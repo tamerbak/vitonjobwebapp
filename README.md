@@ -1,2 +1,3 @@
 # vitonjobwebapp
-La version web app de vitonjob
+La version web de vitonjob
+run the serveur with "node app/bin/www.js --harmony"
