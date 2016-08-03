@@ -40,3 +40,15 @@ html {
     height: 100%;
   }
 }
+.mdl-layout__header .mdl-layout__drawer-button {
+  color: #757575;
+}
+.div-search {
+  position: absolute;
+  bottom: 0;
+  margin: 0 auto;
+  width: 100%;
+  background-color: black;
+  opacity: 0.8;
+  height: 6%;
+}
