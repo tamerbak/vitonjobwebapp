@@ -1,0 +1,48 @@
+<!-- Always shows a header, even in smaller screens. -->
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header" style="color: #757575">
+    <header class="mdl-layout__header" style="background-color: transparent;box-shadow: none; color: #757575">
+        <div class="mdl-layout__header-row">
+            <!-- Add spacer, to align navigation to the right -->
+            <img id="logo" src="../images/logo.png" alt="">
+
+            <div class="mdl-layout-spacer"></div>
+            <!-- Navigation. We hide it in small screens. -->
+            <nav class="mdl-navigation mdl-layout--large-screen-only">
+                <button id="demo-menu-lower-right"
+                        class="mdl-button mdl-js-button mdl-button--icon">
+                    <i class="material-icons">view_module</i>
+                </button>
+
+                <div class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+                    for="demo-menu-lower-right">
+
+                </div>
+                <a style="color: #757575" class="mdl-navigation__link" href="/"><i class="material-icons">power_settings_new</i> Se connecter</a>
+            </nav>
+        </div>
+    </header>
+    <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">Menu</span>
+        <nav class="mdl-navigation"style="color: #757575">
+            <a class="mdl-navigation__link" href=""><i class="material-icons">search</i> Lancer une recherche</a>
+            <a class="mdl-navigation__link" href="/"><i class="material-icons">power_settings_new</i> Se connecter</a>
+            <a class="mdl-navigation__link" href=""><i class="material-icons">info</i> A propos</a>
+            <a class="mdl-navigation__link" href=""><i class="material-icons">person</i> Mon Profil</a>
+            <a class="mdl-navigation__link" href=""><i class="material-icons">toc</i> Mes missions</a>
+            <a class="mdl-navigation__link" href=""><i class="material-icons">schedule</i> Contrat en attente</a>
+            <a class="mdl-navigation__link" href=""><i class="material-icons">people</i> Gestion des habilitations</a>
+            <a class="mdl-navigation__link" href=""><i class="material-icons">lock</i> Coffre numérique</a>
+            <a class="mdl-navigation__link" href=""><i class="material-icons">settings</i> Mes options</a>
+        </nav>
+    </div>
+    <main class="mdl-layout__content">
+        <div class="page-content"><!-- Your content goes here --></div>
+    </main>
+</div>
+<div class="fullscreen-bg">
+    <video loop muted autoplay poster="" class="fullscreen-bg__video">
+
+        <source src="../videos/vitonjob.mp4" type="video/mp4">
+
+    </video>
+</div>
