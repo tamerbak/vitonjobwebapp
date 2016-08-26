@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Configs} from '../configurations/configs';
 import {Http, Headers} from '@angular/http';
+import {Utils} from "../app/utils/utils";
 
 // import {GlobalConfigs} from '../configurations/globalConfigs';
 // import {Storage, SqlStorage} from 'ionic-angular';
@@ -349,16 +350,16 @@ export class MissionService {
      });*/
   }
 
-  savePointing(pointing) {
+  savePointing(pointing, isStart, isPause) {
     var sql;
-    if (pointing.id_pause) {
-      if (pointing.start) {
-        sql = "update user_pause set debut_pointe = '" + pointing.pointe + "' where pk_user_pause = '" + pointing.id_pause + "'";
+    if (isPause) {
+      if (isStart) {
+        sql = "update user_pause set debut_pointe = '" + pointing.pointe + "' where pk_user_pause = '" + pointing.id + "'";
       } else {
-        sql = "update user_pause set fin_pointe = '" + pointing.pointe + "' where pk_user_pause = '" + pointing.id_pause + "'";
+        sql = "update user_pause set fin_pointe = '" + pointing.pointe + "' where pk_user_pause = '" + pointing.id + "'";
       }
     } else {
-      if (pointing.start) {
+      if (isStart) {
         sql = "update user_heure_mission set heure_debut_pointe = '" + pointing.pointe + "' where pk_user_heure_mission = '" + pointing.id + "'";
       } else {
         sql = "update user_heure_mission set heure_fin_pointe = '" + pointing.pointe + "' where pk_user_heure_mission = '" + pointing.id + "'";

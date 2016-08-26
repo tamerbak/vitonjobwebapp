@@ -55,9 +55,7 @@
               <button
                 type="button" class="btn btn-secondary btn-sm"
                 (click)="goToMissionPointingPage(item)"
-                [hidden]="item.option_mission != '2.0' || isEmployer || upperCase(item.releve_employeur) == 'OUI' || upperCase(item.vu) == 'NON'"
-                [disabled]="item.disableBtnPointing"
-              >
+                [hidden]="item.option_mission != '2.0' || isEmployer || upperCase(item.releve_employeur) == 'OUI' || upperCase(item.vu) == 'NON'">
                 Pointage
               </button>
             </div>

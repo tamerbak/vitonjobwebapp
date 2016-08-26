@@ -116,7 +116,7 @@ export class MissionList{
               let array = this.missionService.getTodayMission(missionHoursTemp);
               let missionHours = array[0];
               let missionPauses = array[1];
-              item.disableBtnPointing = this.missionService.disablePointing(missionHours, missionPauses).disabled;
+              //item.disableBtnPointing = this.missionService.disablePointing(missionHours, missionPauses).disabled;
               /*let autoPointing = navParams.get('autoPointing');
                if(autoPointing){
                this.nextPointing = navParams.get('nextPointing')

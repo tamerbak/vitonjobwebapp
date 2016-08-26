@@ -56,19 +56,20 @@ export class MissionPointing {
             }
           }
         }
-        this.disableBtnPointing = this.missionService.disablePointing(this.missionHours, this.missionPauses).disabled;
-        this.nextPointing = this.missionService.disablePointing(this.missionHours, this.missionPauses).nextPointing;
+        //this.disableBtnPointing = this.missionService.disablePointing(this.missionHours, this.missionPauses).disabled;
+        //this.nextPointing = this.missionService.disablePointing(this.missionHours, this.missionPauses).nextPointing;
       }
     });
   }
 
-  pointHour(autoPointing) {
-    if (this.nextPointing) {
+  pointHour(autoPointing, day, isStart, isPause) {
+    //if (this.nextPointing) {
       let h = new Date().getHours();
       let m = new Date().getMinutes();
       let minutesNow = this.missionService.convertHoursToMinutes(h + ':' + m);
-      this.nextPointing.pointe = minutesNow;
-      this.missionService.savePointing(this.nextPointing).then((data: any) => {
+      day.pointe = minutesNow;
+
+      this.missionService.savePointing(day, isStart, isPause).then((data: any) => {
         //retrieve mission hours of today
         this.missionService.listMissionHours(this.contract, true).then((data: any) => {
           if (data.data) {
@@ -76,12 +77,12 @@ export class MissionPointing {
             let array = this.missionService.getTodayMission(missionHoursTemp);
             this.missionHours = array[0];
             this.missionPauses = array[1];
-            this.disableBtnPointing = true;
+            //this.disableBtnPointing = true;
             //this.router.navigate(['mission/details']);
           }
         });
       });
-    }
+    //}
   }
 
   upperCase(str) {
@@ -91,9 +92,6 @@ export class MissionPointing {
   }
 
   isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
+    return Utils.isEmpty(str);
   }
 }
