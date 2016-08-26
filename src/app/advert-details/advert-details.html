@@ -44,7 +44,8 @@
               type="submit"
               class="btn btn-secondary btn-sm top-element"
               (click)="switchJobyerInterest()"
-              style="background-color: #40aea9; color: white; float: right;">
+              style="background-color: #40aea9; color: white; float: right;"
+              *ngIf="!isEmployer">
               {{jobyerInterestLabel}}
             </button>
           </div>

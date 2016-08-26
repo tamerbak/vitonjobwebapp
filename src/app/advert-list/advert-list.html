@@ -42,10 +42,13 @@
 
       <div class="clearfix">
         <div class="pull-sm-right pull-md-right pull-lg-right pull-xl-right clear-child">
-            <button type="button" class="btn btn-primary btn-sm " style="background-color: #40aea9; color: white; border-radius: 0.2rem;" (click)="gotoAdvert(adv)">
+            <button type="button" class="btn btn-primary btn-sm " style="background-color: #40aea9; color: white; border-radius: 0.2rem;" (click)="gotoAdvertDetails(adv)">
               Détails
             </button>
-            <button type="button" class="btn btn-danger btn-sm clear-child-3" (click)="deleteAdv(adv)" *ngIf="isEmployer">Supprimer
+          <button type="button" class="btn btn-warning btn-sm clear-child-3" (click)="gotoEditAdvert(adv)" *ngIf="isEmployer">
+            Modifier
+          </button>
+          <button type="button" class="btn btn-danger btn-sm clear-child-3" (click)="deleteAdv(adv)" *ngIf="isEmployer">Supprimer
             </button>
           <button type="button" class="btn btn-success btn-sm clear-child-3" (click)="goToAdvJobyerInterestList(adv)" *ngIf="isEmployer">{{adv.nbInterest}} jobyer(s) intéressé(s)
           </button>
