@@ -1,0 +1,15 @@
+{
+  "globalDependencies": {
+    "es6-shim": "registry:dt/es6-shim#0.31.2+20160602141504",
+    "fbemitter": "registry:dt/fbemitter#2.0.0+20160618175531",
+    "flux": "registry:dt/flux#0.0.0+20160618175531",
+    "immutable": "registry:dt/immutable#3.8.1+20160608070634",
+    "node": "registry:dt/node#6.0.0+20160826120425",
+    "react": "registry:dt/react#0.14.0+20160817201227",
+    "react-bootstrap": "registry:dt/react-bootstrap#0.0.0+20160806072414",
+    "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
+    "react-router": "registry:dt/react-router#2.0.0+20160813233016",
+    "react-select": "registry:dt/react-select#1.0.0+20160803032132",
+    "superagent": "registry:dt/superagent#2.0.0+20160811085415"
+  }
+}
