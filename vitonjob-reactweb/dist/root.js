@@ -8,6 +8,7 @@ var React = require("react");
 var react_router_1 = require('react-router');
 var app_1 = require("./components/app");
 var signIn_1 = require("./components/signIn");
+var signUp_1 = require("./components/signUp");
 var Root = (function (_super) {
     __extends(Root, _super);
     function Root() {
@@ -16,8 +17,8 @@ var Root = (function (_super) {
     Root.prototype.render = function () {
         return (React.createElement(react_router_1.Router, {history: this.props.history}, 
             React.createElement(react_router_1.Route, {path: "/", component: app_1.App}, 
-                React.createElement(react_router_1.Route, {path: "/signIn", component: signIn_1.SignIn})
-            )
+                React.createElement(react_router_1.Route, {path: "/signIn", component: signIn_1.SignIn}), 
+                React.createElement(react_router_1.Route, {path: "/signUp", component: signUp_1.SignUp}))
         ));
     };
     return Root;

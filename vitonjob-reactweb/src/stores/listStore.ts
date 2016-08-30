@@ -5,8 +5,7 @@ import { EventEmitter } from 'events';
 const CHANGE_EVENT = 'change';
 var _countryCodes:Array<{value:string,label:string}> = [];
 
-function fillCountryCallingCodeList(response:any) {
-  console.log(response.data);
+function fillCountryCallingCodeList(response:any){
   _countryCodes = [];
   var data:Array<{indicatif_telephonique:string,nom:string}> = response.data;
 

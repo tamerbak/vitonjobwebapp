@@ -4,6 +4,11 @@ var remoteValidationConstants_1 = require('../constants/remoteValidationConstant
 var authenticationServices_1 = require('../services/authenticationServices');
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = {
+    initialize: function () {
+        appDispatcher_1.default.dispatch({
+            actionType: remoteValidationConstants_1.default.INITIALIZE_CASE
+        });
+    },
     getUserByPhone: function (countryCode, phoneNumber) {
         var fullPhoneNumber = "+" + countryCode + phoneNumber;
         authenticationServices_1.default
@@ -18,7 +23,24 @@ exports.default = {
             appDispatcher_1.default.dispatch({
                 actionType: remoteValidationConstants_1.default.ERROR_CASE,
                 error: err,
-                message: "getting User By phone"
+                message: "error in getting user by phonenumber",
+            });
+        });
+    },
+    getUserByEmail: function (email) {
+        authenticationServices_1.default
+            .getUserByEmail(email)
+            .then(function (res) {
+            appDispatcher_1.default.dispatch({
+                actionType: remoteValidationConstants_1.default.USER_BY_EMAIL_CASE,
+                response: res
+            });
+        })
+            .catch(function (err) {
+            appDispatcher_1.default.dispatch({
+                actionType: remoteValidationConstants_1.default.ERROR_CASE,
+                error: err,
+                message: "error in getting user by email",
             });
         });
     }

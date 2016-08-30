@@ -4,12 +4,15 @@
 
       "./src/dispatcher/appDispatcher.ts",
       "./src/configs/apiUrls.ts",
+      "./src/utils/utils.ts",
 
-      "./src/components/header.tsx",
-      "./src/components/app.tsx",
-      "./src/components/signIn.tsx",
-      "./src/root.tsx",
       "./src/index.tsx",
+      "./src/root.tsx",
+      "./src/components/app.tsx",
+      "./src/components/header.tsx",
+      "./src/components/signIn.tsx",
+      "./src/components/signUp.tsx",
+
 
       "./src/constants/authConstants.ts",
       "./src/constants/listConstants.ts",

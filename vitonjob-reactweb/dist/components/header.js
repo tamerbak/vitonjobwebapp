@@ -41,11 +41,15 @@ var Header = (function (_super) {
                     React.createElement("img", {id: "logo", alt: "VitOnJob", src: "img/logo.png"})
                 ), 
                 React.createElement(react_bootstrap_1.Navbar.Toggle, null)), 
-            React.createElement(react_bootstrap_1.Navbar.Collapse, null, 
-                React.createElement(react_bootstrap_1.Nav, {pullRight: true}, !this.state.authenticated ? (React.createElement(react_bootstrap_1.NavItem, null, 
+            React.createElement(react_bootstrap_1.Navbar.Collapse, null, !this.state.authenticated ? (React.createElement(react_bootstrap_1.Nav, {pullRight: true}, 
+                React.createElement(react_bootstrap_1.NavItem, null, 
                     React.createElement(react_router_1.Link, {to: "/signIn"}, "Se connecter")
-                )) : (React.createElement(react_bootstrap_1.NavItem, {onClick: this.logout}, "Déconnexion")))
-            )));
+                ), 
+                React.createElement(react_bootstrap_1.NavItem, null, 
+                    React.createElement(react_router_1.Link, {to: "/signUp"}, "S'inscrire")
+                ))) : (React.createElement(react_bootstrap_1.Nav, {pullRight: true}, 
+                React.createElement(react_bootstrap_1.NavItem, {onClick: this.logout}, "Déconnexion")
+            )))));
     };
     return Header;
 }(React.Component));

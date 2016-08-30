@@ -51,6 +51,20 @@ exports.default = {
                 resolve(JSON.parse(response.text));
             });
         });
+    },
+    getUserByEmail: function (email) {
+        var sql = "select pk_user_account, email, telephone, role from user_account where LOWER(email) = lower_unaccent('" + email + "')";
+        return new Promise(function (resolve, reject) {
+            request
+                .post(apiUrls_1.default.SQL_URL)
+                .send(sql)
+                .set('Content-Type', 'text/plain')
+                .end(function (err, response) {
+                if (err)
+                    reject(err);
+                resolve(JSON.parse(response.text));
+            });
+        });
     }
 };
 //# sourceMappingURL=authenticationServices.js.map

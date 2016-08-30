@@ -10,7 +10,6 @@ var events_1 = require('events');
 var CHANGE_EVENT = 'change';
 var _countryCodes = [];
 function fillCountryCallingCodeList(response) {
-    console.log(response.data);
     _countryCodes = [];
     var data = response.data;
     for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {

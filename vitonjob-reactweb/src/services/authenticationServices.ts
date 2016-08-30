@@ -46,6 +46,8 @@ export default {
     });
 
   },
+
+  //Service : get User by his phonenumber from the server
   getUserByPhone: (phoneNumber:string) => {
     var sql= "select pk_user_account, email, role from user_account where telephone = '"+phoneNumber+"'";
     return new Promise((resolve:any, reject:any) => {
@@ -58,7 +60,21 @@ export default {
           resolve(JSON.parse(response.text));
         })
     });
+  },
 
+  //Service : get User by his email from the server
+  getUserByEmail: (email:string) => {
+    var sql = "select pk_user_account, email, telephone, role from user_account where LOWER(email) = lower_unaccent('"+email+"')";
+    return new Promise((resolve:any, reject:any) => {
+      request
+        .post(ApiURLs.SQL_URL)
+        .send(sql)
+        .set('Content-Type', 'text/plain')
+        .end((err, response) => {
+          if (err) reject(err);
+          resolve(JSON.parse(response.text));
+        })
+    });
   }
 
 

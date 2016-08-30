@@ -9,13 +9,25 @@ var remoteValidationConstants_1 = require('../constants/remoteValidationConstant
 var events_1 = require('events');
 var CHANGE_EVENT = 'change';
 var _isPhoneNumberExist = null;
-function getPhoneNumberState(response) {
-    console.log(response);
+var _isEmailExist = null;
+function initializeStates() {
+    _isPhoneNumberExist = null;
+    _isEmailExist = null;
+}
+function setPhoneNumberState(response) {
     if (!response || response.data.length == 0) {
         _isPhoneNumberExist = false;
     }
     else {
         _isPhoneNumberExist = true;
+    }
+}
+function setEmailState(response) {
+    if (!response || response.data.length == 0) {
+        _isEmailExist = false;
+    }
+    else {
+        _isEmailExist = true;
     }
 }
 var RemoteValidationStoreClass = (function (_super) {
@@ -35,17 +47,27 @@ var RemoteValidationStoreClass = (function (_super) {
     RemoteValidationStoreClass.prototype.isPhoneNumberExist = function () {
         return _isPhoneNumberExist;
     };
+    RemoteValidationStoreClass.prototype.isEmailExist = function () {
+        return _isEmailExist;
+    };
     return RemoteValidationStoreClass;
 }(events_1.EventEmitter));
 var RemoteValidationStore = new RemoteValidationStoreClass();
 RemoteValidationStore.dispatchToken = appDispatcher_1.default.register(function (action) {
     switch (action.actionType) {
+        case remoteValidationConstants_1.default.INITIALIZE_CASE:
+            initializeStates();
+            break;
         case remoteValidationConstants_1.default.USER_BY_PHONE_CASE:
-            getPhoneNumberState(action.response);
+            setPhoneNumberState(action.response);
+            RemoteValidationStore.emitChange();
+            break;
+        case remoteValidationConstants_1.default.USER_BY_EMAIL_CASE:
+            setEmailState(action.response);
             RemoteValidationStore.emitChange();
             break;
         case remoteValidationConstants_1.default.ERROR_CASE:
-            console.log("error executing request: " + action.message, action.error);
+            console.log(action.message, action.error);
             RemoteValidationStore.emitChange();
             break;
         default:

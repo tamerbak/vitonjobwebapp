@@ -5895,6 +5895,7 @@
 	var react_router_1 = __webpack_require__(3);
 	var app_1 = __webpack_require__(68);
 	var signIn_1 = __webpack_require__(330);
+	var signUp_1 = __webpack_require__(354);
 	//set routes to different pages with react-router
 	var Root = (function (_super) {
 	    __extends(Root, _super);
@@ -5902,7 +5903,7 @@
 	        _super.apply(this, arguments);
 	    }
 	    Root.prototype.render = function () {
-	        return (React.createElement(react_router_1.Router, {history: this.props.history}, React.createElement(react_router_1.Route, {path: "/", component: app_1.App}, React.createElement(react_router_1.Route, {path: "/signIn", component: signIn_1.SignIn}))));
+	        return (React.createElement(react_router_1.Router, {history: this.props.history}, React.createElement(react_router_1.Route, {path: "/", component: app_1.App}, React.createElement(react_router_1.Route, {path: "/signIn", component: signIn_1.SignIn}), React.createElement(react_router_1.Route, {path: "/signUp", component: signUp_1.SignUp}))));
 	    };
 	    return Root;
 	}(React.Component));
@@ -5979,7 +5980,7 @@
 	        this.setState({ authenticated: false });
 	    };
 	    Header.prototype.render = function () {
-	        return (React.createElement(react_bootstrap_1.Navbar, {fluid: true}, React.createElement(react_bootstrap_1.Navbar.Header, null, React.createElement(react_bootstrap_1.Navbar.Brand, null, React.createElement("img", {id: "logo", alt: "VitOnJob", src: "img/logo.png"})), React.createElement(react_bootstrap_1.Navbar.Toggle, null)), React.createElement(react_bootstrap_1.Navbar.Collapse, null, React.createElement(react_bootstrap_1.Nav, {pullRight: true}, !this.state.authenticated ? (React.createElement(react_bootstrap_1.NavItem, null, React.createElement(react_router_1.Link, {to: "/signIn"}, "Se connecter"))) : (React.createElement(react_bootstrap_1.NavItem, {onClick: this.logout}, "Déconnexion"))))));
+	        return (React.createElement(react_bootstrap_1.Navbar, {fluid: true}, React.createElement(react_bootstrap_1.Navbar.Header, null, React.createElement(react_bootstrap_1.Navbar.Brand, null, React.createElement("img", {id: "logo", alt: "VitOnJob", src: "img/logo.png"})), React.createElement(react_bootstrap_1.Navbar.Toggle, null)), React.createElement(react_bootstrap_1.Navbar.Collapse, null, !this.state.authenticated ? (React.createElement(react_bootstrap_1.Nav, {pullRight: true}, React.createElement(react_bootstrap_1.NavItem, null, React.createElement(react_router_1.Link, {to: "/signIn"}, "Se connecter")), React.createElement(react_bootstrap_1.NavItem, null, React.createElement(react_router_1.Link, {to: "/signUp"}, "S'inscrire")))) : (React.createElement(react_bootstrap_1.Nav, {pullRight: true}, React.createElement(react_bootstrap_1.NavItem, {onClick: this.logout}, "Déconnexion"))))));
 	    };
 	    return Header;
 	}(React.Component));
@@ -25496,21 +25497,7 @@
 	var remoteValidationActions_1 = __webpack_require__(349);
 	var listStore_1 = __webpack_require__(351);
 	var remoteValidationStore_1 = __webpack_require__(352);
-	//function : verify if a value exist in a list of objects
-	function contains(list, val) {
-	    if (list == null) {
-	        return false;
-	    }
-	    else {
-	        var i = list.length;
-	        while (i--) {
-	            if (list[i].value === val) {
-	                return true;
-	            }
-	        }
-	        return false;
-	    }
-	}
+	var utils_1 = __webpack_require__(353);
 	var SignIn = (function (_super) {
 	    __extends(SignIn, _super);
 	    function SignIn(props) {
@@ -25548,6 +25535,7 @@
 	    };
 	    SignIn.prototype.componentDidMount = function () {
 	        listActions_1.default.getCountryCallingCodes();
+	        remoteValidationActions_1.default.initialize();
 	    };
 	    SignIn.prototype.componentWillUnmount = function () {
 	        //remove the stores changes listeners
@@ -25582,7 +25570,7 @@
 	    };
 	    SignIn.prototype.handlePhoneChange = function (e) {
 	        var newValue = e.target.value.replace(/[^0-9]/g, "");
-	        var isIndexExist = contains(this.state.countryCodesList, this.state.index);
+	        var isIndexExist = utils_1.default.listHasValue(this.state.countryCodesList, this.state.index);
 	        this.setState({
 	            phone: newValue,
 	            isPhoneNumberExist: null
@@ -25592,7 +25580,7 @@
 	        });
 	    };
 	    SignIn.prototype.getUserByPhoneNumber = function () {
-	        var isIndexExist = contains(this.state.countryCodesList, this.state.index);
+	        var isIndexExist = utils_1.default.listHasValue(this.state.countryCodesList, this.state.index);
 	        if (this.state.phone.length == 9 && isIndexExist) {
 	            remoteValidationActions_1.default.getUserByPhone(this.state.index, this.state.phone);
 	        }
@@ -25632,7 +25620,6 @@
 	                }
 	                //case of incorrect password
 	                if (res.id == 0 && res.status == "passwordError") {
-	                    console.log("Numéro de téléphone déjà pris");
 	                    _this.setState({
 	                        passwordHint: "le mot de passe saisi est incorrect"
 	                    });
@@ -25653,7 +25640,7 @@
 	    };
 	    //verify if the full phonenumber is valid and show error message for every case
 	    SignIn.prototype.isPhoneNumberValid = function () {
-	        var isIndexExist = contains(this.state.countryCodesList, this.state.index);
+	        var isIndexExist = utils_1.default.listHasValue(this.state.countryCodesList, this.state.index);
 	        var index = this.state.index;
 	        var phoneNumber = this.state.phone;
 	        var password = this.state.password;
@@ -27505,8 +27492,24 @@
 	            });
 	        });
 	    },
+	    //Service : get User by his phonenumber from the server
 	    getUserByPhone: function (phoneNumber) {
 	        var sql = "select pk_user_account, email, role from user_account where telephone = '" + phoneNumber + "'";
+	        return new Promise(function (resolve, reject) {
+	            request
+	                .post(apiUrls_1.default.SQL_URL)
+	                .send(sql)
+	                .set('Content-Type', 'text/plain')
+	                .end(function (err, response) {
+	                if (err)
+	                    reject(err);
+	                resolve(JSON.parse(response.text));
+	            });
+	        });
+	    },
+	    //Service : get User by his email from the server
+	    getUserByEmail: function (email) {
+	        var sql = "select pk_user_account, email, telephone, role from user_account where LOWER(email) = lower_unaccent('" + email + "')";
 	        return new Promise(function (resolve, reject) {
 	            request
 	                .post(apiUrls_1.default.SQL_URL)
@@ -29549,22 +29552,50 @@
 	var authenticationServices_1 = __webpack_require__(338);
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = {
-	    // Action : verify if the user exists by his phoneNumber
+	    //Action: initialize states of validations values
+	    initialize: function () {
+	        appDispatcher_1.default.dispatch({
+	            actionType: remoteValidationConstants_1.default.INITIALIZE_CASE
+	        });
+	    },
+	    //verify if the user exists by his phoneNumber
 	    getUserByPhone: function (countryCode, phoneNumber) {
 	        var fullPhoneNumber = "+" + countryCode + phoneNumber;
 	        authenticationServices_1.default
 	            .getUserByPhone(fullPhoneNumber)
 	            .then(function (res) {
+	            //Action: fetching done
 	            appDispatcher_1.default.dispatch({
 	                actionType: remoteValidationConstants_1.default.USER_BY_PHONE_CASE,
 	                response: res
 	            });
 	        })
 	            .catch(function (err) {
+	            //Action: fetching error
 	            appDispatcher_1.default.dispatch({
 	                actionType: remoteValidationConstants_1.default.ERROR_CASE,
 	                error: err,
-	                message: "getting User By phone"
+	                message: "error in getting user by phonenumber",
+	            });
+	        });
+	    },
+	    //verify if the user exists by his email
+	    getUserByEmail: function (email) {
+	        authenticationServices_1.default
+	            .getUserByEmail(email)
+	            .then(function (res) {
+	            //Action: fetching done
+	            appDispatcher_1.default.dispatch({
+	                actionType: remoteValidationConstants_1.default.USER_BY_EMAIL_CASE,
+	                response: res
+	            });
+	        })
+	            .catch(function (err) {
+	            //Action: fetching error
+	            appDispatcher_1.default.dispatch({
+	                actionType: remoteValidationConstants_1.default.ERROR_CASE,
+	                error: err,
+	                message: "error in getting user by email",
 	            });
 	        });
 	    }
@@ -29581,6 +29612,8 @@
 	exports.default = keyMirror({
 	    USER_BY_PHONE_CASE: null,
 	    ERROR_CASE: null,
+	    USER_BY_EMAIL_CASE: null,
+	    INITIALIZE_CASE: null,
 	});
 
 
@@ -29600,7 +29633,6 @@
 	var CHANGE_EVENT = 'change';
 	var _countryCodes = [];
 	function fillCountryCallingCodeList(response) {
-	    console.log(response.data);
 	    _countryCodes = [];
 	    var data = response.data;
 	    for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
@@ -29665,13 +29697,25 @@
 	var events_1 = __webpack_require__(329);
 	var CHANGE_EVENT = 'change';
 	var _isPhoneNumberExist = null;
-	function getPhoneNumberState(response) {
-	    console.log(response);
+	var _isEmailExist = null;
+	function initializeStates() {
+	    _isPhoneNumberExist = null;
+	    _isEmailExist = null;
+	}
+	function setPhoneNumberState(response) {
 	    if (!response || response.data.length == 0) {
 	        _isPhoneNumberExist = false;
 	    }
 	    else {
 	        _isPhoneNumberExist = true;
+	    }
+	}
+	function setEmailState(response) {
+	    if (!response || response.data.length == 0) {
+	        _isEmailExist = false;
+	    }
+	    else {
+	        _isEmailExist = true;
 	    }
 	}
 	var RemoteValidationStoreClass = (function (_super) {
@@ -29691,18 +29735,29 @@
 	    RemoteValidationStoreClass.prototype.isPhoneNumberExist = function () {
 	        return _isPhoneNumberExist;
 	    };
+	    RemoteValidationStoreClass.prototype.isEmailExist = function () {
+	        return _isEmailExist;
+	    };
 	    return RemoteValidationStoreClass;
 	}(events_1.EventEmitter));
 	var RemoteValidationStore = new RemoteValidationStoreClass();
 	// register a callback for the dispatcher and respond appropriately to various action types
 	RemoteValidationStore.dispatchToken = appDispatcher_1.default.register(function (action) {
 	    switch (action.actionType) {
+	        case remoteValidationConstants_1.default.INITIALIZE_CASE:
+	            initializeStates();
+	            //RemoteValidationStore.emitChange();
+	            break;
 	        case remoteValidationConstants_1.default.USER_BY_PHONE_CASE:
-	            getPhoneNumberState(action.response);
+	            setPhoneNumberState(action.response);
+	            RemoteValidationStore.emitChange();
+	            break;
+	        case remoteValidationConstants_1.default.USER_BY_EMAIL_CASE:
+	            setEmailState(action.response);
 	            RemoteValidationStore.emitChange();
 	            break;
 	        case remoteValidationConstants_1.default.ERROR_CASE:
-	            console.log("error executing request: " + action.message, action.error);
+	            console.log(action.message, action.error);
 	            RemoteValidationStore.emitChange();
 	            break;
 	        default:
@@ -29710,6 +29765,355 @@
 	});
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = RemoteValidationStore;
+
+
+/***/ },
+/* 353 */
+/***/ function(module, exports) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = {
+	    //Action: verify if a value exist in a list of objects
+	    listHasValue: function (list, val) {
+	        if (list == null) {
+	            return false;
+	        }
+	        else {
+	            var i = list.length;
+	            while (i--) {
+	                if (list[i].value === val) {
+	                    return true;
+	                }
+	            }
+	            return false;
+	        }
+	    },
+	    isEmailValid: function (email) {
+	        var emailReg = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	        return emailReg.test(email);
+	    }
+	};
+
+
+/***/ },
+/* 354 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(1);
+	var react_bootstrap_1 = __webpack_require__(70);
+	var Select = __webpack_require__(331);
+	var authenticationServices_1 = __webpack_require__(338);
+	var authenticationActions_1 = __webpack_require__(321);
+	var listActions_1 = __webpack_require__(346);
+	var remoteValidationActions_1 = __webpack_require__(349);
+	var listStore_1 = __webpack_require__(351);
+	var remoteValidationStore_1 = __webpack_require__(352);
+	var utils_1 = __webpack_require__(353);
+	var SignUp = (function (_super) {
+	    __extends(SignUp, _super);
+	    function SignUp(props) {
+	        _super.call(this, props);
+	        //initial state
+	        this.state = {
+	            index: "33",
+	            phone: '',
+	            email: '',
+	            password: '',
+	            passwordConfirmation: '',
+	            countryCodesList: [],
+	            phoneNumberHint: '',
+	            passwordHint: '',
+	            passwordConfirmationHint: '',
+	            isPhoneNumberExist: null,
+	            isEmailExist: null,
+	            isEmailValid: false,
+	            isPhoneNumberValid: false,
+	            isPasswordValid: false,
+	            isFormValid: false,
+	            isLoading: false // boolean defines state of Regestration operation
+	        };
+	        //bind functions
+	        this.onChangeRemoteValidationStore = this.onChangeRemoteValidationStore.bind(this);
+	        this.onChangeListStore = this.onChangeListStore.bind(this);
+	        this.handlePasswordChange = this.handlePasswordChange.bind(this);
+	        this.handlePasswordConfirmationChange = this.handlePasswordConfirmationChange.bind(this);
+	        this.handlePhoneChange = this.handlePhoneChange.bind(this);
+	        this.handleEmailChange = this.handleEmailChange.bind(this);
+	        this.HandleCountryCodeListChange = this.HandleCountryCodeListChange.bind(this);
+	        this.isPhoneNumberValid = this.isPhoneNumberValid.bind(this);
+	        this.isPasswordValid = this.isPasswordValid.bind(this);
+	        this.getUserByPhoneNumber = this.getUserByPhoneNumber.bind(this);
+	        this.SignUp = this.SignUp.bind(this);
+	        this.gotoHome = this.gotoHome.bind(this);
+	    }
+	    SignUp.prototype.componentWillMount = function () {
+	        //add Lists and remoteValidations stores changes listeners
+	        listStore_1.default.addChangeListener(this.onChangeListStore);
+	        remoteValidationStore_1.default.addChangeListener(this.onChangeRemoteValidationStore);
+	    };
+	    SignUp.prototype.componentDidMount = function () {
+	        listActions_1.default.getCountryCallingCodes();
+	        remoteValidationActions_1.default.initialize();
+	    };
+	    SignUp.prototype.componentWillUnmount = function () {
+	        //remove the stores changes listeners
+	        listStore_1.default.removeChangeListener(this.onChangeListStore);
+	        remoteValidationStore_1.default.removeChangeListener(this.onChangeRemoteValidationStore);
+	    };
+	    //function to navigate to Home Page
+	    SignUp.prototype.gotoHome = function () {
+	        this.context.router.push('/');
+	    };
+	    //function: load country calling codes List from the store
+	    SignUp.prototype.onChangeListStore = function () {
+	        this.setState({
+	            countryCodesList: listStore_1.default.getCountryCallingsCodes()
+	        });
+	    };
+	    //function: change the state of isPhoneNumberExist and call isPhoneNumberValid()
+	    SignUp.prototype.onChangeRemoteValidationStore = function () {
+	        this.setState({
+	            isPhoneNumberExist: remoteValidationStore_1.default.isPhoneNumberExist(),
+	            isEmailExist: remoteValidationStore_1.default.isEmailExist()
+	        }, function () {
+	            this.isPhoneNumberValid();
+	            this.isEmailValid();
+	        });
+	    };
+	    SignUp.prototype.handlePasswordChange = function (e) {
+	        this.setState({
+	            password: e.target.value
+	        }, function () {
+	            this.isPasswordValid();
+	        });
+	    };
+	    SignUp.prototype.handlePasswordConfirmationChange = function (e) {
+	        this.setState({
+	            passwordConfirmation: e.target.value
+	        }, function () {
+	            this.isPasswordValid();
+	        });
+	    };
+	    SignUp.prototype.handlePhoneChange = function (e) {
+	        var newValue = e.target.value.replace(/[^0-9]/g, "");
+	        var isIndexExist = utils_1.default.listHasValue(this.state.countryCodesList, this.state.index);
+	        this.setState({
+	            phone: newValue,
+	            isPhoneNumberExist: null
+	        }, function () {
+	            this.isPhoneNumberValid();
+	            this.getUserByPhoneNumber();
+	        });
+	    };
+	    SignUp.prototype.handleEmailChange = function (e) {
+	        this.setState({
+	            email: e.target.value.trim(),
+	            isEmailExist: null
+	        }, function () {
+	            this.isEmailValid();
+	            this.getUserByEmail();
+	        });
+	    };
+	    SignUp.prototype.getUserByPhoneNumber = function () {
+	        var isIndexExist = utils_1.default.listHasValue(this.state.countryCodesList, this.state.index);
+	        if (this.state.phone.length == 9 && isIndexExist) {
+	            remoteValidationActions_1.default.getUserByPhone(this.state.index, this.state.phone);
+	        }
+	    };
+	    SignUp.prototype.getUserByEmail = function () {
+	        if (utils_1.default.isEmailValid(this.state.email)) {
+	            remoteValidationActions_1.default.getUserByEmail(this.state.email);
+	        }
+	    };
+	    SignUp.prototype.handleIndexChange = function (e) {
+	        var newValue = e.target.value.replace(/[^0-9]/g, "");
+	        this.setState({
+	            index: newValue,
+	            isPhoneNumberExist: null
+	        }, function () {
+	            this.isPhoneNumberValid();
+	            this.getUserByPhoneNumber();
+	        });
+	    };
+	    // call Registration service and logIn/notify the user in success/failure case
+	    SignUp.prototype.SignUp = function () {
+	        var _this = this;
+	        if (this.state.isFormValid) {
+	            var index = this.state.index;
+	            var phoneNumber = this.state.phone;
+	            var password = this.state.password;
+	            var email = this.state.email;
+	            //state of authentication: Loading
+	            this.setState({
+	                isLoading: true
+	            });
+	            authenticationServices_1.default
+	                .Athenticate(index, phoneNumber, password, email, 'employeur')
+	                .then(function (res) {
+	                //state of authentication: Done
+	                _this.setState({
+	                    isLoading: false
+	                });
+	                //case of authentication failure : server unavailable or connection problem
+	                if (!res || res.length == 0 || (res.id == 0 && res.status == "failure")) {
+	                    console.log("Serveur non disponible ou problème de connexion.");
+	                    return;
+	                }
+	                //case of success : call AuthAction logIn and redirect to home page (for now...)
+	                authenticationActions_1.default.logUserIn(res);
+	                _this.gotoHome();
+	            })
+	                .catch(function (err) {
+	                //state of authentication operation : done
+	                _this.setState({
+	                    isLoading: false
+	                });
+	            });
+	        }
+	    };
+	    //verify if the full phonenumber is valid and show error message for every case
+	    SignUp.prototype.isPhoneNumberValid = function () {
+	        var isIndexExist = utils_1.default.listHasValue(this.state.countryCodesList, this.state.index);
+	        var index = this.state.index;
+	        var phoneNumber = this.state.phone;
+	        var password = this.state.password;
+	        var isPhoneNumberExist = this.state.isPhoneNumberExist;
+	        var phoneMsg = '';
+	        var _isPhoneNumberValid = true;
+	        if (!index || !phoneNumber) {
+	            phoneMsg = "Veillez saisir l'indicatif téléphonique et le téléphone";
+	            _isPhoneNumberValid = false;
+	        }
+	        else {
+	            if (phoneNumber.length != 9) {
+	                phoneMsg = "le numéro de téléphone doit contenir 9 chiffres";
+	                _isPhoneNumberValid = false;
+	            }
+	            else if (!isIndexExist) {
+	                phoneMsg = "l'indicatif téléphonique est non disponible";
+	                _isPhoneNumberValid = false;
+	            }
+	            else {
+	                if (isPhoneNumberExist == null) {
+	                    phoneMsg = "Verification en cours ...";
+	                    _isPhoneNumberValid = false;
+	                }
+	                else if (isPhoneNumberExist == true) {
+	                    phoneMsg = "Ce numéro de téléphone est déja utilisé";
+	                    _isPhoneNumberValid = false;
+	                }
+	                else {
+	                    phoneMsg = "";
+	                }
+	            }
+	        }
+	        this.setState({
+	            phoneNumberHint: phoneMsg,
+	            isPhoneNumberValid: _isPhoneNumberValid
+	        }, function () {
+	            this.isFormValid();
+	        });
+	    };
+	    //verify if the password is valid and show error message for every case
+	    SignUp.prototype.isPasswordValid = function () {
+	        var password = this.state.password;
+	        var passwordConf = this.state.passwordConfirmation;
+	        var passwordMsg = '';
+	        var password2Msg = '';
+	        var _isPasswordValid = true;
+	        if (!password) {
+	            passwordMsg = "le mot de passe est obligatoire";
+	            password2Msg = "";
+	            _isPasswordValid = false;
+	        }
+	        else if (password.length < 8) {
+	            passwordMsg = "votre mot de passe doit comporter 8 caractères minimum";
+	            password2Msg = "";
+	            _isPasswordValid = false;
+	        }
+	        else if (password !== passwordConf) {
+	            passwordMsg = "";
+	            password2Msg = "Les deux mots de passe ne sont pas identiques";
+	            _isPasswordValid = false;
+	        }
+	        else {
+	            passwordMsg = "";
+	        }
+	        this.setState({
+	            passwordHint: passwordMsg,
+	            passwordConfirmationHint: password2Msg,
+	            isPasswordValid: _isPasswordValid
+	        }, function () {
+	            this.isFormValid();
+	        });
+	    };
+	    //verify if the email is valid/exist andshow error message for every case
+	    SignUp.prototype.isEmailValid = function () {
+	        var isEmailValid = utils_1.default.isEmailValid(this.state.email);
+	        var isEmailExist = this.state.isEmailExist;
+	        var emailMsg = '';
+	        var _isEmailFormValid = true;
+	        if (this.state.email == "") {
+	            emailMsg = "l'adresse e-mail est obligatoire";
+	            _isEmailFormValid = false;
+	        }
+	        else if (!isEmailValid) {
+	            emailMsg = "Adresse e-mail incorrecte ";
+	            _isEmailFormValid = false;
+	        }
+	        else if (isEmailExist == true) {
+	            emailMsg = "Cette adresse e-mail a été déjà utilisé. Veuillez choisir une autre.";
+	            _isEmailFormValid = false;
+	        }
+	        else if (isEmailExist == null) {
+	            emailMsg = "Vérification en cours ...";
+	            _isEmailFormValid = false;
+	        }
+	        else {
+	            emailMsg = "";
+	        }
+	        this.setState({
+	            emailHint: emailMsg,
+	            isEmailValid: _isEmailFormValid
+	        }, function () {
+	            this.isFormValid();
+	        });
+	    };
+	    //verify if all form input and remote validation are valid
+	    SignUp.prototype.isFormValid = function () {
+	        var isPhoneValid = this.state.isPhoneNumberValid;
+	        var isPasswordValid = this.state.isPasswordValid;
+	        var isEmailValid = this.state.isEmailValid;
+	        var _isFormValid = false;
+	        if (isPhoneValid && isPasswordValid && isEmailValid) {
+	            _isFormValid = true;
+	        }
+	        this.setState({
+	            isFormValid: _isFormValid
+	        });
+	    };
+	    SignUp.prototype.HandleCountryCodeListChange = function (option) {
+	        this.setState({ index: option.value });
+	    };
+	    SignUp.prototype.render = function () {
+	        var isLoading = this.state.isLoading;
+	        var isFormValid = this.state.isFormValid;
+	        return (React.createElement(react_bootstrap_1.Grid, null, React.createElement(react_bootstrap_1.Row, {className: "show-grid"}, React.createElement(react_bootstrap_1.Col, {xs: 12, md: 6, mdPush: 3}, React.createElement(react_bootstrap_1.Form, {horizontal: true}, React.createElement(react_bootstrap_1.FormGroup, {controlId: "formCountry"}, React.createElement(react_bootstrap_1.Col, {componentClass: react_bootstrap_1.ControlLabel, sm: 3}, "Pays"), React.createElement(react_bootstrap_1.Col, {sm: 9}, React.createElement(Select, {ref: 'fieldInput', name: "name1", value: this.state.index, onChange: this.HandleCountryCodeListChange, options: this.state.countryCodesList}))), React.createElement(react_bootstrap_1.FormGroup, {controlId: "formPhoneNumber"}, React.createElement("div", null, React.createElement(react_bootstrap_1.Col, {componentClass: react_bootstrap_1.ControlLabel, sm: 3}, "Téléphone"), React.createElement(react_bootstrap_1.Col, {sm: 3}, React.createElement(react_bootstrap_1.FormControl, {type: "text", placeholder: "Indice", maxLength: 4, value: this.state.index, onChange: this.handleIndexChange.bind(this)})), React.createElement(react_bootstrap_1.Col, {sm: 6}, React.createElement(react_bootstrap_1.FormControl, {type: "text", placeholder: "Tèlèphone", maxLength: 9, value: this.state.phone, onChange: this.handlePhoneChange.bind(this)}))), React.createElement("div", null, React.createElement(react_bootstrap_1.Col, {smOffset: 3, sm: 9}, React.createElement(react_bootstrap_1.Label, {bsStyle: "danger"}, this.state.phoneNumberHint)))), React.createElement(react_bootstrap_1.FormGroup, {controlId: "formEmail"}, React.createElement("div", null, React.createElement(react_bootstrap_1.Col, {componentClass: react_bootstrap_1.ControlLabel, sm: 3}, "Email"), React.createElement(react_bootstrap_1.Col, {sm: 9}, React.createElement(react_bootstrap_1.FormControl, {type: "text", placeholder: "Email", onChange: this.handleEmailChange.bind(this)}))), React.createElement("div", null, React.createElement(react_bootstrap_1.Col, {smOffset: 3, sm: 9}, React.createElement(react_bootstrap_1.Label, {bsStyle: "danger"}, this.state.emailHint)))), React.createElement(react_bootstrap_1.FormGroup, {controlId: "formPassword"}, React.createElement("div", null, React.createElement(react_bootstrap_1.Col, {componentClass: react_bootstrap_1.ControlLabel, sm: 3}, "Mot de Passe"), React.createElement(react_bootstrap_1.Col, {sm: 9}, React.createElement(react_bootstrap_1.FormControl, {type: "password", placeholder: "Mot de passe", onChange: this.handlePasswordChange.bind(this)}))), React.createElement("div", null, React.createElement(react_bootstrap_1.Col, {smOffset: 3, sm: 9}, React.createElement(react_bootstrap_1.Label, {bsStyle: "danger"}, this.state.passwordHint)))), React.createElement(react_bootstrap_1.FormGroup, {controlId: "formPasswordConfirmation"}, React.createElement("div", null, React.createElement(react_bootstrap_1.Col, {componentClass: react_bootstrap_1.ControlLabel, sm: 3}, "Mot de Passe 2"), React.createElement(react_bootstrap_1.Col, {sm: 9}, React.createElement(react_bootstrap_1.FormControl, {type: "password", placeholder: "Mot de passe 2", onChange: this.handlePasswordConfirmationChange.bind(this)}))), React.createElement("div", null, React.createElement(react_bootstrap_1.Col, {smOffset: 3, sm: 9}, React.createElement(react_bootstrap_1.Label, {bsStyle: "danger"}, this.state.passwordConfirmationHint)))), React.createElement(react_bootstrap_1.FormGroup, null, React.createElement(react_bootstrap_1.Col, {smOffset: 3, sm: 9}, React.createElement(react_bootstrap_1.Button, {bsStyle: "primary", disabled: !isFormValid || isLoading, onClick: !isLoading ? this.SignUp : null}, isLoading ? 'Inscription...' : "S'inscrire"))))))));
+	    };
+	    //set contextTypes four router (necessary for redirection by react-router to pages)
+	    SignUp.contextTypes = {
+	        router: React.PropTypes.func.isRequired
+	    };
+	    return SignUp;
+	}(React.Component));
+	exports.SignUp = SignUp;
 
 
 /***/ }

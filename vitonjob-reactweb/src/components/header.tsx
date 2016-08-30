@@ -50,13 +50,20 @@ export class Header extends React.Component<{}, any> {
               <Navbar.Toggle />
             </Navbar.Header>
             <Navbar.Collapse>
-              <Nav pullRight>
               { !this.state.authenticated ? (
-                <NavItem><Link to="/signIn">Se connecter</Link></NavItem>
-              ) : (
-                <NavItem onClick={this.logout}>Déconnexion</NavItem>
-              )}
+              <Nav pullRight>
+                <NavItem>
+                  <Link to="/signIn">Se connecter</Link>
+                </NavItem>
+                <NavItem>
+                  <Link to="/signUp">S'inscrire</Link>
+                </NavItem>
               </Nav>
+              ) : (
+                <Nav pullRight>
+                  <NavItem onClick={this.logout}>Déconnexion</NavItem>
+                </Nav>
+              )}
             </Navbar.Collapse>
           </Navbar>
 

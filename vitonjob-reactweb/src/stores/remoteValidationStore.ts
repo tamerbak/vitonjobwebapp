@@ -5,13 +5,26 @@ import { EventEmitter } from 'events';
 const CHANGE_EVENT = 'change';
 
 var _isPhoneNumberExist:boolean = null;
+var _isEmailExist:boolean = null;
 
-function getPhoneNumberState(response:any) {
-  console.log(response);
+function initializeStates() {
+  _isPhoneNumberExist = null;
+  _isEmailExist = null;
+}
+
+function setPhoneNumberState(response:any) {
   if (!response || response.data.length == 0) {
     _isPhoneNumberExist = false;
   }else{
     _isPhoneNumberExist = true;
+  }
+}
+
+function setEmailState(response:any) {
+  if (!response || response.data.length == 0) {
+    _isEmailExist = false;
+  }else{
+    _isEmailExist = true;
   }
 }
 
@@ -35,6 +48,10 @@ class RemoteValidationStoreClass extends EventEmitter {
     return _isPhoneNumberExist;
   }
 
+  isEmailExist() {
+    return _isEmailExist;
+  }
+
 }
 
 const RemoteValidationStore = new RemoteValidationStoreClass();
@@ -43,14 +60,23 @@ const RemoteValidationStore = new RemoteValidationStoreClass();
 RemoteValidationStore.dispatchToken = AppDispatcher.register((action:any) => {
 
   switch(action.actionType) {
+    case RemoteValidationConstants.INITIALIZE_CASE:
+      initializeStates();
+      //RemoteValidationStore.emitChange();
+      break;
 
     case RemoteValidationConstants.USER_BY_PHONE_CASE:
-      getPhoneNumberState(action.response);
+      setPhoneNumberState(action.response);
+      RemoteValidationStore.emitChange();
+      break;
+
+    case RemoteValidationConstants.USER_BY_EMAIL_CASE:
+      setEmailState(action.response);
       RemoteValidationStore.emitChange();
       break;
 
     case RemoteValidationConstants.ERROR_CASE:
-      console.log("error executing request: "+ action.message,action.error );
+      console.log(action.message,action.error );
       RemoteValidationStore.emitChange();
       break;
 

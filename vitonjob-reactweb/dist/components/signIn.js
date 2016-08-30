@@ -13,20 +13,7 @@ var listActions_1 = require('../actions/listActions');
 var remoteValidationActions_1 = require('../actions/remoteValidationActions');
 var listStore_1 = require('../stores/listStore');
 var remoteValidationStore_1 = require('../stores/remoteValidationStore');
-function contains(list, val) {
-    if (list == null) {
-        return false;
-    }
-    else {
-        var i = list.length;
-        while (i--) {
-            if (list[i].value === val) {
-                return true;
-            }
-        }
-        return false;
-    }
-}
+var utils_1 = require('../utils/utils');
 var SignIn = (function (_super) {
     __extends(SignIn, _super);
     function SignIn(props) {
@@ -61,6 +48,7 @@ var SignIn = (function (_super) {
     };
     SignIn.prototype.componentDidMount = function () {
         listActions_1.default.getCountryCallingCodes();
+        remoteValidationActions_1.default.initialize();
     };
     SignIn.prototype.componentWillUnmount = function () {
         listStore_1.default.removeChangeListener(this.onChangeListStore);
@@ -91,7 +79,7 @@ var SignIn = (function (_super) {
     };
     SignIn.prototype.handlePhoneChange = function (e) {
         var newValue = e.target.value.replace(/[^0-9]/g, "");
-        var isIndexExist = contains(this.state.countryCodesList, this.state.index);
+        var isIndexExist = utils_1.default.listHasValue(this.state.countryCodesList, this.state.index);
         this.setState({
             phone: newValue,
             isPhoneNumberExist: null
@@ -101,7 +89,7 @@ var SignIn = (function (_super) {
         });
     };
     SignIn.prototype.getUserByPhoneNumber = function () {
-        var isIndexExist = contains(this.state.countryCodesList, this.state.index);
+        var isIndexExist = utils_1.default.listHasValue(this.state.countryCodesList, this.state.index);
         if (this.state.phone.length == 9 && isIndexExist) {
             remoteValidationActions_1.default.getUserByPhone(this.state.index, this.state.phone);
         }
@@ -136,7 +124,6 @@ var SignIn = (function (_super) {
                     return;
                 }
                 if (res.id == 0 && res.status == "passwordError") {
-                    console.log("Numéro de téléphone déjà pris");
                     _this.setState({
                         passwordHint: "le mot de passe saisi est incorrect"
                     });
@@ -154,7 +141,7 @@ var SignIn = (function (_super) {
         }
     };
     SignIn.prototype.isPhoneNumberValid = function () {
-        var isIndexExist = contains(this.state.countryCodesList, this.state.index);
+        var isIndexExist = utils_1.default.listHasValue(this.state.countryCodesList, this.state.index);
         var index = this.state.index;
         var phoneNumber = this.state.phone;
         var password = this.state.password;

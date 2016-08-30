@@ -9,22 +9,7 @@ import ListActions from '../actions/listActions';
 import RemoteValidationActions from '../actions/remoteValidationActions';
 import ListStore from '../stores/listStore';
 import RemoteValidationStore from '../stores/remoteValidationStore';
-
-
-//function : verify if a value exist in a list of objects
-function contains( list:{value:string,label:string}[],val:string) {
-  if(list == null){
-    return false;
-  }else{
-  var i = list.length;
-  while (i--) {
-     if (list[i].value === val) {
-         return true;
-     }
-  }
-  return false;
-  }
-}
+import Utils from '../utils/utils';
 
 export interface SignInProps { }
 export interface SignInStats {
@@ -87,6 +72,7 @@ export class SignIn extends React.Component<SignInProps, SignInStats> {
 
     componentDidMount() {
       ListActions.getCountryCallingCodes();
+      RemoteValidationActions.initialize();
     }
 
     componentWillUnmount() {
@@ -133,7 +119,7 @@ export class SignIn extends React.Component<SignInProps, SignInStats> {
 
     handlePhoneChange(e:any) {
         var newValue = e.target.value.replace(/[^0-9]/g, "");
-        var isIndexExist:boolean = contains(this.state.countryCodesList,this.state.index);
+        var isIndexExist:boolean = Utils.listHasValue(this.state.countryCodesList,this.state.index);
 
         this.setState(
           {
@@ -149,7 +135,7 @@ export class SignIn extends React.Component<SignInProps, SignInStats> {
     }
 
     getUserByPhoneNumber(){
-      var isIndexExist:boolean = contains(this.state.countryCodesList,this.state.index);
+      var isIndexExist:boolean = Utils.listHasValue(this.state.countryCodesList,this.state.index);
       if(this.state.phone.length == 9 && isIndexExist){
         RemoteValidationActions.getUserByPhone(this.state.index,this.state.phone);
       }
@@ -201,7 +187,6 @@ export class SignIn extends React.Component<SignInProps, SignInStats> {
 
 						//case of incorrect password
 						if (res.id == 0 && res.status == "passwordError") {
-							console.log("Numéro de téléphone déjà pris");
               this.setState({
                 passwordHint :"le mot de passe saisi est incorrect"
               });
@@ -226,7 +211,7 @@ export class SignIn extends React.Component<SignInProps, SignInStats> {
 
     //verify if the full phonenumber is valid and show error message for every case
     isPhoneNumberValid(){
-      var isIndexExist:boolean = contains(this.state.countryCodesList,this.state.index);
+      var isIndexExist:boolean = Utils.listHasValue(this.state.countryCodesList,this.state.index);
       var index:string = this.state.index;
       var phoneNumber:string = this.state.phone;
       var password:string = this.state.password;
