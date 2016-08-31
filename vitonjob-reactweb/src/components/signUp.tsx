@@ -1,7 +1,8 @@
 import * as React from "react";
 import {Navbar,Nav,NavItem,NavDropdown,MenuItem,Grid,Row,Col,Form,FormGroup,Button,ControlLabel,FormControl,Label} from "react-bootstrap";
 import Select = require("react-select");
-import { Router, Link } from 'react-router';
+import {Router, Link} from 'react-router';
+import {RadioGroup,Radio} from "react-radio-group";
 
 import AuthServices from '../services/authenticationServices';
 import AuthActions from '../actions/authenticationActions';
@@ -18,6 +19,7 @@ export interface SignUpStats {
     index?:string,
     phone?:string,
     email?:string,
+    role?:string,
     password?: string,
     passwordConfirmation?: string,
     countryCodesList?: {value:string,label:string}[],
@@ -51,6 +53,7 @@ export class SignUp extends React.Component<SignUpProps, SignUpStats> {
         email:'',
         password: '',
         passwordConfirmation: '',
+        role:'employeur',
         countryCodesList : [], //list of country calling codes
         phoneNumberHint : '', // message to show in case of full phonenumber errors
         passwordHint:'', // message to show in case of password errors
@@ -71,7 +74,8 @@ export class SignUp extends React.Component<SignUpProps, SignUpStats> {
       this.handlePasswordConfirmationChange = this.handlePasswordConfirmationChange.bind(this);
       this.handlePhoneChange = this.handlePhoneChange.bind(this);
       this.handleEmailChange = this.handleEmailChange.bind(this);
-      this.HandleCountryCodeListChange = this.HandleCountryCodeListChange.bind(this);
+      this.handleRoleChange = this.handleRoleChange.bind(this);
+      this.handleCountryCodeListChange = this.handleCountryCodeListChange.bind(this);
       this.isPhoneNumberValid = this.isPhoneNumberValid.bind(this);
       this.isPasswordValid = this.isPasswordValid.bind(this);
       this.getUserByPhoneNumber= this.getUserByPhoneNumber.bind(this);
@@ -189,7 +193,7 @@ export class SignUp extends React.Component<SignUpProps, SignUpStats> {
 
     handleIndexChange(e:any) {
         var newValue = e.target.value.replace(/[^0-9]/g, "");
-
+        
         this.setState(
           {
             index: newValue,
@@ -210,6 +214,7 @@ export class SignUp extends React.Component<SignUpProps, SignUpStats> {
         var phoneNumber = this.state.phone;
         var password = this.state.password;
         var email = this.state.email;
+        var role = this.state.role;
 
         //state of authentication: Loading
         this.setState({
@@ -218,7 +223,7 @@ export class SignUp extends React.Component<SignUpProps, SignUpStats> {
 
 
         AuthServices
-        .Athenticate(index,phoneNumber,password,email,'employeur')
+        .Athenticate(index,phoneNumber,password,email,role)
           .then((res:any) => {
             //state of authentication: Done
             this.setState({
@@ -391,8 +396,14 @@ export class SignUp extends React.Component<SignUpProps, SignUpStats> {
 
     }
 
-    HandleCountryCodeListChange(option:any) {
+    handleCountryCodeListChange(option:any) {
         this.setState({index:option.value });
+    }
+
+    handleRoleChange(value:string) {
+        this.setState({
+          role: value
+        });
     }
 
     render() {
@@ -410,9 +421,12 @@ export class SignUp extends React.Component<SignUpProps, SignUpStats> {
                     </Col>
                     <Col sm={9}>
                       <Select ref='fieldInput'
-                        name="name1"
+                        clearValueText="Choisissez votre pays"
+                        noResultsText= "résultats non trouvés"
+                        clearable={false}
+                        name="countryCodesSelect"
                         value={this.state.index}
-                        onChange={this.HandleCountryCodeListChange}
+                        onChange={this.handleCountryCodeListChange}
                         options={this.state.countryCodesList}
                       />
                     </Col>
@@ -438,7 +452,26 @@ export class SignUp extends React.Component<SignUpProps, SignUpStats> {
                       </Col>
                     </div>
                   </FormGroup>
+                  <FormGroup controlId="formRole">
+                    <Col componentClass={ControlLabel} sm={3}>
+                      Role
+                    </Col>
+                    <RadioGroup
+                      name="role"
+                      selectedValue={this.state.role}
+                      onChange={this.handleRoleChange}>
 
+                      <Col sm={3}>
+                        <Radio value="employeur"/> Employeur
+                      </Col>
+                      <Col sm={3}>
+                        <Radio value="recruteur"/> Recruteur
+                      </Col>
+                      <Col sm={3}>
+                        <Radio value="jobyer"/> Jobyer
+                      </Col>
+                    </RadioGroup>
+                  </FormGroup>
                   <FormGroup controlId="formEmail">
                     <div>
                       <Col componentClass={ControlLabel} sm={3}>
@@ -484,12 +517,12 @@ export class SignUp extends React.Component<SignUpProps, SignUpStats> {
                   <FormGroup controlId="formPasswordConfirmation">
                     <div>
                       <Col componentClass={ControlLabel} sm={3}>
-                        Mot de Passe 2
+                        Confirmation MDP
                       </Col>
                       <Col sm={9}>
                         <FormControl
                         type="password"
-                        placeholder="Mot de passe 2"
+                        placeholder="Confirmation du mot de passe"
                         onChange={ this.handlePasswordConfirmationChange.bind(this)} />
                       </Col>
                     </div>

@@ -7,6 +7,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 var React = require("react");
 var react_bootstrap_1 = require("react-bootstrap");
 var Select = require("react-select");
+var react_radio_group_1 = require("react-radio-group");
 var authenticationServices_1 = require('../services/authenticationServices');
 var authenticationActions_1 = require('../actions/authenticationActions');
 var listActions_1 = require('../actions/listActions');
@@ -24,6 +25,7 @@ var SignUp = (function (_super) {
             email: '',
             password: '',
             passwordConfirmation: '',
+            role: 'employeur',
             countryCodesList: [],
             phoneNumberHint: '',
             passwordHint: '',
@@ -42,7 +44,8 @@ var SignUp = (function (_super) {
         this.handlePasswordConfirmationChange = this.handlePasswordConfirmationChange.bind(this);
         this.handlePhoneChange = this.handlePhoneChange.bind(this);
         this.handleEmailChange = this.handleEmailChange.bind(this);
-        this.HandleCountryCodeListChange = this.HandleCountryCodeListChange.bind(this);
+        this.handleRoleChange = this.handleRoleChange.bind(this);
+        this.handleCountryCodeListChange = this.handleCountryCodeListChange.bind(this);
         this.isPhoneNumberValid = this.isPhoneNumberValid.bind(this);
         this.isPasswordValid = this.isPasswordValid.bind(this);
         this.getUserByPhoneNumber = this.getUserByPhoneNumber.bind(this);
@@ -140,11 +143,12 @@ var SignUp = (function (_super) {
             var phoneNumber = this.state.phone;
             var password = this.state.password;
             var email = this.state.email;
+            var role = this.state.role;
             this.setState({
                 isLoading: true
             });
             authenticationServices_1.default
-                .Athenticate(index, phoneNumber, password, email, 'employeur')
+                .Athenticate(index, phoneNumber, password, email, role)
                 .then(function (res) {
                 _this.setState({
                     isLoading: false
@@ -280,8 +284,13 @@ var SignUp = (function (_super) {
             isFormValid: _isFormValid
         });
     };
-    SignUp.prototype.HandleCountryCodeListChange = function (option) {
+    SignUp.prototype.handleCountryCodeListChange = function (option) {
         this.setState({ index: option.value });
+    };
+    SignUp.prototype.handleRoleChange = function (value) {
+        this.setState({
+            role: value
+        });
     };
     SignUp.prototype.render = function () {
         var isLoading = this.state.isLoading;
@@ -293,7 +302,7 @@ var SignUp = (function (_super) {
                         React.createElement(react_bootstrap_1.FormGroup, {controlId: "formCountry"}, 
                             React.createElement(react_bootstrap_1.Col, {componentClass: react_bootstrap_1.ControlLabel, sm: 3}, "Pays"), 
                             React.createElement(react_bootstrap_1.Col, {sm: 9}, 
-                                React.createElement(Select, {ref: 'fieldInput', name: "name1", value: this.state.index, onChange: this.HandleCountryCodeListChange, options: this.state.countryCodesList})
+                                React.createElement(Select, {ref: 'fieldInput', clearValueText: "Choisissez votre pays", noResultsText: "résultats non trouvés", clearable: false, name: "countryCodesSelect", value: this.state.index, onChange: this.handleCountryCodeListChange, options: this.state.countryCodesList})
                             )), 
                         React.createElement(react_bootstrap_1.FormGroup, {controlId: "formPhoneNumber"}, 
                             React.createElement("div", null, 
@@ -309,6 +318,18 @@ var SignUp = (function (_super) {
                                     React.createElement(react_bootstrap_1.Label, {bsStyle: "danger"}, this.state.phoneNumberHint)
                                 )
                             )), 
+                        React.createElement(react_bootstrap_1.FormGroup, {controlId: "formRole"}, 
+                            React.createElement(react_bootstrap_1.Col, {componentClass: react_bootstrap_1.ControlLabel, sm: 3}, "Role"), 
+                            React.createElement(react_radio_group_1.RadioGroup, {name: "role", selectedValue: this.state.role, onChange: this.handleRoleChange}, 
+                                React.createElement(react_bootstrap_1.Col, {sm: 3}, 
+                                    React.createElement(react_radio_group_1.Radio, {value: "employeur"}), 
+                                    " Employeur"), 
+                                React.createElement(react_bootstrap_1.Col, {sm: 3}, 
+                                    React.createElement(react_radio_group_1.Radio, {value: "recruteur"}), 
+                                    " Recruteur"), 
+                                React.createElement(react_bootstrap_1.Col, {sm: 3}, 
+                                    React.createElement(react_radio_group_1.Radio, {value: "jobyer"}), 
+                                    " Jobyer"))), 
                         React.createElement(react_bootstrap_1.FormGroup, {controlId: "formEmail"}, 
                             React.createElement("div", null, 
                                 React.createElement(react_bootstrap_1.Col, {componentClass: react_bootstrap_1.ControlLabel, sm: 3}, "Email"), 
@@ -333,9 +354,9 @@ var SignUp = (function (_super) {
                             )), 
                         React.createElement(react_bootstrap_1.FormGroup, {controlId: "formPasswordConfirmation"}, 
                             React.createElement("div", null, 
-                                React.createElement(react_bootstrap_1.Col, {componentClass: react_bootstrap_1.ControlLabel, sm: 3}, "Mot de Passe 2"), 
+                                React.createElement(react_bootstrap_1.Col, {componentClass: react_bootstrap_1.ControlLabel, sm: 3}, "Confirmation MDP"), 
                                 React.createElement(react_bootstrap_1.Col, {sm: 9}, 
-                                    React.createElement(react_bootstrap_1.FormControl, {type: "password", placeholder: "Mot de passe 2", onChange: this.handlePasswordConfirmationChange.bind(this)})
+                                    React.createElement(react_bootstrap_1.FormControl, {type: "password", placeholder: "Confirmation du mot de passe", onChange: this.handlePasswordConfirmationChange.bind(this)})
                                 )), 
                             React.createElement("div", null, 
                                 React.createElement(react_bootstrap_1.Col, {smOffset: 3, sm: 9}, 

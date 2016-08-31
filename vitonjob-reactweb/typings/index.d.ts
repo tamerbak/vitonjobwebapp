@@ -3,6 +3,7 @@
 /// <reference path="globals/flux/index.d.ts" />
 /// <reference path="globals/immutable/index.d.ts" />
 /// <reference path="globals/keymirror/index.d.ts" />
+/// <reference path="globals/react-radio-group/index.d.ts" />
 /// <reference path="globals/node/index.d.ts" />
 /// <reference path="globals/react-bootstrap/index.d.ts" />
 /// <reference path="globals/react-dom/index.d.ts" />
