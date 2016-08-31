@@ -1,0 +1,41 @@
+{
+  "files": [
+      "./typings/index.d.ts",
+
+      "./src/dispatcher/appDispatcher.ts",
+      "./src/configs/apiUrls.ts",
+      "./src/utils/utils.ts",
+
+      "./src/index.tsx",
+      "./src/root.tsx",
+      "./src/components/app.tsx",
+      "./src/components/header.tsx",
+      "./src/components/signIn.tsx",
+      "./src/components/signUp.tsx",
+
+
+      "./src/constants/authConstants.ts",
+      "./src/constants/listConstants.ts",
+      "./src/constants/remoteValidationConstants.ts",
+
+      "./src/services/authenticationServices.ts",
+      "./src/services/listServices.ts",
+
+      "./src/actions/authenticationActions.ts",
+      "./src/actions/listActions.ts",
+      "./src/actions/remoteValidationActions.ts",
+
+      "./src/stores/authenticationStore.ts",
+      "./src/stores/listStore.ts",
+      "./src/stores/remoteValidationStore.ts"
+  ],
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "module": "commonjs",
+        "target": "es5",
+        "jsx": "react"
+    }
+
+}
