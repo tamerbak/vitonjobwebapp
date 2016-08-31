@@ -261,7 +261,7 @@ var SignIn = (function (_super) {
         ));
     };
     SignIn.contextTypes = {
-        router: React.PropTypes.func.isRequired
+        router: React.PropTypes.object.isRequired
     };
     return SignIn;
 }(React.Component));

@@ -373,7 +373,7 @@ var SignUp = (function (_super) {
         ));
     };
     SignUp.contextTypes = {
-        router: React.PropTypes.func.isRequired
+        router: React.PropTypes.object.isRequired
     };
     return SignUp;
 }(React.Component));

@@ -38,9 +38,9 @@ export interface SignUpStats {
 
 export class SignUp extends React.Component<SignUpProps, SignUpStats> {
 
-    //set contextTypes four router (necessary for redirection by react-router to pages)
+    //set contextTypes for router (necessary for redirection by react-router to pages)
     static contextTypes: React.ValidationMap<any> = {
-        router: React.PropTypes.func.isRequired
+        router: React.PropTypes.object.isRequired
     };
 
     refs:any;
@@ -193,7 +193,7 @@ export class SignUp extends React.Component<SignUpProps, SignUpStats> {
 
     handleIndexChange(e:any) {
         var newValue = e.target.value.replace(/[^0-9]/g, "");
-        
+
         this.setState(
           {
             index: newValue,
