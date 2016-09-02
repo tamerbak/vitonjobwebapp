@@ -1,0 +1,11 @@
+{
+  "name": "bootstrap-application-wizard",
+  "version": "0.0.0",
+  "description": "-",
+  "repository": {
+    "type": "git",
+    "url": "-"
+  },
+  "readme": "-",
+  "_napaResolved": "git://github.com/amoffat/bootstrap-application-wizard.git"
+}

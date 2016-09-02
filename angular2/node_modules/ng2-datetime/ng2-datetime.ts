@@ -1,0 +1,1 @@
+export * from './src/ng2-datetime/ng2-datetime';

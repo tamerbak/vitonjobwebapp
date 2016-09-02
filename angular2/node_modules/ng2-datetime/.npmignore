@@ -1,0 +1,10 @@
+.idea
+
+demo
+node_modules
+test
+typings
+
+index.html
+karma.conf.js
+tsconfig.json

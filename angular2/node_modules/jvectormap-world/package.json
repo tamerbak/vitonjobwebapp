@@ -1,0 +1,11 @@
+{
+  "name": "jvectormap-world",
+  "version": "0.0.0",
+  "description": "-",
+  "repository": {
+    "type": "git",
+    "url": "-"
+  },
+  "readme": "-",
+  "_napaResolved": "http://jvectormap.com/js/jquery-jvectormap-world-mill-en.js"
+}
