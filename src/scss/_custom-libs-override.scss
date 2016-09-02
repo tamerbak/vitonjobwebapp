@@ -1,0 +1,163 @@
+/***********************************/
+/**          Datatables           **/
+/***********************************/
+
+table.dataTable thead .sorting {
+  background: url("#{$vendor-folder}/datatables/media/images/sort_both.png") no-repeat center right;
+}
+table.dataTable thead .sorting_asc {
+  background: url("#{$vendor-folder}/datatables/media/images/sort_asc.png") no-repeat center right;
+}
+table.dataTable thead .sorting_desc {
+  background: url("#{$vendor-folder}/datatables/media/images/sort_desc.png") no-repeat center right;
+}
+table.dataTable thead .sorting_asc_disabled {
+  background: url("#{$vendor-folder}/datatables/media/images/sort_asc_disabled.png") no-repeat center right;
+}
+table.dataTable thead .sorting_desc_disabled {
+  background: url("#{$vendor-folder}/datatables/media/images/sort_desc_disabled.png") no-repeat center right;
+}
+
+table.dataTable thead th,
+table.dataTable thead td,
+table.dataTable.no-footer{
+  border-bottom-color: transparent;
+}
+
+table.dataTable thead th,
+table.dataTable tfoot th{
+  font-weight: $font-weight-semi-bold;
+}
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_processing,
+.dataTables_wrapper .dataTables_paginate{
+  color: $text-color;
+}
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_processing,
+.dataTables_wrapper .dataTables_paginate{
+  font-size: $font-size-mini;
+  color: $gray-semi-light;
+}
+
+table.table-hover.dataTable > tbody > tr:hover > td {
+  .progress-bar {
+    background-color: $white !important;
+  }
+}
+
+
+/***********************/
+/*       wysihtml5     */
+/***********************/
+
+/* fix wysihtml5 iframe width*/
+.wysihtml5-sandbox{
+  max-width: 100%;
+}
+
+
+
+/**
+ * No More Tables
+ * http://css-tricks.com/responsive-data-tables/
+ * Just mark your cells with col header attribute <td data-col-title="Surname">Otto</td>
+ */
+
+.table-no-more{
+  @include media-breakpoint-down(sm) {
+    /* Force table to not be like tables anymore */
+    &, thead, tbody, th, td, tr {
+      display: block;
+    }
+
+    /* Hide table headers (but not display: none;, for accessibility) */
+    thead > tr {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+    }
+
+    tbody > tr > td {
+      /* Behave  like a "row" */
+      border: none;
+      border-bottom: 1px solid #eee;
+      position: relative;
+      padding-left: 50%;
+    }
+
+    tbody > tr > td:before {
+      /* Now like a table header */
+      position: absolute;
+      /* Top/left values mimic padding */
+      top: 6px;
+      left: 6px;
+      width: 45%;
+      padding-right: 10px;
+      white-space: nowrap;
+      content: attr(data-col-title);
+    }
+  }
+}
+
+/**
+ * Wysihtml
+ */
+
+.wysihtml5-toolbar {
+  .dropdown-menu > li > a {
+    display: block;
+    width: 100%; // For `<button>`s
+    padding: 3px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: $line-height;
+    color: $dropdown-link-color;
+    text-align: inherit; // For `<button>`s
+    white-space: nowrap; // prevent links from randomly breaking onto new lines
+    background: none; // For `<button>`s
+    border: 0; // For `<button>`s
+
+    @include hover-focus {
+      color: $dropdown-link-hover-color;
+      text-decoration: none;
+      background-color: $dropdown-link-hover-bg;
+    }
+
+    // Active state
+    &.active {
+      @include plain-hover-focus {
+        color: $dropdown-link-active-color;
+        text-decoration: none;
+        background-color: $dropdown-link-active-bg;
+        outline: 0;
+      }
+    }
+
+    // Disabled state
+    //
+    // Gray out text and ensure the hover/focus state remains gray
+    &.disabled {
+      @include plain-hover-focus {
+        color: $dropdown-link-disabled-color;
+      }
+
+      // Nuke hover/focus effects
+      @include hover-focus {
+        text-decoration: none;
+        cursor: $cursor-disabled;
+        background-color: transparent;
+        background-image: none; // Remove CSS gradient
+        @include reset-filter();
+      }
+    }
+  }
+}
+
+
