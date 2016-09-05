@@ -1,6 +1,6 @@
-# Sing App Angular 2.0 Seed version
+# VitOnJob web App Angular 2.0 version
 
-# install Sing Seed version with npm
+# install dependencies with npm
 `npm install`
 
 # install TypeScript typings
