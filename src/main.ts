@@ -72,6 +72,7 @@ import {LocationStrategy, HashLocationStrategy} from '@angular/common';
 import {HTTP_PROVIDERS} from '@angular/http';
 import {GOOGLE_MAPS_PROVIDERS} from 'angular2-google-maps/core';
 import {APP_ROUTER_PROVIDERS} from './app.routes';
+import {SharedService} from "./app/providers/shared.service";
 
 const ENV_PROVIDERS = [];
 
@@ -84,7 +85,7 @@ import {ConfigService} from './app/core/config';
 import {FakeWorldData} from './app/widgets/years-map-widget/fake-world-data';
 
 document.addEventListener('DOMContentLoaded', function main(): void {
-  bootstrap(App, [
+  bootstrap(App, [SharedService,
     ConfigService,
     FakeWorldData,
     NgControl,
