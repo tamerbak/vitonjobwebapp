@@ -25,6 +25,11 @@
     },
     "files": [
         "typings/index.d.ts",
+        "./src/utils/utils.ts",
+        "./src/configurations/configs.ts",
+        "./src/providers/communes-service.ts",
+        "./src/providers/medecine-service.ts",
+        "./src/providers/profile-service.ts",
         "./src/app.ts",
         "./src/app/charts/charts.ts",
         "./src/app/charts/flot-chart-animator/flot-chart-animator.ts",
