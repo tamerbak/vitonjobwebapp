@@ -25,10 +25,10 @@ export class Profile {
   ape:string;
   birthdate:Date;
   birthplace:string;
-  selectedMedecine:any={id:0};
+  selectedMedecine:any={id:0, libelle:""};
   cni:string;
   numSS:string;
-  nationality:any="9";
+  nationalityId:string="9";
   nationalities=[];
   isValidLastname:boolean = false;
   isValidFirstname:boolean = false;
@@ -46,7 +46,7 @@ export class Profile {
   birthdateHint:string="";
   cniHint:string="";
   numSSHint:string="";
-  selectedCommune:any={id:0}
+  selectedCommune:any={id:0, nom: '', code_insee: ''}
   dataForNationalitySelectReady =false;
 
 
@@ -54,17 +54,17 @@ export class Profile {
   isEmployer:boolean = true;
   isRecruiter:boolean = false;
   isNewUser:boolean = true;
+  accountId:string = "0";
+  userRoleId:string = "0";
+  userEntrepriseId:string = "0";
   //styles
   formPosition = this.isNewUser ? 'col-md-offset-3 col-xs-offset-0 col-lg-6 col-xs-12' : 'col-lg-6 col-xs-12';
 
-  constructor(private listService:LoadListService){
+  constructor(private listService:LoadListService,private profileService:ProfileService){
 
     if(!this.isRecruiter && !this.isEmployer){
       jQuery('.nationalitySelectPicker').selectpicker();
       listService.loadNationalities().then((response:any) => {
-          console.log(response);
-          console.log(this.nationality);
-
           this.nationalities = response.data;
           this.dataForNationalitySelectReady =true;
       });
@@ -453,8 +453,106 @@ export class Profile {
         _isFormValid = false;
       }
     }
-    return _isFormValid
+    return _isFormValid;
   }
+
+
+  UpdateCivility(){
+      if(this.isValidForm()){
+
+        var title = this.title;
+        var firstname = this.firstname;
+        var lastname = this.lastname;
+        var accountId = this.accountId;
+        var userRoleId = this.userRoleId;
+
+        if(this.isEmployer){
+            if(this.isRecruiter){
+
+              this.profileService.updateRecruiterCivility(title,lastname,firstname,accountId)
+                .then((res:any) => {
+
+
+
+                  //case of authentication failure : server unavailable or connection problem
+      						if (!res || res.status == "failure") {
+      							console.log("Serveur non disponible ou problème de connexion.");
+                    return;
+      						} else {
+                    // data saved
+                    console.log("response update civility : " + res.status);
+                    // TODO: update user object
+                  }
+
+
+                })
+                .catch((error:any) => {
+                  console.log(error);
+                });
+
+            }else{
+              var companyname = this.companyname;
+              var siret = this.siret;
+              var ape = this.ape;
+              var medecineId = this.selectedMedecine.id === "0" ? 0: parseInt(this.selectedMedecine.id);
+              var entrepriseId = this.userEntrepriseId;
+
+              this.profileService.updateEmployerCivility(title,lastname,firstname,companyname,siret,ape,userRoleId,entrepriseId,medecineId)
+                .then((res:any) => {
+
+                  //case of authentication failure : server unavailable or connection problem
+      						if (!res || res.status == "failure") {
+      							console.log("Serveur non disponible ou problème de connexion.");
+                    return;
+      						} else {
+                    // data saved
+                    console.log("response update civility : " + res.status);
+                    // TODO: update user object
+
+                  }
+
+                })
+                .catch((error:any) => {
+                  console.log(error);
+                });
+            }
+        }else{
+          var numSS = this.numSS;
+          var cni = this.cni;
+          var nationality = this.nationalityId;
+          var birthdate = this.birthdate;
+          var birthplace = this.selectedCommune.nom;
+          var nationalityId = this.nationalityId;
+
+          this.profileService.updateJobyerCivility(title,lastname,firstname,numSS,cni,nationalityId,userRoleId,birthdate,birthplace)
+            .then((res:any) => {
+
+
+
+              //case of authentication failure : server unavailable or connection problem
+              if (!res || res.status == "failure") {
+                console.log("Serveur non disponible ou problème de connexion.");
+                return;
+              } else {
+                // data saved
+                console.log("response update civility : " + res.status);
+                //TODO:Update user data
+
+
+                //done
+
+              }
+
+
+            })
+            .catch((error:any) => {
+              console.log(error);
+            });
+
+        }
+      }
+    }
+
 
 
 }
