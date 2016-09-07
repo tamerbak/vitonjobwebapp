@@ -3,13 +3,11 @@
 		<div class="row">
 			<div class="col-xl-6 col-md-8 col-xs-12 col-xl-offset-3 col-md-offset-2 col-xs-offset-0">
 				<h5 class="widget-login-logo animated fadeInUp">
-					<i class="fa fa-circle text-gray"></i>
-					sing
-					<i class="fa fa-circle text-warning"></i>
+					<img src="../assets/images/logo.png" style="width: 50%; margin-bottom: 20px;">
 				</h5>
 				<section class="widget widget-login animated fadeInUp">
 					<header>
-						<h3>Bienvenue sur VitOnJob</h3>
+						<h3 style="text-align: center;">Bienvenue sur VitOnJob</h3>
 					</header>
 					<div class="widget-body">
 						<!--<p class="widget-login-info">
@@ -18,6 +16,9 @@
 						<p class="widget-login-info">
 							Don't have an account? Sign up now!
 						</p>-->
+						<alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
+							<div [innerHTML]="alert.msg"></div>
+						</alert>
 						<form class="login-form mt-lg">
 							<div class="form-group row">
 								<label class="col-md-4 col-xs-12 form-control-label text-md-right">Je me connecte en tant que</label>

@@ -4,13 +4,13 @@ import {LoadListService} from "../providers/load-list.service";
 import {AuthenticationService} from "../providers/authentication.service";
 import {ValidationDataService} from "../providers/validation-data.service";
 import {SharedService} from "../providers/shared.service";
+import {AlertComponent} from 'ng2-bootstrap/components/alert';
+
 declare function md5(value: string): string;
 //declare var jQuery: any;
 
 @Component({
-  directives: [
-    ROUTER_DIRECTIVES
-  ],
+  directives: [ROUTER_DIRECTIVES, AlertComponent],
   selector: '[login]',
   host: {
     class: 'login-page app'
@@ -38,6 +38,7 @@ export class LoginPage {
 	
 	libelleButton: string;
 	fromPage: string;
+	alerts: Array<Object>;
 	
 	constructor(private loadListService: LoadListService, 
 				private authService: AuthenticationService,
@@ -71,17 +72,17 @@ export class LoginPage {
 			console.log(data);
 			//case of authentication failure : server unavailable or connection probleme 
 			if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
-				//this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+				this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
 				return;
 			}
 			//case of authentication failure : incorrect password 
 			if (data.id == 0 && data.status == "passwordError") {
 				console.log("Password error");
 				if(!this.showEmailField){
-					//this.globalService.showAlertValidation("VitOnJob", "Votre mot de passe est incorrect.");
+					this.addAlert("danger", "Votre mot de passe est incorrect.");
 				}else{
 					console.log("used email error");
-					//this.globalService.showAlertValidation("VitOnJob", "Cette adresse email a été déjà utilisé. Veuillez en choisir une autre.");
+					this.addAlert("danger", "Cette adresse email a été déjà utilisé. Veuillez en choisir une autre.");
 				}
 				return;
 			}
@@ -107,7 +108,6 @@ export class LoginPage {
 		* @description validate phone data field and call the function that search for it in the server
 	*/
 	watchPhone(e) {
-		console.log(this.role);
 		if (this.phone) {
 			if (e.target.value.substring(0,1) == '0') {
 				e.target.value = e.target.value.substring(1, e.target.value.length);
@@ -132,7 +132,7 @@ export class LoginPage {
 			this.authService.getUserByPhone(tel, this.role).then((data: any) => {
 				if (!data || data.status == "failure") {
 					console.log(data);
-					//this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+					this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
 					return;
 				}
 				if (!data || data.data.length == 0) {
@@ -190,7 +190,7 @@ export class LoginPage {
 		this.authService.getUserByMail(this.email, this.role).then((data: any) => {
 			if (!data || data.status == "failure") {
 				console.log(data);
-				//this.globalService.showAlertValidation("VitOnJob", "Serveur non disponible ou problème de connexion.");
+				this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
 				return;
 			}
 			if (data && data.data.length != 0) {
@@ -244,6 +244,10 @@ export class LoginPage {
 	
 	watchRole(e){
 		this.role = e.target.value;
+	}
+	
+	addAlert(type, msg): void {
+		this.alerts = [{type: type, msg: msg}];
 	}
 	
 	isEmpty(str){
