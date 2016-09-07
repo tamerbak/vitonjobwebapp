@@ -17,13 +17,13 @@ declare var jQuery,require: any;
 })
 export class Profile {
 
-  title:string;
-  lastname:string="Daoudi";
+  title:string="M.";
+  lastname:string;
   firstname:string;
   companyname:string;
   siret:string;
   ape:string;
-  birthdate;
+  birthdate:Date;
   birthplace:string;
   medecineTravail:string;
   cni:string;
@@ -31,20 +31,54 @@ export class Profile {
   nationality:any="9";
   nationalities=[];
   isValidLastname:boolean = false;
-  lastnameHint:string = "";
-  
-  constructor(private listService:LoadListService){
+  isValidFirstname:boolean = false;
+  isValidCompanyname:boolean = false;
+  isValidSiret:boolean = false;
+  isValidApe:boolean = false;
+  isValidBirthdate:boolean = false;
+  isValidCni:boolean = false;
+  isValidNumSS:boolean = false;
+  lastnameHint: string ="";
+  firstnameHint:string="";
+  companynameHint:string="";
+  siretHint:string="";
+  apeHint:string="";
+  birthdateHint:string="";
+  cniHint:string="";
+  numSSHint:string="";
+  selectedCommune:any={id:0}
+  dataForNationalitySelectReady =false;
 
+
+  constructor(private listService:LoadListService){
+    jQuery('.selectpicker2').selectpicker();
     listService.loadNationalities().then((response:any) => {
         console.log(response);
         console.log(this.nationality);
-        jQuery('.selectpicker').selectpicker();
+
+
         this.nationalities = response.data;
-        this.nationality = "9";
+        jQuery('.selectpicker').selectpicker();
+
+
+        this.title = "Mlle"
+        jQuery('.selectpicker').selectpicker('val', 'Mlle');
+        this.dataForNationalitySelectReady =true;
+
+        this.nationality = "20";
     });
   }
 
+  ngAfterViewChecked () {
+    if (this.dataForNationalitySelectReady) {
+      jQuery('.selectpicker2').selectpicker('refresh');
+
+    }
+  }
+
+
   ngAfterViewInit(): void {
+
 
     jQuery('.commune-select').select2(
       {
@@ -135,11 +169,11 @@ dropdownCssClass: "bigdrop",
 
 
   watchLastname(e) {
-      let name = e.target.value;
+      let _name = e.target.value;
       let _isValid:boolean = true;
       let _hint:string = "";
 
-      if(!Utils.isValidName(name) ){
+      if(!Utils.isValidName(_name) ){
         _hint = "Saisissez un nom valide";
         _isValid = false;
       }else{
@@ -149,6 +183,257 @@ dropdownCssClass: "bigdrop",
       this.isValidLastname = _isValid;
       this.lastnameHint = _hint;
       console.log();
+      this.isValidForm();
+  }
+
+  watchFirstname(e) {
+      let _name = e.target.value;
+      let _isValid:boolean = true;
+      let _hint:string = "";
+
+      if(!Utils.isValidName(_name) ){
+        _hint = "Saisissez un nom valide";
+        _isValid = false;
+      }else{
+        _hint = "";
+      }
+
+      this.isValidFirstname = _isValid;
+      this.firstnameHint = _hint;
+      console.log();
+      this.isValidForm();
+  }
+
+  watchCompanyname(e) {
+      let _name = e.target.value;
+      let _isValid:boolean = true;
+      let _hint:string = "";
+
+      if(!_name ){
+        _hint = "Veuillez saisir le nom de votre entreprise";
+        _isValid = false;
+      }else{
+        _hint = "";
+      }
+
+      this.isValidCompanyname = _isValid;
+      this.companynameHint = _hint;
+      console.log();
+      this.isValidForm();
+  }
+
+  watchSiret(e){
+    var _regex = new RegExp('_', 'g')
+    var _rawvalue = e.target.value.replace(_regex, '')
+
+    var _value = (_rawvalue === '' ? '' : _rawvalue);
+    let _isValid:boolean = true;
+    let _hint:string = "";
+
+    if(_value.length != 0 && _value.length != 17  ){
+      _hint = "Saisissez les 14 chiffres du SIRET";
+      _isValid = false;
+    }else{
+      _hint = "";
+    }
+    this.isValidSiret = _isValid;
+    this.siretHint = _hint;
+    console.log();
+    this.isValidForm();
+  }
+
+  watchApe(e){
+    var _regex = new RegExp('_', 'g')
+    var _rawvalue = e.target.value.replace(_regex, '')
+
+    var _value = (_rawvalue === '' ? '' : _rawvalue);
+    let _isValid:boolean = true;
+    let _hint:string = "";
+
+    if(_value.length != 0 && _value.length != 5  ){
+      _hint = "Saisissez les 4 chiffres suivis d'une lettre";
+      _isValid = false;
+    }else{
+      _hint = "";
+    }
+    this.isValidApe = _isValid;
+    this.apeHint = _hint;
+    console.log();
+    this.isValidForm();
+  }
+
+  watchCni(e){
+    var _cni = e.target.value;
+
+    let _isValid:boolean = true;
+    let _hint:string = "";
+
+    if(_cni.length != 0 && _cni.length != 12  ){
+      _hint = "Saisissez les 12 chiffres suivis du CNI";
+      _isValid = false;
+    }else{
+      _hint = "";
+    }
+
+    this.isValidCni = _isValid;
+    this.cniHint = _hint;
+    console.log();
+    this.isValidForm();
+  }
+
+  watchNumSS(e){
+    var _numSS = e.target.value;
+
+    let _isValid:boolean = true;
+    let _hint:string = "";
+
+    if(_numSS.length != 0 && _numSS.length != 12  ){
+      _hint = "Saisissez les 15 chiffres du n° SS";
+      _isValid = false;
+    }else if(_numSS.length == 15){
+
+      if(_numSS.length == 15 && !this.checkGender(_numSS,this.title) ){
+        _hint = "* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles";
+        _isValid = false;
+      }
+      else if(_numSS.length ==15 && !this.checkBirthYear(_numSS,this.birthdate) ){
+        _hint = "* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles";
+        _isValid = false;
+      }
+      else if(_numSS.length ==15 && !this.checkBirthMonth(_numSS,this.birthdate) ){
+        _hint = "* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles";
+        _isValid = false;
+      }
+      else if(_numSS.length ==15 && !this.checkINSEE(_numSS,this.selectedCommune) ){
+        _hint = "* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles";
+        _isValid = false;
+      }
+      else if(_numSS.length ==15 && !this.checkModKey(_numSS) ){
+        _hint = "* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles";
+        _isValid = false;
+      }else{
+          _hint = "";
+      }
+    }else{
+        _hint = "";
+    }
+
+    this.isValidNumSS = _isValid;
+    this.numSSHint = _hint;
+    console.log();
+    this.isValidForm();
+  }
+
+    checkGender(num:string,title:string) {
+
+        let indicator = num.charAt(0);
+        if ((indicator === '1' && title === 'M.') || (indicator === '2' && title !== 'M.')){
+
+          return true;
+        }else{
+
+          return false;
+        }
+    }
+
+    checkBirthYear(num:string,date:any){
+
+        if(date.length == 0){
+          return false
+        }
+        let indicator = num.charAt(1) + num.charAt(2);
+
+        let birthYear = date.format("YYYY")
+        birthYear = birthYear.substr(2);
+
+        if (indicator == birthYear)
+            return true;
+        else
+            return false;
+    }
+
+    checkBirthMonth(num:string,date:any){
+
+        if(date.length == 0){
+          return false
+        }
+        let indicator = num.charAt(3) + num.charAt(4);
+
+        let birthMonth = date.format("MM")
+
+        if (birthMonth.length == 1)
+            birthMonth = "0" + birthMonth;
+        if (indicator == birthMonth)
+            return true;
+        else
+            return false;
+    }
+
+    checkINSEE(num:string,communeObj:any){
+
+        let indicator = num.substr(5, 5);
+
+        if (communeObj.id != '0') {
+            if (indicator != communeObj.code_insee)
+                return false;
+            else
+                return true;
+        }
+
+        if (indicator.charAt(0) != '9')
+            return false;
+        else
+            return true;
+    }
+
+    checkModKey(num:string){
+
+        try {
+            let indicator = num.substr(0, 13);
+            let key = num.substr(13);
+            let number = parseInt(indicator);
+            let nkey = parseInt(key);
+            let modulo = number % 97;
+            if (nkey == 97 - modulo)
+                return true;
+            else
+                return false;
+        }
+        catch (err) {
+            return false;
+        }
+    }
+
+  watchBirthdate(e){
+    var _date = e;
+    let _isValid:boolean = true;
+    let _hint:string = "";
+
+    var ageDifMs = Date.now() - new Date(_date).getTime();
+    var ageDate = new Date(ageDifMs);
+    var _diff = Math.abs(ageDate.getUTCFullYear() - 1970);
+    if(_diff < 18){
+		     _isValid = false;
+         _hint = "* Vous devez avoir plus de 18 ans pour pouvoir valider votre profil";
+     }else{
+         _hint = "";
+     }
+
+     this.isValidBirthdate = _isValid;
+     this.birthdateHint = _hint;
+     console.log();
+     this.isValidForm();
+
+  }
+
+
+
+  isValidForm(){
+
+    if(this.isValidLastname){
+      return true
+    }
+    return false;
   }
 
 }
