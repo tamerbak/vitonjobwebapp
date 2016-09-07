@@ -25,7 +25,7 @@ export class Profile {
   ape:string;
   birthdate:Date;
   birthplace:string;
-  medecineTravail:string;
+  selectedMedecine:any={id:0};
   cni:string;
   numSS:string;
   nationality:any="9";
@@ -50,117 +50,119 @@ export class Profile {
   dataForNationalitySelectReady =false;
 
 
+  //TODO: to change by currentUser object
+  isEmployer:boolean = true;
+  isRecruiter:boolean = false;
+  isNewUser:boolean = true;
+  //styles
+  formPosition = this.isNewUser ? 'col-md-offset-3 col-xs-offset-0 col-lg-6 col-xs-12' : 'col-lg-6 col-xs-12';
+
   constructor(private listService:LoadListService){
-    jQuery('.selectpicker2').selectpicker();
-    listService.loadNationalities().then((response:any) => {
-        console.log(response);
-        console.log(this.nationality);
 
+    if(!this.isRecruiter && !this.isEmployer){
+      jQuery('.nationalitySelectPicker').selectpicker();
+      listService.loadNationalities().then((response:any) => {
+          console.log(response);
+          console.log(this.nationality);
 
-        this.nationalities = response.data;
-        jQuery('.selectpicker').selectpicker();
-
-
-        this.title = "Mlle"
-        jQuery('.selectpicker').selectpicker('val', 'Mlle');
-        this.dataForNationalitySelectReady =true;
-
-        this.nationality = "20";
-    });
+          this.nationalities = response.data;
+          this.dataForNationalitySelectReady =true;
+      });
+    }
   }
 
   ngAfterViewChecked () {
-    if (this.dataForNationalitySelectReady) {
-      jQuery('.selectpicker2').selectpicker('refresh');
-
+    if(!this.isEmployer){
+      if (this.dataForNationalitySelectReady) {
+        jQuery('.nationalitySelectPicker').selectpicker('refresh');
+      }
     }
   }
 
 
   ngAfterViewInit(): void {
+    jQuery('.titleSelectPicker').selectpicker();
+
+    if(!this.isRecruiter && !this.isEmployer){
+      jQuery('.commune-select').select2({
+        ajax:
+        {
+          url: 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/sql',
+          type: 'POST',
+          dataType: 'json',
+          quietMillis: 250,
+          params: {
+            contentType: "text/plain",
+          },
+          data: function (term, page) {
+              return "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) % lower_unaccent('"+term+"') limit 5" // search term
+
+          },
+          results: function (data, page) {
+
+              console.log(data)
 
 
-    jQuery('.commune-select').select2(
-      {
-    ajax: {
-      url: 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/sql',
-      type: 'POST',
-      dataType: 'json',
-      quietMillis: 250,
-      params: {
-        contentType: "text/plain",
-      },
-      data: function (term, page) {
-          return "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) % lower_unaccent('"+term+"') limit 5" // search term
+              return { results: data.data };
+          },
+          cache: true
+        },
 
-      },
-      results: function (data, page) {
-
-          console.log(data)
-
-
-          return { results: data.data };
-      },
-      cache: true
-  },
-
-
-  formatResult: function(item) {
-
-      return item.nom;
-   },
-   formatSelection: function(item) {
-      return item.nom;
-   },
-dropdownCssClass: "bigdrop",
+        formatResult: function(item) {
+          return item.nom;
+        },
+        formatSelection: function(item) {
+          return item.nom;
+        },
+        dropdownCssClass: "bigdrop",
         escapeMarkup: function (markup) { return markup; },
         minimumInputLength: 3,
-      }
-    );
-
-    jQuery('.medecine-select').select2(
-      {
-        ajax: {
-      url: 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/sql',
-      type: 'POST',
-      dataType: 'json',
-      quietMillis: 250,
-      params: {
-        contentType: "text/plain",
-      },
-      data: function (term, page) {
-          return "select pk_user_medecine_de_travail as id, libelle from user_medecine_de_travail where lower_unaccent(libelle) % lower_unaccent('"+term+"') limit 5"; // search term
-      },
-      results: function (data, page) {
-
-          console.log(data)
-
-
-          return { results: data.data };
-      },
-      cache: true
-  },
-
-
-  formatResult: function(item) {
-      return  item.libelle;
-   },
-   formatSelection: function(item) {
-      return item.libelle;
-   },
-        dropdownCssClass: "bigdrop",
-        escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-        minimumInputLength: 3,
-      }
-   );
-        jQuery('.commune-select').on(
-                'change',
-                (e) =>
-                {
-                  console.log(e);
-
-                }
+      });
+      jQuery('.commune-select').on('change',
+              (e) =>
+              {
+                this.selectedCommune = e.added;
+              }
             );
+    }
+
+    if(!this.isRecruiter && this.isEmployer){
+      jQuery('.medecine-select').select2({
+
+        ajax: {
+          url: 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/sql',
+          type: 'POST',
+          dataType: 'json',
+          quietMillis: 250,
+          params: {
+            contentType: "text/plain",
+          },
+          data: function (term, page) {
+            return "select pk_user_medecine_de_travail as id, libelle from user_medecine_de_travail where lower_unaccent(libelle) % lower_unaccent('"+term+"') limit 5"; // search term
+          },
+          results: function (data, page) {
+            return { results: data.data };
+          },
+          cache: true
+        },
+        formatResult: function(item) {
+          return  item.libelle;
+        },
+        formatSelection: function(item) {
+          return item.libelle;
+        },
+        dropdownCssClass: "bigdrop",
+        escapeMarkup: function (markup) { return markup; },
+        minimumInputLength: 3,
+      });
+      jQuery('.medecine-select').on('change',
+              (e) =>
+              {
+                console.log(e);
+                this.selectedMedecine = e.added;
+              }
+            );
+    }
   }
 
 
@@ -426,14 +428,33 @@ dropdownCssClass: "bigdrop",
 
   }
 
-
-
   isValidForm(){
+    var _isFormValid = false;
+    if(this.isRecruiter){
+      if (this.isValidFirstname && this.isValidLastname)
+      {
+        _isFormValid = true;
+      }else{
+        _isFormValid = false;
+      }
+    }else if(this.isEmployer){
 
-    if(this.isValidLastname){
-      return true
+      if(this.isValidFirstname && this.isValidLastname && this.isValidCompanyname && this.isValidSiret && this.isValidApe)
+      {
+        _isFormValid = true;
+      }else{
+        _isFormValid = false;
+      }
+    }else{
+
+      if(this.isValidFirstname && this.isValidLastname && this.isValidCni && this.isValidNumSS && this.isValidBirthdate){
+        _isFormValid = true;
+      }else{
+        _isFormValid = false;
+      }
     }
-    return false;
+    return _isFormValid
   }
+
 
 }
