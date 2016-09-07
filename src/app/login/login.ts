@@ -5,12 +5,13 @@ import {AuthenticationService} from "../providers/authentication.service";
 import {ValidationDataService} from "../providers/validation-data.service";
 import {SharedService} from "../providers/shared.service";
 import {AlertComponent} from 'ng2-bootstrap/components/alert';
+import {ModalComponent} from './modal-component/modal-component';
 
 declare function md5(value: string): string;
 //declare var jQuery: any;
 
 @Component({
-  directives: [ROUTER_DIRECTIVES, AlertComponent],
+  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalComponent],
   selector: '[login]',
   host: {
     class: 'login-page app'
@@ -34,11 +35,15 @@ export class LoginPage {
 	showEmailField: boolean;
 	emailExist = false;
 	isRecruteur : boolean = false;
-	isNewRecruteur: boolean = false
+	isNewRecruteur: boolean = false;
 	
 	libelleButton: string;
+	showHidePasswdIcon: string;
+	showHidePasswdConfirmIcon: string;
+	
 	fromPage: string;
 	alerts: Array<Object>;
+	hideLoader: boolean = true;
 	
 	constructor(private loadListService: LoadListService, 
 				private authService: AuthenticationService,
@@ -55,7 +60,8 @@ export class LoginPage {
 		this.loadListService.loadCountries(this.role).then((data: any) => {
 			this.pays = data.data;
 		});
-		
+		this.showHidePasswdIcon = "fa fa-eye";
+		this.showHidePasswdConfirmIcon = "fa fa-eye";
 	}
 	
 	authenticate(){
@@ -63,6 +69,7 @@ export class LoginPage {
 		if(this.isAuthDisabled()){
 			return;
 		}
+		this.hideLoader = false;
 		var indPhone = this.index + "" + this.phone;
 		//call the service of autentication
 		let pwd = md5(this.password1);
@@ -92,7 +99,7 @@ export class LoginPage {
 			var isNewUser = data.newAccount;
 			if (isNewUser || this.isNewRecruteur) {
 				//this.nav.setRoot(CivilityPage, {currentUser: data});
-				this.router.navigate(['/form-elements']);
+				this.router.navigate(['app/charts']);
 			 } else {
 				if(this.fromPage == "Search"){
 					//this.nav.pop();
@@ -149,8 +156,9 @@ export class LoginPage {
 						this.email = "";
 					}
 				}
+				this.sharedService.setCurrentUser({phone: tel, email: this.email});
 			});
-			} else {
+		} else {
 			//ça sera toujours une connexion
 			this.showEmailField = true;
 			this.libelleButton = "S'inscrire";
@@ -248,6 +256,38 @@ export class LoginPage {
 	
 	addAlert(type, msg): void {
 		this.alerts = [{type: type, msg: msg}];
+	}
+	
+	showHidePasswd(){
+		let divHide = document.getElementById('hidePasswd');
+        let divShow = document.getElementById('showPasswd');
+
+        if (divHide.style.display == 'none') {
+            divHide.style.display = 'flex';
+            divShow.style.display = 'none';
+			this.showHidePasswdIcon = "fa fa-eye";
+        }
+        else {
+            divHide.style.display = 'none';
+            divShow.style.display = 'flex';
+			this.showHidePasswdIcon = "fa fa-eye-slash";
+        }
+	}
+	
+	showHidePasswdConfirm(){
+		let divHide = document.getElementById('hidePasswdConfirm');
+        let divShow = document.getElementById('showPasswdConfirm');
+
+        if (divHide.style.display == 'none') {
+            divHide.style.display = 'flex';
+            divShow.style.display = 'none';
+			this.showHidePasswdConfirmIcon = "fa fa-eye";
+        }
+        else {
+            divHide.style.display = 'none';
+            divShow.style.display = 'flex';
+			this.showHidePasswdConfirmIcon = "fa fa-eye-slash";
+        }
 	}
 	
 	isEmpty(str){

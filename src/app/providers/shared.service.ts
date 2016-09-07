@@ -17,6 +17,10 @@ export class SharedService {
 		this.currentUser = user;
 	}
 	
+	getCurrentUser(){
+		return this.currentUser;
+	}
+	
 	
 	
 	
