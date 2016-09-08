@@ -18,24 +18,23 @@
               <span class="thumb-xlg">
                 <img class="img-circle" src="assets/images/people/a5.jpg" alt="...">
               </span>
-              <h5 class="fw-normal">Adam <span class="fw-semi-bold">Johns</span></h5>
+              <h5 class="fw-normal">{{currentUserFullname}}</h5>
               <p>{{isEmployer? (isRecruiter ? "Recruteur":"Employeur"):"Jobyer"}}</p>
-              <!-- <a href="#" class="btn btn-danger btn-sm mt">
-                &nbsp;Send
-                <i class="fa fa-envelope ml-xs"></i>&nbsp;
-              </a> -->
+
               <ul class="contacts">
-                <li><i class="fa fa-phone fa-fw mr-xs"></i><a href="#"> +375 29 555-55-55</a></li>
-                <li><i class="fa fa-envelope fa-fw mr-xs"></i><a href="#"> psmith@example.com</a></li>
-                <li><i class="fa fa-map-marker fa-fw mr-xs"></i><a href="#"> Minsk, Belarus</a></li>
+                <li><i class="fa fa-phone fa-fw mr-xs"></i><a href="#"> {{phoneNumber}}</a></li>
+                <li><i class="fa fa-envelope fa-fw mr-xs"></i><a href="#"> {{email}}</a></li>
               </ul>
+              <button href="#" class="btn btn-danger btn-sm mt" (click)="initForm()">
+                Modifier les informations
+              </button>
             </div>
           </div>
         </div>
       </div>
     </section>
   </div>
-  <div [ngClass]="formPosition" class="col-lg-6 col-xs-12">
+  <div [hidden]="!showForm" class="col-lg-6 col-xs-12">
     <section class="widget" widget>
       <header>
         <h6>
@@ -96,7 +95,7 @@
                   Raison Sociale
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input type="text" id="companyname" class="form-control" [(ngModel)]="companyname" name="companyname" placeholder="Raison Sociale" (keyup)="watchCompanyname($event)">
+                  <input type="text" id="companyname" class="form-control" [(ngModel)]="companyname" name="companyname" placeholder="Raison Sociale" (keyup)="watchCompanyname($event)" (change)="IsCompanyExist($event, 'companyname')">
                 </div>
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
                   <span class="hint label label-danger">{{companynameHint}}</span>
@@ -109,7 +108,7 @@
                   <!-- <span class="help-block">999 999 999 99999</span> -->
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input id="siret" type="text" data-mask="999 999 999 99999" class="form-control" [(ngModel)]="siret" name="siret" placeholder="SIRET" (keyup)="watchSiret($event)">
+                  <input id="siret" type="text" data-mask="999 999 999 99999" class="form-control" [(ngModel)]="siret" name="siret" placeholder="SIRET" (keyup)="watchSiret($event)" (change)="IsCompanyExist($event, 'siret')">
                 </div>
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
                   <span class="hint label label-danger">{{siretHint}}</span>
@@ -199,16 +198,16 @@
               </div>
 
               <div class="form-group row">
-                <label class="form-control-label col-md-4 col-xs-12">
-                  Image upload widget
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Joindre une photo {{scanTitle}}
                 </label>
                 <div class="col-md-8 col-xs-12">
                   <div class="fileinput fileinput-new" data-provides="fileinput">
                     <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;" >
                     </div>
                     <div>
-                      <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span><input type="file" name="..."></span>
-                      <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+                      <span class="btn btn-default btn-file"><span class="fileinput-new">Choisier</span><span class="fileinput-exists">Modifier</span><input type="file" name="..."></span>
+                      <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Enlever</a>
                     </div>
                   </div>
                 </div>
@@ -222,7 +221,7 @@
           <div class="form-actions">
             <div class="row">
               <div class="col-md-offset-4 col-md-7 col-xs-12">
-                <button type="submit" class="btn btn-primary" [disabled]="!isValidForm()" >Valider</button>
+                <button type="submit" class="btn btn-primary" [disabled]="!isValidForm() || validation" (click)="updateCivility()" >Valider</button>
               </div>
             </div>
           </div>

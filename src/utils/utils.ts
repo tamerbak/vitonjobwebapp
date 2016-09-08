@@ -11,4 +11,11 @@ export class Utils {
       return regEx.test(name);
     }
 
+    public static isEmpty(str){
+  		if(str == '' || str == 'null' || !str)
+  			return true;
+  		else
+  			return false;
+  	}
+
 }
