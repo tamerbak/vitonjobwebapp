@@ -101,6 +101,91 @@ export class AuthenticationService {
         })
     }
 	
+	setNewPassword(phoneOrEmail){
+        let encodedArg = btoa(phoneOrEmail);
+
+        let payload = {
+            'class': 'fr.protogen.masterdata.model.CCallout',
+            id: 152,
+            args: [{
+                'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+                label: 'Contact to create',
+                value: encodedArg
+            }]
+        };
+        return new Promise(resolve => {
+            let headers = Configs.getHttpJsonHeaders();
+            this.http.post(this.configuration.calloutURL, JSON.stringify(payload), {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    resolve(data);
+			});
+        });
+    }
+	
+	updatePasswordByPhone(tel, password){
+        let sql = "update user_account set mot_de_passe = '" + password + "' where telephone = '" + tel + "';";
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    resolve(data);
+                });
+        })
+    }
+	
+	sendPasswordBySMS(tel, passwd){
+        tel = tel.replace('+', '00');
+        let url = Configs.smsURL;
+        let payload = "<fr.protogen.connector.model.SmsModel>"
+            + 	"<telephone>"+tel+"</telephone>"
+            + 	"<text>Votre mot de passe est: " + passwd +".</text>"
+            + "</fr.protogen.connector.model.SmsModel>";
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpXmlHeaders();
+            this.http.post(url, payload, {headers:headers})
+                .subscribe(data => {
+                    resolve(data);
+                });
+        })
+    }
+	
+    sendPasswordByEmail(email, passwd){
+        let url = Configs.emailURL;
+        let payload = "<fr.protogen.connector.model.MailModel>"
+            + "<sendTo>"+email+"</sendTo>"
+            + 	"<title>VitOnJob - Mot de passe réinitialisé</title>"
+            + 	"<content>"
+            + 		"Suite à votre requête nous avons procédé à une rénitialisation de votre mot de passe."
+            + 		" Votre nouveau mot de passe est : "+passwd
+            + 	"</content>"
+            + 	"<status></status>"
+            + "</fr.protogen.connector.model.MailModel>";
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpXmlHeaders();
+            this.http.post(url, payload, {headers:headers})
+                .subscribe(data => {
+                    resolve(data);
+                });
+        })
+    }
+	
+	updatePasswordByMail(email, password){
+        let sql = "update user_account set mot_de_passe = '" + password + "' where email = '" + email + "';";
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    resolve(data);
+                });
+        })
+    }
 	isEmpty(str){
 		if(str == '' || str == 'null' || !str)
 			return true;

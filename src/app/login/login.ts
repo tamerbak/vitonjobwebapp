@@ -156,7 +156,6 @@ export class LoginPage {
 						this.email = "";
 					}
 				}
-				this.sharedService.setCurrentUser({phone: tel, email: this.email});
 			});
 		} else {
 			//ça sera toujours une connexion
