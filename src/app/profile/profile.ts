@@ -48,7 +48,7 @@ export class Profile {
   numSSHint:string="";
   selectedCommune:any={id:0, nom: '', code_insee: ''}
   dataForNationalitySelectReady =false;
-
+  scanData:string ="";
 
   //TODO: to change by currentUser object
   isEmployer:boolean = true;
@@ -71,6 +71,33 @@ export class Profile {
     }
   }
 
+  updateScan(userId) {
+        if (this.scanData) {
+            // this.currentUser.scanUploaded = true;
+            // this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
+            this.profileService.uploadScan(this.scanData, userId, 'scan', 'upload')
+                .then((data) => {
+                    if (!data || data.status == "failure") {
+                        console.log("Scan upload failed !");
+                        //this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde du scan");
+                        // this.currentUser.scanUploaded = false;
+                        // this.storage.set(this.currentUserVar, JSON.stringify(this.currentUser));
+                    }
+                    else {
+                        console.log("Scan uploaded !");
+                    }
+
+                });
+            // this.storage.get(this.currentUserVar).then(usr => {
+            //     if (usr) {
+            //         let user = JSON.parse(usr);
+            //         this.attachementService.uploadFile(user, 'scan ' + this.scanTitle, this.scanUri);
+            //     }
+            // });
+
+        }
+    }
+
   ngAfterViewChecked () {
     if(!this.isEmployer){
       if (this.dataForNationalitySelectReady) {
@@ -79,10 +106,19 @@ export class Profile {
     }
   }
 
+  onChangeUpload(e){
+    console.log(e)
+  }
 
   ngAfterViewInit(): void {
     jQuery('.titleSelectPicker').selectpicker();
 
+    jQuery(document).ready(function() {
+
+    jQuery('.fileinput').on('change.bs.fileinput', function(e, file){
+      this.scanData = file.result;
+    })
+});
     if(!this.isRecruiter && !this.isEmployer){
       jQuery('.commune-select').select2({
         ajax:

@@ -11,6 +11,40 @@ export class ProfileService {
       this.http = http;
     }
 
+    uploadScan(scanData, userId, field, action){
+        var role = (this.projectTarget == 'employer' ? 'employeur' : this.projectTarget)
+        var scanDataObj = {
+            "class":'com.vitonjob.callouts.files.DataToken',
+            "table":'user_'+ role,
+            "field": field,
+            "id": userId,
+            "operation": action,
+            "encodedFile": (scanUri)? scanUri.split(';base64,')[1] : ''
+        };
+        scanDataStr = JSON.stringify(scanDataObj);
+        var encodedData = btoa(scanDataStr);
+
+        var body = {
+            'class': 'fr.protogen.masterdata.model.CCallout',
+            'id': 97,
+            'args': [{
+                'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+                label: 'Upload fichier',
+                value: encodedData
+            }]
+        };
+        var stringData = JSON.stringify(body);
+
+        //  send request
+        return new Promise(resolve => {
+            let headers = Configs.getHttpJsonHeaders();
+            this.http.post(Configs.calloutURL, stringData, {headers:headers})
+                .subscribe(data => {
+                    resolve(data);
+                });
+        });
+    }
+
     countEntreprisesByRaisonSocial(companyname: string){
         var sql = "select count(*) from user_entreprise where nom_ou_raison_sociale='" + companyname + "';";
         console.log(sql);
