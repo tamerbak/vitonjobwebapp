@@ -60,4 +60,35 @@
       background-color: $gray-semi-lighter;
     }
   }
+  
+.labelRadio{
+	padding-right: 20px;
+	font-size: 13px;
+} 
+
+.abc-radio {
+    padding-top: 10px;
+}
+ 
+.parsley-errors-list{
+  font-size: $font-size-smaller;
+  padding-left: 0;
+  margin-bottom: 5px;
+
+  li{
+    list-style: none;
+    color: $brand-danger;
+  }
+}
+
+.loaderPosition{
+	position: relative;
+    margin-right: 20px;
+	margin-bottom: 10px;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
 }
