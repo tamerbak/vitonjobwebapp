@@ -11,11 +11,11 @@ import {Configs} from '../configurations/configs';
 @Injectable()
 export class LoadListService {
 	configuration;
-	
+
 	constructor(private http: Http) {
 		this.http = http;
 	}
-	
+
 	/**
 		* @description load a list of countries with their codes
 		* @return JSON results in the form of {country name, country code}
@@ -35,20 +35,18 @@ export class LoadListService {
 	          });
 	    });
 	}
-	
+
 	/**
 		* @description load a list of nationalities
 		* @return JSON results
 	*/
-	loadNationalities(projectTarget) {
-		//  Init project parameters
-		this.configuration = Configs.setConfigs(projectTarget);
+	loadNationalities() {
 		var sql = "select pk_user_nationalite, libelle from user_nationalite";
-		
+
 		return new Promise(resolve => {
 			let headers = Configs.getHttpTextHeaders();
 
-			this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+			this.http.post(Configs.sqlURL, sql, {headers:headers})
 			.map(res => res.json())
 			.subscribe(data => {
 	            resolve(data);

@@ -1,20 +1,22 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 import {NKDatetime} from 'ng2-datetime/ng2-datetime';
-import {ProfileService} from "../../providers/profile-service";
-import {CommunesService} from "../../providers/communes-service";
-import {LoadListService} from "../../providers/loadList-service";
-import {MedecineService} from "../../providers/medecine-service";
+import {AlertComponent} from 'ng2-bootstrap/components/alert';
+import {ProfileService} from "../providers/profile.service";
+import {CommunesService} from "../providers/communes.service";
+import {LoadListService} from "../providers/load-list.service";
+import {MedecineService} from "../providers/medecine.service";
+import {AttachementsService} from "../providers/attachements.service";
 import {SharedService} from "../providers/shared.service";
-import {Utils} from "../../utils/utils";
+import {Utils} from "../utils/utils";
 import {Configs} from "../configurations/configs";
 declare var jQuery,require: any;
 
 @Component({
   selector: '[profile]',
   template: require('./profile.html'),
-  directives: [ROUTER_DIRECTIVES,NKDatetime],
-  providers: [Utils,ProfileService,CommunesService,LoadListService,MedecineService],
+  directives: [ROUTER_DIRECTIVES,NKDatetime,AlertComponent],
+  providers: [Utils,ProfileService,CommunesService,LoadListService,MedecineService,AttachementsService],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./profile.scss')]
 })
@@ -62,14 +64,18 @@ export class Profile {
   isRecruiter:boolean;
   accountId:string;
   userRoleId:string;
+
   //styles && vars
   showForm:boolean = false;
   scanTitle:string;
-  operationTitle:string;
   validation:boolean = false;
+  siretAlert:string="";
+  showCurrentSiretBtn:boolean = false;
+  companyAlert:string="";
+  showCurrentCompanyBtn:boolean = false;
 
 
-  constructor(private listService:LoadListService,private profileService:ProfileService,private sharedService:SharedService,private medecineService:MedecineService,private communesService:CommunesService,private router: Router){
+  constructor(private listService:LoadListService,private profileService:ProfileService,private sharedService:SharedService,private medecineService:MedecineService,private communesService:CommunesService,private attachementsService:AttachementsService,private router: Router){
     this.currentUser = this.sharedService.getCurrentUser();
     console.log(this.currentUser);
     if(!this.currentUser){
@@ -98,7 +104,7 @@ export class Profile {
     this.getUserFullname();
     this.phoneNumber = this.currentUser.tel;
     this.email = this.currentUser.email;
-    this.isNewUser = this.currentUser.isNewUser;
+    this.isNewUser = this.currentUser.newAccount;
     this.showForm = this.isNewUser ? true:false;
     this.isEmployer = this.currentUser.estEmployeur;
     this.isRecruiter = this.currentUser.estRecruteur;
@@ -122,6 +128,7 @@ export class Profile {
     this.showForm = true;
     this.initValidation();
     this.title = this.currentUser.titre;
+    jQuery('.titleSelectPicker').selectpicker('val', this.title);
     this.lastname = this.currentUser.nom;
     this.firstname = this.currentUser.prenom;
 
@@ -173,6 +180,7 @@ export class Profile {
                  this.cni = this.currentUser.jobyer.cni;
                  this.numSS = this.currentUser.jobyer.numSS;
                  this.nationalityId = this.currentUser.jobyer.natId;
+                 jQuery('.nationalitySelectPicker').selectpicker('val', this.nationalityId);
 
                  this.isValidCni = true;
 
@@ -181,7 +189,7 @@ export class Profile {
      }
   }
 
-  updateScan(userId,role) {
+  updateScan(accountId,userId,role) {
         if (this.scanData) {
             this.currentUser.scanUploaded = true;
             this.sharedService.setCurrentUser(this.currentUser);
@@ -199,12 +207,10 @@ export class Profile {
                     }
 
                 });
-            // this.storage.get(this.currentUserVar).then(usr => {
-            //     if (usr) {
-            //         let user = JSON.parse(usr);
-            //         this.attachementService.uploadFile(user, 'scan ' + this.scanTitle, this.scanUri);
-            //     }
-            // });
+
+          if (accountId) {
+             this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle, this.scanData);
+          }
 
         }
     }
@@ -610,12 +616,17 @@ export class Profile {
 			this.profileService.countEntreprisesByRaisonSocial(this.companyname).then((res:any) => {
 				if(res.data[0].count != 0 && this.companyname != this.currentUser.employer.entreprises[0].nom){
 					if (!Utils.isEmpty(this.currentUser.employer.entreprises[0].nom)) {
-						console.log("VitOnJob", "L'entreprise " + this.companyname + " existe déjà. Veuillez saisir une autre raison sociale.");
-            this.companyname = this.currentUser.employer.entreprises[0].nom;
+						this.companyAlert = "L'entreprise " + this.companyname + " existe déjà. Veuillez saisir une autre raison sociale.";
+            this.showCurrentCompanyBtn = true;
+            // this.companyname = this.currentUser.employer.entreprises[0].nom;
 					}else{
-						this.displayCompanyAlert('companyname');
+						this.companyAlert= this.companyInfosAlert('companyname');
+            this.showCurrentCompanyBtn = false;
 					}
 				}else{
+          this.companyAlert="";
+          this.showCurrentCompanyBtn = false;
+          console.log()
 					return;
 				}
 			})
@@ -623,23 +634,52 @@ export class Profile {
 			this.profileService.countEntreprisesBySIRET(this.siret).then((res:any) => {
 				if(res.data[0].count != 0 && this.siret != this.currentUser.employer.entreprises[0].siret){
 					if (!Utils.isEmpty(this.currentUser.employer.entreprises[0].nom)) {
-						console.log("VitOnJob", "Le SIRET " + this.siret + " existe déjà. Veuillez en saisir un autre.");
-						this.siret = this.currentUser.employer.entreprises[0].siret;
+						this.siretAlert = "Le SIRET " + this.siret + " existe déjà. Veuillez en saisir un autre.";
+            this.showCurrentSiretBtn = true;
+						//this.siret = this.currentUser.employer.entreprises[0].siret;
 					}else{
-						this.displayCompanyAlert('siret');
+            this.siretAlert = this.companyInfosAlert('siret');
+            this.showCurrentSiretBtn = false;
 					}
 				}else{
+          this.siretAlert="";
+          this.showCurrentSiretBtn = false;
+          console.log()
 					return;
 				}
 			})
 		}
 	}
 
-  displayCompanyAlert(field){
+  companyInfosAlert(field){
 			var message = (field == "siret" ? ("Le SIRET " + this.siret) : ("La raison sociale " + this.companyname)) + " existe déjà. Si vous continuez, ce compte sera bloqué, \n sinon veuillez en saisir " + (field == "siret" ? "un " : "une ") + "autre. \n Voulez vous continuez?";
-			console.log(message);
+			return message;
 	}
 
+  focus(field){
+    if(field == 'companyname'){
+      jQuery('#companyname').focus()
+    }else if(field == 'siret'){
+      jQuery('#siret').focus()
+    }
+  }
+
+  setDefaultValue(field){
+    if(field == 'companyname'){
+      this.companyname = this.currentUser.employer.entreprises[0].nom;
+      this.companyAlert="";
+      this.showCurrentCompanyBtn = false;
+    }else if(field == 'siret'){
+      this.siret = this.currentUser.employer.entreprises[0].siret;
+      this.siretAlert="";
+      this.showCurrentSiretBtn = false;
+    }
+    console.log()
+  }
+
+  closeForm(){
+    this.showForm = false;
+  }
 
   updateCivility(){
       console.log(this.isValidForm())
@@ -708,7 +748,7 @@ export class Profile {
                     this.getUserFullname();
 
                     //upload scan
-                    this.updateScan(userRoleId,'employeur');
+                    this.updateScan(accountId,userRoleId,'employeur');
                     this.validation = false;
                   }
 
@@ -751,7 +791,7 @@ export class Profile {
                 this.sharedService.setCurrentUser(this.currentUser);
 
                 //upload scan
-                this.updateScan(userRoleId,"jobyer");
+                this.updateScan(accountId,userRoleId,"jobyer");
                 this.validation = false;
 
               }

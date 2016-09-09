@@ -8,6 +8,15 @@
 @import "../../../node_modules/ng2-datetime/src/vendor/bootstrap-timepicker/bootstrap-timepicker.min";
 @import "../../../node_modules/jasny-bootstrap/dist/css/jasny-bootstrap";
 
+/**
+ * spinner
+*/
+
+.civility-form .loaderPosition {
+    position: relative;
+    margin-right: 20px;
+    margin-bottom: 10px;
+}
 
 /**
  * #birthdate

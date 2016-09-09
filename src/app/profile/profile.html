@@ -25,7 +25,7 @@
                 <li><i class="fa fa-phone fa-fw mr-xs"></i><a href="#"> {{phoneNumber}}</a></li>
                 <li><i class="fa fa-envelope fa-fw mr-xs"></i><a href="#"> {{email}}</a></li>
               </ul>
-              <button href="#" class="btn btn-danger btn-sm mt" (click)="initForm()">
+              <button [disabled]="showForm" class="btn btn-primary btn-sm mt" (click)="initForm()">
                 Modifier les informations
               </button>
             </div>
@@ -35,7 +35,7 @@
     </section>
   </div>
   <div [hidden]="!showForm" class="col-lg-6 col-xs-12">
-    <section class="widget" widget>
+    <section class="widget">
       <header>
         <h6>
           Inputs
@@ -45,7 +45,7 @@
         </div>
       </header>
       <div class="widget-body">
-        <form class="form-horizontal" role="form">
+        <form class="civility-form form-horizontal" role="form">
           <fieldset>
             <legend><strong>Horizontal</strong> form</legend>
             <div class="form-group row">
@@ -217,14 +217,46 @@
 
 
 
+
             </fieldset>
-          <div class="form-actions">
-            <div class="row">
-              <div class="col-md-offset-4 col-md-7 col-xs-12">
-                <button type="submit" class="btn btn-primary" [disabled]="!isValidForm() || validation" (click)="updateCivility()" >Valider</button>
+            <div class="form-group row">
+              <div class="col-md-12 col-xs-12 col-lg-12">
+                <alert *ngIf="!!companyAlert" [type]="'danger'+ ' alert-sm'" dismissible="false">
+                  <div>
+                    <span class="fw-semi-bold">Attention:</span>
+                    {{companyAlert}}
+                    <div>
+                      <button class="btn btn-danger btn-xs pull-xs-right mr-xs" (click)="focus('companyname')">changer la valeur</button>
+                        <button *ngIf="showCurrentCompanyBtn" class="btn btn-danger btn-xs pull-xs-right mr-xs" (click)="setDefaultValue('companyname')" >valeur par défault</button>
+                    </div>
+                  </div>
+                </alert>
+                <alert *ngIf="!!siretAlert" [type]="'danger'+ ' alert-sm'" dismissible="false" >
+                  <div>
+
+                    <span class="fw-semi-bold">Attention:</span>
+                    {{siretAlert}}
+                    <button class="btn btn-danger btn-xs pull-xs-right mr-xs" (click)="focus('siret')">changer la valeur</button>
+                    <button *ngIf="showCurrentSiretBtn" class="btn btn-danger btn-xs pull-xs-right mr-xs" (click)="setDefaultValue('siret')">valeur par défault</button>
+                  </div>
+                </alert>
               </div>
             </div>
-          </div>
+              <div class="clearfix">
+								<div class="btn-toolbar pull-xs-right m-t-1">
+								  <div class="widget-body btn loaderPosition" [hidden]="!validation">
+  									<div class="loader animated fadeIn handle">
+  										<span class="spinner">
+  											<i class="fa fa-spinner fa-spin"></i>
+  										</span>
+  									</div>
+								  </div>
+				          <button class="btn btn-primary" [disabled]="!isValidForm() || validation" (click)="updateCivility()" >Valider</button>
+                  <button class="btn btn-default" (click)="closeForm()" >Annuler</button>
+								</div>
+							</div>
+
+
         </form>
       </div>
     </section>
