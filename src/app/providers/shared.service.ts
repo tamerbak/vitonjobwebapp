@@ -8,6 +8,8 @@ import {Injectable} from '@angular/core';
 @Injectable()
 export class SharedService {
 	currentUser: any;
+	currentOffer: any;
+	lastResult: any;
 	
 	constructor() {
 		
@@ -21,7 +23,19 @@ export class SharedService {
 		return this.currentUser;
 	}
 	
+	setCurrentOffer(offer){
+		this.currentOffer = offer;
+	}
 	
+	getCurrentOffer(){
+		return this.currentOffer;
+	}
 	
+	setLastResult(result){
+		this.lastResult = result;
+	}
 	
+	getLastResult(){
+		return this.lastResult;
+	}
 }
