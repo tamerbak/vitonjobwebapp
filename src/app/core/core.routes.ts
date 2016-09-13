@@ -25,6 +25,7 @@ import {ExtraGallery} from '../extra-gallery/extra-gallery';
 import {ExtraSearchResults} from '../extra-search-results/extra-search-results';
 import {ExtraTimeLine} from '../extra-time-line/extra-time-line';
 import {OfferList} from '../offer-list/offer-list';
+import {OfferDetail} from '../offer-detail/offer-detail';
 
 export const CoreRoutes: RouterConfig = [
   {
@@ -55,7 +56,8 @@ export const CoreRoutes: RouterConfig = [
       { path: 'extra/gallery', component: ExtraGallery},
       { path: 'extra/search', component: ExtraSearchResults},
       { path: 'extra/timeline', component: ExtraTimeLine},
-	  { path: 'offer/list', component: OfferList}
+	  { path: 'offer/list', component: OfferList},
+	  { path: 'offer/detail', component: OfferDetail}
     ]
   }
 ];

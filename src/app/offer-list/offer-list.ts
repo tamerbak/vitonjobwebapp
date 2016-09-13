@@ -80,7 +80,7 @@ export class OfferList {
 	
 	goToDetailOffer(offer){
 		this.sharedService.setCurrentOffer(offer);
-		this.router.navigate(['dashboard']);
+		this.router.navigate(['app/offer/detail']);
 	}
 	
 	autoSearchMode(offer){
