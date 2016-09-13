@@ -1,17 +1,15 @@
 @import "../../scss/variables";
 @import "../../../node_modules/bootstrap/scss/_variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
-
-
 /*
  * Bootstrap calendar
  */
-
-.calendar{
+.calendar {
   font-size: $font-size-mini;
   padding: $line-height-computed/2 0;
 }
-.calendar a{
+
+.calendar a {
   text-decoration: none;
   cursor: pointer;
   color: $gray-dark;
@@ -21,37 +19,44 @@
   line-height: 30px;
   position: relative;
 }
-.calendar td{
+
+.calendar td {
   text-align: center;
 }
-.calendar .header{
-  padding: 10px 0 10px 0;
+
+.calendar .header {
+  padding: 10px 0;
   color: #666;
-  i{
+
+  i {
     cursor: pointer;
   }
 }
-.calendar .prev_month{
+
+.calendar .prev_month {
   float: left;
 }
-.calendar .next_month{
+
+.calendar .next_month {
   float: right;
 }
-.calendar .year{
+
+.calendar .year {
   text-align: center;
   font-weight: 500;
 }
-.calendar .week_days{
+
+.calendar .week_days {
   color: $gray-light;
 }
 
-.calendar .event{
+.calendar .event {
   color: white;
   font-weight: bold;
   background-color: transparent;
 
-  &:hover{
-    > a{
+  &:hover {
+    > a {
       background-color: $gray-lighter;
     }
   }
@@ -60,7 +65,7 @@
     background-color: $white;
     @include border-radius(50%);
 
-    > span{
+    > span {
       display: inline-block;
       width: 6px;
       height: 6px;
@@ -71,24 +76,39 @@
     }
   }
 
-  .popover{
+  .popover {
     color: $text-color;
   }
 }
-.calendar .table td{
+
+.calendar .table td {
   padding: 1px 0;
   border-top: 0;
 }
-.calendar .table{
+
+.calendar .table {
   margin-bottom: 3px;
-  &.header{
+
+  &.header {
     margin-bottom: $line-height-computed/2;
   }
 }
+
 .container-home{
 
 }
-.div-search{
+.modal{
+  width: 100%!important;
+  height: 100%!important;
+}
+.play {
+
+  top: 2em;
+  color: white;
+  font-size: 4em;
+}
+
+.div-search {
   width: 100%;
   height: 20em;
   position: absolute;
@@ -96,59 +116,69 @@
   background-color: #eee;
   display: flex;
 }
-.search{
+
+.adv-search {
   position: absolute;
-  top: -6em;
+  right: 9em;
+  color: white;
+  margin-top: 6em;
+}
+
+.search {
+  position: absolute;
+  top: -8em;
   width: 100%;
-  height: 6em;
+  height: 8em;
   display: flex;
   background-color: rgba(#14baa6, 0.5);
 }
-.input-search{
+
+.input-search {
   width: 70%;
   margin: auto;
 }
 
-.video video{
+.video video {
   width: 100%;
   height: 100%;
 }
-.content{
-  padding: 0px!important;
+
+.content {
+  padding: 0 !important;
 }
-.calendar .week_days td{
-}
+
+.calendar .week_days td {}
+
 .calendar .visualmonthyear {
   color: $gray-light;
 }
-.dropdown-menu .calendar td a {
-  padding: 0px;
-}
 
+.dropdown-menu .calendar td a {
+  padding: 0;
+}
 /**
  * Mapael
  */
-
 .mapTooltip {
-  position : fixed;
-  padding : 2px;
+  position: fixed;
+  padding: 2px;
   z-index: 1000;
   max-width: 200px;
   display: none;
-  background-color : #fff;
+  background-color: #fff;
   border: 1px solid #ccc;
   border-radius: $border-radius;
   font-size: $font-size-sm;
   color: $text-color;
 }
 
-.zoomIn, .zoomOut {
+.zoomIn,
+.zoomOut {
   position: absolute;
   bottom: 10px;
-  left : 10px;
+  left: 10px;
   width: 20px;
   height: 20px;
-
   box-sizing: content-box;
   border: 1px solid #ccc;
   background-color: #fff;
@@ -158,22 +188,22 @@
   border-radius: $border-radius;
   cursor: pointer;
   font-weight: $font-weight-bold;
-
   user-select: none;
 }
 
 .zoomOut {
   left: 36px;
-
 }
 
-.mapael{
+.mapael {
   position: relative;
   margin: (-$widget-padding-vertical) (-$widget-padding-horizontal) 0;
+
   .map {
-    position:relative;
+    position: relative;
   }
-  .stats{
+
+  .stats {
     position: absolute;
     z-index: 1;
     top: 0;
@@ -181,68 +211,64 @@
     margin: 5% 10%;
   }
 }
-
 // Checkbox
-
 .table td > .abc-checkbox,
 .table th > .abc-checkbox {
-  > label:before,
-  > label:after {
+   > label:after,
+  > label:before {
     margin-left: -16px;
   }
 }
-
 /***********************/
 /* Part:Progress Stats */
 /***********************/
+.progress-stats {
+  .name {
+    margin-bottom: 2px;
+  }
 
-.progress-stats{
-  .name{
+  .description {
     margin-bottom: 2px;
   }
-  .description{
-    margin-bottom: 2px;
-  }
-  .status{
+
+  .status {
     margin-top: 15px;
   }
-
   @include media-breakpoint-down(lg) {
-    .description + .progress{
+    .description + .progress {
       margin-bottom: 0;
     }
   }
 }
-
 /***********************/
 /*    Part:Stats Row   */
 /***********************/
-
-.stats-row{
+.stats-row {
   margin-bottom: 15px;
 }
 
-.stat-item{
+.stat-item {
   display: inline-block;
   padding-right: 15px;
 
-  & + .stat-item{
+  & + .stat-item {
     padding-left: 15px;
     border-left: 1px solid $hr-border-color;
   }
-  .name{
+
+  .name {
     margin-bottom: 2px;
     margin-top: 10px;
   }
-  .value{
+
+  .value {
     font-weight: bold;
   }
 
-  &.stat-item-mini-chart{
+  &.stat-item-mini-chart {
     position: relative;
     top: -12px;
     padding-left: 0;
     border-left: none;
   }
-
 }
