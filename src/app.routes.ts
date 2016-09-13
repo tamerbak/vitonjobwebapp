@@ -9,7 +9,7 @@ const routes: RouterConfig = [
   { path: 'login', component: LoginPage},
   {
     path: '',
-    redirectTo: '/app/dashboard',
+    redirectTo: '',
     pathMatch: 'full'
   },
   { path: '**', redirectTo: '/app/dashboard' },

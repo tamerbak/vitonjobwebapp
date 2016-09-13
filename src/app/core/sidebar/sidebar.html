@@ -1,21 +1,19 @@
 <div class="js-sidebar-content">
   <header class="logo hidden-sm-down">
-    <a href="index.html">sing</a>
+    <a href="index.html"><img src="assets/images/logo/on.png" style="width : 40px" alt="..."></a>
   </header>
   <!-- seems like lots of recent admin template have this feature of user info in the sidebar.
        looks good, so adding it and enhancing with notifications -->
   <div class="sidebar-status hidden-md-up">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <span class="thumb-sm avatar pull-xs-right">
+      <span class="thumb-sm avatar pull-xs-right">
         <img class="img-circle" src="assets/images/people/a5.jpg" alt="...">
               </span>
       <!-- .circle is a pretty cool way to add a bit of beauty to raw data.
            should be used with bg-* and text-* classes for colors -->
-              <span class="circle bg-warning fw-bold text-gray-dark">
+      <span class="circle bg-warning fw-bold text-gray-dark">
                   13
-              </span>
-      &nbsp;
-      Philip <strong>Smith</strong>
+              </span> &nbsp; Philip <strong>Smith</strong>
       <b class="caret"></b>
     </a>
     <!-- #notifications-dropdown-menu goes here when screen collapsed to xs or sm -->
@@ -23,69 +21,66 @@
   <!-- main notification links are placed inside of .sidebar-nav -->
   <ul class="sidebar-nav">
 
-        <li>
-          <a [routerLink]=" ['dashboard'] ">
-            <span class="icon">
+    <li>
+      <a [routerLink]=" ['dashboard'] ">
+        <span class="icon">
             <i class="glyphicon glyphicon-search"></i>
-          </span>
-            Search
-          </a>
-        </li>
-
-    <li>
-      <a [routerLink]=" ['inbox'] " data-ui-sref="app.inbox">
-          <span class="icon">
-            <i class="fa fa-envelope"></i>
-          </span>
-        Email
-          <span class="label label-danger">
-            9
-          </span>
+          </span> Search
       </a>
     </li>
     <li>
-      <a [routerLink]=" ['profile'] ">
-          <span class="icon">
-            <i class="glyphicon glyphicon-user"></i>
-          </span>
-        Profile
+      <a [routerLink]=" ['offres'] ">
+        <span class="icon">
+            <i class="glyphicon glyphicon-bullhorn"></i>
+          </span>Mes Offres
       </a>
     </li>
     <li>
-      <a [routerLink]=" ['profile'] ">
-          <span class="icon">
-            <i class="glyphicon glyphicon-user"></i>
-          </span>
-        Offres
-      </a>
-    </li>
-
-    <li>
-      <a [routerLink]=" ['profile'] ">
-          <span class="icon">
-            <i class="glyphicon glyphicon-user"></i>
-          </span>
-        Mission
+      <a [routerLink]=" ['missions'] ">
+        <span class="icon">
+            <i class="glyphicon glyphicon-bookmark"></i>
+          </span> Mes Missions
       </a>
     </li>
     <li>
-    <a [routerLink]=" ['profile'] ">
-          <span class="icon">
-            <i class="glyphicon glyphicon-user"></i>
-          </span>
-      Coffre numérique
-    </a>
-  </li>
+      <a [routerLink]=" ['coffre'] ">
+        <span class="icon">
+            <i class="glyphicon glyphicon-credit-card"></i>
+          </span> Coffre Numérique
+      </a>
+    </li>
     <li>
-      <a [routerLink]=" ['profile'] ">
-        <span>
-          <i class="glyphicon glyphicon-cogwheel"></i>
-        </span>
-        Option
+      <a [routerLink]=" ['option'] ">
+        <span class="icon">
+            <i class="glyphicon glyphicon-cog"></i>
+          </span> Mes Options
+      </a>
+    </li>
+    <li>
+      <a [routerLink]=" ['habilitation'] ">
+        <span class="icon">
+            <i class="glyphicon glyphicon-user"></i>
+          </span>Habilitations
+      </a>
+    </li>
+    <li>
+      <a [routerLink]=" ['rg'] ">
+        <span class="icon">
+            <i class="glyphicon glyphicon-th-list"></i>
+          </span> Recrutement Groupé
+      </a>
+    </li>
+    <li>
+      <a [routerLink]=" ['about'] ">
+        <span class="icon">
+            <i class="glyphicon glyphicon-question-sign"></i>
+          </span> A propos
       </a>
     </li>
 
-   </ul>
+
+
+  </ul>
 
 
 
