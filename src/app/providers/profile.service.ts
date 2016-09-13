@@ -11,6 +11,42 @@ export class ProfileService {
       this.http = http;
     }
 
+    updateUserPersonalAddress(id: string, name, streetNumber, street, cp, ville, pays,role){
+        //  Now we need to save the address
+        var addressData = {
+            'class': 'com.vitonjob.localisation.AdressToken',
+            'street': street,
+            'cp': cp,
+            'ville': ville,
+            'pays': pays,
+		        'name': name,
+            'streetNumber': streetNumber,
+            // 'role': (this.projectTarget == 'employer' ? 'employeur' : this.projectTarget),
+            'role': role,
+            'id': id,
+            'type': 'personnelle'
+        };
+        var addressDataStr = JSON.stringify(addressData);
+        var encodedAddress = btoa(addressDataStr);
+        var data = {
+            'class': 'fr.protogen.masterdata.model.CCallout',
+            'id': 239,
+            'args': [{
+                'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+                label: 'Adresse',
+                value: encodedAddress
+            }]
+        };
+        var stringData = JSON.stringify(data);
+        return new Promise(resolve => {
+            let headers = Configs.getHttpJsonHeaders();
+            this.http.post(Configs.calloutURL, stringData, {headers:headers})
+                .subscribe(data => {
+                    resolve(data);
+                });
+        });
+    }
+
     uploadScan(scanData, userId, field, action,role){
         //var role = (this.projectTarget == 'employer' ? 'employeur' : this.projectTarget)
         var scanDataObj = {
@@ -114,6 +150,8 @@ export class ProfileService {
       })
   }
 
+
+
   updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId, medecineId){
         var sql = "update user_employeur set ";
         sql = sql + " titre='" + title + "' ";
@@ -151,6 +189,35 @@ export class ProfileService {
                     resolve(data);
                 });
         })
+    }
+
+
+    getAddressByUser(id,role){
+        var payload = {
+            'class' : 'fr.protogen.masterdata.model.CCallout',
+            id : 165,
+            args : [
+                {
+                    class : 'fr.protogen.masterdata.model.CCalloutArguments',
+                    label : 'Requete de recherche',
+                    value : btoa(id)
+                },
+                {
+                    class : 'fr.protogen.masterdata.model.CCalloutArguments',
+                    label : 'ID Offre',
+                    value : btoa(role == 'employer' ? 'employeur' : 'jobyer')
+                }
+            ]
+        }
+        var stringData = JSON.stringify(payload);
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpJsonHeaders();
+            this.http.post(Configs.calloutURL, stringData, {headers:headers})
+                .subscribe((data:any) => {
+                    resolve(JSON.parse(data._body));
+                });
+        });
     }
 
 

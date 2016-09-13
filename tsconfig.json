@@ -104,6 +104,7 @@
         "./src/app/widgets/years-map-widget/fake-world-data.ts",
         "./src/app/widgets/years-map-widget/years-map-widget.ts",
         "./src/main.ts",
-        "./src/polyfills.ts"
+        "./src/polyfills.ts",
+        "./src/app/personal.address/personal.address.ts"
     ]
 }

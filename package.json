@@ -46,6 +46,7 @@
     "angular2-autosize": "git://github.com/stevepapa/angular2-autosize.git#5a030f92890d0531b73272b337b0d736940bd24e",
     "angular2-color-picker": "1.0.3",
     "angular2-datatable": "0.4.2",
+    "angular2-google-map-auto-complete": "^1.0.5",
     "angular2-google-maps": "0.12.0",
     "animate.css": "3.5.1",
     "autoprefixer": "6.3.1",
