@@ -104,7 +104,7 @@ export class LoginPage {
 				if(this.fromPage == "Search"){
 					//this.nav.pop();
 				}else{
-					this.router.navigate(['/dashboard']);
+					this.router.navigate(['app/offer/list']);
 				}
 			}
 		
