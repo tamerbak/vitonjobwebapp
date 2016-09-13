@@ -29,6 +29,8 @@ import {ExtraGallery} from '../extra-gallery/extra-gallery';
 import {ExtraTimeLine} from '../extra-time-line/extra-time-line';
 import {ExtraSearchResults} from '../extra-search-results/extra-search-results';
 import {ConfigService} from './config';
+import {OfferList} from '../offer-list/offer-list';
+import {OfferDetail} from '../offer-detail/offer-detail';
 
 declare var Raphael: any;
 declare var jQuery: any;

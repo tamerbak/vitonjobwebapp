@@ -1,0 +1,126 @@
+<ol class="breadcrumb">
+	<li>Vous êtes ici</li>
+	<li class="active">Mes offres</li>
+	<li class="active">Détails de l'offre</li>
+</ol>
+<!--<h1 class="page-title">{{currentUser.estEmployeur ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Détails de mon offre</span></h1>-->
+<alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
+	<div [innerHTML]="alert.msg"></div>
+</alert>
+
+<div class="row">
+	<div class="col-lg-8 col-xl-offset-2 col-xs-12">
+		<!--<section class="widget" widget>
+			<header>
+				<h4>
+					Job
+				</h4>
+				<div class="widget-controls">
+					<a data-widgster="close" title="Close" href="#"><i class="glyphicon glyphicon-remove"></i></a>	
+					<a data-widgster="expand" title="Expand" href="#"><i class="glyphicon glyphicon-chevron-up"></i></a>
+					<a data-widgster="collapse" title="Collapse" href="#"><i class="glyphicon glyphicon-chevron-down"></i></a>
+				</div>
+			</header>
+			<div class="widget-body">
+				<form class="form-horizontal" role="form">
+					<fieldset>
+						<div class="form-group row">
+							<label class="col-md-4 col-xs-12 form-control-label text-md-right">Secteur</label>
+							<div class="col-md-7 col-xs-12">
+								<select class="form-control" [(ngModel)]="jobData.sector">
+									<option *ngFor="let s of sectors" [value]="s.id"> ({{s.libelle}})</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="hint-field" class="col-md-4 form-control-label text-md-right">
+								Job
+							</label>
+							<div class="col-md-7 col-xs-12">
+								<select class="form-control" [(ngModel)]="jobData.job">
+									<option *ngFor="let j of sectors" [value]="j.id"> ({{j.libelle}})</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-4 col-xs-12 form-control-label text-md-right" for="tooltip-enabled">Niveau</label>
+							<div class="col-md-7 col-xs-12">
+								<div class="abc-radio">
+									<input type="radio" name="radio3" id="radio5" value="option1" disabled>
+									<label for="radio5">
+										Débutant
+									</label>
+								</div>
+								<div class="abc-radio abc-radio-warning">
+									<input type="radio" name="radio3" id="radio6" value="option2" checked disabled>
+									<label for="radio6">
+										Expérimenté
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-4 col-xs-12 form-control-label text-md-right">Taux horaire</label>
+							<div class="col-md-3 col-xs-12">
+								<input type="number" class="form-control">
+							</div>
+							<div class="col-md-3 col-xs-12">
+								<select class="form-control">
+									<option> EUR </option>
+								</select>
+							</div>
+						</div>
+					</fieldset>
+					
+					<div class="form-actions">
+						<div class="row">
+							<div class="col-md-offset-4 col-md-7 col-xs-12">
+								<button type="submit" class="btn btn-primary">Sauvegarder</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</section>-->
+		<!--<section class="widget" widget>
+			<header>
+				<h4>
+					Disponibilités
+				</h4>
+				<div class="widget-controls">
+					<a data-widgster="close" title="Close" href="#"><i class="glyphicon glyphicon-remove"></i></a>	
+					<a data-widgster="expand" title="Expand" href="#"><i class="glyphicon glyphicon-chevron-up"></i></a>
+					<a data-widgster="collapse" title="Collapse" href="#"><i class="glyphicon glyphicon-chevron-down"></i></a>
+				</div>
+			</header>
+			<div class="widget-body">
+				<form class="form-horizontal" role="form">
+					<fieldset>
+						<div class="form-group row">
+							<label class="col-md-6 col-xs-6 form-control-label">Créneaux</label>
+							<label class="col-md-2 col-xs-2 form-control-label">De</label>
+							<label class="col-md-2 col-xs-2 form-control-label">A</label>
+						</div>
+						<div class="form-group row">
+							<div class="col-md-6 col-xs-12">
+								<datetime id="datetimepicker2i"></datetime>
+							</div>
+						
+						</div>
+	
+
+			
+					</fieldset>
+					
+					<div class="form-actions">
+						<div class="row">
+							<div class="col-md-offset-4 col-md-7 col-xs-12">
+								<button type="submit" class="btn btn-primary">Sauvegarder</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</section>-->
+	</div>
+</div>
