@@ -17,11 +17,11 @@ declare var jQuery,require: any;
 
 @Component({
   selector: '[personalAddress]',
-  template: require('./personal.address.html'),
+  template: require('./personal-address.html'),
   directives: [ROUTER_DIRECTIVES,NKDatetime,AlertComponent,GoogleplaceDirective],
   providers: [Utils,ProfileService,CommunesService,LoadListService,MedecineService,AttachementsService],
   encapsulation: ViewEncapsulation.None,
-  styles: [require('./personal.address.scss')]
+  styles: [require('./personal-address.scss')]
 })
 export class PersonalAddress {
   searchData:string;

@@ -89,6 +89,7 @@
         "./src/app/maps-google/maps-google.ts",
         "./src/app/maps-vector/maps-vector.ts",
         "./src/app/profile/profile.ts",
+        "./src/app/civility/civility.ts",
         "./src/app/providers/authentication.service.ts",
         "./src/app/providers/load-list.service.ts",
         "./src/app/providers/shared.service.ts",
@@ -114,6 +115,6 @@
         "./src/app/widgets/years-map-widget/years-map-widget.ts",
         "./src/main.ts",
         "./src/polyfills.ts",
-        "./src/app/personal.address/personal.address.ts"
+        "./src/app/personal.address/personal-address.ts"
     ]
 }
