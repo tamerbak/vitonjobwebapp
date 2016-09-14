@@ -4,158 +4,261 @@
 </ol>
 <h1 class="page-title">User - <span class="fw-semi-bold">Profile</span></h1>
 <div class="row profile">
-  <div class="col-lg-6 col-xs-12">
+  <div *ngIf="!isNewUser" class="col-lg-6 col-xs-12">
     <section class="widget">
       <div class="widget-body">
         <div class="widget-top-overflow text-white">
           <div class="height-250 overflow-hidden">
-            <img class="img-fluid" src="assets/images/pictures/19.jpg">
-          </div>
-          <div class="btn-toolbar">
-            <a href="#" class="btn btn-outline btn-sm pull-right">
-              <i class="fa fa-twitter mr-xs"></i>
-              Follow
-            </a>
+            <!-- <img class="img-fluid" src="assets/images/pictures/19.jpg"> -->
           </div>
         </div>
         <div class="row">
-          <div class="col-md-5 col-xs-12 text-xs-center">
+          <div class="col-md-12 col-xs-12 text-xs-center">
             <div class="post-user post-user-profile">
               <span class="thumb-xlg">
                 <img class="img-circle" src="assets/images/people/a5.jpg" alt="...">
               </span>
-              <h5 class="fw-normal">Adam <span class="fw-semi-bold">Johns</span></h5>
-              <p>UI/UX designer</p>
-              <a href="#" class="btn btn-danger btn-sm mt">
-                &nbsp;Send
-                <i class="fa fa-envelope ml-xs"></i>&nbsp;
-              </a>
+              <h5 class="fw-normal">{{currentUserFullname}}</h5>
+              <p>{{isEmployer? (isRecruiter ? "Recruteur":"Employeur"):"Jobyer"}}</p>
+
               <ul class="contacts">
-                <li><i class="fa fa-phone fa-fw mr-xs"></i><a href="#"> +375 29 555-55-55</a></li>
-                <li><i class="fa fa-envelope fa-fw mr-xs"></i><a href="#"> psmith@example.com</a></li>
-                <li><i class="fa fa-map-marker fa-fw mr-xs"></i><a href="#"> Minsk, Belarus</a></li>
+                <li><i class="fa fa-phone fa-fw mr-xs"></i><a href="#"> {{phoneNumber}}</a></li>
+                <li><i class="fa fa-envelope fa-fw mr-xs"></i><a href="#"> {{email}}</a></li>
               </ul>
+              <button [disabled]="showForm" class="btn btn-primary btn-sm mt" (click)="initForm()">
+                Modifier les informations
+              </button>
             </div>
-          </div>
-          <div class="col-md-7 col-xs-12">
-            <div class="stats-row stats-row-profile mt text-xs-right">
-              <div class="stat-item">
-                <p class="value text-xs-right">251</p>
-                <h6 class="name">Posts</h6>
-              </div>
-              <div class="stat-item">
-                <p class="value text-xs-right">9.38%</p>
-                <h6 class="name">Conversion</h6>
-              </div>
-              <div class="stat-item">
-                <p class="value text-xs-right">842</p>
-                <h6 class="name">Followers</h6>
-              </div>
-            </div>
-            <p class="text-xs-right mt-lg">
-              <a href="#" class="label label-warning"> UI/UX </a>
-              <a href="#" class="label label-danger ml-xs"> Web Design </a>
-              <a href="#" class="label label-default ml-xs"> Mobile Apps </a>
-            </p>
-            <p class="lead mt-lg">
-              My name is Adam Johns and here is my new Sing user profile page.
-            </p>
-            <p>
-              I love reading people's summaries page especially those who are in the same industry as me.
-              Sometimes it's much easier to find your concentration during the night.
-            </p>
           </div>
         </div>
       </div>
     </section>
   </div>
-  <div class="col-lg-6 col-xs-12">
-    <section class="activities">
-      <h2 class="m-l-1">Activities</h2>
-      <section class="event">
-        <span class="thumb-sm avatar pull-left mr-sm">
-          <img class="img-circle" src="assets/images/people/a5.jpg" alt="...">
-        </span>
-        <h5 class="event-heading"><a href="#">Bob Nilson</a> <small><a href="#">@nils</a></small></h5>
-        <p class="text-muted">February 22, 2014 at 01:59 PM</p>
-        <p class="fs-mini">
-          There is no such thing as maturity. There is instead an ever-evolving process of maturing.
-          Because when there is a maturity, there is ...
-        </p>
-        <footer>
-          <ul class="post-links">
-            <li><a href="#">1 hour</a></li>
-            <li><a href="#"><span class="text-danger"><i class="fa fa-heart"></i> Like</span></a></li>
-            <li><a href="#">Comment</a></li>
-          </ul>
-        </footer>
-      </section>
-      <section class="event">
-        <h5 class="event-heading"><a href="#">Jessica Smith</a> <small>@jess</small></h5>
-        <p class="text-muted">February 22, 2014 at 01:59 PM</p>
-        <p class="fs-mini">
-          Check out this awesome photo I made in Italy last summer. Seems it was lost somewhere deep inside
-          my brand new HDD 40TB. Thanks god I found it!
-        </p>
-        <footer>
-          <div class="clearfix">
-            <ul class="post-links mt-sm pull-left">
-              <li><a href="#">1 hour</a></li>
-              <li><a href="#"><span class="text-danger"><i class="fa fa-heart-o"></i> Like</span></a></li>
-              <li><a href="#">Comment</a></li>
-            </ul>
+  <div [hidden]="!showForm" class="col-lg-6 col-xs-12">
+    <section class="widget">
+      <header>
+        <h6>
+          Inputs
+        </h6>
+        <div class="widget-controls">
+          <a href="#" data-widgster="close"><i class="glyphicon glyphicon-remove"></i></a>
+        </div>
+      </header>
+      <div class="widget-body">
+        <form class="civility-form form-horizontal" role="form">
+          <fieldset>
+            <legend><strong>Horizontal</strong> form</legend>
+            <div class="form-group row">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="title">
+                Civilité
+              </label>
+              <div class="col-md-7 col-xs-12">
+                <select data-style="btn-secondary"
+                        class="titleSelectPicker form-control"
+                        tabindex="-1" id="title" [(ngModel)]="title">
+                  <option value="Mme">Mme</option>
+                  <option value="Mlle">Mlle</option>
+                  <option value="M.">M.</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="lastname" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                Nom
+              </label>
+              <div class="col-md-7 col-xs-12">
+                <input type="text" id="lastname" class="form-control" placeholder="Nom" [(ngModel)]="lastname" name="lastname" (keyup)="watchLastname($event)">
+              </div>
+              <div class="col-md-offset-4 col-md-7 col-xs-12">
+                <span class="hint label label-danger">{{lastnameHint}}</span>
+              </div>
+            </div>
 
-            <span class="thumb thumb-sm pull-right">
-              <a href="#">
-                <img class="img-circle" src="assets/images/people/a1.jpg">
-              </a>
-            </span>
-            <span class="thumb thumb-sm pull-right">
-              <a href="#"><img class="img-circle" src="assets/images/people/a5.jpg"></a>
-            </span>
-            <span class="thumb thumb-sm pull-right">
-              <a href="#"><img class="img-circle" src="assets/images/people/a3.jpg"></a>
-            </span>
-          </div>
-          <ul class="post-comments mt-sm">
-            <li>
-              <span class="thumb-xs avatar pull-left mr-sm">
-                <img class="img-circle" src="assets/images/people/a1.jpg" alt="...">
-              </span>
-              <div class="comment-body">
-                <h6 class="author fs-sm fw-semi-bold">Ignacio Abad <small>6 mins ago</small></h6>
-                <p>Hey, have you heard anything about that?</p>
+            <div class="form-group row">
+
+                <label for="firstname" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Prénom
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input type="text" id="firstname" class="form-control" [(ngModel)]="firstname" name="firstname" placeholder="prénom" (keyup)="watchFirstname($event)">
+                </div>
+
+              <div class="col-md-offset-4 col-md-7 col-xs-12">
+                <span class="hint label label-danger">{{firstnameHint}}</span>
               </div>
-            </li>
-            <li>
-              <span class="thumb-xs avatar pull-left mr-sm">
-                <img class="img-circle" src="assets/images/avatar.png" alt="...">
-              </span>
-              <div class="comment-body">
-                <input class="form-control form-control-sm" type="text" placeholder="Write your comment...">
+            </div>
+
+            <div *ngIf="!isRecruiter">
+
+              <div *ngIf="isEmployer" class="form-group row">
+                <label for="companyname" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Raison Sociale
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input type="text" id="companyname" class="form-control" [(ngModel)]="companyname" name="companyname" placeholder="Raison Sociale" (keyup)="watchCompanyname($event)" (change)="IsCompanyExist($event, 'companyname')">
+                </div>
+                <div class="col-md-offset-4 col-md-7 col-xs-12">
+                  <span class="hint label label-danger">{{companynameHint}}</span>
+                </div>
               </div>
-            </li>
-          </ul>
-        </footer>
-      </section>
-      <form class="mt" action="#">
-        <div class="form-group mb-0">
-          <label class="sr-only" for="new-event">New event</label>
-          <textarea class="form-control" id="new-event" placeholder="Post something..." rows="3"></textarea>
-        </div>
-        <div class="btn-toolbar">
-          <div class="btn-group">
-            <a href="#" class="btn btn-sm btn-gray">
-              <i class="fa fa-camera fa-lg"></i>
-            </a>
-            <a href="#" class="btn btn-sm btn-gray">
-              <i class="fa fa-map-marker fa-lg"></i>
-            </a>
-          </div>
-          <button type="submit" class="btn btn-danger btn-sm pull-right">Post</button>
-        </div>
-      </form>
+
+              <div *ngIf="isEmployer" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="siret">
+                  SIRET
+                  <!-- <span class="help-block">999 999 999 99999</span> -->
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input id="siret" type="text" data-mask="999 999 999 99999" class="form-control" [(ngModel)]="siret" name="siret" placeholder="SIRET" (keyup)="watchSiret($event)" (change)="IsCompanyExist($event, 'siret')">
+                </div>
+                <div class="col-md-offset-4 col-md-7 col-xs-12">
+                  <span class="hint label label-danger">{{siretHint}}</span>
+                </div>
+              </div>
+
+              <div *ngIf="isEmployer" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="siret">
+                  NAF
+                  <!-- <span class="help-block">9999A</span> -->
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input id="ape" type="text" data-mask="9999a" class="form-control" [(ngModel)]="ape" name="ape" placeholder="NAF" (keyup)="watchApe($event)">
+                </div>
+                <div class="col-md-offset-4 col-md-7 col-xs-12">
+                  <span class="hint label label-danger">{{apeHint}}</span>
+                </div>
+
+              </div>
+
+              <div *ngIf="!isEmployer" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="birthDate">
+                  Date de naissance
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <datetime id="birthdate" [(ngModel)]="birthdate" name="birthdate" [timepicker]="false" [datepicker]="{autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}" (ngModelChange)="watchBirthdate($event)"></datetime>
+                </div>
+                <div class="col-md-offset-4 col-md-7 col-xs-12">
+                  <span class="hint label label-danger">{{birthdateHint}}</span>
+                </div>
+              </div>
+
+              <div *ngIf="!isEmployer" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="title">
+                  Lieu de naissance
+                  <span class="help-block">ex: Palaiseau (91)</span>
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input type="hidden" class="select2 commune-select form-control" name="birthplace" placeholder="Lieu de naissance" [(ngModel)]="birthplace" name="birthplace" />
+                </div>
+              </div>
+
+              <div *ngIf="isEmployer" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="title">
+                  Organisme de médecine de travail
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input type="hidden" class="select2 medecine-select form-control" name="medecineTravail" placeholder="Organisme de médecine de travail" [(ngModel)]="medecineTravail" name="medecineTravail" />
+                </div>
+              </div>
+
+              <div *ngIf="!isEmployer" class="form-group row">
+                <label for="companyname" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  CNI
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input type="text" id="cni" class="form-control" [(ngModel)]="cni" name="cni" placeholder="CNI" (keyup)="watchCni($event)" maxlength="12">
+                </div>
+                <div class="col-md-offset-4 col-md-7 col-xs-12">
+                  <span class="hint label label-danger">{{cniHint}}</span>
+                </div>
+              </div>
+
+              <div *ngIf="!isEmployer" class="form-group row">
+                <label for="companyname" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  N° de sécurité sociale
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input type="text" id="numSS" class="form-control" [(ngModel)]="numSS" name="numSS" placeholder="N° de sécurité sociale" (keyup)="watchNumSS($event)" maxlength="15">
+                </div>
+                <div class="col-md-offset-4 col-md-7 col-xs-12">
+                  <span class="hint label label-danger">{{numSSHint}}</span>
+                </div>
+              </div>
+
+              <div *ngIf="!isEmployer" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="title">
+                  Nationalité
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <select
+                          placeholder="Nationalité" data-style="btn-secondary"
+                          class="nationalitySelectPicker form-control" id="nationality-select"  [(ngModel)]="nationality" name="nationality_slct">
+                          <option *ngFor="let n of nationalities" value="{{n.pk_user_nationalite}}">{{n.libelle}}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Joindre une photo {{scanTitle}}
+                </label>
+                <div class="col-md-8 col-xs-12">
+                  <div class="fileinput fileinput-new" data-provides="fileinput">
+                    <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;" >
+                    </div>
+                    <div>
+                      <span class="btn btn-default btn-file"><span class="fileinput-new">Choisier</span><span class="fileinput-exists">Modifier</span><input type="file" name="..."></span>
+                      <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Enlever</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+            </fieldset>
+            <div class="form-group row">
+              <div class="col-md-12 col-xs-12 col-lg-12">
+                <alert *ngIf="!!companyAlert" [type]="'danger'+ ' alert-sm'" dismissible="false">
+                  <div>
+                    <span class="fw-semi-bold">Attention:</span>
+                    {{companyAlert}}
+                    <div>
+                      <button class="btn btn-danger btn-xs pull-xs-right mr-xs" (click)="focus('companyname')">changer la valeur</button>
+                        <button *ngIf="showCurrentCompanyBtn" class="btn btn-danger btn-xs pull-xs-right mr-xs" (click)="setDefaultValue('companyname')" >valeur par défault</button>
+                    </div>
+                  </div>
+                </alert>
+                <alert *ngIf="!!siretAlert" [type]="'danger'+ ' alert-sm'" dismissible="false" >
+                  <div>
+
+                    <span class="fw-semi-bold">Attention:</span>
+                    {{siretAlert}}
+                    <button class="btn btn-danger btn-xs pull-xs-right mr-xs" (click)="focus('siret')">changer la valeur</button>
+                    <button *ngIf="showCurrentSiretBtn" class="btn btn-danger btn-xs pull-xs-right mr-xs" (click)="setDefaultValue('siret')">valeur par défault</button>
+                  </div>
+                </alert>
+              </div>
+            </div>
+              <div class="clearfix">
+								<div class="btn-toolbar pull-xs-right m-t-1">
+								  <div class="widget-body btn loaderPosition" [hidden]="!validation">
+  									<div class="loader animated fadeIn handle">
+  										<span class="spinner">
+  											<i class="fa fa-spinner fa-spin"></i>
+  										</span>
+  									</div>
+								  </div>
+				          <button class="btn btn-primary" [disabled]="!isValidForm() || validation" (click)="updateCivility()" >Valider</button>
+                  <button class="btn btn-default" (click)="closeForm()" >Annuler</button>
+								</div>
+							</div>
+
+
+        </form>
+      </div>
     </section>
   </div>
 </div>
-

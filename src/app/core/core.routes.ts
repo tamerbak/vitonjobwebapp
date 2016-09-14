@@ -5,6 +5,8 @@ import {Inbox} from '../inbox/inbox';
 import {Widgets} from '../widgets/widgets';
 import {Charts} from '../charts/charts';
 import {Profile} from '../profile/profile';
+import {Civility} from '../civility/civility';
+import {PersonalAddress} from '../personal.address/personal-address';
 import {FormsElements} from '../forms-elements/forms-elements';
 import {FormsValidation} from '../forms-validation/forms-validation';
 import {FormsWizard} from '../forms-wizard/forms-wizard';
@@ -37,6 +39,8 @@ export const CoreRoutes: RouterConfig = [
       { path: 'widgets', component: Widgets},
       { path: 'charts', component: Charts },
       { path: 'profile', component: Profile },
+      { path: 'civility', component: Civility },
+      { path: 'personalAddress', component: PersonalAddress },
       { path: 'forms/elements', component: FormsElements },
       { path: 'forms/validation', component: FormsValidation },
       { path: 'forms/wizard', component: FormsWizard },

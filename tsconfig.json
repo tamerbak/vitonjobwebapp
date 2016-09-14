@@ -26,6 +26,12 @@
     "files": [
         "typings/index.d.ts",
         "./src/app.routes.ts",
+        "./src/app/utils/utils.ts",
+        "./src/app/configurations/configs.ts",
+        "./src/app/providers/communes.service.ts",
+        "./src/app/providers/medecine.service.ts",
+        "./src/app/providers/profile.service.ts",
+        "./src/app/providers/load-list.service.ts",
         "./src/app.ts",
         "./src/app/charts/charts.ts",
         "./src/app/charts/flot-chart-animator/flot-chart-animator.ts",
@@ -83,6 +89,7 @@
         "./src/app/maps-google/maps-google.ts",
         "./src/app/maps-vector/maps-vector.ts",
         "./src/app/profile/profile.ts",
+        "./src/app/civility/civility.ts",
         "./src/app/providers/authentication.service.ts",
         "./src/app/providers/load-list.service.ts",
         "./src/app/providers/shared.service.ts",
@@ -107,6 +114,7 @@
         "./src/app/widgets/years-map-widget/fake-world-data.ts",
         "./src/app/widgets/years-map-widget/years-map-widget.ts",
         "./src/main.ts",
-        "./src/polyfills.ts"
+        "./src/polyfills.ts",
+        "./src/app/personal.address/personal-address.ts"
     ]
 }
