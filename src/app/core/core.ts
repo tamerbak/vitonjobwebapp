@@ -31,6 +31,7 @@ import {ExtraSearchResults} from '../extra-search-results/extra-search-results';
 import {ConfigService} from './config';
 import {OfferList} from '../offer-list/offer-list';
 import {OfferDetail} from '../offer-detail/offer-detail';
+import {OfferAdd} from '../offer-add/offer-add';
 
 declare var Raphael: any;
 declare var jQuery: any;

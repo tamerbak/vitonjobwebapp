@@ -127,7 +127,7 @@ export class OfferList {
             this.addAlert("warning", "Veuillez remplir les informations de votre profil avant de créer une offre.");
             return;
         } else {
-            this.router.navigate(['dashboard']);
+			this.router.navigate(['app/offer/add']);
         }
     }
 	
