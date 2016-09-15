@@ -87,7 +87,10 @@ export class OfferList {
 		var mode = offer.rechercheAutomatique ? "Non" : "Oui";
         this.offersService.saveAutoSearchMode(this.projectTarget, offer.idOffer, mode).then((data: any)=> {
             if (data && data.status == "success") {
-                offer.rechercheAutomatique = !offer.rechercheAutomatique;
+                var newOffer = offer;
+				newOffer.rechercheAutomatique = !offer.rechercheAutomatique;
+				this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, newOffer, this.projectTarget);
+				this.sharedService.setCurrentUser(this.currentUser);
             } else {
                 this.addAlert("danger", "Une erreur est survenue lors de la sauvegarde des données.");
             }
