@@ -7,71 +7,72 @@ import {Injectable} from '@angular/core';
 
 @Injectable()
 export class SharedService {
-	currentUser: any;
+	/*currentUser: any;
 	currentOffer: any;
 	lastResult: any;
 	sectorList = [];
 	jobList = [];
 	qualityList = [];
-	langList = [];
+	langList = [];*/
 	
 	constructor() {
 		
 	}
 	
 	setCurrentUser(user){
-		this.currentUser = user;
+		localStorage.setItem('currentUser', JSON.stringify(user));
 	}
 	
 	getCurrentUser(){
-		return this.currentUser;
+		return JSON.parse(localStorage.getItem('currentUser'));
+		//return this.currentUser;
 	}
 	
 	setCurrentOffer(offer){
-		this.currentOffer = offer;
+		localStorage.setItem('currentOffer', JSON.stringify(offer));
 	}
 	
 	getCurrentOffer(){
-		return this.currentOffer;
+		return JSON.parse(localStorage.getItem('currentOffer'));
 	}
 	
 	setLastResult(result){
-		this.lastResult = result;
+		localStorage.setItem('lastResult', JSON.stringify(result));
 	}
 	
 	getLastResult(){
-		return this.lastResult;
+		return JSON.parse(localStorage.getItem('lastResult'));
 	}
 	
 	setSectorList(list){
-		this.sectorList = list;
+		localStorage.setItem('sectorList', JSON.stringify(list));
 	}
 	
 	getSectorList(){
-		return this.sectorList;
+		return JSON.parse(localStorage.getItem('sectorList'));
 	}
 	
 	setJobList(list){
-		this.jobList = list;
+		localStorage.setItem('jobList', JSON.stringify(list));
 	}
 	
 	getJobList(){
-		return this.jobList;
+		return JSON.parse(localStorage.getItem('jobList'));
 	}
 	
 	setQualityList(list){
-		this.qualityList = list;
+		localStorage.setItem('qualityList', JSON.stringify(list));
 	}
 	
 	getQualityList(){
-		return this.qualityList;
+		return JSON.parse(localStorage.getItem('qualityList'));
 	}
 	
 	setLangList(list){
-		this.langList = list;
+		localStorage.setItem('langList', JSON.stringify(list));
 	}
 	
 	getLangList(){
-		return this.langList;
+		return JSON.parse(localStorage.getItem('langList'));
 	}
 }
