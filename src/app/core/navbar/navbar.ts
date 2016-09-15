@@ -18,6 +18,11 @@ export class Navbar implements OnInit {
   $el: any;
   config: any;
   currentUser:any = {nom:"",prenom:""};
+  alerts:any= [
+    {text:'13 Offres correspondent au poste "Serveur"' ,info:"  ",image:"assets/images/people/a8.jpg"},
+    {text:'Notification' ,info:"  ",image:"assets/images/people/a9.jpg"},
+    {text:'Notification' ,info: "  ",image:"assets/images/people/a8.jpg"}
+  ]
 
   constructor(el: ElementRef, config: ConfigService,private sharedService:SharedService) {
     this.currentUser = this.sharedService.getCurrentUser()?this.sharedService.getCurrentUser():  {nom:"",prenom:""};

@@ -1,64 +1,18 @@
 <section class="card notifications">
   <header class="card-header">
     <div class="text-xs-center mb-sm">
-      <strong>Vous avez 3 notifications</strong>
-    </div>
-    <div class="btn-group btn-group-sm btn-group-justified" id="notifications-toggle" data-toggle="buttons">
-      <label class="btn btn-secondary active">
-        <!-- ajax-load plugin in action. setting data-ajax-load & data-ajax-target is the
-             only requirement for async reloading -->
-        <input type="radio"
-               notification-load
-               data-ajax-trigger="change"
-               data-ajax-load="assets/demo/notifications/notifications.html"
-               data-ajax-target="#notifications-list"> Alertes Offres
-      </label>
-      <label class="btn btn-secondary">
-        <input type="radio"
-               notification-load
-               data-ajax-trigger="change"
-               data-ajax-load="assets/demo/notifications/messages.html"
-               data-ajax-target="#notifications-list"> Mises à jours
-      </label>
-      <label class="btn btn-secondary">
-        <input type="radio"
-               notification-load
-               data-ajax-trigger="change"
-               data-ajax-load="assets/demo/notifications/progress.html"
-               data-ajax-target="#notifications-list"> Factures
-      </label>
+      <strong>Vous avez {{alerts.length}} notifications</strong>
     </div>
   </header>
   <!-- notification list with .thin-scroll which styles scrollbar for webkit -->
   <div id="notifications-list" class="list-group thin-scroll">
-    <div class="list-group-item">
+    <div *ngFor="let alert of alerts; let i = index"
+         class="list-group-item">
                                 <span class="thumb-sm pull-xs-left mr clearfix">
-                                    <img class="img-circle" src="assets/images/people/a8.jpg" alt="...">
+                                    <img class="img-circle" src={{alert.image}} alt="...">
                                 </span>
       <p class="no-margin overflow-hidden">
-        13 Offres correspondent au poste "Serveur"
-      </p>
-      <time class="help-block no-margin">
-        &nbsp;&nbsp;
-      </time>
-    </div>
-    <div class="list-group-item">
-                                <span class="thumb-sm pull-xs-left mr clearfix">
-                                    <img class="img-circle" src="assets/images/people/a9.jpg" alt="...">
-                                </span>
-      <p class="no-margin overflow-hidden">
-        Notification
-      </p>
-      <time class="help-block no-margin">
-        &nbsp;&nbsp;
-      </time>
-    </div>
-    <div class="list-group-item">
-                                <span class="thumb-sm pull-xs-left mr clearfix">
-                                    <img class="img-circle" src="assets/images/people/a8.jpg" alt="...">
-                                </span>
-      <p class="no-margin overflow-hidden">
-        Notification
+        {{alert.text}}
       </p>
       <time class="help-block no-margin">
         &nbsp;&nbsp;
