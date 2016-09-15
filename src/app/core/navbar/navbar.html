@@ -48,7 +48,7 @@
           &nbsp;
           {{currentUser.prenom}} <strong>{{currentUser.nom}}</strong>&nbsp;
                 <span class="circle bg-warning fw-bold">
-                    {{alerts.length}}
+                    {{autoSearchOffers.length}}
                 </span>
           <b class="caret"></b>
         </a>
@@ -57,7 +57,7 @@
                      notifications, messages, progress. leave or add what's important for you.
                      uses Sing's ajax-load plugin for async content loading. See #load-notifications-btn -->
 
-        <notifications [alerts]="alerts"  class="dropdown-menu dropdown-menu-right animated animated-fast fadeInUp"
+        <notifications [alerts]="autoSearchOffers"  class="dropdown-menu dropdown-menu-right animated animated-fast fadeInUp"
           ></notifications>
       </li>
       <li class="nav-item dropdown">

@@ -6,13 +6,13 @@
   </header>
   <!-- notification list with .thin-scroll which styles scrollbar for webkit -->
   <div id="notifications-list" class="list-group thin-scroll">
-    <div *ngFor="let alert of alerts; let i = index"
+    <div *ngFor="let offre of alerts; let i = index"
          class="list-group-item">
                                 <span class="thumb-sm pull-xs-left mr clearfix">
-                                    <img class="img-circle" src={{alert.image}} alt="...">
+                                    <img class="img-circle" src={{offre.image}} alt="...">
                                 </span>
       <p class="no-margin overflow-hidden">
-        {{alert.text}}
+        {{offer.correspondantsCount}} Offres correspondent au poste de {{offer.title}}
       </p>
       <time class="help-block no-margin">
         &nbsp;&nbsp;

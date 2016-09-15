@@ -30,13 +30,13 @@ export class Civility {
   companyname:string;
   siret:string;
   ape:string;
-  birthdate:Date;
+  birthdate:Date = new Date(2014, 1, 10);
   selectedMedecine:any={id:0, libelle:""};
   cni:string;
   numSS:string;
   nationalityId:string="9";
   nationalities=[];
-  personalAddress:string="ok";
+  personalAddress:string;
   jobAddress:string;
   isValidPersonalAddress:boolean = false;
   isValidJobAddress:boolean = false;
@@ -46,8 +46,8 @@ export class Civility {
   isValidSiret:boolean = false;
   isValidApe:boolean = false;
   isValidBirthdate:boolean = false;
-  isValidCni:boolean = false;
-  isValidNumSS:boolean = false;
+  isValidCni:boolean = true;
+  isValidNumSS:boolean = true;
   lastnameHint: string ="";
   firstnameHint:string="";
   companynameHint:string="";
@@ -127,7 +127,7 @@ export class Civility {
     this.phoneNumber = this.currentUser.tel;
     this.email = this.currentUser.email;
     this.isNewUser = this.currentUser.newAccount;
-    this.showForm = this.isNewUser ? true:false;
+    this.showForm = false;
     this.isEmployer = this.currentUser.estEmployeur;
     this.isRecruiter = this.currentUser.estRecruteur;
     this.accountId = this.currentUser.id;
@@ -184,7 +184,7 @@ export class Civility {
   initForm(){
     this.showForm=true;
     this.initValidation();
-    this.title = this.currentUser.titre;
+    this.title = !this.currentUser.titre ? "M.":this.currentUser.titre;
     jQuery('.titleSelectPicker').selectpicker('val', this.title);
     this.lastname = this.currentUser.nom;
     this.firstname = this.currentUser.prenom;
@@ -269,8 +269,12 @@ export class Civility {
 
 
                  if (this.currentUser.jobyer.dateNaissance) {
-                     this.birthdate = new Date(this.currentUser.jobyer.dateNaissance);
+                     var birthDate = new Date(this.currentUser.jobyer.dateNaissance).toLocaleDateString("fr-FR")
+
+                     this.birthdate = new Date(this.currentUser.jobyer.dateNaissance)
+
                      this.isValidBirthdate = true;
+                     jQuery("#q-datepicker_1").find('input:first').val(birthDate);
                  } else {
                      this.birthdate = null;
                      this.isValidBirthdate = false;
@@ -288,7 +292,7 @@ export class Civility {
                  //this.selectedCommune = {id:0, nom: this.currentUser.jobyer.lieuNaissance, code_insee: ''}
                  this.cni = this.currentUser.jobyer.cni;
                  this.numSS = this.currentUser.jobyer.numSS;
-                 this.nationalityId = this.currentUser.jobyer.natId;
+                 this.nationalityId = !this.currentUser.jobyer.natId ? '9':this.currentUser.jobyer.natId;
                  jQuery('.nationalitySelectPicker').selectpicker('val', this.nationalityId);
 
                  this.isValidCni = true;
@@ -745,6 +749,7 @@ export class Civility {
         _isFormValid = false;
       }
     }else if(this.isEmployer){
+
       if(this.isValidFirstname && this.isValidLastname && this.isValidCompanyname && this.isValidSiret && this.isValidApe && this.isValidPersonalAddress && this.isValidJobAddress)
       {
         _isFormValid = true;
@@ -752,7 +757,6 @@ export class Civility {
         _isFormValid = false;
       }
     }else{
-
       if(this.isValidFirstname && this.isValidLastname && this.isValidCni && this.isValidNumSS && this.isValidBirthdate && this.isValidPersonalAddress && this.isValidJobAddress){
         _isFormValid = true;
       }else{
@@ -866,7 +870,6 @@ export class Civility {
 
                   }
 
-
                 })
                 .catch((error:any) => {
                   // console.log(error);
@@ -922,7 +925,7 @@ export class Civility {
           var numSS = this.numSS;
           var cni = this.cni;
           var nationality = this.nationalityId;
-          var birthdate = this.birthdate;
+          var birthdate = this.birthdate.toLocaleDateString('en-US');
           var birthplace = this.selectedCommune.nom;
           var nationalityId = this.nationalityId;
 
@@ -933,21 +936,22 @@ export class Civility {
 
               //case of authentication failure : server unavailable or connection problem
               if (!res || res.status == "failure") {
-                // console.log("Serveur non disponible ou problème de connexion.");
+                //console.log("Serveur non disponible ou problème de connexion.");
                 this.validation = false;
                 return;
               } else {
                 // data saved
-                // console.log("response update civility : " + res.status);
+                //console.log("response update civility : " + res.status);
                 this.currentUser.titre = this.title;
                 this.currentUser.nom = this.lastname;
                 this.currentUser.prenom = this.firstname;
                 this.currentUser.jobyer.cni = this.cni;
                 this.currentUser.jobyer.numSS = this.numSS;
                 this.currentUser.jobyer.natId = this.nationalityId;
-                this.currentUser.jobyer.dateNaissance = this.birthdate.toLocaleDateString('fr-FR');
+                this.currentUser.jobyer.dateNaissance = Date.parse(this.birthdate.toLocaleDateString('en-US'));
                 this.currentUser.jobyer.lieuNaissance = birthplace;
                 this.sharedService.setCurrentUser(this.currentUser);
+                console.log(this.currentUser);
 
                 //upload scan
                 this.updateScan(accountId,userRoleId,"jobyer");
@@ -963,7 +967,7 @@ export class Civility {
 
             })
             .catch((error:any) => {
-              // console.log(error);
+              //console.log(error);
               this.validation = false;
             });
 
@@ -1028,6 +1032,7 @@ export class Civility {
   						// console.log("VitOnJob", "Erreur lors de la sauvegarde des données");
   						return;
   					}else{
+              this.validation = false;
   						//id address not send by server
   						this.currentUser.jobyer.personnalAdress.id = JSON.parse(data._body).id;
   						this.currentUser.jobyer.personnalAdress.fullAdress = (name ? name + ", " : "") + (streetNumber ? streetNumber + ", " : "") + (street ? street + ", " : "") + (zipCode ? zipCode + ", " : "") + city + ", " + country;
@@ -1127,6 +1132,7 @@ export class Civility {
   						return;
   					}else{
   						//id address not send by server
+              this.validation = false;
   						this.currentUser.jobyer.workAdress.id = JSON.parse(data._body).id;
   						this.currentUser.jobyer.workAdress.fullAdress = (name ? name + ", " : "") + (streetNumber ? streetNumber + ", " : "") + (street ? street + ", " : "") + (zipCode ? zipCode + ", " : "") + city + ", " + country;
   						this.currentUser.jobyer.workAdress.name = name;
