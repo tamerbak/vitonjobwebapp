@@ -1,9 +1,9 @@
 <ol class="breadcrumb">
 	<li>Vous êtes ici</li>
 	<li class="active">Mes offres</li>
-	<li class="active">Détails de l'offre</li>
+	<li class="active">Nouvelle offre</li>
 </ol>
-<h1 class="page-title">{{currentUser.estEmployeur ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Détails de mon offre</span></h1>
+<h1 class="page-title">{{currentUser.estEmployeur ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Nouvelle offre</span></h1>
 
 <div class="row">
 	<div class="col-lg-8 col-xl-offset-2 col-xs-12">
@@ -12,17 +12,14 @@
 		</alert>
 		<section class="widget" widget>
 			<header>
-				<h4>
-					Job
-				</h4>
-				<div class="widget-controls">
-					<a data-widgster="expand" title="Expand" href="#"><i class="glyphicon glyphicon-chevron-up"></i></a>
-					<a data-widgster="collapse" title="Collapse" href="#"><i class="glyphicon glyphicon-chevron-down"></i></a>
-				</div>
+				<h6>
+					Nouvelle offre
+				</h6>
 			</header>
 			<div class="widget-body">
 				<form class="form-horizontal" role="form">
 					<fieldset>
+						<legend> <strong>Job</strong></legend>
 						<div class="form-group row">
 							<label class="col-md-4 col-xs-12 form-control-label text-md-right">Secteur</label>
 							<div class="col-md-7 col-xs-12">
@@ -69,31 +66,10 @@
 								</select>
 							</div>
 						</div>
-					</fieldset>
-					
-					<div class="form-actions">
-						<div class="row">
-							<div class="col-md-offset-4 col-md-7 col-xs-12">
-								<button type="submit" class="btn btn-primary" [disabled]="!offer.jobData.job || !offer.jobData.sector || !offer.jobData.remuneration" (click)="validateJob()">Valider</button>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-		</section>
-		<section class="widget" widget>
-			<header>
-				<h4>
-					Disponibilités
-				</h4>
-				<div class="widget-controls">
-					<a data-widgster="expand" title="Expand" href="#"><i class="glyphicon glyphicon-chevron-up"></i></a>
-					<a data-widgster="collapse" title="Collapse" href="#"><i class="glyphicon glyphicon-chevron-down"></i></a>
-				</div>
-			</header>
-			<div class="widget-body">
-				<form class="form-horizontal" role="form">
+					</fieldset>	
+		
 					<fieldset>
+						<legend> <strong>Disponibilités</strong></legend>
 						<div class="form-group row">
 							<label class="col-md-6 col-xs-6 form-control-label">Créneaux</label>
 							<label class="col-md-2 col-xs-2 form-control-label">De</label>
@@ -132,24 +108,10 @@
 							</div>
 						</div>
 					</fieldset>
-				</form>
-			</div>
-		</section>
-		<section class="widget" widget>
-			<header>
-				<h4>
-					Qualités & Langues
-				</h4>
-				<div class="widget-controls">
-					<a data-widgster="expand" title="Expand" href="#"><i class="glyphicon glyphicon-chevron-up"></i></a>
-					<a data-widgster="collapse" title="Collapse" href="#"><i class="glyphicon glyphicon-chevron-down"></i></a>
-				</div>
-			</header>
-			<div class="widget-body">
-				<form class="form-horizontal row" role="form">
-					<div class="col-md-6 col-xs-12">
+					<div class="row">	
+						<div class="col-md-6 col-xs-12">
 						<fieldset>
-							<legend>Qualités</legend>
+							<legend><strong>Qualités</strong></legend>
 							<div class="form-group row">
 								<div class="col-md-10 col-xs-12">
 									<select class="form-control" [(ngModel)]="selectedQuality">
@@ -170,12 +132,11 @@
 								  </button>
 								</div>
 							</div>
-					
 						</fieldset>
-					</div>
-					<div class="col-md-6 col-xs-12">
+						</div>
+						<div class="col-md-6 col-xs-12">
 						<fieldset>
-							<legend>Langues</legend>
+							<legend><strong>Langues</strong></legend>
 							<div class="form-group row">
 								<div class="col-md-6 col-xs-12">
 									<select class="form-control" [(ngModel)]="selectedLang">
@@ -203,7 +164,15 @@
 								  </button>
 								</div>
 							</div>
-						</fieldset>
+						</fieldset>	
+						</div>
+					</div>
+					<div class="form-actions">
+						<div class="row">
+							<div class="col-md-offset-4 col-md-7 col-xs-12">
+								<button type="submit" class="btn btn-primary" (click)="addOffer()">Suavegarder</button>
+							</div>
+						</div>
 					</div>
 				</form>
 			</div>

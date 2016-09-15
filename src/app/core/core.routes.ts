@@ -28,6 +28,7 @@ import {ExtraSearchResults} from '../extra-search-results/extra-search-results';
 import {ExtraTimeLine} from '../extra-time-line/extra-time-line';
 import {OfferList} from '../offer-list/offer-list';
 import {OfferDetail} from '../offer-detail/offer-detail';
+import {OfferAdd} from '../offer-add/offer-add';
 
 export const CoreRoutes: RouterConfig = [
   {
@@ -61,7 +62,8 @@ export const CoreRoutes: RouterConfig = [
       { path: 'extra/search', component: ExtraSearchResults},
       { path: 'extra/timeline', component: ExtraTimeLine},
 	  { path: 'offer/list', component: OfferList},
-	  { path: 'offer/detail', component: OfferDetail}
+	  { path: 'offer/detail', component: OfferDetail},
+	  { path: 'offer/add', component: OfferAdd}
     ]
   }
 ];
