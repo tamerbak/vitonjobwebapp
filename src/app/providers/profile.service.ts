@@ -12,6 +12,7 @@ export class ProfileService {
     }
 
     updateUserPersonalAddress(id: string, name, streetNumber, street, cp, ville, pays,role){
+        console.log(pays)
         //  Now we need to save the address
         var addressData = {
             'class': 'com.vitonjob.localisation.AdressToken',
@@ -42,6 +43,47 @@ export class ProfileService {
             let headers = Configs.getHttpJsonHeaders();
             this.http.post(Configs.calloutURL, stringData, {headers:headers})
                 .subscribe(data => {
+                    resolve(data);
+                });
+        });
+    }
+
+    /**
+     * @description update employer and jobyer job address
+     * @param id  : entreprise id for employer role and role id for jobyer role, address
+     */
+    updateUserJobAddress(id: string, name, streetNumber, street, cp, ville, pays,role){
+        console.log(">>",pays)
+        //  Now we need to save the address
+        var addressData = {
+            'class': 'com.vitonjob.localisation.AdressToken',
+            'street': street,
+            'cp': cp,
+            'ville': ville,
+            'pays': pays,
+	          'name': name,
+	          'streetNumber': streetNumber,
+            'role': role,
+            'id': id,
+            'type': 'travaille'
+        };
+        var addressDataStr = JSON.stringify(addressData);
+        var encodedAddress = btoa(addressDataStr);
+        var data = {
+            'class': 'fr.protogen.masterdata.model.CCallout',
+            'id': 239,
+            'args': [{
+                'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+                label: 'Adresse',
+                value: encodedAddress
+            }]
+        };
+        var stringData = JSON.stringify(data);
+
+        return new Promise(resolve => {
+            let headers = Configs.getHttpJsonHeaders();
+            this.http.post(Configs.calloutURL, stringData, {headers:headers})
+                .subscribe((data:any) => {
                     resolve(data);
                 });
         });

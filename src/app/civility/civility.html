@@ -37,9 +37,6 @@
   <div [hidden]="!showForm" class="col-lg-6 col-xs-12">
     <section class="widget">
       <header>
-        <h6>
-          Inputs
-        </h6>
         <div class="widget-controls">
           <a href="#" data-widgster="close"><i class="glyphicon glyphicon-remove"></i></a>
         </div>
@@ -47,7 +44,7 @@
       <div class="widget-body">
         <form class="civility-form form-horizontal" role="form">
           <fieldset>
-            <legend><strong>Horizontal</strong> form</legend>
+            <legend><strong>Modification des Informations</strong></legend>
             <div class="form-group row">
               <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="title">
                 Civilité
@@ -108,7 +105,7 @@
                   <!-- <span class="help-block">999 999 999 99999</span> -->
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input id="siret" type="text" data-mask="999 999 999 99999" class="form-control" [(ngModel)]="siret" name="siret" placeholder="SIRET" (keyup)="watchSiret($event)" (change)="IsCompanyExist($event, 'siret')">
+                  <input id="siret" type="text" data-mask="999 999 999 99999" class="form-control" [(ngModel)]="siret" name="siret" placeholder="999 999 999 99999" (keyup)="watchSiret($event)" (change)="IsCompanyExist($event, 'siret')">
                 </div>
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
                   <span class="hint label label-danger">{{siretHint}}</span>
@@ -121,7 +118,7 @@
                   <!-- <span class="help-block">9999A</span> -->
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input id="ape" type="text" data-mask="9999a" class="form-control" [(ngModel)]="ape" name="ape" placeholder="NAF" (keyup)="watchApe($event)">
+                  <input id="ape" type="text" data-mask="9999a" class="form-control" [(ngModel)]="ape" name="ape" placeholder="9999A" (keyup)="watchApe($event)">
                 </div>
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
                   <span class="hint label label-danger">{{apeHint}}</span>
@@ -206,10 +203,28 @@
                     <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;" >
                     </div>
                     <div>
-                      <span class="btn btn-default btn-file"><span class="fileinput-new">Choisier</span><span class="fileinput-exists">Modifier</span><input type="file" name="..."></span>
+                      <span class="btn btn-default btn-file"><span class="fileinput-new">Choisir</span><span class="fileinput-exists">Modifier</span><input type="file" name="..."></span>
                       <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Enlever</a>
                     </div>
                   </div>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Adresse du siège
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input type="text" class="form-control" placeholder="Recherchez adresse" [(ngModel)] = "personalAddress"  (setAddress) = "getAddress($event,'personal')" googleplace/>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Adresse du lieu du travail
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input type="text" class="form-control" placeholder="Recherchez adresse" [(ngModel)] = "jobAddress"  (setAddress) = "getAddress($event,'job')" googleplace/>
                 </div>
               </div>
             </div>

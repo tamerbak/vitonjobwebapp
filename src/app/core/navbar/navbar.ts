@@ -3,6 +3,7 @@ import {TOOLTIP_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
 import {ROUTER_DIRECTIVES} from '@angular/router';
 import {ConfigService} from '../config';
 import {Notifications} from '../notifications/notifications';
+import {SharedService} from "../../providers/shared.service";
 declare var jQuery: any;
 
 @Component({
@@ -16,8 +17,12 @@ export class Navbar implements OnInit {
   toggleChatEvent: EventEmitter<any> = new EventEmitter();
   $el: any;
   config: any;
+  currentUser:any = {nom:"",prenom:""};
 
-  constructor(el: ElementRef, config: ConfigService) {
+  constructor(el: ElementRef, config: ConfigService,private sharedService:SharedService) {
+    this.currentUser = this.sharedService.getCurrentUser()?this.sharedService.getCurrentUser():  {nom:"",prenom:""};
+
+    console.log(this.currentUser);
     this.$el = jQuery(el.nativeElement);
     this.config = config.getConfig();
   }
