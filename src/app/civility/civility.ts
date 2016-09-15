@@ -132,7 +132,6 @@ export class Civility {
     this.isRecruiter = this.currentUser.estRecruteur;
     this.accountId = this.currentUser.id;
     this.userRoleId = this.currentUser.estEmployeur ? this.currentUser.employer.id : this.currentUser.jobyer.id;
-    //console.log()
   }
 
   initValidation(){
@@ -356,14 +355,12 @@ export class Civility {
                 .then((data:any) => {
 
                     if (!data || data.status == "failure") {
-                        console.log("Scan upload failed !");
+                        // console.log("Scan upload failed !");
                         //this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde du scan");
                         this.currentUser.scanUploaded = false;
                         this.sharedService.setCurrentUser(this.currentUser);
                     }
-                    else {
-                        console.log("Scan uploaded !");
-                    }
+
 
                 });
 
@@ -539,7 +536,6 @@ export class Civility {
     var _rawvalue = e.target.value.replace(_regex, '')
 
     var _value = (_rawvalue === '' ? '' : _rawvalue).trim();
-    console.log(_value,_value.length)
     let _isValid:boolean = true;
     let _hint:string = "";
 
@@ -749,7 +745,6 @@ export class Civility {
         _isFormValid = false;
       }
     }else if(this.isEmployer){
-      console.log(this.isValidFirstname , this.isValidLastname , this.isValidCompanyname , this.isValidSiret , this.isValidApe , this.isValidPersonalAddress , this.isValidJobAddress)
       if(this.isValidFirstname && this.isValidLastname && this.isValidCompanyname && this.isValidSiret && this.isValidApe && this.isValidPersonalAddress && this.isValidJobAddress)
       {
         _isFormValid = true;
@@ -840,7 +835,6 @@ export class Civility {
   }
 
   updateCivility(){
-      console.log(this.isValidForm())
       if(this.isValidForm()){
         this.validation = true;
         var title = this.title;
@@ -858,11 +852,11 @@ export class Civility {
 
                   //case of authentication failure : server unavailable or connection problem
       						if (!res || res.status == "failure") {
-      							console.log("Serveur non disponible ou problème de connexion.");
+      							// console.log("Serveur non disponible ou problème de connexion.");
                     this.validation = false;
                     return;
       						} else {
-                    console.log("response update civility : " + res.status);
+                    // console.log("response update civility : " + res.status);
                     this.currentUser.titre = this.title;
                     this.currentUser.nom = this.lastname;
                     this.currentUser.prenom = this.firstname;
@@ -875,7 +869,7 @@ export class Civility {
 
                 })
                 .catch((error:any) => {
-                  console.log(error);
+                  // console.log(error);
                   this.validation = false;
                 });
 
@@ -891,12 +885,12 @@ export class Civility {
 
                   //case of authentication failure : server unavailable or connection problem
       						if (!res || res.status == "failure") {
-      							console.log("Serveur non disponible ou problème de connexion.");
+      							// console.log("Serveur non disponible ou problème de connexion.");
                     this.validation = false;
                     return;
       						} else {
                     // data saved
-                    console.log("response update civility : " + res.status);
+                    // console.log("response update civility : " + res.status);
           					this.currentUser.titre = this.title;
           					this.currentUser.nom = this.lastname;
           					this.currentUser.prenom = this.firstname;
@@ -920,7 +914,7 @@ export class Civility {
                 })
                 .catch((error:any) => {
                   this.validation = false;
-                  console.log(error);
+                  // console.log(error);
                 });
             }
         }else{
@@ -939,12 +933,12 @@ export class Civility {
 
               //case of authentication failure : server unavailable or connection problem
               if (!res || res.status == "failure") {
-                console.log("Serveur non disponible ou problème de connexion.");
+                // console.log("Serveur non disponible ou problème de connexion.");
                 this.validation = false;
                 return;
               } else {
                 // data saved
-                console.log("response update civility : " + res.status);
+                // console.log("response update civility : " + res.status);
                 this.currentUser.titre = this.title;
                 this.currentUser.nom = this.lastname;
                 this.currentUser.prenom = this.firstname;
@@ -969,7 +963,7 @@ export class Civility {
 
             })
             .catch((error:any) => {
-              console.log(error);
+              // console.log(error);
               this.validation = false;
             });
 
@@ -996,8 +990,8 @@ export class Civility {
   				this.profileService.updateUserPersonalAddress(entrepriseId, name, streetNumber, street, zipCode, city, country,'employeur')
   				.then((data:any) => {
   					if (!data || data.status == "failure") {
-  						console.log(data.error);
-  						console.log("VitOnJob", "Erreur lors de la sauvegarde des données");
+  						// console.log(data.error);
+  						// console.log("VitOnJob", "Erreur lors de la sauvegarde des données");
               this.validation = false;
   						return;
   					}else{
@@ -1029,9 +1023,9 @@ export class Civility {
   				this.profileService.updateUserPersonalAddress(roleId, name, streetNumber, street, zipCode, city, country,'jobyer')
   				.then((data:any) => {
   					if (!data || data.status == "failure") {
-  						console.log(data.error);
+  						// console.log(data.error);
 
-  						console.log("VitOnJob", "Erreur lors de la sauvegarde des données");
+  						// console.log("VitOnJob", "Erreur lors de la sauvegarde des données");
   						return;
   					}else{
   						//id address not send by server
@@ -1094,8 +1088,8 @@ export class Civility {
   				this.profileService.updateUserJobAddress(entrepriseId, name, streetNumber, street, zipCode, city, country,'employeur')
   				.then((data:any) => {
   					if (!data || data.status == "failure") {
-  						console.log(data.error);
-  						console.log("VitOnJob", "Erreur lors de la sauvegarde des données");
+  						// console.log(data.error);
+  						// console.log("VitOnJob", "Erreur lors de la sauvegarde des données");
               this.validation = false;
   						return;
   					}else{
@@ -1127,9 +1121,9 @@ export class Civility {
   				this.profileService.updateUserJobAddress(roleId, name, streetNumber, street, zipCode, city, country,'jobyer')
   				.then((data:any) => {
   					if (!data || data.status == "failure") {
-  						console.log(data.error);
+  						// console.log(data.error);
 
-  						console.log("VitOnJob", "Erreur lors de la sauvegarde des données");
+  						// console.log("VitOnJob", "Erreur lors de la sauvegarde des données");
   						return;
   					}else{
   						//id address not send by server

@@ -12,7 +12,6 @@ export class ProfileService {
     }
 
     updateUserPersonalAddress(id: string, name, streetNumber, street, cp, ville, pays,role){
-        console.log(pays)
         //  Now we need to save the address
         var addressData = {
             'class': 'com.vitonjob.localisation.AdressToken',
@@ -53,7 +52,6 @@ export class ProfileService {
      * @param id  : entreprise id for employer role and role id for jobyer role, address
      */
     updateUserJobAddress(id: string, name, streetNumber, street, cp, ville, pays,role){
-        console.log(">>",pays)
         //  Now we need to save the address
         var addressData = {
             'class': 'com.vitonjob.localisation.AdressToken',
