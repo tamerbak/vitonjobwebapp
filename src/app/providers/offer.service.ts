@@ -413,6 +413,47 @@ export class OffersService {
                 });
         });
     }
+	
+	/*
+     *  Update offer statut, job and title
+     */
+
+	updateOfferStatut(offerId, statut, projectTarget){
+		//  Init project parameters
+        this.configuration = Configs.setConfigs(projectTarget);
+
+        //  Constructing the query
+        var table = projectTarget == "jobyer" ? 'user_offre_jobyer' : 'user_offre_entreprise';
+		var sql = "update " + table + " set publiee = '" + statut + "' where pk_" + table + " = '" + offerId + "';";
+
+	    return new Promise(resolve => {
+			let headers = new Headers();
+			headers = Configs.getHttpTextHeaders();
+			this.http.post(this.configuration.sqlURL, sql, {headers:headers})
+			.map(res => res.json())
+			.subscribe(
+			data => resolve(data),
+			err => console.log(err)
+			)
+		});
+	}
+
+	spliceOfferInLocal(currentUser, oldOffer, newOffer, projectTarget){
+		var offerList = (projectTarget == 'employer' ? currentUser.employer.entreprises[0].offers : currentUser.jobyer.offers);
+		var offerTemp = offerList.filter((v)=> {
+			return (v.idOffer == oldOffer.idOffer);
+		});
+		if(offerList.indexOf(offerTemp[0]) != -1){
+			offerList.splice(offerList.indexOf(offerTemp[0]), 1, newOffer);
+		}
+		if(projectTarget == 'employer'){
+			currentUser.employer.entreprises[0].offers = offerList;
+		}else{
+			currentUser.jobyer.offers = offerList;
+		}
+		return currentUser;
+	}
+	
 	convertToFormattedHour(value) {
         var hours = Math.floor(value / 60);
         var minutes = value % 60;

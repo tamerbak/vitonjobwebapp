@@ -131,6 +131,15 @@ export class OfferList {
         }
     }
 	
+	changePrivacy(offer){
+		var statut = offer.visible ? 'Non' : 'Oui';
+		this.offersService.updateOfferStatut(offer.idOffer, statut, this.projectTarget).then(()=> {
+			var newOffer = offer;
+			newOffer.visible = (statut == 'Non' ? false : true);this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, newOffer, this.projectTarget);
+			this.sharedService.setCurrentUser(this.currentUser);
+		});
+	}
+	
 	addAlert(type, msg): void {
 		this.alerts = [{type: type, msg: msg}];
 	}
