@@ -1,0 +1,76 @@
+<ol class="breadcrumb">
+  <li>Vous êtes ici</li>
+  <li class="active">Suivi des missions</li>
+</ol>
+
+<h1 class="page-title">
+  {{currentUser.estEmployeur ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Missions en lignes</span>
+  <li *ngFor="let label of coucou;">
+    <ul>{{ label }}</ul>
+  </li>
+</h1>
+
+<div class="row">
+  <div class="col-xs-12">
+    <div class="btn-group">
+      <label class="btn btn-gray active" btnRadio="0" [(ngModel)]="typeMissionModel">
+        Missions en cours ({{ missionNow.length > 0 ? missionNow.length : 'Aucune' }})
+      </label>
+      <label class="btn btn-gray" btnRadio="1" [(ngModel)]="typeMissionModel">
+        Missions en attente ({{ missionFutur.length > 0 ? missionFutur.length : 'Aucune' }})
+      </label>
+      <label class="btn btn-gray" btnRadio="2" [(ngModel)]="typeMissionModel">
+        Missions terminées ({{ missionPast.length > 0 ? missionPast.length : 'Aucune' }})
+      </label>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+    <div *ngFor="let missionTypeList of [missionNow, missionFutur, missionPast]; let i = index;"
+         style="margin-bottom: 10px;">
+
+      <section class="widget" widget *ngFor="let item of missionTypeList" [hidden]="i != typeMissionModel">
+        <div class="widget-body row">
+
+          <div class="col-sm-9 mision-list-description">
+            <h4 class="search-result-item-heading" (click)="goToDetailMission(item)">
+              <a href="#">{{ item.titre }}</a>
+            </h4>
+
+            <p class="description">
+              {{ isEmployer ? 'Vous l\'avez signé ' : 'Signé par ' + item.nom + ' ' }}
+              le {{ toStringDate(item.date_signature) }}<br/>
+              avec {{ item.prenom }} {{ item.nom }}
+            </p>
+
+            <div class="col-sm-9">
+              <span class="label {{ upperCase(item.signature_jobyer) == 'OUI' ? 'label-primary' : 'label-default' }}">1. Contrat signé</span>
+              <span class="label {{ upperCase(item.vu) == 'OUI' ? 'label-primary' : 'label-default' }}">2. Horaires validés</span>
+              <span class="label {{ upperCase(item.releve_employeur) == 'OUI' ? 'label-primary' : 'label-default' }}">3. Relevé généré</span>
+              <span class="label {{ upperCase(item.approuve) == 'OUI' ? 'label-primary' : 'label-default' }}">4. Horaires signés</span>
+            </div>
+
+          </div>
+
+          <div class="col-sm-3 mision-list-data">
+            <p class="value3 mt-sm">
+              {{ toStringDate(item.date_de_debut) }}
+              {{(toStringDate(item.date_de_fin) != toStringDate(item.date_de_debut))
+              ? 'au ' + toStringDate(item.date_de_fin)
+              : ''
+              }}
+            </p>
+            <p class="fs-mini text-muted">Contrat n°{{ item.numero }}</p>
+            <button type="button" class="btn btn-secondary btn-sm" (click)="goToDetailMission(item)">
+              Détails de la mission
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>

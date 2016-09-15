@@ -1,0 +1,86 @@
+<section class="widget" widget *ngFor="let item of globalList.list">
+         <!--[hidden]="!item.visible || typeOfferModel == '1'">-->
+  <div class="widget-body row">
+
+    <div class="col-sm-9">
+      <h4 class="search-result-item-heading">
+        <a href="#">{{ item.title }}</a>
+      </h4>
+
+      <p class="info">Dernier Bar avant la Fin du Monde, 19 Avenue Victoria, 75001 Paris--</p>
+
+      <p class="description">
+        {{ isEmployer ? 'Vous l\'avez signé ' : 'Signé par ' + item.nom + ' ' }}
+        le {{ toStringDate(item.date_signature) }}
+        avec M. {{ item.prenom }} {{ item.nom }}S
+      </p>
+
+      <div class="col-sm-9">
+        <span class="badge bg-primary">1. Contrat signé</span>
+        <span class="badge bg-primary">2. Horaires validés</span>
+        <span class="badge bg-default">3. Horaires signés</span>
+        <span class="badge bg-default">4. Facture signée</span>
+      </div>
+
+    </div>
+
+    <div class="col-sm-3 text-align-center">
+      <p class="value3 mt-sm">
+        {{ toStringDate(item.date_de_debut) }}
+        {{(toStringDate(item.date_de_fin) != toStringDate(item.date_de_debut))
+        ? 'au ' + toStringDate(item.date_de_fin)
+        : ''
+        }}
+      </p>
+      <p class="fs-mini text-muted">Contrat n°{{ item.numero }}</p>
+      <button type="button" class="btn btn-secondary btn-sm" (click)="goToDetailMission(item)">
+        Détails de la mission
+      </button>
+    </div>
+
+    <!--<div class="col-md-2 col-xs-4">-->
+    <!--&lt;!&ndash;<div class="checkbox-inline checkbox-ios">&ndash;&gt;-->
+    <!--&lt;!&ndash;<label class="switch">&ndash;&gt;-->
+    <!--&lt;!&ndash;<input type="checkbox" class="ios" [checked] = "item.rechercheAutomatique" (click)="autoSearchMode(item)"><i></i>&ndash;&gt;-->
+    <!--&lt;!&ndash;</label>&ndash;&gt;-->
+    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+    <!--&lt;!&ndash;<label class="labelSwitch">Activer l'alerte</label>&ndash;&gt;-->
+    <!--</div>-->
+
+    <!--<div class="col-md-1 col-xs-2 pull-xs-right" style="padding-right: 25px;">-->
+    <!--<h4 class="pull-xs-right" style="margin-bottom:0px"><strong>{{ item.jobData.remuneration }} € </strong>-->
+    <!--</h4>-->
+    <!--<label class="pull-xs-right" style="font-size: small; color: #ccc">DE L'HEURE</label>-->
+    <!--</div>-->
+    <!--</div>-->
+
+  </div>
+
+  <!--<div class="clearfix">-->
+  <!--<div class="col-md-1 col-xs-2 pull-xs-right">-->
+  <!--<div class="input-group-btn">-->
+  <!--<button type="button" class="btn btn-secondary btn-sm" style="background-color: #40aea9; color: white;" (click)="launchSearch(item)">Lancer la recherche</button>-->
+  <!--<button class="btn btn-gray btn-sm" type="button">{{(item.correspondantsCount < 0) ? '' : item.correspondantsCount}}</button>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--<div class="col-md-1 col-xs-2 pull-xs-right">-->
+  <!--<button type="button" class="btn btn-secondary btn-sm" (click)="goToDetailOffer(item)">Détails de l'offre</button>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--<div class="alert alert-warning alert-sm alertDispo" *ngIf="item.obsolete">Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilité</div>-->
+</section>
+<!--<section class="widget" widget *ngFor="let item of globalList.list" [hidden]="item.visible || typeOfferModel == '0'">-->
+<!--<div class="widget-body row">-->
+<!--<h5 class="name no-margin mb-xs col-md-11 col-xs-12">{{item.title}}</h5>-->
+<!--<div class="col-md-1 col-xs-2 pull-xs-right" style="padding-right: 25px;">-->
+<!--<h4 class="pull-xs-right" style="margin-bottom:0px"><strong>{{item.jobData.remuneration}} € </strong></h4>-->
+<!--<label class="pull-xs-right" style="font-size: small; color: #ccc">DE L'HEURE</label>-->
+<!--</div>-->
+<!--</div>-->
+
+<!--<div class="clearfix">-->
+<!--<div class="col-md-1 col-xs-2 pull-xs-right">-->
+<!--<button type="button" class="btn btn-secondary btn-sm" (click)="goToDetailOffer(item)">Détails de l'offre</button>-->
+<!--</div>-->
+<!--</div>-->
+<!--</section>-->
