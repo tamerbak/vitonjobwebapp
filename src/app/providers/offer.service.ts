@@ -438,13 +438,13 @@ export class OffersService {
 		});
 	}
 
-	spliceOfferInLocal(currentUser, oldOffer, newOffer, projectTarget){
+	spliceOfferInLocal(currentUser, offer, projectTarget){
 		var offerList = (projectTarget == 'employer' ? currentUser.employer.entreprises[0].offers : currentUser.jobyer.offers);
 		var offerTemp = offerList.filter((v)=> {
-			return (v.idOffer == oldOffer.idOffer);
+			return (v.idOffer == offer.idOffer);
 		});
 		if(offerList.indexOf(offerTemp[0]) != -1){
-			offerList.splice(offerList.indexOf(offerTemp[0]), 1, newOffer);
+			offerList.splice(offerList.indexOf(offerTemp[0]), 1, offer);
 		}
 		if(projectTarget == 'employer'){
 			currentUser.employer.entreprises[0].offers = offerList;
