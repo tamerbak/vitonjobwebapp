@@ -1022,7 +1022,7 @@ export class Civility {
   					}
   				});
   				}else{
-  		      var roleId = this.userRoleId;
+  		      var roleId = ""+this.userRoleId+"";
   				// update personal address
   				this.profileService.updateUserPersonalAddress(roleId, name, streetNumber, street, zipCode, city, country,'jobyer')
   				.then((data:any) => {
@@ -1121,7 +1121,7 @@ export class Civility {
   					}
   				});
   				}else{
-  		      var roleId = this.userRoleId;
+  		      var roleId = ""+this.userRoleId+"";
   				// update personal address
   				this.profileService.updateUserJobAddress(roleId, name, streetNumber, street, zipCode, city, country,'jobyer')
   				.then((data:any) => {

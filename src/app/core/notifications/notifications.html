@@ -6,30 +6,27 @@
   </header>
   <!-- notification list with .thin-scroll which styles scrollbar for webkit -->
   <div id="notifications-list" class="list-group thin-scroll">
-    <div *ngFor="let offre of alerts; let i = index"
+    <div *ngFor="let offer of alerts; let i = index"
          class="list-group-item">
                                 <span class="thumb-sm pull-xs-left mr clearfix">
-                                    <img class="img-circle" src={{offre.image}} alt="...">
+                                    <img class="img-circle" src={{offer.image}} alt="...">
                                 </span>
       <p class="no-margin overflow-hidden">
-        {{offer.correspondantsCount}} Offres correspondent au poste de {{offer.title}}
+        <b>{{offer.correspondantsCount}}</b> {{offer.text}} <b>{{offer.title}}</b>
       </p>
       <time class="help-block no-margin">
-        &nbsp;&nbsp;
+        <!-- &nbsp;&nbsp; -->
       </time>
     </div>
   </div>
   <footer class="card-footer text-sm">
-    <!-- ajax-load button. loads assets/demo/notifications/notifications.php to #notifications-list
+    <!-- ajax-load button. loads offers to #notifications-list
          when clicked -->
     <button class="btn btn-xs btn-link pull-xs-right btn-notifications-reload"
             id="load-notifications-btn"
-            notification-load
-            data-ajax-load="assets/demo/notifications/notifications.php"
-            data-ajax-target="#notifications-list"
-            data-loading-text="<i class='fa fa-refresh fa-spin mr-xs'></i> Loading...">
+            (click)="loadOffers()">
       <i class="fa fa-refresh"></i>
     </button>
-    <span class="fs-mini"></span>
+    <span class="fs-mini">&nbsp;&nbsp;</span>
   </footer>
 </section>

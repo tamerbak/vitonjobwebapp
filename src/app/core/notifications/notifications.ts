@@ -12,6 +12,7 @@ export class Notifications implements OnInit {
   $el: any;
   config: any;
   @Input() alerts:any;
+  @Input() loadOffers: Function; 
 
   constructor(el: ElementRef, config: ConfigService) {
     this.$el = jQuery(el.nativeElement);

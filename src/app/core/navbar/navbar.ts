@@ -22,19 +22,16 @@ export class Navbar implements OnInit {
   currentUser:any = {nom:"",prenom:""};
   isEmployer:boolean;
   projectTarget:string;
-  alerts:any= [
-    {text:'13 Offres correspondent au poste "Serveur"' ,info:"  ",image:"assets/images/people/a8.jpg"},
-    {text:'Notification' ,info:"  ",image:"assets/images/people/a9.jpg"},
-    {text:'Notification' ,info: "  ",image:"assets/images/people/a8.jpg"}
-  ]
 
   autoSearchOffers:any = []
+  public loadOffers: Function;
 
 
   constructor(el: ElementRef, config: ConfigService,private sharedService:SharedService,private offerService: OffersService) {
     //TODO: change this line & redirect to login page if not connected
     this.currentUser = this.sharedService.getCurrentUser()? this.sharedService.getCurrentUser():  {nom:"",prenom:"",estEmployeur:false,jobyer:{offers:[]}};
     this.isEmployer = this.currentUser.estEmployeur;
+    this.getOffers();
     this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
 
     console.log(this.currentUser);
@@ -43,6 +40,7 @@ export class Navbar implements OnInit {
   }
 
   getOffers(){
+    this.autoSearchOffers = [];
 		var offers = this.isEmployer ? this.currentUser.employer.entreprises[0].offers : this.currentUser.jobyer.offers;
 		for(var i = 0; i < offers.length; i++){
 			var offer = offers[i];
@@ -50,6 +48,7 @@ export class Navbar implements OnInit {
 				offer.arrowLabel = "arrow-dropright";
 				offer.isResultHidden = true;
         offer.correspondantsCount = -1;
+        offer.image = "assets/images/people/a8.jpg"
 				this.autoSearchOffers.push(offer);
 				continue;
 			}
@@ -58,7 +57,7 @@ export class Navbar implements OnInit {
 			let offer = this.autoSearchOffers[i];
 			this.offerService.getCorrespondingOffers(offer, this.projectTarget).then((data:any) => {
 				offer.correspondantsCount = data.length;
-        offer.image = "assets/images/people/a8.jpg"
+        offer.text = offer.correspondantsCount !=1 ? " Offres correspondent au poste de " : " Offre correspond au poste de "
 			});
 		}
 	}
@@ -72,7 +71,7 @@ export class Navbar implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getOffers();
+    this.loadOffers = this.getOffers.bind(this);
     setTimeout(() => {
       let $chatNotification = jQuery('#chat-notification');
       $chatNotification.removeClass('hide').addClass('animated fadeIn')
