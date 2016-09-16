@@ -33,7 +33,7 @@ export class OfferList {
 
 	ngOnInit() {
 		this.currentUser = this.sharedService.getCurrentUser();
-		this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer')
+		this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
 		this.globalOfferList.length = 0;
 		this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
 		this.globalOfferList.push({header: 'Mes brouillons', list: []});
@@ -88,6 +88,8 @@ export class OfferList {
         this.offersService.saveAutoSearchMode(this.projectTarget, offer.idOffer, mode).then((data: any)=> {
             if (data && data.status == "success") {
                 offer.rechercheAutomatique = !offer.rechercheAutomatique;
+				this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
+				this.sharedService.setCurrentUser(this.currentUser);
             } else {
                 this.addAlert("danger", "Une erreur est survenue lors de la sauvegarde des données.");
             }
@@ -127,9 +129,18 @@ export class OfferList {
             this.addAlert("warning", "Veuillez remplir les informations de votre profil avant de créer une offre.");
             return;
         } else {
-            this.router.navigate(['dashboard']);
+			this.router.navigate(['app/offer/add']);
         }
     }
+	
+	changePrivacy(offer){
+		var statut = offer.visible ? 'Non' : 'Oui';
+		this.offersService.updateOfferStatut(offer.idOffer, statut, this.projectTarget).then(()=> {
+			offer.visible = (statut == 'Non' ? false : true);
+			this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
+			this.sharedService.setCurrentUser(this.currentUser);
+		});
+	}
 	
 	addAlert(type, msg): void {
 		this.alerts = [{type: type, msg: msg}];
