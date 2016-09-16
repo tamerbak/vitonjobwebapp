@@ -1,0 +1,32 @@
+<ol class="breadcrumb">
+	<li>Vous êtes ici</li>
+	<li class="active">Résultats de la recherche</li>
+	<li class="active">Détails</li>
+</ol>
+<h1 class="page-title">{{currentUser.estEmployeur ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Détails de l'offre sélectionnée</span></h1>
+
+<div class="row">
+	<div class="col-lg-8 col-xl-offset-2 col-xs-12">
+		<section class="widget" widget>
+			<header>
+				<h4>
+					{{fullName}}
+				</h4>
+				<div class="widget-controls">
+					{{(matching.toString().indexOf('.') < 0) ? matching:matching.toString().split('.')[0]}}%
+				</div>
+			</header>
+			<div class="widget-body">
+				<form class="form-horizontal" role="form">
+					<fieldset>
+						{{isEmployer ? 'Offre de service: ' : 'Offre: '}} {{fullTitle}}
+						
+					</fieldset>
+					
+					
+				</form>
+			</div>
+		</section>
+		
+	</div>
+</div>

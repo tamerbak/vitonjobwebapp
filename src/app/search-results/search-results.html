@@ -1,0 +1,41 @@
+<ol class="breadcrumb">
+	<li>Vous êtes ici</li>
+	<li class="active">Résultats de la recherche</li>
+</ol>
+<h1 class="page-title">{{currentUser.estEmployeur ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Résultats de la recherche</span></h1>
+
+<div class="row">
+	<div class="col-lg-12 col-xs-12">
+		<section class="widget" widget *ngFor="let item of searchResults, let i=index">
+			<div class="widget-body row">
+				<div class="col-md-1 col-xs-4">
+					<span class="thumb-sm pull-xs-left mr" style="width: 100%;">
+						<img class="img-circle" [src]="item.avatar">
+					</span>
+				</div>
+				<div class="col-md-11 col-xs-4">
+					<div class="row">
+						<h5 class="name no-margin mb-xs col-md-10 col-xs-12">{{currentUser.estEmployeur ? item.prenom + ' ' + item.nom : item.entreprise}}</h5>
+						<div class="col-md-2 col-xs-2 pull-xs-right">
+							<h4 class="pull-xs-right" style="margin-bottom:0px"><strong>{{(item.matching.toString().indexOf('.') < 0) ? item.matching:item.matching.toString().split('.')[0]}}%</strong></h4>
+							<label class="pull-xs-right" style="font-size: small; color: #ccc">de correspondance avec l'offre</label>
+						</div>
+						<h5 class="name no-margin mb-xs col-md-8 col-xs-12">{{item.titreoffre}}</h5>
+					</div>
+					<div class="row">
+						<!--<div class="col-md-1 col-xs-2 pull-xs-left">
+							<label>Entretien</label>
+						</div>-->
+						<div class="col-md-10 col-xs-2">
+							<button type="button" class="btn btn-secondary btn-sm pull-xs-right" style="background-color: #40aea9; color: white; margin-right: -30px;" *ngIf="currentUser.estEmployeur && !isRecruteur" (click)="contract(i)">Recrutement immédiat</button>
+						</div>
+						<div class="col-md-1 col-xs-2">
+							<button type="button" class="btn btn-secondary btn-sm pull-xs-right" (click)="itemSelected(item)">Détails</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="alert alert-warning alert-sm alertDispo" *ngIf="currentUser.estEmployeur && item.checkedContract">Ce jobyer est sélectionné pour l'établissement d'un contrat, vous pouvez consulter les détails dans l'écran "Recrutement groupé"</div> 
+		</section>
+	</div>
+</div>

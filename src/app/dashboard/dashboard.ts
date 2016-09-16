@@ -7,11 +7,12 @@ import {GeoLocationsWidget} from './geo-locations-widget/geo-locations-widget';
 import {MarkerStatsWidget} from './marker-stats-widget/marker-stats-widget';
 import {BootstrapCalendar} from './bootstrap-calendar/bootstrap-calendar';
 import {ConfigService} from '../core/config';
+import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 
 @Component({
   selector: 'dashboard',
   template: require('./dashboard.html'),
-  directives: [Widget, ProgressAnimate, AnimateNumber, CheckAll, GeoLocationsWidget, MarkerStatsWidget, BootstrapCalendar],
+  directives: [Widget, ProgressAnimate, AnimateNumber, CheckAll, GeoLocationsWidget, MarkerStatsWidget, BootstrapCalendar, ROUTER_DIRECTIVES],
   styles: [require('./dashboard.scss')],
   encapsulation: ViewEncapsulation.None
 })
@@ -21,7 +22,7 @@ export class Dashboard {
   month: any;
   year: any;
 
-  constructor(config: ConfigService) {
+  constructor(config: ConfigService, private router: Router) {
     this.config = config.getConfig();
   }
 

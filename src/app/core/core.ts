@@ -32,6 +32,9 @@ import {ConfigService} from './config';
 import {OfferList} from '../offer-list/offer-list';
 import {OfferDetail} from '../offer-detail/offer-detail';
 import {OfferAdd} from '../offer-add/offer-add';
+import {SearchResults} from '../search-results/search-results';
+import {SearchDetails} from '../search-details/search-details';
+import {SearchCriteria} from '../search-criteria/search-criteria';
 
 declare var Raphael: any;
 declare var jQuery: any;

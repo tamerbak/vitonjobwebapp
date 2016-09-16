@@ -116,7 +116,7 @@ export class OfferList {
         this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
             this.sharedService.setLastResult(data);
             this.sharedService.setCurrentOffer(offer);
-			this.router.navigate(['dashboard']);
+			this.router.navigate(['app/search/results']);
         });
     }
 	
