@@ -42,13 +42,12 @@ export class OfferDetail {
 		
 		this.currentUser = this.sharedService.getCurrentUser();
 		this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer')
-		
 		this.offer = this.sharedService.getCurrentOffer();
-		
+		//display alert if offer is obsolete
 		if(this.offer.obsolete){
 			this.addAlert("warning", "Attention: Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilités.");
 		}
-		//load sectors
+		//load all sectors, if not yet loaded in local
 		this.sectors = this.sharedService.getSectorList();
 		if(!this.sectors || this.sectors.length == 0){
 			this.offersService.loadSectorsToLocal().then((data: any) =>{
@@ -56,36 +55,20 @@ export class OfferDetail {
 				this.sectors = data;	
 			})
 		}
-		
-		//load jobs
+		//load all jobs, if not yet loaded in local
 		var jobList = this.sharedService.getJobList();
 		if(!jobList || jobList.length == 0){
 			this.offersService.loadJobsToLocal().then((data: any) =>{
 				this.sharedService.setJobList(data);
-				//display selected job
+				//display selected job of the current offer
 				this.sectorSelected(this.offer.jobData.idSector);
 			})
 		}else{
-			//display selected job
+			//display selected job of the current offer
 			this.sectorSelected(this.offer.jobData.idSector);
 		}
 		
-		//display calendar slots
-		this.convertSlotsForDisplay();
-		
-		//display qualities
-		for(let i = 0; i < this.offer.qualityData.length; i++){
-			this.qualities[i] = this.offer.qualityData[i].libelle;
-		}
-		
-		//init slot
-		this.slot = {
-            date: 0,
-            startHour: 0,
-            endHour: 0
-		};
-		
-		//loadQualities
+		//load all qualities
 		this.qualities = this.sharedService.getQualityList();
 		if(!this.qualities || this.qualities.length == 0){
 			this.offersService.loadQualities(this.projectTarget).then((data: any) =>{
@@ -102,6 +85,16 @@ export class OfferDetail {
 				this.sharedService.setLangList(this.langs);
 			})
 		}
+		
+		//display calendar slots of the current offer
+		this.convertSlotsForDisplay();
+		
+		//init slot
+		this.slot = {
+            date: 0,
+            startHour: 0,
+            endHour: 0
+		};	
 	}
 	
 	sectorSelected(sector) {
@@ -131,7 +124,8 @@ export class OfferDetail {
 		this.offer.title = this.offer.jobData.job+' '+((this.offer.jobData.level != 'junior')?'Expérimenté':'Débutant');
 		
 		this.offersService.updateOfferJob(this.offer, this.projectTarget);
-		this.sharedService.setCurrentOffer(this.offer);
+		this.setOfferInLocal();
+		this.addAlert("success", "Informations enregistrées avec succès.");
 	}
 	
 	watchLevel(e){
@@ -199,37 +193,45 @@ export class OfferDetail {
 	removeQuality(item){
 		this.offer.qualityData.splice(this.offer.qualityData.indexOf(item), 1);
 		this.offersService.updateOfferQualities(this.offer, this.projectTarget);
-		this.sharedService.setCurrentOffer(this.offer);
+		this.setOfferInLocal();
 	}
 	
 	addQuality(){
 		if(this.isEmpty(this.selectedQuality)){
 			return;
 		}
-		var qualitiesTemp = this.qualities.filter((v)=> {
+		//searching the selected quality in the list of qualities of the current offer
+		var q1 = this.offer.qualityData.filter((v)=> {
 			return (v.idQuality == this.selectedQuality);
 		});
-		if(this.offer.qualityData.indexOf(qualitiesTemp[0]) != -1){
+		//ignore the add request if quality is already added
+		if(this.offer.qualityData.indexOf(q1[0]) != -1){
 			return;	
 		}
-		this.offer.qualityData.push(qualitiesTemp[0]);
+		//searching the selected quality in the generel list of qualities
+		var q2 = this.qualities.filter((v)=> {
+			return (v.idQuality == this.selectedQuality);
+		});
+		this.offer.qualityData.push(q2[0]);
 		this.offersService.updateOfferQualities(this.offer, this.projectTarget);
-		this.sharedService.setCurrentOffer(this.offer);
+		this.setOfferInLocal();
 	}
 	
 	removeLanguage(item){
 		this.offer.languageData.splice(this.offer.languageData.indexOf(item), 1);
 		this.offersService.updateOfferLanguages(this.offer, this.projectTarget);
-		this.sharedService.setCurrentOffer(this.offer);
+		this.setOfferInLocal();
 	}
 	
 	addLanguage(){
 		if(this.isEmpty(this.selectedLang)){
 			return;
 		}
+		//searching the selected lang in the general list of langs
 		var langTemp = this.langs.filter((v)=> {
 			return (v.idLanguage == this.selectedLang);
 		});
+		//delete the lang from the cyurrent offer lang list, if already existant
 		if(this.offer.languageData.indexOf(langTemp[0]) != -1){
 			this.offer.languageData.splice(this.offer.languageData.indexOf(langTemp[0]), 1);
 			
@@ -237,9 +239,15 @@ export class OfferDetail {
 		langTemp[0]['level'] = this.selectedLevel;
 		this.offer.languageData.push(langTemp[0]);
 		this.offersService.updateOfferQualities(this.offer, this.projectTarget);
+		this.setOfferInLocal();
+	}
+	
+    setOfferInLocal(){
+		//set offer in local
+		this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, this.offer, this.projectTarget);
+		this.sharedService.setCurrentUser(this.currentUser);
 		this.sharedService.setCurrentOffer(this.offer);
 	}
-    
 	/**
      * @Description Converts a timeStamp to date string
      * @param time : a timestamp date
