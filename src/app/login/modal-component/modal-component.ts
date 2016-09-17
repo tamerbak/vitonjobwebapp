@@ -68,7 +68,6 @@ export class ModalComponent {
 			var tel = "+" + index + phone;
 			this.authService.getUserByPhone(tel, this.role).then((data: any) => {
 				if (!data || data.status == "failure") {
-					console.log(data);
 					this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
 					return;
 				}
@@ -84,7 +83,7 @@ export class ModalComponent {
 					}
 				}
 			});
-			} else {
+		} else {
 			//ça sera toujours une connexion
 			this.showEmailField = true;
 			this.email = "";
@@ -101,7 +100,6 @@ export class ModalComponent {
 			//check if the phone number start with a zero
 			var isMatchRegex = phone_REGEXP.test(tel);
 			if (Number(tel.toString().length) == 9 && !isMatchRegex) {
-				console.log('phone number is valid');
 				return true;
 			}
 			else

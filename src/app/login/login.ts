@@ -76,7 +76,6 @@ export class LoginPage {
 		if(this.email == null || this.email == 'null')
 			this.email = '';
 		this.authService.authenticate(this.email, indPhone, pwd, this.role, this.isRecruteur).then((data: any) => {
-			console.log(data);
 			//case of authentication failure : server unavailable or connection probleme 
 			if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
 				this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
@@ -84,11 +83,9 @@ export class LoginPage {
 			}
 			//case of authentication failure : incorrect password 
 			if (data.id == 0 && data.status == "passwordError") {
-				console.log("Password error");
 				if(!this.showEmailField){
 					this.addAlert("danger", "Votre mot de passe est incorrect.");
 				}else{
-					console.log("used email error");
 					this.addAlert("danger", "Cette adresse email a été déjà utilisé. Veuillez en choisir une autre.");
 				}
 				return;
@@ -138,7 +135,6 @@ export class LoginPage {
 			var tel = "+" + index + phone;
 			this.authService.getUserByPhone(tel, this.role).then((data: any) => {
 				if (!data || data.status == "failure") {
-					console.log(data);
 					this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
 					return;
 				}
@@ -175,7 +171,6 @@ export class LoginPage {
 			//check if the phone number start with a zero
 			var isMatchRegex = phone_REGEXP.test(tel);
 			if (Number(tel.length) == 9 && !isMatchRegex) {
-				console.log('phone number is valid');
 				return true;
 			}
 			else
@@ -196,7 +191,6 @@ export class LoginPage {
 		//verify if the email exist in the database
 		this.authService.getUserByMail(this.email, this.role).then((data: any) => {
 			if (!data || data.status == "failure") {
-				console.log(data);
 				this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
 				return;
 			}
