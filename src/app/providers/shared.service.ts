@@ -75,4 +75,12 @@ export class SharedService {
 	getLangList(){
 		return JSON.parse(localStorage.getItem('langList'));
 	}
+	
+	setSearchResult(item){
+		localStorage.setItem('searchResult', JSON.stringify(item));
+	}
+	
+	getSearchResult(){
+		return JSON.parse(localStorage.getItem('searchResult'));
+	}
 }

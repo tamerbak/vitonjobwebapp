@@ -260,6 +260,28 @@ export class ProfileService {
         });
     }
 
-
-
+	loadProfilePicture(accountId, tel, role){
+		var sql;
+		if(!this.isEmpty(accountId)){
+			sql = "select encode(photo_de_profil::bytea, 'escape') from user_account where pk_user_account = '" + accountId + "';";
+		}else{
+			sql = "select encode(photo_de_profil::bytea, 'escape') from user_account where telephone = '" + tel + "' and role = '" + role +"';";
+		}
+		return new Promise(resolve => {
+            let headers = new Headers();
+            headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers:headers})
+			.map(res => res.json())
+			.subscribe(data => {
+				resolve(data);
+			});
+		});
+	}
+	
+	isEmpty(str){
+		if(str == '' || str == 'null' || !str)
+			return true;
+		else
+			return false;
+	}
 }
