@@ -139,7 +139,16 @@ export class OfferList {
 			offer.visible = (statut == 'Non' ? false : true);
 			this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
 			this.sharedService.setCurrentUser(this.currentUser);
+			if(offer.visible){
+				this.addAlert("info", "Votre offre a bien été déplacé dans «Mes offres en ligne».");
+			}else{
+				this.addAlert("info", "Votre offre a bien été déplacé dans «Mes offres en brouillon».");
+			}
 		});
+	}
+	
+	watchTypeOfferModel(){
+		this.alerts = [];
 	}
 	
 	addAlert(type, msg): void {
