@@ -1,16 +1,18 @@
-import {Component, ElementRef, OnInit} from '@angular/core';
+import {Component,Input, ElementRef, OnInit} from '@angular/core';
 import {ConfigService} from '../config';
 import {NotificationLoad} from './notification-load';
-declare var jQuery: any;
+declare var jQuery,require: any;
 
 @Component({
-  selector: '[notifications]',
+  selector: 'notifications',
   directives: [NotificationLoad],
   template: require('./notifications.html')
 })
 export class Notifications implements OnInit {
   $el: any;
   config: any;
+  @Input() alerts:any;
+  @Input() loadOffers: Function; 
 
   constructor(el: ElementRef, config: ConfigService) {
     this.$el = jQuery(el.nativeElement);

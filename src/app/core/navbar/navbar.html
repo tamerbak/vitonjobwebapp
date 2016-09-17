@@ -46,30 +46,24 @@
                     <img class="img-circle" src="assets/images/people/a5.jpg" alt="...">
                 </span>
           &nbsp;
-          Philip <strong>Smith</strong>&nbsp;
+          {{currentUser.prenom}} <strong>{{currentUser.nom}}</strong>&nbsp;
                 <span class="circle bg-warning fw-bold">
-                    13
+                    {{autoSearchOffers.length}}
                 </span>
           <b class="caret"></b>
         </a>
-        <!-- ready to use notifications dropdown. inspired by smartadmin template.
-                     consists of three components:
-                     notifications, messages, progress. leave or add what's important for you.
-                     uses Sing's ajax-load plugin for async content loading. See #load-notifications-btn -->
-        <div notifications class="dropdown-menu dropdown-menu-right animated animated-fast fadeInUp"
-          ></div>
+        <!-- ready to use notifications dropdown-->
+        <notifications [alerts]="autoSearchOffers" [loadOffers]="loadOffers"  class="dropdown-menu dropdown-menu-right animated animated-fast fadeInUp"
+          ></notifications>
       </li>
       <li class="nav-item dropdown">
         <a href class="nav-link dropdown-toggle" data-toggle="dropdown">
           <i class="fa fa-cog fa-lg"></i>
         </a>
         <ul class="dropdown-menu dropdown-menu-right">
-          <li><a class="dropdown-item" [routerLink]=" ['profile'] "><i class="glyphicon glyphicon-user"></i> &nbsp; My Account</a></li>
+          <li><a class="dropdown-item" [routerLink]=" ['civility'] "><i class="glyphicon glyphicon-user"></i> &nbsp; Mon compte</a></li>
           <li class="dropdown-divider"></li>
-          <li><a class="dropdown-item" [routerLink]=" ['/calendar'] ">Calendar</a></li>
-          <li><a class="dropdown-item" [routerLink]=" ['/inbox'] ">Inbox &nbsp;&nbsp;<span class="label label-pill bg-danger text-white animated bounceIn">9</span></a></li>
-          <li class="dropdown-divider"></li>
-          <li><a class="dropdown-item" [routerLink]=" ['/login'] "><i class="fa fa-sign-out"></i> &nbsp; Log Out</a></li>
+          <li><a class="dropdown-item" [routerLink]=" ['/login'] "><i class="fa fa-sign-out"></i> &nbsp; Se déconnecter</a></li>
         </ul>
       </li>
       <li class="nav-item">
