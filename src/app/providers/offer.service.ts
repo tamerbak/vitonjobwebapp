@@ -454,6 +454,50 @@ export class OffersService {
 		return currentUser;
 	}
 	
+	getOffersLanguages(idOffers:any, offerTable:string) {
+        let ids = '(' + idOffers[0];
+        for (var i = 1; i < idOffers.length; i++)
+            ids = ids + ',' + idOffers[i];
+        ids = ids + ')';
+        var sql = "select pk_user_langue as id, libelle from user_langue where " +
+            "pk_user_langue in (select fk_user_langue from user_pratique_langue where fk_" + offerTable + " in " + ids + ")" +
+            " group by id, libelle";
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+				.map(res => res.json())
+                .subscribe(data => {
+                    resolve(data.data);
+                });
+        });
+    }
+
+    /**
+     * @description listing qualities related to a set of offers
+     * @param idOffers list of offers ID
+     * @param offerTable offerTable as user_offre_jobyer or user_offre_entreprise
+     * @return the proposition of grouped qualities
+     */
+    getOffersQualities(idOffers:any, offerTable:string) {
+        let ids = '(' + idOffers[0];
+        for (var i = 1; i < idOffers.length; i++)
+            ids = ids + ',' + idOffers[i];
+        ids = ids + ')';
+        var sql = "select pk_user_indispensable as id, libelle from user_indispensable where " +
+            "pk_user_indispensable in (select fk_user_indispensable from user_pratique_indispensable where fk_" + offerTable + " in " + ids + ")" +
+            " group by id, libelle";
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    resolve(data.data);
+                });
+        });
+    }
+	
 	convertToFormattedHour(value) {
         var hours = Math.floor(value / 60);
         var minutes = value % 60;

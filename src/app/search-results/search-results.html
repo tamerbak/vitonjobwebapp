@@ -13,29 +13,46 @@
 						<img class="img-circle" [src]="item.avatar">
 					</span>
 				</div>
-				<div class="col-md-11 col-xs-4">
+				<div class="col-md-8 col-xs-4">
 					<div class="row">
-						<h5 class="name no-margin mb-xs col-md-10 col-xs-12">{{currentUser.estEmployeur ? item.prenom + ' ' + item.nom : item.entreprise}}</h5>
-						<div class="col-md-2 col-xs-2 pull-xs-right">
-							<h4 class="pull-xs-right" style="margin-bottom:0px"><strong>{{(item.matching.toString().indexOf('.') < 0) ? item.matching:item.matching.toString().split('.')[0]}}%</strong></h4>
-							<label class="pull-xs-right" style="font-size: small; color: #ccc">de correspondance avec l'offre</label>
-						</div>
-						<h5 class="name no-margin mb-xs col-md-8 col-xs-12">{{item.titreoffre}}</h5>
+						<h4 class="name no-margin mb-xs col-md-10 col-xs-12" style="color: #40aea9;"><strong>
+						{{currentUser.estEmployeur ? item.prenom + ' ' + item.nom : item.entreprise}}</strong></h4>
 					</div>
 					<div class="row">
-						<!--<div class="col-md-1 col-xs-2 pull-xs-left">
-							<label>Entretien</label>
-						</div>-->
-						<div class="col-md-10 col-xs-2">
-							<button type="button" class="btn btn-secondary btn-sm pull-xs-right" style="background-color: #40aea9; color: white; margin-right: -30px;" *ngIf="currentUser.estEmployeur && !isRecruteur" (click)="contract(i)">Recrutement immédiat</button>
+						<h5 class="name no-margin mb-xs col-md-8 col-xs-12">{{item.titreoffre}}</h5>
+					</div>
+					<!--<div class="row" style="margin-top: 10px;" [hidden]="!languages[i] || languages[i].length==0">
+						<h6 class="name no-margin mb-xs col-md-8 col-xs-12">Langues {{currentUser.estEmployeur?"maîtrisées":"requises"}} : <label *ngFor="let l of languages[i]" style="margin-bottom: -10px;">
+							<p>{{l.libelle}} </p>
+						</label></h6>
+					</div>
+					<div class="row" [hidden]="!qualities[i] || qualities[i].length==0">
+						<h6 class="name no-margin mb-xs col-md-9 col-xs-12">Qualités {{currentUser.estEmployeur?"acquises":"requises"}} : <label *ngFor="let q of qualities[i]">
+							<p>{{q.libelle}} </p>
+						</label></h6>
+					</div>-->
+				</div>
+				<div class="col-md-3 col-xs-4">
+					<div class="row">
+						<h4 class="pull-xs-right" style="margin-bottom:0px"><strong>{{(item.matching.toString().indexOf('.') < 0) ? item.matching:item.matching.toString().split('.')[0]}}%</strong></h4>
+					</div>
+					<div class="row">
+						<label class="pull-xs-right" style="font-size: small; color: #ccc">de correspondance avec l'offre</label>
+					</div>
+					<div class="row">
+						<div class="col-md-1 col-xs-2 pull-xs-left">
+							<button type="button" class="btn btn-secondary btn-sm pull-xs-right" style="background-color: #40aea9; color: white;" *ngIf="currentUser.estEmployeur && !isRecruteur">Recrutement immédiat</button>
 						</div>
 						<div class="col-md-1 col-xs-2">
-							<button type="button" class="btn btn-secondary btn-sm pull-xs-right" (click)="itemSelected(item)">Détails</button>
+						<!--<div modal-component></div>-->
+						<button type="button" class="btn btn-secondary btn-sm pull-xs-right" style="background-color: #40aea9; color: white;" (click)="itemSelected(item)">Détails</button>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="alert alert-warning alert-sm alertDispo" *ngIf="currentUser.estEmployeur && item.checkedContract">Ce jobyer est sélectionné pour l'établissement d'un contrat, vous pouvez consulter les détails dans l'écran "Recrutement groupé"</div> 
+		<!--<div class="alert alert-warning alert-sm alertDispo" *ngIf="currentUser.estEmployeur && item.checkedContract">Ce jobyer est sélectionné pour l'établissement d'un contrat, vous pouvez consulter les détails dans l'écran "Recrutement groupé"</div> -->
 		</section>
+		
+		
 	</div>
 </div>

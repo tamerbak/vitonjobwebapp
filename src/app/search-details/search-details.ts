@@ -1,83 +1,71 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component} from '@angular/core';
 import {OffersService} from "../providers/offer.service";
 import {SharedService} from "../providers/shared.service";
-import {ROUTER_DIRECTIVES, Router} from '@angular/router';
-import {AlertComponent} from 'ng2-bootstrap/components/alert';
-import {SearchService} from "../providers/search-service";
-import {Widget} from '../core/widget/widget';
-import {NKDatetime} from 'ng2-datetime/ng2-datetime';
+import {ROUTER_DIRECTIVES, Router} from '@angular/router';import {GOOGLE_MAPS_DIRECTIVES} from 'angular2-google-maps/core';
+
 declare var jQuery: any;
 
 @Component({
     selector: '[search-details]',
 	template: require('./search-details.html'),
-	encapsulation: ViewEncapsulation.None,
 	styles: [require('./search-details.scss')],
-	directives: [ROUTER_DIRECTIVES, AlertComponent, Widget, NKDatetime],
-	providers: [OffersService, SearchService]
+	directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES],
+	providers: [OffersService]
 })
 
 export class SearchDetails {
-	fullTitle:string = '';
+	currentUser: any;
+	offer: any;
+	result: any;
+    fullTitle:string = '';
     fullName:string = '';
     matching:string = '';
-	result: any;
-    
-	offer: any;
-	sectors:any = [];
-    jobs:any = [];
-	selectedSector: any;
-	qualities = [];
-	langs = [];
-	projectTarget: string;
-	currentUser: any;
-	slot: any;
-	selectedQuality: any;
-	selectedLang: any;
-	selectedLevel = "junior";
-	datepickerOpts: any;
-	alerts: Array<Object>;
-	temp: Date;
+	avatar: string;
+	lat: number; 
+	lng: number;
+	zoom: number;
+	languages:any[];
+    qualities:any[];
 	
 	constructor(private sharedService: SharedService,
-				public offersService:OffersService,
-				private router: Router){}
-				
+	public offersService:OffersService,
+	private router: Router){}
+	
 	ngOnInit(): void {
-		jQuery('.select2').select2();
-		
 		this.currentUser = this.sharedService.getCurrentUser();
-		this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer')
-		
 		this.result = this.sharedService.getSearchResult();
 		this.offer = this.sharedService.getCurrentOffer();
 		
+		//get offer title, employer/jobyer name and matching
 		if (this.result.titreOffre)
-            this.fullTitle = this.result.titreOffre;
+		this.fullTitle = this.result.titreOffre;
         if (this.result.titreoffre)
-            this.fullTitle = this.fullTitle + this.result.titreoffre;
-			
+		this.fullTitle = this.fullTitle + this.result.titreoffre;
 		if (!this.currentUser.estEmployeur)
-            this.fullName = this.result.entreprise;
+		this.fullName = this.result.entreprise;
         else
-            this.fullName = this.result.titre + ' ' + this.result.prenom + ' ' + this.result.nom;
+		this.fullName = this.result.titre + ' ' + this.result.prenom + ' ' + this.result.nom;
 		this.matching = this.result.matching + "%";
+		
+		//load markers
+		this.lat = + this.result.latitude;
+		this.lng = + this.result.longitude;
+		this.zoom = 12;
+		
+		//get qualities and langs of the selected offer	
+		let table = this.currentUser.estEmployeur ? 'user_offre_jobyer' : 'user_offre_entreprise';
+		let idOffers = [];
+        idOffers.push(this.result.idOffre);
+		this.offersService.getOffersLanguages(idOffers, table).then((data: any) => {
+			if (data)
+				this.languages = data;
+		});
+		this.offersService.getOffersQualities(idOffers, table).then((data: any)=> {
+			if (data)
+				this.qualities = data;
+		});
 	}
-	
-	/**
-     * @Description Converts a timeStamp to date string
-     * @param time : a timestamp date
-     */
-    toHourString(time:number) {
-        let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
-        let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
-        return hours + ":" + minutes;
-    }
 
-	addAlert(type, msg): void {
-		this.alerts = [{type: type, msg: msg}];
-	}
-	
 	isEmpty(str){
 		if(str == '' || str == 'null' || !str)
 		return true;
