@@ -1,8 +1,8 @@
 <ol class="breadcrumb">
-  <li>YOU ARE HERE</li>
-  <li class="active">Profile</li>
+  <li>VOUS ÊTES ICI</li>
+  <li class="active">Mon compte</li>
 </ol>
-<h1 class="page-title">User - <span class="fw-semi-bold">Profile</span></h1>
+<h1 class="page-title">{{isEmployer? (isRecruiter ? "Recruteur":"Employeur"):"Jobyer"}} - <span class="fw-semi-bold">Profil</span></h1>
 <div class="row civility">
   <div class="col-lg-6 col-xs-12">
     <section class="widget">
@@ -131,7 +131,7 @@
                   Date de naissance
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <datetime id="birthdate" [(ngModel)]="birthdate" name="birthdate" [timepicker]="false" [datepicker]="{autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}" (ngModelChange)="watchBirthdate($event)"></datetime>
+                  <datetime id="birthdate" (ngModel)="birthdate" name="birthdate" [timepicker]="false" [datepicker]="{autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}" (ngModelChange)="watchBirthdate($event)"></datetime>
                 </div>
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
                   <span class="hint label label-danger">{{birthdateHint}}</span>
@@ -212,19 +212,19 @@
 
               <div class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Adresse du siège
+                  {{personalAddressLabel}}
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input id="autocompleteInput" type="text" class="form-control" placeholder="Recherchez adresse" [(ngModel)] = "personalAddress"  (input) = "autocomplete()" />
+                  <input id="autocompletePersonal" type="text" class="form-control" placeholder="Recherchez adresse" [(ngModel)] = "personalAddress"  (input) = "autocompletePersonalAddress()" />
                 </div>
               </div>
 
               <div class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Adresse du lieu du travail
+                  {{jobAddressLabel}}
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input type="text" class="form-control" placeholder="Recherchez adresse" [(ngModel)] = "jobAddress"  (setAddress) = "getAddress($event,'job')" googleplace/>
+                  <input id="autocompleteJob" type="text" class="form-control" placeholder="Recherchez adresse" [(ngModel)] = "jobAddress"  (input) = "autocompleteJobAddress()" />
                 </div>
               </div>
             </div>
@@ -234,7 +234,7 @@
 
 
             </fieldset>
-            <div class="form-group row">
+            <div *ngIf="isEmployer" class="form-group row">
               <div class="col-md-12 col-xs-12 col-lg-12">
                 <alert *ngIf="!!companyAlert" [type]="'danger'+ ' alert-sm'" dismissible="false">
                   <div>
