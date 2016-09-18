@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnInit, ElementRef} from '@angular/core';
 import {TOOLTIP_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
-import {ROUTER_DIRECTIVES} from '@angular/router';
+import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 import {ConfigService} from '../config';
 import {Notifications} from '../notifications/notifications';
 import {SharedService} from "../../providers/shared.service";
@@ -23,44 +23,53 @@ export class Navbar implements OnInit {
   isEmployer:boolean;
   projectTarget:string;
 
+  allSearchOffers:any = []
   autoSearchOffers:any = []
   public loadOffers: Function;
 
 
-  constructor(el: ElementRef, config: ConfigService,private sharedService:SharedService,private offerService: OffersService) {
+  constructor(el: ElementRef, config: ConfigService,private sharedService:SharedService,private offerService: OffersService,private router:Router) {
     //TODO: change this line & redirect to login page if not connected
     this.currentUser = this.sharedService.getCurrentUser()? this.sharedService.getCurrentUser():  {nom:"",prenom:"",estEmployeur:false,jobyer:{offers:[]}};
     this.isEmployer = this.currentUser.estEmployeur;
     this.getOffers();
     this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
 
-    console.log(this.currentUser);
     this.$el = jQuery(el.nativeElement);
     this.config = config.getConfig();
   }
 
   getOffers(){
+    this.allSearchOffers = [];
     this.autoSearchOffers = [];
-		var offers = this.isEmployer ? this.currentUser.employer.entreprises[0].offers : this.currentUser.jobyer.offers;
-		for(var i = 0; i < offers.length; i++){
-			var offer = offers[i];
-			if(offer.visible && offer.rechercheAutomatique){
-				offer.arrowLabel = "arrow-dropright";
-				offer.isResultHidden = true;
+    var offers = this.isEmployer ? this.currentUser.employer.entreprises[0].offers : this.currentUser.jobyer.offers;
+    for(var i = 0; i < offers.length; i++){
+      var offer = offers[i];
+      if(offer.visible && offer.rechercheAutomatique){
+        offer.arrowLabel = "arrow-dropright";
+        offer.isResultHidden = true;
         offer.correspondantsCount = -1;
-        offer.image = "assets/images/people/a8.jpg"
-				this.autoSearchOffers.push(offer);
-				continue;
-			}
-		}
-		for(var i = 0; i < this.autoSearchOffers.length; i++){
-			let offer = this.autoSearchOffers[i];
-			this.offerService.getCorrespondingOffers(offer, this.projectTarget).then((data:any) => {
-				offer.correspondantsCount = data.length;
-        offer.text = offer.correspondantsCount !=1 ? " Offres correspondent au poste de " : " Offre correspond au poste de "
-			});
-		}
-	}
+        this.allSearchOffers.push(offer);
+        continue;
+      }
+    }
+    for(var i = 0; i < this.allSearchOffers.length; i++){
+      let offer = this.allSearchOffers[i];
+      this.offerService.getCorrespondingOffers(offer, this.projectTarget).then((data:any) => {
+        offer.correspondantsCount = data.length;
+        if(offer.correspondantsCount> 0){
+          offer.text = offer.correspondantsCount !=1 ? " Offres correspondent au poste de " : " Offre correspond au poste de ";
+          this.autoSearchOffers.push(offer);
+        }
+
+      });
+    }
+  }
+
+  logOut(){
+    this.router.navigate(['/login']);
+    this.sharedService.logOut();
+  }
 
   toggleSidebar(state): void {
     this.toggleSidebarEvent.emit(state);
@@ -75,15 +84,15 @@ export class Navbar implements OnInit {
     setTimeout(() => {
       let $chatNotification = jQuery('#chat-notification');
       $chatNotification.removeClass('hide').addClass('animated fadeIn')
-        .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', () => {
-          $chatNotification.removeClass('animated fadeIn');
-          setTimeout(() => {
-            $chatNotification.addClass('animated fadeOut')
-              .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', () => {
-                $chatNotification.addClass('hide');
-              });
-          }, 4000);
-        });
+      .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', () => {
+        $chatNotification.removeClass('animated fadeIn');
+        setTimeout(() => {
+          $chatNotification.addClass('animated fadeOut')
+          .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', () => {
+            $chatNotification.addClass('hide');
+          });
+        }, 4000);
+      });
       $chatNotification.siblings('#toggle-chat').append('<i class="chat-notification-sing animated bounceIn"></i>');
     }, 4000);
 

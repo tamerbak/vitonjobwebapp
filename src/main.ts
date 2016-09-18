@@ -32,6 +32,7 @@ import 'parsleyjs/dist/parsley.js';
 import 'bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js';
 import 'bootstrap-select/dist/js/bootstrap-select.js';
 import 'select2/select2.js';
+import 'select2/select2_locale_fr.js';
 import 'seiyria-bootstrap-slider/js/bootstrap-slider.js';
 import 'jasny-bootstrap/docs/assets/js/vendor/holder.js';
 import 'jasny-bootstrap/js/fileinput.js';
@@ -90,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function main(): void {
     FakeWorldData,
     NgControl,
     GOOGLE_MAPS_PROVIDERS,
-	provideLazyMapsAPILoaderConfig({ 
+	provideLazyMapsAPILoaderConfig({
 	libraries: ['places'] }),
     ...ENV_PROVIDERS,
     ...HTTP_PROVIDERS,
