@@ -36,6 +36,14 @@ export class SharedService {
         return JSON.parse(localStorage.getItem('currentMission'));
 	}
 
+	setCurrentInvoice(invoice){
+        localStorage.setItem('currentInvoice', JSON.stringify(invoice));
+	}
+
+	getCurrentInvoice(){
+        return JSON.parse(localStorage.getItem('currentInvoice'));
+	}
+
 	setLastResult(result){
 		localStorage.setItem('lastResult', JSON.stringify(result));
 	}

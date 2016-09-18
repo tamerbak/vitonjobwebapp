@@ -1,40 +1,60 @@
-.mission-details {
-	background-size: cover;
+@import "../../scss/variables";
+@import "../../../node_modules/bootstrap/scss/variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+@import "../../../node_modules/ng2-datetime/src/vendor/bootstrap-datepicker/bootstrap-datepicker3.min";
+@import "../../../node_modules/ng2-datetime/src/vendor/bootstrap-timepicker/bootstrap-timepicker.min";
 
-	ion-toolbar.toolbar {
-		min-height: 70px;
-	}
 
-	.cardHeader{
-		background: #b7b5b5 !important;
-		padding-top: 5px;
-		padding-bottom: 5px;
-		font-size: small;
-	}
+.news-list {
+  margin-bottom: 0;
+  padding-left: 0;
 
-	.iconRight{
-		float: right;
-	}
+  li {
+    list-style: none;
+    box-sizing: content-box;
+    border-top: 1px solid $gray-lighter;
+    padding: 12px;
+    cursor: pointer;
+    @include transition(background-color .2s ease-out);
 
-	.marginTopList{
-		margin-top: 5px;
-	}
+    &:hover {
+      background: $body-bg-light;
+    }
 
-	.button-picture {
-		white-space: normal;
-		font-size: 12px;
-	}
+    &:last-child {
+      margin-bottom: -10px;
+    }
+  }
 
-	ion-label {
-		padding-top: 5px;
-	}
+  img,
+  .icon {
+    float: left;
+    height: 50px;
+    width: 50px;
+  }
 
-	.labelInItem {
-		background-color: lightyellow;
-	}
+  .icon {
+    line-height: 50px;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 28px;
+  }
 
-	.ion-col {
-		border: think solid black;
-	}
+  .news-item-info {
+    margin-left: 62px; /*50 + 12px padding*/
+  }
 
+  .name {
+    text-transform: uppercase;
+
+    a {
+      text-decoration: none;
+      &:hover {
+        color: $link-color;
+      }
+    }
+  }
 }
+
+
+
