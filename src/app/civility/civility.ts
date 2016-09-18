@@ -1,7 +1,6 @@
 import {Component,NgZone, ViewEncapsulation} from '@angular/core';
 import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 import {NKDatetime} from 'ng2-datetime/ng2-datetime';
-import {GoogleplaceDirective} from 'angular2-google-map-auto-complete/directives/googleplace.directive';
 import {AlertComponent} from 'ng2-bootstrap/components/alert';
 import {ProfileService} from "../providers/profile.service";
 import {CommunesService} from "../providers/communes.service";
@@ -12,12 +11,14 @@ import {SharedService} from "../providers/shared.service";
 import {Utils} from "../utils/utils";
 import {AddressUtils} from "../utils/addressUtils";
 import {Configs} from "../configurations/configs";
+import {MapsAPILoader} from 'angular2-google-maps/core';
 declare var jQuery,require: any;
+declare var google: any;
 
 @Component({
   selector: '[civility]',
   template: require('./civility.html'),
-  directives: [ROUTER_DIRECTIVES,NKDatetime,AlertComponent,GoogleplaceDirective],
+  directives: [ROUTER_DIRECTIVES,NKDatetime,AlertComponent],
   providers: [Utils,ProfileService,CommunesService,LoadListService,MedecineService,AttachementsService],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./civility.scss')]
@@ -97,7 +98,8 @@ export class Civility {
   showCurrentCompanyBtn:boolean = false;
 
 
-  constructor(private listService:LoadListService,private profileService:ProfileService,private sharedService:SharedService,private medecineService:MedecineService,private communesService:CommunesService,private attachementsService:AttachementsService,private zone:NgZone,private router: Router){
+  constructor(private listService:LoadListService,private profileService:ProfileService,private sharedService:SharedService,private medecineService:MedecineService,private communesService:CommunesService,private attachementsService:AttachementsService,private zone:NgZone,private router: Router, private _loader: MapsAPILoader){
+	
     this.currentUser = this.sharedService.getCurrentUser();
     if(!this.currentUser){
       this.router.navigate(['/login']);
@@ -148,7 +150,7 @@ export class Civility {
   }
 
    getAddress(place:Object,type:string) {
-
+		
       var addressObj = AddressUtils.decorticateGeolocAddress(place);
       if(type == 'personal'){
         this.personalAddress = place['formatted_address'];
@@ -179,6 +181,16 @@ export class Civility {
       }
 
     }
+	
+	autocomplete() {
+        this._loader.load().then(() => {
+            let autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocompleteInput"), {});
+            google.maps.event.addListener(autocomplete, 'place_changed', () => {
+                let place = autocomplete.getPlace();
+                console.log(place);
+            });
+        });
+	}
 
 
   initForm(){
@@ -1156,7 +1168,4 @@ export class Civility {
   	}
     }
     }
-
-
-
 }

@@ -70,7 +70,7 @@ import {NgControl} from '@angular/common';
 import {bootstrap} from '@angular/platform-browser-dynamic';
 import {LocationStrategy, HashLocationStrategy} from '@angular/common';
 import {HTTP_PROVIDERS} from '@angular/http';
-import {GOOGLE_MAPS_PROVIDERS} from 'angular2-google-maps/core';
+import {GOOGLE_MAPS_PROVIDERS, provideLazyMapsAPILoaderConfig} from 'angular2-google-maps/core';
 import {APP_ROUTER_PROVIDERS} from './app.routes';
 import {SharedService} from "./app/providers/shared.service";
 
@@ -90,6 +90,8 @@ document.addEventListener('DOMContentLoaded', function main(): void {
     FakeWorldData,
     NgControl,
     GOOGLE_MAPS_PROVIDERS,
+	provideLazyMapsAPILoaderConfig({ 
+	libraries: ['places'] }),
     ...ENV_PROVIDERS,
     ...HTTP_PROVIDERS,
     ...APP_ROUTER_PROVIDERS,

@@ -215,7 +215,7 @@
                   Adresse du siège
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input type="text" class="form-control" placeholder="Recherchez adresse" [(ngModel)] = "personalAddress"  (setAddress) = "getAddress($event,'personal')" googleplace/>
+                  <input id="autocompleteInput" type="text" class="form-control" placeholder="Recherchez adresse" [(ngModel)] = "personalAddress"  (input) = "autocomplete()" />
                 </div>
               </div>
 
