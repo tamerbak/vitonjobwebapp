@@ -27,6 +27,7 @@ export class OfferDetail {
 	projectTarget: string;
 	currentUser: any;
 	slot: any;
+	slots = [];
 	selectedQuality: any;
 	selectedLang: any;
 	selectedLevel = "junior";
@@ -132,21 +133,23 @@ export class OfferDetail {
 		this.offer.jobData.level = e.target.value;
 	}
 	
-	removeSlot(item) {
+	removeSlot(i) {
 		/*for(let i = 0; i < this.offer.calendarData.length; i++){
 			if(this.offer.calendarData[i].idCalendar == item.idCalendar){
 				this.offer.calendarData.splice(i, 1);
 				break;
 			}
 		}*/
-		this.offer.calendarData.splice(this.offer.calendarData.indexOf(item), 1);
-		this.convertSlotsForSaving();
+		this.offer.calendarData.splice(i, 1);
+		//this.convertSlotsForSaving();
 		this.offersService.updateOfferCalendar(this.offer, this.projectTarget);
 		this.sharedService.setCurrentOffer(this.offer);
+		this.slots = [];
+		this.convertSlotsForDisplay();
 	}
 	
 	addSlot(){
-		this.convertSlotsForSaving();
+		//this.convertSlotsForSaving();
 		this.slot.date = this.slot.date.getTime();
 		var h = this.slot.startHour.getHours() * 60;
 		var m = this.slot.startHour.getMinutes();
@@ -163,29 +166,35 @@ export class OfferDetail {
 				startHour: 0,
 				endHour: 0
 			};
+			this.slots = [];
 			this.convertSlotsForDisplay();
 		})
 	}
 
 	convertSlotsForDisplay(){
 		for(let i = 0; i < this.offer.calendarData.length; i++){
-			this.offer.calendarData[i].date = new Date(this.offer.calendarData[i].date);
-			var hour = this.toHourString(this.offer.calendarData[i].startHour)
-			this.offer.calendarData[i].startHour = new Date(this.offer.calendarData[i].date.setHours(hour.split(':')[0], hour.split(':')[1]));
-			hour = this.toHourString(this.offer.calendarData[i].endHour)
-			this.offer.calendarData[i].endHour = new Date(this.offer.calendarData[i].date.setHours(hour.split(':')[0], hour.split(':')[1]));
+			var slotTemp = {
+				date: this.toDateString(this.offer.calendarData[i].date),
+				startHour: this.toHourString(this.offer.calendarData[i].startHour),
+				endHour: this.toHourString(this.offer.calendarData[i].endHour)
+			};
+			this.slots.push(slotTemp);
+			//this.offer.calendarData[i].date = this.toDateString(this.offer.calendarData[i].date);
+			//this.offer.calendarData[i].date = new Date(this.offer.calendarData[i].date).toLocaleDateString("fr-FR");
+			//this.offer.calendarData[i].startHour = this.toHourString(this.offer.calendarData[i].startHour);
+			//this.offer.calendarData[i].endHour = this.toHourString(this.offer.calendarData[i].endHour);
 		}
 	}
 	
 	//convert existant slots
 	convertSlotsForSaving(){
 		for(let i = 0; i < this.offer.calendarData.length; i++){
-			this.offer.calendarData[i].date = this.offer.calendarData[i].date.getTime();
-			var h = this.offer.calendarData[i].startHour.getHours() * 60;
-			var m = this.offer.calendarData[i].startHour.getMinutes();
+			this.offer.calendarData[i].date = Date.parse(this.offer.calendarData[i].date);
+			var h = this.offer.calendarData[i].startHour.split(':')[0] * 60;
+			var m = this.offer.calendarData[i].startHour.split(':')[1];
 			this.offer.calendarData[i].startHour = h + m;
-			h = this.offer.calendarData[i].endHour.getHours() * 60;
-			m = this.offer.calendarData[i].endHour.getMinutes();
+			h = this.offer.calendarData[i].endHour.split(':')[0] * 60;
+			m = this.offer.calendarData[i].endHour.split(':')[1];
 			this.offer.calendarData[i].endHour = h + m;
 		}
 	}
@@ -256,6 +265,18 @@ export class OfferDetail {
         let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
         let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
         return hours + ":" + minutes;
+    }
+	
+	/**
+     * @Description Converts a timeStamp to date string : 
+     * @param date : a timestamp date
+     */
+    toDateString(date:number) {
+		var dateOptions = {
+            weekday: "long", month: "long", year: "numeric",
+            day: "numeric"//, hour: "2-digit", minute: "2-digit"
+        };
+        return new Date(date).toLocaleDateString('fr-FR', dateOptions);
     }
 
 	addAlert(type, msg): void {
