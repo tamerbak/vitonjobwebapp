@@ -12,6 +12,16 @@ export class SharedService {
 
   }
 
+  logOut() {
+    this.setCurrentUser(null);
+    this.setCurrentOffer(null);
+    this.setLastResult(null);
+    this.setSearchResult(null);
+    this.setLangList(null);
+    this.setQualityList(null);
+    this.setJobList(null);
+  }
+
   setCurrentUser(user) {
     localStorage.setItem('currentUser', JSON.stringify(user));
   }
