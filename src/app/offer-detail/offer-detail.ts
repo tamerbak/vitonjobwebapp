@@ -3,18 +3,15 @@ import {OffersService} from "../providers/offer.service";
 import {SharedService} from "../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 import {AlertComponent} from 'ng2-bootstrap/components/alert';
-import {SearchService} from "../providers/search-service";
-import {Widget} from '../core/widget/widget';
 import {NKDatetime} from 'ng2-datetime/ng2-datetime';
-declare var jQuery: any;
 
 @Component({
     selector: '[offer-detail]',
 	template: require('./offer-detail.html'),
 	encapsulation: ViewEncapsulation.None,
 	styles: [require('./offer-detail.scss')],
-	directives: [ROUTER_DIRECTIVES, AlertComponent, Widget, NKDatetime],
-	providers: [OffersService, SearchService]
+	directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime],
+	providers: [OffersService]
 })
 
 export class OfferDetail {
@@ -39,8 +36,6 @@ export class OfferDetail {
 				private router: Router){}
 				
 	ngOnInit(): void {
-		jQuery('.select2').select2();
-		
 		this.currentUser = this.sharedService.getCurrentUser();
 		this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer')
 		this.offer = this.sharedService.getCurrentOffer();
@@ -134,14 +129,7 @@ export class OfferDetail {
 	}
 	
 	removeSlot(i) {
-		/*for(let i = 0; i < this.offer.calendarData.length; i++){
-			if(this.offer.calendarData[i].idCalendar == item.idCalendar){
-				this.offer.calendarData.splice(i, 1);
-				break;
-			}
-		}*/
 		this.offer.calendarData.splice(i, 1);
-		//this.convertSlotsForSaving();
 		this.offersService.updateOfferCalendar(this.offer, this.projectTarget);
 		this.sharedService.setCurrentOffer(this.offer);
 		this.slots = [];
@@ -149,7 +137,6 @@ export class OfferDetail {
 	}
 	
 	addSlot(){
-		//this.convertSlotsForSaving();
 		this.slot.date = this.slot.date.getTime();
 		var h = this.slot.startHour.getHours() * 60;
 		var m = this.slot.startHour.getMinutes();
@@ -179,23 +166,6 @@ export class OfferDetail {
 				endHour: this.toHourString(this.offer.calendarData[i].endHour)
 			};
 			this.slots.push(slotTemp);
-			//this.offer.calendarData[i].date = this.toDateString(this.offer.calendarData[i].date);
-			//this.offer.calendarData[i].date = new Date(this.offer.calendarData[i].date).toLocaleDateString("fr-FR");
-			//this.offer.calendarData[i].startHour = this.toHourString(this.offer.calendarData[i].startHour);
-			//this.offer.calendarData[i].endHour = this.toHourString(this.offer.calendarData[i].endHour);
-		}
-	}
-	
-	//convert existant slots
-	convertSlotsForSaving(){
-		for(let i = 0; i < this.offer.calendarData.length; i++){
-			this.offer.calendarData[i].date = Date.parse(this.offer.calendarData[i].date);
-			var h = this.offer.calendarData[i].startHour.split(':')[0] * 60;
-			var m = this.offer.calendarData[i].startHour.split(':')[1];
-			this.offer.calendarData[i].startHour = h + m;
-			h = this.offer.calendarData[i].endHour.split(':')[0] * 60;
-			m = this.offer.calendarData[i].endHour.split(':')[1];
-			this.offer.calendarData[i].endHour = h + m;
 		}
 	}
 	
@@ -247,7 +217,7 @@ export class OfferDetail {
 		}
 		langTemp[0]['level'] = this.selectedLevel;
 		this.offer.languageData.push(langTemp[0]);
-		this.offersService.updateOfferQualities(this.offer, this.projectTarget);
+		this.offersService.updateOfferLanguages(this.offer, this.projectTarget);
 		this.setOfferInLocal();
 	}
 	

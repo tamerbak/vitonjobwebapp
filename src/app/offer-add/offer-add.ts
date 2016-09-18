@@ -3,18 +3,15 @@ import {OffersService} from "../providers/offer.service";
 import {SharedService} from "../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 import {AlertComponent} from 'ng2-bootstrap/components/alert';
-import {SearchService} from "../providers/search-service";
-import {Widget} from '../core/widget/widget';
 import {NKDatetime} from 'ng2-datetime/ng2-datetime';
-declare var jQuery: any;
 
 @Component({
     selector: '[offer-add]',
 	template: require('./offer-add.html'),
 	encapsulation: ViewEncapsulation.None,
 	styles: [require('./offer-add.scss')],
-	directives: [ROUTER_DIRECTIVES, AlertComponent, Widget, NKDatetime],
-	providers: [OffersService, SearchService]
+	directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime],
+	providers: [OffersService]
 })
 
 export class OfferAdd {
@@ -27,10 +24,11 @@ export class OfferAdd {
 	projectTarget: string;
 	currentUser: any;
 	slot: any;
+	slots = [];
 	selectedQuality: any;
 	selectedLang: any;
 	selectedLevel = "junior";
-	
+	slotsToSave = [];
 	alerts: Array<Object>;
 	
 	constructor(private sharedService: SharedService,
@@ -38,11 +36,8 @@ export class OfferAdd {
 				private router: Router){}
 				
 	ngOnInit(): void {
-		jQuery('.select2').select2();
-		
 		this.currentUser = this.sharedService.getCurrentUser();
 		this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer')
-		
 		var jobData = {
 			'class': "com.vitonjob.callouts.auth.model.JobData",
 			job: "",
@@ -54,7 +49,6 @@ export class OfferAdd {
 			currency: 'euro',
 			validated: false
 		};
-
 		this.offer = {
             jobData: jobData, calendarData: [], qualityData: [], languageData: [],
             visible: false, title: "", status: "open", videolink: ""
@@ -129,38 +123,46 @@ export class OfferAdd {
 		this.offer.jobData.level = e.target.value;
 	}
 	
-	removeSlot(item) {
-		this.offer.calendarData.splice(this.offer.calendarData.indexOf(item), 1);
+	removeSlot(i) {
+		this.slots.splice(i, 1);
+		//this.offer.calendarData.splice(i, 1);
 	}
 	
 	addSlot(){
-		this.offer.calendarData.push(this.slot);
-		this.slot = {
-				date: 0,
-				startHour: 0,
-				endHour: 0
-			};
+		this.slotsToSave.push(this.slot);
+		this.slot.date = this.slot.date.getTime();
+		var h = this.slot.startHour.getHours() * 60;
+		var m = this.slot.startHour.getMinutes();
+		this.slot.startHour = h + m;
+		h = this.slot.endHour.getHours() * 60;
+		m = this.slot.endHour.getMinutes();
+		this.slot.endHour = h + m;
+		//this.offer.calendarData.push(this.slot);
+		var s = this.convertSlotsForDisplay(this.slot);	
+		this.slots.push(s);
 	}
 
-	convertSlotsForDisplay(){
-		for(let i = 0; i < this.offer.calendarData.length; i++){
-			this.offer.calendarData[i].date = new Date(this.offer.calendarData[i].date);
-			var hour = this.toHourString(this.offer.calendarData[i].startHour)
-			this.offer.calendarData[i].startHour = new Date(this.offer.calendarData[i].date.setHours(hour.split(':')[0], hour.split(':')[1]));
-			hour = this.toHourString(this.offer.calendarData[i].endHour)
-			this.offer.calendarData[i].endHour = new Date(this.offer.calendarData[i].date.setHours(hour.split(':')[0], hour.split(':')[1]));
-		}
+	convertSlotsForDisplay(s){
+		//for(let i = 0; i < this.offer.calendarData.length; i++){
+			var slotTemp = {
+				date: this.toDateString(s.date),
+				startHour: this.toHourString(s.startHour),
+				endHour: this.toHourString(s.endHour)
+			};
+			//this.slots.push(slotTemp);
+			return slotTemp;
+	//}
 	}
 	
 	//convert existant slots
 	convertSlotsForSaving(){
-		for(let i = 0; i < this.offer.calendarData.length; i++){
-			this.offer.calendarData[i].date = this.offer.calendarData[i].date.getTime();
-			var h = this.offer.calendarData[i].startHour.getHours() * 60;
-			var m = this.offer.calendarData[i].startHour.getMinutes();
+		for(let i = 0; i < this.slotsToSave.length; i++){
+			this.offer.calendarData[i].date = this.slotsToSave[i].date.getTime();
+			var h = this.slotsToSave[i].startHour.getHours() * 60;
+			var m = this.slotsToSave[i].startHour.getMinutes();
 			this.offer.calendarData[i].startHour = h + m;
-			h = this.offer.calendarData[i].endHour.getHours() * 60;
-			m = this.offer.calendarData[i].endHour.getMinutes();
+			h = this.slotsToSave[i].endHour.getHours() * 60;
+			m = this.slotsToSave[i].endHour.getMinutes();
 			this.offer.calendarData[i].endHour = h + m;
 		}
 	}
@@ -202,6 +204,7 @@ export class OfferAdd {
 	}
 	
 	addOffer(){
+		this.offer.calendarData = this.slotsToSave;
 		if(!this.offer.jobData.job || !this.offer.jobData.sector || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0){
 			this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.");
 			return;
@@ -210,14 +213,14 @@ export class OfferAdd {
 		let level = (this.offer.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant'
 		this.offer.title = this.offer.jobData.job + " " + level;
 		this.offer.identity = (this.projectTarget == 'employer' ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id);
-		this.convertSlotsForSaving();
-		this.offersService.setOfferInRemote(this.offer, this.projectTarget).then(data => {
+		this.offersService.setOfferInRemote(this.offer, this.projectTarget).then((data:any )=> {
 			if(this.projectTarget == 'employer'){
-				this.currentUser.employer.entreprises[0].offers.push(this.offer);
+				this.currentUser.employer.entreprises[0].offers.push(JSON.parse(data._body));
 				
 			}else{
-				this.currentUser.jobyer.offers.push(this.offer);
-			} 
+				this.currentUser.jobyer.offers.push(JSON.parse(data._body));
+			}
+			this.sharedService.setCurrentUser(this.currentUser);
 			this.router.navigate(['app/offer/list']);
 		});
 	}
@@ -232,6 +235,18 @@ export class OfferAdd {
         return hours + ":" + minutes;
     }
 
+	/**
+     * @Description Converts a timeStamp to date string : 
+     * @param date : a timestamp date
+     */
+    toDateString(date:number) {
+		var dateOptions = {
+            weekday: "long", month: "long", year: "numeric",
+            day: "numeric"//, hour: "2-digit", minute: "2-digit"
+        };
+        return new Date(date).toLocaleDateString('fr-FR', dateOptions);
+    }
+	
 	addAlert(type, msg): void {
 		this.alerts = [{type: type, msg: msg}];
 	}

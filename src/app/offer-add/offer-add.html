@@ -75,31 +75,32 @@
 							<label class="col-md-2 col-xs-2 form-control-label">De</label>
 							<label class="col-md-2 col-xs-2 form-control-label">A</label>
 						</div>
-						<div class="form-group row" *ngFor="let item of offer.calendarData">
+						<div class="form-group row" *ngFor="let item of slots, let j = index">
 							<div class="col-md-6 col-xs-12">
-								<datetime [timepicker]="false" [(ngModel)]="item.date"></datetime>
+							<!--<datetime [timepicker]="false" [(ngModel)]="item.date"></datetime>-->
+							<input class="form-control" [(ngModel)]="item.date" disabled/>
 							</div>
 							<div class="col-md-2 col-xs-12">
-								<datetime [datepicker]="false"[(ngModel)]="item.startHour"></datetime>
+							<input class="form-control" [(ngModel)]="item.startHour" disabled/>
 							</div>
 							<div class="col-md-2 col-xs-12">
-								<datetime [datepicker]="false" [(ngModel)]="item.endHour"></datetime>
+							<input class="form-control" [(ngModel)]="item.endHour" disabled/>
 							</div>
 							<div class="col-md-2 col-xs-12">
-								<button class="btn btn-secondary mb-xs" role="button" (click)="removeSlot(item)">
+								<button class="btn btn-secondary mb-xs" role="button" (click)="removeSlot(j)">
 								<i class="glyphicon glyphicon-trash"></i>
 							  </button>
 							</div>
 						</div>
 						<div class="form-group row">
 							<div class="col-md-6 col-xs-12">
-								<datetime [timepicker]="false" [(ngModel)]="slot.date"></datetime>
+								<datetime [timepicker]="false" [datepicker]="{autoclose: true,format: 'dd/mm/yyyy', language: 'fr'}" [(ngModel)]="slot.date"></datetime>
 							</div>
 							<div class="col-md-2 col-xs-12">
-								<datetime [datepicker]="false" [(ngModel)]="slot.startHour"></datetime>
+								<datetime [datepicker]="false" [timepicker]="{ showMeridian: false, minuteStep: 15 }" [(ngModel)]="slot.startHour"></datetime>
 							</div>
 							<div class="col-md-2 col-xs-12">
-								<datetime [datepicker]="false" [(ngModel)]="slot.endHour"></datetime>
+								<datetime [datepicker]="false" [timepicker]="{ showMeridian: false, minuteStep: 15 }" [(ngModel)]="slot.endHour"></datetime>
 							</div>
 							<div class="col-md-2 col-xs-12">
 								<button class="btn btn-danger mb-xs" role="button" (click)="addSlot()">
@@ -170,7 +171,7 @@
 					<div class="form-actions">
 						<div class="row">
 							<div class="col-md-offset-4 col-md-7 col-xs-12">
-								<button type="submit" class="btn btn-primary" (click)="addOffer()">Suavegarder</button>
+								<button type="submit" class="btn btn-primary" (click)="addOffer()">Sauvegarder</button>
 							</div>
 						</div>
 					</div>
