@@ -129,6 +129,9 @@ export class OfferAdd {
 	}
 	
 	addSlot(){
+		if(this.slot.date == 0 || this.slot.startHour == 0 || this.slot.endHour == 0){
+			return;
+		}
 		this.slotsToSave.push(this.slot);
 		this.slot.date = this.slot.date.getTime();
 		var h = this.slot.startHour.getHours() * 60;
@@ -140,6 +143,18 @@ export class OfferAdd {
 		//this.offer.calendarData.push(this.slot);
 		var s = this.convertSlotsForDisplay(this.slot);	
 		this.slots.push(s);
+		//reset datetime component
+		let elements: NodeListOf<Element> = document.getElementById('slotDate').getElementsByClassName('form-control');
+		(<HTMLInputElement>elements[0]).value = null;
+		elements = document.getElementById('slotSHour').getElementsByClassName('form-control');
+		(<HTMLInputElement>elements[0]).value = null;
+		elements = document.getElementById('slotEHour').getElementsByClassName('form-control');
+		(<HTMLInputElement>elements[0]).value = null;
+		this.slot = {
+            date: 0,
+            startHour: 0,
+            endHour: 0
+		};	
 	}
 
 	convertSlotsForDisplay(s){

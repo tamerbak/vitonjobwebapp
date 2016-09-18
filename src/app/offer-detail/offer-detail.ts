@@ -137,6 +137,9 @@ export class OfferDetail {
 	}
 	
 	addSlot(){
+		if(this.slot.date == 0 || this.slot.startHour == 0 || this.slot.endHour == 0){
+			return;
+		}
 		this.slot.date = this.slot.date.getTime();
 		var h = this.slot.startHour.getHours() * 60;
 		var m = this.slot.startHour.getMinutes();
@@ -148,14 +151,21 @@ export class OfferDetail {
 		
 		this.offersService.updateOfferCalendar(this.offer, this.projectTarget).then(() => {
 			this.sharedService.setCurrentOffer(this.offer);
-			this.slot = {
-				date: 0,
-				startHour: 0,
-				endHour: 0
-			};
 			this.slots = [];
 			this.convertSlotsForDisplay();
-		})
+		});
+		//reset datetime component
+		let elements: NodeListOf<Element> = document.getElementById('slotDate').getElementsByClassName('form-control');
+		(<HTMLInputElement>elements[0]).value = null;
+		elements = document.getElementById('slotSHour').getElementsByClassName('form-control');
+		(<HTMLInputElement>elements[0]).value = null;
+		elements = document.getElementById('slotEHour').getElementsByClassName('form-control');
+		(<HTMLInputElement>elements[0]).value = null;
+		this.slot = {
+            date: 0,
+            startHour: 0,
+            endHour: 0
+		};	
 	}
 
 	convertSlotsForDisplay(){

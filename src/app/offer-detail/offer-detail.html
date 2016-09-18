@@ -118,13 +118,13 @@
 						</div>
 						<div class="form-group row">
 							<div class="col-md-6 col-xs-12">
-								<datetime [timepicker]="false" [datepicker]="{autoclose: true,format: 'dd/mm/yyyy', language: 'fr'}" [(ngModel)]="slot.date"></datetime>
+								<datetime id="slotDate" [timepicker]="false" [datepicker]="{autoclose: true,format: 'dd/mm/yyyy', language: 'fr'}" [(ngModel)]="slot.date"></datetime>
 							</div>
 							<div class="col-md-2 col-xs-12">
-								<datetime [datepicker]="false" [timepicker]="{ showMeridian: false, minuteStep: 15 }" [(ngModel)]="slot.startHour"></datetime>
+								<datetime id="slotSHour" [datepicker]="false" [timepicker]="{ showMeridian: false, minuteStep: 15 }" [(ngModel)]="slot.startHour"></datetime>
 							</div>
 							<div class="col-md-2 col-xs-12">
-								<datetime [datepicker]="false" [timepicker]="{ showMeridian: false, minuteStep: 15 }" [(ngModel)]="slot.endHour"></datetime>
+								<datetime id="slotEHour" [datepicker]="false" [timepicker]="{ showMeridian: false, minuteStep: 15 }" [(ngModel)]="slot.endHour"></datetime>
 							</div>
 							<div class="col-md-2 col-xs-12">
 								<button class="btn btn-danger mb-xs" role="button" (click)="addSlot()">
