@@ -46,7 +46,7 @@
                     <img class="img-circle" src="assets/images/people/a5.jpg" alt="...">
                 </span>
           &nbsp;
-          {{currentUser.prenom}} <strong>{{currentUser.nom}}</strong>&nbsp;
+          {{sharedService.getCurrentUser().prenom}} <strong>{{sharedService.getCurrentUser().nom}}</strong>&nbsp;
                 <span class="circle bg-warning fw-bold">
                     {{autoSearchOffers.length}}
                 </span>
@@ -63,11 +63,8 @@
         <ul class="dropdown-menu dropdown-menu-right">
           <li><a class="dropdown-item" [routerLink]=" ['civility'] "><i class="glyphicon glyphicon-user"></i> &nbsp; Mon compte</a></li>
           <li class="dropdown-divider"></li>
-          <li><a class="dropdown-item" [routerLink]=" ['/login'] "><i class="fa fa-sign-out"></i> &nbsp; Se déconnecter</a></li>
+          <li><a class="dropdown-item" (click)="logOut()"><i class="fa fa-sign-out"></i> &nbsp; Se déconnecter</a></li>
         </ul>
-      </li>
-      <li class="nav-item">
-        <a href="#" class="nav-link"><i class="glyphicon glyphicon-th"></i></a>
       </li>
     </ul>
   </div>
