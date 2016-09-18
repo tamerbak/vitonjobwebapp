@@ -1,88 +1,94 @@
 import {Injectable} from '@angular/core';
 
 /**
-	* @author Amal ROCHD
-	* @description service shared between different components of the app
-*/
+ * @author Amal ROCHD
+ * @description service shared between different components of the app
+ */
 
 @Injectable()
 export class SharedService {
 
-	constructor() {
+  constructor() {
 
-	}
+  }
 
-	setCurrentUser(user){
-		localStorage.setItem('currentUser', JSON.stringify(user));
-	}
+  setCurrentUser(user) {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+  }
 
-	getCurrentUser(){
-		return JSON.parse(localStorage.getItem('currentUser'));
-	}
+  getCurrentUser() {
+    return JSON.parse(localStorage.getItem('currentUser'));
+  }
 
-	setCurrentOffer(offer){
-		localStorage.setItem('currentOffer', JSON.stringify(offer));
-	}
+  setCurrentOffer(offer) {
+    localStorage.setItem('currentOffer', JSON.stringify(offer));
+  }
 
-	getCurrentOffer(){
-		return JSON.parse(localStorage.getItem('currentOffer'));
-	}
+  getCurrentOffer() {
+    return JSON.parse(localStorage.getItem('currentOffer'));
+  }
 
-	setCurrentMission(mission){
-        localStorage.setItem('currentMission', JSON.stringify(mission));
-	}
+  setCurrentMission(mission) {
+    localStorage.setItem('currentMission', JSON.stringify(mission));
+  }
 
-	getCurrentMission(){
-        return JSON.parse(localStorage.getItem('currentMission'));
-	}
+  getCurrentMission() {
+    return JSON.parse(localStorage.getItem('currentMission'));
+  }
 
-	setCurrentInvoice(invoice){
-        localStorage.setItem('currentInvoice', JSON.stringify(invoice));
-	}
+  setCurrentInvoice(invoice) {
+    localStorage.setItem('currentInvoice', JSON.stringify(invoice));
+  }
 
-	getCurrentInvoice(){
-        return JSON.parse(localStorage.getItem('currentInvoice'));
-	}
+  getCurrentInvoice() {
+    return JSON.parse(localStorage.getItem('currentInvoice'));
+  }
 
-	setLastResult(result){
-		localStorage.setItem('lastResult', JSON.stringify(result));
-	}
+  setLastResult(result) {
+    localStorage.setItem('lastResult', JSON.stringify(result));
+  }
 
-	getLastResult(){
-		return JSON.parse(localStorage.getItem('lastResult'));
-	}
+  getLastResult() {
+    return JSON.parse(localStorage.getItem('lastResult'));
+  }
 
-	setSectorList(list){
-		localStorage.setItem('sectorList', JSON.stringify(list));
-	}
+  setSectorList(list) {
+    localStorage.setItem('sectorList', JSON.stringify(list));
+  }
 
-	getSectorList(){
-		return JSON.parse(localStorage.getItem('sectorList'));
-	}
+  getSectorList() {
+    return JSON.parse(localStorage.getItem('sectorList'));
+  }
 
-	setJobList(list){
-		localStorage.setItem('jobList', JSON.stringify(list));
-	}
+  setJobList(list) {
+    localStorage.setItem('jobList', JSON.stringify(list));
+  }
 
-	getJobList(){
-		return JSON.parse(localStorage.getItem('jobList'));
-	}
+  getJobList() {
+    return JSON.parse(localStorage.getItem('jobList'));
+  }
 
-	setQualityList(list){
-		localStorage.setItem('qualityList', JSON.stringify(list));
-	}
+  setQualityList(list) {
+    localStorage.setItem('qualityList', JSON.stringify(list));
+  }
 
-	getQualityList(){
-		return JSON.parse(localStorage.getItem('qualityList'));
-	}
+  getQualityList() {
+    return JSON.parse(localStorage.getItem('qualityList'));
+  }
 
-	setLangList(list){
-		localStorage.setItem('langList', JSON.stringify(list));
-	}
+  setLangList(list) {
+    localStorage.setItem('langList', JSON.stringify(list));
+  }
 
-	getLangList(){
-		return JSON.parse(localStorage.getItem('langList'));
-	}
+  getLangList() {
+    return JSON.parse(localStorage.getItem('langList'));
+  }
 
+  setSearchResult(item) {
+    localStorage.setItem('searchResult', JSON.stringify(item));
+  }
 
+  getSearchResult() {
+    return JSON.parse(localStorage.getItem('searchResult'));
+  }
 }

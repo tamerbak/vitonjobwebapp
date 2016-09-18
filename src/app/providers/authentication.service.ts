@@ -89,8 +89,7 @@ export class AuthenticationService {
             }]
         };
         let body = JSON.stringify(dataLog);
-        console.log(body);
-       //debugger;
+        //debugger;
         return new Promise(resolve => {
             let headers = Configs.getHttpJsonHeaders();
             this.http.post(this.configuration.calloutURL, body, {headers:headers})

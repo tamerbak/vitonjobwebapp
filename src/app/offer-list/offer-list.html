@@ -9,10 +9,10 @@
 	</div>
 	<div class="col-lg-6 col-xs-6">
 		<div class="btn-group pull-xs-right">
-			<label class="btn btn-gray" btnRadio="0" [(ngModel)]="typeOfferModel">
+			<label class="btn btn-gray" btnRadio="0" [(ngModel)]="typeOfferModel" (click)="watchTypeOfferModel()">
 				Mes offres en ligne
 			</label>
-            <label class="btn btn-gray" btnRadio="1" [(ngModel)]="typeOfferModel">
+            <label class="btn btn-gray" btnRadio="1" [(ngModel)]="typeOfferModel" (click)="watchTypeOfferModel()">
 				Mes offres en brouillon
 			</label>
 		</div>        

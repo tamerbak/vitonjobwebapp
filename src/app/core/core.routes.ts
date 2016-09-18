@@ -29,6 +29,9 @@ import {ExtraTimeLine} from '../extra-time-line/extra-time-line';
 import {OfferList} from '../offer-list/offer-list';
 import {OfferDetail} from '../offer-detail/offer-detail';
 import {OfferAdd} from '../offer-add/offer-add';
+import {SearchResults} from '../search-results/search-results';
+import {SearchDetails} from '../search-details/search-details';
+import {SearchCriteria} from '../search-criteria/search-criteria';
 import {MissionList} from '../mission-list/mission-list';
 import {MissionDetails} from '../mission-details/mission-details';
 
@@ -66,6 +69,9 @@ export const CoreRoutes: RouterConfig = [
       {path: 'offer/list', component: OfferList},
       {path: 'offer/detail', component: OfferDetail},
       {path: 'offer/add', component: OfferAdd},
+      {path: 'search/results', component: SearchResults},
+      {path: 'search/details', component: SearchDetails},
+      {path: 'search/criteria', component: SearchCriteria},
       {path: 'mission/list', component: MissionList},
       {path: 'mission/details', component: MissionDetails}
     ]

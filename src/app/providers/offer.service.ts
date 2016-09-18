@@ -43,8 +43,7 @@ export class OffersService {
 	saveAutoSearchMode(projectTarget, idOffer, mode){
 		let table = projectTarget == 'jobyer' ? "user_offre_jobyer":"user_offre_entreprise";
 		let sql = "update "+table+" set recherche_automatique='"+ mode +"' where pk_"+table+"="+idOffer;
-        console.log(sql);
-		return new Promise(resolve => {
+        return new Promise(resolve => {
             let headers = new Headers();
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -57,7 +56,6 @@ export class OffersService {
 	
 	loadSectorsToLocal(){
         let sql = 'select pk_user_metier as id, libelle as libelle from user_metier order by libelle asc';
-        console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
             headers = Configs.getHttpTextHeaders();
@@ -72,7 +70,6 @@ export class OffersService {
 	
 	loadJobsToLocal(){
         let sql = 'select pk_user_job as id, libelle as libelle, fk_user_metier as idSector from user_job order by libelle asc';
-        console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
             headers = Configs.getHttpTextHeaders();
@@ -112,7 +109,6 @@ export class OffersService {
         
         // store in remote database
         let stringData = JSON.stringify(offerData);
-        console.log('Adding offer payload : '+stringData);
         
         let encoded = btoa(stringData);
 
@@ -169,8 +165,6 @@ export class OffersService {
                 .subscribe(data => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
-                    console.log(JSON.stringify(data));
-
                     resolve(data);
                 });
         });
@@ -190,8 +184,6 @@ export class OffersService {
                 .subscribe(data => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
-                    console.log(JSON.stringify(data));
-
                     resolve(data);
                 });
         });
@@ -211,8 +203,6 @@ export class OffersService {
                 .subscribe(data => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
-                    console.log(JSON.stringify(data));
-
                     resolve(data);
                 });
         });
@@ -233,7 +223,6 @@ export class OffersService {
                 .subscribe(data => {
                     // we've got back the raw data, now generate the core schedule data
                     // and save the data for later reference
-                    console.log(JSON.stringify(data));
                     resolve(data);
                 });
         });
@@ -339,7 +328,6 @@ export class OffersService {
         this.configuration = Configs.setConfigs(projectTarget);
         let type = (projectTarget == "jobyer")?'jobyer':'employeur';
         var sql = "select pk_user_indispensable as \"idQuality\", libelle as libelle from user_indispensable where type='"+type+"'";
-        console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
             headers = Configs.getHttpTextHeaders();
@@ -402,7 +390,6 @@ export class OffersService {
         //  Init project parameters
         this.configuration = Configs.setConfigs(projectTarget);
         var sql = 'select pk_user_langue as \"idLanguage\", libelle as libelle, \'junior\' as level from user_langue';
-        console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
             headers = Configs.getHttpTextHeaders();
@@ -453,6 +440,50 @@ export class OffersService {
 		}
 		return currentUser;
 	}
+	
+	getOffersLanguages(idOffers:any, offerTable:string) {
+        let ids = '(' + idOffers[0];
+        for (var i = 1; i < idOffers.length; i++)
+            ids = ids + ',' + idOffers[i];
+        ids = ids + ')';
+        var sql = "select pk_user_langue as id, libelle from user_langue where " +
+            "pk_user_langue in (select fk_user_langue from user_pratique_langue where fk_" + offerTable + " in " + ids + ")" +
+            " group by id, libelle";
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+				.map(res => res.json())
+                .subscribe(data => {
+                    resolve(data.data);
+                });
+        });
+    }
+
+    /**
+     * @description listing qualities related to a set of offers
+     * @param idOffers list of offers ID
+     * @param offerTable offerTable as user_offre_jobyer or user_offre_entreprise
+     * @return the proposition of grouped qualities
+     */
+    getOffersQualities(idOffers:any, offerTable:string) {
+        let ids = '(' + idOffers[0];
+        for (var i = 1; i < idOffers.length; i++)
+            ids = ids + ',' + idOffers[i];
+        ids = ids + ')';
+        var sql = "select pk_user_indispensable as id, libelle from user_indispensable where " +
+            "pk_user_indispensable in (select fk_user_indispensable from user_pratique_indispensable where fk_" + offerTable + " in " + ids + ")" +
+            " group by id, libelle";
+        return new Promise(resolve => {
+            let headers = new Headers();
+            headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    resolve(data.data);
+                });
+        });
+    }
 	
 	convertToFormattedHour(value) {
         var hours = Math.floor(value / 60);
