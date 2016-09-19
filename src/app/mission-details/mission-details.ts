@@ -57,7 +57,7 @@ export class MissionDetails {
 
   enterpriseName: string = "--";
   jobyerName: string = "--";
-  currentUserVar: string;
+  currentUser: any;
 
   /*
    *   Invoice management
@@ -96,16 +96,18 @@ export class MissionDetails {
     // this.themeColor = config.themeColor;
     // this.missionDetailsTitle = "Gestion de la mission";
 
-    this.isEmployer = true;
-    /*
-     this.backgroundImage = config.backgroundImage;
-     this.currentUserVar = config.currentUserVar;
-     //get missions
-     this.contract = navParams.get('contract');*/
+    // Retrieve the project target
+    this.currentUser = this.sharedService.getCurrentUser();
+    this.isEmployer = this.currentUser.estEmployeur;
+    this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+
+    //get missions
     this.contract = this.sharedService.getCurrentMission();
-    console.log(this.contract);
+
     //verify if the mission has already pauses
-    this.isNewMission = this.contract.vu.toUpperCase() == 'Oui'.toUpperCase() ? false : true;
+    // this.isNewMission = this.contract.vu.toUpperCase() == 'Oui'.toUpperCase() ? false : true;
+    this.refreshGraphicalData();
+
     var forPointing = this.contract.option_mission != "1.0" ? true : false;
     this.missionService.listMissionHours(this.contract, forPointing).then(
       (data: any) => {
@@ -248,15 +250,7 @@ export class MissionDetails {
         }
       }
     }
-    //  let loading = Loading.create({
-    //    content: `
-    // <div>
-    // <img src='img/loading.gif' />
-    // </div>
-    // `,
-    //    spinner: 'hide'
-    //  });
-    //  this.nav.present(loading).then(()=> {
+
     this.missionService.addPauses(this.missionHours, this.missionPauses, this.contract.pk_user_contrat).then((data: any) => {
       if (!data || data.status == "failure") {
         console.log(data.error);
@@ -267,8 +261,11 @@ export class MissionDetails {
         // data saved
         console.log("pauses saved successfully : " + data.status);
       }
+
+      // Update contract status
+      this.contract.vu = 'Oui';
     });
-    // loading.dismiss();
+
     var message = "Horaire du contrat n°" + this.contract.numero + " validé";
     var objectifNotif = "MissionDetailsPage";
     this.sendPushNotification(message, objectifNotif, "toJobyer");
@@ -276,8 +273,7 @@ export class MissionDetails {
     if (this.contract.option_mission != "1.0") {
       this.missionService.schedulePointeuse(this.contract, this.missionHours, this.missionPauses);
     }
-    //   this.nav.pop();
-    // });
+    this.navigationPreviousPage();
   }
 
   sendPushNotification(message, objectifNotif, who) {
@@ -623,24 +619,15 @@ export class MissionDetails {
         var objectifNotif = "MissionDetailsPage";
         this.sendPushNotification(message, objectifNotif, "toJobyer");
         this.sendInfoBySMS(message, "toJobyer");
-        // this.nav.pop();
+
+        // Return to the list
+        this.navigationPreviousPage();
       }
     });
   }
 
   signSchedule() {
-    /* TODO
-     let loading = Loading.create({
-     content: `
-     <div>
-     <img src='img/loading.gif' />
-     </div>
-     `,
-     spinner: 'hide',
-     duration: 10000
-     });
 
-     this.nav.present(loading).then(()=> {*/
     this.missionService.signSchedule(this.contract).then((data: any) => {
       if (!data || data.status == "failure") {
         console.log(data.error);
@@ -658,9 +645,9 @@ export class MissionDetails {
         }
       }
     });
-    // TODO : loading.dismiss();
-    // TODO : this.nav.pop();
-    // });
+
+    // Return to the list
+    this.navigationPreviousPage();
   }
 
   // displaySignAlert() {
@@ -753,6 +740,7 @@ export class MissionDetails {
 
       });
     });
+    this.navigationPreviousPage();
   }
 
   resetForm() {
@@ -764,7 +752,8 @@ export class MissionDetails {
   }
 
   // goBack() {
-  //   this.nav.pop();
+  //   // TODO : this.nav.pop();
+  // this.navigationPreviousPage();
   // }
   //
   // watchSignedToggle(e) {
@@ -804,7 +793,7 @@ export class MissionDetails {
   // }
 
   disableTimesheetButton() {
-    var disable;
+    let disable = false;
     var k = 0;
     for (var i = 0; i < this.missionHours.length; i++) {
       var m = this.missionHours[i];
@@ -1224,5 +1213,16 @@ export class MissionDetails {
       return true;
     else
       return false;
+  }
+
+  refreshGraphicalData() {
+    this.isNewMission = this.contract.vu.toUpperCase() == 'Oui'.toUpperCase() ? false : true;
+  }
+
+  /**
+   * Return to the list page in order to refresh all data
+   */
+  navigationPreviousPage() {
+    this.router.navigate(['app/mission/list']);
   }
 }

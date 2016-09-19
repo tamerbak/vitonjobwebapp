@@ -38,20 +38,25 @@
             <tr>
               <th colspan="4">
                 Jour {{i + 1}}: {{day.jour_debut | dateConverter:'long'}}
-                <button class="btn btn-default btn-xs pull-right" (click)="onCardClick(i)">
-                  [{{ !isNewMission || !isEmployer || upperCase(contract.signature_jobyer) == 'NON' }}]
-                  <span
-                    [hidden]="!isNewMission || !isEmployer || upperCase(contract.signature_jobyer) == 'NON'"
-                    class="glyphicon glyphicon-plus"
-                  ></span> Ajouter pause
-                </button>
+                <!-- TODO : Add break time -->
+                <!--<button class="btn btn-default pull-right" (click)="onCardClick(i)">-->
+                  <!--[{{ !isNewMission || !isEmployer || upperCase(contract.signature_jobyer) == 'NON' }}]-->
+                  <!--<span-->
+                    <!--[hidden]="!isNewMission || !isEmployer || upperCase(contract.signature_jobyer) == 'NON'"-->
+                    <!--class="glyphicon glyphicon-plus"-->
+                  <!--&gt;</span> Ajouter pause-->
+                <!--</button>-->
               </th>
             </tr>
             <tr>
               <th>Heure</th>
               <th class="text-align-right">Prévu</th>
-              <th class="text-align-center">Jobyer</th>
-              <th class="text-align-center">{{enterpriseName}}</th>
+              <th class="text-align-center" *ngIf="isEmployer && upperCase(contract.approuve) == 'NON'">
+                Jobyer
+              </th>
+              <th class="text-align-center" *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && (day.heure_debut_pointe || day.heure_fin_pointe)">
+                {{enterpriseName}}
+              </th>
             </tr>
             </thead>
 
@@ -73,7 +78,10 @@
                   {{ (day.heure_debut_pointe) ? day.heure_debut_pointe : '--:--' }}
                 </span>
               </td>
-              <td class="text-align-center">
+              <td
+                class="text-align-center"
+                *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && day.heure_debut_pointe"
+              >
                 <div class="btn-group">
                   <label
                     class="btn btn-gray btn-sm"
@@ -108,7 +116,10 @@
                   {{ (day.heure_fin_pointe) ? day.heure_fin_pointe : '--:--' }}
                 </span>
               </td>
-              <td class="text-align-center">
+              <td
+                class="text-align-center"
+                *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && day.heure_fin_pointe"
+              >
                 <div class="btn-group">
                   <label
                     class="btn btn-gray btn-sm"
@@ -132,65 +143,64 @@
         <div class="col-xs-12">
 
           <button
-            type="button" class="btn btn-primary btn-xs"
+            type="button" class="btn btn-primary btn-sm"
             (click)="validateWork()"
             [style.color]="themeColor"
-            [disabled]="!isEmployer || isNewMission || upperCase(contract.approuve) != 'OUI' || (upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0')"
+            *ngIf="isEmployer && !isNewMission && upperCase(contract.approuve) == 'OUI' && !(upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0')"
           >
             {{ !isEmployer }} - {{ isNewMission }} - {{ upperCase(contract.approuve) != 'OUI' }} - {{
             (upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0') }}
             Fin de mission
           </button>
           <button
-            type="button" class="btn btn-primary btn-xs"
+            type="button" class="btn btn-primary btn-sm"
             (click)="eomReleve()"
             [style.color]="themeColor"
-            [disabled]="! isReleveAvailable"
+            *ngIf="isReleveAvailable"
           >
             Signer le relevé
           </button>
           <button
-            type="button" class="btn btn-primary btn-xs"
+            type="button" class="btn btn-primary btn-sm"
             (click)="eomInvoice()"
             [style.color]="themeColor"
-            [disabled]="! isInvoiceAvailable"
+            *ngIf="isInvoiceAvailable"
           >
             Signer la facture
           </button>
           <button
-            type="button" class="btn btn-primary btn-xs"
+            type="button" class="btn btn-primary btn-sm"
             (click)="generateTimesheet()"
             [style.color]="themeColor"
-            [disabled]="(missionHours && missionHours.length == 0) || !isEmployer || contract.option_mission == '1.0' || isNewMission || upperCase(contract.releve_employeur) == 'OUI'"
+            *ngIf="!(missionHours && missionHours.length == 0) && isEmployer && contract.option_mission != '1.0' && !isNewMission || upperCase(contract.releve_employeur) != 'OUI'"
             [disabled]="disableTimesheetButton()"
           >
             (hidden et disabled) Générer et envoyer le relevé d'heure
           </button>
           <button
-            type="button" class="btn btn-primary btn-xs"
+            type="button" class="btn btn-primary btn-sm"
             (click)="validatePauses()"
             [style.color]="themeColor"
-            [disabled]="!isNewMission || (missionHours && missionHours.length == 0) || !isEmployer || upperCase(contract.signature_jobyer) == 'NON'"
+            *ngIf="isNewMission && !(missionHours && missionHours.length == 0) && isEmployer && upperCase(contract.signature_jobyer) != 'NON'"
           >
             Valider et notifier le Jobyer
           </button>
           <button
-            type="button" class="btn btn-primary btn-xs"
+            type="button" class="btn btn-primary btn-sm"
             (click)="signSchedule()"
             [style.color]="themeColor"
-            [disabled]="isNewMission || !isEmployer || upperCase(contract.approuve) == 'OUI' || (contract.option_mission == '2.0' && upperCase(contract.releve_employeur) == 'NON')"
+            *ngIf="!isNewMission && isEmployer && upperCase(contract.approuve) != 'OUI' && !(contract.option_mission == '2.0' && upperCase(contract.releve_employeur) == 'NON')"
           >
             Signer les horaires
           </button>
           <button
-            type="button" class="btn btn-primary btn-xs"
+            type="button" class="btn btn-primary btn-sm"
             (click)="resetForm()"
             [style.color]="themeColor"
-            [disabled]="!isNewMission || (missionHours && missionHours.length == 0) || !isEmployer || upperCase(contract.signature_jobyer) == 'NON'"
+            *ngIf="isNewMission && !(missionHours && missionHours.length == 0) && isEmployer && upperCase(contract.signature_jobyer) != 'NON'"
           >
             Réinitialiser
           </button>
-
 
         </div>
 
@@ -201,69 +211,11 @@
             <li><span class="label label-danger">Horaire</span> invalidé par l'employeur</li>
             <li><span class="label label-warning">Horaire</span> prévu modifié et validé par l'employeur</li>
             <li><span class="label label-default">Horaire</span> prévu et validé par l'employeur</li>
-            <li>
-              <button class="btn btn-xs btn-gray" disabled>Valider</button>
-              Valider et notifier le Jobyer
-            </li>
-            <li>
-              <button class="btn btn-xs btn-gray" disabled>Réinitialiser</button>
-              Réinitialiser
-            </li>
-
-            <li>
-              [{{ !isNewMission || (missionHours && missionHours.length == 0) || !isEmployer ||
-              upperCase(contract.signature_jobyer) == 'NON' }}]
-              -{{ !isNewMission }}-{{ (missionHours && missionHours.length == 0) }}-{{ !isEmployer
-              }}-{{upperCase(contract.signature_jobyer) == 'NON' }}-
-              1. Valider et notifier le Jobyer
-            </li>
-            <li>
-              [{{ isNewMission || !isEmployer || upperCase(contract.approuve) == 'OUI' || (contract.option_mission ==
-              '2.0' && upperCase(contract.releve_employeur) == 'NON') }}]
-              [{{ isNewMission }} - {{ !isEmployer }} - {{ upperCase(contract.approuve) == 'OUI' }} - {{
-              (contract.option_mission ==
-              '2.0' && upperCase(contract.releve_employeur) == 'NON') }}]
-              2. Signer les horaires
-            </li>
-            <li>
-              [{{ disableTimesheetButton() }}]
-              [{{ (missionHours && missionHours.length == 0) || !isEmployer || contract.option_mission == '1.0' ||
-              isNewMission || upperCase(contract.releve_employeur) == 'OUI' }}]
-              3. Générer et envoyer le relevé d'heure
-            </li>
-            <li>
-              [{{ !isEmployer || isNewMission || upperCase(contract.approuve) != 'OUI' ||
-              (upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0') }}]
-              [{{ !isEmployer }} - {{ isNewMission }} - {{ upperCase(contract.approuve) != 'OUI' }} - {{
-              (upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0') }}]
-              4. Fin de mission
-            </li>
-            <li>
-              [{{ !isNewMission || (missionHours && missionHours.length == 0) || !isEmployer ||
-              upperCase(contract.signature_jobyer) == 'NON' }}]
-              5. Réinitialiser
-            </li>
-            <li>
-              [{{ ! isReleveAvailable }}]
-              6. Signer le relevé
-            </li>
-            <li>
-              [{{ ! isInvoiceAvailable }}]
-              7. Signer la facture
-            </li>
-
           </ul>
-
         </div>
-
-        <pre><code>missionHours: {{ missionHours | json }}</code></pre>
-        <pre><code>missionPauses: {{ missionPauses | json }}</code></pre>
-        <pre><code>contact: {{ contract | json }}</code></pre>
 
       </div>
     </section>
-
-    <pre><code>{{ '' | json }}</code></pre>
 
   </div>
 </div>

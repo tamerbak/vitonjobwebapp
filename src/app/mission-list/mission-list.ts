@@ -77,6 +77,8 @@ export class MissionList {
 
     this.currentUser = this.sharedService.getCurrentUser();
 
+    this.sharedService.setCurrentMission(null);
+
     this.isEmployer = this.currentUser.estEmployeur;
     // Get target to determine configs
     this.projectTarget = (this.isEmployer ? 'employer' : 'jobyer');
