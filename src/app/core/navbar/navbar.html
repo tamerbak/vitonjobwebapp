@@ -39,7 +39,7 @@
     <!-- search form! link it to your search server -->
 
     <ul class="nav navbar-nav pull-xs-right" (click)="$event.preventDefault()">
-      <li class="nav-item dropdown">
+      <li *ngIf="currentUser" class="nav-item dropdown">
         <a class="nav-link dropdown-toggle dropdown-toggle-notifications"
            id="notifications-dropdown-toggle" data-toggle="dropdown">
                 <span class="thumb-sm avatar pull-xs-left">
@@ -56,7 +56,7 @@
         <notifications [alerts]="autoSearchOffers" [loadOffers]="loadOffers"  class="dropdown-menu dropdown-menu-right animated animated-fast fadeInUp"
           ></notifications>
       </li>
-      <li class="nav-item dropdown">
+      <li *ngIf="currentUser" class="nav-item dropdown">
         <a href class="nav-link dropdown-toggle" data-toggle="dropdown">
           <i class="fa fa-cog fa-lg"></i>
         </a>
@@ -67,6 +67,7 @@
           <li><a class="dropdown-item" (click)="logOut()"><i class="fa fa-sign-out"></i> &nbsp; Se déconnecter</a></li>
         </ul>
       </li>
+      <li><a *ngIf="!currentUser" class="dropdown-item" [routerLink]=" ['/login'] "><i class="fa fa-sign-in"></i> &nbsp; Se connecter</a></li>
     </ul>
   </div>
 </div>

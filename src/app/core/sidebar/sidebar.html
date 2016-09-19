@@ -25,38 +25,38 @@
       <a [routerLink]=" ['dashboard'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-search"></i>
-          </span> Search
+          </span>Lancer une recherche
       </a>
     </li>
-    <li>
+    <li *ngIf="currentUser">
       <a [routerLink]=" ['offer/list'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-bullhorn"></i>
           </span>Mes Offres
       </a>
     </li>
-    <li>
+    <li *ngIf="currentUser">
       <a [routerLink]=" ['mission/list'] ">
         <span class="icon">
             <i class="fa fa-file-text"></i>
           </span> Mes Missions
       </a>
     </li>
-    <li>
+    <li *ngIf="currentUser">
       <a [routerLink]=" ['coffre'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-credit-card"></i>
           </span> Coffre Numérique
       </a>
     </li>
-    <li>
+    <li *ngIf="currentUser">
       <a [routerLink]=" ['option'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-cog"></i>
           </span> Mes Options
       </a>
     </li>
-    <li>
+    <li *ngIf="currentUser">
       <a [routerLink]=" ['habilitation'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-user"></i>
@@ -64,7 +64,7 @@
       </a>
     </li>
 
-    <li>
+    <li *ngIf="currentUser">
       <a [routerLink]=" ['rg'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-th-list"></i>
