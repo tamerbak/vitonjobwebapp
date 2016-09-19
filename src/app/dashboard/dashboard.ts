@@ -1,34 +1,68 @@
 import {Component, ViewEncapsulation} from '@angular/core';
-import {Widget} from '../core/widget/widget';
-import {ProgressAnimate} from '../core/utils/progress-animate';
-import {AnimateNumber} from '../core/utils/animate-number';
-import {CheckAll} from '../core/utils/check-all';
-import {GeoLocationsWidget} from './geo-locations-widget/geo-locations-widget';
-import {MarkerStatsWidget} from './marker-stats-widget/marker-stats-widget';
-import {BootstrapCalendar} from './bootstrap-calendar/bootstrap-calendar';
-import {ConfigService} from '../core/config';
 import {ROUTER_DIRECTIVES, Router} from '@angular/router';
+import {AlertComponent} from 'ng2-bootstrap/components/alert';
+import {SearchService} from "../providers/search-service";
+import {SharedService} from "../providers/shared.service";
 
 @Component({
-  selector: 'dashboard',
-  template: require('./dashboard.html'),
-  directives: [Widget, ProgressAnimate, AnimateNumber, CheckAll, GeoLocationsWidget, MarkerStatsWidget, BootstrapCalendar, ROUTER_DIRECTIVES],
-  styles: [require('./dashboard.scss')],
-  encapsulation: ViewEncapsulation.None
+	selector: 'dashboard',
+	template: require('./dashboard.html'),
+	directives: [ROUTER_DIRECTIVES, AlertComponent],
+	providers: [SearchService],
+	styles: [require('./dashboard.scss')],
+	encapsulation: ViewEncapsulation.None
 })
 
 export class Dashboard {
-  config: any;
-  month: any;
-  year: any;
+	currentUser: any;
+	projectTarget: any;
+	scQuery: string;
+	alerts: Array<Object>;
+	hideLoader: boolean = true;
 
-  constructor(config: ConfigService, private router: Router) {
-    this.config = config.getConfig();
-  }
+	
+	constructor(private router: Router,
+				private searchService: SearchService,
+				private sharedService: SharedService) {}
+	
+	ngOnInit(): void {
+		this.currentUser = this.sharedService.getCurrentUser();
+		this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+	}
+	
+	doSemanticSearch(){
+		if(this.isEmpty(this.scQuery) || !this.scQuery.match(/[a-z]/i)){
+			this.addAlert("warning", "Veuillez saisir un job avant de lancer la recherche");
+			return;
+		}
+		
+		this.hideLoader = false;
+        this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((data: any) => {
+			this.hideLoader = true;
+			if(data.length == 0){
+				this.addAlert("warning", "Aucun résultat trouvé pour votre recherche.");
+				return;	
+			}
+            this.sharedService.setLastResult(data);
+		this.router.navigate(['app/search/results']);
+        });
+    }
+	
+	checkForEnterKey(e){
+        if(e.code != "Enter")
+            return;
 
-  ngOnInit(): void {
-    let now = new Date();
-    this.month = now.getMonth() + 1;
-    this.year = now.getFullYear();
-  }
+        this.doSemanticSearch();
+    }
+	
+	addAlert(type, msg): void {
+		this.alerts = [{type: type, msg: msg}];
+	}
+	
+	isEmpty(str){
+		if(str == '' || str == 'null' || !str)
+			return true;
+		else
+			return false;
+	}
 }
