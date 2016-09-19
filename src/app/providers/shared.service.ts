@@ -20,6 +20,7 @@ export class SharedService {
     this.setLangList(null);
     this.setQualityList(null);
     this.setJobList(null);
+    this.setOptionMission(null);
   }
 
   setCurrentUser(user) {
@@ -100,5 +101,13 @@ export class SharedService {
 
   getSearchResult() {
     return JSON.parse(localStorage.getItem('searchResult'));
+  }
+
+  setOptionMission(option) {
+    localStorage.setItem('optionMission', JSON.stringify(option));
+  }
+
+  getOptionMIssion() {
+    return JSON.parse(localStorage.getItem('optionMission'));
   }
 }

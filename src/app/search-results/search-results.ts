@@ -39,7 +39,7 @@ export class SearchResults {
 			for (let i = 0; i < this.searchResults.length; i++) {
 				var role = this.projectTarget == 'employer' ? "employeur" : "jobyer";
 				this.profileService.loadProfilePicture(null, this.searchResults[i].tel, role).then((data: any) => {
-					if (data && data.data && !this.isEmpty(data.data[0].encode)) {
+					if(data && data.data && data.data[0] && !this.isEmpty(data.data[0].encode)){
 						this.searchResults[i].avatar = data.data[0].encode;
 					}
 				});
