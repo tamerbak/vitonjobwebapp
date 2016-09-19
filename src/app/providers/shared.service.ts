@@ -1,105 +1,113 @@
 import {Injectable} from '@angular/core';
 
 /**
-	* @author Amal ROCHD
-	* @description service shared between different components of the app
-*/
+ * @author Amal ROCHD
+ * @description service shared between different components of the app
+ */
 
 @Injectable()
 export class SharedService {
-	/*currentUser: any;
-	currentOffer: any;
-	lastResult: any;
-	sectorList = [];
-	jobList = [];
-	qualityList = [];
-	langList = [];*/
 
-	constructor() {
+  constructor() {
 
-	}
+  }
 
-	logOut(){
-		this.setCurrentUser(null);
-		this.setCurrentOffer(null);
-		this.setLastResult(null);
-		this.setSearchResult(null);
-		this.setLangList(null);
-		this.setQualityList(null);
-		this.setJobList(null);
-		this.setOptionMission(null);
-	}
+  logOut() {
+    this.setCurrentUser(null);
+    this.setCurrentOffer(null);
+    this.setLastResult(null);
+    this.setSearchResult(null);
+    this.setLangList(null);
+    this.setQualityList(null);
+    this.setJobList(null);
+    this.setOptionMission(null);
+  }
 
-	setCurrentUser(user){
-		localStorage.setItem('currentUser', JSON.stringify(user));
-	}
+  setCurrentUser(user) {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+  }
 
-	getCurrentUser(){
-		return JSON.parse(localStorage.getItem('currentUser'));
-		//return this.currentUser;
-	}
+  getCurrentUser() {
+    return JSON.parse(localStorage.getItem('currentUser'));
+  }
 
-	setCurrentOffer(offer){
-		localStorage.setItem('currentOffer', JSON.stringify(offer));
-	}
+  setCurrentOffer(offer) {
+    localStorage.setItem('currentOffer', JSON.stringify(offer));
+  }
 
-	getCurrentOffer(){
-		return JSON.parse(localStorage.getItem('currentOffer'));
-	}
+  getCurrentOffer() {
+    return JSON.parse(localStorage.getItem('currentOffer'));
+  }
 
-	setLastResult(result){
-		localStorage.setItem('lastResult', JSON.stringify(result));
-	}
+  setCurrentMission(mission) {
+    localStorage.setItem('currentMission', JSON.stringify(mission));
+  }
 
-	getLastResult(){
-		return JSON.parse(localStorage.getItem('lastResult'));
-	}
+  getCurrentMission() {
+    return JSON.parse(localStorage.getItem('currentMission'));
+  }
 
-	setSectorList(list){
-		localStorage.setItem('sectorList', JSON.stringify(list));
-	}
+  setCurrentInvoice(invoice) {
+    localStorage.setItem('currentInvoice', JSON.stringify(invoice));
+  }
 
-	getSectorList(){
-		return JSON.parse(localStorage.getItem('sectorList'));
-	}
+  getCurrentInvoice() {
+    return JSON.parse(localStorage.getItem('currentInvoice'));
+  }
 
-	setJobList(list){
-		localStorage.setItem('jobList', JSON.stringify(list));
-	}
+  setLastResult(result) {
+    localStorage.setItem('lastResult', JSON.stringify(result));
+  }
 
-	getJobList(){
-		return JSON.parse(localStorage.getItem('jobList'));
-	}
+  getLastResult() {
+    return JSON.parse(localStorage.getItem('lastResult'));
+  }
 
-	setQualityList(list){
-		localStorage.setItem('qualityList', JSON.stringify(list));
-	}
+  setSectorList(list) {
+    localStorage.setItem('sectorList', JSON.stringify(list));
+  }
 
-	getQualityList(){
-		return JSON.parse(localStorage.getItem('qualityList'));
-	}
+  getSectorList() {
+    return JSON.parse(localStorage.getItem('sectorList'));
+  }
 
-	setLangList(list){
-		localStorage.setItem('langList', JSON.stringify(list));
-	}
+  setJobList(list) {
+    localStorage.setItem('jobList', JSON.stringify(list));
+  }
 
-	getLangList(){
-		return JSON.parse(localStorage.getItem('langList'));
-	}
+  getJobList() {
+    return JSON.parse(localStorage.getItem('jobList'));
+  }
 
-	setSearchResult(item){
-		localStorage.setItem('searchResult', JSON.stringify(item));
-	}
+  setQualityList(list) {
+    localStorage.setItem('qualityList', JSON.stringify(list));
+  }
 
-	getSearchResult(){
-		return JSON.parse(localStorage.getItem('searchResult'));
-	}
+  getQualityList() {
+    return JSON.parse(localStorage.getItem('qualityList'));
+  }
 
-	setOptionMission(option){
-		localStorage.setItem('optionMission', JSON.stringify(option));
-	}
+  setLangList(list) {
+    localStorage.setItem('langList', JSON.stringify(list));
+  }
 
-	getOptionMIssion(){
-		return JSON.parse(localStorage.getItem('optionMission'));
-	}
+  getLangList() {
+    return JSON.parse(localStorage.getItem('langList'));
+  }
+
+  setSearchResult(item) {
+    localStorage.setItem('searchResult', JSON.stringify(item));
+  }
+
+  getSearchResult() {
+    return JSON.parse(localStorage.getItem('searchResult'));
+  }
+
+  setOptionMission(option) {
+    localStorage.setItem('optionMission', JSON.stringify(option));
+  }
+
+  getOptionMIssion() {
+    return JSON.parse(localStorage.getItem('optionMission'));
+  }
 }

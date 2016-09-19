@@ -1,4 +1,4 @@
-import { provideRouter, RouterConfig } from '@angular/router';
+import {provideRouter, RouterConfig} from '@angular/router';
 import {Core} from './core';
 import {Dashboard} from './../dashboard/dashboard';
 import {Inbox} from '../inbox/inbox';
@@ -6,6 +6,7 @@ import {Widgets} from '../widgets/widgets';
 import {Charts} from '../charts/charts';
 import {Profile} from '../profile/profile';
 import {Civility} from '../civility/civility';
+// import {PersonalAddress} from '../personal.address/personal-address';
 import {Settings} from '../settings/settings';
 import {FormsElements} from '../forms-elements/forms-elements';
 import {FormsValidation} from '../forms-validation/forms-validation';
@@ -32,45 +33,49 @@ import {OfferAdd} from '../offer-add/offer-add';
 import {SearchResults} from '../search-results/search-results';
 import {SearchDetails} from '../search-details/search-details';
 import {SearchCriteria} from '../search-criteria/search-criteria';
+import {MissionList} from '../mission-list/mission-list';
+import {MissionDetails} from '../mission-details/mission-details';
 
 export const CoreRoutes: RouterConfig = [
   {
     path: 'app',
     component: Core,
     children: [
-      { path: 'dashboard', component: Dashboard},
-      { path: 'inbox', component: Inbox},
-      { path: 'widgets', component: Widgets},
-      { path: 'charts', component: Charts },
-      { path: 'profile', component: Profile },
-      { path: 'civility', component: Civility },
-      { path: 'settings', component: Settings },
-      { path: 'forms/elements', component: FormsElements },
-      { path: 'forms/validation', component: FormsValidation },
-      { path: 'forms/wizard', component: FormsWizard },
-      { path: 'ui/components', component: UiComponents },
-      { path: 'ui/notifications', component: UiNotifications },
-      { path: 'ui/icons', component: UiIcons },
-      { path: 'ui/buttons', component: UiButtons},
-      { path: 'ui/tabs-accordion', component: UiTabsAccordion},
-      { path: 'ui/list-groups', component: UiListGroups},
-      { path: 'grid', component: Grid},
-      { path: 'maps/google', component: MapsGoogle },
-      { path: 'maps/vector', component: MapsVector},
-      { path: 'tables/basic', component: TablesBasic},
-      { path: 'tables/dynamic', component: TablesDynamic},
-      { path: 'extra/calendar', component: ExtraCalendar},
-      { path: 'extra/invoice', component: ExtraInvoice},
-      { path: 'extra/gallery', component: ExtraGallery},
-      { path: 'extra/search', component: ExtraSearchResults},
-      { path: 'extra/timeline', component: ExtraTimeLine},
-  	  { path: 'offer/list', component: OfferList},
-  	  { path: 'offer/detail', component: OfferDetail},
-  	  { path: 'offer/add', component: OfferAdd},
-  	  { path: 'search/results', component: SearchResults},
-  	  { path: 'search/details', component: SearchDetails},
-  		{ path: 'search/criteria', component: SearchCriteria }
-
+      {path: 'dashboard', component: Dashboard},
+      {path: 'inbox', component: Inbox},
+      {path: 'widgets', component: Widgets},
+      {path: 'charts', component: Charts},
+      {path: 'profile', component: Profile},
+      {path: 'civility', component: Civility},
+      {path: 'settings', component: Settings},
+      // {path: 'personalAddress', component: PersonalAddress},
+      {path: 'forms/elements', component: FormsElements},
+      {path: 'forms/validation', component: FormsValidation},
+      {path: 'forms/wizard', component: FormsWizard},
+      {path: 'ui/components', component: UiComponents},
+      {path: 'ui/notifications', component: UiNotifications},
+      {path: 'ui/icons', component: UiIcons},
+      {path: 'ui/buttons', component: UiButtons},
+      {path: 'ui/tabs-accordion', component: UiTabsAccordion},
+      {path: 'ui/list-groups', component: UiListGroups},
+      {path: 'grid', component: Grid},
+      {path: 'maps/google', component: MapsGoogle},
+      {path: 'maps/vector', component: MapsVector},
+      {path: 'tables/basic', component: TablesBasic},
+      {path: 'tables/dynamic', component: TablesDynamic},
+      {path: 'extra/calendar', component: ExtraCalendar},
+      {path: 'extra/invoice', component: ExtraInvoice},
+      {path: 'extra/gallery', component: ExtraGallery},
+      {path: 'extra/search', component: ExtraSearchResults},
+      {path: 'extra/timeline', component: ExtraTimeLine},
+      {path: 'offer/list', component: OfferList},
+      {path: 'offer/detail', component: OfferDetail},
+      {path: 'offer/add', component: OfferAdd},
+      {path: 'search/results', component: SearchResults},
+      {path: 'search/details', component: SearchDetails},
+      {path: 'search/criteria', component: SearchCriteria},
+      {path: 'mission/list', component: MissionList},
+      {path: 'mission/details', component: MissionDetails}
     ]
   }
 ];
