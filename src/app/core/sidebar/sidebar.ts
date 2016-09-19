@@ -3,6 +3,7 @@ import {ROUTER_DIRECTIVES, Router, NavigationEnd} from '@angular/router';
 import {Location} from '@angular/common';
 import {SlimScroll} from 'ng2-slimscroll/ng2-slimscroll';
 import {ConfigService} from '../config';
+import {SharedService} from "../../providers/shared.service";
 declare var jQuery: any;
 
 @Component({
@@ -20,7 +21,10 @@ export class Sidebar implements OnInit {
   router: Router;
   location: Location;
 
-  constructor(config: ConfigService, el: ElementRef, router: Router, location: Location) {
+  currentUser:any;
+
+  constructor(config: ConfigService, el: ElementRef, router: Router, location: Location,private sharedService:SharedService) {
+    this.currentUser = this.sharedService.getCurrentUser();
     this.$el = jQuery(el.nativeElement);
     this.config = config.getConfig();
     this.router = router;

@@ -29,11 +29,12 @@ export class Navbar implements OnInit {
 
 
   constructor(el: ElementRef, config: ConfigService,private sharedService:SharedService,private offerService: OffersService,private router:Router) {
-    //TODO: change this line & redirect to login page if not connected
-    this.currentUser = this.sharedService.getCurrentUser()? this.sharedService.getCurrentUser():  {nom:"",prenom:"",estEmployeur:false,jobyer:{offers:[]}};
-    this.isEmployer = this.currentUser.estEmployeur;
-    this.getOffers();
-    this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+    this.currentUser = this.sharedService.getCurrentUser();
+    if(this.currentUser){
+      this.isEmployer = this.currentUser.estEmployeur;
+      this.getOffers();
+      this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+    }
 
     this.$el = jQuery(el.nativeElement);
     this.config = config.getConfig();
