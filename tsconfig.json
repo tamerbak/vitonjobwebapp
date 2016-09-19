@@ -115,6 +115,7 @@
         "./src/app/widgets/years-map-widget/years-map-widget.ts",
         "./src/main.ts",
         "./src/polyfills.ts",
-        "./src/app/personal.address/personal-address.ts"
+        "./src/app/settings/settings.ts",
+        "./src/app/providers/mission-service.ts"
     ]
 }

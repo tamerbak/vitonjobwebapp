@@ -11,7 +11,7 @@ import {Configs} from '../configurations/configs';
 @Injectable()
 export class AuthenticationService {
     configuration;
-    
+
     constructor(private http: Http) {
         this.http = http;
     }
@@ -34,7 +34,7 @@ export class AuthenticationService {
 	          });
 	    })
 	}
-	
+
 	/**
 		* @description get user information by his mail and role
 		* @param mail, role
@@ -56,7 +56,7 @@ export class AuthenticationService {
 	          });
 	    })
 	}
-	
+
 	/**
      * @description Insert a user_account if it does not exist
      * @param email, phone, password, role
@@ -99,7 +99,7 @@ export class AuthenticationService {
                 });
         })
     }
-	
+
 	setNewPassword(phoneOrEmail){
         let encodedArg = btoa(phoneOrEmail);
 
@@ -121,7 +121,7 @@ export class AuthenticationService {
 			});
         });
     }
-	
+
 	updatePasswordByPhone(tel, password){
         let sql = "update user_account set mot_de_passe = '" + password + "' where telephone = '" + tel + "';";
 
@@ -134,7 +134,7 @@ export class AuthenticationService {
                 });
         })
     }
-	
+
 	sendPasswordBySMS(tel, passwd){
         tel = tel.replace('+', '00');
         let url = Configs.smsURL;
@@ -151,7 +151,7 @@ export class AuthenticationService {
                 });
         })
     }
-	
+
     sendPasswordByEmail(email, passwd){
         let url = Configs.emailURL;
         let payload = "<fr.protogen.connector.model.MailModel>"
@@ -172,7 +172,7 @@ export class AuthenticationService {
                 });
         })
     }
-	
+
 	updatePasswordByMail(email, password){
         let sql = "update user_account set mot_de_passe = '" + password + "' where email = '" + email + "';";
 
@@ -185,10 +185,25 @@ export class AuthenticationService {
                 });
         })
     }
-	isEmpty(str){
-		if(str == '' || str == 'null' || !str)
-			return true;
-		else
-			return false;
-	}
+
+    updatePasswd(passwd, id){
+      var sql = "update user_account set mot_de_passe = '" + passwd + "' where pk_user_account = '" + id + "';";
+
+      return new Promise(resolve => {
+        let headers = Configs.getHttpTextHeaders();
+        this.http.post(Configs.sqlURL, sql, {headers:headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          console.log(data);
+          resolve(data);
+        });
+      })
+    }
+
+    isEmpty(str){
+      if(str == '' || str == 'null' || !str)
+        return true;
+      else
+        return false;
+    }
 }
