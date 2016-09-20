@@ -46,5 +46,18 @@ export class CommunesService {
                 });
         });
     }
+	
+	autocompleteCity(letters){
+        let sql = "select pk_user_ville as id, nom from user_ville where lower_unaccent(nom) % lower_unaccent('"+letters+"') order by nom asc limit 5";
+        return new Promise(resolve => {
+            let headers = Configs.getHttpTextHeaders();
+            this.http.post(Configs.sqlURL, sql, {headers: headers})
+                .map(res => res.json())
+                .subscribe(data => {
+                    resolve(data);
+                });
+        });
+
+    }
 
 }

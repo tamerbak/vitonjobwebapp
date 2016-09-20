@@ -1,39 +1,69 @@
+<ol class="breadcrumb">
+	<li>Vous êtes ici</li>
+	<li class="active">Recherche avancée</li>
+</ol>
+<h1 class="page-title">{{currentUser.estEmployeur ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Recherche avancée</span></h1>
 
 <div class="row">
-  <div class="col-lg-12">
-    <h1>Recherche avancée</h1>
-      <form>
-
-        <fieldset class="form-group">
-          <label for="x">Secteur</label>
-          <select class="form-control" id="ex1">
-            <option>Test</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-          </select>
-        </fieldset>
-        <fieldset class="form-group">
-          <label for="x">Job</label>
-          <select class="form-control" id="ex1">
-            <option>test</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-          </select>
-        </fieldset>
-        <fieldset class="form-group">
-          <label for="x">Date</label>
-          <input class="form-control" type="date" value="2011-08-19" id="example-date-input">
-        </fieldset>
-
-        <fieldset class="form-group">
-          <label for="x">Ville</label>
-          <input class="form-control" type="text" id="example-text-input">
-        </fieldset>
-        <button type="submit" class="btn btn-primary">Recherche</button>
-      </form>
-  </div>
+	<div class="col-lg-8 col-xl-offset-2 col-xs-12">
+		<alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
+			<div [innerHTML]="alert.msg"></div>
+		</alert>
+		<section class="widget" widget>
+			<header>
+				<h4>
+					Recherhce par critères
+				</h4>
+			</header>
+			<div class="widget-body">
+				<form class="form-horizontal" role="form">
+					<fieldset>
+						<div class="form-group row">
+							<label class="col-md-4 col-xs-12 form-control-label text-md-right">Secteur</label>
+							<div class="col-md-7 col-xs-12">
+								<select class="form-control" [(ngModel)]="idSector" (change)="sectorSelected($event.target.value)">
+									<option *ngFor="let s of sectors" [value]="s.id"> {{s.libelle}}</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="hint-field" class="col-md-4 form-control-label text-md-right">
+								Job
+							</label>
+							<div class="col-md-7 col-xs-12">
+								<select class="form-control" [(ngModel)]="idJob" (change)="jobSelected($event.target.value)">
+									<option *ngFor="let j of jobs" [value]="j.id"> {{j.libelle}}</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="hint-field" class="col-md-4 form-control-label text-md-right">
+								Date de disponibilité
+							</label>
+							<div class="col-md-7 col-xs-12">
+								<datetime [timepicker]="false" [datepicker]="{autoclose: true,format: 'dd/mm/yyyy', language: 'fr'}" [(ngModel)]="availabilityDate"></datetime>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="hint-field" class="col-md-4 form-control-label text-md-right">
+								Ville
+							</label>
+							<div class="col-md-7 col-xs-12">
+								<input type="hidden" class="select2 form-control city" name="city" [(ngModel)]="city"/>
+							</div>
+						</div>
+						
+					</fieldset>
+					
+					<div class="form-actions">
+						<div class="row">
+							<div class="col-md-offset-4 col-md-7 col-xs-12">
+								<button type="submit" class="btn btn-primary" (click)="validateSearch()">Rechercher</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</section>
+	</div>
 </div>
