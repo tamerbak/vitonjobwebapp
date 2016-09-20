@@ -35,6 +35,7 @@ import {SearchDetails} from '../search-details/search-details';
 import {SearchCriteria} from '../search-criteria/search-criteria';
 import {MissionList} from '../mission-list/mission-list';
 import {MissionDetails} from '../mission-details/mission-details';
+import {WalletCreate} from '../wallet-create/wallet-create';
 
 export const CoreRoutes: RouterConfig = [
   {
@@ -75,7 +76,8 @@ export const CoreRoutes: RouterConfig = [
       {path: 'search/details', component: SearchDetails},
       {path: 'search/criteria', component: SearchCriteria},
       {path: 'mission/list', component: MissionList},
-      {path: 'mission/details', component: MissionDetails}
+      {path: 'mission/details', component: MissionDetails},
+	  {path: 'wallet/create', component: WalletCreate}
     ]
   }
 ];
