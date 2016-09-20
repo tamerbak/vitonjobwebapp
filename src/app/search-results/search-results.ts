@@ -44,7 +44,8 @@ export class SearchResults {
 			for (let i = 0; i < this.searchResults.length; i++) {
 				var role = this.projectTarget == 'employer' ? "employeur" : "jobyer";
 				this.profileService.loadProfilePicture(null, this.searchResults[i].tel, role).then((data: any) => {
-					if(data && data.data && data.data[0] && !this.isEmpty(data.data[0].encode)){
+					//regex to test if the returned data is base64 
+					if(data && data.data && data.data[0] && !this.isEmpty(data.data[0].encode) && data.data[0].encode.startsWith("data:image/")){
 						this.searchResults[i].avatar = data.data[0].encode;
 					}
 				});
