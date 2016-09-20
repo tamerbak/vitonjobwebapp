@@ -719,7 +719,7 @@ export class MissionDetails {
             jobyerPhone: data.jobyerPhone,
             idContract: idContrat,
             idInvoice: idInvoice
-          }
+          };
           this.missionService.signEndOfMission(bean).then(signatureData=> {
             // debugger;
             this.financeService.checkInvoice(this.contract.pk_user_contrat).then((invoice: any)=> {
@@ -1177,13 +1177,12 @@ export class MissionDetails {
   //   );
   // }
 
-
+  /**
+   * Call the hours record signature page
+   */
   eomReleve() {
-    // this.nav.push(MissionEndRelevePage, {idInvoice: this.invoiceId});
-
     this.sharedService.setCurrentInvoice(this.invoiceId);
-    console.log('eomRevele');
-    // TODO : signature
+    this.router.navigate(['app/contract/hours-record']);
   }
 
   eomInvoice() {

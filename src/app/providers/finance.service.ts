@@ -144,20 +144,20 @@ export class FinanceService {
     });
   }
 
-  // loadInvoiceSignature(idInvoice) {
-  //   let sql = "select * from user_facture_voj where pk_user_facture_voj=" + idInvoice;
-  //   console.log(sql);
-  //   return new Promise(resolve => {
-  //     let headers = new Headers();
-  //     headers = Configs.getHttpTextHeaders();
-  //     this.http.post(this.configuration.sqlURL, sql, {headers: headers})
-  //       .map(res => res.json())
-  //       .subscribe(data => {
-  //         this.data = data.data[0];
-  //         resolve(this.data);
-  //       });
-  //   });
-  // }
+  loadInvoiceSignature(idInvoice) {
+    let sql = "select * from user_facture_voj where pk_user_facture_voj=" + idInvoice;
+    console.log(sql);
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          this.data = data.data[0];
+          resolve(this.data);
+        });
+    });
+  }
 
   checkInvoice(idContrat) {
     let sql = "select * from user_facture_voj where fk_user_contrat=" + idContrat;
