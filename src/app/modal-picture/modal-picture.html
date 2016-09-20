@@ -1,0 +1,48 @@
+<div class="modal fade" id="modal-picture">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel18">Photo de profil</h4>
+        <!-- <p class="text-xs-center fs-mini text-muted mt-sm">
+          We need a bit of your detailed information to proceed. US ticketing system requires
+          us to process and check your personal infromation before we can go.
+        </p> -->
+      </div>
+      <div class="modal-body bg-gray-lighter">
+        <form class="modal-picture-form form-horizontal" role="form">
+          <div class="row">
+            <div class="col-lg-12 col-xs-12">
+
+              <div class="form-group row">
+                <div class="col-md-12 col-xs-12">
+                  <div class="croppieDiv"></div>
+                  <a class="btn file-btn btn-default" style="text-align: center">
+                    <input type="file" id="upload" value="Choisir une image" accept="image/*">
+                    <span><i class="fa fa-upload" aria-hidden="true"></i>Choisir une image</span>
+                  </a>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="clearfix">
+          <div class="btn-toolbar pull-xs-right m-t-1">
+            <div class="widget-body btn loaderPosition" [hidden]="!validationImage">
+              <div class="loader animated fadeIn handle">
+                <span class="spinner">
+                  <i class="fa fa-spinner fa-spin"></i>
+                </span>
+              </div>
+            </div>
+            <button class="btn btn-primary" [disabled]="!isPictureChanged || validationImage" (click)="updatePicture()" >Modifier</button>
+            <button type="button" class="btn btn-gray" data-dismiss="modal">Annuler</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

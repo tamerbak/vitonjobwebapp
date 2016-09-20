@@ -43,7 +43,7 @@
         <a class="nav-link dropdown-toggle dropdown-toggle-notifications"
            id="notifications-dropdown-toggle" data-toggle="dropdown">
                 <span class="thumb-sm avatar pull-xs-left">
-                    <img class="img-circle" src="assets/images/people/a5.jpg" alt="...">
+                    <img class="img-circle" src={{sharedService.getProfilImageUrl()}} alt="...">
                 </span>
           &nbsp;
           {{sharedService.getCurrentUser().prenom}} <strong>{{sharedService.getCurrentUser().nom}}</strong>&nbsp;

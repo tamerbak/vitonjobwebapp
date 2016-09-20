@@ -28,6 +28,7 @@ export class SharedService {
 		this.setQualityList(null);
 		this.setJobList(null);
 		this.setOptionMission(null);
+		this.setProfilImageUrl(null);
 	}
 
 	setCurrentUser(user){
@@ -102,4 +103,17 @@ export class SharedService {
 	getOptionMIssion(){
 		return JSON.parse(localStorage.getItem('optionMission'));
 	}
+
+	setProfilImageUrl(str){
+		localStorage.setItem('profilImage', str);
+	}
+
+	getProfilImageUrl(){
+		var image = localStorage.getItem('profilImage');
+		if(image !== 'null'){
+			return localStorage.getItem('profilImage');
+		}
+		return 'assets/images/people/a5.jpg';
+	}
+
 }

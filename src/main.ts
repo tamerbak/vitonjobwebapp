@@ -20,6 +20,7 @@ import 'jquery-flot/jquery.flot.time.js';
 import 'jquery.flot.animator/jquery.flot.animator.js';
 import 'flot-orderBars/js/jquery.flot.orderBars.js';
 import 'bootstrap_calendar/bootstrap_calendar/js/bootstrap_calendar.js';
+import 'croppie/croppie.js';
 
 import 'jquery.nestable/jquery.nestable.js';
 import 'jquery-ui/ui/mouse.js';
