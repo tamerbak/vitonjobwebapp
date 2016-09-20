@@ -3,13 +3,14 @@ import {SharedService} from "../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 import {SearchService} from "../providers/search-service";
 import {ProfileService} from "../providers/profile.service";
+import {ModalComponent} from './modal-component/modal-component';
 
 @Component({
   selector: '[search-results]',
   template: require('./search-results.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./search-results.scss')],
-  directives: [ROUTER_DIRECTIVES],
+  directives: [ROUTER_DIRECTIVES, ModalComponent],
   providers: [SearchService, ProfileService]
 })
 export class SearchResults {
