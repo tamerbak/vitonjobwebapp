@@ -1,8 +1,8 @@
 <ol class="breadcrumb">
 	<li>Vous êtes ici</li>
-	<li class="active">Recherche avancée</li>
+	<li class="active">Empreinte de carte bancaire</li>
 </ol>
-<h1 class="page-title">{{projectTarget ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Recherche avancée</span></h1>
+<h1 class="page-title">{{projectTarget ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Empreinte de carte bancaire</span></h1>
 
 <div class="row">
 	<div class="col-lg-8 col-xl-offset-2 col-xs-12">
@@ -12,44 +12,42 @@
 		<section class="widget" widget>
 			<header>
 				<h4>
-					Recherhce par critères
+					Empreinte de carte bancaire
 				</h4>
 			</header>
 			<div class="widget-body">
 				<form class="form-horizontal" role="form">
 					<fieldset>
 						<div class="form-group row">
-							<label class="col-md-4 col-xs-12 form-control-label text-md-right">Secteur</label>
+							<label class="col-md-4 col-xs-12 form-control-label text-md-right">Type de carte</label>
 							<div class="col-md-7 col-xs-12">
-								<select class="form-control" [(ngModel)]="idSector" (change)="sectorSelected($event.target.value)">
-									<option *ngFor="let s of sectors" [value]="s.id"> {{s.libelle}}</option>
+								<select class="form-control" [(ngModel)]="cardType">
+									<option value="CB"> Carte Bleue</option>
 								</select>
 							</div>
 						</div>
 						<div class="form-group row">
 							<label for="hint-field" class="col-md-4 form-control-label text-md-right">
-								Job
+								Numéro de carte
 							</label>
 							<div class="col-md-7 col-xs-12">
-								<select class="form-control" [(ngModel)]="idJob" (change)="jobSelected($event.target.value)">
-									<option *ngFor="let j of jobs" [value]="j.id"> {{j.libelle}}</option>
-								</select>
+								<input class="form-control" [(ngModel)]="cardNumber"/>
 							</div>
 						</div>
 						<div class="form-group row">
 							<label for="hint-field" class="col-md-4 form-control-label text-md-right">
-								Date de disponibilité
+								MMAA
 							</label>
 							<div class="col-md-7 col-xs-12">
-								<datetime [timepicker]="false" [datepicker]="{autoclose: true,format: 'dd/mm/yyyy', language: 'fr'}" [(ngModel)]="availabilityDate"></datetime>
+								<input class="form-control" [(ngModel)]="cardExpirationDate"/>
 							</div>
 						</div>
 						<div class="form-group row">
 							<label for="hint-field" class="col-md-4 form-control-label text-md-right">
-								Ville
+								Code Sécurité
 							</label>
 							<div class="col-md-7 col-xs-12">
-								<input type="hidden" class="select2 form-control city" name="city" [(ngModel)]="city"/>
+								<input class="form-control" [(ngModel)]="cardCvv"/>
 							</div>
 						</div>
 						
@@ -58,7 +56,14 @@
 					<div class="form-actions">
 						<div class="row">
 							<div class="col-md-offset-4 col-md-7 col-xs-12">
-								<button type="submit" class="btn btn-primary" (click)="validateSearch()">Rechercher</button>
+								<button type="submit" class="btn btn-primary" (click)="openWallet()" [disabled]="!hideLoader">Enregistrer</button>
+							</div>
+							<div class="widget-body btn loaderPosition" [hidden]="true">
+								<div class="loader animated fadeIn handle">
+									<span class="spinner">
+										<i class="fa fa-spinner fa-spin"></i>
+									</span>
+								</div>
 							</div>
 						</div>
 					</div>
