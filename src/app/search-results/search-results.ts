@@ -23,7 +23,11 @@ export class SearchResults {
 
 	ngOnInit() {
 		this.currentUser = this.sharedService.getCurrentUser();
-		this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+		if(this.currentUser){
+			this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+		}else{
+			this.projectTarget = this.sharedService.getProjectTarget();
+		}
 		//  Retrieving last search
 		let jsonResults = this.sharedService.getLastResult();
 		if (jsonResults) {
