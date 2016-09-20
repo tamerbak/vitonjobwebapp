@@ -15,7 +15,7 @@ import {SharedService} from "../providers/shared.service";
 
 export class Dashboard {
 	currentUser: any;
-	projectTarget: any;
+	projectTarget: string;
 	scQuery: string;
 	alerts: Array<Object>;
 	hideLoader: boolean = true;
@@ -27,7 +27,11 @@ export class Dashboard {
 	
 	ngOnInit(): void {
 		this.currentUser = this.sharedService.getCurrentUser();
-		this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+		if(this.currentUser){
+			this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+		}else{
+			this.projectTarget = this.sharedService.getProjectTarget();
+		}
 	}
 	
 	doSemanticSearch(){

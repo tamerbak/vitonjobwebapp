@@ -15,6 +15,7 @@ declare var jQuery: any;
 
 export class SearchDetails {
 	currentUser: any;
+	projectTarget: string;
 	offer: any;
 	result: any;
     fullTitle:string = '';
@@ -33,6 +34,11 @@ export class SearchDetails {
 	
 	ngOnInit(): void {
 		this.currentUser = this.sharedService.getCurrentUser();
+		if(this.currentUser){
+			this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+		}else{
+			this.projectTarget = this.sharedService.getProjectTarget();
+		}
 		this.result = this.sharedService.getSearchResult();
 		this.offer = this.sharedService.getCurrentOffer();
 		
@@ -41,7 +47,7 @@ export class SearchDetails {
 		this.fullTitle = this.result.titreOffre;
         if (this.result.titreoffre)
 		this.fullTitle = this.fullTitle + this.result.titreoffre;
-		if (!this.currentUser.estEmployeur)
+		if (this.projectTarget != "employer")
 		this.fullName = this.result.entreprise;
         else
 		this.fullName = this.result.titre + ' ' + this.result.prenom + ' ' + this.result.nom;
@@ -53,7 +59,7 @@ export class SearchDetails {
 		this.zoom = 12;
 		
 		//get qualities and langs of the selected offer	
-		let table = this.currentUser.estEmployeur ? 'user_offre_jobyer' : 'user_offre_entreprise';
+		let table = this.projectTarget == "employer" ? 'user_offre_jobyer' : 'user_offre_entreprise';
 		let idOffers = [];
         idOffers.push(this.result.idOffre);
 		this.offersService.getOffersLanguages(idOffers, table).then((data: any) => {

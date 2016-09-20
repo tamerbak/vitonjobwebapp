@@ -39,7 +39,11 @@ export class SearchCriteria {
 	
 	ngOnInit(): void {
 		this.currentUser = this.sharedService.getCurrentUser();
-		this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer')
+		if(this.currentUser){
+			this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+		}else{
+			this.projectTarget = this.sharedService.getProjectTarget();
+		}
 		this.buildFilters();
 		//load all sectors, if not yet loaded in local
 		this.sectors = this.sharedService.getSectorList();
