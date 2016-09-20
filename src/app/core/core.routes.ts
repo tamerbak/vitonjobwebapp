@@ -6,7 +6,6 @@ import {Widgets} from '../widgets/widgets';
 import {Charts} from '../charts/charts';
 import {Profile} from '../profile/profile';
 import {Civility} from '../civility/civility';
-// import {PersonalAddress} from '../personal.address/personal-address';
 import {Settings} from '../settings/settings';
 import {FormsElements} from '../forms-elements/forms-elements';
 import {FormsValidation} from '../forms-validation/forms-validation';
@@ -35,7 +34,8 @@ import {SearchDetails} from '../search-details/search-details';
 import {SearchCriteria} from '../search-criteria/search-criteria';
 import {MissionList} from '../mission-list/mission-list';
 import {MissionDetails} from '../mission-details/mission-details';
-import {MissionEndRelevePage} from "../mission-end-releve/mission-end-releve";
+import {MissionEndReleve} from "../mission-end-releve/mission-end-releve";
+import {MissionEndInvoice} from "../mission-end-invoice/mission-end-invoice";
 
 /**
  * This module contains all routes for the project
@@ -93,7 +93,8 @@ export const CoreRoutes: RouterConfig = [
       {path: 'mission/details', component: MissionDetails},
 
       // Contract management
-      {path: 'contract/hours-record', component: MissionEndRelevePage},
+      {path: 'contract/hours-record', component: MissionEndReleve},
+      {path: 'contract/invoice', component: MissionEndInvoice},
     ]
   }
 ];

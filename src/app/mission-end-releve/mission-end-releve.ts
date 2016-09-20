@@ -12,7 +12,7 @@ import {FinanceService} from "../providers/finance.service";
   styles: [require('./mission-end-releve.scss')],
   providers: [SharedService, GlobalConfigs, FinanceService]
 })
-export class MissionEndRelevePage {
+export class MissionEndReleve {
   currentUser: any;
   invoice: any;
   isEmployer: boolean;
@@ -63,6 +63,8 @@ export class MissionEndRelevePage {
     iframe.style.width = "100%";
     iframe.setAttribute("src", yousignEmployerLink);
 
+    console.log('load iframe from: ' + yousignEmployerLink);
+
     document.getElementById("iframPlaceHolder").appendChild(iframe);
   }
 
@@ -80,6 +82,8 @@ export class MissionEndRelevePage {
     iframe.style.height = "100%";
     iframe.style.width = "100%";
     iframe.setAttribute("src", yousignEmployerLink);
+
+    console.log('load iframe from: ' + yousignEmployerLink);
 
     document.getElementById("iframPlaceHolder").appendChild(iframe);
   }

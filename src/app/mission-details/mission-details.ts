@@ -1185,11 +1185,12 @@ export class MissionDetails {
     this.router.navigate(['app/contract/hours-record']);
   }
 
+  /**
+   * Call the invoice signature page
+   */
   eomInvoice() {
-    // this.nav.push(MissionEndInvoicePage, {idInvoice: this.invoiceId});
     this.sharedService.setCurrentInvoice(this.invoiceId);
-    console.log('eomInvoice');
-    // TODO : signature
+    this.router.navigate(['app/contract/invoice']);
   }
 
   getOptionMission() {
