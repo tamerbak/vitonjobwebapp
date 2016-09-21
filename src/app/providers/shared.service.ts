@@ -7,9 +7,10 @@ import {Injectable} from '@angular/core';
 
 @Injectable()
 export class SharedService {
+	stockageType: string;
 	
 	constructor() {
-		
+		this.stockageType = localStorage.getItem('stockageType');
 	}
 	
 	logOut() {
@@ -23,99 +24,179 @@ export class SharedService {
 		this.setOptionMission(null);
 	}
 	
+	setStorageType(value) {
+        localStorage.setItem('stockageType', value);
+    }
+
+    getStorageType() {
+        return localStorage.getItem('stockageType');
+    }
+	
 	setProjectTarget(value) {
-        localStorage.setItem('projectTarget', value);
+		if(this.stockageType == "local")
+			localStorage.setItem('projectTarget', value);
+		else
+			sessionStorage.setItem('projectTarget', value);
     }
 
     getProjectTarget() {
-        return localStorage.getItem('projectTarget');
+        if(this.stockageType == "local")
+			return localStorage.getItem('projectTarget');
+		else
+			return sessionStorage.getItem('projectTarget');
     }
 	
 	setCurrentUser(user) {
-		localStorage.setItem('currentUser', JSON.stringify(user));
+		if(this.stockageType == "local")
+			localStorage.setItem('currentUser', JSON.stringify(user));
+		else
+			sessionStorage.setItem('currentUser', JSON.stringify(user));
 	}
 	
 	getCurrentUser() {
-		return JSON.parse(localStorage.getItem('currentUser'));
+		if(this.stockageType == "local")
+			return JSON.parse(localStorage.getItem('currentUser'));
+		else
+			return JSON.parse(sessionStorage.getItem('currentUser'));
 	}
 	
 	setCurrentOffer(offer) {
-		localStorage.setItem('currentOffer', JSON.stringify(offer));
+		if(this.stockageType == "local")
+			localStorage.setItem('currentOffer', JSON.stringify(offer));
+		else
+			sessionStorage.setItem('currentOffer', JSON.stringify(offer));
 	}
 	
 	getCurrentOffer() {
-		return JSON.parse(localStorage.getItem('currentOffer'));
+		if(this.stockageType == "local")
+			return JSON.parse(localStorage.getItem('currentOffer'));
+		else
+			return JSON.parse(sessionStorage.getItem('currentOffer'));
 	}
 	
 	setCurrentMission(mission) {
-		localStorage.setItem('currentMission', JSON.stringify(mission));
+		if(this.stockageType == "local")
+			localStorage.setItem('currentMission', JSON.stringify(mission));
+		else
+			sessionStorage.setItem('currentMission', JSON.stringify(mission));
 	}
 	
 	getCurrentMission() {
-		return JSON.parse(localStorage.getItem('currentMission'));
+		if(this.stockageType == "local")
+			return JSON.parse(localStorage.getItem('currentMission'));
+		else
+			return JSON.parse(sessionStorage.getItem('currentMission'));
 	}
 	
 	setCurrentInvoice(invoice) {
-		localStorage.setItem('currentInvoice', JSON.stringify(invoice));
+		if(this.stockageType == "local")
+			localStorage.setItem('currentInvoice', JSON.stringify(invoice));
+		else
+			sessionStorage.setItem('currentInvoice', JSON.stringify(invoice));
 	}
 	
 	getCurrentInvoice() {
-		return JSON.parse(localStorage.getItem('currentInvoice'));
+		if(this.stockageType == "local")
+			return JSON.parse(localStorage.getItem('currentInvoice'));
+		else
+			return JSON.parse(sessionStorage.getItem('currentInvoice'));
 	}
 	
 	setLastResult(result) {
-		localStorage.setItem('lastResult', JSON.stringify(result));
+		if(this.stockageType == "local")
+			localStorage.setItem('lastResult', JSON.stringify(result));
+		else
+			sessionStorage.setItem('lastResult', JSON.stringify(result));
 	}
 	
 	getLastResult() {
-		return JSON.parse(localStorage.getItem('lastResult'));
+		if(this.stockageType == "local")
+			return JSON.parse(localStorage.getItem('lastResult'));
+		else
+			return JSON.parse(sessionStorage.getItem('lastResult'));
 	}
 	
 	setSectorList(list) {
-		localStorage.setItem('sectorList', JSON.stringify(list));
+		if(this.stockageType == "local")
+			localStorage.setItem('sectorList', JSON.stringify(list));
+		else
+			sessionStorage.setItem('sectorList', JSON.stringify(list));
 	}
 	
 	getSectorList() {
-		return JSON.parse(localStorage.getItem('sectorList'));
+		if(this.stockageType == "local")
+			return JSON.parse(localStorage.getItem('sectorList'));
+		else
+			return JSON.parse(sessionStorage.getItem('sectorList'));
 	}
 	
 	setJobList(list) {
-		localStorage.setItem('jobList', JSON.stringify(list));
+		if(this.stockageType == "local")
+			localStorage.setItem('jobList', JSON.stringify(list));
+		else
+			sessionStorage.setItem('jobList', JSON.stringify(list));
 	}
 	
 	getJobList() {
-		return JSON.parse(localStorage.getItem('jobList'));
+		if(this.stockageType == "local")
+			return JSON.parse(localStorage.getItem('jobList'));
+		else
+			return JSON.parse(sessionStorage.getItem('jobList'));
 	}
 	
 	setQualityList(list) {
-		localStorage.setItem('qualityList', JSON.stringify(list));
+		if(this.stockageType == "local")
+			localStorage.setItem('qualityList', JSON.stringify(list));
+		else
+			sessionStorage.setItem('qualityList', JSON.stringify(list));
 	}
 	
 	getQualityList() {
-		return JSON.parse(localStorage.getItem('qualityList'));
+		if(this.stockageType == "local")
+			return JSON.parse(localStorage.getItem('qualityList'));
+		else
+			return JSON.parse(sessionStorage.getItem('qualityList'));
 	}
 	
 	setLangList(list) {
-		localStorage.setItem('langList', JSON.stringify(list));
+		if(this.stockageType == "local")
+			localStorage.setItem('langList', JSON.stringify(list));
+		else
+			sessionStorage.setItem('langList', JSON.stringify(list));
 	}
 	
 	getLangList() {
-		return JSON.parse(localStorage.getItem('langList'));
+		if(this.stockageType == "local")
+			return JSON.parse(localStorage.getItem('langList'));
+		else
+			return JSON.parse(sessionStorage.getItem('langList'));
 	}
 	
 	setSearchResult(item) {
-		localStorage.setItem('searchResult', JSON.stringify(item));
+		if(this.stockageType == "local")
+			localStorage.setItem('searchResult', JSON.stringify(item));
+		else
+			sessionStorage.setItem('searchResult', JSON.stringify(item));
 	}
 	
 	getSearchResult() {
-		return JSON.parse(localStorage.getItem('searchResult'));
+		if(this.stockageType == "local")
+			return JSON.parse(localStorage.getItem('searchResult'));
+		else
+			return JSON.parse(sessionStorage.getItem('searchResult'));
 	}
 	
 	setOptionMission(option) {
-		localStorage.setItem('optionMission', JSON.stringify(option));
+		if(this.stockageType == "local")
+			localStorage.setItem('optionMission', JSON.stringify(option));
+		else
+			sessionStorage.setItem('optionMission', JSON.stringify(option));
 	}
 	
 	getOptionMIssion() {
-		return JSON.parse(localStorage.getItem('optionMission'));
+		if(this.stockageType == "local")
+			return JSON.parse(localStorage.getItem('optionMission'));
+		else
+			return JSON.parse(sessionStorage.getItem('optionMission'));
 	}
 }

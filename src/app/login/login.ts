@@ -38,6 +38,7 @@ export class LoginPage {
 	libelleButton: string;
 	showHidePasswdIcon: string;
 	showHidePasswdConfirmIcon: string;
+	isRemembered: boolean;
 	
 	fromPage: string;
 	alerts: Array<Object>;
@@ -89,6 +90,11 @@ export class LoginPage {
 				return;
 			}
 			//store current user in session
+			if(this.isRemembered){
+				this.sharedService.setStorageType("local");
+			}else{
+				this.sharedService.setStorageType("session");
+			}
 			this.sharedService.setCurrentUser(data);
 			//if user is connected for the first time, redirect him to the page 'civility', otherwise redirect him to the home page
 			var isNewUser = data.newAccount;
