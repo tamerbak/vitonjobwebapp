@@ -6,8 +6,10 @@ import {Widgets} from '../widgets/widgets';
 import {Charts} from '../charts/charts';
 import {Profile} from '../profile/profile';
 import {Civility} from '../civility/civility';
-// import {PersonalAddress} from '../personal.address/personal-address';
 import {Settings} from '../settings/settings';
+import {RecruitList} from '../recruit-list/recruit-list';
+import {Attachements} from '../attachements/attachements';
+import {PendingContracts} from '../pending-contracts/pending-contracts';
 import {FormsElements} from '../forms-elements/forms-elements';
 import {FormsValidation} from '../forms-validation/forms-validation';
 import {FormsWizard} from '../forms-wizard/forms-wizard';
@@ -49,7 +51,9 @@ export const CoreRoutes: RouterConfig = [
       {path: 'profile', component: Profile},
       {path: 'civility', component: Civility},
       {path: 'settings', component: Settings},
-      // {path: 'personalAddress', component: PersonalAddress},
+      {path: 'recruitList', component: RecruitList},
+      {path: 'attachements', component: Attachements},
+      {path: 'pendingContracts', component: PendingContracts},
       {path: 'forms/elements', component: FormsElements},
       {path: 'forms/validation', component: FormsValidation},
       {path: 'forms/wizard', component: FormsWizard},
@@ -77,7 +81,7 @@ export const CoreRoutes: RouterConfig = [
       {path: 'search/criteria', component: SearchCriteria},
       {path: 'mission/list', component: MissionList},
       {path: 'mission/details', component: MissionDetails},
-	  {path: 'wallet/create', component: WalletCreate}
+      {path: 'wallet/create', component: WalletCreate}
     ]
   }
 ];
