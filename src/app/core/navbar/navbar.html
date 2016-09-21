@@ -13,7 +13,7 @@
 					<i class="fa fa-bars fa-lg hidden-sm-down"></i>
 				</a>
 			</li>
-			
+
 		</ul>
 		<ul class="nav navbar-nav navbar-right hidden-md-up">
 			<li class="nav-item">
@@ -33,7 +33,7 @@
 			<i class="fa fa-circle text-gray"></i>
 		</a>
 	</div>
-	
+
 	<!-- this part is hidden for xs screens -->
 	<div class="collapse navbar-collapse">
 		<!-- search form! link it to your search server -->
@@ -52,10 +52,10 @@
 		</form>
 		<ul class="nav navbar-nav pull-xs-right" (click)="$event.preventDefault()">
 			<li *ngIf="currentUser" class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle dropdown-toggle-notifications"
-				id="notifications-dropdown-toggle" data-toggle="dropdown">
+				<a class="nav-link dropdown-toggle"
+				data-toggle="dropdown">
 					<span class="thumb-sm avatar pull-xs-left">
-						<img class="img-circle" src="assets/images/people/a5.jpg" alt="...">
+						<img class="img-circle" src={{sharedService.getProfilImageUrl()}} alt="...">
 					</span>
 					&nbsp;
 					{{sharedService.getCurrentUser().prenom}} <strong>{{sharedService.getCurrentUser().nom}}</strong>&nbsp;
@@ -79,7 +79,7 @@
 					<li><a class="dropdown-item" (click)="logOut()"><i class="fa fa-sign-out"></i> &nbsp; Se déconnecter</a></li>
 				</ul>
 			</li>
-			<li><a *ngIf="!currentUser" class="dropdown-item" [routerLink]=" ['/login'] "><i class="fa fa-sign-in"></i> &nbsp; Se connecter</a></li>
+			<li><a [hidden]="currentUser" class="dropdown-item" [routerLink]=" ['/login'] "><i class="fa fa-sign-in"></i> &nbsp; Se connecter</a></li>
 		</ul>
 	</div>
 </div>

@@ -16,8 +16,9 @@
           <div class="col-md-12 col-xs-12 text-xs-center">
             <div class="post-user post-user-profile">
               <span class="thumb-xlg">
-                <img class="img-circle" src="assets/images/people/a5.jpg" alt="...">
+                <img class="img-circle" src={{sharedService.getProfilImageUrl()}} alt="..." data-toggle="modal" data-target="#modal-picture" style="cursor: pointer;">
               </span>
+              <div modal-picture></div>
               <h5 class="fw-normal">{{currentUserFullname}}</h5>
               <p>{{isEmployer? (isRecruiter ? "Recruteur":"Employeur"):"Jobyer"}}</p>
 
