@@ -24,7 +24,6 @@ export class ProfileService {
         this.http.post(Configs.sqlURL, sql, {headers:headers})
         .map(res => res.json())
         .subscribe(data => {
-          console.log(data);
           resolve(data);
         });
       });
@@ -38,7 +37,6 @@ export class ProfileService {
         this.http.post(Configs.sqlURL, sql, {headers:headers})
         .map(res => res.json())
         .subscribe(data => {
-          console.log(data);
           resolve(data);
         });
       });
@@ -162,7 +160,6 @@ export class ProfileService {
             this.http.post(Configs.sqlURL, sql, {headers:headers})
 			.map(res => res.json())
 			.subscribe(data => {
-				console.log(data);
 				resolve(data);
 			});
 		});
@@ -170,14 +167,12 @@ export class ProfileService {
 
 	countEntreprisesBySIRET(siret){
 		var sql = "select count(*) from user_entreprise where siret='" + siret + "';";
-        console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers:headers})
           			.map(res => res.json())
           			.subscribe(data => {
-          				console.log(data);
           				resolve(data);
           			});
 		});
@@ -237,8 +232,7 @@ export class ProfileService {
         if(medecineId && medecineId>0)
             sql = sql + " , fk_user_medecine_de_travail='" + medecineId+ "' ";
         ape = (!ape ? "" : ape);
-		sql = sql + " , ape_ou_naf='" + ape + "' where  pk_user_entreprise=" + entrepriseId;
-        console.log(sql);
+	      sql = sql + " , ape_ou_naf='" + ape + "' where  pk_user_entreprise=" + entrepriseId;
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers:headers})

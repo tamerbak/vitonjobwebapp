@@ -7,9 +7,7 @@ import {SharedService} from "../providers/shared.service";
 import {ProfileService} from "../providers/profile.service";
 import {AlertComponent} from 'ng2-bootstrap/components/alert';
 import {ModalComponent} from './modal-component/modal-component';
-
 declare function md5(value: string): string;
-//declare var jQuery: any;
 
 @Component({
   directives: [ROUTER_DIRECTIVES, AlertComponent, ModalComponent],
@@ -50,11 +48,10 @@ export class LoginPage {
 				private authService: AuthenticationService,
 				private validationDataService: ValidationDataService,
 				private sharedService: SharedService,
-        private profileService:ProfileService,
+        private profileService: ProfileService,
 				private router: Router){}
 
 	ngOnInit(): void {
-		//jQuery('.select2').select2();
 		this.index = 33;
 		this.libelleButton = "Se connecter";
 		this.role = "employer";
@@ -78,6 +75,7 @@ export class LoginPage {
 		if(this.email == null || this.email == 'null')
 			this.email = '';
 		this.authService.authenticate(this.email, indPhone, pwd, this.role, this.isRecruteur).then((data: any) => {
+			this.hideLoader = true;
 			//case of authentication failure : server unavailable or connection probleme
 			if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
 				this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
@@ -117,7 +115,6 @@ export class LoginPage {
   				}
   			}
       });
-
 
 		});
 	}

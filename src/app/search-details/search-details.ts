@@ -1,7 +1,9 @@
 import {Component} from '@angular/core';
 import {OffersService} from "../providers/offer.service";
 import {SharedService} from "../providers/shared.service";
-import {ROUTER_DIRECTIVES, Router} from '@angular/router';import {GOOGLE_MAPS_DIRECTIVES} from 'angular2-google-maps/core';
+import {ROUTER_DIRECTIVES, Router} from '@angular/router';
+import {GOOGLE_MAPS_DIRECTIVES} from 'angular2-google-maps/core';
+import {ModalComponent} from './modal-component/modal-component';
 
 declare var jQuery: any;
 
@@ -9,7 +11,7 @@ declare var jQuery: any;
     selector: '[search-details]',
 	template: require('./search-details.html'),
 	styles: [require('./search-details.scss')],
-	directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES],
+	directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, ModalComponent],
 	providers: [OffersService]
 })
 

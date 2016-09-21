@@ -3,13 +3,14 @@ import {SharedService} from "../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 import {SearchService} from "../providers/search-service";
 import {ProfileService} from "../providers/profile.service";
+import {ModalComponent} from './modal-component/modal-component';
 
 @Component({
   selector: '[search-results]',
   template: require('./search-results.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./search-results.scss')],
-  directives: [ROUTER_DIRECTIVES],
+  directives: [ROUTER_DIRECTIVES, ModalComponent],
   providers: [SearchService, ProfileService]
 })
 export class SearchResults {
@@ -43,7 +44,8 @@ export class SearchResults {
 			for (let i = 0; i < this.searchResults.length; i++) {
 				var role = this.projectTarget == 'employer' ? "employeur" : "jobyer";
 				this.profileService.loadProfilePicture(null, this.searchResults[i].tel, role).then((data: any) => {
-					if(data && data.data && data.data[0] && !this.isEmpty(data.data[0].encode)){
+					//regex to test if the returned data is base64 
+					if(data && data.data && data.data[0] && !this.isEmpty(data.data[0].encode) && data.data[0].encode.startsWith("data:image/")){
 						this.searchResults[i].avatar = data.data[0].encode;
 					}
 				});

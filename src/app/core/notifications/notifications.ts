@@ -12,7 +12,7 @@ export class Notifications implements OnInit {
   $el: any;
   config: any;
   @Input() alerts:any;
-  @Input() loadOffers: Function; 
+  @Input() loadOffers: Function;
 
   constructor(el: ElementRef, config: ConfigService) {
     this.$el = jQuery(el.nativeElement);
@@ -28,6 +28,11 @@ export class Notifications implements OnInit {
   }
 
   ngOnInit(): void {
+    jQuery(document).ready(function(){
+        jQuery("#load-notifications-btn").click(function(){
+            console.log()
+        });
+    });
     this.config.onScreenSize(['sm', 'xs'], this.moveNotificationsDropdown);
     this.config.onScreenSize(['sm', 'xs'], this.moveBackNotificationsDropdown, false);
 
