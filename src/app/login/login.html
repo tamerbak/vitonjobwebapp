@@ -12,8 +12,8 @@
 					<div class="widget-body">
 						<!--<p class="widget-login-info">
 							Use Facebook, Twitter or your email to sign in.
-						</p>
-						<p class="widget-login-info">
+							</p>
+							<p class="widget-login-info">
 							Don't have an account? Sign up now!
 						</p>-->
 						<alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
@@ -22,20 +22,20 @@
 						<form class="login-form mt-lg">
 							<div class="form-group row">
 								<label class="col-md-4 col-xs-12 form-control-label text-md-right">Je me connecte en tant que</label>
-								  <div class="abc-radio">
+								<div class="abc-radio">
 									<input type="radio" name="radio1" id="radio1" value="employer" (click)="watchRole($event)" checked>
 									<label for="radio1" class="labelRadio">
-									  Employeur
+										Employeur
 									</label>
 									<input type="radio" name="radio1" id="radio2" value="jobyer" (click)="watchRole($event)">
 									<label for="radio2" class="labelRadio">
-									  Jobyer
+										Jobyer
 									</label>
 									<!--<input type="radio" name="radio1" id="radio3" value="employer" (click)="watchRole($event)">
-									<label for="radio3" class="labelRadio">
-									  Recruteur
+										<label for="radio3" class="labelRadio">
+										Recruteur
 									</label>-->
-								  </div>
+								</div>
 							</div>
 							<div class="form-group row">
 								<label class="col-md-4 col-xs-12 form-control-label text-md-right">Téléphone</label>
@@ -43,7 +43,7 @@
 									<!--<div class="input-group">
 										<input [(ngModel)]="index" type="number" class="form-control">
 										<div class="input-group-btn">
-											<button type="button" class="btn btn-inverse"><i class="fa fa-caret-down"></i></button>
+										<button type="button" class="btn btn-inverse"><i class="fa fa-caret-down"></i></button>
 										</div>
 									</div>-->
 									<select class="select2 form-control" [(ngModel)]="index">
@@ -91,7 +91,7 @@
 								<div class="col-md-8 col-xs-12">
 									<div id="hidePasswdConfirm" class="input-group">
 										<input [(ngModel)]="password2" class="form-control" type="password">
-											<div class="input-group-btn">
+										<div class="input-group-btn">
 											<button type="button" class="btn btn-success" (click)="showHidePasswdConfirm()"><i class="{{showHidePasswdConfirmIcon}}"></i></button>
 										</div>
 									</div>
@@ -106,35 +106,43 @@
 							</div>
 							<div class="clearfix">
 								<div class="btn-toolbar pull-xs-right m-t-1">
-								  <div class="widget-body btn loaderPosition" [hidden]="hideLoader">
-									<div class="loader animated fadeIn handle">
-										<span class="spinner">
-											<i class="fa fa-spinner fa-spin"></i>
-										</span>
+									<div class="widget-body btn loaderPosition" [hidden]="hideLoader">
+										<div class="loader animated fadeIn handle">
+											<span class="spinner">
+												<i class="fa fa-spinner fa-spin"></i>
+											</span>
+										</div>
 									</div>
-								  </div>
 									<button class="btn btn-inverse btn-sm" (click)="authenticate()" [disabled]="isAuthDisabled() || !hideLoader">{{libelleButton}}</button>
 								</div>
 							</div>
 							<div class="row m-t-1">
-								<div class="col-md-6 col-md-push-6">
+								<div class="col-md-12">
 									<div class="clearfix">
 										<!--<div class="abc-checkbox widget-login-info pull-xs-right ml-n-lg">
 											<input type="checkbox" id="checkbox1" value="1">
 											<label for="checkbox1">Keep me signed in </label>
 										</div>-->
 									</div>
-								</div>
-								
-								<div class="col-md-6 col-md-pull-6">
-									<!--modal de la rénitialisation du mot de passe-->
-									<div modal-component></div>
+									<div class="row m-t-1">
+										<div class="col-md-6 col-md-push-6">
+											<div class="clearfix">
+												<div class="abc-checkbox widget-login-info pull-xs-right ml-n-lg">
+													<input type="checkbox" #checkbox1 id="checkbox1" (change)="isRemembered = checkbox1.checked">
+													<label for="checkbox1">Se souvenir de moi </label>
+												</div>
+											</div>
+										</div>
+										
+										<div class="col-md-6 col-md-pull-6">
+											<div modal-component></div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</form>
 					</div>
 				</section>
-				
 			</div>
 		</div>
 	</main>
@@ -142,4 +150,3 @@
 		2015 &copy; Sing. Admin Dashboard Template.
 	</footer>
 </div>
-		
