@@ -86,7 +86,7 @@
     "metrojs": "0.9.77",
     "morris.js": "0.5.0",
     "ng2-bootstrap": "1.0.16",
-    "ng2-datetime": "^1.1.3",
+    "ng2-datetime": "1.1.3",
     "ng2-slimscroll": "https://github.com/jhuntoo/ng2-slimscroll.git#5c84226a1beaec21456e08760cb2598344a919e8",
     "nvd3": "1.8.1",
     "pace": "git://github.com/HubSpot/pace.git#v0.7.1",
