@@ -269,4 +269,8 @@ export class OfferDetail {
 		else
 		return false;
 	}
+	
+	ngOnDestroy(): void {
+		this.sharedService.setCurrentOffer(null);
+	}
 }

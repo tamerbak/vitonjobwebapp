@@ -8,17 +8,16 @@
 <div class="row">
 	<div class="col-lg-8 col-xl-offset-2 col-xs-12">
     <section widget class="widget">
-      <div class="widget-controls">
-        {{(matching.toString().indexOf('.') < 0) ? matching:matching.toString().split('.')[0]}}%
-      </div>
-      <div class="widget-body">
+      <div modal-component *ngIf="projectTarget == 'employer'"></div>
+	  <div class="widget-body">
         <div class="post-user mt-n-xs">
           <span class="thumb pull-left mr">
             <img class="img-circle" [src]="result.avatar">
           </span>
           <h6 class="mb-xs mt-xs"><span class="fw-semi-bold">{{fullName}}</span></h6>
-		<p class="fs-mini text-muted">{{projectTarget == 'employer' ? 'Offre de service: ' : 'Offre: '}} {{fullTitle}}</p>
-        </div>
+		<p class="fs-mini text-muted">{{projectTarget == 'employer' ? 'Offre de service: ' : 'Offre: '}} {{fullTitle}} <span class="label label-pill label-danger" style="margin-left: 5px">{{(matching.toString().indexOf('.') < 0) ? matching:matching.toString().split('.')[0]}}%</span>
+        </p>
+		</div>
         <div class="widget-middle-overflow windget-padding-md clearfix bg-info text-white">
 			<sebm-google-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" class="content-map">
 			  <sebm-google-map-marker [latitude]="lat" [longitude]="lng" >

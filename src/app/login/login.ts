@@ -6,9 +6,7 @@ import {ValidationDataService} from "../providers/validation-data.service";
 import {SharedService} from "../providers/shared.service";
 import {AlertComponent} from 'ng2-bootstrap/components/alert';
 import {ModalComponent} from './modal-component/modal-component';
-
 declare function md5(value: string): string;
-//declare var jQuery: any;
 
 @Component({
   directives: [ROUTER_DIRECTIVES, AlertComponent, ModalComponent],
@@ -52,7 +50,6 @@ export class LoginPage {
 				private router: Router){}
 	
 	ngOnInit(): void {
-		//jQuery('.select2').select2();
 		this.index = 33;
 		this.libelleButton = "Se connecter";
 		this.role = "employer";
@@ -76,6 +73,7 @@ export class LoginPage {
 		if(this.email == null || this.email == 'null')
 			this.email = '';
 		this.authService.authenticate(this.email, indPhone, pwd, this.role, this.isRecruteur).then((data: any) => {
+			this.hideLoader = true;
 			//case of authentication failure : server unavailable or connection probleme 
 			if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
 				this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
@@ -96,12 +94,12 @@ export class LoginPage {
 			var isNewUser = data.newAccount;
 			if (isNewUser || this.isNewRecruteur) {
 				//this.nav.setRoot(CivilityPage, {currentUser: data});
-				this.router.navigate(['app/charts']);
+				this.router.navigate(['app/profile']);
 			 } else {
 				if(this.fromPage == "Search"){
 					//this.nav.pop();
 				}else{
-					this.router.navigate(['app/offer/list']);
+					this.router.navigate(['app/dashboard']);
 				}
 			}
 		
