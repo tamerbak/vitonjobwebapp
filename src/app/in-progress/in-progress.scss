@@ -1,0 +1,47 @@
+@import "../../scss/variables";
+@import "../../../node_modules/bootstrap/scss/_variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+
+.progress-page{
+  background-color: $gray-semi-lighter;
+}
+
+.progress-container{
+  padding-top: 5%;
+  text-align: center;
+
+  > .btn{
+    padding-left: 35px;
+    padding-right: 35px;
+  }
+}
+
+.progress-code{
+  margin: 20px;
+  font-size: 30px;
+  font-weight: $font-weight-normal;
+  color: $gray-dark;
+  @include media-breakpoint-up(md){
+    font-size: 40px;
+  }
+}
+
+.progress-info{
+  font-size: 20px;
+  color: $gray-dark;
+}
+
+.progress-help{
+  font-size: 14px;
+}
+
+.progress-page .progress-footer {
+  position: absolute;
+  bottom: 30px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  font-size: $font-size-mini;
+  color: $text-muted;
+  text-align: center;
+}
