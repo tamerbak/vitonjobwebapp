@@ -34,14 +34,26 @@
 				</div>
 				<div class="col-md-3 col-xs-4">
 					<div class="row">
-						<h4 class="pull-xs-right" style="margin-bottom:0px"><strong>{{(item.matching.toString().indexOf('.') < 0) ? item.matching:item.matching.toString().split('.')[0]}}%</strong></h4>
+						<h4 class="pull-xs-right" style="margin-bottom:0px">
+              <strong>
+                {{(item.matching.toString().indexOf('.') < 0) ? item.matching:item.matching.toString().split('.')[0]}}%
+              </strong>
+            </h4>
 					</div>
 					<div class="row">
 						<label class="pull-xs-right" style="font-size: small; color: #ccc">de correspondance avec l'offre</label>
 					</div>
 					<div class="row">
 						<div class="col-md-1 col-xs-2 pull-xs-left">
-							<button type="button" class="btn btn-secondary btn-sm pull-xs-right" style="background-color: #40aea9; color: white;" *ngIf="currentUser.estEmployeur && !isRecruteur">Recrutement immédiat</button>
+							<button
+                type="button"
+                class="btn btn-secondary btn-sm pull-xs-right"
+                style="background-color: #40aea9; color: white;"
+                *ngIf="currentUser.estEmployeur && !isRecruteur"
+                (click)="contract(i)"
+              >
+                Recrutement immédiat
+              </button>
 						</div>
 						<div class="col-md-1 col-xs-2">
 						<!--<div modal-component></div>-->
@@ -52,7 +64,5 @@
 			</div>
 		<!--<div class="alert alert-warning alert-sm alertDispo" *ngIf="currentUser.estEmployeur && item.checkedContract">Ce jobyer est sélectionné pour l'établissement d'un contrat, vous pouvez consulter les détails dans l'écran "Recrutement groupé"</div> -->
 		</section>
-		
-		
 	</div>
 </div>

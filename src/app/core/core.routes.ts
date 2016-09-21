@@ -36,6 +36,8 @@ import {MissionList} from '../mission-list/mission-list';
 import {MissionDetails} from '../mission-details/mission-details';
 import {MissionEndReleve} from "../mission-end-releve/mission-end-releve";
 import {MissionEndInvoice} from "../mission-end-invoice/mission-end-invoice";
+import {Contract} from "../contract/contract";
+import {Yousign} from "../yousign/yousign";
 
 /**
  * This module contains all routes for the project
@@ -93,6 +95,8 @@ export const CoreRoutes: RouterConfig = [
       {path: 'mission/details', component: MissionDetails},
 
       // Contract management
+      {path: 'contract/recruitment-form', component: Contract},
+      {path: 'contract/recruitment', component: Yousign},
       {path: 'contract/hours-record', component: MissionEndReleve},
       {path: 'contract/invoice', component: MissionEndInvoice},
     ]

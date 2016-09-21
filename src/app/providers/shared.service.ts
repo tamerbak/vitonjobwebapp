@@ -47,6 +47,22 @@ export class SharedService {
     return JSON.parse(localStorage.getItem('currentMission'));
   }
 
+  setCurrentJobyer(jobyer) {
+    localStorage.setItem('currentJobyer', JSON.stringify(jobyer));
+  }
+
+  getCurrentJobyer() {
+    return JSON.parse(localStorage.getItem('currentJobyer'));
+  }
+
+  setContractData(contractData) {
+    localStorage.setItem('ContractData', JSON.stringify(contractData));
+  }
+
+  getContractData() {
+    return JSON.parse(localStorage.getItem('ContractData'));
+  }
+
   setCurrentInvoice(invoice) {
     localStorage.setItem('currentInvoice', JSON.stringify(invoice));
   }
