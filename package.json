@@ -63,6 +63,7 @@
     "bootstrap-select": "1.10.0",
     "bootstrap-timepicker": "^0.5.2",
     "core-js": "2.4.0",
+    "croppie": "^2.3.0",
     "d3": "3.5.5",
     "dropzone": "4.3.0",
     "easy-pie-chart": "2.1.7",

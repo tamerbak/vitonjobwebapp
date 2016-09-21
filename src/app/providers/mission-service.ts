@@ -26,7 +26,6 @@ export class MissionService {
     } else {
       var sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, h.heure_debut_new, h.heure_fin_new, p.debut as pause_debut, p.fin as pause_fin, p.debut_new as pause_debut_new, p.fin_new as pause_fin_new, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '" + contract.pk_user_contrat + "' order by h.jour_debut, p.debut";
     }
-    console.log(sql);
 
     return new Promise(resolve => {
       let headers = new Headers();
@@ -111,7 +110,7 @@ export class MissionService {
     if (valuesString != "") {
       sql = sql + " insert into user_pause (fk_user_heure_mission, debut, fin) values " + valuesString.slice(0, -1) + "; ";
     }
-    console.log(sql);
+
 
     return new Promise(resolve => {
       let headers = new Headers();
@@ -132,7 +131,6 @@ export class MissionService {
     } else {
       sql = "update user_contrat set approuve = 'Oui' where pk_user_contrat = '" + contract.pk_user_contrat + "'; ";
     }
-    console.log(sql);
 
     return new Promise(resolve => {
       let headers = new Headers();
@@ -159,8 +157,6 @@ export class MissionService {
       ]
     };
 
-    console.log(JSON.stringify(payload));
-
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
       // then on the response it'll map the JSON data to a parsed JS object.
@@ -175,7 +171,6 @@ export class MissionService {
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
           this.data = data;
-          console.log(this.data);
           resolve(this.data);
         });
     });
@@ -196,8 +191,6 @@ export class MissionService {
       ]
     };
 
-    console.log(JSON.stringify(payload));
-
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
       // then on the response it'll map the JSON data to a parsed JS object.
@@ -214,7 +207,6 @@ export class MissionService {
           if (data.code == '00000') {
             this.updateContractWithInvoice(invoice);
           }
-          console.log(this.data);
           resolve(this.data);
         });
     });
@@ -224,7 +216,6 @@ export class MissionService {
 
     let sql = "update user_contrat set date_paiement_client='" + this.sqlfyDate(new Date()) + "', montant_a_payer_par_client=" + invoice.amount + ", montant_paye_par_client=" + invoice.amount + " " +
       "where numero='" + invoice.contractReference + "'";
-    console.log(sql);
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
@@ -239,7 +230,6 @@ export class MissionService {
 
   signContract(contractId) {
     var sql = "update user_contrat set signature_jobyer = 'Oui' where pk_user_contrat = '" + contractId + "'; ";
-    console.log(sql);
 
     return new Promise(resolve => {
       let headers = new Headers();
@@ -255,7 +245,6 @@ export class MissionService {
 
   updateOptionMission(selectedOption, contractId) {
     var sql = "update user_contrat set option_mission = '" + selectedOption + "' where pk_user_contrat = '" + contractId + "'; ";
-    console.log(sql);
 
     return new Promise(resolve => {
       let headers = new Headers();
@@ -271,7 +260,6 @@ export class MissionService {
 
   updateDefaultOptionMission(selectedOption, accountId, entrepriseId) {
     var sql = "update user_account set option_mission = '" + selectedOption + "' where pk_user_account = '" + accountId + "'; ";
-    console.log(sql);
 
     return new Promise(resolve => {
       let headers = new Headers();

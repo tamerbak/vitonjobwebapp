@@ -12,13 +12,14 @@ import {Utils} from "../utils/utils";
 import {AddressUtils} from "../utils/addressUtils";
 import {Configs} from "../configurations/configs";
 import {MapsAPILoader} from 'angular2-google-maps/core';
+import {ModalPicture} from '../modal-picture/modal-picture';
 declare var jQuery,require: any;
 declare var google: any;
 
 @Component({
   selector: '[civility]',
   template: require('./civility.html'),
-  directives: [ROUTER_DIRECTIVES,NKDatetime,AlertComponent],
+  directives: [ROUTER_DIRECTIVES,NKDatetime,AlertComponent,ModalPicture],
   providers: [Utils,ProfileService,CommunesService,LoadListService,MedecineService,AttachementsService],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./civility.scss')]
@@ -446,13 +447,13 @@ export class Civility {
 
 
     ngAfterViewInit(): void {
-
+      var self = this;
 
       jQuery('.titleSelectPicker').selectpicker();
       jQuery(document).ready(function() {
 
           jQuery('.fileinput').on('change.bs.fileinput', function(e, file){
-            this.scanData = file.result;
+            self.scanData = file.result;
           })
       });
 
@@ -943,6 +944,7 @@ export class Civility {
             var ape = this.ape;
             var medecineId = this.selectedMedecine.id === "0" ? 0: parseInt(this.selectedMedecine.id);
             var entrepriseId = this.currentUser.employer.entreprises[0].id;
+            console.log(medecineId);
 
             this.profileService.updateEmployerCivility(title,lastname,firstname,companyname,siret,ape,userRoleId,entrepriseId,medecineId)
             .then((res:any) => {

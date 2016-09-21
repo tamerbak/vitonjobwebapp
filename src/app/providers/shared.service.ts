@@ -11,6 +11,7 @@ export class SharedService {
 	
 	constructor() {
 		this.stockageType = localStorage.getItem('stockageType');
+
 	}
 	
 	logOut() {
@@ -22,6 +23,7 @@ export class SharedService {
 		this.setQualityList(null);
 		this.setJobList(null);
 		this.setOptionMission(null);
+		this.setProfilImageUrl(null);
 	}
 	
 	setStorageType(value) {
@@ -198,5 +200,27 @@ export class SharedService {
 			return JSON.parse(localStorage.getItem('optionMission'));
 		else
 			return JSON.parse(sessionStorage.getItem('optionMission'));
+	}
+	
+	setProfilImageUrl(str){
+		if(this.stockageType == "local")
+			localStorage.setItem('profilImage', str);
+		else
+			sessionStorage.setItem('profilImage', str);
+	}
+
+	getProfilImageUrl(){
+		if(this.stockageType == "local"){
+			var image = localStorage.getItem('profilImage');
+			if(image !== 'null'){
+				return localStorage.getItem('profilImage');
+			}
+		}else{
+			var image = sessionStorage.getItem('profilImage');
+			if(image !== 'null'){
+				return sessionStorage.getItem('profilImage');
+			}
+		}
+		return 'assets/images/people/a5.jpg';
 	}
 }
