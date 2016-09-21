@@ -51,9 +51,8 @@ export class Navbar implements OnInit {
 		this.config = config.getConfig();
 	}
 
-	refreshOffers(e){
-		console.log("clicked")
-		e.preventDefault();
+	refreshOffers(evt){
+		evt.stopPropagation();
 		this.getOffers();
 		return false;
 	}
@@ -103,7 +102,7 @@ export class Navbar implements OnInit {
 		this.loadOffers = this.getOffers.bind(this);
 		this.loadOffers = this.refreshOffers.bind(this);
 
-		
+
 		setTimeout(() => {
 			let $chatNotification = jQuery('#chat-notification');
 			$chatNotification.removeClass('hide').addClass('animated fadeIn')

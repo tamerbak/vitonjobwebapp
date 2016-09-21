@@ -116,6 +116,11 @@
         "./src/main.ts",
         "./src/polyfills.ts",
         "./src/app/settings/settings.ts",
-        "./src/app/providers/mission-service.ts"
+        "./src/app/providers/mission-service.ts",
+        "./src/app/recruit-list/recruit-list.ts",
+        "./src/app/attachements/attachements.ts",
+        "./src/app/pending-contracts/pending-contracts.ts",
+        "./src/app/in-progress/in-progress.ts"
+
     ]
 }
