@@ -18,10 +18,10 @@ import {BUTTON_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
 export class OfferList {
 	globalOfferList = [];
 	offerList = [];
-	
+
 	currentUser: any;
     projectTarget: string;
-	
+
 	alerts: Array<Object>;
 	typeOfferModel: string = '0';
 
@@ -29,7 +29,12 @@ export class OfferList {
 	constructor(private sharedService: SharedService,
 				public offersService:OffersService,
 				private router: Router,
-				private searchService: SearchService){}
+				private searchService: SearchService){
+          this.currentUser = this.sharedService.getCurrentUser();
+          if(!this.currentUser){
+            this.router.navigate(['app/dashboard']);
+          }
+        }
 
 	ngOnInit() {
 		this.currentUser = this.sharedService.getCurrentUser();
@@ -37,7 +42,7 @@ export class OfferList {
 		this.globalOfferList.length = 0;
 		this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
 		this.globalOfferList.push({header: 'Mes brouillons', list: []});
-		
+
 		this.offerList = this.projectTarget == 'employer' ? this.currentUser.employer.entreprises[0].offers : this.currentUser.jobyer.offers;
 		for (var i = 0; i < this.offerList.length; i++) {
 			let offer = this.offerList[i];
@@ -47,12 +52,12 @@ export class OfferList {
 			if (offer.visible) {
 				offer.color = 'black';
 				offer.correspondantsCount = -1;
-				
+
 				//verify if offer is obsolete
 				for(var j = 0; j < offer.calendarData.length; j++){
 					var slotDate = offer.calendarData[j].date;
 					var startH = this.offersService.convertToFormattedHour(offer.calendarData[j].startHour);
-					slotDate = new Date(slotDate).setHours(+(startH.split(':')[0]), +(startH.split(':')[1]));						
+					slotDate = new Date(slotDate).setHours(+(startH.split(':')[0]), +(startH.split(':')[1]));
 					var dateNow = new Date().getTime();
 					if(slotDate <= dateNow){
 						offer.obsolete = true;
@@ -60,8 +65,8 @@ export class OfferList {
 					}else{
 						offer.obsolete = false;
 					}
-				} 
-				
+				}
+
 				this.globalOfferList[0].list.push(offer);
 				this.offersService.getCorrespondingOffers(offer, this.currentUser.role).then((data: any)=> {
 					offer.correspondantsCount = data.length;
@@ -77,12 +82,12 @@ export class OfferList {
 			}
 		}
     }
-	
+
 	goToDetailOffer(offer){
 		this.sharedService.setCurrentOffer(offer);
 		this.router.navigate(['app/offer/detail']);
 	}
-	
+
 	autoSearchMode(offer){
 		var mode = offer.rechercheAutomatique ? "Non" : "Oui";
         this.offersService.saveAutoSearchMode(this.projectTarget, offer.idOffer, mode).then((data: any)=> {
@@ -95,7 +100,7 @@ export class OfferList {
             }
         });
 	}
-	
+
 	/**
      * @Description : Launch search from current offer-list
      */
@@ -119,7 +124,7 @@ export class OfferList {
 			this.router.navigate(['app/search/results']);
         });
     }
-	
+
 	/**
      * @Description: Navigating to new offer page
      */
@@ -132,7 +137,7 @@ export class OfferList {
 			this.router.navigate(['app/offer/add']);
         }
     }
-	
+
 	changePrivacy(offer){
 		var statut = offer.visible ? 'Non' : 'Oui';
 		this.offersService.updateOfferStatut(offer.idOffer, statut, this.projectTarget).then(()=> {
@@ -146,15 +151,15 @@ export class OfferList {
 			}
 		});
 	}
-	
+
 	watchTypeOfferModel(){
 		this.alerts = [];
 	}
-	
+
 	addAlert(type, msg): void {
 		this.alerts = [{type: type, msg: msg}];
 	}
-	
+
 	isEmpty(str){
 		if(str == '' || str == 'null' || !str)
 			return true;
