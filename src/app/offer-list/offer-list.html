@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
 	<li>Vous êtes ici</li>
-	<li class="active">Mes offres</li>
+	<li class="active"><a class="breadcrumb-link" [routerLink]="['/app/offer/list']">Mes offres</a></li>
 </ol>
 <h1 class="page-title">{{currentUser.estEmployeur ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Mes offres</span></h1>
 <div class="row">
@@ -15,7 +15,7 @@
             <label class="btn btn-gray" btnRadio="1" [(ngModel)]="typeOfferModel" (click)="watchTypeOfferModel()">
 				Mes offres en brouillon
 			</label>
-		</div>        
+		</div>
 	</div>
 </div>
 <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
@@ -46,7 +46,7 @@
 						<label class="pull-xs-right" style="font-size: small; color: #ccc">DE L'HEURE</label>
 					</div>
 				</div>
-					
+
 				<div class="clearfix">
 					<div class="col-md-1 col-xs-2 pull-xs-right">
 						<div class="input-group-btn">
@@ -58,8 +58,8 @@
 						<button type="button" class="btn btn-secondary btn-sm" (click)="goToDetailOffer(item)">Détails de l'offre</button>
 					</div>
 				</div>
-				<div class="alert alert-warning alert-sm alertDispo" *ngIf="item.obsolete">Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilité</div> 
-			</section>			
+				<div class="alert alert-warning alert-sm alertDispo" *ngIf="item.obsolete">Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilité</div>
+			</section>
 			<section class="widget" widget *ngFor="let item of globalList.list" [hidden]="item.visible || typeOfferModel == '0'">
 				<div class="widget-body row">
 					<div class="col-md-1 col-xs-4">
@@ -73,7 +73,7 @@
 						<label class="pull-xs-right" style="font-size: small; color: #ccc">DE L'HEURE</label>
 					</div>
 				</div>
-				
+
 				<div class="clearfix">
 					<div class="col-md-1 col-xs-2 pull-xs-right">
 						<button type="button" class="btn btn-secondary btn-sm" (click)="goToDetailOffer(item)">Détails de l'offre</button>
