@@ -14,11 +14,18 @@ declare var jQuery,require: any;
 })
 export class RecruitList {
 
+  currentUser:any;
+
   constructor(
       private sharedService:SharedService,
       private router: Router
     ){
+      this.currentUser = this.sharedService.getCurrentUser();
+      if(!this.currentUser){
+        this.router.navigate(['app/dashboard']);
+      }else{
 
+      }
   }
-  
+
 }

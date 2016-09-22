@@ -76,27 +76,31 @@ export class MissionList {
               private contractService: ContractService) {
 
     this.currentUser = this.sharedService.getCurrentUser();
+    console.log(this.currentUser)
+    if(!this.currentUser){
+      this.router.navigate(['app/dashboard']);
+    }else{
+      this.sharedService.setCurrentMission(null);
 
-    this.sharedService.setCurrentMission(null);
+      this.isEmployer = this.currentUser.estEmployeur;
+      // Get target to determine configs
+      this.projectTarget = (this.isEmployer ? 'employer' : 'jobyer');
 
-    this.isEmployer = this.currentUser.estEmployeur;
-    // Get target to determine configs
-    this.projectTarget = (this.isEmployer ? 'employer' : 'jobyer');
+      this.contractList = [];
 
-    this.contractList = [];
+      this.missionNow = [];
+      this.missionFutur = [];
+      this.missionPast = [];
 
-    this.missionNow = [];
-    this.missionFutur = [];
-    this.missionPast = [];
+      this.missionsObjNow = {header: 'Missions en cours', list: this.missionNow, loaded: false};
+      this.missionsObjFutur = {header: 'Missions en attente', list: this.missionFutur, loaded: false};
+      this.missionsObjPast = {header: 'Missions terminées', list: this.missionPast, loaded: false};
 
-    this.missionsObjNow = {header: 'Missions en cours', list: this.missionNow, loaded: false};
-    this.missionsObjFutur = {header: 'Missions en attente', list: this.missionFutur, loaded: false};
-    this.missionsObjPast = {header: 'Missions terminées', list: this.missionPast, loaded: false};
-
-    this.missionList = [];
-    this.missionList.push(this.missionsObjNow);
-    this.missionList.push(this.missionsObjFutur);
-    this.missionList.push(this.missionsObjPast);
+      this.missionList = [];
+      this.missionList.push(this.missionsObjNow);
+      this.missionList.push(this.missionsObjFutur);
+      this.missionList.push(this.missionsObjPast);
+    }
   }
 
   ngOnInit() {

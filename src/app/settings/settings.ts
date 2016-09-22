@@ -61,7 +61,7 @@ export class Settings {
 
       this.currentUser = this.sharedService.getCurrentUser();
       if(!this.currentUser){
-        this.router.navigate(['/login']);
+        this.router.navigate(['app/dashboard']);
       }else{
         this.getUserInfos();
         if(this.isEmployer){
