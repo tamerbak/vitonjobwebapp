@@ -45,12 +45,12 @@ declare var Tether: any;
 @Component({
   selector: 'app',
   host: {
-    '[class.nav-static]' : 'config.state["nav-static"]',
-    '[class.chat-sidebar-opened]' : 'chatOpened',
-    '[class.app]' : 'true',
+    '[class.nav-static]': 'config.state["nav-static"]',
+    '[class.chat-sidebar-opened]': 'chatOpened',
+    '[class.app]': 'true',
     id: 'app'
   },
-  providers: [ FORM_PROVIDERS ],
+  providers: [FORM_PROVIDERS],
   directives: [Sidebar, Navbar, ChatSidebar, ROUTER_DIRECTIVES],
   template: require('./core.html')
 })
@@ -65,7 +65,9 @@ export class Core {
   constructor(config: ConfigService,
               el: ElementRef,
               router: Router) {
-    Raphael.prototype.safari = function(): any { return; };
+    Raphael.prototype.safari = function (): any {
+      return;
+    };
 
     this.el = el;
     this.config = config.getConfig();
@@ -74,26 +76,40 @@ export class Core {
     this.router = router;
 
     jQuery.fn.onPositionChanged = function (trigger, millis): any {
-      if (millis == null) { millis = 100; }
+      if (millis == null) {
+        millis = 100;
+      }
       let o = jQuery(this[0]); // our jquery object
-      if (o.length < 1) { return o; }
+      if (o.length < 1) {
+        return o;
+      }
 
       let lastPos = null;
       let lastOff = null;
       setInterval(() => {
-        if (o == null || o.length < 1) { return o; } // abort if element is non existend eny more
-        if (lastPos == null) { lastPos = o.position(); }
-        if (lastOff == null) { lastOff = o.offset(); }
+        if (o == null || o.length < 1) {
+          return o;
+        } // abort if element is non existend eny more
+        if (lastPos == null) {
+          lastPos = o.position();
+        }
+        if (lastOff == null) {
+          lastOff = o.offset();
+        }
         let newPos = o.position();
         let newOff = o.offset();
         if (lastPos.top !== newPos.top || lastPos.left !== newPos.left) {
-          jQuery(this).trigger('onPositionChanged', { lastPos: lastPos, newPos: newPos });
-          if (typeof (trigger) === 'function') { trigger(lastPos, newPos); }
+          jQuery(this).trigger('onPositionChanged', {lastPos: lastPos, newPos: newPos});
+          if (typeof (trigger) === 'function') {
+            trigger(lastPos, newPos);
+          }
           lastPos = o.position();
         }
         if (lastOff.top !== newOff.top || lastOff.left !== newOff.left) {
-          jQuery(this).trigger('onOffsetChanged', { lastOff: lastOff, newOff: newOff});
-          if (typeof (trigger) === 'function') { trigger(lastOff, newOff); }
+          jQuery(this).trigger('onOffsetChanged', {lastOff: lastOff, newOff: newOff});
+          if (typeof (trigger) === 'function') {
+            trigger(lastOff, newOff);
+          }
           lastOff = o.offset();
         }
       }, millis);
@@ -128,7 +144,9 @@ export class Core {
 
   expandNavigation(): void {
     // this method only makes sense for non-static navigation state
-    if (this.isNavigationStatic() && (this.configFn.isScreen('lg') || this.configFn.isScreen('xl'))) { return; }
+    if (this.isNavigationStatic() && (this.configFn.isScreen('lg') || this.configFn.isScreen('xl'))) {
+      return;
+    }
 
     jQuery('app').removeClass('nav-collapsed');
     this.$sidebar.find('.active .active').closest('.collapse').collapse('show')
@@ -137,7 +155,9 @@ export class Core {
 
   collapseNavigation(): void {
     // this method only makes sense for non-static navigation state
-    if (this.isNavigationStatic() && (this.configFn.isScreen('lg') || this.configFn.isScreen('xl'))) { return; }
+    if (this.isNavigationStatic() && (this.configFn.isScreen('lg') || this.configFn.isScreen('xl'))) {
+      return;
+    }
 
     jQuery('app').addClass('nav-collapsed');
     this.$sidebar.find('.collapse.in').collapse('hide')
@@ -180,6 +200,7 @@ export class Core {
       this.expandNavigation();
     }
   }
+
   _sidebarMouseLeave(): void {
     if (this.configFn.isScreen('lg') || this.configFn.isScreen('xl')) {
       this.collapseNavigation();
@@ -189,20 +210,26 @@ export class Core {
   enableSwipeCollapsing(): void {
     let d = this;
     jQuery('.content-wrap').swipe({
-      swipeLeft: function(): void {
+      swipeLeft: function (): void {
         // this method only makes sense for small screens + ipad
-        if (d.configFn.isScreen('lg')) { return; }
+        if (d.configFn.isScreen('lg')) {
+          return;
+        }
 
         if (!jQuery('app').is('.nav-collapsed')) {
           d.collapseNavigation();
         }
       },
-      swipeRight: function(): void {
+      swipeRight: function (): void {
         // this method only makes sense for small screens + ipad
-        if (d.configFn.isScreen('lg')) { return; }
+        if (d.configFn.isScreen('lg')) {
+          return;
+        }
 
         // check if navigation is collapsing. exiting if true
-        if (jQuery('app').is('.nav-busy')) { return; }
+        if (jQuery('app').is('.nav-busy')) {
+          return;
+        }
 
         if (jQuery('app').is('.nav-collapsed')) {
           d.expandNavigation();
@@ -219,9 +246,13 @@ export class Core {
   }
 
   ngOnInit(): void {
-    setTimeout(() => { jQuery('[data-toggle="tooltip"]').tooltip(); });
+    setTimeout(() => {
+      jQuery('[data-toggle="tooltip"]').tooltip();
+    });
 
-    jQuery('[data-toggle="tooltip"]').onPositionChanged(() => { Tether.position(); }, 0);
+    jQuery('[data-toggle="tooltip"]').onPositionChanged(() => {
+      Tether.position();
+    }, 0);
 
     if (localStorage.getItem('nav-static') === 'true') {
       this.config.state['nav-static'] = true;
@@ -260,27 +291,35 @@ export class Core {
       }
     });
 
-    if ('ontouchstart' in window) { this.enableSwipeCollapsing(); }
+    if ('ontouchstart' in window) {
+      this.enableSwipeCollapsing();
+    }
 
-    this.$sidebar.find('.collapse').on('show.bs.collapse', function(e): void {
-        // execute only if we're actually the .collapse element initiated event
-        // return for bubbled events
-        if (e.target !== e.currentTarget) { return; }
-
-        let $triggerLink = jQuery(this).prev('[data-toggle=collapse]');
-        jQuery($triggerLink.data('parent')).find('.collapse.in').not(jQuery(this)).collapse('hide');
-      })
-      /* adding additional classes to navigation link li-parent for several purposes. see navigation styles */
-      .on('show.bs.collapse', function(e): void {
-        // execute only if we're actually the .collapse element initiated event
-        // return for bubbled events
-        if (e.target !== e.currentTarget) { return; }
-
-        jQuery(this).closest('li').addClass('open');
-      }).on('hide.bs.collapse', function(e): void {
+    this.$sidebar.find('.collapse').on('show.bs.collapse', function (e): void {
       // execute only if we're actually the .collapse element initiated event
       // return for bubbled events
-      if (e.target !== e.currentTarget) { return; }
+      if (e.target !== e.currentTarget) {
+        return;
+      }
+
+      let $triggerLink = jQuery(this).prev('[data-toggle=collapse]');
+      jQuery($triggerLink.data('parent')).find('.collapse.in').not(jQuery(this)).collapse('hide');
+    })
+    /* adding additional classes to navigation link li-parent for several purposes. see navigation styles */
+      .on('show.bs.collapse', function (e): void {
+        // execute only if we're actually the .collapse element initiated event
+        // return for bubbled events
+        if (e.target !== e.currentTarget) {
+          return;
+        }
+
+        jQuery(this).closest('li').addClass('open');
+      }).on('hide.bs.collapse', function (e): void {
+      // execute only if we're actually the .collapse element initiated event
+      // return for bubbled events
+      if (e.target !== e.currentTarget) {
+        return;
+      }
 
       jQuery(this).closest('li').removeClass('open');
     });

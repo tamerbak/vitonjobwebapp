@@ -37,24 +37,34 @@ import {SearchDetails} from '../search-details/search-details';
 import {SearchCriteria} from '../search-criteria/search-criteria';
 import {MissionList} from '../mission-list/mission-list';
 import {MissionDetails} from '../mission-details/mission-details';
+import {MissionEndReleve} from "../mission-end-releve/mission-end-releve";
+import {MissionEndInvoice} from "../mission-end-invoice/mission-end-invoice";
+import {Contract} from "../contract/contract";
+import {Yousign} from "../yousign/yousign";
 import {WalletCreate} from '../wallet-create/wallet-create';
 import {MissionPointing} from '../mission-pointing/mission-pointing';
 
+/**
+ * This module contains all routes for the project
+ */
 export const CoreRoutes: RouterConfig = [
   {
     path: 'app',
     component: Core,
     children: [
+
+      // Application
       {path: 'dashboard', component: Dashboard},
-      {path: 'inbox', component: Inbox},
-      {path: 'widgets', component: Widgets},
-      {path: 'charts', component: Charts},
+
+      // User parameters
       {path: 'profile', component: Profile},
       {path: 'civility', component: Civility},
       {path: 'settings', component: Settings},
-      {path: 'recruitList', component: RecruitList},
-      {path: 'attachements', component: Attachements},
-      {path: 'pendingContracts', component: PendingContracts},
+
+      // Template deprecated
+      {path: 'inbox', component: Inbox},
+      {path: 'widgets', component: Widgets},
+      {path: 'charts', component: Charts},
       {path: 'forms/elements', component: FormsElements},
       {path: 'forms/validation', component: FormsValidation},
       {path: 'forms/wizard', component: FormsWizard},
@@ -74,16 +84,39 @@ export const CoreRoutes: RouterConfig = [
       {path: 'extra/gallery', component: ExtraGallery},
       {path: 'extra/search', component: ExtraSearchResults},
       {path: 'extra/timeline', component: ExtraTimeLine},
+
+      // Offers management
       {path: 'offer/list', component: OfferList},
       {path: 'offer/detail', component: OfferDetail},
       {path: 'offer/add', component: OfferAdd},
+
+      // Search management
       {path: 'search/results', component: SearchResults},
       {path: 'search/details', component: SearchDetails},
       {path: 'search/criteria', component: SearchCriteria},
+
+      // Mission management
       {path: 'mission/list', component: MissionList},
       {path: 'mission/details', component: MissionDetails},
+      {path: 'mission/details', component: MissionDetails},
+      {path: 'mission/pointing', component: MissionPointing},
+
+      // Contract management
+      {path: 'contract/recruitment-form', component: Contract},
+      {path: 'contract/recruitment', component: Yousign},
+      {path: 'contract/hours-record', component: MissionEndReleve},
+      {path: 'contract/invoice', component: MissionEndInvoice},
+
+      // Payment
       {path: 'wallet/create', component: WalletCreate},
-	  {path: 'mission/pointing', component: MissionPointing}
+
+      // Grouped recruitment
+      {path: 'recruitList', component: RecruitList},
+      {path: 'pendingContracts', component: PendingContracts},
+
+      // Attachments chest
+      {path: 'attachements', component: Attachements},
+
     ]
   }
 ];

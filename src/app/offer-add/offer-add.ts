@@ -4,6 +4,7 @@ import {SharedService} from "../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 import {AlertComponent} from 'ng2-bootstrap/components/alert';
 import {NKDatetime} from 'ng2-datetime/ng2-datetime';
+import {NgControl} from "@angular/common";
 
 @Component({
     selector: '[offer-add]',
@@ -11,7 +12,7 @@ import {NKDatetime} from 'ng2-datetime/ng2-datetime';
 	encapsulation: ViewEncapsulation.None,
 	styles: [require('./offer-add.scss')],
 	directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime],
-	providers: [OffersService]
+	providers: [OffersService, NgControl]
 })
 
 export class OfferAdd {
