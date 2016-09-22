@@ -26,189 +26,124 @@ export class SharedService {
 		this.setProfilImageUrl(null);
 	}
 	
+	getStorageType() {
+        return localStorage.getItem('stockageType');
+    }
+	
 	setStorageType(value) {
         localStorage.setItem('stockageType', value);
     }
 
-    getStorageType() {
-        return localStorage.getItem('stockageType');
+    protected getStorageVariable(variableName) { 	
+		if(this.stockageType == "local") 
+			return JSON.parse(localStorage.getItem(variableName)); 
+		else
+			return JSON.parse(sessionStorage.getItem(variableName)); 
+	}
+	
+	protected setStorageVariable(variableName, value) { 	
+		if(this.stockageType == "local") 
+			return localStorage.setItem(variableName, JSON.stringify(value)); 
+		else
+			return sessionStorage.setItem(variableName, JSON.stringify(value)); 
+	}
+	
+	getProjectTarget() {
+        return this.getStorageVariable("projectTarget");
     }
 	
 	setProjectTarget(value) {
-		if(this.stockageType == "local")
-			localStorage.setItem('projectTarget', value);
-		else
-			sessionStorage.setItem('projectTarget', value);
+		this.setStorageVariable("projectTarget", value);
     }
 
-    getProjectTarget() {
-        if(this.stockageType == "local")
-			return localStorage.getItem('projectTarget');
-		else
-			return sessionStorage.getItem('projectTarget');
-    }
-	
-	setCurrentUser(user) {
-		if(this.stockageType == "local")
-			localStorage.setItem('currentUser', JSON.stringify(user));
-		else
-			sessionStorage.setItem('currentUser', JSON.stringify(user));
-	}
-	
 	getCurrentUser() {
-		if(this.stockageType == "local")
-			return JSON.parse(localStorage.getItem('currentUser'));
-		else
-			return JSON.parse(sessionStorage.getItem('currentUser'));
+		return this.getStorageVariable("currentUser");
 	}
 	
-	setCurrentOffer(offer) {
-		if(this.stockageType == "local")
-			localStorage.setItem('currentOffer', JSON.stringify(offer));
-		else
-			sessionStorage.setItem('currentOffer', JSON.stringify(offer));
+	setCurrentUser(value) {
+		this.setStorageVariable("currentUser", value);
 	}
 	
 	getCurrentOffer() {
-		if(this.stockageType == "local")
-			return JSON.parse(localStorage.getItem('currentOffer'));
-		else
-			return JSON.parse(sessionStorage.getItem('currentOffer'));
+		return this.getStorageVariable("currentOffer");
 	}
 	
-	setCurrentMission(mission) {
-		if(this.stockageType == "local")
-			localStorage.setItem('currentMission', JSON.stringify(mission));
-		else
-			sessionStorage.setItem('currentMission', JSON.stringify(mission));
+	setCurrentOffer(value) {
+		this.setStorageVariable("currentOffer", value);
 	}
 	
 	getCurrentMission() {
-		if(this.stockageType == "local")
-			return JSON.parse(localStorage.getItem('currentMission'));
-		else
-			return JSON.parse(sessionStorage.getItem('currentMission'));
+		return this.getStorageVariable("currentMission");
 	}
 	
-	setCurrentInvoice(invoice) {
-		if(this.stockageType == "local")
-			localStorage.setItem('currentInvoice', JSON.stringify(invoice));
-		else
-			sessionStorage.setItem('currentInvoice', JSON.stringify(invoice));
+	setCurrentMission(value) {
+		this.setStorageVariable("currentMission", value);
 	}
 	
 	getCurrentInvoice() {
-		if(this.stockageType == "local")
-			return JSON.parse(localStorage.getItem('currentInvoice'));
-		else
-			return JSON.parse(sessionStorage.getItem('currentInvoice'));
+		return this.getStorageVariable("currentInvoice");
 	}
 	
-	setLastResult(result) {
-		if(this.stockageType == "local")
-			localStorage.setItem('lastResult', JSON.stringify(result));
-		else
-			sessionStorage.setItem('lastResult', JSON.stringify(result));
+	setCurrentInvoice(value) {
+		this.setStorageVariable("currentInvoice", value)
 	}
 	
 	getLastResult() {
-		if(this.stockageType == "local")
-			return JSON.parse(localStorage.getItem('lastResult'));
-		else
-			return JSON.parse(sessionStorage.getItem('lastResult'));
+		return this.getStorageVariable("lastResult");
 	}
 	
-	setSectorList(list) {
-		if(this.stockageType == "local")
-			localStorage.setItem('sectorList', JSON.stringify(list));
-		else
-			sessionStorage.setItem('sectorList', JSON.stringify(list));
+	setLastResult(value) {
+		this.setStorageVariable("lastResult", value);
 	}
 	
 	getSectorList() {
-		if(this.stockageType == "local")
-			return JSON.parse(localStorage.getItem('sectorList'));
-		else
-			return JSON.parse(sessionStorage.getItem('sectorList'));
+		return this.getStorageVariable("sectorList");
 	}
 	
-	setJobList(list) {
-		if(this.stockageType == "local")
-			localStorage.setItem('jobList', JSON.stringify(list));
-		else
-			sessionStorage.setItem('jobList', JSON.stringify(list));
+	setSectorList(value) {
+		this.setStorageVariable("sectorList", value);
 	}
 	
 	getJobList() {
-		if(this.stockageType == "local")
-			return JSON.parse(localStorage.getItem('jobList'));
-		else
-			return JSON.parse(sessionStorage.getItem('jobList'));
+		return this.getStorageVariable("jobList");
 	}
 	
-	setQualityList(list) {
-		if(this.stockageType == "local")
-			localStorage.setItem('qualityList', JSON.stringify(list));
-		else
-			sessionStorage.setItem('qualityList', JSON.stringify(list));
+	setJobList(value) {
+		this.setStorageVariable("jobList", value);
 	}
 	
 	getQualityList() {
-		if(this.stockageType == "local")
-			return JSON.parse(localStorage.getItem('qualityList'));
-		else
-			return JSON.parse(sessionStorage.getItem('qualityList'));
+		return this.getStorageVariable("qualityList");
 	}
 	
-	setLangList(list) {
-		if(this.stockageType == "local")
-			localStorage.setItem('langList', JSON.stringify(list));
-		else
-			sessionStorage.setItem('langList', JSON.stringify(list));
+	setQualityList(value) {
+		this.setStorageVariable("qualityList", value);
 	}
 	
 	getLangList() {
-		if(this.stockageType == "local")
-			return JSON.parse(localStorage.getItem('langList'));
-		else
-			return JSON.parse(sessionStorage.getItem('langList'));
+		return this.getStorageVariable("langList");
 	}
 	
-	setSearchResult(item) {
-		if(this.stockageType == "local")
-			localStorage.setItem('searchResult', JSON.stringify(item));
-		else
-			sessionStorage.setItem('searchResult', JSON.stringify(item));
+	setLangList(value) {
+		this.setStorageVariable("langList", value);
 	}
 	
 	getSearchResult() {
-		if(this.stockageType == "local")
-			return JSON.parse(localStorage.getItem('searchResult'));
-		else
-			return JSON.parse(sessionStorage.getItem('searchResult'));
+		return this.getStorageVariable("searchResult");
 	}
 	
-	setOptionMission(option) {
-		if(this.stockageType == "local")
-			localStorage.setItem('optionMission', JSON.stringify(option));
-		else
-			sessionStorage.setItem('optionMission', JSON.stringify(option));
+	setSearchResult(value) {
+		this.setStorageVariable("searchResult", value);
 	}
 	
 	getOptionMIssion() {
-		if(this.stockageType == "local")
-			return JSON.parse(localStorage.getItem('optionMission'));
-		else
-			return JSON.parse(sessionStorage.getItem('optionMission'));
+		return this.getStorageVariable("optionMission");
 	}
 	
-	setProfilImageUrl(str){
-		if(this.stockageType == "local")
-			localStorage.setItem('profilImage', str);
-		else
-			sessionStorage.setItem('profilImage', str);
+	setOptionMission(value) {
+		this.setStorageVariable("optionMission", value);
 	}
-
+	
 	getProfilImageUrl(){
 		if(this.stockageType == "local"){
 			var image = localStorage.getItem('profilImage');
@@ -222,5 +157,9 @@ export class SharedService {
 			}
 		}
 		return 'assets/images/people/a5.jpg';
+	}
+
+	setProfilImageUrl(value){
+		this.setStorageVariable("profilImage", value);
 	}
 }
