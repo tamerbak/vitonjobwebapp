@@ -1,0 +1,341 @@
+<!--<header>-->
+<!--<navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''">-->
+<!--<title>{{contractTitle}}</title>-->
+<!--&lt;!&ndash;<buttons end>-->
+<!--<button (click)="selectOffer()">-->
+<!--<icon name="checkbox-outline"></icon>-->
+<!--</button>-->
+<!--</buttons>&ndash;&gt;-->
+<!--</navbar>-->
+<!--</header>-->
+
+<div class="contract">
+
+  <div class="list">
+    <div class="list-header">
+      INFORMATIONS GENERALES
+    </div>
+    <div>
+      <label>Intérimaire</label>
+      <input type="text" [(ngModel)]="contractData.interim"/>
+    </div>
+  </div>
+
+  <div class="list">
+    <div class="list-header">
+      CONTRAT DE MISSION
+    </div>
+    <div>
+      <label>Société utilisatrice</label> <input type="text" [(ngModel)]="companyName"/>
+    </div>
+    <div>
+      <label>Contact</label>
+      <input type="text" [(ngModel)]="employerFullName"/>
+    </div>
+    <div>
+      <label>Lieu de la mission</label>
+      <input type="text" [(ngModel)]="workAdress"/>
+    </div>
+  </div>
+
+  <!-- TODO -->
+  <!--<div class="list" [disabled]="isEmployer">-->
+  <div class="list">
+    <div class="list-header">
+      SALARIE INTERIMAIRE
+    </div>
+
+    <div>
+      <label>Nom</label>
+      <input type="text" [(ngModel)]="jobyer.nom"/>
+    </div>
+
+    <div>
+      <label>Prénom</label>
+      <input type="text" [(ngModel)]="jobyer.prenom"/>
+    </div>
+
+    <div>
+      <label>N° SS</label>
+      <input type="text" [(ngModel)]="jobyer.numSS"/>
+    </div>
+
+    <div>
+      <label>Date de naissance</label>
+      <input type="date" [(ngModel)]="jobyerBirthDate"/>
+    </div>
+
+    <div>
+      <label>Lieu de naissance</label>
+      <input type="text" [(ngModel)]="jobyer.lieuNaissance"/>
+    </div>
+
+    <div>
+      <label>Nationalité</label>
+      <input type="text" [(ngModel)]="jobyer.nationaliteLibelle"/>
+    </div>
+
+    <div>
+      <label>Num. Titre de travail</label>
+      <input type="text" [(ngModel)]="contractData.numeroTitreTravail"/>
+    </div>
+
+    <div>
+      <label>Valable du</label>
+      <input type="date" [(ngModel)]="contractData.debutTitreTravail"/>
+    </div>
+
+    <div>
+      <label>Valable au</label>
+      <input type="date" [(ngModel)]="contractData.finTitreTravail"/>
+    </div>
+  </div>
+
+
+  <div class="list">
+    <div class="list-header">
+      MISSION
+    </div>
+
+    <div>
+      <label>Début de mission</label>
+      <input type="date" [(ngModel)]="contractData.missionStartDate"/>
+    </div>
+    <div>
+      <label>Fin de mission</label>
+      <input type="date" [(ngModel)]="contractData.missionEndDate"/>
+    </div>
+    <div>
+      <label>P. essai (J) </label>
+      <input type="text" [(ngModel)]="contractData.trialPeriod"/>
+    </div>
+    <div>
+      <label>Début terme </label>
+      <input type="date" [(ngModel)]="contractData.termStartDate"/>
+    </div>
+    <div>
+      <label>Fin terme</label>
+      <input type="date" [(ngModel)]="contractData.termEndDate"/>
+    </div>
+    <div>
+      <label>Recours</label>
+      <select [(ngModel)]="contractData.motif" (ionChange)="recoursSelected($event)">
+        <option *ngFor="let r of recours" value="{{r.libelle}}">
+          {{r.libelle}}
+        </option>
+      </select>
+      <!--input type="text" [(ngModel)]="contractData.motif"></input-->
+    </div>
+    <div>
+      <!-- TODO select -->
+      <!--<label>Motif</label>-->
+      <select [(ngModel)]="contractData.justification">
+        <option *ngFor="let r of justificatifs" value="{{r.libelle}}">
+          {{r.libelle}}
+        </option>
+      </select>
+      <!--input type="text" [(ngModel)]="contractData.justification"></input-->
+    </div>
+    <div>
+      <label>Début de souplesse</label>
+      <input type="date" [(ngModel)]="contractData.debutSouplesse"/>
+    </div>
+    <div>
+      <label>Fin de souplesse</label>
+      <input type="date" [(ngModel)]="contractData.finSouplesse"/>
+    </div>
+    <div>
+      <label>Période non travaillée</label>
+      <input type="text" [(ngModel)]="contractData.periodesNonTravaillees"/>
+    </div>
+  </div>
+
+  <div class="list">
+    <div class="list-header">
+      POSTE DE TRAVAIL ET ORGANISATION DU TEMPS DE TRAVAIL
+    </div>
+
+    <div>
+      <label>Qualification</label>
+      <input type="text" [(ngModel)]="contractData.qualification"/>
+    </div>
+    <div>
+      <label>Caractéristiques du poste</label>
+      <input type="text" [(ngModel)]="contractData.characteristics"/>
+    </div>
+    <div>
+      <label>Temps de travail (H)</label>
+      <input type="text" [(ngModel)]="contractData.workTimeHours"/>
+    </div>
+
+    <div>
+      <label>Horaires habituels de travail</label>
+      <input type="text"
+             [(ngModel)]="contractData.usualWorkTimeHours"/>
+    </div>
+
+    <div>
+      <label>Risques</label>
+      <input type="text" [(ngModel)]="contractData.postRisks"/>
+    </div>
+
+    <div>
+      <label>Surveillance médicale</label>
+      <input type="text" [(ngModel)]="contractData.medicalSurv"/>
+    </div>
+
+    <div>
+      <label>EPI</label>
+      <input type="text" [(ngModel)]="contractData.epi"/>
+    </div>
+
+    <div>
+      <label>Equipement</label>
+      <input type="text" [(ngModel)]="contractData.equipements"/>
+    </div>
+  </div>
+
+
+  <div class="list">
+    <div class="list-header">
+      SALAIRE DE REFERENCE-DUREE DU TRAVAIL
+    </div>
+
+
+    <div>
+      <label>Salaire de base</label>
+      <input type="text" [(ngModel)]="contractData.baseSalary"/>
+    </div>
+
+
+    <div>
+      <label>Durée collective moyenne</label>
+      <input type="text"
+             [(ngModel)]="contractData.MonthlyAverageDuration"/>
+    </div>
+
+
+  </div>
+
+  <div class="list">
+    <div class="list-header">
+      REMENURATION
+    </div>
+
+    <div>
+      <label>Heures normales</label>
+      <input type="text" [(ngModel)]="contractData.salaryNHours"/>
+
+    </div>
+
+    <div>
+      <label>HS au-dela de 35H</label>
+      <input type="text" [(ngModel)]="contractData.salarySH35"/>
+    </div>
+
+    <div>
+      <label>HS au-dela de 43H</label>
+      <input type="text" [(ngModel)]="contractData.salarySH43"/>
+
+    </div>
+
+    <div>
+      <label>Droit au repos compensateur</label>
+      <input type="text" [(ngModel)]="contractData.restRight"/>
+
+    </div>
+
+    <div>
+      <label>Ind. fin de mission</label>
+      <input type="text" [(ngModel)]="contractData.indemniteFinMission"/>
+
+    </div>
+
+    <div>
+      <label>Ind. congés payés</label>
+      <input type="text" [(ngModel)]="contractData.indemniteCongesPayes"/>
+
+    </div>
+
+  </div>
+
+  <div class="list">
+    <div class="list-header">
+      MEDECINE DU TRAVAIL
+    </div>
+    <div>
+      <label>Centre de médecine ETT</label>
+      <input type="text" [(ngModel)]="contractData.centreMedecineETT"/>
+    </div>
+    <div>
+      <label>Adresse Centre de médecine ETT</label>
+      <input type="text"
+             [(ngModel)]="contractData.adresseCentreMedecineETT"/>
+    </div>
+    <div>
+      <label>Centre de médecine Entreprise</label>
+      <input type="text"
+             [(ngModel)]="contractData.centreMedecineEntreprise"/>
+    </div>
+    <div>
+      <label>Adresse Centre de médecine Entreprise</label>
+      <input type="text"
+             [(ngModel)]="contractData.adresseCentreMedecineEntreprise"/>
+    </div>
+    <!--item>
+        <label>Gestion intérim</label>
+  <input type="text" [(ngModel)]="contractData.interimAddress" />
+    </div>
+    <div>
+        <label>Client</label>
+  <input type="text" [(ngModel)]="contractData.customer" />
+    </item-->
+
+  </div>
+
+  <div class="list">
+    <div class="list-header">
+      INFORMATIONS COMPLEMENTAIRES
+    </div>
+
+    <div>
+      <label>Primes</label>
+      <input type="text" [(ngModel)]="contractData.primes"/>
+    </div>
+    <div>
+      <label>Siège social</label>
+      <input type="text" [(ngModel)]="contractData.headOffice"/>
+    </div>
+    <div>
+      <label>Contenu de la mission</label>
+      <input type="text" [(ngModel)]="contractData.missionContent"/>
+    </div>
+    <div>
+      <label>Catégorie</label>
+      <input type="text" [(ngModel)]="contractData.category"/>
+    </div>
+    <div>
+      <label>Filière</label>
+      <input type="text" [(ngModel)]="contractData.sector"/>
+    </div>
+    <div>
+      <label>Titre de transport</label>
+      <input type="text" [(ngModel)]="contractData.titreTransport"/>
+    </div>
+    <div>
+      <label>Zones de transport</label>
+      <input type="text" [(ngModel)]="contractData.zonesTitre"/>
+    </div>
+  </div>
+  <!-- TODO -->
+  <!--<row>-->
+    <!--<col width-10></col>-->
+    <!--<col text-center>-->
+    <!--<button [style.backgroundColor]="themeColor" (click)="goToYousignPage()">-->
+    <button (click)="goToYousignPage()">
+      Valider les informations de contrat
+    </button>
+    <!--</col>-->
+    <!--<col width-10></col>-->
+  <!--</row>-->
+</div>

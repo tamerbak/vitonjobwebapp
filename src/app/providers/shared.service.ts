@@ -1,165 +1,181 @@
 import {Injectable} from '@angular/core';
 
 /**
-	* @author Amal ROCHD
-	* @description service shared between different components of the app
-*/
+ * @author Amal ROCHD
+ * @description service shared between different components of the app
+ */
 
 @Injectable()
 export class SharedService {
-	stockageType: string;
-	
-	constructor() {
-		this.stockageType = localStorage.getItem('stockageType');
+  stockageType: string;
 
-	}
-	
-	logOut() {
-		this.setCurrentUser(null);
-		this.setCurrentOffer(null);
-		this.setLastResult(null);
-		this.setSearchResult(null);
-		this.setLangList(null);
-		this.setQualityList(null);
-		this.setJobList(null);
-		this.setOptionMission(null);
-		this.setProfilImageUrl(null);
-	}
-	
-	getStorageType() {
-        return localStorage.getItem('stockageType');
-    }
-	
-	setStorageType(value) {
-        localStorage.setItem('stockageType', value);
-    }
+  constructor() {
+    this.stockageType = localStorage.getItem('stockageType');
 
-    protected getStorageVariable(variableName) { 	
-		if(this.stockageType == "local") 
-			return JSON.parse(localStorage.getItem(variableName)); 
-		else
-			return JSON.parse(sessionStorage.getItem(variableName)); 
-	}
-	
-	protected setStorageVariable(variableName, value) { 	
-		if(this.stockageType == "local") 
-			return localStorage.setItem(variableName, JSON.stringify(value)); 
-		else
-			return sessionStorage.setItem(variableName, JSON.stringify(value)); 
-	}
-	
-	getProjectTarget() {
-        return this.getStorageVariable("projectTarget");
-    }
-	
-	setProjectTarget(value) {
-		this.setStorageVariable("projectTarget", value);
-    }
+  }
 
-	getCurrentUser() {
-		return this.getStorageVariable("currentUser");
-	}
-	
-	setCurrentUser(value) {
-		this.setStorageVariable("currentUser", value);
-	}
-	
-	getCurrentOffer() {
-		return this.getStorageVariable("currentOffer");
-	}
-	
-	setCurrentOffer(value) {
-		this.setStorageVariable("currentOffer", value);
-	}
-	
-	getCurrentMission() {
-		return this.getStorageVariable("currentMission");
-	}
-	
-	setCurrentMission(value) {
-		this.setStorageVariable("currentMission", value);
-	}
-	
-	getCurrentInvoice() {
-		return this.getStorageVariable("currentInvoice");
-	}
-	
-	setCurrentInvoice(value) {
-		this.setStorageVariable("currentInvoice", value)
-	}
-	
-	getLastResult() {
-		return this.getStorageVariable("lastResult");
-	}
-	
-	setLastResult(value) {
-		this.setStorageVariable("lastResult", value);
-	}
-	
-	getSectorList() {
-		return this.getStorageVariable("sectorList");
-	}
-	
-	setSectorList(value) {
-		this.setStorageVariable("sectorList", value);
-	}
-	
-	getJobList() {
-		return this.getStorageVariable("jobList");
-	}
-	
-	setJobList(value) {
-		this.setStorageVariable("jobList", value);
-	}
-	
-	getQualityList() {
-		return this.getStorageVariable("qualityList");
-	}
-	
-	setQualityList(value) {
-		this.setStorageVariable("qualityList", value);
-	}
-	
-	getLangList() {
-		return this.getStorageVariable("langList");
-	}
-	
-	setLangList(value) {
-		this.setStorageVariable("langList", value);
-	}
-	
-	getSearchResult() {
-		return this.getStorageVariable("searchResult");
-	}
-	
-	setSearchResult(value) {
-		this.setStorageVariable("searchResult", value);
-	}
-	
-	getOptionMIssion() {
-		return this.getStorageVariable("optionMission");
-	}
-	
-	setOptionMission(value) {
-		this.setStorageVariable("optionMission", value);
-	}
-	
-	getProfilImageUrl(){
-		if(this.stockageType == "local"){
-			var image = localStorage.getItem('profilImage');
-			if(image !== 'null'){
-				return localStorage.getItem('profilImage');
-			}
-		}else{
-			var image = sessionStorage.getItem('profilImage');
-			if(image !== 'null'){
-				return sessionStorage.getItem('profilImage');
-			}
-		}
-		return 'assets/images/people/a5.jpg';
-	}
+  logOut() {
+    this.setCurrentUser(null);
+    this.setCurrentOffer(null);
+    this.setLastResult(null);
+    this.setSearchResult(null);
+    this.setLangList(null);
+    this.setQualityList(null);
+    this.setJobList(null);
+    this.setOptionMission(null);
+    this.setProfilImageUrl(null);
+  }
 
-	setProfilImageUrl(value){
-		this.setStorageVariable("profilImage", value);
-	}
+  getStorageType() {
+    return localStorage.getItem('stockageType');
+  }
+
+  setStorageType(value) {
+    localStorage.setItem('stockageType', value);
+  }
+
+  protected getStorageVariable(variableName) {
+    if (this.stockageType == "local")
+      return JSON.parse(localStorage.getItem(variableName));
+    else
+      return JSON.parse(sessionStorage.getItem(variableName));
+  }
+
+  protected setStorageVariable(variableName, value) {
+    if (this.stockageType == "local")
+      return localStorage.setItem(variableName, JSON.stringify(value));
+    else
+      return sessionStorage.setItem(variableName, JSON.stringify(value));
+  }
+
+  getProjectTarget() {
+    return this.getStorageVariable("projectTarget");
+  }
+
+  setProjectTarget(value) {
+    this.setStorageVariable("projectTarget", value);
+  }
+
+  getCurrentUser() {
+    return this.getStorageVariable("currentUser");
+  }
+
+  setCurrentUser(value) {
+    this.setStorageVariable("currentUser", value);
+  }
+
+  getCurrentOffer() {
+    return this.getStorageVariable("currentOffer");
+  }
+
+  setCurrentOffer(value) {
+    this.setStorageVariable("currentOffer", value);
+  }
+
+  getCurrentMission() {
+    return this.getStorageVariable("currentMission");
+  }
+
+  setCurrentMission(value) {
+    this.setStorageVariable("currentMission", value);
+  }
+
+  getCurrentJobyer() {
+    return this.getStorageVariable('currentJobyer');
+  }
+
+  setCurrentJobyer(value) {
+    this.setStorageVariable('currentJobyer', value);
+  }
+
+  getContractData() {
+    return this.getStorageVariable('ContractData');
+  }
+
+  setContractData(value) {
+    this.setStorageVariable('ContractData', value);
+  }
+
+  getCurrentInvoice() {
+    return this.getStorageVariable("currentInvoice");
+  }
+
+  setCurrentInvoice(value) {
+    this.setStorageVariable("currentInvoice", value);
+  }
+
+  getLastResult() {
+    return this.getStorageVariable("lastResult");
+  }
+
+  setLastResult(value) {
+    this.setStorageVariable("lastResult", value);
+  }
+
+  getSectorList() {
+    return this.getStorageVariable("sectorList");
+  }
+
+  setSectorList(value) {
+    this.setStorageVariable("sectorList", value);
+  }
+
+  getJobList() {
+    return this.getStorageVariable("jobList");
+  }
+
+  setJobList(value) {
+    this.setStorageVariable("jobList", value);
+  }
+
+  getQualityList() {
+    return this.getStorageVariable("qualityList");
+  }
+
+  setQualityList(value) {
+    this.setStorageVariable("qualityList", value);
+  }
+
+  getLangList() {
+    return this.getStorageVariable("langList");
+  }
+
+  setLangList(value) {
+    this.setStorageVariable("langList", value);
+  }
+
+  getSearchResult() {
+    return this.getStorageVariable("searchResult");
+  }
+
+  setSearchResult(value) {
+    this.setStorageVariable("searchResult", value);
+  }
+
+  getOptionMIssion() {
+    return this.getStorageVariable("optionMission");
+  }
+
+  setOptionMission(value) {
+    this.setStorageVariable("optionMission", value);
+  }
+
+  getProfilImageUrl() {
+    if (this.stockageType == "local") {
+      var image = localStorage.getItem('profilImage');
+      if (image !== 'null') {
+        return localStorage.getItem('profilImage');
+      }
+    } else {
+      var image = sessionStorage.getItem('profilImage');
+      if (image !== 'null') {
+        return sessionStorage.getItem('profilImage');
+      }
+    }
+    return 'assets/images/people/a5.jpg';
+  }
+
+  setProfilImageUrl(value) {
+    this.setStorageVariable("profilImage", value);
+  }
 }

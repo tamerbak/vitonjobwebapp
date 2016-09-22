@@ -87,17 +87,19 @@ import {ConfigService} from './app/core/config';
 import {FakeWorldData} from './app/widgets/years-map-widget/fake-world-data';
 
 document.addEventListener('DOMContentLoaded', function main(): void {
-  bootstrap(App, [SharedService,
+  bootstrap(App, [
+    SharedService,
     ConfigService,
     FakeWorldData,
     NgControl,
     GOOGLE_MAPS_PROVIDERS,
-	provideLazyMapsAPILoaderConfig({
-	libraries: ['places'] }),
+    provideLazyMapsAPILoaderConfig({
+      libraries: ['places']
+    }),
     ...ENV_PROVIDERS,
     ...HTTP_PROVIDERS,
     ...APP_ROUTER_PROVIDERS,
-    {provide: LocationStrategy, useClass: HashLocationStrategy }
+    {provide: LocationStrategy, useClass: HashLocationStrategy}
   ])
-  .catch(err => console.error(err));
+    .catch(err => console.error(err));
 });
