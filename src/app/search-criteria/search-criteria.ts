@@ -31,22 +31,26 @@ export class SearchCriteria {
 	alerts: Array<Object>;
 	city: any;
 	filters:any = [];
-	
+
 	constructor(private sharedService: SharedService,
 				public offersService:OffersService,
 				private router: Router,
 				private searchService: SearchService){}
-	
+
 	ngOnInit(): void {
 		this.currentUser = this.sharedService.getCurrentUser();
-		this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer')
+		if(this.currentUser){
+			this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+		}else{
+			this.projectTarget = this.sharedService.getProjectTarget();
+		}
 		this.buildFilters();
 		//load all sectors, if not yet loaded in local
 		this.sectors = this.sharedService.getSectorList();
 		if(!this.sectors || this.sectors.length == 0){
 			this.offersService.loadSectorsToLocal().then((data: any) =>{
 				this.sharedService.setSectorList(data);
-				this.sectors = data;	
+				this.sectors = data;
 			})
 		}
 		//load all jobs, if not yet loaded in local
@@ -57,7 +61,7 @@ export class SearchCriteria {
 			})
 		}
 	}
-	
+
 	sectorSelected(sector) {
 		let sectorsTemp = this.sectors.filter((v)=> {
 			return (v.id == sector);
@@ -69,14 +73,14 @@ export class SearchCriteria {
 		});
 		this.sector = sectorsTemp[0].libelle;
 	}
-	
+
 	jobSelected(idJob) {
 		let jobsTemp = this.jobs.filter((v)=> {
 			return (v.id == idJob);
 		});
 		this.job = jobsTemp[0].libelle;
 	}
-	
+
 	validateSearch(){
 		let ignoreSector: boolean = false;
         if(this.isEmpty(this.sector) || (this.job && this.job.length>0))
@@ -108,7 +112,7 @@ export class SearchCriteria {
 			this.router.navigate(['app/search/results']);
         });
 	}
-	
+
 	ngAfterViewInit(){
 		jQuery('.city').select2({
 			ajax: {
@@ -120,7 +124,7 @@ export class SearchCriteria {
 					contentType: "text/plain",
 				},
 				data: function (term, page) {
-					return "select pk_user_ville as id, nom from user_ville where lower_unaccent(nom) % lower_unaccent('"+term+"') order by nom asc limit 5"; 
+					return "select pk_user_ville as id, nom from user_ville where lower_unaccent(nom) % lower_unaccent('"+term+"') order by nom asc limit 5";
 				},
 				results: function (data, page) {
 					return { results: data.data };
@@ -144,7 +148,7 @@ export class SearchCriteria {
 		}
 		);
 	}
-	
+
 	/**
      * @descirption depending on the nature of the project this method constructs the required buttons and input for filters
      */
@@ -274,8 +278,8 @@ export class SearchCriteria {
             this.filters.push(filter);
         }
     }
-	
-	
+
+
 	/**
 		* @Description Converts a timeStamp to date string
 		* @param time : a timestamp date
@@ -285,9 +289,9 @@ export class SearchCriteria {
         let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
         return hours + ":" + minutes;
 	}
-	
+
 	/**
-		* @Description Converts a timeStamp to date string : 
+		* @Description Converts a timeStamp to date string :
 		* @param date : a timestamp date
 	*/
     toDateString(date:number) {
@@ -297,11 +301,11 @@ export class SearchCriteria {
 		};
         return new Date(date).toLocaleDateString('fr-FR', dateOptions);
 	}
-	
+
 	addAlert(type, msg): void {
 		this.alerts = [{type: type, msg: msg}];
 	}
-	
+
 	isEmpty(str){
 		if(str == '' || str == 'null' || !str)
 		return true;

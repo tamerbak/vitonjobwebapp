@@ -1,7 +1,7 @@
 <ol class="breadcrumb">
 	<li>Vous êtes ici</li>
-	<li class="active">Mes offres</li>
-	<li class="active">Nouvelle offre</li>
+	<li class="active"><a class="breadcrumb-link" [routerLink]="['/app/offer/list']">Mes offres</a></li>
+	<li class="active"><a class="breadcrumb-link" [routerLink]="['/app/mission/add']">Nouvelle offre</a></li>
 </ol>
 <h1 class="page-title">{{currentUser.estEmployeur ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Nouvelle offre</span></h1>
 
@@ -66,8 +66,8 @@
 								</select>
 							</div>
 						</div>
-					</fieldset>	
-		
+					</fieldset>
+
 					<fieldset>
 						<legend> <strong>Disponibilités</strong></legend>
 						<div class="form-group row">
@@ -109,7 +109,7 @@
 							</div>
 						</div>
 					</fieldset>
-					<div class="row">	
+					<div class="row">
 						<div class="col-md-6 col-xs-12">
 						<fieldset>
 							<legend><strong>Qualités</strong></legend>
@@ -165,7 +165,7 @@
 								  </button>
 								</div>
 							</div>
-						</fieldset>	
+						</fieldset>
 						</div>
 					</div>
 					<div class="form-actions">

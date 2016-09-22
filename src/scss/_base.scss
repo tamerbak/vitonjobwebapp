@@ -1294,3 +1294,16 @@ input[type=search], input.search {
     z-index: 2;
   }
 }
+
+/**********************/
+/*     breadcrumb     */
+/**********************/
+
+a.breadcrumb-link{
+  color : #555555;
+  text-decoration: none;
+
+  &:hover, &:focus {
+      color: #14baa6;
+  }
+}

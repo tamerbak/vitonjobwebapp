@@ -43,21 +43,21 @@
       </a>
     </li>
     <li *ngIf="currentUser">
-      <a [routerLink]=" ['coffre'] ">
+      <a [routerLink]=" ['attachements'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-credit-card"></i>
           </span> Coffre Numérique
       </a>
     </li>
     <li *ngIf="currentUser">
-      <a [routerLink]=" ['option'] ">
+      <a [routerLink]=" ['settings'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-cog"></i>
           </span> Mes Options
       </a>
     </li>
     <li *ngIf="currentUser">
-      <a [routerLink]=" ['habilitation'] ">
+      <a [routerLink]=" ['recruitList'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-user"></i>
           </span>Habilitations
@@ -65,7 +65,7 @@
     </li>
 
     <li *ngIf="currentUser">
-      <a [routerLink]=" ['rg'] ">
+      <a [routerLink]=" ['pendingContracts'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-th-list"></i>
           </span> Recrutement Groupé

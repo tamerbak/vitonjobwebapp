@@ -21,6 +21,7 @@ import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 import {AlertComponent} from 'ng2-bootstrap/components/alert';
 import {SearchService} from "../providers/search-service";
 import {BUTTON_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
+import {MissionService} from "../providers/mission-service";
 import {Helpers} from "../providers/helpers.service";
 
 /*
@@ -38,7 +39,7 @@ import {Helpers} from "../providers/helpers.service";
   encapsulation: ViewEncapsulation.None,
   styles: [require('./mission-list.scss')],
   directives: [ACCORDION_DIRECTIVES, ROUTER_DIRECTIVES, AlertComponent, BUTTON_DIRECTIVES],
-  providers: [ContractService, Helpers]
+  providers: [ContractService, MissionService, Helpers]
   // providers: [missionsService, SearchService]
 
 })
@@ -69,17 +70,24 @@ export class MissionList {
 
   // Web
   typeMissionModel: string = '0';
+  disableBtnPointing;
 
   constructor(private sharedService: SharedService,
               // public gc: GlobalConfigs,
               // public nav: NavController,
               private router: Router,
-              private contractService: ContractService) {
+              private contractService: ContractService,
+              private missionService: MissionService) {
 
     this.currentUser = this.sharedService.getCurrentUser();
 
-    this.sharedService.setCurrentMission(null);
-
+    console.log(this.currentUser)
+    if (!this.currentUser) {
+      this.router.navigate(['app/dashboard']);
+      return;
+    } else {
+      this.sharedService.setCurrentMission(null);
+    }
     this.isEmployer = this.currentUser.estEmployeur;
     // Get target to determine configs
     this.projectTarget = (this.isEmployer ? 'employer' : 'jobyer');
@@ -103,7 +111,7 @@ export class MissionList {
   ngOnInit() {
 
     //get contracts
-    var id;
+    let id;
     if (this.isEmployer) {
       id = this.currentUser.employer.entreprises[0].id;
     } else {
@@ -128,6 +136,21 @@ export class MissionList {
             // Mission in past
               this.missionPast.push(item);
           }
+          //retrieve mission hours of today
+          this.missionService.listMissionHours(item, true).then((data: any) => {
+            if (data.data) {
+              let missionHoursTemp = data.data;
+              let array = this.missionService.getTodayMission(missionHoursTemp);
+              let missionHours = array[0];
+              let missionPauses = array[1];
+              item.disableBtnPointing = this.missionService.disablePointing(missionHours, missionPauses).disabled;
+              /*let autoPointing = navParams.get('autoPointing');
+               if(autoPointing){
+               this.nextPointing = navParams.get('nextPointing')
+               this.pointHour(true);
+               }*/
+            }
+          });
         }
 
         this.missionNow = this.missionNow.sort((a, b) => {
@@ -173,10 +196,10 @@ export class MissionList {
     console.log('goToDetailMission');
   }
 
-  // goToMissionPointingPage(contract) {
-  //   // this.nav.push(MissionPointingPage, {contract: contract});
-  //   console.log('goToMissionPointingPage');
-  // }
+  goToMissionPointingPage(mission) {
+    this.sharedService.setCurrentMission(mission);
+    this.router.navigate(['app/mission/pointing']);
+  }
 
   isEmpty(str) {
     if (str == '' || str == 'null' || !str)

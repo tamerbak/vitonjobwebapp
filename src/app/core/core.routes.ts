@@ -7,6 +7,9 @@ import {Charts} from '../charts/charts';
 import {Profile} from '../profile/profile';
 import {Civility} from '../civility/civility';
 import {Settings} from '../settings/settings';
+import {RecruitList} from '../recruit-list/recruit-list';
+import {Attachements} from '../attachements/attachements';
+import {PendingContracts} from '../pending-contracts/pending-contracts';
 import {FormsElements} from '../forms-elements/forms-elements';
 import {FormsValidation} from '../forms-validation/forms-validation';
 import {FormsWizard} from '../forms-wizard/forms-wizard';
@@ -38,6 +41,8 @@ import {MissionEndReleve} from "../mission-end-releve/mission-end-releve";
 import {MissionEndInvoice} from "../mission-end-invoice/mission-end-invoice";
 import {Contract} from "../contract/contract";
 import {Yousign} from "../yousign/yousign";
+import {WalletCreate} from '../wallet-create/wallet-create';
+import {MissionPointing} from '../mission-pointing/mission-pointing';
 
 /**
  * This module contains all routes for the project
@@ -93,12 +98,25 @@ export const CoreRoutes: RouterConfig = [
       // Mission management
       {path: 'mission/list', component: MissionList},
       {path: 'mission/details', component: MissionDetails},
+      {path: 'mission/details', component: MissionDetails},
+      {path: 'mission/pointing', component: MissionPointing},
 
       // Contract management
       {path: 'contract/recruitment-form', component: Contract},
       {path: 'contract/recruitment', component: Yousign},
       {path: 'contract/hours-record', component: MissionEndReleve},
       {path: 'contract/invoice', component: MissionEndInvoice},
+
+      // Payment
+      {path: 'wallet/create', component: WalletCreate},
+
+      // Grouped recruitment
+      {path: 'recruitList', component: RecruitList},
+      {path: 'pendingContracts', component: PendingContracts},
+
+      // Attachments chest
+      {path: 'attachements', component: Attachements},
+
     ]
   }
 ];

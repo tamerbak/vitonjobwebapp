@@ -98,64 +98,68 @@ export class MissionDetails {
 
     // Retrieve the project target
     this.currentUser = this.sharedService.getCurrentUser();
-    this.isEmployer = this.currentUser.estEmployeur;
-    this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+    if(!this.currentUser){
+      this.router.navigate(['app/dashboard']);
+    }else{
+      this.isEmployer = this.currentUser.estEmployeur;
+      this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
 
-    //get missions
-    this.contract = this.sharedService.getCurrentMission();
+      //get missions
+      this.contract = this.sharedService.getCurrentMission();
 
-    //verify if the mission has already pauses
-    // this.isNewMission = this.contract.vu.toUpperCase() == 'Oui'.toUpperCase() ? false : true;
-    this.refreshGraphicalData();
+      //verify if the mission has already pauses
+      // this.isNewMission = this.contract.vu.toUpperCase() == 'Oui'.toUpperCase() ? false : true;
+      this.refreshGraphicalData();
 
-    var forPointing = this.contract.option_mission != "1.0" ? true : false;
-    this.missionService.listMissionHours(this.contract, forPointing).then(
-      (data: any) => {
-        if (data.data) {
-          this.initialMissionHours = data.data;
-          //initiate pauses array
-          var array = this.missionService.constructMissionHoursArray(this.initialMissionHours);
-          this.missionHours = array[0];
-          this.missionPauses = array[1];
-        }
-      });
+      var forPointing = this.contract.option_mission != "1.0" ? true : false;
+      this.missionService.listMissionHours(this.contract, forPointing).then(
+        (data: any) => {
+          if (data.data) {
+            this.initialMissionHours = data.data;
+            //initiate pauses array
+            var array = this.missionService.constructMissionHoursArray(this.initialMissionHours);
+            this.missionHours = array[0];
+            this.missionPauses = array[1];
+          }
+        });
 
-    this.missionService.getCosignersNames(this.contract).then(
-      (data: any) => {
-        if (data.data) {
-          let cosigners = data.data[0];
-          this.enterpriseName = cosigners.enterprise;
-          this.jobyerName = cosigners.jobyer;
-        }
-      });
+      this.missionService.getCosignersNames(this.contract).then(
+        (data: any) => {
+          if (data.data) {
+            let cosigners = data.data[0];
+            this.enterpriseName = cosigners.enterprise;
+            this.jobyerName = cosigners.jobyer;
+          }
+        });
 
-    if (this.contract.numero_de_facture && this.contract.numero_de_facture != 'null')
-      this.invoiceReady = true;
+      if (this.contract.numero_de_facture && this.contract.numero_de_facture != 'null')
+        this.invoiceReady = true;
 
-    this.getOptionMission();
+      this.getOptionMission();
 
-    // TODO
-    //  Getting contract score
-    // this.notationService.loadContractNotation(this.contract, this.projectTarget).then(
-    //   (score: any) => {
-    //     this.rating = score;
-    //     this.starsText = this.writeStars(this.rating);
-    //   });
+      // TODO
+      //  Getting contract score
+      // this.notationService.loadContractNotation(this.contract, this.projectTarget).then(
+      //   (score: any) => {
+      //     this.rating = score;
+      //     this.starsText = this.writeStars(this.rating);
+      //   });
 
-    console.log(JSON.stringify(this.contract));
-    this.financeService.checkInvoice(this.contract.pk_user_contrat).then(
-      (invoice: any) => {
-        if (invoice) {
-          this.invoiceId = invoice.pk_user_facture_voj;
+      console.log(JSON.stringify(this.contract));
+      this.financeService.checkInvoice(this.contract.pk_user_contrat).then(
+        (invoice: any) => {
+          if (invoice) {
+            this.invoiceId = invoice.pk_user_facture_voj;
 
-          if (this.projectTarget == 'employer')
-            this.isReleveAvailable = invoice.releve_signe_employeur == 'Non';
-          else
-            this.isReleveAvailable = invoice.releve_signe_jobyer == 'Non';
+            if (this.projectTarget == 'employer')
+              this.isReleveAvailable = invoice.releve_signe_employeur == 'Non';
+            else
+              this.isReleveAvailable = invoice.releve_signe_jobyer == 'Non';
 
-          this.isInvoiceAvailable = invoice.facture_signee == 'Non' && this.projectTarget == 'employer';
-        }
-      });
+            this.isInvoiceAvailable = invoice.facture_signee == 'Non' && this.projectTarget == 'employer';
+          }
+        });
+      }
   }
 
   onCardClick(dayIndex) {

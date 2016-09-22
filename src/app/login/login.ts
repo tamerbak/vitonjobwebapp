@@ -4,31 +4,31 @@ import {LoadListService} from "../providers/load-list.service";
 import {AuthenticationService} from "../providers/authentication.service";
 import {ValidationDataService} from "../providers/validation-data.service";
 import {SharedService} from "../providers/shared.service";
+import {ProfileService} from "../providers/profile.service";
 import {AlertComponent} from 'ng2-bootstrap/components/alert';
 import {ModalComponent} from './modal-component/modal-component';
-
 declare function md5(value: string): string;
-//declare var jQuery: any;
 
 @Component({
-  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalComponent],
-  selector: '[login]',
-  host: {
-    class: 'login-page app'
-  },
-  template: require('./login.html'),
-  encapsulation: ViewEncapsulation.None,
-  styles: [require('./login.scss')],
-  providers: [AuthenticationService, LoadListService, ValidationDataService]
+	directives: [ROUTER_DIRECTIVES, AlertComponent, ModalComponent],
+	selector: '[login]',
+	host: {
+		class: 'login-page app'
+	},
+	template: require('./login.html'),
+	encapsulation: ViewEncapsulation.None,
+	styles: [require('./login.scss')],
+	providers: [AuthenticationService, LoadListService, ValidationDataService,ProfileService]
 })
 export class LoginPage {
 	index: number;
 	phone: number;
-	email: string; 
+	email: string;
 	password1: string;
 	password2: string;
 	role: string;
 	pays = [];
+	
 	
 	isIndexValid =true;
 	isPhoneNumValid = true;
@@ -37,22 +37,27 @@ export class LoginPage {
 	isRecruteur : boolean = false;
 	isNewRecruteur: boolean = false;
 	
+	
 	libelleButton: string;
 	showHidePasswdIcon: string;
 	showHidePasswdConfirmIcon: string;
+	isRemembered: boolean;
+	
 	
 	fromPage: string;
 	alerts: Array<Object>;
 	hideLoader: boolean = true;
 	
-	constructor(private loadListService: LoadListService, 
-				private authService: AuthenticationService,
-				private validationDataService: ValidationDataService,
-				private sharedService: SharedService,
-				private router: Router){}
+	
+	constructor(private loadListService: LoadListService,
+	private authService: AuthenticationService,
+	private validationDataService: ValidationDataService,
+	private sharedService: SharedService,
+	private profileService: ProfileService,
+	private router: Router){}
+	
 	
 	ngOnInit(): void {
-		//jQuery('.select2').select2();
 		this.index = 33;
 		this.libelleButton = "Se connecter";
 		this.role = "employer";
@@ -64,6 +69,7 @@ export class LoginPage {
 		this.showHidePasswdConfirmIcon = "fa fa-eye";
 	}
 	
+	
 	authenticate(){
 		//in case email was changed just before validate button is clicked
 		if(this.isAuthDisabled()){
@@ -74,39 +80,59 @@ export class LoginPage {
 		//call the service of autentication
 		let pwd = md5(this.password1);
 		if(this.email == null || this.email == 'null')
-			this.email = '';
+		this.email = '';
 		this.authService.authenticate(this.email, indPhone, pwd, this.role, this.isRecruteur).then((data: any) => {
-			//case of authentication failure : server unavailable or connection probleme 
+			this.hideLoader = true;
+			//case of authentication failure : server unavailable or connection probleme
 			if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
 				this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
 				return;
 			}
-			//case of authentication failure : incorrect password 
+			//case of authentication failure : incorrect password
 			if (data.id == 0 && data.status == "passwordError") {
 				if(!this.showEmailField){
 					this.addAlert("danger", "Votre mot de passe est incorrect.");
-				}else{
+					}else{
 					this.addAlert("danger", "Cette adresse email a été déjà utilisé. Veuillez en choisir une autre.");
 				}
 				return;
 			}
 			//store current user in session
-			this.sharedService.setCurrentUser(data);
-			//if user is connected for the first time, redirect him to the page 'civility', otherwise redirect him to the home page
-			var isNewUser = data.newAccount;
-			if (isNewUser || this.isNewRecruteur) {
-				//this.nav.setRoot(CivilityPage, {currentUser: data});
-				this.router.navigate(['app/charts']);
-			 } else {
-				if(this.fromPage == "Search"){
-					//this.nav.pop();
-				}else{
-					this.router.navigate(['app/offer/list']);
-				}
+			if(this.isRemembered){
+				this.sharedService.setStorageType("local");
+			}else{
+				this.sharedService.setStorageType("session");
 			}
-		
+			this.sharedService.setCurrentUser(data);
+			//get current user profile picture
+			this.profileService.loadProfilePicture(data.id).then((pic: any) => {
+				var userImageURL;
+				if(!this.isEmpty(pic.data[0].encode)){
+					userImageURL = pic.data[0].encode;
+					this.sharedService.setProfilImageUrl(pic.data[0].encode);
+					}else{
+					this.sharedService.setProfilImageUrl(null);
+				}
+				
+				//if user is connected for the first time, redirect him to the page 'civility', otherwise redirect him to the home page
+				var isNewUser = data.newAccount;
+				if (isNewUser || this.isNewRecruteur) {
+					this.router.navigate(['app/profile']);
+					} else {
+					if(this.fromPage == "Search"){
+						//this.nav.pop();
+						}else{
+						this.router.navigate(['app/dashboard']);
+					}
+				}
+			});
+			
+			
+			
+			
 		});
 	}
+	
 	
 	/**
 		* @description validate phone data field and call the function that search for it in the server
@@ -126,6 +152,7 @@ export class LoginPage {
 		}
 	}
 	
+	
 	/**
 		* @description function called when the phone input is valid to decide if the form is for inscription or authentication
 	*/
@@ -143,7 +170,7 @@ export class LoginPage {
 					this.email = "";
 					this.libelleButton = "S'inscrire";
 					//this.isNewRecruteur = false;
-				} else {
+					} else {
 					this.email = data.data[0]["email"];
 					this.libelleButton = "Se connecter";
 					this.showEmailField = false;
@@ -153,7 +180,7 @@ export class LoginPage {
 					}
 				}
 			});
-		} else {
+			} else {
 			//ça sera toujours une connexion
 			this.showEmailField = true;
 			this.libelleButton = "S'inscrire";
@@ -161,6 +188,7 @@ export class LoginPage {
 			this.isRecruteur = false;
 		}
 	}
+	
 	
 	/**
 		* @description validate the phone format
@@ -179,13 +207,15 @@ export class LoginPage {
 		return false;
 	}
 	
+	
 	validatePhone(e){
 		if(e.target.value.length == 9){
-			this.isPhoneNumValid = true;	
-		}else{
-			this.isPhoneNumValid = false;	
+			this.isPhoneNumValid = true;
+			}else{
+			this.isPhoneNumValid = false;
 		}
 	}
+	
 	
 	isEmailExist(e){
 		//verify if the email exist in the database
@@ -196,23 +226,25 @@ export class LoginPage {
 			}
 			if (data && data.data.length != 0) {
 				this.emailExist = true;
-			}else{
+				}else{
 				this.emailExist = false;
 			}
 		});
 	}
+	
 	
 	/**
 		* @description validate the email format
 	*/
 	showEmailError() {
 		if(this.isRecruteur)
-			return false;
+		return false;
 		if(this.email)
-			return !(this.validationDataService.checkEmail(this.email));
+		return !(this.validationDataService.checkEmail(this.email));
 		else
-			return false;
+		return false;
 	}
+	
 	
 	/**
 		* @description show error msg if password is not valid
@@ -222,13 +254,15 @@ export class LoginPage {
 		return this.password1.length < 6;
 	}
 	
+	
 	/**
-		* @description check if the password and its confirmation are the same 
+		* @description check if the password and its confirmation are the same
 	*/
 	showPassword2Error(){
 		if(this.password2)
 		return this.password2 != this.password1;
 	}
+	
 	
 	/**
 		* @description function called to decide if the auth/inscr button should be disabled
@@ -243,50 +277,55 @@ export class LoginPage {
 		}
 	}
 	
+	
 	watchRole(e){
 		this.role = e.target.value;
 	}
+	
 	
 	addAlert(type, msg): void {
 		this.alerts = [{type: type, msg: msg}];
 	}
 	
+	
 	showHidePasswd(){
 		let divHide = document.getElementById('hidePasswd');
         let divShow = document.getElementById('showPasswd');
-
+		
         if (divHide.style.display == 'none') {
             divHide.style.display = 'flex';
             divShow.style.display = 'none';
 			this.showHidePasswdIcon = "fa fa-eye";
-        }
+		}
         else {
             divHide.style.display = 'none';
             divShow.style.display = 'flex';
 			this.showHidePasswdIcon = "fa fa-eye-slash";
-        }
+		}
 	}
+	
 	
 	showHidePasswdConfirm(){
 		let divHide = document.getElementById('hidePasswdConfirm');
         let divShow = document.getElementById('showPasswdConfirm');
-
+		
         if (divHide.style.display == 'none') {
             divHide.style.display = 'flex';
             divShow.style.display = 'none';
 			this.showHidePasswdConfirmIcon = "fa fa-eye";
-        }
+		}
         else {
             divHide.style.display = 'none';
             divShow.style.display = 'flex';
 			this.showHidePasswdConfirmIcon = "fa fa-eye-slash";
-        }
+		}
 	}
+	
 	
 	isEmpty(str){
 		if(str == '' || str == 'null' || !str)
-			return true;
+		return true;
 		else
-			return false;
+		return false;
 	}
 }

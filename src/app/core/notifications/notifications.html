@@ -7,10 +7,7 @@
   <!-- notification list with .thin-scroll which styles scrollbar for webkit -->
   <div id="notifications-list" class="list-group thin-scroll">
     <div *ngFor="let offer of alerts; let i = index"
-         class="list-group-item">
-                                <!-- <span class="thumb-sm pull-xs-left mr clearfix">
-                                    <img class="img-circle" src={{offer.image}} alt="...">
-                                </span> -->
+         class="list-group-item" (click)="goToDetailOffer(offer)" style="cursor: pointer;">
       <p class="no-margin overflow-hidden">
         <b>{{offer.correspondantsCount}}</b> {{offer.text}} <b>{{offer.title}}</b>
       </p>
@@ -24,7 +21,7 @@
          when clicked -->
     <button class="btn btn-xs btn-link pull-xs-right btn-notifications-reload"
             id="load-notifications-btn"
-            (click)="loadOffers()">
+            (click)="loadOffers($event)">
       <i class="fa fa-refresh"></i>
     </button>
     <span class="fs-mini">&nbsp;&nbsp;</span>

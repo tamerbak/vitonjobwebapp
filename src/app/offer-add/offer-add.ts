@@ -34,7 +34,12 @@ export class OfferAdd {
 
 	constructor(private sharedService: SharedService,
 				public offersService:OffersService,
-				private router: Router){}
+				private router: Router){
+          this.currentUser = this.sharedService.getCurrentUser();
+          if(!this.currentUser){
+            this.router.navigate(['app/dashboard']);
+          }
+        }
 
 	ngOnInit(): void {
 		this.currentUser = this.sharedService.getCurrentUser();

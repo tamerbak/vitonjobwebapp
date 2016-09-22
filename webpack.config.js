@@ -93,6 +93,14 @@ module.exports = {
         'NODE_ENV': JSON.stringify(metadata.ENV)
       }
     }),
+	/*new webpack.optimize.UglifyJsPlugin({
+      minimize: true,
+	  sourceMap: false,
+	  compress: {
+		drop_console: true
+	  },
+      mangle: false
+    }),*/
     new ProvidePlugin({
       jQuery: 'jquery',
       'window.jQuery': 'jquery',

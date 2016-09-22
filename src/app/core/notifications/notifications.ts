@@ -1,5 +1,7 @@
 import {Component,Input, ElementRef, OnInit} from '@angular/core';
 import {ConfigService} from '../config';
+import {SharedService} from "../../providers/shared.service";
+import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 import {NotificationLoad} from './notification-load';
 declare var jQuery,require: any;
 
@@ -12,11 +14,16 @@ export class Notifications implements OnInit {
   $el: any;
   config: any;
   @Input() alerts:any;
-  @Input() loadOffers: Function; 
+  @Input() loadOffers: Function;
 
-  constructor(el: ElementRef, config: ConfigService) {
+  constructor(el: ElementRef, config: ConfigService,private sharedService:SharedService,private router:Router) {
     this.$el = jQuery(el.nativeElement);
     this.config = config;
+  }
+
+  goToDetailOffer(offer){
+    this.sharedService.setCurrentOffer(offer);
+    this.router.navigate(['app/offer/detail']);
   }
 
   moveNotificationsDropdown(): void {

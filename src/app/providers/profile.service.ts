@@ -11,6 +11,37 @@ export class ProfileService {
       this.http = http;
     }
 
+    loadProfilePicture(accountId, tel?, role?){
+      var sql;
+      if(!this.isEmpty(accountId)){
+        sql = "select encode(photo_de_profil::bytea, 'escape') from user_account where pk_user_account = '" + accountId + "';";
+      }else{
+        sql = "select encode(photo_de_profil::bytea, 'escape') from user_account where telephone = '" + tel + "' and role = '" + role +"';";
+      }
+      return new Promise(resolve => {
+        let headers = new Headers();
+        headers = Configs.getHttpTextHeaders();
+        this.http.post(Configs.sqlURL, sql, {headers:headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+      });
+    }
+
+    uploadProfilePictureInServer(imgUri, accountId){
+      var sql = "update user_account set photo_de_profil ='" + imgUri + "' where pk_user_account = '" + accountId + "';";
+      return new Promise(resolve => {
+        let headers = new Headers();
+        headers = Configs.getHttpTextHeaders();
+        this.http.post(Configs.sqlURL, sql, {headers:headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+      });
+    }
+
     updateUserPersonalAddress(id: string, name, streetNumber, street, cp, ville, pays,role){
         //  Now we need to save the address
         var addressData = {
@@ -129,7 +160,6 @@ export class ProfileService {
             this.http.post(Configs.sqlURL, sql, {headers:headers})
 			.map(res => res.json())
 			.subscribe(data => {
-				console.log(data);
 				resolve(data);
 			});
 		});
@@ -137,14 +167,12 @@ export class ProfileService {
 
 	countEntreprisesBySIRET(siret){
 		var sql = "select count(*) from user_entreprise where siret='" + siret + "';";
-        console.log(sql);
         return new Promise(resolve => {
             let headers = new Headers();
             headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers:headers})
           			.map(res => res.json())
           			.subscribe(data => {
-          				console.log(data);
           				resolve(data);
           			});
 		});
@@ -204,8 +232,7 @@ export class ProfileService {
         if(medecineId && medecineId>0)
             sql = sql + " , fk_user_medecine_de_travail='" + medecineId+ "' ";
         ape = (!ape ? "" : ape);
-		sql = sql + " , ape_ou_naf='" + ape + "' where  pk_user_entreprise=" + entrepriseId;
-        console.log(sql);
+	      sql = sql + " , ape_ou_naf='" + ape + "' where  pk_user_entreprise=" + entrepriseId;
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();
             this.http.post(Configs.sqlURL, sql, {headers:headers})
@@ -260,24 +287,8 @@ export class ProfileService {
         });
     }
 
-	loadProfilePicture(accountId, tel, role){
-		var sql;
-		if(!this.isEmpty(accountId)){
-			sql = "select encode(photo_de_profil::bytea, 'escape') from user_account where pk_user_account = '" + accountId + "';";
-		}else{
-			sql = "select encode(photo_de_profil::bytea, 'escape') from user_account where telephone = '" + tel + "' and role = '" + role +"';";
-		}
-		return new Promise(resolve => {
-            let headers = new Headers();
-            headers = Configs.getHttpTextHeaders();
-            this.http.post(Configs.sqlURL, sql, {headers:headers})
-			.map(res => res.json())
-			.subscribe(data => {
-				resolve(data);
-			});
-		});
-	}
-	
+
+
 	isEmpty(str){
 		if(str == '' || str == 'null' || !str)
 			return true;

@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
   <li>Vous êtes ici</li>
-  <li class="active">Suivi des missions</li>
+  <li class="active"><a class="breadcrumb-link" [routerLink]="['/app/mission/list']">Suivi des missions</a></li>
 </ol>
 
 <h1 class="page-title">
@@ -63,11 +63,18 @@
             <button type="button" class="btn btn-secondary btn-sm" (click)="goToDetailMission(item)">
               Détails de la mission
             </button>
+            <!--<div modal-component [hidden]="item.option_mission != '2.0' || isEmployer || upperCase(item.releve_employeur) == 'OUI' || upperCase(item.vu) == 'NON'"></div>-->
+            <button
+              type="button" class="btn btn-secondary btn-sm"
+              (click)="goToMissionPointingPage(item)"
+              [hidden]="item.option_mission != '2.0' || isEmployer || upperCase(item.releve_employeur) == 'OUI' || upperCase(item.vu) == 'NON'"
+              [disabled]="item.disableBtnPointing"
+            >
+              Pointage
+            </button>
           </div>
-
         </div>
       </section>
-
     </div>
   </div>
 </div>

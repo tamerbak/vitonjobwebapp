@@ -7,8 +7,10 @@ import {Injectable} from '@angular/core';
 
 @Injectable()
 export class SharedService {
+  stockageType: string;
 
   constructor() {
+    this.stockageType = localStorage.getItem('stockageType');
 
   }
 
@@ -21,109 +23,159 @@ export class SharedService {
     this.setQualityList(null);
     this.setJobList(null);
     this.setOptionMission(null);
+    this.setProfilImageUrl(null);
   }
 
-  setCurrentUser(user) {
-    localStorage.setItem('currentUser', JSON.stringify(user));
+  getStorageType() {
+    return localStorage.getItem('stockageType');
+  }
+
+  setStorageType(value) {
+    localStorage.setItem('stockageType', value);
+  }
+
+  protected getStorageVariable(variableName) {
+    if (this.stockageType == "local")
+      return JSON.parse(localStorage.getItem(variableName));
+    else
+      return JSON.parse(sessionStorage.getItem(variableName));
+  }
+
+  protected setStorageVariable(variableName, value) {
+    if (this.stockageType == "local")
+      return localStorage.setItem(variableName, JSON.stringify(value));
+    else
+      return sessionStorage.setItem(variableName, JSON.stringify(value));
+  }
+
+  getProjectTarget() {
+    return this.getStorageVariable("projectTarget");
+  }
+
+  setProjectTarget(value) {
+    this.setStorageVariable("projectTarget", value);
   }
 
   getCurrentUser() {
-    return JSON.parse(localStorage.getItem('currentUser'));
+    return this.getStorageVariable("currentUser");
   }
 
-  setCurrentOffer(offer) {
-    localStorage.setItem('currentOffer', JSON.stringify(offer));
+  setCurrentUser(value) {
+    this.setStorageVariable("currentUser", value);
   }
 
   getCurrentOffer() {
-    return JSON.parse(localStorage.getItem('currentOffer'));
+    return this.getStorageVariable("currentOffer");
   }
 
-  setCurrentMission(mission) {
-    localStorage.setItem('currentMission', JSON.stringify(mission));
+  setCurrentOffer(value) {
+    this.setStorageVariable("currentOffer", value);
   }
 
   getCurrentMission() {
-    return JSON.parse(localStorage.getItem('currentMission'));
+    return this.getStorageVariable("currentMission");
   }
 
-  setCurrentJobyer(jobyer) {
-    localStorage.setItem('currentJobyer', JSON.stringify(jobyer));
+  setCurrentMission(value) {
+    this.setStorageVariable("currentMission", value);
   }
 
   getCurrentJobyer() {
-    return JSON.parse(localStorage.getItem('currentJobyer'));
+    this.getStorageVariable('currentJobyer');
   }
 
-  setContractData(contractData) {
-    localStorage.setItem('ContractData', JSON.stringify(contractData));
+  setCurrentJobyer(value) {
+    this.setStorageVariable('currentJobyer', JSON.stringify(value));
   }
 
   getContractData() {
-    return JSON.parse(localStorage.getItem('ContractData'));
+    return this.getStorageVariable('ContractData');
   }
 
-  setCurrentInvoice(invoice) {
-    localStorage.setItem('currentInvoice', JSON.stringify(invoice));
+  setContractData(value) {
+    this.setStorageVariable('ContractData', JSON.stringify(value));
   }
 
   getCurrentInvoice() {
-    return JSON.parse(localStorage.getItem('currentInvoice'));
+    return this.getStorageVariable("currentInvoice");
   }
 
-  setLastResult(result) {
-    localStorage.setItem('lastResult', JSON.stringify(result));
+  setCurrentInvoice(value) {
+    this.setStorageVariable("currentInvoice", value);
   }
 
   getLastResult() {
-    return JSON.parse(localStorage.getItem('lastResult'));
+    return this.getStorageVariable("lastResult");
   }
 
-  setSectorList(list) {
-    localStorage.setItem('sectorList', JSON.stringify(list));
+  setLastResult(value) {
+    this.setStorageVariable("lastResult", value);
   }
 
   getSectorList() {
-    return JSON.parse(localStorage.getItem('sectorList'));
+    return this.getStorageVariable("sectorList");
   }
 
-  setJobList(list) {
-    localStorage.setItem('jobList', JSON.stringify(list));
+  setSectorList(value) {
+    this.setStorageVariable("sectorList", value);
   }
 
   getJobList() {
-    return JSON.parse(localStorage.getItem('jobList'));
+    return this.getStorageVariable("jobList");
   }
 
-  setQualityList(list) {
-    localStorage.setItem('qualityList', JSON.stringify(list));
+  setJobList(value) {
+    this.setStorageVariable("jobList", value);
   }
 
   getQualityList() {
-    return JSON.parse(localStorage.getItem('qualityList'));
+    return this.getStorageVariable("qualityList");
   }
 
-  setLangList(list) {
-    localStorage.setItem('langList', JSON.stringify(list));
+  setQualityList(value) {
+    this.setStorageVariable("qualityList", value);
   }
 
   getLangList() {
-    return JSON.parse(localStorage.getItem('langList'));
+    return this.getStorageVariable("langList");
   }
 
-  setSearchResult(item) {
-    localStorage.setItem('searchResult', JSON.stringify(item));
+  setLangList(value) {
+    this.setStorageVariable("langList", value);
   }
 
   getSearchResult() {
-    return JSON.parse(localStorage.getItem('searchResult'));
+    return this.getStorageVariable("searchResult");
   }
 
-  setOptionMission(option) {
-    localStorage.setItem('optionMission', JSON.stringify(option));
+  setSearchResult(value) {
+    this.setStorageVariable("searchResult", value);
   }
 
   getOptionMIssion() {
-    return JSON.parse(localStorage.getItem('optionMission'));
+    return this.getStorageVariable("optionMission");
+  }
+
+  setOptionMission(value) {
+    this.setStorageVariable("optionMission", value);
+  }
+
+  getProfilImageUrl() {
+    if (this.stockageType == "local") {
+      var image = localStorage.getItem('profilImage');
+      if (image !== 'null') {
+        return localStorage.getItem('profilImage');
+      }
+    } else {
+      var image = sessionStorage.getItem('profilImage');
+      if (image !== 'null') {
+        return sessionStorage.getItem('profilImage');
+      }
+    }
+    return 'assets/images/people/a5.jpg';
+  }
+
+  setProfilImageUrl(value) {
+    this.setStorageVariable("profilImage", value);
   }
 }
