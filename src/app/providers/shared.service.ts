@@ -48,6 +48,20 @@ export class SharedService {
       return sessionStorage.setItem(variableName, JSON.stringify(value));
   }
 
+	protected getStorageVariableRaw(variableName) {
+		if(this.stockageType == "local")
+			return localStorage.getItem(variableName);
+		else
+			return sessionStorage.getItem(variableName);
+	}
+
+	protected setStorageVariableRaw(variableName, value) {
+		if(this.stockageType == "local")
+			return localStorage.setItem(variableName, value);
+		else
+			return sessionStorage.setItem(variableName, value);
+	}
+
   getProjectTarget() {
     return this.getStorageVariable("projectTarget");
   }
@@ -176,6 +190,6 @@ export class SharedService {
   }
 
   setProfilImageUrl(value) {
-    this.setStorageVariable("profilImage", value);
+    this.setStorageVariableRaw("profilImage", value);
   }
 }
