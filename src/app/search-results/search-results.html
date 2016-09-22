@@ -52,6 +52,14 @@
 					</div>
 				</div>
 			</div>
+			<div *ngIf="projectTarget == 'employer'" class="row col-md-12 col-xs-12 mg-tp">
+				<div class="col-lg-4 col-md-6 col-xs-12 mg-bt-2">
+					<span><i class="fa fa-envelope" aria-hidden="true"></i><b> {{item.email}}</b></span>
+				</div>
+				<div class="col-lg-4 col-md-6 col-xs-12 mg-bt-2">
+					<span><i class="fa fa-phone" aria-hidden="true"></i><b> {{item.tel}}</b></span>
+				</div>
+			</div>
 		<!--<div class="alert alert-warning alert-sm alertDispo" *ngIf="currentUser.estEmployeur && item.checkedContract">Ce jobyer est sélectionné pour l'établissement d'un contrat, vous pouvez consulter les détails dans l'écran "Recrutement groupé"</div> -->
 		</section>
 
