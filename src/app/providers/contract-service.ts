@@ -76,9 +76,6 @@ export class ContractService {
       " where user_jobyer.fk_user_pays=user_pays.pk_user_pays " +
       " and fk_user_account in (select pk_user_account from user_account where email='"+ jobyer.email +"' or telephone='"+ jobyer.tel +"') limit 1";
 
-    console.log(sql);
-
-
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
@@ -446,7 +443,7 @@ export class ContractService {
       let headers = new Headers();
       headers.append("Content-Type", 'application/json');
 
-      this.http.post('http://ns389914.ovh.net:8080/vitonjobv1/api/callout', JSON.stringify(payload), {headers:headers})
+      this.http.post(this.configuration.yousignURL, JSON.stringify(payload), {headers:headers})
         .map(res => res.json())
         .subscribe(data => {
           // debugger;

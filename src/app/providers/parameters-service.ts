@@ -5,7 +5,6 @@ import {Configs} from "../../configurations/configs";
 
 @Injectable()
 export class ParametersService {
-  data: any = null;
 
   constructor(public http: Http) {
   }
@@ -17,9 +16,8 @@ export class ParametersService {
       headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
-        .subscribe(data => {
-          this.data = data.data;
-          resolve(this.data);
+        .subscribe((data: any) => {
+          resolve(data);
         });
     });
   }

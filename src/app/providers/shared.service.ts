@@ -81,11 +81,11 @@ export class SharedService {
   }
 
   getCurrentJobyer() {
-    this.getStorageVariable('currentJobyer');
+    return this.getStorageVariable('currentJobyer');
   }
 
   setCurrentJobyer(value) {
-    this.setStorageVariable('currentJobyer', JSON.stringify(value));
+    this.setStorageVariable('currentJobyer', value);
   }
 
   getContractData() {
@@ -93,7 +93,7 @@ export class SharedService {
   }
 
   setContractData(value) {
-    this.setStorageVariable('ContractData', JSON.stringify(value));
+    this.setStorageVariable('ContractData', value);
   }
 
   getCurrentInvoice() {

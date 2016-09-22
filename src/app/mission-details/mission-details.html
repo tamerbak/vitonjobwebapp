@@ -174,9 +174,7 @@
             [style.color]="themeColor"
             *ngIf="!(missionHours && missionHours.length == 0) && isEmployer && contract.option_mission != '1.0' && !isNewMission && upperCase(contract.releve_employeur) != 'OUI'"
           >
-            <!--[disabled]="disableTimesheetButton()"-->
-            <!-- TODO -->
-            (hidden et disabled) Générer et envoyer le relevé d'heure
+            Générer et envoyer le relevé d'heure
           </button>
           <button
             type="button" class="btn btn-primary btn-sm"

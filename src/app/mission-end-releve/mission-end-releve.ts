@@ -10,7 +10,7 @@ import {FinanceService} from "../providers/finance.service";
   selector: '[mission-end-releve]',
   template: require('./mission-end-releve.html'),
   styles: [require('./mission-end-releve.scss')],
-  providers: [SharedService, GlobalConfigs, FinanceService]
+  providers: [GlobalConfigs, FinanceService]
 })
 export class MissionEndReleve {
   currentUser: any;

@@ -10,7 +10,7 @@ import {FinanceService} from "../providers/finance.service";
   selector: '[mission-end-invoice]',
   template: require('./mission-end-invoice.html'),
   styles: [require('./mission-end-invoice.scss')],
-  providers: [SharedService, GlobalConfigs, FinanceService]
+  providers: [GlobalConfigs, FinanceService]
 })
 export class MissionEndInvoice {
   invoice: any;
