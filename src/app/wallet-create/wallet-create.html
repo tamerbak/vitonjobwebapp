@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
 	<li>Vous êtes ici</li>
-	<li class="active">Empreinte de carte bancaire</li>
+	<li class="active"><a class="breadcrumb-link" [routerLink]="['/app/wallet/create']">Empreinte de carte bancaire</a></li>
 </ol>
 <h1 class="page-title">{{projectTarget ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Empreinte de carte bancaire</span></h1>
 
@@ -50,9 +50,9 @@
 								<input class="form-control" [(ngModel)]="cardCvv"/>
 							</div>
 						</div>
-						
+
 					</fieldset>
-					
+
 					<div class="form-actions">
 						<div class="row">
 							<div class="col-md-offset-4 col-md-7 col-xs-12">

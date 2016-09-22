@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
 	<li>Vous êtes ici</li>
-	<li class="active">Recherche avancée</li>
+	<li class="active"><a class="breadcrumb-link" [routerLink]="['/app/search/criteria']">Recherche avancée</a></li>
 </ol>
 <h1 class="page-title">{{projectTarget ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Recherche avancée</span></h1>
 
@@ -52,9 +52,9 @@
 								<input type="hidden" class="select2 form-control city" name="city" [(ngModel)]="city"/>
 							</div>
 						</div>
-						
+
 					</fieldset>
-					
+
 					<div class="form-actions">
 						<div class="row">
 							<div class="col-md-offset-4 col-md-7 col-xs-12">
