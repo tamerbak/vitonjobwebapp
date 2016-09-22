@@ -1,11 +1,14 @@
 import {Component,NgZone} from '@angular/core';
+import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 import {SharedService} from "../providers/shared.service";
 import {ProfileService} from "../providers/profile.service";
+
 
 declare var jQuery,require,Messenger: any;
 
 @Component({
   selector: '[modal-picture]',
+  directives: [ROUTER_DIRECTIVES],
   providers: [ProfileService],
   template: require('./modal-picture.html'),
   styles: [require('./modal-picture.scss')]
@@ -24,7 +27,8 @@ export class ModalPicture {
   constructor(
     private sharedService:SharedService,
     private profileService:ProfileService,
-    private zone:NgZone
+    private zone:NgZone,
+    private router:Router
   ) {
     Messenger.options = {
       theme: 'air',
@@ -32,10 +36,13 @@ export class ModalPicture {
     }
 
     this.currentUser = this.sharedService.getCurrentUser();
-    this.isEmployer = this.currentUser.estEmployeur;
-
-    this.pictureUri = ""
-    this.validationImage = false;
+    if(!this.currentUser){
+      this.router.navigate(['app/dashboard']);
+    }else{
+      this.isEmployer = this.currentUser.estEmployeur;
+      this.pictureUri = ""
+      this.validationImage = false;
+    }
   }
 
   ngAfterViewInit(): void {

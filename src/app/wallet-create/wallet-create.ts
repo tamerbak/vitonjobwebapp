@@ -18,18 +18,23 @@ export class WalletCreate {
 	projectTarget: string;
 	alerts: Array<Object> = [];
 	hideLoader: boolean = true;
-	
+
 	existingWallet: boolean = false;
 	cardNumber:string;
     cardExpirationDate:number;
     cardCvv:string;
     cardType : string = "CB";
 	walletMsg: any;
-	
+
 	constructor(private sharedService: SharedService,
 				private service : PaylineServices,
-				private router: Router){}
-	
+				private router: Router){
+          this.currentUser = this.sharedService.getCurrentUser();
+          if(!this.currentUser){
+            this.router.navigate(['app/dashboard']);
+          }
+        }
+
 	ngOnInit(): void {
 		this.currentUser = this.sharedService.getCurrentUser();
 		if(this.currentUser){
@@ -39,7 +44,7 @@ export class WalletCreate {
 			return;
 
 		}
-		
+
 		this.service.checkWallet(this.currentUser).then((walletId: any) => {
 			if(walletId && walletId != 'null' && walletId.length > 0){
 				this.existingWallet = true;
@@ -52,7 +57,7 @@ export class WalletCreate {
 			}
 		});
 	}
-	
+
 	openWallet(){
         let card = {
             cardNumber : this.cardNumber,
@@ -70,15 +75,15 @@ export class WalletCreate {
 			}
         });
     }
-	
+
 	addAlert(type, msg): void {
 		this.alerts = [];
 		this.alerts = [this.walletMsg];
 		if(!this.isEmpty(type)){
-			this.alerts.push({type: type, msg: msg});	
+			this.alerts.push({type: type, msg: msg});
 		}
 	}
-	
+
 	isEmpty(str){
 		if(str == '' || str == 'null' || !str)
 		return true;

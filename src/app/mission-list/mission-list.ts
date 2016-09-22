@@ -80,8 +80,13 @@ export class MissionList {
 		
 		this.currentUser = this.sharedService.getCurrentUser();
 		
-		this.sharedService.setCurrentMission(null);
-		
+		console.log(this.currentUser)
+		if(!this.currentUser){
+			this.router.navigate(['app/dashboard']);
+			return;
+			}else{
+			this.sharedService.setCurrentMission(null);
+		}
 		this.isEmployer = this.currentUser.estEmployeur;
 		// Get target to determine configs
 		this.projectTarget = (this.isEmployer ? 'employer' : 'jobyer');
@@ -207,4 +212,4 @@ export class MissionList {
 		return '';
 		return str.toUpperCase();
 	}
-}
+}				
