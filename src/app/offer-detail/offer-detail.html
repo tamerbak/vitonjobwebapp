@@ -1,7 +1,7 @@
 <ol class="breadcrumb">
 	<li>Vous êtes ici</li>
-	<li class="active">Mes offres</li>
-	<li class="active">Détails de l'offre</li>
+	<li class="active"><a class="breadcrumb-link" [routerLink]="['/app/offer/list']">Mes offres</a></li>
+	<li class="active"><a class="breadcrumb-link" [routerLink]="['/app/offer/detail']">Détails de l'offre</a></li>
 </ol>
 <h1 class="page-title">{{currentUser.estEmployeur ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Détails de mon offre</span></h1>
 
@@ -70,7 +70,7 @@
 							</div>
 						</div>
 					</fieldset>
-					
+
 					<div class="form-actions">
 						<div class="row">
 							<div class="col-md-offset-4 col-md-7 col-xs-12">
@@ -171,7 +171,7 @@
 								  </button>
 								</div>
 							</div>
-					
+
 						</fieldset>
 					</div>
 					<div class="col-md-6 col-xs-12">

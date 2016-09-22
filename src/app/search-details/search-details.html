@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
 	<li>Vous êtes ici</li>
-	<li class="active">Résultats de la recherche</li>
+	<li class="active"><a class="breadcrumb-link" [routerLink]="['/app/search/details']">Résultats de la recherche</a></li>
 	<li class="active">Détails</li>
 </ol>
 <h1 class="page-title">{{projectTarget == 'employer' ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Détails de l'offre sélectionnée</span></h1>
@@ -22,7 +22,7 @@
 			<sebm-google-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" class="content-map">
 			  <sebm-google-map-marker [latitude]="lat" [longitude]="lng" >
 			  </sebm-google-map-marker>
-			</sebm-google-map>          
+			</sebm-google-map>
         </div>
       </div>
       <footer class="bg-body-light">
@@ -45,4 +45,3 @@
   </div>
 
 </div>
-

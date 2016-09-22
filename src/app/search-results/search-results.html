@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
 	<li>Vous êtes ici</li>
-	<li class="active">Résultats de la recherche</li>
+	<li class="active"><a class="breadcrumb-link" [routerLink]="['/app/search/results']">Résultats de la recherche</a></li>
 </ol>
 <h1 class="page-title">{{projectTarget == 'employer' ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Résultats de la recherche</span></h1>
 
@@ -54,7 +54,7 @@
 			</div>
 		<!--<div class="alert alert-warning alert-sm alertDispo" *ngIf="currentUser.estEmployeur && item.checkedContract">Ce jobyer est sélectionné pour l'établissement d'un contrat, vous pouvez consulter les détails dans l'écran "Recrutement groupé"</div> -->
 		</section>
-		
-		
+
+
 	</div>
 </div>
