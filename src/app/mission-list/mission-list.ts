@@ -21,6 +21,7 @@ import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 import {AlertComponent} from 'ng2-bootstrap/components/alert';
 import {SearchService} from "../providers/search-service";
 import {BUTTON_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
+import {Helpers} from "../providers/helpers.service";
 
 /*
  Generated class for the MissionListPage page.
@@ -37,7 +38,7 @@ import {BUTTON_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
   encapsulation: ViewEncapsulation.None,
   styles: [require('./mission-list.scss')],
   directives: [ACCORDION_DIRECTIVES, ROUTER_DIRECTIVES, AlertComponent, BUTTON_DIRECTIVES],
-  providers: [ContractService]
+  providers: [ContractService, Helpers]
   // providers: [missionsService, SearchService]
 
 })
