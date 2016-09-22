@@ -673,4 +673,73 @@ export class MissionService {
         });
     });
   }
+  
+  getTodayMission(missionHoursTemp){
+		let now = new Date().setHours(0, 0, 0, 0);
+		let missionHoursToday = [];
+		for(let i = 0; i < missionHoursTemp.length; i++){
+			if(new Date(missionHoursTemp[i].jour_debut.replace(' ', 'T')).setHours(0, 0, 0, 0) == now || new Date(missionHoursTemp[i].jour_fin.replace(' ', 'T')).setHours(0, 0, 0, 0) == now){
+				missionHoursToday.push(missionHoursTemp[i]);
+			}
+		}
+		let array = this.constructMissionHoursArray(missionHoursToday);
+		return array;
+	}
+	
+	disablePointing(missionHours, missionPauses){
+		let disabled = true;
+		let h = new Date().getHours();
+		let m = new Date().getMinutes();
+		let minutesNow = this.convertHoursToMinutes(h+':'+m);
+		for(let i = 0; i < missionHours.length; i++){
+			let scheduledHour = this.isEmpty(missionHours[i].heure_debut_new) ? missionHours[i].heure_debut : missionHours[i].heure_debut_new;
+			if(scheduledHour - minutesNow <=  10 && scheduledHour - minutesNow >=  0 && this.isEmpty(missionHours[i].heure_debut_pointe)){
+				disabled = false;
+				let nextPointing = {id: missionHours[i].id, start: true};
+				return {disabled: disabled, nextPointing: nextPointing};
+			}
+			scheduledHour = this.isEmpty(missionHours[i].heure_fin_new) ? missionHours[i].heure_fin : missionHours[i].heure_fin_new;
+			if(scheduledHour - minutesNow <=  10 && scheduledHour - minutesNow >=  0 && (this.isEmpty(missionHours[i].heure_fin_pointe))){
+				disabled = false;
+				let nextPointing = {id: missionHours[i].id, start: false};
+				return {disabled: disabled, nextPointing: nextPointing};
+			}
+			for(let j = 0; j < missionPauses[i].length; j++){
+				let p = missionPauses[i][j];
+				let minutesPause;
+				if(this.isEmpty(p.pause_debut_new)){
+					let h = (p.pause_debut).split(":")[0];
+					let m = (p.pause_debut).split(":")[1];
+					minutesPause = this.convertHoursToMinutes(h+':'+m);					
+				}else{
+					minutesPause = p.pause_debut_new;
+				}
+				if(minutesPause - minutesNow <=  10 && minutesPause - minutesNow >=  0 && this.isEmpty(p.pause_debut_pointe)){
+					disabled = false;
+					let nextPointing = {id: missionHours[i].id, start: true, id_pause: p.id};
+					return {disabled: disabled, nextPointing: nextPointing};
+				}
+				if(this.isEmpty(p.pause_fin_new)){
+					let h = (p.pause_fin).split(":")[0];
+					let m = (p.pause_fin).split(":")[1];
+					let minutesPause = this.convertHoursToMinutes(h+':'+m);					
+				}else{
+					minutesPause = p.pause_fin_new;
+				}
+				if(minutesPause - minutesNow <=  10 && minutesPause - minutesNow >=  0 && this.isEmpty(p.pause_fin_pointe)){
+					disabled = false;
+					let nextPointing = {id: missionHours[i].id, start: false, id_pause: p.id};
+					return {disabled: disabled, nextPointing: nextPointing};
+				}
+			}
+		}
+		return {disabled: disabled, nextPointing: null};
+	}
+	
+	isEmpty(str) {
+    if (str == '' || str == 'null' || !str)
+      return true;
+    else
+      return false;
+  }
 }

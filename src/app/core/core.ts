@@ -36,6 +36,7 @@ import {SearchResults} from '../search-results/search-results';
 import {SearchDetails} from '../search-details/search-details';
 import {SearchCriteria} from '../search-criteria/search-criteria';
 import {WalletCreate} from '../wallet-create/wallet-create';
+import {MissionPointing} from '../mission-pointing/mission-pointing';
 
 declare var Raphael: any;
 declare var jQuery: any;
