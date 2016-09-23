@@ -1,7 +1,7 @@
 <ol class="breadcrumb">
 	<li>Vous êtes ici</li>
 	<li class="active"><a class="breadcrumb-link" [routerLink]="['/app/offer/list']">Mes offres</a></li>
-	<li class="active"><a class="breadcrumb-link" [routerLink]="['/app/mission/add']">Nouvelle offre</a></li>
+	<li class="active"><a class="breadcrumb-link" [routerLink]="['/app/offer/add']">Nouvelle offre</a></li>
 </ol>
 <h1 class="page-title">{{currentUser.estEmployeur ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Nouvelle offre</span></h1>
 
@@ -23,7 +23,14 @@
 						<div class="form-group row">
 							<label class="col-md-4 col-xs-12 form-control-label text-md-right">Secteur</label>
 							<div class="col-md-7 col-xs-12">
-								<select class="form-control" [(ngModel)]="offer.jobData.idSector" (change)="sectorSelected($event.target.value)">
+								<div class="widget-body btn loaderPosition" [hidden]="hideJobLoader">
+									<div class="loader animated fadeIn handle">
+										<span class="spinner">
+											<i class="fa fa-spinner fa-spin"></i>
+										</span>
+									</div>
+								</div>
+								<select class="form-control" [(ngModel)]="offer.jobData.idSector" (change)="sectorSelected($event.target.value)" [disabled]="!hideJobLoader">
 									<option *ngFor="let s of sectors" [value]="s.id"> {{s.libelle}}</option>
 								</select>
 							</div>
@@ -33,7 +40,14 @@
 								Job
 							</label>
 							<div class="col-md-7 col-xs-12">
-								<select class="form-control" [(ngModel)]="offer.jobData.idJob" (change)="jobSelected($event.target.value)">
+								<div class="widget-body btn loaderPosition" [hidden]="hideJobLoader">
+									<div class="loader animated fadeIn handle">
+										<span class="spinner">
+											<i class="fa fa-spinner fa-spin"></i>
+										</span>
+									</div>
+								</div>
+								<select class="form-control" [(ngModel)]="offer.jobData.idJob" (change)="jobSelected($event.target.value)" [disabled]="!hideJobLoader">
 									<option *ngFor="let j of jobs" [value]="j.id"> {{j.libelle}}</option>
 								</select>
 							</div>
@@ -67,7 +81,7 @@
 							</div>
 						</div>
 					</fieldset>
-
+					
 					<fieldset>
 						<legend> <strong>Disponibilités</strong></legend>
 						<div class="form-group row">
@@ -77,19 +91,19 @@
 						</div>
 						<div class="form-group row" *ngFor="let item of slots, let j = index">
 							<div class="col-md-6 col-xs-12">
-							<!--<datetime [timepicker]="false" [(ngModel)]="item.date"></datetime>-->
-							<input class="form-control" [(ngModel)]="item.date" disabled/>
+								<!--<datetime [timepicker]="false" [(ngModel)]="item.date"></datetime>-->
+								<input class="form-control" [(ngModel)]="item.date" disabled/>
 							</div>
 							<div class="col-md-2 col-xs-12">
-							<input class="form-control" [(ngModel)]="item.startHour" disabled/>
+								<input class="form-control" [(ngModel)]="item.startHour" disabled/>
 							</div>
 							<div class="col-md-2 col-xs-12">
-							<input class="form-control" [(ngModel)]="item.endHour" disabled/>
+								<input class="form-control" [(ngModel)]="item.endHour" disabled/>
 							</div>
 							<div class="col-md-2 col-xs-12">
 								<button class="btn btn-secondary mb-xs" role="button" (click)="removeSlot(j)">
-								<i class="glyphicon glyphicon-trash"></i>
-							  </button>
+									<i class="glyphicon glyphicon-trash"></i>
+								</button>
 							</div>
 						</div>
 						<div class="form-group row">
@@ -104,68 +118,68 @@
 							</div>
 							<div class="col-md-2 col-xs-12">
 								<button class="btn btn-danger mb-xs" role="button" (click)="addSlot()">
-								<i class="glyphicon glyphicon-plus"></i>
-							  </button>
+									<i class="glyphicon glyphicon-plus"></i>
+								</button>
 							</div>
 						</div>
 					</fieldset>
 					<div class="row">
 						<div class="col-md-6 col-xs-12">
-						<fieldset>
-							<legend><strong>Qualités</strong></legend>
-							<div class="form-group row">
-								<div class="col-md-10 col-xs-12">
-									<select class="form-control" [(ngModel)]="selectedQuality">
-										<option *ngFor="let q of qualities" [value]="q.idQuality"> {{q.libelle}}</option>
-									</select>
+							<fieldset>
+								<legend><strong>Qualités</strong></legend>
+								<div class="form-group row">
+									<div class="col-md-10 col-xs-12">
+										<select class="form-control" [(ngModel)]="selectedQuality">
+											<option *ngFor="let q of qualities" [value]="q.idQuality"> {{q.libelle}}</option>
+										</select>
+									</div>
+									<div class="col-md-2 col-xs-12">
+										<button class="btn btn-danger mb-xs" role="button" (click)="addQuality()">
+											<i class="glyphicon glyphicon-plus"></i>
+										</button>
+									</div>
 								</div>
-								<div class="col-md-2 col-xs-12">
-									<button class="btn btn-danger mb-xs" role="button" (click)="addQuality()">
-										<i class="glyphicon glyphicon-plus"></i>
-								  </button>
+								<div class="form-group row" *ngFor="let item of offer.qualityData">
+									<label class="col-md-10 col-xs-6 form-control-label">{{item.libelle}}</label>
+									<div class="col-md-2 col-xs-12">
+										<button class="btn btn-secondary mb-xs" role="button">
+											<i class="glyphicon glyphicon-trash" (click)="removeQuality(item)"></i>
+										</button>
+									</div>
 								</div>
-							</div>
-							<div class="form-group row" *ngFor="let item of offer.qualityData">
-								<label class="col-md-10 col-xs-6 form-control-label">{{item.libelle}}</label>
-								<div class="col-md-2 col-xs-12">
-									<button class="btn btn-secondary mb-xs" role="button">
-									<i class="glyphicon glyphicon-trash" (click)="removeQuality(item)"></i>
-								  </button>
-								</div>
-							</div>
-						</fieldset>
+							</fieldset>
 						</div>
 						<div class="col-md-6 col-xs-12">
-						<fieldset>
-							<legend><strong>Langues</strong></legend>
-							<div class="form-group row">
-								<div class="col-md-6 col-xs-12">
-									<select class="form-control" [(ngModel)]="selectedLang">
-										<option *ngFor="let l of langs" [value]="l.idLanguage"> {{l.libelle}}</option>
-									</select>
+							<fieldset>
+								<legend><strong>Langues</strong></legend>
+								<div class="form-group row">
+									<div class="col-md-6 col-xs-12">
+										<select class="form-control" [(ngModel)]="selectedLang">
+											<option *ngFor="let l of langs" [value]="l.idLanguage"> {{l.libelle}}</option>
+										</select>
+									</div>
+									<div class="col-md-4 col-xs-12">
+										<select class="form-control" [(ngModel)]="selectedLevel">
+											<option value="junior">Débutant</option>
+											<option value="senior">Courant</option>
+										</select>
+									</div>
+									<div class="col-md-2 col-xs-12">
+										<button class="btn btn-danger mb-xs" role="button" (click)="addLanguage()">
+											<i class="glyphicon glyphicon-plus"></i>
+										</button>
+									</div>
 								</div>
-								<div class="col-md-4 col-xs-12">
-									<select class="form-control" [(ngModel)]="selectedLevel">
-										<option value="junior">Débutant</option>
-										<option value="senior">Courant</option>
-									</select>
+								<div class="form-group row" *ngFor="let item of offer.languageData">
+									<label class="col-md-6 col-xs-6 form-control-label">{{item.libelle}}</label>
+									<label class="col-md-4 col-xs-6 form-control-label">{{item.level == 'junior' ? 'Débutant' : 'Courant'}}</label>
+									<div class="col-md-2 col-xs-12">
+										<button class="btn btn-secondary mb-xs" role="button">
+											<i class="glyphicon glyphicon-trash" (click)="removeLanguage(item)"></i>
+										</button>
+									</div>
 								</div>
-								<div class="col-md-2 col-xs-12">
-									<button class="btn btn-danger mb-xs" role="button" (click)="addLanguage()">
-										<i class="glyphicon glyphicon-plus"></i>
-								  </button>
-								</div>
-							</div>
-							<div class="form-group row" *ngFor="let item of offer.languageData">
-								<label class="col-md-6 col-xs-6 form-control-label">{{item.libelle}}</label>
-								<label class="col-md-4 col-xs-6 form-control-label">{{item.level == 'junior' ? 'Débutant' : 'Courant'}}</label>
-								<div class="col-md-2 col-xs-12">
-									<button class="btn btn-secondary mb-xs" role="button">
-									<i class="glyphicon glyphicon-trash" (click)="removeLanguage(item)"></i>
-								  </button>
-								</div>
-							</div>
-						</fieldset>
+							</fieldset>
 						</div>
 					</div>
 					<div class="form-actions">
