@@ -2,7 +2,7 @@ declare let jQuery: any;
 
 export class ConfigService {
   config = {
-    name: 'sing',
+    name: 'VitOnJob',
     title: 'Sing - Dashboard',
     version: '2.0.0',
     /**
@@ -221,4 +221,3 @@ export class ConfigService {
     return this.config;
   }
 }
-

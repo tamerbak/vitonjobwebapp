@@ -32,7 +32,8 @@ export class Civility {
   companyname:string;
   siret:string;
   ape:string;
-  birthdate:Date = new Date(2014, 1, 10);
+  birthdate:Date;
+  birthdateHidden:Date;
   selectedMedecine:any={id:0, libelle:""};
   cni:string;
   numSS:string;
@@ -119,7 +120,7 @@ export class Civility {
       }else{
         this.getUserInfos();
         if(!this.isRecruiter && !this.isEmployer){
-          jQuery('.nationalitySelectPicker').selectpicker();
+          //jQuery('.nationalitySelectPicker').selectpicker();
           this.personalAddressLabel = "Adresse personnelle";
           this.jobAddressLabel = "Adresse de départ au travail";
           listService.loadNationalities().then((response:any) => {
@@ -330,14 +331,13 @@ export class Civility {
       } else {
         if (this.currentUser.jobyer.dateNaissance) {
           var birthDate = new Date(this.currentUser.jobyer.dateNaissance).toLocaleDateString("fr-FR")
+          this.birthdateHidden = new Date(this.currentUser.jobyer.dateNaissance)
+          this.isValidBirthdate = true;
+          jQuery("#birthdate input").val(birthDate);
 
-          this.zone.run(()=>{
-            this.birthdate = new Date(this.currentUser.jobyer.dateNaissance)
-            this.isValidBirthdate = true;
-            jQuery("#birthdate input").val(birthDate);
-          });
         } else {
           this.birthdate = null;
+          this.birthdateHidden = null;
           this.isValidBirthdate = false;
         }
         //this.birthdate = this.currentUser.jobyer.dateNaissance ?  : "";
@@ -439,7 +439,7 @@ export class Civility {
     ngAfterViewChecked () {
       if(!this.isEmployer){
         if (this.dataForNationalitySelectReady) {
-          jQuery('.nationalitySelectPicker').selectpicker('refresh');
+          jQuery('.nationalitySelectPicker').selectpicker();
         }
       }
     }
@@ -470,11 +470,8 @@ export class Civility {
             },
             data: function (term, page) {
                 return "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) % lower_unaccent('"+term+"') limit 5" // search term
-
             },
             results: function (data, page) {
-
-
                 return { results: data.data };
             },
             cache: true
@@ -670,11 +667,11 @@ export class Civility {
           _hint = "* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles";
           _isValid = false;
         }
-        else if(_numSS.length ==15 && !this.checkBirthYear(_numSS,this.birthdate) ){
+        else if(_numSS.length ==15 && !this.checkBirthYear(_numSS,this.birthdateHidden) ){
           _hint = "* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles";
           _isValid = false;
         }
-        else if(_numSS.length ==15 && !this.checkBirthMonth(_numSS,this.birthdate) ){
+        else if(_numSS.length ==15 && !this.checkBirthMonth(_numSS,this.birthdateHidden) ){
           _hint = "* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles";
           _isValid = false;
         }
@@ -793,6 +790,8 @@ export class Civility {
         _hint = "";
       }
 
+      this.birthdate = e;
+      this.birthdateHidden = e;
       this.isValidBirthdate = _isValid;
       this.birthdateHint = _hint;
       console.log();
@@ -989,7 +988,7 @@ export class Civility {
           var numSS = this.numSS;
           var cni = this.cni;
           var nationality = this.nationalityId;
-          var birthdate = this.birthdate.toLocaleDateString('en-US');
+          var birthdate = this.birthdateHidden.toLocaleDateString('en-US');
           var birthplace = this.selectedCommune.nom;
           var nationalityId = this.nationalityId;
 
@@ -1012,7 +1011,7 @@ export class Civility {
               this.currentUser.jobyer.cni = this.cni;
               this.currentUser.jobyer.numSS = this.numSS;
               this.currentUser.jobyer.natId = this.nationalityId;
-              this.currentUser.jobyer.dateNaissance = Date.parse(this.birthdate.toLocaleDateString('en-US'));
+              this.currentUser.jobyer.dateNaissance = Date.parse(this.birthdateHidden.toLocaleDateString('en-US'));
               this.currentUser.jobyer.lieuNaissance = birthplace;
               this.sharedService.setCurrentUser(this.currentUser);
               this.getUserFullname();
