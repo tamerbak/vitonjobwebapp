@@ -22,7 +22,7 @@ var HOST = process.env.HOST || 'localhost';
 var PORT = process.env.PORT || 8080;
 
 var metadata = {
-  title: 'Sing dashboard',
+  title: 'Vit-On-Job',
   baseUrl: '/',
   host: HOST,
   port: PORT,

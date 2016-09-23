@@ -12,7 +12,7 @@ const autoprefixer = require('autoprefixer');
 var ProvidePlugin = require('webpack/lib/ProvidePlugin');
 
 var metadata = {
-  title: 'Sing dashboard',
+  title: 'Vit-On-Job',
   baseUrl: '/',
   host: 'localhost',
   port: 3000,
