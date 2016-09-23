@@ -495,6 +495,13 @@ export class OffersService {
         }
     }
 	
+	convertHoursToMinutes(hour) {
+		if (hour) {
+		  var hourArray = hour.split(':');
+		  return hourArray[0] * 60 + parseInt(hourArray[1]);
+		}
+	}
+	
 	isEmpty(str){
 		if(str == '' || str == 'null' || !str)
 			return true;
