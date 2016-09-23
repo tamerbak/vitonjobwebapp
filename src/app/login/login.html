@@ -10,12 +10,9 @@
 						<h3 style="text-align: center;">Bienvenue sur VitOnJob</h3>
 					</header>
 					<div class="widget-body">
-						<!--<p class="widget-login-info">
-							Use Facebook, Twitter or your email to sign in.
-							</p>
-							<p class="widget-login-info">
-							Don't have an account? Sign up now!
-						</p>-->
+						<p class="widget-login-info">
+							Si vous n'avez pas encore de compte sur Vit-On-Job et désirez en créer un, renseigner votre numéro de téléphone.
+						</p>
 						<alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
 							<div [innerHTML]="alert.msg"></div>
 						</alert>
