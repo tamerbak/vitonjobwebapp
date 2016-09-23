@@ -24,6 +24,7 @@ export class Notifications implements OnInit {
   goToDetailOffer(offer){
     this.sharedService.setCurrentOffer(offer);
     this.router.navigate(['app/offer/detail']);
+	window.location.reload();
   }
 
   moveNotificationsDropdown(): void {
