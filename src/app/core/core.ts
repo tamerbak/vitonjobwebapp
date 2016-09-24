@@ -3,7 +3,6 @@ import {ROUTER_DIRECTIVES, Router, NavigationEnd} from '@angular/router';
 import {FORM_PROVIDERS} from '@angular/common';
 import {Sidebar} from './sidebar/sidebar';
 import {Navbar} from './navbar/navbar';
-import {ChatSidebar} from './chat-sidebar/chat-sidebar';
 import {Widgets} from '../widgets/widgets';
 import {Dashboard} from '../dashboard/dashboard';
 import {Charts} from '../charts/charts';
@@ -46,12 +45,11 @@ declare var Tether: any;
   selector: 'app',
   host: {
     '[class.nav-static]': 'config.state["nav-static"]',
-    '[class.chat-sidebar-opened]': 'chatOpened',
     '[class.app]': 'true',
     id: 'app'
   },
   providers: [FORM_PROVIDERS],
-  directives: [Sidebar, Navbar, ChatSidebar, ROUTER_DIRECTIVES],
+  directives: [Sidebar, Navbar, ROUTER_DIRECTIVES],
   template: require('./core.html')
 })
 export class Core {
@@ -59,7 +57,6 @@ export class Core {
   configFn: any;
   $sidebar: any;
   el: ElementRef;
-  chatOpened: boolean;
   router: Router;
 
   constructor(config: ConfigService,
@@ -72,7 +69,6 @@ export class Core {
     this.el = el;
     this.config = config.getConfig();
     this.configFn = config;
-    this.chatOpened = false;
     this.router = router;
 
     jQuery.fn.onPositionChanged = function (trigger, millis): any {
@@ -122,20 +118,6 @@ export class Core {
     let toggleNavigation = state === 'static' ? this.toggleNavigationState : this.toggleNavigationCollapseState;
     toggleNavigation.apply(this);
     localStorage.setItem('nav-static', this.config.state['nav-static']);
-  }
-
-  toggleChatListener(): void {
-    jQuery(this.el.nativeElement).find('.chat-notification-sing').remove();
-    this.chatOpened = !this.chatOpened;
-
-    setTimeout(() => {
-      // demo: add class & badge to indicate incoming messages from contact
-      // .js-notification-added ensures notification added only once
-      jQuery('.chat-sidebar-user-group:first-of-type .list-group-item:first-child:not(.js-notification-added)')
-        .addClass('active js-notification-added')
-        .find('.fa-circle')
-        .after('<span class="label label-pill label-danger pull-right animated bounceInDown">3</span>');
-    }, 1000);
   }
 
   toggleNavigationState(): void {
