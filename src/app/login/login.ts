@@ -6,11 +6,10 @@ import {ValidationDataService} from "../providers/validation-data.service";
 import {SharedService} from "../providers/shared.service";
 import {ProfileService} from "../providers/profile.service";
 import {AlertComponent} from 'ng2-bootstrap/components/alert';
-import {ModalComponent} from './modal-component/modal-component';
 declare function md5(value: string): string;
 
 @Component({
-	directives: [ROUTER_DIRECTIVES, AlertComponent, ModalComponent],
+	directives: [ROUTER_DIRECTIVES, AlertComponent],
 	selector: '[login]',
 	host: {
 		class: 'login-page app'
