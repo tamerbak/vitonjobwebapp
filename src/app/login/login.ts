@@ -1,10 +1,10 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import {ROUTER_DIRECTIVES, Router} from '@angular/router';
-import {LoadListService} from "../providers/load-list.service";
-import {AuthenticationService} from "../providers/authentication.service";
-import {ValidationDataService} from "../providers/validation-data.service";
-import {SharedService} from "../providers/shared.service";
-import {ProfileService} from "../providers/profile.service";
+import {LoadListService} from "../../providers/load-list.service";
+import {AuthenticationService} from "../../providers/authentication.service";
+import {ValidationDataService} from "../../providers/validation-data.service";
+import {SharedService} from "../../providers/shared.service";
+import {ProfileService} from "../../providers/profile.service";
 import {AlertComponent} from 'ng2-bootstrap/components/alert';
 import {ModalComponent} from "./modal-component/modal-component";
 declare function md5(value: string): string;

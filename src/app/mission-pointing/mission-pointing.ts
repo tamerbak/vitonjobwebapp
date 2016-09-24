@@ -7,10 +7,10 @@ import {NKDatetime} from 'ng2-datetime/ng2-datetime';
 
 import {GlobalConfigs} from "../configurations/globalConfigs";
 
-import {SharedService} from "../providers/shared.service";
-import {MissionService} from "../providers/mission-service";
-import {FinanceService} from "../providers/finance.service";
-import {ContractService} from '../providers/contract-service';
+import {SharedService} from "../../providers/shared.service";
+import {MissionService} from "../../providers/mission-service";
+import {FinanceService} from "../../providers/finance.service";
+import {ContractService} from '../../providers/contract-service';
 
 import {DateConverter} from '../../pipes/date-converter/date-converter';
 import {TimeConverter} from '../../pipes/time-converter/time-converter';
@@ -28,57 +28,57 @@ export class MissionPointing {
 	projectTarget: string = 'employer';
 	isEmployer: boolean;
 	themeColor: string;
-	
+
 	contract: any;
 	missionDetailsTitle: string;
-	
+
 	missionIndex: number;
 	missionDayIndex: number;
 	missionTimeIsFirst: boolean;
 	missionTimeIsStart: boolean;
-	
+
 	//records of user_heure_mission of a contract
 	missionHours = [];
 	initialMissionHours = [];
-	
+
 	//two dimensional array of pauses of mission days
 	isNewMission = true;
 	contractSigned = false;
-	
+
 	store: Storage;
 	invoiceReady: boolean = false;
-	
+
 	rating: number = 0;
 	starsText: string = '';
 	db: Storage;
-	
+
 	optionMission: string;
 	backgroundImage: string;
-	
+
 	enterpriseName: string = "--";
 	jobyerName: string = "--";
 	currentUser: any;
-	
+
 	/*
 		*   Invoice management
 	*/
 	invoiceId: number;
 	isInvoiceAvailable: boolean = false;
 	isReleveAvailable: boolean = false;
-	
+
 	alerts: Array<Object>;
-	
+
 	scheduleStartStatus: string = '-1';
 	scheduleEndStatus: string = '-1';
-	
+
 	missionPauses = [];
-	
+
 	pointingClassSwitch = {'non': 'success', 'oui': 'danger'};
-	
+
 	disableBtnPointing;
 	nextPointing;
-	
-	
+
+
 	constructor(private route: ActivatedRoute,
 	private sharedService: SharedService,
 	private missionService: MissionService,
@@ -88,11 +88,11 @@ export class MissionPointing {
 		this.currentUser = this.sharedService.getCurrentUser();
 		this.isEmployer = this.currentUser.estEmployeur;
 		this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
-		
+
 		//get missions
 		this.contract = this.sharedService.getCurrentMission();
-		
-		
+
+
 		//retrieve mission hours of today
 		this.missionService.listMissionHours(this.contract, true).then((data: any) => {
 			if(data.data){
@@ -110,7 +110,7 @@ export class MissionPointing {
 			}
 		});
 	}
-	
+
 	pointHour(autoPointing){
 		if(this.nextPointing){
 			let h = new Date().getHours();
@@ -131,20 +131,20 @@ export class MissionPointing {
 			});
 		}
 	}
-	
+
 	upperCase(str) {
 		if (str == null || !str)
 		return '';
 		return str.toUpperCase();
 	}
-	
+
 	isEmpty(str) {
 		if (str == '' || str == 'null' || !str)
 		return true;
 		else
 		return false;
 	}
-	
+
 	/**
 		* Return to the list page in order to refresh all data
 	*/

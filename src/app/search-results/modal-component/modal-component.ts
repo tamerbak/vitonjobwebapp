@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {SharedService} from "../../providers/shared.service";
+import {SharedService} from "../../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 
 declare var jQuery: any;
@@ -12,12 +12,12 @@ declare var jQuery: any;
 export class ModalComponent {
 	currentUser: any;
     projectTarget: string;
-	
+
 	showContractNotif = false;
 	showOfferNotif = false;
 	showProfilNotif = false;
 	showAuthNotif = false;
-	
+
 	constructor(private sharedService: SharedService,
 				private router: Router){}
 
@@ -26,11 +26,11 @@ export class ModalComponent {
 		if(this.currentUser){
 			this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
 		}
-		
+
 		if (this.currentUser) {
             let currentEmployer = this.currentUser.employer;
             let userData = this.currentUser;
-            
+
             //verification of employer informations
             let redirectToCivility = (currentEmployer && currentEmployer.entreprises[0]) ?
             (userData.titre == "") ||
@@ -62,15 +62,15 @@ export class ModalComponent {
 			this.showAuthNotif = true;
         }
 	}
-	
+
 	gotoContractForm(){
 		jQuery('#my-modal18-content').modal('hide');
 		//just for test, to replace with the right redirection
 		this.router.navigate(['app/search/details']);
 	}
-	
+
 	close(): void {
 		jQuery('#my-modal18-content').modal('hide');
-	}	
+	}
 }
 

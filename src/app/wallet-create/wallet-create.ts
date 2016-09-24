@@ -1,8 +1,8 @@
 import {Component, ViewEncapsulation} from '@angular/core';
-import {SharedService} from "../providers/shared.service";
+import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 import {AlertComponent} from 'ng2-bootstrap/components/alert';
-import {PaylineServices} from "../providers/payline-services";
+import {PaylineServices} from "../../providers/payline-services";
 
 @Component({
     selector: '[wallet-create]',

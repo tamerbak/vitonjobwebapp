@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
-import {LoadListService} from "../../providers/load-list.service";
-import {AuthenticationService} from "../../providers/authentication.service";
+import {LoadListService} from "../../../providers/load-list.service";
+import {AuthenticationService} from "../../../providers/authentication.service";
 import {AlertComponent} from 'ng2-bootstrap/components/alert';
 
 declare function md5(value: string): string;

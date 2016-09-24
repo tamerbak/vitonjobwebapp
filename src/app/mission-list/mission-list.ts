@@ -2,7 +2,7 @@
 // import {NavController} from 'ionic-angular';
 // import {Configs} from '../../configurations/configs';
 // import {GlobalConfigs} from '../../configurations/globalConfigs';
-// import {ContractService} from '../../providers/contract-service/contract-service';
+// import {ContractService} from '../../../providers/contract-service/contract-service';
 // import {DatePicker} from 'ionic-native';
 // import {MissionDetailsPage} from '../mission-details/mission-details';
 // import {Storage, SqlStorage} from 'ionic-angular';
@@ -10,19 +10,19 @@
 // import {MissionPointingPage} from "../mission-pointing/mission-pointing";
 
 // Import updated from mobile to web
-import {ContractService} from '../providers/contract-service';
+import {ContractService} from '../../providers/contract-service';
 
 
 import {Component, ViewEncapsulation} from '@angular/core';
 import {ACCORDION_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
-import {OffersService} from "../providers/offer.service";
-import {SharedService} from "../providers/shared.service";
+import {OffersService} from "../../providers/offer.service";
+import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 import {AlertComponent} from 'ng2-bootstrap/components/alert';
-import {SearchService} from "../providers/search-service";
+import {SearchService} from "../../providers/search-service";
 import {BUTTON_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
-import {MissionService} from "../providers/mission-service";
-import {Helpers} from "../providers/helpers.service";
+import {MissionService} from "../../providers/mission-service";
+import {Helpers} from "../../providers/helpers.service";
 
 /*
  Generated class for the MissionListPage page.

@@ -1,6 +1,6 @@
 import {Component,Input, ElementRef, OnInit} from '@angular/core';
 import {ConfigService} from '../config';
-import {SharedService} from "../../providers/shared.service";
+import {SharedService} from "../../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 import {NotificationLoad} from './notification-load';
 declare var jQuery,require: any;

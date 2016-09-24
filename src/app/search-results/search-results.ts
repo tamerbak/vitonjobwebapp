@@ -1,8 +1,8 @@
 import {Component, ViewEncapsulation} from '@angular/core';
-import {SharedService} from "../providers/shared.service";
+import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from '@angular/router';
-import {SearchService} from "../providers/search-service";
-import {ProfileService} from "../providers/profile.service";
+import {SearchService} from "../../providers/search-service";
+import {ProfileService} from "../../providers/profile.service";
 import {ModalComponent} from './modal-component/modal-component';
 
 @Component({
@@ -17,12 +17,12 @@ export class SearchResults {
 	searchResults: any;
 	currentUser: any;
 	projectTarget: string;
-	
+
 	constructor(private sharedService: SharedService,
 	private router: Router,
 	private profileService: ProfileService) {
 	}
-	
+
 	ngOnInit() {
 		this.currentUser = this.sharedService.getCurrentUser();
 		if(this.currentUser){
@@ -41,7 +41,7 @@ export class SearchResults {
 				r.index = i + 1;
 				r.avatar = "../assets/images/avatar.png"
 			}
-			
+
 			//load profile pictures
 			for (let i = 0; i < this.searchResults.length; i++) {
 				var role = this.projectTarget == 'employer' ? "jobyer" : "employeur";
@@ -54,7 +54,7 @@ export class SearchResults {
 			}
 		}
 	}
-	
+
 	contract(index) {
 		let currentEmployer = this.sharedService.getCurrentUser();
         let o = this.sharedService.getCurrentOffer();
@@ -64,7 +64,7 @@ export class SearchResults {
 			this.router.navigate(['app/contract/recruitment-form']);
 		}
 	}
-	
+
 	/**
 		* @description Selecting an item allows to call an action sheet for communications and contract
 		* @param item the selected Employer/Jobyer
@@ -75,7 +75,7 @@ export class SearchResults {
 		this.router.navigate(['app/search/details']);
 		//this.router.navigate(['app/search/details', {item, o}]);
 	}
-	
+
 	isEmpty(str) {
 		if (str == '' || str == 'null' || !str)
 		return true;

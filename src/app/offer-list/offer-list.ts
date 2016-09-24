@@ -1,10 +1,10 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import {ACCORDION_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
-import {OffersService} from "../providers/offer.service";
-import {SharedService} from "../providers/shared.service";
+import {OffersService} from "../../providers/offer.service";
+import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 import {AlertComponent} from 'ng2-bootstrap/components/alert';
-import {SearchService} from "../providers/search-service";
+import {SearchService} from "../../providers/search-service";
 import {BUTTON_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
 
 @Component({

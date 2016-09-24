@@ -1,7 +1,7 @@
 import {Component,NgZone} from '@angular/core';
 import {ROUTER_DIRECTIVES, Router} from '@angular/router';
-import {SharedService} from "../providers/shared.service";
-import {ProfileService} from "../providers/profile.service";
+import {SharedService} from "../../providers/shared.service";
+import {ProfileService} from "../../providers/profile.service";
 
 
 declare var jQuery,require,Messenger: any;

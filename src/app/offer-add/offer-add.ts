@@ -1,6 +1,6 @@
 import {Component, ViewEncapsulation} from '@angular/core';
-import {OffersService} from "../providers/offer.service";
-import {SharedService} from "../providers/shared.service";
+import {OffersService} from "../../providers/offer.service";
+import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 import {AlertComponent} from 'ng2-bootstrap/components/alert';
 import {NKDatetime} from 'ng2-datetime/ng2-datetime';
@@ -42,7 +42,7 @@ export class OfferAdd {
 			this.router.navigate(['app/dashboard']);
 		}
 	}
-	
+
 	ngOnInit(): void {
 		this.currentUser = this.sharedService.getCurrentUser();
 		this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer')
@@ -61,7 +61,7 @@ export class OfferAdd {
 			jobData: jobData, calendarData: [], qualityData: [], languageData: [],
 			visible: false, title: "", status: "open", videolink: ""
 		};
-		
+
 		//load sectors
 		this.sectors = this.sharedService.getSectorList();
 		if(!this.sectors || this.sectors.length == 0){
@@ -70,7 +70,7 @@ export class OfferAdd {
 				this.sectors = data;
 			})
 		}
-		
+
 		//load jobs
 		var jobList = this.sharedService.getJobList();
 		if(!jobList || jobList.length == 0){
@@ -80,14 +80,14 @@ export class OfferAdd {
 				this.hideJobLoader = true;
 			})
 		}
-		
+
 		//init slot
 		this.slot = {
 			date: 0,
 			startHour: 0,
 			endHour: 0
 		};
-		
+
 		//loadQualities
 		this.qualities = this.sharedService.getQualityList();
 		if(!this.qualities || this.qualities.length == 0){
@@ -96,7 +96,7 @@ export class OfferAdd {
 				this.sharedService.setQualityList(this.qualities);
 			})
 		}
-		
+
 		//loadLanguages
 		this.langs = this.sharedService.getLangList();
 		if(!this.langs || this.langs.length == 0){
@@ -113,7 +113,7 @@ export class OfferAdd {
 			format: 'dd/mm/yyyy'
 		}
 	}
-	
+
 	sectorSelected(sector) {
 		//set sector info in jobdata
 		this.offer.jobData.idSector = sector;
@@ -127,7 +127,7 @@ export class OfferAdd {
 			return (v.idsector == sector);
 		});
 	}
-	
+
 	jobSelected(idJob) {
 		this.offer.jobData.idJob = idJob;
 		var jobsTemp = this.jobs.filter((v)=> {
@@ -135,23 +135,23 @@ export class OfferAdd {
 		});
 		this.offer.jobData.job = jobsTemp[0].libelle;
 	}
-	
+
 	watchLevel(e){
 		this.offer.jobData.level = e.target.value;
 	}
-	
+
 	removeSlot(i) {
 		this.slots.splice(i, 1);
 		//this.offer.calendarData.splice(i, 1);
 	}
-	
+
 	addSlot(){
 		if(this.slot.date == 0 || this.slot.startHour == 0 || this.slot.endHour == 0){
 			return;
 		}
 		if(this.checkHour() == false)
 			return;
-		
+
 		this.slotsToSave.push(this.slot);
 		this.slot.date = this.slot.date.getTime();
 		var h = this.slot.startHour.getHours() * 60;
@@ -176,7 +176,7 @@ export class OfferAdd {
 			endHour: 0
 		};
 	}
-	
+
 	convertSlotsForDisplay(s){
 		var slotTemp = {
 			date: this.toDateString(s.date),
@@ -185,7 +185,7 @@ export class OfferAdd {
 		};
 		return slotTemp;
 	}
-	
+
 	//convert existant slots
 	convertSlotsForSaving(){
 		for(let i = 0; i < this.slotsToSave.length; i++){
@@ -198,11 +198,11 @@ export class OfferAdd {
 			this.offer.calendarData[i].endHour = h + m;
 		}
 	}
-	
+
 	removeQuality(item){
 		this.offer.qualityData.splice(this.offer.qualityData.indexOf(item), 1);
 	}
-	
+
 	addQuality(){
 		if(this.isEmpty(this.selectedQuality)){
 			return;
@@ -215,11 +215,11 @@ export class OfferAdd {
 		}
 		this.offer.qualityData.push(qualitiesTemp[0]);
 	}
-	
+
 	removeLanguage(item){
 		this.offer.languageData.splice(this.offer.languageData.indexOf(item), 1);
 	}
-	
+
 	addLanguage(){
 		if(this.isEmpty(this.selectedLang)){
 			return;
@@ -229,26 +229,26 @@ export class OfferAdd {
 		});
 		if(this.offer.languageData.indexOf(langTemp[0]) != -1){
 			this.offer.languageData.splice(this.offer.languageData.indexOf(langTemp[0]), 1);
-			
+
 		}
 		langTemp[0]['level'] = this.selectedLevel;
 		this.offer.languageData.push(langTemp[0]);
 	}
-	
+
 	addOffer(){
 		this.offer.calendarData = this.slotsToSave;
 		if(!this.offer.jobData.job || !this.offer.jobData.sector || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0){
 			this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
 			return;
 		}
-		
+
 		let level = (this.offer.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant'
 		this.offer.title = this.offer.jobData.job + " " + level;
 		this.offer.identity = (this.projectTarget == 'employer' ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id);
 		this.offersService.setOfferInRemote(this.offer, this.projectTarget).then((data:any )=> {
 			if(this.projectTarget == 'employer'){
 				this.currentUser.employer.entreprises[0].offers.push(JSON.parse(data._body));
-				
+
 				}else{
 				this.currentUser.jobyer.offers.push(JSON.parse(data._body));
 			}
@@ -256,7 +256,7 @@ export class OfferAdd {
 			this.router.navigate(['app/offer/list']);
 		});
 	}
-	
+
 	checkHour(){
 		this.alertsSlot = [];
 		if(this.slot.startHour && this.slot.endHour && this.slot.startHour >= this.slot.endHour){
@@ -281,12 +281,12 @@ export class OfferAdd {
 		}
 		return true;
 	}
-	
+
 	resetDatetime(componentId){
 		let elements: NodeListOf<Element> = document.getElementById(componentId).getElementsByClassName('form-control');
 		(<HTMLInputElement>elements[0]).value = null;
 	}
-	
+
 	/**
 		* @Description Converts a timeStamp to date string
 		* @param time : a timestamp date
@@ -296,7 +296,7 @@ export class OfferAdd {
 		let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
 		return hours + ":" + minutes;
 	}
-	
+
 	/**
 		* @Description Converts a timeStamp to date string :
 		* @param date : a timestamp date
@@ -308,7 +308,7 @@ export class OfferAdd {
 		};
 		return new Date(date).toLocaleDateString('fr-FR', dateOptions);
 	}
-	
+
 	addAlert(type, msg, section): void {
 		if(section == "general"){
 			this.alerts = [{type: type, msg: msg}];
@@ -317,7 +317,7 @@ export class OfferAdd {
 			this.alertsSlot = [{type: type, msg: msg}];
 		}
 	}
-	
+
 	isEmpty(str){
 		if(str == '' || str == 'null' || !str)
 		return true;

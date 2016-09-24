@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Configs} from '../../configurations/configs';
+import {Configs} from '../configurations/configs';
 import {Http, Headers} from '@angular/http';
 import {Helpers} from "./helpers.service";
 

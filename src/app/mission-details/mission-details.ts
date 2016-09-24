@@ -7,10 +7,10 @@ import {NKDatetime} from 'ng2-datetime/ng2-datetime';
 
 import {GlobalConfigs} from "../configurations/globalConfigs";
 
-import {SharedService} from "../providers/shared.service";
-import {MissionService} from "../providers/mission-service";
-import {FinanceService} from "../providers/finance.service";
-import {ContractService} from '../providers/contract-service';
+import {SharedService} from "../../providers/shared.service";
+import {MissionService} from "../../providers/mission-service";
+import {FinanceService} from "../../providers/finance.service";
+import {ContractService} from '../../providers/contract-service';
 
 import {DateConverter} from '../../pipes/date-converter/date-converter';
 import {TimeConverter} from '../../pipes/time-converter/time-converter';

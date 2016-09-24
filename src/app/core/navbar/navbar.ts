@@ -3,8 +3,8 @@ import {TOOLTIP_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
 import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 import {ConfigService} from '../config';
 import {Notifications} from '../notifications/notifications';
-import {SharedService} from "../../providers/shared.service";
-import {OffersService} from "../../providers/offer.service";
+import {SharedService} from "../../../providers/shared.service";
+import {OffersService} from "../../../providers/offer.service";
 declare var jQuery: any;
 
 @Component({
