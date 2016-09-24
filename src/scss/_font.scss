@@ -5,6 +5,7 @@
   src: local('Open Sans Light'), local('OpenSans-Light'),
   url(assets/fonts/google/open-sans-light.woff) format('woff');
 }
+
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
@@ -12,6 +13,7 @@
   src: local('Open Sans'), local('OpenSans'),
   url(assets/fonts/google/open-sans.woff) format('woff');
 }
+
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
@@ -19,6 +21,7 @@
   src: local('Open Sans Semibold'), local('OpenSans-Semibold'),
   url(assets/fonts/google/open-sans-semibold.woff) format('woff');
 }
+
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
@@ -26,6 +29,7 @@
   src: local('Open Sans Bold'), local('OpenSans-Bold'),
   url(assets/fonts/google/open-sans-bold.woff) format('woff');
 }
+
 @font-face {
   font-family: 'Open Sans';
   font-style: italic;
@@ -33,6 +37,7 @@
   src: local('Open Sans Light Italic'), local('OpenSansLight-Italic'),
   url(assets/fonts/google/open-sans-light-italic.woff) format('woff');
 }
+
 @font-face {
   font-family: 'Open Sans';
   font-style: italic;
@@ -40,6 +45,7 @@
   src: local('Open Sans Italic'), local('OpenSans-Italic'),
   url(assets/fonts/google/open-sans-italic.woff) format('woff');
 }
+
 @font-face {
   font-family: 'Open Sans';
   font-style: italic;
@@ -47,6 +53,7 @@
   src: local('Open Sans Semibold Italic'), local('OpenSans-SemiboldItalic'),
   url(assets/fonts/google/open-sans-semibold-italic.woff) format('woff');
 }
+
 @font-face {
   font-family: 'Open Sans';
   font-style: italic;
@@ -61,11 +68,12 @@
   font-family: 'Glyphicons Halflings';
   src: url('assets/fonts/glyphicons/glyphicons-halflings-regular.eot');
   src: url('assets/fonts/glyphicons/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
-       url('assets/fonts/glyphicons/glyphicons-halflings-regular.woff2') format('woff2'),
-       url('assets/fonts/glyphicons/glyphicons-halflings-regular.woff') format('woff'),
-       url('assets/fonts/glyphicons/glyphicons-halflings-regular.ttf') format('truetype'),
-       url('assets/fonts/glyphicons/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+  url('assets/fonts/glyphicons/glyphicons-halflings-regular.woff2') format('woff2'),
+  url('assets/fonts/glyphicons/glyphicons-halflings-regular.woff') format('woff'),
+  url('assets/fonts/glyphicons/glyphicons-halflings-regular.ttf') format('truetype'),
+  url('assets/fonts/glyphicons/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
+
 //@font-face {
 //  font-family: 'Roboto';
 //  font-style: normal;

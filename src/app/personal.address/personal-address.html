@@ -54,7 +54,8 @@
                 Rechercher
               </label>
               <div class="col-md-7 col-xs-12">
-                <input type="text" class="form-control" [(ngModel)] = "searchData"  (setAddress) = "getAddress($event)" googleplace/>
+                <input type="text" class="form-control" [(ngModel)]="searchData" (setAddress)="getAddress($event)"
+                       googleplace/>
 
               </div>
 
@@ -65,7 +66,8 @@
                 N° de la rue
               </label>
               <div class="col-md-7 col-xs-12">
-                <input type="text" id="streetNumber" class="form-control" placeholder="N° de la rue" [(ngModel)]="streetNumber" name="streetNumber" >
+                <input type="text" id="streetNumber" class="form-control" placeholder="N° de la rue"
+                       [(ngModel)]="streetNumber" name="streetNumber">
               </div>
             </div>
             <div class="form-group row">
@@ -73,75 +75,81 @@
                 Rue
               </label>
               <div class="col-md-7 col-xs-12">
-                <textarea type="text" id="street" class="form-control" placeholder="Rue" [(ngModel)]="street" name="street" ></textarea>
+                <textarea type="text" id="street" class="form-control" placeholder="Rue" [(ngModel)]="street"
+                          name="street"></textarea>
               </div>
             </div>
 
             <div class="form-group row">
 
-                <label for="firstname" class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Adresse complémentaire
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <textarea type="text" id="name" class="form-control" [(ngModel)]="name" name="name" placeholder="Adresse complémentaire"></textarea>
-                </div>
+              <label for="firstname" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                Adresse complémentaire
+              </label>
+              <div class="col-md-7 col-xs-12">
+                <textarea type="text" id="name" class="form-control" [(ngModel)]="name" name="name"
+                          placeholder="Adresse complémentaire"></textarea>
+              </div>
             </div>
 
 
+            <div class="form-group row">
+              <label for="companyname" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                Code postal
+              </label>
+              <div class="col-md-7 col-xs-12">
+                <input type="text" id="zipCode" class="form-control" [(ngModel)]="zipCode" name="zipCode"
+                       placeholder="Code postal" (keyup)="watchZipCode($event)">
+              </div>
+              <div class="col-md-offset-4 col-md-7 col-xs-12">
+                <span class="hint label label-danger">{{zipCodeHint}}</span>
+              </div>
+            </div>
 
-              <div class="form-group row">
-                <label for="companyname" class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Code postal
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <input type="text" id="zipCode" class="form-control" [(ngModel)]="zipCode" name="zipCode" placeholder="Code postal" (keyup)="watchZipCode($event)">
-                </div>
-                <div class="col-md-offset-4 col-md-7 col-xs-12">
-                  <span class="hint label label-danger">{{zipCodeHint}}</span>
-                </div>
+            <div class="form-group row">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="siret">
+                Ville
+              </label>
+              <div class="col-md-7 col-xs-12">
+                <input id="city" type="text" class="form-control" [(ngModel)]="city" name="city" placeholder="Ville"
+                       (keyup)="watchCity($event)">
+              </div>
+              <div class="col-md-offset-4 col-md-7 col-xs-12">
+                <span class="hint label label-danger">{{cityHint}}</span>
               </div>
 
-              <div class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="siret">
-                  Ville
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <input id="city" type="text" class="form-control" [(ngModel)]="city" name="city" placeholder="Ville" (keyup)="watchCity($event)">
-                </div>
-                <div class="col-md-offset-4 col-md-7 col-xs-12">
-                  <span class="hint label label-danger">{{cityHint}}</span>
-                </div>
+            </div>
 
+            <div class="form-group row">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="siret">
+                Pays
+              </label>
+              <div class="col-md-7 col-xs-12">
+                <input id="country" type="text" class="form-control" [(ngModel)]="country" name="country"
+                       placeholder="Pays" (keyup)="watchCountry($event)">
+              </div>
+              <div class="col-md-offset-4 col-md-7 col-xs-12">
+                <span class="hint label label-danger">{{countryHint}}</span>
               </div>
 
-              <div class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="siret">
-                  Pays
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <input id="country" type="text" class="form-control" [(ngModel)]="country" name="country" placeholder="Pays" (keyup)="watchCountry($event)">
-                </div>
-                <div class="col-md-offset-4 col-md-7 col-xs-12">
-                  <span class="hint label label-danger">{{countryHint}}</span>
-                </div>
+            </div>
 
-              </div>
+          </fieldset>
 
-            </fieldset>
-
-              <div class="clearfix">
-								<div class="btn-toolbar pull-xs-right m-t-1">
-								  <div class="widget-body btn loaderPosition" [hidden]="!validation">
-  									<div class="loader animated fadeIn handle">
+          <div class="clearfix">
+            <div class="btn-toolbar pull-xs-right m-t-1">
+              <div class="widget-body btn loaderPosition" [hidden]="!validation">
+                <div class="loader animated fadeIn handle">
   										<span class="spinner">
   											<i class="fa fa-spinner fa-spin"></i>
   										</span>
-  									</div>
-								  </div>
-				          <button class="btn btn-primary" [disabled]="!isValidForm() || validation" (click)="updatePersonalAddress()" >Valider</button>
-                  <button class="btn btn-default" (click)="closeForm()" >Annuler</button>
-								</div>
-							</div>
+                </div>
+              </div>
+              <button class="btn btn-primary" [disabled]="!isValidForm() || validation"
+                      (click)="updatePersonalAddress()">Valider
+              </button>
+              <button class="btn btn-default" (click)="closeForm()">Annuler</button>
+            </div>
+          </div>
 
 
         </form>

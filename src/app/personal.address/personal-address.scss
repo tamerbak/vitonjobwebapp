@@ -13,9 +13,9 @@
 */
 
 .civility-form .loaderPosition {
-    position: relative;
-    margin-right: 20px;
-    margin-bottom: 10px;
+  position: relative;
+  margin-right: 20px;
+  margin-bottom: 10px;
 }
 
 /**
@@ -48,7 +48,7 @@
     border: $thumbnail-border-width solid $thumbnail-border-color;
     border-radius: $thumbnail-border-radius;
     transition: all .2s ease-in-out;
-    @include box-shadow(0 1px 2px rgba(0,0,0,.075));
+    @include box-shadow(0 1px 2px rgba(0, 0, 0, .075));
   }
 }
 
@@ -83,6 +83,7 @@
     border-color: $state-warning-border;
   }
 }
+
 .form-group.has-error .fileinput {
   .fileinput-preview {
     color: $state-danger-text;
@@ -91,6 +92,7 @@
     border-color: $state-danger-border;
   }
 }
+
 .form-group.has-success .fileinput {
   .fileinput-preview {
     color: $state-success-text;
@@ -220,32 +222,31 @@ html[dir="rtl"] .select2-search input {
   }
 }
 
-
 /***********************/
 /*    Part:Stats Row   */
 /***********************/
 
-.stats-row{
+.stats-row {
   margin-bottom: 15px;
 }
 
-.stat-item{
+.stat-item {
   display: inline-block;
   padding-right: 15px;
 
-  & + .stat-item{
+  & + .stat-item {
     padding-left: 15px;
     border-left: 1px solid $hr-border-color;
   }
-  .name{
+  .name {
     margin-bottom: 2px;
     margin-top: 10px;
   }
-  .value{
+  .value {
     font-weight: bold;
   }
 
-  &.stat-item-mini-chart{
+  &.stat-item-mini-chart {
     position: relative;
     top: -12px;
     padding-left: 0;
@@ -257,34 +258,34 @@ html[dir="rtl"] .select2-search input {
 /**          Post Links           **/
 /***********************************/
 
-.post-links{
+.post-links {
   margin-bottom: 0;
   font-size: $font-size-sm;
   padding-left: 0;
   @include clearfix();
-  > li{
+  > li {
     float: left;
     list-style: none;
 
-    + li{
-      &:before{
+    + li {
+      &:before {
         color: #999;
         content: "\25cf";
         padding: 0 8px;
       }
     }
-    > a{
+    > a {
       text-decoration: none;
       color: $text-muted;
-      &:hover{
+      &:hover {
         color: $text-muted;
       }
     }
   }
 
-  &.no-separator > li + li{
+  &.no-separator > li + li {
     margin-left: 12px;
-    &:before{
+    &:before {
       content: normal;
     }
   }
@@ -294,12 +295,12 @@ html[dir="rtl"] .select2-search input {
 /**          Post Comments           **/
 /***********************************/
 
-.post-comments{
+.post-comments {
   font-size: $font-size-sm;
   padding-left: 0;
   @include clearfix();
 
-  .post-links + &{
+  .post-links + & {
     margin-top: $line-height-computed / 2;
   }
 
@@ -309,34 +310,34 @@ html[dir="rtl"] .select2-search input {
     list-style: none;
     @include clearfix();
 
-    &:last-child{
+    &:last-child {
       padding-bottom: 0;
     }
   }
 
-  p:last-child{
+  p:last-child {
     margin-bottom: 0;
   }
 
-  .avatar{
+  .avatar {
     margin-top: 1px;
   }
 
-  .author{
+  .author {
     margin-top: 0;
     margin-bottom: 2px;
     color: #7ca9dd;
   }
 
-  .comment-body{
+  .comment-body {
     overflow: auto;
   }
 
-  h6.author > small{
+  h6.author > small {
     font-size: 11px;
   }
 
-  .widget > footer &{
+  .widget > footer & {
     margin-left: -$widget-padding-horizontal;
     margin-right: -$widget-padding-horizontal;
   }
@@ -346,11 +347,11 @@ html[dir="rtl"] .select2-search input {
 /**           Post User           **/
 /***********************************/
 
-.post-user{
+.post-user {
   position: relative;
   @include clearfix();
 
-  img{
+  img {
     border: 3px solid white;
   }
 }
@@ -383,7 +384,7 @@ html[dir="rtl"] .select2-search input {
       text-align: left;
       margin: 0 10px;
 
-      @include media-breakpoint-up(lg){
+      @include media-breakpoint-up(lg) {
         width: 150px;
         white-space: nowrap;
       }
@@ -412,7 +413,7 @@ html[dir="rtl"] .select2-search input {
     padding-left: 15px;
     text-align: center;
 
-    @include media-breakpoint-up(lg){
+    @include media-breakpoint-up(lg) {
       padding-right: 0;
     }
 
@@ -423,30 +424,31 @@ html[dir="rtl"] .select2-search input {
   }
 }
 
-.activities{
+.activities {
   h3 {
     margin-left: 20px
   }
 }
-.event{
-  .activities &{
+
+.event {
+  .activities & {
     margin-top: $line-height-computed;
     width: 100%;
   }
 }
 
-.event{
+.event {
   background: $white;
   border-radius: $border-radius;
   padding: 20px 20px 0;
   position: relative;
 
-  .post-comments{
+  .post-comments {
     margin-left: -20px;
     margin-right: -20px;
   }
 
-  > footer{
+  > footer {
     margin: 20px -20px 0;
     padding: 10px 20px;
     border-bottom-left-radius: $border-radius;
@@ -455,42 +457,41 @@ html[dir="rtl"] .select2-search input {
 
     @include clearfix();
 
-    .thumb{
+    .thumb {
       margin-left: 10px;
     }
   }
 
-
 }
 
-.event-heading{
+.event-heading {
   margin: 0 0 2px;
   font-weight: $font-weight-semi-bold;
   > a {
     text-decoration: none;
     color: #7ca9dd;
   }
-  > small{
+  > small {
     font-weight: $font-weight-semi-bold;
-    > a{
+    > a {
       text-decoration: none;
       color: $text-muted;
     }
   }
 }
 
-.event-map{
+.event-map {
   display: block;
   height: 200px;
   margin: 0 -20px -20px;
   overflow: visible !important;
 }
 
-.event-image{
+.event-image {
   margin: 0 -20px -20px;
   max-height: 260px;
   overflow: hidden;
-  > img{
+  > img {
     max-width: 100%;
   }
 }

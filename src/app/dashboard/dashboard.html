@@ -1,37 +1,40 @@
 <div class="container-home">
-	<a class="play" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="glyphicon glyphicon-play"></i></a>
-	<div align="center" class="video">
-		<div class="modal bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-			
-			
-		<video src="assets/video/vitonjob.mp4" controls loop muted></video>
-		</div>
-		<video autoplay loop muted src="assets/video/job1.mp4">
-		</video>
-		<div class="div-search">
-			<div class="search">
-				<div class="input-search">
-					<div class="col-lg-6">
-						<alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
-							<div [innerHTML]="alert.msg"></div>
-						</alert>
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Veuillez saisir votre recherche..." [(ngModel)]="scQuery" (keyup)="checkForEnterKey($event)">
-							<span class="input-group-btn">
+  <a class="play" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="glyphicon glyphicon-play"></i></a>
+  <div align="center" class="video">
+    <div class="modal bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+         aria-hidden="true">
+
+
+      <video src="assets/video/vitonjob.mp4" controls loop muted></video>
+    </div>
+    <video autoplay loop muted src="assets/video/job1.mp4">
+    </video>
+    <div class="div-search">
+      <div class="search">
+        <div class="input-search">
+          <div class="col-lg-6">
+            <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
+              <div [innerHTML]="alert.msg"></div>
+            </alert>
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Veuillez saisir votre recherche..."
+                     [(ngModel)]="scQuery" (keyup)="checkForEnterKey($event)">
+              <span class="input-group-btn">
 								<button class="btn btn-secondary" type="button" (click)="doSemanticSearch()">Go!</button>
 							</span>
-							<div class="widget-body btn loaderPosition" [hidden]="hideLoader" style="background-color: #f8f8f8; margin-left: 5px;">
-								<div class="loader animated fadeIn handle">
+              <div class="widget-body btn loaderPosition" [hidden]="hideLoader"
+                   style="background-color: #f8f8f8; margin-left: 5px;">
+                <div class="loader animated fadeIn handle">
 									<span class="spinner">
 										<i class="fa fa-spinner fa-spin"></i>
 									</span>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<a class="adv-search" [routerLink]=" ['../search/criteria'] ">Recherche avancée</a>
-			</div>
-		</div>
-	</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a class="adv-search" [routerLink]=" ['../search/criteria'] ">Recherche avancée</a>
+      </div>
+    </div>
+  </div>
 </div>

@@ -2,76 +2,76 @@
  * Created by tim on 06/05/2016.
  */
 
-import {Injectable} from '@angular/core';
+import {Injectable} from "@angular/core";
 
 @Injectable()
 export class GlobalConfigs {
 
-    //Project Target : employer or jobyer
-    private projectTarget;
-    //Name of the connexion button : Connexion or Deconnexion
-    private cnxBtnName: string;
-    // Avatars :
-    private avatars:any;
-    // 3rd Color for backgrounds
-    private thirdThemeColor:string;
-    // Instabug object
-    private instabug: any;
-    // mission mode
-    private missionOption : any;
+  //Project Target : employer or jobyer
+  private projectTarget;
+  //Name of the connexion button : Connexion or Deconnexion
+  private cnxBtnName: string;
+  // Avatars :
+  private avatars: any;
+  // 3rd Color for backgrounds
+  private thirdThemeColor: string;
+  // Instabug object
+  private instabug: any;
+  // mission mode
+  private missionOption: any;
 
-    constructor() {
-        this.projectTarget = "employer";
-        this.cnxBtnName = "Se connecter / S'inscrire";
-        this.thirdThemeColor = '#f4f4f4';
-    }
+  constructor() {
+    this.projectTarget = "employer";
+    this.cnxBtnName = "Se connecter / S'inscrire";
+    this.thirdThemeColor = '#f4f4f4';
+  }
 
-    setProjectTarget(value) {
-        this.projectTarget = value;
-    }
+  setProjectTarget(value) {
+    this.projectTarget = value;
+  }
 
-    getProjectTarget() {
-        return this.projectTarget;
-    }
-    
-    setAvatars(value) {
-        this.avatars = value;
-    }
+  getProjectTarget() {
+    return this.projectTarget;
+  }
 
-    getAvatars() {
-        return this.avatars;
-    }
+  setAvatars(value) {
+    this.avatars = value;
+  }
 
-    setCnxBtnName(value) {
-        this.cnxBtnName = value;
-    }
+  getAvatars() {
+    return this.avatars;
+  }
 
-    getCnxBtnName() {
-        return this.cnxBtnName;
-    }
+  setCnxBtnName(value) {
+    this.cnxBtnName = value;
+  }
 
-    setThirdThemeColor(value) {
-        this.thirdThemeColor = value;
-    }
+  getCnxBtnName() {
+    return this.cnxBtnName;
+  }
 
-    getThirdThemeColor() {
-        return this.thirdThemeColor;
-    }
+  setThirdThemeColor(value) {
+    this.thirdThemeColor = value;
+  }
 
-    setInstabug(value) {
-        this.instabug = value;
-    }
+  getThirdThemeColor() {
+    return this.thirdThemeColor;
+  }
 
-    getInstabug() {
-        return this.instabug;
-    }
+  setInstabug(value) {
+    this.instabug = value;
+  }
 
-    setMissionOption(value) {
-        this.missionOption = value;
-    }
+  getInstabug() {
+    return this.instabug;
+  }
 
-    getMissionOption() {
-        return this.missionOption;
-    }
+  setMissionOption(value) {
+    this.missionOption = value;
+  }
+
+  getMissionOption() {
+    return this.missionOption;
+  }
 
 }

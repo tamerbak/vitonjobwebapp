@@ -1,5 +1,5 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
-import {SearchPipe} from './../../pipes/pipe';
+import {Component, Input, Output, EventEmitter} from "@angular/core";
+import {SearchPipe} from "./../../pipes/pipe";
 
 @Component({
 

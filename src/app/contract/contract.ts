@@ -1,6 +1,5 @@
-import {Component} from '@angular/core';
+import {Component} from "@angular/core";
 import {Router} from "@angular/router";
-
 import {Helpers} from "../../providers/helpers.service";
 import {SharedService} from "../../providers/shared.service";
 import {ContractService} from "../../providers/contract-service";

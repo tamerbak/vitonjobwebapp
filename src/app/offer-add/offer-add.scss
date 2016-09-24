@@ -6,11 +6,11 @@
 @import "../../../node_modules/select2/select2";
 @import "../../../node_modules/select2-bootstrap-css/select2-bootstrap";
 
-.news-list{
+.news-list {
   margin-bottom: 0;
   padding-left: 0;
 
-  li{
+  li {
     list-style: none;
     box-sizing: content-box;
     border-top: 1px solid $gray-lighter;
@@ -18,39 +18,39 @@
     cursor: pointer;
     @include transition(background-color .2s ease-out);
 
-    &:hover{
+    &:hover {
       background: $body-bg-light;
     }
 
-    &:last-child{
+    &:last-child {
       margin-bottom: -10px;
     }
   }
 
   img,
-  .icon{
+  .icon {
     float: left;
     height: 50px;
     width: 50px;
   }
 
-  .icon{
+  .icon {
     line-height: 50px;
     border-radius: 50%;
     text-align: center;
     font-size: 28px;
   }
 
-  .news-item-info{
+  .news-item-info {
     margin-left: 62px; /*50 + 12px padding*/
   }
 
-  .name{
+  .name {
     text-transform: uppercase;
 
-    a{
+    a {
       text-decoration: none;
-      &:hover{
+      &:hover {
         color: $link-color;
       }
     }

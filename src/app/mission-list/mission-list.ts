@@ -10,17 +10,12 @@
 // import {MissionPointingPage} from "../mission-pointing/mission-pointing";
 
 // Import updated from mobile to web
-import {ContractService} from '../../providers/contract-service';
-
-
-import {Component, ViewEncapsulation} from '@angular/core';
-import {ACCORDION_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
-import {OffersService} from "../../providers/offer.service";
+import {ContractService} from "../../providers/contract-service";
+import {Component, ViewEncapsulation} from "@angular/core";
+import {ACCORDION_DIRECTIVES, BUTTON_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap";
 import {SharedService} from "../../providers/shared.service";
-import {ROUTER_DIRECTIVES, Router} from '@angular/router';
-import {AlertComponent} from 'ng2-bootstrap/components/alert';
-import {SearchService} from "../../providers/search-service";
-import {BUTTON_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
+import {ROUTER_DIRECTIVES, Router} from "@angular/router";
+import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {MissionService} from "../../providers/mission-service";
 import {Helpers} from "../../providers/helpers.service";
 

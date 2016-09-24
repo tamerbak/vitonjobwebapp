@@ -1,6 +1,7 @@
 @import "../../scss/variables";
 @import "../../../node_modules/bootstrap/scss/_variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
+
 /*
  * Bootstrap calendar
  */
@@ -94,13 +95,15 @@
   }
 }
 
-.container-home{
+.container-home {
 
 }
-.modal{
-  width: 100%!important;
-  height: 100%!important;
+
+.modal {
+  width: 100% !important;
+  height: 100% !important;
 }
+
 .play {
 
   top: 2em;
@@ -147,7 +150,8 @@
   padding: 0 !important;
 }*/
 
-.calendar .week_days td {}
+.calendar .week_days td {
+}
 
 .calendar .visualmonthyear {
   color: $gray-light;
@@ -156,6 +160,7 @@
 .dropdown-menu .calendar td a {
   padding: 0;
 }
+
 /**
  * Mapael
  */
@@ -211,14 +216,16 @@
     margin: 5% 10%;
   }
 }
+
 // Checkbox
 .table td > .abc-checkbox,
 .table th > .abc-checkbox {
-   > label:after,
+  > label:after,
   > label:before {
     margin-left: -16px;
   }
 }
+
 /***********************/
 /* Part:Progress Stats */
 /***********************/
@@ -240,6 +247,7 @@
     }
   }
 }
+
 /***********************/
 /*    Part:Stats Row   */
 /***********************/

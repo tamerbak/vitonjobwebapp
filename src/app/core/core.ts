@@ -1,19 +1,9 @@
-import {Component, ElementRef} from '@angular/core';
-import {ROUTER_DIRECTIVES, Router, NavigationEnd} from '@angular/router';
-import {FORM_PROVIDERS} from '@angular/common';
-import {Sidebar} from './sidebar/sidebar';
-import {Navbar} from './navbar/navbar';
-import {Dashboard} from '../dashboard/dashboard';
-import {Profile} from '../profile/profile';
-import {ConfigService} from './config';
-import {OfferList} from '../offer-list/offer-list';
-import {OfferDetail} from '../offer-detail/offer-detail';
-import {OfferAdd} from '../offer-add/offer-add';
-import {SearchResults} from '../search-results/search-results';
-import {SearchDetails} from '../search-details/search-details';
-import {SearchCriteria} from '../search-criteria/search-criteria';
-import {WalletCreate} from '../wallet-create/wallet-create';
-import {MissionPointing} from '../mission-pointing/mission-pointing';
+import {Component, ElementRef} from "@angular/core";
+import {ROUTER_DIRECTIVES, Router, NavigationEnd} from "@angular/router";
+import {FORM_PROVIDERS} from "@angular/common";
+import {Sidebar} from "./sidebar/sidebar";
+import {Navbar} from "./navbar/navbar";
+import {ConfigService} from "./config";
 
 declare var Raphael: any;
 declare var jQuery: any;

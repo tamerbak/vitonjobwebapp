@@ -1,8 +1,5 @@
-import {Component, ViewEncapsulation} from '@angular/core';
-import {ROUTER_DIRECTIVES} from '@angular/router';
-import {Core} from './app/core/core';
-import {ErrorPage} from './app/error/error';
-import {LoginPage} from './app/login/login';
+import {Component, ViewEncapsulation} from "@angular/core";
+import {ROUTER_DIRECTIVES} from "@angular/router";
 declare var jQuery: any;
 
 @Component({

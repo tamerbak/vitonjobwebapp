@@ -1,55 +1,59 @@
 <ol class="breadcrumb">
-	<li>Vous êtes ici</li>
-	<li class="active"><a class="breadcrumb-link" [routerLink]="['/app/search/details']">Résultats de la recherche</a></li>
-	<li class="active">Détails</li>
+  <li>Vous êtes ici</li>
+  <li class="active"><a class="breadcrumb-link" [routerLink]="['/app/search/details']">Résultats de la recherche</a>
+  </li>
+  <li class="active">Détails</li>
 </ol>
-<h1 class="page-title">{{projectTarget == 'employer' ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Détails de l'offre sélectionnée</span></h1>
+<h1 class="page-title">{{projectTarget == 'employer' ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Détails de l'offre sélectionnée</span>
+</h1>
 
 <div class="row">
-	<div class="col-lg-8 col-xl-offset-2 col-xs-12">
-		<section widget class="widget">
-			<div modal-component *ngIf="projectTarget == 'employer'"></div>
-			<div class="widget-body">
-				<div class="post-user mt-n-xs">
+  <div class="col-lg-8 col-xl-offset-2 col-xs-12">
+    <section widget class="widget">
+      <div modal-component *ngIf="projectTarget == 'employer'"></div>
+      <div class="widget-body">
+        <div class="post-user mt-n-xs">
 					<span class="thumb pull-left mr">
 						<img class="img-circle" [src]="result.avatar">
 					</span>
-					<h6 class="mb-xs mt-xs"><span class="fw-semi-bold">{{fullName}}</span></h6>
-					<p class="fs-mini text-muted">{{projectTarget == 'employer' ? 'Offre de service: ' : 'Offre: '}} {{fullTitle}} <span class="label label-pill label-danger" style="margin-left: 5px">{{(matching.toString().indexOf('.') < 0) ? matching:matching.toString().split('.')[0]}}%</span>
-					</p>
-				</div>
-				<div *ngIf="projectTarget == 'employer'" class="row col-md-12 col-xs-12" style="padding-top: 7px;margin-bottom: 10px;">
-					<div class="col-lg-4 col-md-6 col-xs-12">
-						<span><i class="fa fa-envelope" aria-hidden="true"></i><b> {{result.email}}</b></span>
-					</div>
-					<div class="col-lg-4 col-md-6 col-xs-12">
-						<span><i class="fa fa-phone" aria-hidden="true"></i><b> {{result.tel}}</b></span>
-					</div>
-				</div>
-				<div class="widget-middle-overflow windget-padding-md clearfix bg-info text-white">
-					<sebm-google-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" class="content-map">
-						<sebm-google-map-marker [latitude]="lat" [longitude]="lng" >
-						</sebm-google-map-marker>
-					</sebm-google-map>
-				</div>
-			</div>
-			<footer class="bg-body-light">
-				<div class="row">
-					<div class="col-lg-6 col-xl-offset-2 col-xs-12 no-margin" [hidden]="!languages || languages.length==0">
-						<label>Langues {{projectTarget == 'employer' ?"maîtrisées":"requises"}}</label>
-						<ul class="post-links">
-							<li *ngFor="let l of languages">{{l.libelle}}</li>
-						</ul>
-					</div>
-					<div class="col-lg-6 col-xl-offset-2 col-xs-12 no-margin" [hidden]="!qualities || qualities.length==0">
-						<label>Qualités {{projectTarget == 'employer' ?"acquises":"requises"}}</label>
-						<ul class="post-links">
-							<li *ngFor="let q of qualities">{{q.libelle}}</li>
-						</ul>
-					</div>
-				</div>
-			</footer>
-		</section>
-	</div>
+          <h6 class="mb-xs mt-xs"><span class="fw-semi-bold">{{fullName}}</span></h6>
+          <p class="fs-mini text-muted">{{projectTarget == 'employer' ? 'Offre de service: ' : 'Offre: '}} {{fullTitle}}
+            <span class="label label-pill label-danger" style="margin-left: 5px">{{(matching.toString().indexOf('.') < 0) ? matching:matching.toString().split('.')[0]}}%</span>
+          </p>
+        </div>
+        <div *ngIf="projectTarget == 'employer'" class="row col-md-12 col-xs-12"
+             style="padding-top: 7px;margin-bottom: 10px;">
+          <div class="col-lg-4 col-md-6 col-xs-12">
+            <span><i class="fa fa-envelope" aria-hidden="true"></i><b> {{result.email}}</b></span>
+          </div>
+          <div class="col-lg-4 col-md-6 col-xs-12">
+            <span><i class="fa fa-phone" aria-hidden="true"></i><b> {{result.tel}}</b></span>
+          </div>
+        </div>
+        <div class="widget-middle-overflow windget-padding-md clearfix bg-info text-white">
+          <sebm-google-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" class="content-map">
+            <sebm-google-map-marker [latitude]="lat" [longitude]="lng">
+            </sebm-google-map-marker>
+          </sebm-google-map>
+        </div>
+      </div>
+      <footer class="bg-body-light">
+        <div class="row">
+          <div class="col-lg-6 col-xl-offset-2 col-xs-12 no-margin" [hidden]="!languages || languages.length==0">
+            <label>Langues {{projectTarget == 'employer' ?"maîtrisées":"requises"}}</label>
+            <ul class="post-links">
+              <li *ngFor="let l of languages">{{l.libelle}}</li>
+            </ul>
+          </div>
+          <div class="col-lg-6 col-xl-offset-2 col-xs-12 no-margin" [hidden]="!qualities || qualities.length==0">
+            <label>Qualités {{projectTarget == 'employer' ?"acquises":"requises"}}</label>
+            <ul class="post-links">
+              <li *ngFor="let q of qualities">{{q.libelle}}</li>
+            </ul>
+          </div>
+        </div>
+      </footer>
+    </section>
+  </div>
 
 </div>

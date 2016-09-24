@@ -1,7 +1,7 @@
-import {Directive, ElementRef, Input} from '@angular/core';
+import {Directive, ElementRef, Input} from "@angular/core";
 declare var jQuery: any;
 
-@Directive ({
+@Directive({
   selector: '[flot-chart]'
 })
 
@@ -21,7 +21,7 @@ export class FlotChart {
             show: true,
             lineWidth: 1,
             fill: false,
-            fillColor: { colors: [{ opacity: .001 }, { opacity: .5}] }
+            fillColor: {colors: [{opacity: .001}, {opacity: .5}]}
           },
           points: {
             show: false,

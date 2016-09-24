@@ -2,12 +2,12 @@
 // Typography
 // --------------------------------------------------
 
-.blockquote-sm{
+.blockquote-sm {
   padding: 3px 15px;
   font-size: $font-size-base;
 }
 
-blockquote{
+blockquote {
   font-size: $font-size-lg;
 
   footer {
@@ -17,11 +17,12 @@ blockquote{
     }
   }
 }
+
 // Headings
 // -------------------------
 
 h1, h2, h3, h4, h5, h6,
-.h1, .h2, .h3, .h4, .h5, .h6{
+.h1, .h2, .h3, .h4, .h5, .h6 {
   small,
   .small {
     font-weight: $headings-font-weight;
@@ -57,7 +58,6 @@ h1, h2, h3, h4, h5, h6,
     color: inherit;
   }
 }
-
 
 accordion-group .panel-title a.accordion-toggle i {
   transform: rotate(180deg);
@@ -143,7 +143,6 @@ small, .small {
   }
 }
 
-
 // Contextual variations
 .panel-default {
   @include panel-variant($panel-default-border, $panel-default-text, $panel-default-heading-bg, $panel-default-border);
@@ -153,12 +152,11 @@ small, .small {
 // Forms
 // --------------------------------------------------
 
-
 .form-control {
   font-weight: $font-weight-normal;
   padding: $padding-base-vertical $padding-base-horizontal;
   @include box-shadow(none);
-  &:focus{
+  &:focus {
     @include box-shadow(none);
   }
 }
@@ -171,7 +169,7 @@ small, .small {
   padding: $padding-small-vertical $padding-small-horizontal;
 }
 
-.input-group-btn>.btn {
+.input-group-btn > .btn {
   padding-top: $padding-base-vertical;
   padding-bottom: $padding-base-vertical;
 }
@@ -181,15 +179,15 @@ small, .small {
   padding-bottom: $padding-base-vertical;
 }
 
-.btn-lg, .btn-group-lg>.btn {
- padding: $btn-padding-y-lg $btn-padding-x-lg !important;
+.btn-lg, .btn-group-lg > .btn {
+  padding: $btn-padding-y-lg $btn-padding-x-lg !important;
 }
 
 label {
   font-weight: $font-weight-normal;
 }
 
-.help-block{
+.help-block {
   margin-top: 5px;
   font-size: $font-size-smaller;
   color: $text-muted;
@@ -212,31 +210,31 @@ legend {
 .form-group {
   margin-bottom: $line-height-computed;
 
-  .input-group-addon{
+  .input-group-addon {
     line-height: inherit;
   }
 }
 
-.input-group-addon{
-  &.bg-primary{
+.input-group-addon {
+  &.bg-primary {
     border-color: darken($brand-primary, 10%);
   }
-  &.bg-success{
+  &.bg-success {
     border-color: darken($state-success-bg, 10%);
   }
-  &.bg-info{
+  &.bg-info {
     border-color: darken($state-info-bg, 10%);
   }
-  &.bg-warning{
+  &.bg-warning {
     border-color: darken($state-warning-bg, 10%);
   }
-  &.bg-danger{
+  &.bg-danger {
     border-color: darken($state-danger-bg, 10%);
   }
 }
 
 .form-horizontal.form-label-left {
-  @include media-breakpoint-up(md){
+  @include media-breakpoint-up(md) {
     .control-label {
       text-align: left;
     }
@@ -251,9 +249,11 @@ legend {
 .has-success {
   @include form-control-validation($brand-success);
 }
+
 .has-warning {
   @include form-control-validation($brand-warning);
 }
+
 .has-error {
   @include form-control-validation($brand-danger);
 }
@@ -269,10 +269,9 @@ legend {
   }
 }
 
-.input-rounded{
+.input-rounded {
   border-radius: $border-radius;
 }
-
 
 // Checkboxes and radios
 //
@@ -292,7 +291,7 @@ legend {
 // --------------------------------------------------
 
 .table td > .abc-checkbox,
-.table th > .abc-checkbox{
+.table th > .abc-checkbox {
   position: relative;
   top: -8px;
   margin-top: 0;
@@ -304,13 +303,13 @@ legend {
   border-top: none;
 }
 
-.table > thead > tr > th{
+.table > thead > tr > th {
   font-weight: $font-weight-semi-bold;
   text-transform: uppercase;
   border-bottom-width: 1px;
 }
 
-.table-bordered th{
+.table-bordered th {
   background-color: $gray-lighter;
 }
 
@@ -340,7 +339,7 @@ legend {
   }
 }
 
-.table-hover > tbody > tr:hover .progress{
+.table-hover > tbody > tr:hover .progress {
   background-color: $white;
 }
 
@@ -358,11 +357,11 @@ legend {
   }
 }
 
-.dropdown-menu{
+.dropdown-menu {
   font-size: $font-size-mini;
   border-radius: 0;
 
-  & > li > a{
+  & > li > a {
     padding-top: 5px;
     padding-bottom: 5px;
   }
@@ -374,11 +373,13 @@ legend {
   height: 0;
   margin-left: 2px;
   vertical-align: middle;
-  border-top:   4px dashed;
-  border-top:   4px solid \9; // IE8
+  border-top: 4px dashed;
+  border-top: 4px solid \9
+; // IE8
   border-right: 4px solid transparent;
-  border-left:  4px solid transparent;
+  border-left: 4px solid transparent;
 }
+
 //
 // Navs
 // --------------------------------------------------
@@ -396,7 +397,9 @@ legend {
 }
 
 .nav-tabs {
-  & .nav-item+.nav-item { margin-left: 0}
+  & .nav-item + .nav-item {
+    margin-left: 0
+  }
   border-bottom: none;
   background-color: $gray-semi-lighter;
   border-top-left-radius: $border-radius;
@@ -422,7 +425,7 @@ legend {
     .nav-link.open {
       &,
       &:hover,
-      &:focus{
+      &:focus {
         background-color: $nav-tabs-active-link-hover-bg;
         color: $nav-tabs-active-link-hover-color;
       }
@@ -456,13 +459,13 @@ legend {
 // TABBABLE
 // --------
 
-
 // COMMON STYLES
 // -------------
 
 .tabbable {
   @include clearfix();
 }
+
 .tab-content {
   overflow: auto; // prevent content from running below tabs
   margin-bottom: 1.5rem;
@@ -480,6 +483,7 @@ legend {
 .pill-content > .pill-pane {
   display: none;
 }
+
 .tab-content > .active,
 .pill-content > .active {
   display: block;
@@ -493,6 +497,7 @@ legend {
 .tabs-right > .nav-tabs > li {
   float: none;
 }
+
 .tabs-left > .nav-tabs > li > a,
 .tabs-right > .nav-tabs > li > a {
   min-width: 74px;
@@ -501,7 +506,7 @@ legend {
 }
 
 .tabs-left > .nav-tabs > li:last-child > a,
-.tabs-right > .nav-tabs > li:last-child > a{
+.tabs-right > .nav-tabs > li:last-child > a {
   margin-bottom: 0;
 }
 
@@ -510,6 +515,7 @@ legend {
   float: left;
   border-top-right-radius: 0;
 }
+
 .tabs-left > .nav-tabs > li > a {
   margin-right: -1px;
   @include border-radius(4px 0 0 4px);
@@ -520,15 +526,15 @@ legend {
   float: right;
   border-top-left-radius: 0;
 }
+
 .tabs-right > .nav-tabs > li > a {
   margin-left: -1px;
   @include border-radius(0 4px 4px 0);
 }
 
-.tabs-right > .nav-tabs > li.active > a{
+.tabs-right > .nav-tabs > li.active > a {
   @include box-shadow(-1px 1px 2px #ccc);
 }
-
 
 //
 // Navbars
@@ -542,32 +548,30 @@ legend {
   margin-bottom: 0;
   padding: 0;
 
-  h5{
+  h5 {
     font-size: $navbar-font-size;
   }
 
-  .deemphasize{
+  .deemphasize {
     font-size: $font-size-sm;
   }
 }
 
-.navbar-form{
-  .form-control{
+.navbar-form {
+  .form-control {
     font-size: $navbar-font-size;
     padding: 0.6rem 0.85rem;
 
   }
 
-  .input-group{
+  .input-group {
     width: 245px;
   }
 
-  .input-group-addon{
+  .input-group-addon {
     color: $navbar-dashboard-link-color;
   }
 }
-
-
 
 .container,
 .container-fluid {
@@ -575,15 +579,15 @@ legend {
   > .navbar-collapse {
     @media (min-width: map_get($grid-breakpoints, md)) {
       margin-right: -$navbar-padding-horizontal;
-      margin-left:  -$navbar-padding-horizontal;
+      margin-left: -$navbar-padding-horizontal;
     }
   }
 }
 
-.navbar-header > .navbar-nav{
+.navbar-header > .navbar-nav {
   float: left;
 
-  &.navbar-right{
+  &.navbar-right {
     float: right;
 
     @include media-breakpoint-down(sm) {
@@ -600,7 +604,7 @@ legend {
   @include media-breakpoint-down(sm) {
     margin-left: $navbar-padding-vertical;
 
-    + .navbar-brand{
+    + .navbar-brand {
       height: 60px;
       line-height: 30px;
     }
@@ -611,11 +615,10 @@ legend {
     > a {
       padding: 17px $navbar-padding-vertical $navbar-padding-horizontal $navbar-padding-vertical;
 
-
     }
   }
 
-  li:nth-child(3){
+  li:nth-child(3) {
     margin-left: 0;
   }
 }
@@ -629,9 +632,9 @@ legend {
 .navbar-collapse {
   overflow-x: visible;
   padding-right: $navbar-padding-horizontal;
-  padding-left:  $navbar-padding-horizontal;
+  padding-left: $navbar-padding-horizontal;
   border-top: 1px solid transparent;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
   @include clearfix;
 
   &.in {
@@ -707,13 +710,12 @@ legend {
 }
 
 .navbar-nav .nav-item .nav-link {
-    margin-left: 0;
+  margin-left: 0;
 }
 
 //
 // Breadcrumbs
 // --------------------------------------------------
-
 
 .breadcrumb {
   color: $gray-light;
@@ -723,15 +725,16 @@ legend {
     font-weight: $font-weight-semi-bold;
   }
 
-  .content &{
+  .content & {
     padding-top: 0;
     padding-bottom: 0;
   }
 }
 
-.breadcrumb>li+li::before {
+.breadcrumb > li + li::before {
   content: ">";
 }
+
 //
 // Buttons
 // --------------------------------------------------
@@ -753,15 +756,15 @@ legend {
   padding-bottom: .35rem;
 }
 
-.btn-rounded{
+.btn-rounded {
   @include border-radius(6px);
 }
 
-.btn-gray{
+.btn-gray {
   @include button-variant($text-color, $gray-semi-lighter, darken($gray-semi-lighter, 5%));
 }
 
-.btn-outline{
+.btn-outline {
   @include button-variant($white, transparent, $white);
 
   &:hover,
@@ -772,7 +775,7 @@ legend {
 
 .btn-link:focus,
 .btn-link:active:focus,
-.btn-link.active:focus{
+.btn-link.active:focus {
   outline: 0;
 }
 
@@ -780,21 +783,19 @@ legend {
   @include border-right-radius($btn-border-radius);
 }
 
-
 .btn-group > .btn[data-toggle="dropdown"][data-original-title][title] {
   @include border-right-radius($btn-border-radius);
 
   &:focus,
-  &:active{
+  &:active {
     outline: none !important;
   }
 }
 
-
 //
 // Labels
 // --------------------------------------------------
-.label{
+.label {
   font-size: 11px;
   font-weight: $font-weight-semi-bold;
   padding: 6px;
@@ -807,7 +808,7 @@ legend {
   font-size: 12px;
 }
 
-.help-block{
+.help-block {
   margin-top: 5px;
   font-size: $font-size-smaller;
   color: $text-muted;
@@ -818,7 +819,7 @@ legend {
 // Button groups
 // --------------------------------------------------
 
-.btn-toolbar{
+.btn-toolbar {
   margin-top: $line-height-computed/2;
   margin-bottom: $line-height-computed/2;
 }
@@ -831,27 +832,26 @@ legend {
   transition: width 0.6s ease;
 }
 
-.progress{
+.progress {
   @include box-shadow(none);
   transition: width 0.6s ease;
   height: 1.3rem;
 }
 
-.progress-bar{
+.progress-bar {
   border-radius: $border-radius;
   @include box-shadow(none);
 }
 
-.progress-sm{
+.progress-sm {
   height: 10px;
   margin-bottom: $line-height-computed/2;
 }
 
-.progress-xs{
+.progress-xs {
   height: 5px;
   margin-bottom: $line-height-computed/2;
 }
-
 
 .progress-bar-gray {
   @include progress-variant($gray);
@@ -864,7 +864,6 @@ legend {
 .progress-primary {
   @include progress-variant($brand-primary)
 }
-
 
 //
 // List groups
@@ -887,33 +886,32 @@ legend {
   }
 }
 
-.list-group{
-  .widget-body.no-padding > &{
+.list-group {
+  .widget-body.no-padding > & {
     margin: 0;
 
-    .list-group-item{
+    .list-group-item {
       border-width: 1px 0;
     }
   }
 }
 
-.list-group-item{
+.list-group-item {
 
   .list-group-lg & {
     padding: 15px 15px;
   }
 
-  .list-group:last-of-type &:last-child{
+  .list-group:last-of-type &:last-child {
     border-bottom: 0;
   }
 }
-
 
 //
 // Tooltips
 // --------------------------------------------------
 
-.tooltip-inner{
+.tooltip-inner {
   @include border-radius(3px);
 }
 
@@ -921,27 +919,25 @@ legend {
 // Alerts
 // --------------------------------------------------
 
-
-.alert-sm{
+.alert-sm {
   padding: 10px 12px;
   font-size: $font-size-mini;
 
-  .close{
+  .close {
     font-size: 18px;
   }
 }
 
-.alert-dismissible .close{
+.alert-dismissible .close {
   position: static;
   color: $close-color;
 
 }
 
-
 //
 // Popovers
 
-.popover{
+.popover {
   border: none;
   @include box-shadow(none);
 }
@@ -955,16 +951,16 @@ legend {
 // --------------------------------------------------
 
 // z-index fix. modal doesn't show up properly when .content-wrap is relative
-.modal-open{
-  &, &.nav-collapsed, &.nav-static{
-    .content-wrap{
+.modal-open {
+  &, &.nav-collapsed, &.nav-static {
+    .content-wrap {
       -webkit-transform: none;
       -ms-transform: none;
       transform: none;
       position: static;
     }
 
-    .sidebar{
+    .sidebar {
       z-index: -1;
     }
   }
@@ -974,31 +970,31 @@ legend {
 // Pagination
 // --------------------------------------------------
 
-.pagination{
+.pagination {
   font-weight: $font-weight-normal;
 
   > .page-item {
     display: inline; // Remove list-style and block-level defaults
     > .page-link,
-    > span{
+    > span {
       border-radius: $border-radius;
       margin: 0 2px;
     }
 
-    >.page-link {
+    > .page-link {
       text-decoration: none;
       border: none;
     }
   }
 }
 
-.pagination{
+.pagination {
   font-weight: $font-weight-normal;
 
   > li {
     display: inline; // Remove list-style and block-level defaults
     > a,
-    > span{
+    > span {
       border-radius: $border-radius;
       margin: 0 2px;
     }
@@ -1015,12 +1011,11 @@ legend {
 // --------------------------------------------------
 
 .jumbotron {
-  @include media-breakpoint-up(md){
+  @include media-breakpoint-up(md) {
     padding-left: $jumbotron-padding;
     padding-right: $jumbotron-padding;
   }
 }
-
 
 // Navbar form
 //
@@ -1158,7 +1153,6 @@ legend {
     }
   }
 }
-
 
 @mixin bg-variant($parent, $color) {
   #{$parent} {

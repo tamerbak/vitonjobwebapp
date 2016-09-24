@@ -1,9 +1,9 @@
-import {Component,Input, ElementRef, OnInit} from '@angular/core';
-import {ConfigService} from '../config';
+import {Component, Input, ElementRef, OnInit} from "@angular/core";
+import {ConfigService} from "../config";
 import {SharedService} from "../../../providers/shared.service";
-import {ROUTER_DIRECTIVES, Router} from '@angular/router';
-import {NotificationLoad} from './notification-load';
-declare var jQuery,require: any;
+import {Router} from "@angular/router";
+import {NotificationLoad} from "./notification-load";
+declare var jQuery, require: any;
 
 @Component({
   selector: 'notifications',
@@ -13,18 +13,18 @@ declare var jQuery,require: any;
 export class Notifications implements OnInit {
   $el: any;
   config: any;
-  @Input() alerts:any;
+  @Input() alerts: any;
   @Input() loadOffers: Function;
 
-  constructor(el: ElementRef, config: ConfigService,private sharedService:SharedService,private router:Router) {
+  constructor(el: ElementRef, config: ConfigService, private sharedService: SharedService, private router: Router) {
     this.$el = jQuery(el.nativeElement);
     this.config = config;
   }
 
-  goToDetailOffer(offer){
+  goToDetailOffer(offer) {
     this.sharedService.setCurrentOffer(offer);
     this.router.navigate(['app/offer/detail']);
-	window.location.reload();
+    window.location.reload();
   }
 
   moveNotificationsDropdown(): void {
@@ -39,8 +39,12 @@ export class Notifications implements OnInit {
     this.config.onScreenSize(['sm', 'xs'], this.moveNotificationsDropdown);
     this.config.onScreenSize(['sm', 'xs'], this.moveBackNotificationsDropdown, false);
 
-    if (this.config.isScreen('sm')) { this.moveNotificationsDropdown(); }
-    if (this.config.isScreen('xs')) { this.moveNotificationsDropdown(); }
+    if (this.config.isScreen('sm')) {
+      this.moveNotificationsDropdown();
+    }
+    if (this.config.isScreen('xs')) {
+      this.moveNotificationsDropdown();
+    }
 
     jQuery('.sidebar-status').on('show.bs.dropdown', () => {
       jQuery('#sidebar').css('z-index', 2);

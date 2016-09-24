@@ -1,6 +1,6 @@
-import {Component, OnInit, ElementRef} from '@angular/core';
-import {ChatMessage} from './chat-message/chat-message';
-import {SearchPipe} from './../pipes/pipe';
+import {Component, OnInit, ElementRef} from "@angular/core";
+import {ChatMessage} from "./chat-message/chat-message";
+import {SearchPipe} from "./../pipes/pipe";
 declare var jQuery: any;
 declare var Util: any;
 
@@ -113,21 +113,21 @@ export class ChatSidebar implements OnInit {
   ngOnInit(): void {
     let $chatContainer = jQuery('app').addClass('chat-sidebar-container');
     jQuery(document).on('swipeLeft', '.content-wrap', () => {
-        if ($chatContainer.is('.nav-collapsed')) {
-          $chatContainer.addClass('chat-sidebar-opened');
-        }
-      })
-      /*
-       * Hide chat on swipe right but first check if navigation is collapsed
-       * otherwise do nothing
-       */
+      if ($chatContainer.is('.nav-collapsed')) {
+        $chatContainer.addClass('chat-sidebar-opened');
+      }
+    })
+    /*
+     * Hide chat on swipe right but first check if navigation is collapsed
+     * otherwise do nothing
+     */
       .on('swipeRight', () => {
         if ($chatContainer.is('.nav-collapsed.chat-sidebar-opened')) {
           $chatContainer.removeClass('chat-sidebar-opened')
-            // as there is no way to cancel swipeLeft handlers attached to
-            // .content making this hack with temporary class which will be
-            // used by snNavigation directive to check whether it is permitted to open navigation
-            // on swipeRight
+          // as there is no way to cancel swipeLeft handlers attached to
+          // .content making this hack with temporary class which will be
+          // used by snNavigation directive to check whether it is permitted to open navigation
+          // on swipeRight
             .addClass('nav-busy').one(Util.TRANSITION_END, () => {
             jQuery('app').removeClass('nav-busy');
           }).emulateTransitionEnd(300);
