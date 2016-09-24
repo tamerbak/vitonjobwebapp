@@ -1,0 +1,70 @@
+<a class="mr-n-lg" data-toggle="modal" data-target="#my-modal18-content">
+  Mot de passe oublié?
+</a>
+<div class="modal fade" id="my-modal18-content">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" [hidden]="isSent">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel18">VitOnJob</h4>
+        <p class="text-xs-center fs-mini text-muted mt-sm">
+          <!--{{displayedMsg}}-->
+          Votre mot de passe est sur le point d'être réinitialisé. Voulez-vous le recevoir par SMS ou par email?
+        </p>
+      </div>
+      <div class="modal-body bg-gray-lighter">
+        <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
+          <div [innerHTML]="alert.msg"></div>
+        </alert>
+        <form>
+          <div class="row">
+            <div class="col-lg-4 col-xs-6">
+              <div class="form-group">
+                <label class="col-lg-4 col-xs-6 form-control-label text-md-right">Votre numéro de téléphone</label>
+              </div>
+            </div>
+            <div class="col-lg-4 col-xs-6">
+              <div class="form-group">
+                <select class="input-no-border form-control" [(ngModel)]="index" style="background-color: white">
+                  <option *ngFor="let p of pays" [value]="p.indicatif_telephonique"> {{p.nom}}
+                    ({{p.indicatif_telephonique}})
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-4 col-xs-6">
+              <div class="form-group">
+                <input [(ngModel)]="phone" type="number" class="form-control" (keyup)="watchPhone($event)"
+                       (change)="validatePhone($event)" style="background-color: white" placeholder="999999999">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="widget-body btn loaderPosition" [hidden]="hideLoader">
+          <div class="loader animated fadeIn handle">
+						<span class="spinner">
+							<i class="fa fa-spinner fa-spin"></i>
+						</span>
+          </div>
+        </div>
+        <button type="button" class="btn btn-gray" (click)="sendSMS()" [disabled]="!hideLoader">SMS</button>
+        <button type="button" class="btn btn-success" (click)="sendEmail()" [disabled]="!hideLoader">Email</button>
+      </div>
+    </div>
+
+    <div class="modal-content" [hidden]="!isSent">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel18">VitOnJob</h4>
+        <p class="text-xs-center fs-mini text-muted mt-sm">
+          {{displayedMsg}}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-gray" (click)="close($event)">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
