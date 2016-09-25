@@ -139,6 +139,8 @@ export class Configs {
    public static fssURL:string = 'https://app.vitonjob.com/api/fssjs';
    */
 
+  public static googleMapApiKey: string = 'AIzaSyD6de5QuqKPECTwNSkmBfeRmiTb9147S_Y';
+
   public static getHttpJsonHeaders() {
     let headers = new Headers();
     headers.append("Content-Type", 'application/json');
