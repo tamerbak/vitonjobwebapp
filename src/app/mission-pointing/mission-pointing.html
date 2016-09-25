@@ -52,16 +52,20 @@
             <tbody>
             <tr>
               <td class="text-align-right">Début</td>
-              <td class="text-align-right">{{(day.heure_debut_new != '' && day.heure_debut_new != 'null') ? (day.heure_debut_new | timeConverter:'minute') : (day.heure_debut | timeConverter:'minute')}}</td>
+              <td class="text-align-right">{{(day.heure_debut_new != '' && day.heure_debut_new != 'null') ?
+                (day.heure_debut_new | timeConverter:'minute') : (day.heure_debut | timeConverter:'minute')}}
+              </td>
               <td class="text-align-center">
-                  {{day.heure_debut_pointe}}
-			  </td>
+                {{day.heure_debut_pointe}}
+              </td>
             </tr>
             <tr>
               <td class="text-align-right">Fin</td>
-              <td class="text-align-right">{{(day.heure_fin_new != '' && day.heure_fin_new != 'null') ? (day.heure_fin_new | timeConverter:'minute') : (day.heure_fin | timeConverter:'minute')}}</td>
+              <td class="text-align-right">{{(day.heure_fin_new != '' && day.heure_fin_new != 'null') ?
+                (day.heure_fin_new | timeConverter:'minute') : (day.heure_fin | timeConverter:'minute')}}
+              </td>
               <td class="text-align-center">
-                  {{ (day.heure_fin_pointe) ? day.heure_fin_pointe : '--:--' }}
+                {{ (day.heure_fin_pointe) ? day.heure_fin_pointe : '--:--' }}
               </td>
             </tr>
             </tbody>
@@ -69,11 +73,11 @@
         </div>
         <div class="col-xs-12">
           <button
-			type="button" class="btn btn-primary btn-sm"
-			(click)="pointHour(false)"
-			[disabled]="disableBtnPointing">
-				Pointer
-			</button>
+            type="button" class="btn btn-primary btn-sm"
+            (click)="pointHour(false)"
+            [disabled]="disableBtnPointing">
+            Pointer
+          </button>
         </div>
       </div>
     </section>

@@ -23,45 +23,49 @@
   'use strict'
 
   /*
-  * Add integers, wrapping at 2^32. This uses 16-bit operations internally
-  * to work around bugs in some JS interpreters.
-  */
-  function safe_add (x, y) {
+   * Add integers, wrapping at 2^32. This uses 16-bit operations internally
+   * to work around bugs in some JS interpreters.
+   */
+  function safe_add(x, y) {
     var lsw = (x & 0xFFFF) + (y & 0xFFFF)
     var msw = (x >> 16) + (y >> 16) + (lsw >> 16)
     return (msw << 16) | (lsw & 0xFFFF)
   }
 
   /*
-  * Bitwise rotate a 32-bit number to the left.
-  */
-  function bit_rol (num, cnt) {
+   * Bitwise rotate a 32-bit number to the left.
+   */
+  function bit_rol(num, cnt) {
     return (num << cnt) | (num >>> (32 - cnt))
   }
 
   /*
-  * These functions implement the four basic operations the algorithm uses.
-  */
-  function md5_cmn (q, a, b, x, s, t) {
+   * These functions implement the four basic operations the algorithm uses.
+   */
+  function md5_cmn(q, a, b, x, s, t) {
     return safe_add(bit_rol(safe_add(safe_add(a, q), safe_add(x, t)), s), b)
   }
-  function md5_ff (a, b, c, d, x, s, t) {
+
+  function md5_ff(a, b, c, d, x, s, t) {
     return md5_cmn((b & c) | ((~b) & d), a, b, x, s, t)
   }
-  function md5_gg (a, b, c, d, x, s, t) {
+
+  function md5_gg(a, b, c, d, x, s, t) {
     return md5_cmn((b & d) | (c & (~d)), a, b, x, s, t)
   }
-  function md5_hh (a, b, c, d, x, s, t) {
+
+  function md5_hh(a, b, c, d, x, s, t) {
     return md5_cmn(b ^ c ^ d, a, b, x, s, t)
   }
-  function md5_ii (a, b, c, d, x, s, t) {
+
+  function md5_ii(a, b, c, d, x, s, t) {
     return md5_cmn(c ^ (b | (~d)), a, b, x, s, t)
   }
 
   /*
-  * Calculate the MD5 of an array of little-endian words, and a bit length.
-  */
-  function binl_md5 (x, len) {
+   * Calculate the MD5 of an array of little-endian words, and a bit length.
+   */
+  function binl_md5(x, len) {
     /* append padding */
     x[len >> 5] |= 0x80 << (len % 32)
     x[(((len + 64) >>> 9) << 4) + 14] = len
@@ -159,9 +163,9 @@
   }
 
   /*
-  * Convert an array of little-endian words to a string
-  */
-  function binl2rstr (input) {
+   * Convert an array of little-endian words to a string
+   */
+  function binl2rstr(input) {
     var i
     var output = ''
     for (i = 0; i < input.length * 32; i += 8) {
@@ -171,10 +175,10 @@
   }
 
   /*
-  * Convert a raw string to an array of little-endian words
-  * Characters >255 have their high-byte silently ignored.
-  */
-  function rstr2binl (input) {
+   * Convert a raw string to an array of little-endian words
+   * Characters >255 have their high-byte silently ignored.
+   */
+  function rstr2binl(input) {
     var i
     var output = []
     output[(input.length >> 2) - 1] = undefined
@@ -188,16 +192,16 @@
   }
 
   /*
-  * Calculate the MD5 of a raw string
-  */
-  function rstr_md5 (s) {
+   * Calculate the MD5 of a raw string
+   */
+  function rstr_md5(s) {
     return binl2rstr(binl_md5(rstr2binl(s), s.length * 8))
   }
 
   /*
-  * Calculate the HMAC-MD5, of a key and some data (raw strings)
-  */
-  function rstr_hmac_md5 (key, data) {
+   * Calculate the HMAC-MD5, of a key and some data (raw strings)
+   */
+  function rstr_hmac_md5(key, data) {
     var i
     var bkey = rstr2binl(key)
     var ipad = []
@@ -216,9 +220,9 @@
   }
 
   /*
-  * Convert a raw string to a hex string
-  */
-  function rstr2hex (input) {
+   * Convert a raw string to a hex string
+   */
+  function rstr2hex(input) {
     var hex_tab = '0123456789abcdef'
     var output = ''
     var x
@@ -226,35 +230,38 @@
     for (i = 0; i < input.length; i += 1) {
       x = input.charCodeAt(i)
       output += hex_tab.charAt((x >>> 4) & 0x0F) +
-      hex_tab.charAt(x & 0x0F)
+        hex_tab.charAt(x & 0x0F)
     }
     return output
   }
 
   /*
-  * Encode a string as utf-8
-  */
-  function str2rstr_utf8 (input) {
+   * Encode a string as utf-8
+   */
+  function str2rstr_utf8(input) {
     return unescape(encodeURIComponent(input))
   }
 
   /*
-  * Take string arguments and return either raw or hex encoded strings
-  */
-  function raw_md5 (s) {
+   * Take string arguments and return either raw or hex encoded strings
+   */
+  function raw_md5(s) {
     return rstr_md5(str2rstr_utf8(s))
   }
-  function hex_md5 (s) {
+
+  function hex_md5(s) {
     return rstr2hex(raw_md5(s))
   }
-  function raw_hmac_md5 (k, d) {
+
+  function raw_hmac_md5(k, d) {
     return rstr_hmac_md5(str2rstr_utf8(k), str2rstr_utf8(d))
   }
-  function hex_hmac_md5 (k, d) {
+
+  function hex_hmac_md5(k, d) {
     return rstr2hex(raw_hmac_md5(k, d))
   }
 
-  function md5 (string, key, raw) {
+  function md5(string, key, raw) {
     if (!key) {
       if (!raw) {
         return hex_md5(string)

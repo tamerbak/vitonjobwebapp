@@ -5,8 +5,9 @@
       {{conversation.name}}
     </a>
   </h6>
-  <ul class="message-list" >
-    <li *ngFor="let message of conversation.messages | SearchPipe : searchMessage" class="message" [ngClass]="{'from-me': message.fromMe}">
+  <ul class="message-list">
+    <li *ngFor="let message of conversation.messages | SearchPipe : searchMessage" class="message"
+        [ngClass]="{'from-me': message.fromMe}">
       <span class="thumb-sm">
           <img class="img-circle" src="{{message.fromMe ? 'assets/images/avatar.png' : conversation.image}}" alt="...">
       </span>

@@ -1,8 +1,8 @@
-import {Directive, ElementRef} from '@angular/core';
+import {Directive, ElementRef} from "@angular/core";
 declare var jQuery: any;
 declare var Holder: any;
 
-@Directive ({
+@Directive({
   selector: '[holderjs]'
 })
 

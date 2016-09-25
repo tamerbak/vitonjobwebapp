@@ -1,8 +1,8 @@
-import {Directive, ElementRef, Input} from '@angular/core';
+import {Directive, ElementRef, Input} from "@angular/core";
 declare var jQuery: any;
 declare var Rickshaw: any;
 
-@Directive ({
+@Directive({
   selector: '[rickshaw-chart]'
 })
 
@@ -43,18 +43,18 @@ export class RickshawChart {
 
     let hoverDetail = new Rickshaw.Graph.HoverDetail({
       graph: graph,
-      xFormatter: function(x): string {
+      xFormatter: function (x): string {
         return new Date(x * 1000).toString();
       }
     });
 
     if (this.realtime) {
-      setInterval( () => {
+      setInterval(() => {
         this.random.removeData(this.seriesData);
         this.random.addData(this.seriesData);
         graph.update();
 
-      }, 1000 );
+      }, 1000);
     }
   }
 

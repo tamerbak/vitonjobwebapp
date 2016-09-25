@@ -1,8 +1,8 @@
-import {Directive, ElementRef, Input} from '@angular/core';
+import {Directive, ElementRef} from "@angular/core";
 declare var jQuery: any;
 declare var Dropzone: any;
 
-@Directive ({
+@Directive({
   selector: '[dropzone-demo]'
 })
 

@@ -1,51 +1,62 @@
-<a class="mr-n-lg btn btn-info btn-sm pull-xs-right" data-toggle="modal" data-target="#my-modal18-content" style="margin-right: 10px;">
-	Recrutement immédiat
+<a class="mr-n-lg btn btn-info btn-sm pull-xs-right" data-toggle="modal" data-target="#my-modal18-content"
+   style="margin-right: 10px;">
+  Recrutement immédiat
 </a>
 <div class="modal fade" id="my-modal18-content">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content" [hidden]="!showContractNotif">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel18">VitOnJob</h4>
-				<p class="text-xs-center text-muted mt-sm" style="line-height: 2;">Vous êtes sur le point de procéder à la validation, complétion et éventuellement modifications des informations qui vont être installées sur votre <span *ngIf="projectTarget != 'employer'">contrat de mission</span> <span *ngIf="projectTarget == 'employer'">contrat de mise à disposition</span>.</p>
-				<p class="text-xs-center text-muted mt-sm" style="line-height: 2;">Cette étape exige toute votre attention pour éviter la signature d'un contrat avec des informations erronées.</p>
-				<p class="text-xs-center text-muted mt-sm" style="line-height: 2;">Nous avons apporté un soin particulier pour vous aider à réussir cette étape.</p>
-			</div>
-			<div class="modal-footer">
-				 <button type="button" class="btn btn-success" (click)="gotoContractForm($event)">Je confirme avoir lu et compris</button>
-			</div>
-		</div>
-		<div class="modal-content" [hidden]="!showAuthNotif">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel18">VitOnJob</h4>
-				<p class="text-xs-center text-muted mt-sm" style="line-height: 2;">Pour contacter ce profil, vous devez être connecté.</p>
-			</div>
-			<div class="modal-footer">
-				 <button type="button" class="btn btn-success" (click)="close($event)">OK</button>
-			</div>
-		</div>
-		
-		<div class="modal-content" [hidden]="!showOfferNotif">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel18">VitOnJob</h4>
-				<p class="text-xs-center text-muted mt-sm" style="line-height: 2;">Veuillez sélectionner une offre existante, ou en créer une nouvelle pour pouvoir recruter ce jobyer.</p>
-			</div>
-			<div class="modal-footer">
-				 <button type="button" class="btn btn-success" (click)="close($event)">OK</button>
-			</div>
-		</div>
-		
-		<div class="modal-content" [hidden]="!showProfilNotif">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel18">VitOnJob</h4>
-				<p class="text-xs-center text-muted mt-sm" style="line-height: 2;">Informations incomplètes: Veuillez compléter votre profil avant d'établir votre premier contrat.</p>
-			</div>
-			<div class="modal-footer">
-				 <button type="button" class="btn btn-success" (click)="close($event)">OK</button>
-			</div>
-		</div>
-	</div>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" [hidden]="!showContractNotif">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel18">VitOnJob</h4>
+        <p class="text-xs-center text-muted mt-sm" style="line-height: 2;">Vous êtes sur le point de procéder à la
+          validation, complétion et éventuellement modifications des informations qui vont être installées sur votre
+          <span *ngIf="projectTarget != 'employer'">contrat de mission</span> <span *ngIf="projectTarget == 'employer'">contrat de mise à disposition</span>.
+        </p>
+        <p class="text-xs-center text-muted mt-sm" style="line-height: 2;">Cette étape exige toute votre attention pour
+          éviter la signature d'un contrat avec des informations erronées.</p>
+        <p class="text-xs-center text-muted mt-sm" style="line-height: 2;">Nous avons apporté un soin particulier pour
+          vous aider à réussir cette étape.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" (click)="gotoContractForm($event)">Je confirme avoir lu et
+          compris
+        </button>
+      </div>
+    </div>
+    <div class="modal-content" [hidden]="!showAuthNotif">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel18">VitOnJob</h4>
+        <p class="text-xs-center text-muted mt-sm" style="line-height: 2;">Pour contacter ce profil, vous devez être
+          connecté.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" (click)="close($event)">OK</button>
+      </div>
+    </div>
+
+    <div class="modal-content" [hidden]="!showOfferNotif">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel18">VitOnJob</h4>
+        <p class="text-xs-center text-muted mt-sm" style="line-height: 2;">Veuillez sélectionner une offre existante, ou
+          en créer une nouvelle pour pouvoir recruter ce jobyer.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" (click)="close($event)">OK</button>
+      </div>
+    </div>
+
+    <div class="modal-content" [hidden]="!showProfilNotif">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel18">VitOnJob</h4>
+        <p class="text-xs-center text-muted mt-sm" style="line-height: 2;">Informations incomplètes: Veuillez compléter
+          votre profil avant d'établir votre premier contrat.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" (click)="close($event)">OK</button>
+      </div>
+    </div>
+  </div>
 </div>

@@ -1,19 +1,16 @@
-import {Widget} from '../core/widget/widget';
-import {Component} from '@angular/core';
-import {ROUTER_DIRECTIVES, Router, ActivatedRoute} from '@angular/router';
-import {AlertComponent} from 'ng2-bootstrap/components/alert';
-import {BUTTON_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
-import {NKDatetime} from 'ng2-datetime/ng2-datetime';
-
-import {GlobalConfigs} from "../configurations/globalConfigs";
-
-import {SharedService} from "../providers/shared.service";
-import {MissionService} from "../providers/mission-service";
-import {FinanceService} from "../providers/finance.service";
-import {ContractService} from '../providers/contract-service';
-
-import {DateConverter} from '../../pipes/date-converter/date-converter';
-import {TimeConverter} from '../../pipes/time-converter/time-converter';
+import {Widget} from "../core/widget/widget";
+import {Component} from "@angular/core";
+import {ROUTER_DIRECTIVES, Router, ActivatedRoute} from "@angular/router";
+import {AlertComponent} from "ng2-bootstrap/components/alert";
+import {BUTTON_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap";
+import {NKDatetime} from "ng2-datetime/ng2-datetime";
+import {GlobalConfigs} from "../../configurations/globalConfigs";
+import {SharedService} from "../../providers/shared.service";
+import {MissionService} from "../../providers/mission-service";
+import {FinanceService} from "../../providers/finance.service";
+import {ContractService} from "../../providers/contract-service";
+import {DateConverter} from "../../pipes/date-converter/date-converter";
+import {TimeConverter} from "../../pipes/time-converter/time-converter";
 
 @Component({
   selector: '[mission-details]',
@@ -98,9 +95,9 @@ export class MissionDetails {
 
     // Retrieve the project target
     this.currentUser = this.sharedService.getCurrentUser();
-    if(!this.currentUser){
+    if (!this.currentUser) {
       this.router.navigate(['app/dashboard']);
-    }else{
+    } else {
       this.isEmployer = this.currentUser.estEmployeur;
       this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
 
@@ -159,7 +156,7 @@ export class MissionDetails {
             this.isInvoiceAvailable = invoice.facture_signee == 'Non' && this.projectTarget == 'employer';
           }
         });
-      }
+    }
   }
 
   onCardClick(dayIndex) {

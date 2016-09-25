@@ -6,7 +6,7 @@
  * Switchery.
  */
 
-.switch{
+.switch {
   box-sizing: content-box;
   margin-left: -20px;
 }
@@ -14,6 +14,7 @@
 .switch input {
   display: none;
 }
+
 .switch i {
   display: inline-block;
   cursor: pointer;
@@ -21,8 +22,9 @@
   transition: all ease 0.2s;
   -webkit-transition: all ease 0.2s;
   border-radius: 20px;
-  box-shadow: inset 0 0 1px rgba(0,0,0,.5);
+  box-shadow: inset 0 0 1px rgba(0, 0, 0, .5);
 }
+
 .switch i:before {
   display: block;
   content: '';
@@ -31,23 +33,24 @@
   padding: 1px;
   border-radius: 20px;
   background: white;
-  box-shadow: 0 1px 2px rgba(0,0,0,.5);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .5);
 }
+
 .switch :checked + i {
   padding-right: 0;
   padding-left: 20px;
   background: rgb(100, 189, 99);
 }
 
-.labelSwitch{
-	padding-left: 10px;
-    vertical-align: middle;	
+.labelSwitch {
+  padding-left: 10px;
+  vertical-align: middle;
 }
 
-.alertDispo{
-	margin-bottom: -15px;
-    margin-top: 15px;
-    margin-left: -20px;
-    margin-right: -20px;
-	padding: 0 12px;
+.alertDispo {
+  margin-bottom: -15px;
+  margin-top: 15px;
+  margin-left: -20px;
+  margin-right: -20px;
+  padding: 0 12px;
 }

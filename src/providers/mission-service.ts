@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
-import {Configs} from '../configurations/configs';
-import {Http, Headers} from '@angular/http';
+import {Injectable} from "@angular/core";
+import {Configs} from "../configurations/configs";
+import {Http, Headers} from "@angular/http";
 
 // import {GlobalConfigs} from '../configurations/globalConfigs';
 // import {Storage, SqlStorage} from 'ionic-angular';
@@ -288,18 +288,18 @@ export class MissionService {
       nextPointing = {id: missionHours[i].id, start: true};
       console.log('startNotif', year, month, day, startH);
       var startNotif = {
-      //   id: i + 1,
-      //   text: "Vous devez pointer l'heure de début de mission planifiée pour " + startH[0] + ":" + startH[1],
-      //   at: new Date(year, month, day, startH[0], startH[1]),
-      //   data: {contract: contract, nextPointing: nextPointing}
+        //   id: i + 1,
+        //   text: "Vous devez pointer l'heure de début de mission planifiée pour " + startH[0] + ":" + startH[1],
+        //   at: new Date(year, month, day, startH[0], startH[1]),
+        //   data: {contract: contract, nextPointing: nextPointing}
       };
       nextPointing = {id: missionHours[i].id, start: false};
       console.log('endNotif', year, month, day, endH);
       var endNotif = {
-      //   id: j + 1,
-      //   text: "Vous devez pointer l'heure de fin de mission planifiée pour " + endH[0] + ":" + endH[1],
-      //   at: new Date(year, month, day, endH[0], endH[1]),
-      //   data: {contract: contract, nextPointing: nextPointing}
+        //   id: j + 1,
+        //   text: "Vous devez pointer l'heure de fin de mission planifiée pour " + endH[0] + ":" + endH[1],
+        //   at: new Date(year, month, day, endH[0], endH[1]),
+        //   data: {contract: contract, nextPointing: nextPointing}
       };
 
       notifArray.push(startNotif);
@@ -673,70 +673,70 @@ export class MissionService {
         });
     });
   }
-  
-  getTodayMission(missionHoursTemp){
-		let now = new Date().setHours(0, 0, 0, 0);
-		let missionHoursToday = [];
-		for(let i = 0; i < missionHoursTemp.length; i++){
-			if(new Date(missionHoursTemp[i].jour_debut.replace(' ', 'T')).setHours(0, 0, 0, 0) == now || new Date(missionHoursTemp[i].jour_fin.replace(' ', 'T')).setHours(0, 0, 0, 0) == now){
-				missionHoursToday.push(missionHoursTemp[i]);
-			}
-		}
-		let array = this.constructMissionHoursArray(missionHoursToday);
-		return array;
-	}
-	
-	disablePointing(missionHours, missionPauses){
-		let disabled = true;
-		let h = new Date().getHours();
-		let m = new Date().getMinutes();
-		let minutesNow = this.convertHoursToMinutes(h+':'+m);
-		for(let i = 0; i < missionHours.length; i++){
-			let scheduledHour = this.isEmpty(missionHours[i].heure_debut_new) ? missionHours[i].heure_debut : missionHours[i].heure_debut_new;
-			if(scheduledHour - minutesNow <=  10 && scheduledHour - minutesNow >=  0 && this.isEmpty(missionHours[i].heure_debut_pointe)){
-				disabled = false;
-				let nextPointing = {id: missionHours[i].id, start: true};
-				return {disabled: disabled, nextPointing: nextPointing};
-			}
-			scheduledHour = this.isEmpty(missionHours[i].heure_fin_new) ? missionHours[i].heure_fin : missionHours[i].heure_fin_new;
-			if(scheduledHour - minutesNow <=  10 && scheduledHour - minutesNow >=  0 && (this.isEmpty(missionHours[i].heure_fin_pointe))){
-				disabled = false;
-				let nextPointing = {id: missionHours[i].id, start: false};
-				return {disabled: disabled, nextPointing: nextPointing};
-			}
-			for(let j = 0; j < missionPauses[i].length; j++){
-				let p = missionPauses[i][j];
-				let minutesPause;
-				if(this.isEmpty(p.pause_debut_new)){
-					let h = (p.pause_debut).split(":")[0];
-					let m = (p.pause_debut).split(":")[1];
-					minutesPause = this.convertHoursToMinutes(h+':'+m);					
-				}else{
-					minutesPause = p.pause_debut_new;
-				}
-				if(minutesPause - minutesNow <=  10 && minutesPause - minutesNow >=  0 && this.isEmpty(p.pause_debut_pointe)){
-					disabled = false;
-					let nextPointing = {id: missionHours[i].id, start: true, id_pause: p.id};
-					return {disabled: disabled, nextPointing: nextPointing};
-				}
-				if(this.isEmpty(p.pause_fin_new)){
-					let h = (p.pause_fin).split(":")[0];
-					let m = (p.pause_fin).split(":")[1];
-					let minutesPause = this.convertHoursToMinutes(h+':'+m);					
-				}else{
-					minutesPause = p.pause_fin_new;
-				}
-				if(minutesPause - minutesNow <=  10 && minutesPause - minutesNow >=  0 && this.isEmpty(p.pause_fin_pointe)){
-					disabled = false;
-					let nextPointing = {id: missionHours[i].id, start: false, id_pause: p.id};
-					return {disabled: disabled, nextPointing: nextPointing};
-				}
-			}
-		}
-		return {disabled: disabled, nextPointing: null};
-	}
-	
-	isEmpty(str) {
+
+  getTodayMission(missionHoursTemp) {
+    let now = new Date().setHours(0, 0, 0, 0);
+    let missionHoursToday = [];
+    for (let i = 0; i < missionHoursTemp.length; i++) {
+      if (new Date(missionHoursTemp[i].jour_debut.replace(' ', 'T')).setHours(0, 0, 0, 0) == now || new Date(missionHoursTemp[i].jour_fin.replace(' ', 'T')).setHours(0, 0, 0, 0) == now) {
+        missionHoursToday.push(missionHoursTemp[i]);
+      }
+    }
+    let array = this.constructMissionHoursArray(missionHoursToday);
+    return array;
+  }
+
+  disablePointing(missionHours, missionPauses) {
+    let disabled = true;
+    let h = new Date().getHours();
+    let m = new Date().getMinutes();
+    let minutesNow = this.convertHoursToMinutes(h + ':' + m);
+    for (let i = 0; i < missionHours.length; i++) {
+      let scheduledHour = this.isEmpty(missionHours[i].heure_debut_new) ? missionHours[i].heure_debut : missionHours[i].heure_debut_new;
+      if (scheduledHour - minutesNow <= 10 && scheduledHour - minutesNow >= 0 && this.isEmpty(missionHours[i].heure_debut_pointe)) {
+        disabled = false;
+        let nextPointing = {id: missionHours[i].id, start: true};
+        return {disabled: disabled, nextPointing: nextPointing};
+      }
+      scheduledHour = this.isEmpty(missionHours[i].heure_fin_new) ? missionHours[i].heure_fin : missionHours[i].heure_fin_new;
+      if (scheduledHour - minutesNow <= 10 && scheduledHour - minutesNow >= 0 && (this.isEmpty(missionHours[i].heure_fin_pointe))) {
+        disabled = false;
+        let nextPointing = {id: missionHours[i].id, start: false};
+        return {disabled: disabled, nextPointing: nextPointing};
+      }
+      for (let j = 0; j < missionPauses[i].length; j++) {
+        let p = missionPauses[i][j];
+        let minutesPause;
+        if (this.isEmpty(p.pause_debut_new)) {
+          let h = (p.pause_debut).split(":")[0];
+          let m = (p.pause_debut).split(":")[1];
+          minutesPause = this.convertHoursToMinutes(h + ':' + m);
+        } else {
+          minutesPause = p.pause_debut_new;
+        }
+        if (minutesPause - minutesNow <= 10 && minutesPause - minutesNow >= 0 && this.isEmpty(p.pause_debut_pointe)) {
+          disabled = false;
+          let nextPointing = {id: missionHours[i].id, start: true, id_pause: p.id};
+          return {disabled: disabled, nextPointing: nextPointing};
+        }
+        if (this.isEmpty(p.pause_fin_new)) {
+          let h = (p.pause_fin).split(":")[0];
+          let m = (p.pause_fin).split(":")[1];
+          let minutesPause = this.convertHoursToMinutes(h + ':' + m);
+        } else {
+          minutesPause = p.pause_fin_new;
+        }
+        if (minutesPause - minutesNow <= 10 && minutesPause - minutesNow >= 0 && this.isEmpty(p.pause_fin_pointe)) {
+          disabled = false;
+          let nextPointing = {id: missionHours[i].id, start: false, id_pause: p.id};
+          return {disabled: disabled, nextPointing: nextPointing};
+        }
+      }
+    }
+    return {disabled: disabled, nextPointing: null};
+  }
+
+  isEmpty(str) {
     if (str == '' || str == 'null' || !str)
       return true;
     else

@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable} from "@angular/core";
 // import {isUndefined} from "ionic-angular/util";
 
 /**
@@ -23,7 +23,7 @@ export class Helpers {
    * @description convert date String to sql Timestamp format
    * @param dateStr 'dd/MM/yyyy'
    *
-  dateStrToSqlTimestamp(dateStr: string) {
+   dateStrToSqlTimestamp(dateStr: string) {
     if (!dateStr || dateStr.length == 0 || dateStr.split('/').length == 0 || dateStr == 'undefined') {
       return 'null';
     }

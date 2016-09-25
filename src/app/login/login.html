@@ -1,149 +1,171 @@
 <div class="container">
-	<main id="content" class="widget-login-container" role="main" style="padding-top: 5%">
-		<div class="row">
-			<div class="col-xl-6 col-md-8 col-xs-12 col-xl-offset-3 col-md-offset-2 col-xs-offset-0">
-				<h5 class="widget-login-logo animated fadeInUp">
-					<img src="../assets/images/logo.png" style="width: 50%; margin-bottom: 20px;">
-				</h5>
-				<section class="widget widget-login animated">
-					<header>
-						<h3 style="text-align: center;">Bienvenue sur VitOnJob</h3>
-					</header>
-					<div class="widget-body">
-						<p class="widget-login-info">
-							Si vous n'avez pas encore de compte sur Vit-On-Job et désirez en créer un, renseigner votre numéro de téléphone.
-						</p>
-						<alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
-							<div [innerHTML]="alert.msg"></div>
-						</alert>
-						<form class="login-form mt-lg">
-							<div class="form-group row">
-								<label class="col-md-4 col-xs-12 form-control-label text-md-right">Je me connecte en tant que</label>
-								<div class="abc-radio">
-									<input type="radio" name="radio1" id="radio1" value="employer" (click)="watchRole($event)" checked>
-									<label for="radio1" class="labelRadio">
-										Employeur
-									</label>
-									<input type="radio" name="radio1" id="radio2" value="jobyer" (click)="watchRole($event)">
-									<label for="radio2" class="labelRadio">
-										Jobyer
-									</label>
-									<!--<input type="radio" name="radio1" id="radio3" value="employer" (click)="watchRole($event)">
-										<label for="radio3" class="labelRadio">
-										Recruteur
-									</label>-->
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-md-4 col-xs-12 form-control-label text-md-right">Téléphone</label>
-								<div class="col-md-4 col-xs-6">
-									<!--<div class="input-group">
-										<input [(ngModel)]="index" type="number" class="form-control">
-										<div class="input-group-btn">
-										<button type="button" class="btn btn-inverse"><i class="fa fa-caret-down"></i></button>
-										</div>
-									</div>-->
-									<select class="select2 form-control" [(ngModel)]="index">
-										<option *ngFor="let p of pays" [value]="p.indicatif_telephonique"> {{p.nom}} ({{p.indicatif_telephonique}})</option>
-									</select>
-								</div>
-								<div class="col-md-4 col-xs-6">
-									<input [(ngModel)]="phone" type="number" class="form-control" (keyup)="watchPhone($event)" (change)="validatePhone($event)">
-								</div>
-								<div class="col-md-4 col-xs-12">
-								</div>
-								<div class="col-md-8 col-xs-12">
-									<ul class="parsley-errors-list filled" [hidden]="isPhoneNumValid"><li class="parsley-required">Veuillez saisir un numéro de téléphone valide.</li></ul>
-									<ul class="parsley-errors-list filled" [hidden]="isIndexValid"><li class="parsley-required">Veuillez saisir un indicatif valide.</li></ul>
-								</div>
-							</div>
-							<div class="form-group row" [hidden]="!showEmailField">
-								<label class="col-md-4 col-xs-12 form-control-label text-md-right">Email</label>
-								<div class="col-md-8 col-xs-12">
-									<input [(ngModel)]="email" class="form-control" type="email" (change)="isEmailExist($event)">
-									<ul class="parsley-errors-list filled" [hidden]="!showEmailError()"><li class="parsley-required">Veuillez saisir un email valide.</li></ul>
-									<ul class="parsley-errors-list filled" [hidden]="!emailExist || isEmpty(email)"><li class="parsley-required">Cet email est déjà utilisé. Veuillez en choisir un autre.</li></ul>
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-md-4 col-xs-12 form-control-label text-md-right">Mot de passe</label>
-								<div class="col-md-8 col-xs-12">
-									<div id="hidePasswd" class="input-group">
-										<input [(ngModel)]="password1" class="form-control" type="password">
-										<div class="input-group-btn">
-											<button type="button" class="btn btn-success" (click)="showHidePasswd()"><i class="{{showHidePasswdIcon}}"></i></button>
-										</div>
-									</div>
-									<div id="showPasswd" class="input-group" style="display:none;">
-										<input [(ngModel)]="password1" class="form-control" type="text">
-										<div class="input-group-btn">
-											<button type="button" class="btn btn-success" (click)="showHidePasswd()"><i class="{{showHidePasswdIcon}}"></i></button>
-										</div>
-									</div>
-									<ul class="parsley-errors-list filled" [hidden]="!showPassword1Error()"><li class="parsley-required">Taille minimale: 6 caractères.</li></ul>
-								</div>
-							</div>
-							<div class="form-group row" [hidden]="!showEmailField">
-								<label class="col-md-4 col-xs-12 form-control-label text-md-right">Confirmation du mot de passe</label>
-								<div class="col-md-8 col-xs-12">
-									<div id="hidePasswdConfirm" class="input-group">
-										<input [(ngModel)]="password2" class="form-control" type="password">
-										<div class="input-group-btn">
-											<button type="button" class="btn btn-success" (click)="showHidePasswdConfirm()"><i class="{{showHidePasswdConfirmIcon}}"></i></button>
-										</div>
-									</div>
-									<div id="showPasswdConfirm" class="input-group" style="display:none;">
-										<input [(ngModel)]="password2" class="form-control" type="text">
-										<div class="input-group-btn">
-											<button type="button" class="btn btn-success" (click)="showHidePasswdConfirm()"><i class="{{showHidePasswdConfirmIcon}}"></i></button>
-										</div>
-									</div>
-									<ul class="parsley-errors-list filled" [hidden]="!showPassword2Error()"><li class="parsley-required">Mots de passe non identiques!</li></ul>
-								</div>
-							</div>
-							<div class="clearfix">
-								<div class="btn-toolbar pull-xs-right m-t-1">
-									<div class="widget-body btn loaderPosition" [hidden]="hideLoader">
-										<div class="loader animated fadeIn handle">
+  <main id="content" class="widget-login-container" role="main" style="padding-top: 5%">
+    <div class="row">
+      <div class="col-xl-6 col-md-8 col-xs-12 col-xl-offset-3 col-md-offset-2 col-xs-offset-0">
+        <h5 class="widget-login-logo animated fadeInUp">
+          <img src="../assets/images/logo.png" style="width: 50%; margin-bottom: 20px;">
+        </h5>
+        <section class="widget widget-login animated">
+          <header>
+            <h3 style="text-align: center;">Bienvenue sur VitOnJob</h3>
+          </header>
+          <div class="widget-body">
+            <p class="widget-login-info">
+              Si vous n'avez pas encore de compte sur Vit-On-Job et désirez en créer un, renseigner votre numéro de
+              téléphone.
+            </p>
+            <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
+              <div [innerHTML]="alert.msg"></div>
+            </alert>
+            <form class="login-form mt-lg">
+              <div class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">Je me connecte en tant que</label>
+                <div class="abc-radio">
+                  <input type="radio" name="radio1" id="radio1" value="employer" (click)="watchRole($event)" checked>
+                  <label for="radio1" class="labelRadio">
+                    Employeur
+                  </label>
+                  <input type="radio" name="radio1" id="radio2" value="jobyer" (click)="watchRole($event)">
+                  <label for="radio2" class="labelRadio">
+                    Jobyer
+                  </label>
+                  <!--<input type="radio" name="radio1" id="radio3" value="employer" (click)="watchRole($event)">
+                                        <label for="radio3" class="labelRadio">
+                                        Recruteur
+                                    </label>-->
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">Téléphone</label>
+                <div class="col-md-4 col-xs-6">
+                  <!--<div class="input-group">
+                                        <input [(ngModel)]="index" type="number" class="form-control">
+                                        <div class="input-group-btn">
+                                        <button type="button" class="btn btn-inverse"><i class="fa fa-caret-down"></i></button>
+                                        </div>
+                                    </div>-->
+                  <select class="select2 form-control" [(ngModel)]="index">
+                    <option *ngFor="let p of pays" [value]="p.indicatif_telephonique"> {{p.nom}}
+                      ({{p.indicatif_telephonique}})
+                    </option>
+                  </select>
+                </div>
+                <div class="col-md-4 col-xs-6">
+                  <input [(ngModel)]="phone" type="number" class="form-control" (keyup)="watchPhone($event)"
+                         (change)="validatePhone($event)">
+                </div>
+                <div class="col-md-4 col-xs-12">
+                </div>
+                <div class="col-md-8 col-xs-12">
+                  <ul class="parsley-errors-list filled" [hidden]="isPhoneNumValid">
+                    <li class="parsley-required">Veuillez saisir un numéro de téléphone valide.</li>
+                  </ul>
+                  <ul class="parsley-errors-list filled" [hidden]="isIndexValid">
+                    <li class="parsley-required">Veuillez saisir un indicatif valide.</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="form-group row" [hidden]="!showEmailField">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">Email</label>
+                <div class="col-md-8 col-xs-12">
+                  <input [(ngModel)]="email" class="form-control" type="email" (change)="isEmailExist($event)">
+                  <ul class="parsley-errors-list filled" [hidden]="!showEmailError()">
+                    <li class="parsley-required">Veuillez saisir un email valide.</li>
+                  </ul>
+                  <ul class="parsley-errors-list filled" [hidden]="!emailExist || isEmpty(email)">
+                    <li class="parsley-required">Cet email est déjà utilisé. Veuillez en choisir un autre.</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">Mot de passe</label>
+                <div class="col-md-8 col-xs-12">
+                  <div id="hidePasswd" class="input-group">
+                    <input [(ngModel)]="password1" class="form-control" type="password">
+                    <div class="input-group-btn">
+                      <button type="button" class="btn btn-success" (click)="showHidePasswd()"><i
+                        class="{{showHidePasswdIcon}}"></i></button>
+                    </div>
+                  </div>
+                  <div id="showPasswd" class="input-group" style="display:none;">
+                    <input [(ngModel)]="password1" class="form-control" type="text">
+                    <div class="input-group-btn">
+                      <button type="button" class="btn btn-success" (click)="showHidePasswd()"><i
+                        class="{{showHidePasswdIcon}}"></i></button>
+                    </div>
+                  </div>
+                  <ul class="parsley-errors-list filled" [hidden]="!showPassword1Error()">
+                    <li class="parsley-required">Taille minimale: 6 caractères.</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="form-group row" [hidden]="!showEmailField">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">Confirmation du mot de passe</label>
+                <div class="col-md-8 col-xs-12">
+                  <div id="hidePasswdConfirm" class="input-group">
+                    <input [(ngModel)]="password2" class="form-control" type="password">
+                    <div class="input-group-btn">
+                      <button type="button" class="btn btn-success" (click)="showHidePasswdConfirm()"><i
+                        class="{{showHidePasswdConfirmIcon}}"></i></button>
+                    </div>
+                  </div>
+                  <div id="showPasswdConfirm" class="input-group" style="display:none;">
+                    <input [(ngModel)]="password2" class="form-control" type="text">
+                    <div class="input-group-btn">
+                      <button type="button" class="btn btn-success" (click)="showHidePasswdConfirm()"><i
+                        class="{{showHidePasswdConfirmIcon}}"></i></button>
+                    </div>
+                  </div>
+                  <ul class="parsley-errors-list filled" [hidden]="!showPassword2Error()">
+                    <li class="parsley-required">Mots de passe non identiques!</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="clearfix">
+                <div class="btn-toolbar pull-xs-right m-t-1">
+                  <div class="widget-body btn loaderPosition" [hidden]="hideLoader">
+                    <div class="loader animated fadeIn handle">
 											<span class="spinner">
 												<i class="fa fa-spinner fa-spin"></i>
 											</span>
-										</div>
-									</div>
-									<button class="btn btn-inverse btn-sm" (click)="authenticate()" [disabled]="isAuthDisabled() || !hideLoader">{{libelleButton}}</button>
-								</div>
-							</div>
-							<div class="row m-t-1">
-								<div class="col-md-12">
-									<div class="clearfix">
-										<!--<div class="abc-checkbox widget-login-info pull-xs-right ml-n-lg">
-											<input type="checkbox" id="checkbox1" value="1">
-											<label for="checkbox1">Keep me signed in </label>
-										</div>-->
-									</div>
-									<div class="row m-t-1">
-										<div class="col-md-6 col-md-push-6">
-											<div class="clearfix">
-												<div class="abc-checkbox widget-login-info pull-xs-right ml-n-lg">
-													<input type="checkbox" #checkbox1 id="checkbox1" (change)="isRemembered = checkbox1.checked">
-													<label for="checkbox1">Se souvenir de moi </label>
-												</div>
-											</div>
-										</div>
-										
-										<div class="col-md-6 col-md-pull-6">
-											<div modal-component></div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</form>
-					</div>
-				</section>
-			</div>
-		</div>
-	</main>
-	<footer class="page-footer">
-		2015 &copy; Sing. Admin Dashboard Template.
-	</footer>
+                    </div>
+                  </div>
+                  <button class="btn btn-inverse btn-sm" (click)="authenticate()"
+                          [disabled]="isAuthDisabled() || !hideLoader">{{libelleButton}}
+                  </button>
+                </div>
+              </div>
+              <div class="row m-t-1">
+                <div class="col-md-12">
+                  <div class="clearfix">
+                    <!--<div class="abc-checkbox widget-login-info pull-xs-right ml-n-lg">
+                                            <input type="checkbox" id="checkbox1" value="1">
+                                            <label for="checkbox1">Keep me signed in </label>
+                                        </div>-->
+                  </div>
+                  <div class="row m-t-1">
+                    <div class="col-md-6 col-md-push-6">
+                      <div class="clearfix">
+                        <div class="abc-checkbox widget-login-info pull-xs-right ml-n-lg">
+                          <input type="checkbox" #checkbox1 id="checkbox1" (change)="isRemembered = checkbox1.checked">
+                          <label for="checkbox1">Se souvenir de moi </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6 col-md-pull-6">
+                      <div modal-component></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+  <footer class="page-footer">
+    2015 &copy; Sing. Admin Dashboard Template.
+  </footer>
 </div>

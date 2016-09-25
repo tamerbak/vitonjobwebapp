@@ -2,36 +2,36 @@
 @import "../../../node_modules/bootstrap/scss/_variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
 
-.error-page{
+.error-page {
   background-color: $gray-semi-lighter;
 }
 
-.error-container{
+.error-container {
   padding-top: 5%;
   text-align: center;
 
-  > .btn{
+  > .btn {
     padding-left: 35px;
     padding-right: 35px;
   }
 }
 
-.error-code{
+.error-code {
   margin: 20px;
   font-size: 80px;
   font-weight: $font-weight-normal;
   color: $gray-dark;
-  @include media-breakpoint-up(md){
+  @include media-breakpoint-up(md) {
     font-size: 180px;
   }
 }
 
-.error-info{
+.error-info {
   font-size: 20px;
   color: $gray-dark;
 }
 
-.error-help{
+.error-help {
   font-size: 14px;
 }
 

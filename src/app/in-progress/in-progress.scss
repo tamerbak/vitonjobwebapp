@@ -2,36 +2,36 @@
 @import "../../../node_modules/bootstrap/scss/_variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
 
-.progress-page{
+.progress-page {
   background-color: $gray-semi-lighter;
 }
 
-.progress-container{
+.progress-container {
   padding-top: 5%;
   text-align: center;
 
-  > .btn{
+  > .btn {
     padding-left: 35px;
     padding-right: 35px;
   }
 }
 
-.progress-code{
+.progress-code {
   margin: 20px;
   font-size: 30px;
   font-weight: $font-weight-normal;
   color: $gray-dark;
-  @include media-breakpoint-up(md){
+  @include media-breakpoint-up(md) {
     font-size: 40px;
   }
 }
 
-.progress-info{
+.progress-info {
   font-size: 20px;
   color: $gray-dark;
 }
 
-.progress-help{
+.progress-help {
   font-size: 14px;
 }
 

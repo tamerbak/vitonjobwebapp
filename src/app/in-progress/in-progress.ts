@@ -1,5 +1,5 @@
-import {Component, ViewEncapsulation} from '@angular/core';
-import {Router} from '@angular/router';
+import {Component, ViewEncapsulation} from "@angular/core";
+import {Router} from "@angular/router";
 
 @Component({
   selector: '[in-progress]',
@@ -11,7 +11,7 @@ import {Router} from '@angular/router';
   styles: [require('./in-progress.scss')]
 })
 export class InProgressPage {
-router: Router;
+  router: Router;
 
   constructor(router: Router) {
     this.router = router;
