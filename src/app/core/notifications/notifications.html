@@ -7,7 +7,7 @@
   <!-- notification list with .thin-scroll which styles scrollbar for webkit -->
   <div id="notifications-list" class="list-group thin-scroll">
     <div *ngFor="let offer of alerts; let i = index"
-         class="list-group-item" (click)="goToDetailOffer(offer)" style="cursor: pointer;">
+         class="list-group-item" (click)="launchSearch(offer,false)" style="cursor: pointer;">
       <p class="no-margin overflow-hidden">
         <b>{{offer.correspondantsCount}}</b> {{offer.text}} <b>{{offer.title}}</b>
       </p>
