@@ -151,6 +151,15 @@
                   <span class="hint label label-danger">{{birthdateHint}}</span>
                 </div>
               </div>
+              
+              <div *ngIf="!isEmployer" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="birthcp">
+                  Code postal du lieu de naissance
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input type="hidden" class="select2 cp-select form-control" name="birthcp" placeholder="Code postal du lieu de naissance" [(ngModel)]="birthcp" name="birthcp" />
+                </div>
+              </div>
 
               <div *ngIf="!isEmployer" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="title">
