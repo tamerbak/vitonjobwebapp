@@ -41,7 +41,7 @@ export class LoadListService {
    * @return JSON results
    */
   loadNationalities() {
-    var sql = "select pk_user_nationalite, libelle from user_nationalite";
+    var sql = "SELECT pk_user_nationalite, libelle FROM user_nationalite WHERE dirty = 'N' ORDER BY libelle";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
