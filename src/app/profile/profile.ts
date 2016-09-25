@@ -337,11 +337,11 @@ export class Profile {
               if(this.selectedCommune.fk_user_code_postal && this.selectedCommune.fk_user_code_postal != "null"){
                 this.selectedCP = parseInt(this.selectedCommune.fk_user_code_postal);
                 this.birthcp = this.selectedCommune.code;
-                jQuery(".cp-select").select2('data', {id:"",code:this.selectedCP});
+                jQuery(".cp-select").select2('data', {id:this.selectedCP,code:this.birthcp});
               } else {
                 this.selectedCP = 0;
                 this.birthcp = '';
-                jQuery(".cp-select").select2('data', {id:"",code:this.selectedCP});
+                jQuery(".cp-select").select2('data', {id:this.selectedCP,code:this.birthcp});
               }
             }
             this.isValidNumSS = true;
@@ -499,7 +499,8 @@ export class Profile {
         jQuery('.cp-select').on('change',
                 (e) =>
                 {
-                  self.selectedCP = e.added.code;
+                  self.birthcp = e.added.code;
+                  self.selectedCP = e.added.id;
                 }
               );
 
@@ -703,7 +704,7 @@ export class Profile {
 
     let _isValid: boolean = true;
     let _hint: string = "";
-
+    console.log(this.selectedCommune)
     if (_numSS.length != 0 && _numSS.length != 15) {
       _hint = "Saisissez les 15 chiffres du n° SS";
       _isValid = false;
