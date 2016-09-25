@@ -18,7 +18,7 @@ import {TimeConverter} from "../../pipes/time-converter/time-converter";
   styles: [require('./mission-pointing.scss')],
   pipes: [DateConverter, TimeConverter],
   providers: [ContractService, SharedService, MissionService, FinanceService, GlobalConfigs],
-  directives: [ROUTER_DIRECTIVES, AlertComponent, Widget, NKDatetime, BUTTON_DIRECTIVES],
+  directives: [ROUTER_DIRECTIVES, AlertComponent, Widget, NKDatetime, BUTTON_DIRECTIVES]
 })
 export class MissionPointing {
   // TODO Set dynamically
