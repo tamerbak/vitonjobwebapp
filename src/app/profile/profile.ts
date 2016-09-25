@@ -43,7 +43,7 @@ export class Profile {
   selectedMedecine: any = {id: 0, libelle: ""};
   cni: string;
   numSS: string;
-  nationalityId: string = "9";
+  nationalityId: any = "91";
   nationalities = [];
   personalAddress: string;
   jobAddress: string;
@@ -129,9 +129,11 @@ export class Profile {
               private _loader: MapsAPILoader) {
 
     this.currentUser = this.sharedService.getCurrentUser();
+
     if (!this.currentUser) {
       this.router.navigate(['app/dashboard']);
     } else {
+
       Messenger.options = {
         theme: 'air',
         extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right'
@@ -141,7 +143,6 @@ export class Profile {
         this.initForm();
       }
       if (!this.isRecruiter && !this.isEmployer) {
-        //jQuery('.nationalitySelectPicker').selectpicker();
         this.personalAddressLabel = "Adresse personnelle";
         this.jobAddressLabel = "Adresse de départ au travail";
         listService.loadNationalities().then((response: any) => {
@@ -351,7 +352,7 @@ export class Profile {
         this.isValidNumSS = true;
         this.cni = this.currentUser.jobyer.cni;
         this.numSS = this.currentUser.jobyer.numSS;
-        this.nationalityId = !this.currentUser.jobyer.natId ? '9' : this.currentUser.jobyer.natId;
+        this.nationalityId = this.currentUser.jobyer.natId == 0 ? "91" : this.currentUser.jobyer.natId;
         jQuery('.nationalitySelectPicker').selectpicker('val', this.nationalityId);
 
         this.isValidCni = true;
@@ -704,7 +705,6 @@ export class Profile {
 
     let _isValid: boolean = true;
     let _hint: string = "";
-    console.log(this.selectedCommune)
     if (_numSS.length != 0 && _numSS.length != 15) {
       _hint = "Saisissez les 15 chiffres du n° SS";
       _isValid = false;
@@ -1062,7 +1062,6 @@ export class Profile {
 
         var numSS = this.numSS;
         var cni = this.cni;
-        var nationality = this.nationalityId;
         var birthdate = moment(this.birthdateHidden).format('MM/DD/YYYY');//this.birthdateHidden.toLocaleDateString('en-US');
         var birthplace = this.selectedCommune.nom;
         var nationalityId = this.nationalityId;
