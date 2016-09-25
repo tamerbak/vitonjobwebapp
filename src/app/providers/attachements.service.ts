@@ -35,9 +35,9 @@ export class AttachementsService {
         });
     }
 
-    uploadFile(user, fileName, scanUri){
+    uploadFile(userId, fileName, scanUri){
         let d = new Date();
-        let sql = "insert into user_pieces_justificatives (fk_user_account, nom_fichier, date_mise_a_jour) values ("+user.id+",'"+fileName+"','"+this.sqlfyDate(d)+"') returning pk_user_pieces_justificatives";
+        let sql = "insert into user_pieces_justificatives (fk_user_account, nom_fichier, date_mise_a_jour) values ("+userId+",'"+fileName+"','"+this.sqlfyDate(d)+"') returning pk_user_pieces_justificatives";
         console.log(sql);
         return new Promise(resolve => {
             let headers = Configs.getHttpTextHeaders();

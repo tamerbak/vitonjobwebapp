@@ -124,7 +124,7 @@ export class ProfileService {
             "class":'com.vitonjob.callouts.files.DataToken',
             "table":'user_'+ role,
             "field": field,
-            "id": userId,
+            "id":userId,
             "operation": action,
             "encodedFile": (scanData)? scanData.split(';base64,')[1] : ''
         };

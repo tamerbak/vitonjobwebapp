@@ -6,7 +6,6 @@ import {Core} from './core';
  */
 import {Dashboard} from './../dashboard/dashboard';
 import {Profile} from '../profile/profile';
-import {Civility} from '../civility/civility';
 import {Settings} from '../settings/settings';
 import {RecruitList} from '../recruit-list/recruit-list';
 import {Attachements} from '../attachements/attachements';
@@ -40,7 +39,6 @@ export const CoreRoutes: RouterConfig = [
 
       // User parameters
       {path: 'profile', component: Profile},
-      {path: 'civility', component: Civility},
       {path: 'settings', component: Settings},
 
       // Offers management
