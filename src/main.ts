@@ -70,6 +70,7 @@ import {APP_ROUTER_PROVIDERS} from "./app.routes";
 import {SharedService} from "./providers/shared.service";
 import {App} from "./app";
 import {ConfigService} from "./app/core/config";
+import {Configs} from "./configurations/configs";
 
 //
 //
@@ -87,7 +88,8 @@ document.addEventListener('DOMContentLoaded', function main(): void {
     NgControl,
     GOOGLE_MAPS_PROVIDERS,
     provideLazyMapsAPILoaderConfig({
-      libraries: ['places']
+      libraries: ['places'],
+      apiKey: Configs.googleMapApiKey
     }),
     ...ENV_PROVIDERS,
     ...HTTP_PROVIDERS,
