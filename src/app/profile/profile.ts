@@ -109,11 +109,10 @@ export class Profile {
     componentRestrictions: {country: "fr"}
   };
 
-  setImgClasse() {
-	  let classe =  {
+  getImgClasses() {
+	  return {
 	    'img-circle': true,//TODO:this.currentUser && this.currentUser.estEmployeur,
 	  };
-  	return classe;
 	}
 
   constructor(

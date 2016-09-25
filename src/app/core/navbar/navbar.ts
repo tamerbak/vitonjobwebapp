@@ -28,11 +28,10 @@ export class Navbar implements OnInit {
 	autoSearchOffers:any = []
 	public loadOffers: Function;
 
-	setImgClasse() {
-	  let classe =  {
+	getImgClasses() {
+	  return {
 	    'img-circle': true,//TODO:this.currentUser && this.currentUser.estEmployeur,
 	  };
-  	return classe;
 	}
 
 	constructor(el: ElementRef, config: ConfigService,private sharedService:SharedService,private offerService: OffersService,private router:Router) {

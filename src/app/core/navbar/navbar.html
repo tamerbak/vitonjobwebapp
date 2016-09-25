@@ -46,7 +46,7 @@
 				<a class="nav-link dropdown-toggle"
 				data-toggle="dropdown">
 					<span class="thumb-sm avatar pull-xs-left">
-						<img [ngClass]="setImgClasse()" src={{sharedService.getProfilImageUrl()}} alt="...">
+						<img [ngClass]="getImgClasses()" src={{sharedService.getProfilImageUrl()}} alt="...">
 					</span>
 					&nbsp;
 					{{!sharedService.getCurrentUser().prenom ? "":sharedService.getCurrentUser().prenom  }} <strong>{{!sharedService.getCurrentUser().nom? (sharedService.getCurrentUser().estEmployeur ? "Employeur":"Jobyer") : sharedService.getCurrentUser().nom }}</strong>&nbsp;

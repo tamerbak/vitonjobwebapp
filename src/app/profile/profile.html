@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
   <li>VOUS ÊTES ICI</li>
-  <li class="active" ><a class="breadcrumb-link" [routerLink]="['/app/civility']">Mon compte</a></li>
+  <li class="active" ><a class="breadcrumb-link" [routerLink]="['/app/profile']">Mon compte</a></li>
 </ol>
 <h1 class="page-title">{{isEmployer? (isRecruiter ? "Recruteur":"Employeur"):"Jobyer"}} - <span class="fw-semi-bold">Profil</span></h1>
 <div class="row profile">
@@ -16,7 +16,7 @@
           <div class="col-md-12 col-xs-12 text-xs-center">
             <div class="post-user post-user-profile">
               <span class="thumb-xlg">
-                <img [ngClass]="setImgClasse()" src={{sharedService.getProfilImageUrl()}} alt="..." data-toggle="modal" data-target="#modal-picture" style="cursor: pointer;">
+                <img [ngClass]="getImgClasses()" src={{sharedService.getProfilImageUrl()}} alt="..." data-toggle="modal" data-target="#modal-picture" style="cursor: pointer;">
               </span>
               <div modal-picture></div>
               <h5 class="fw-normal">{{isNewUser ? "Cliquez sur l'avatar ci-dessus pour charger votre photo de profil" : currentUserFullname }}</h5>
