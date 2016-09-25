@@ -5,7 +5,7 @@ import {Inbox} from '../inbox/inbox';
 import {Widgets} from '../widgets/widgets';
 import {Charts} from '../charts/charts';
 import {Profile} from '../profile/profile';
-import {Civility} from '../civility/civility';
+//import {Civility} from '../civility/civility';
 import {Settings} from '../settings/settings';
 import {RecruitList} from '../recruit-list/recruit-list';
 import {Attachements} from '../attachements/attachements';
@@ -58,7 +58,7 @@ export const CoreRoutes: RouterConfig = [
 
       // User parameters
       {path: 'profile', component: Profile},
-      {path: 'civility', component: Civility},
+      //{path: 'civility', component: Civility},
       {path: 'settings', component: Settings},
 
       // Template deprecated
