@@ -29,12 +29,15 @@ export class Profile {
   public maskSiret = [/[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/]
   public maskApe = [/[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /^[a-zA-Z]*$/]
 
+
   title: string = "M.";
   lastname: string;
   firstname: string;
   companyname: string;
   siret: string;
   ape: string;
+  birthcp:string;
+  selectedCP:any;
   birthdate: Date;
   birthdateHidden: Date;
   selectedMedecine: any = {id: 0, libelle: ""};
@@ -326,11 +329,20 @@ export class Profile {
         }
         var _birthplace = this.currentUser.jobyer.lieuNaissance;
         if (_birthplace !== null) {
-          this.communesService.getCommunes(_birthplace).then((res: any) => {
+          this.communesService.getCommune(_birthplace).then((res: any) => {
 
             if (res && res.length > 0) {
               this.selectedCommune = res[0];
               jQuery(".commune-select").select2('data', this.selectedCommune);
+              if(this.selectedCommune.fk_user_code_postal && this.selectedCommune.fk_user_code_postal != "null"){
+                this.selectedCP = parseInt(this.selectedCommune.fk_user_code_postal);
+                this.birthcp = this.selectedCommune.code;
+                jQuery(".cp-select").select2('data', {id:"",code:this.selectedCP});
+              } else {
+                this.selectedCP = 0;
+                this.birthcp = '';
+                jQuery(".cp-select").select2('data', {id:"",code:this.selectedCP});
+              }
             }
             this.isValidNumSS = true;
           });
@@ -454,6 +466,44 @@ export class Profile {
     });
 
     if (!this.isRecruiter && !this.isEmployer) {
+      var self = this;
+      jQuery('.cp-select').select2({
+          ajax:
+          {
+            url: Configs.sqlURL,
+            type: 'POST',
+            dataType: 'json',
+            quietMillis: 250,
+            params: {
+              contentType: "text/plain",
+            },
+            data: function (term, page) {
+                return "select pk_user_code_postal as id, code from user_code_postal where code like '%"+term+"%'" // search term
+            },
+            results: function (data, page) {
+                return { results: data.data };
+            },
+            cache: true
+          },
+
+          formatResult: function(item) {
+            return item.code;
+          },
+          formatSelection: function(item) {
+            return item.code;
+          },
+          dropdownCssClass: "bigdrop",
+          escapeMarkup: function (markup) { return markup; },
+          minimumInputLength: 4,
+        });
+        jQuery('.cp-select').on('change',
+                (e) =>
+                {
+                  self.selectedCP = e.added.code;
+                }
+              );
+
+              var val = ""
       jQuery('.commune-select').select2({
         ajax: {
           url: Configs.sqlURL,
@@ -464,7 +514,12 @@ export class Profile {
             contentType: "text/plain",
           },
           data: function (term, page) {
-            return "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) % lower_unaccent('" + term + "') limit 5" // search term
+            val  = term;
+            if(!self.selectedCP || self.selectedCP == 0){
+              return "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('%"+term+"%') UNION select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('"+term+"') limit 5";
+            }else{
+              return "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('%"+term+"%') and fk_user_code_postal="+self.selectedCP+" UNION select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('"+term+"') and fk_user_code_postal="+self.selectedCP+" limit 5";
+            }
           },
           results: function (data, page) {
             return {results: data.data};
