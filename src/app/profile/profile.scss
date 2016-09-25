@@ -1,4 +1,6 @@
 @import "../../scss/variables";
+@import "../../../node_modules/messenger/build/css/messenger";
+@import "../../../node_modules/messenger/build/css/messenger-theme-air";
 @import "../../../node_modules/bootstrap/scss/_variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
 @import "../../../node_modules/bootstrap-select/dist/css/bootstrap-select";
@@ -12,7 +14,7 @@
  * spinner
 */
 
-.civility-form .loaderPosition {
+.profile-form .loaderPosition {
   position: relative;
   margin-right: 20px;
   margin-bottom: 10px;

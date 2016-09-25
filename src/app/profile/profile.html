@@ -1,10 +1,11 @@
 <ol class="breadcrumb">
-  <li>YOU ARE HERE</li>
-  <li class="active">Profile</li>
+  <li>VOUS ÊTES ICI</li>
+  <li class="active"><a class="breadcrumb-link" [routerLink]="['/app/profile']">Mon compte</a></li>
 </ol>
-<h1 class="page-title">User - <span class="fw-semi-bold">Profile</span></h1>
+<h1 class="page-title">{{isEmployer? (isRecruiter ? "Recruteur":"Employeur"):"Jobyer"}} - <span class="fw-semi-bold">Profil</span>
+</h1>
 <div class="row profile">
-  <div *ngIf="!isNewUser" class="col-lg-6 col-xs-12">
+  <div class="col-lg-6 col-xs-12">
     <section class="widget">
       <div class="widget-body">
         <div class="widget-top-overflow text-white">
@@ -16,9 +17,12 @@
           <div class="col-md-12 col-xs-12 text-xs-center">
             <div class="post-user post-user-profile">
               <span class="thumb-xlg">
-                <img class="img-circle" src="assets/images/people/a5.jpg" alt="...">
+                <img [ngClass]="setImgClasses()" src={{sharedService.getProfilImageUrl()}} alt="..." data-toggle="modal"
+                     data-target="#modal-picture" style="cursor: pointer;">
               </span>
-              <h5 class="fw-normal">{{currentUserFullname}}</h5>
+              <div modal-picture></div>
+              <h5 class="fw-normal">{{isNewUser ? "Cliquez sur l'avatar ci-dessus pour charger votre photo de profil" :
+                currentUserFullname }}</h5>
               <p>{{isEmployer? (isRecruiter ? "Recruteur":"Employeur"):"Jobyer"}}</p>
 
               <ul class="contacts">
@@ -36,18 +40,16 @@
   </div>
   <div [hidden]="!showForm" class="col-lg-6 col-xs-12">
     <section class="widget">
-      <header>
-        <h6>
-          Inputs
-        </h6>
-        <div class="widget-controls">
-          <a href="#" data-widgster="close"><i class="glyphicon glyphicon-remove"></i></a>
-        </div>
-      </header>
       <div class="widget-body">
-        <form class="civility-form form-horizontal" role="form">
+        <form class="profile-form form-horizontal" role="form">
           <fieldset>
-            <legend><strong>Horizontal</strong> form</legend>
+            <legend><strong>Saisie des Informations</strong></legend>
+            <alert *ngIf="isNewUser" [type]="'info'+ ' alert-sm'" dismissible="true">
+              <div>
+                <span class="fw-semi-bold">Bienvenue sur Vit-On-Job.</span><br>
+                Veuillez renseigner les informations de votre profil pour pouvoir créer une offre
+              </div>
+            </alert>
             <div class="form-group row">
               <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="title">
                 Civilité
@@ -82,7 +84,7 @@
               </label>
               <div class="col-md-7 col-xs-12">
                 <input type="text" id="firstname" class="form-control" [(ngModel)]="firstname" name="firstname"
-                       placeholder="prénom" (keyup)="watchFirstname($event)">
+                       placeholder="Prénom" (keyup)="watchFirstname($event)">
               </div>
 
               <div class="col-md-offset-4 col-md-7 col-xs-12">
@@ -112,8 +114,8 @@
                   <!-- <span class="help-block">999 999 999 99999</span> -->
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input id="siret" type="text" data-mask="999 999 999 99999" class="form-control" [(ngModel)]="siret"
-                         name="siret" placeholder="SIRET" (keyup)="watchSiret($event)"
+                  <input id="siret" type="text" class="form-control" [textMask]="{mask: maskSiret}" [(ngModel)]="siret"
+                         name="siret" placeholder="999 999 999 99999" (keyup)="watchSiret($event)"
                          (change)="IsCompanyExist($event, 'siret')">
                 </div>
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
@@ -127,8 +129,8 @@
                   <!-- <span class="help-block">9999A</span> -->
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input id="ape" type="text" data-mask="9999a" class="form-control" [(ngModel)]="ape" name="ape"
-                         placeholder="NAF" (keyup)="watchApe($event)">
+                  <input id="ape" type="text" data-mask="9999a" class="form-control" [textMask]="{mask: maskApe}"
+                         [(ngModel)]="ape" name="ape" placeholder="9999A" (keyup)="watchApe($event)">
                 </div>
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
                   <span class="hint label label-danger">{{apeHint}}</span>
@@ -141,7 +143,7 @@
                   Date de naissance
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <datetime id="birthdate" [(ngModel)]="birthdate" name="birthdate" [timepicker]="false"
+                  <datetime id="birthdate" [ngModel]="birthdate" name="birthdate" [timepicker]="false"
                             [datepicker]="{autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}"
                             (ngModelChange)="watchBirthdate($event)"></datetime>
                 </div>
@@ -205,7 +207,7 @@
                 <div class="col-md-7 col-xs-12">
                   <select
                     placeholder="Nationalité" data-style="btn-secondary"
-                    class="nationalitySelectPicker form-control" id="nationality-select" [(ngModel)]="nationality"
+                    class="nationalitySelectPicker form-control" id="nationality-select" [(ngModel)]="nationalityId"
                     name="nationality_slct">
                     <option *ngFor="let n of nationalities" value="{{n.pk_user_nationalite}}">{{n.libelle}}</option>
                   </select>
@@ -222,18 +224,38 @@
                          style="width: 200px; height: 150px;">
                     </div>
                     <div>
-                      <span class="btn btn-default btn-file"><span class="fileinput-new">Choisier</span><span
+                      <span class="btn btn-default btn-file"><span class="fileinput-new">Choisir</span><span
                         class="fileinput-exists">Modifier</span><input type="file" name="..."></span>
                       <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Enlever</a>
                     </div>
                   </div>
                 </div>
               </div>
+
+              <div class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  {{personalAddressLabel}}
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input id="autocompletePersonal" type="text" class="form-control" placeholder="Rechercher une adresse"
+                         [(ngModel)]="personalAddress" (input)="autocompletePersonalAddress()"/>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  {{jobAddressLabel}}
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input id="autocompleteJob" type="text" class="form-control" placeholder="Rechercher une adresse"
+                         [(ngModel)]="jobAddress" (input)="autocompleteJobAddress()"/>
+                </div>
+              </div>
             </div>
 
 
           </fieldset>
-          <div class="form-group row">
+          <div *ngIf="isEmployer" class="form-group row">
             <div class="col-md-12 col-xs-12 col-lg-12">
               <alert *ngIf="!!companyAlert" [type]="'danger'+ ' alert-sm'" dismissible="false">
                 <div>
