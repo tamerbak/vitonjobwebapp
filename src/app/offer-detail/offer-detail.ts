@@ -29,7 +29,9 @@ export class OfferDetail {
 	selectedLang: any;
 	selectedLevel = "junior";
 	alerts: Array<Object>;
+	alertsSlot: Array<Object>;
 	hideJobLoader: boolean = true;
+	datepickerOpts: any;
 	
 	constructor(private sharedService: SharedService,
 	public offersService:OffersService,
@@ -46,7 +48,7 @@ export class OfferDetail {
 		this.offer = this.sharedService.getCurrentOffer();
 		//display alert if offer is obsolete
 		if(this.offer.obsolete){
-			this.addAlert("warning", "Attention: Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilités.");
+			this.addAlert("warning", "Attention: Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilités.", "general");
 		}
 		//load all sectors, if not yet loaded in local
 		this.sectors = this.sharedService.getSectorList();
@@ -98,6 +100,14 @@ export class OfferDetail {
 			startHour: 0,
 			endHour: 0
 		};
+		
+		//dateoption for slotDate
+		this.datepickerOpts = {
+			startDate: new Date(),
+			autoclose: true,
+			todayHighlight: true,
+			format: 'dd/mm/yyyy'
+		}
 	}
 	
 	sectorSelected(sector) {
@@ -128,7 +138,7 @@ export class OfferDetail {
 		
 		this.offersService.updateOfferJob(this.offer, this.projectTarget);
 		this.setOfferInLocal();
-		this.addAlert("success", "Informations enregistrées avec succès.");
+		this.addAlert("success", "Informations enregistrées avec succès.", "general");
 	}
 	
 	watchLevel(e){
@@ -147,6 +157,9 @@ export class OfferDetail {
 		if(this.slot.date == 0 || this.slot.startHour == 0 || this.slot.endHour == 0){
 			return;
 		}
+		if(this.checkHour() == false)
+			return;
+		
 		this.slot.date = this.slot.date.getTime();
 		var h = this.slot.startHour.getHours() * 60;
 		var m = this.slot.startHour.getMinutes();
@@ -162,12 +175,9 @@ export class OfferDetail {
 			this.convertSlotsForDisplay();
 		});
 		//reset datetime component
-		let elements: NodeListOf<Element> = document.getElementById('slotDate').getElementsByClassName('form-control');
-		(<HTMLInputElement>elements[0]).value = null;
-		elements = document.getElementById('slotSHour').getElementsByClassName('form-control');
-		(<HTMLInputElement>elements[0]).value = null;
-		elements = document.getElementById('slotEHour').getElementsByClassName('form-control');
-		(<HTMLInputElement>elements[0]).value = null;
+		this.resetDatetime("slotDate");
+		this.resetDatetime('slotEHour');
+		this.resetDatetime('slotSHour');
 		this.slot = {
 			date: 0,
 			startHour: 0,
@@ -238,6 +248,31 @@ export class OfferDetail {
 		this.setOfferInLocal();
 	}
 	
+	checkHour(){
+		this.alertsSlot = [];
+		if(this.slot.startHour && this.slot.endHour && this.slot.startHour >= this.slot.endHour){
+			this.addAlert("warning", "L'heure de début doit être inférieure à l'heure de fin", "slot");
+			this.resetDatetime('slotEHour');
+			this.slot.endHour = 0;
+			return false;
+		}
+		//check if chosen hour and date are lower than today date and hour
+		if(this.slot.date && new Date(this.slot.date).setHours(0, 0, 0, 0) == new Date().setHours(0, 0, 0, 0)){
+			var h = new Date().getHours();
+			var m = new Date().getMinutes();
+			var minutesNow = this.offersService.convertHoursToMinutes(h+':'+m);
+			if(this.slot.startHour && this.slot.startHour <= new Date()){
+				this.addAlert("warning", "L'heure de début et de fin doivent être supérieures à l'heure actuelle", "slot");
+				this.resetDatetime('slotSHour');
+				this.slot.startHour = 0;
+				this.resetDatetime('slotEHour');
+				this.slot.endHour = 0;
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	setOfferInLocal(){
 		//set offer in local
 		this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, this.offer, this.projectTarget);
@@ -266,8 +301,18 @@ export class OfferDetail {
 		return new Date(date).toLocaleDateString('fr-FR', dateOptions);
 	}
 	
-	addAlert(type, msg): void {
-		this.alerts = [{type: type, msg: msg}];
+	addAlert(type, msg, section): void {
+		if(section == "general"){
+			this.alerts = [{type: type, msg: msg}];
+		}
+		if(section == "slot"){
+			this.alertsSlot = [{type: type, msg: msg}];
+		}
+	}
+	
+	resetDatetime(componentId){
+		let elements: NodeListOf<Element> = document.getElementById(componentId).getElementsByClassName('form-control');
+		(<HTMLInputElement>elements[0]).value = null;
 	}
 	
 	isEmpty(str){

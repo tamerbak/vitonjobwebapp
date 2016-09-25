@@ -30,8 +30,10 @@ export class OfferAdd {
 	selectedLevel = "junior";
 	slotsToSave = [];
 	alerts: Array<Object>;
+	alertsSlot: Array<Object>;
 	hideJobLoader: boolean = true;
-	
+	datepickerOpts: any;
+
 	constructor(private sharedService: SharedService,
 	public offersService:OffersService,
 	private router: Router){
@@ -103,6 +105,13 @@ export class OfferAdd {
 				this.sharedService.setLangList(this.langs);
 			})
 		}
+		//dateoption for slotDate
+		this.datepickerOpts = {
+			startDate: new Date(),
+			autoclose: true,
+			todayHighlight: true,
+			format: 'dd/mm/yyyy'
+		}
 	}
 	
 	sectorSelected(sector) {
@@ -140,6 +149,9 @@ export class OfferAdd {
 		if(this.slot.date == 0 || this.slot.startHour == 0 || this.slot.endHour == 0){
 			return;
 		}
+		if(this.checkHour() == false)
+			return;
+		
 		this.slotsToSave.push(this.slot);
 		this.slot.date = this.slot.date.getTime();
 		var h = this.slot.startHour.getHours() * 60;
@@ -226,7 +238,7 @@ export class OfferAdd {
 	addOffer(){
 		this.offer.calendarData = this.slotsToSave;
 		if(!this.offer.jobData.job || !this.offer.jobData.sector || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0){
-			this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.");
+			this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
 			return;
 		}
 		
@@ -243,6 +255,36 @@ export class OfferAdd {
 			this.sharedService.setCurrentUser(this.currentUser);
 			this.router.navigate(['app/offer/list']);
 		});
+	}
+	
+	checkHour(){
+		this.alertsSlot = [];
+		if(this.slot.startHour && this.slot.endHour && this.slot.startHour >= this.slot.endHour){
+			this.addAlert("warning", "L'heure de début doit être inférieure à l'heure de fin", "slot");
+			this.resetDatetime('slotEHour');
+			this.slot.endHour = 0;
+			return false;
+		}
+		//check if chosen hour and date are lower than today date and hour
+		if(this.slot.date && new Date(this.slot.date).setHours(0, 0, 0, 0) == new Date().setHours(0, 0, 0, 0)){
+			var h = new Date().getHours();
+			var m = new Date().getMinutes();
+			var minutesNow = this.offersService.convertHoursToMinutes(h+':'+m);
+			if(this.slot.startHour && this.slot.startHour <= new Date()){
+				this.addAlert("warning", "L'heure de début et de fin doivent être supérieures à l'heure actuelle", "slot");
+				this.resetDatetime('slotSHour');
+				this.slot.startHour = 0;
+				this.resetDatetime('slotEHour');
+				this.slot.endHour = 0;
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	resetDatetime(componentId){
+		let elements: NodeListOf<Element> = document.getElementById(componentId).getElementsByClassName('form-control');
+		(<HTMLInputElement>elements[0]).value = null;
 	}
 	
 	/**
@@ -267,8 +309,13 @@ export class OfferAdd {
 		return new Date(date).toLocaleDateString('fr-FR', dateOptions);
 	}
 	
-	addAlert(type, msg): void {
-		this.alerts = [{type: type, msg: msg}];
+	addAlert(type, msg, section): void {
+		if(section == "general"){
+			this.alerts = [{type: type, msg: msg}];
+		}
+		if(section == "slot"){
+			this.alertsSlot = [{type: type, msg: msg}];
+		}
 	}
 	
 	isEmpty(str){
@@ -277,4 +324,4 @@ export class OfferAdd {
 		else
 		return false;
 	}
-}	
+}

@@ -84,13 +84,11 @@ if ('production' === process.env.ENV) {
 
 import {App} from './app';
 import {ConfigService} from './app/core/config';
-import {FakeWorldData} from './app/widgets/years-map-widget/fake-world-data';
 
 document.addEventListener('DOMContentLoaded', function main(): void {
   bootstrap(App, [
     SharedService,
     ConfigService,
-    FakeWorldData,
     NgControl,
     GOOGLE_MAPS_PROVIDERS,
     provideLazyMapsAPILoaderConfig({
