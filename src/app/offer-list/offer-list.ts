@@ -84,7 +84,7 @@ export class OfferList {
 
   goToDetailOffer(offer) {
     this.sharedService.setCurrentOffer(offer);
-    this.router.navigate(['app/offer/detail']);
+    this.router.navigate(['app/offer/edit', {obj:'detail'}]);
   }
 
   autoSearchMode(offer) {
@@ -133,7 +133,7 @@ export class OfferList {
       this.addAlert("warning", "Veuillez remplir les informations de votre profil avant de créer une offre.");
       return;
     } else {
-      this.router.navigate(['app/offer/add']);
+      this.router.navigate(['app/offer/edit', {obj:'add'}]);
     }
   }
 
