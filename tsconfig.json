@@ -39,7 +39,6 @@
     // Modules
     "./src/app/utils/utils.ts",
     "./src/app/utils/addressUtils.ts",
-    "./src/app/personal.address/personal-address.ts",
     "./src/app/error/error.ts",
     "./src/app/wallet-create/wallet-create.ts",
     "./src/app/settings/settings.ts",
@@ -61,7 +60,6 @@
     "./src/app/contract/contract.ts",
     "./src/app/profile/profile.ts",
     "./src/app/search-results/search-results.ts",
-    "./src/app/civility/civility.ts",
     "./src/app/offer-detail/offer-detail.ts",
     "./src/app/offer-add/offer-add.ts",
     "./src/app/login/login.ts",
