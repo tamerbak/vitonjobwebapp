@@ -33,12 +33,14 @@
     "./src/app/core/config.ts",
     "./src/app/core/core.routes.ts",
     "./src/app/core/core.ts",
+    // Configuration
+    "./src/configurations/globalConfigs.ts",
+    "./src/configurations/configs.ts",
     // Modules
     "./src/app/utils/utils.ts",
     "./src/app/utils/addressUtils.ts",
     "./src/app/personal.address/personal-address.ts",
     "./src/app/error/error.ts",
-    "./src/app/configurations/globalConfigs.ts",
     "./src/app/wallet-create/wallet-create.ts",
     "./src/app/settings/settings.ts",
     "./src/app/search-details/search-details.ts",
@@ -57,7 +59,6 @@
     "./src/app/mission-end-invoice/mission-end-invoice.ts",
     "./src/app/mission-details/mission-details.ts",
     "./src/app/contract/contract.ts",
-    "./src/app/configurations/configs.ts",
     "./src/app/profile/profile.ts",
     "./src/app/search-results/search-results.ts",
     "./src/app/civility/civility.ts",

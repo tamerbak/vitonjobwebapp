@@ -10,7 +10,7 @@ import {AttachementsService} from "../../providers/attachements.service";
 import {SharedService} from "../../providers/shared.service";
 import {Utils} from "../utils/utils";
 import {AddressUtils} from "../utils/addressUtils";
-import {Configs} from "../configurations/configs";
+import {Configs} from "../../configurations/configs";
 import {MapsAPILoader} from "angular2-google-maps/core";
 import {ModalPicture} from "../modal-picture/modal-picture";
 declare var jQuery, require: any;

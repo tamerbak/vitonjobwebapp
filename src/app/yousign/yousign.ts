@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {GlobalConfigs} from "../configurations/globalConfigs";
+import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SharedService} from "../../providers/shared.service";
 import {FinanceService} from "../../providers/finance.service";
 import {ContractService} from "../../providers/contract-service";

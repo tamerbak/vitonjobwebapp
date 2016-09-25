@@ -9,7 +9,7 @@ import {MedecineService} from "../../providers/medecine.service";
 import {AttachementsService} from "../../providers/attachements.service";
 import {SharedService} from "../../providers/shared.service";
 import {Utils} from "../utils/utils";
-import {Configs} from "../configurations/configs";
+import {Configs} from "../../configurations/configs";
 declare var jQuery, require: any;
 
 @Component({

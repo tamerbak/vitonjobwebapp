@@ -4,7 +4,7 @@ import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {NKDatetime} from "ng2-datetime/ng2-datetime";
-import {Configs} from "../configurations/configs";
+import {Configs} from "../../configurations/configs";
 import {CommunesService} from "../../providers/communes.service";
 import {SearchService} from "../../providers/search-service";
 declare var jQuery: any;

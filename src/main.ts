@@ -67,7 +67,7 @@ import {bootstrap} from "@angular/platform-browser-dynamic";
 import {HTTP_PROVIDERS} from "@angular/http";
 import {GOOGLE_MAPS_PROVIDERS, provideLazyMapsAPILoaderConfig} from "angular2-google-maps/core";
 import {APP_ROUTER_PROVIDERS} from "./app.routes";
-import {SharedService} from "./a../../providers/shared.service";
+import {SharedService} from "./providers/shared.service";
 import {App} from "./app";
 import {ConfigService} from "./app/core/config";
 

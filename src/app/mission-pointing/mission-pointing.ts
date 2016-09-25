@@ -4,7 +4,7 @@ import {ROUTER_DIRECTIVES, Router, ActivatedRoute} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {BUTTON_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap";
 import {NKDatetime} from "ng2-datetime/ng2-datetime";
-import {GlobalConfigs} from "../configurations/globalConfigs";
+import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SharedService} from "../../providers/shared.service";
 import {MissionService} from "../../providers/mission-service";
 import {FinanceService} from "../../providers/finance.service";
