@@ -20,6 +20,7 @@ import {Contract} from "../contract/contract";
 import {Yousign} from "../yousign/yousign";
 import {WalletCreate} from "../wallet-create/wallet-create";
 import {MissionPointing} from "../mission-pointing/mission-pointing";
+import {OfferEdit} from "../offer-edit/offer-edit";
 
 /**
  * VitOnJob modules
@@ -45,6 +46,7 @@ export const CoreRoutes: RouterConfig = [
       {path: 'offer/list', component: OfferList},
       {path: 'offer/detail', component: OfferDetail},
       {path: 'offer/add', component: OfferAdd},
+      {path: 'offer/edit', component: OfferEdit},
 
       // Search management
       {path: 'search/results', component: SearchResults},
