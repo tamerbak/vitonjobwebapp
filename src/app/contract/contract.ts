@@ -1,11 +1,10 @@
-import {Component} from '@angular/core';
+import {Component} from "@angular/core";
 import {Router} from "@angular/router";
-
-import {Helpers} from "../providers/helpers.service";
-import {SharedService} from "../providers/shared.service";
-import {ContractService} from "../providers/contract-service";
-import {MedecineService} from "../providers/medecine.service";
-import {ParametersService} from "../providers/parameters-service";
+import {Helpers} from "../../providers/helpers.service";
+import {SharedService} from "../../providers/shared.service";
+import {ContractService} from "../../providers/contract-service";
+import {MedecineService} from "../../providers/medecine.service";
+import {ParametersService} from "../../providers/parameters-service";
 
 /**
  * @author daoudi amine

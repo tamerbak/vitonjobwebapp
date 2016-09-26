@@ -38,10 +38,21 @@
             <tr>
               <th colspan="4">
                 Jour {{i + 1}}: {{day.jour_debut | dateConverter:'long'}}
+<<<<<<< HEAD
                 <button class="btn btn-default pull-right" (click)="addPause(i)" [hidden]="!isNewMission || !isEmployer || upperCase(contract.signature_jobyer) == 'NON'">
                   <span class="glyphicon glyphicon-plus">
                     </span> Ajouter pause
                 </button>
+=======
+                <!-- TODO : Add break time -->
+                <!--<button class="btn btn-default pull-right" (click)="onCardClick(i)">-->
+                <!--[{{ !isNewMission || !isEmployer || upperCase(contract.signature_jobyer) == 'NON' }}]-->
+                <!--<span-->
+                <!--[hidden]="!isNewMission || !isEmployer || upperCase(contract.signature_jobyer) == 'NON'"-->
+                <!--class="glyphicon glyphicon-plus"-->
+                <!--&gt;</span> Ajouter pause-->
+                <!--</button>-->
+>>>>>>> 6f0390404d45da690dd43d95b69122d24381e1c2
               </th>
             </tr>
             <tr>
@@ -50,7 +61,8 @@
               <th class="text-align-center" *ngIf="isEmployer && upperCase(contract.approuve) == 'NON'">
                 Jobyer
               </th>
-              <th class="text-align-center" *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && (day.heure_debut_pointe || day.heure_fin_pointe)">
+              <th class="text-align-center"
+                  *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && (day.heure_debut_pointe || day.heure_fin_pointe)">
                 {{enterpriseName}}
               </th>
             </tr>

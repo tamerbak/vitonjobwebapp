@@ -1,7 +1,7 @@
-import {Directive, ElementRef} from '@angular/core';
+import {Directive, ElementRef} from "@angular/core";
 declare var jQuery: any;
 
-@Directive ({
+@Directive({
   selector: '[bootstrap-wizard]'
 })
 
@@ -36,7 +36,7 @@ export class BootstrapWizard {
       },
 
       // validate on tab change
-      onNext: function($activeTab, $navigation, nextIndex): boolean{
+      onNext: function ($activeTab, $navigation, nextIndex): boolean {
         let $activeTabPane = jQuery($activeTab.find('a[data-toggle=tab]').attr('href')),
           $form = $activeTabPane.find('form');
 
@@ -46,7 +46,7 @@ export class BootstrapWizard {
         }
       },
       // diable tab clicking
-      onTabClick: function($activeTab, $navigation, currentIndex, clickedIndex): boolean {
+      onTabClick: function ($activeTab, $navigation, currentIndex, clickedIndex): boolean {
         return $navigation.find('li:eq(' + clickedIndex + ')').is('.done');
       }
     });

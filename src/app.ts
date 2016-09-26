@@ -1,9 +1,6 @@
-import {Component, ViewEncapsulation} from '@angular/core';
-import {ROUTER_DIRECTIVES} from '@angular/router';
-import {Core} from './app/core/core';
-import {ErrorPage} from './app/error/error';
-import {LoginPage} from './app/login/login';
-declare var jQuery: any;
+import {Component, ViewEncapsulation} from "@angular/core";
+import {ROUTER_DIRECTIVES} from "@angular/router";
+declare var jQuery,Messenger: any;
 
 @Component({
   selector: 'body',
@@ -13,4 +10,10 @@ declare var jQuery: any;
   encapsulation: ViewEncapsulation.None
 })
 export class App {
+  constructor(){
+    Messenger.options = {
+      theme: 'air',
+      extraClasses: 'messenger-fixed messenger-on-top'
+    }
+  }
 }

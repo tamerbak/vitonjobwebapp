@@ -70,11 +70,21 @@ export class ConfigService {
 
   getScreenSize(): string {
     let screenPx = window.innerWidth;
-    if (screenPx <= this.config.settings.screens['xs-max']) { return 'xs'; }
-    if ((screenPx >= this.config.settings.screens['sm-min']) && (screenPx <= this.config.settings.screens['sm-max'])) { return 'sm'; }
-    if ((screenPx >= this.config.settings.screens['md-min']) && (screenPx <= this.config.settings.screens['md-max'])) { return 'md'; }
-    if ((screenPx >= this.config.settings.screens['lg-min']) && (screenPx <= this.config.settings.screens['lg-max'])) { return 'lg'; }
-    if (screenPx >= this.config.settings.screens['xl-min']) { return 'xl'; }
+    if (screenPx <= this.config.settings.screens['xs-max']) {
+      return 'xs';
+    }
+    if ((screenPx >= this.config.settings.screens['sm-min']) && (screenPx <= this.config.settings.screens['sm-max'])) {
+      return 'sm';
+    }
+    if ((screenPx >= this.config.settings.screens['md-min']) && (screenPx <= this.config.settings.screens['md-max'])) {
+      return 'md';
+    }
+    if ((screenPx >= this.config.settings.screens['lg-min']) && (screenPx <= this.config.settings.screens['lg-max'])) {
+      return 'lg';
+    }
+    if (screenPx >= this.config.settings.screens['xl-min']) {
+      return 'xl';
+    }
   }
 
   onScreenSize(size, fn, /* Boolean= */ onEnter): void {
@@ -109,7 +119,7 @@ export class ConfigService {
 
     // Calculate ratio
     let difference = Math.round(ratio * 256) * (darker ? -1 : 1),
-    // Determine if input is RGB(A)
+      // Determine if input is RGB(A)
       rgb = color.match(new RegExp('^rgba?\\(\\s*' +
         '(\\d|[1-9]\\d|1\\d{2}|2[0-4][0-9]|25[0-5])' +
         '\\s*,\\s*' +
@@ -122,7 +132,7 @@ export class ConfigService {
         , 'i')),
       alpha = !!rgb && rgb[4] !== null ? rgb[4] : null,
 
-    // Convert hex to decimal
+      // Convert hex to decimal
       decimal = !!rgb ? [rgb[1], rgb[2], rgb[3]] : color.replace(
         /^#?([a-f0-9][a-f0-9])([a-f0-9][a-f0-9])([a-f0-9][a-f0-9])/i,
         function (): string {
@@ -188,7 +198,7 @@ export class ConfigService {
     });
   }
 
-  _initOnScreenSizeCallbacks(): void  {
+  _initOnScreenSizeCallbacks(): void {
     let resizeTimeout,
       prevSize = this.getScreenSize();
 

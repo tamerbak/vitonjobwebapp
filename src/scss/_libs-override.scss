@@ -9,7 +9,6 @@
   animation: fa-spin 1s infinite linear;
 }
 
-
 .fa-lg {
   vertical-align: -15%;
 }
@@ -18,20 +17,20 @@
  * Animate.css
  */
 
-.animated{
+.animated {
   animation-duration: .5s;
 }
 
 /**
  * Pace
  */
-.pace .pace-progress{
+.pace .pace-progress {
   background: $brand-primary;
   position: absolute;
   top: $navbar-height;
 }
 
-.pace .pace-activity{
+.pace .pace-activity {
   position: absolute;
   top: 65px;
   border-width: 1px;
@@ -43,9 +42,7 @@
   border-left-color: $brand-primary;
 }
 
-
-
-.pace .pace-progress-inner{
+.pace .pace-progress-inner {
   right: -10px;
   width: 10px;
 }
@@ -55,7 +52,7 @@
 /***********************/
 
 .glyphicon-comment:before {
-  content:"\E111";
+  content: "\E111";
 }
 
 .glyphicon-chevron-up {

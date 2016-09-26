@@ -1,7 +1,7 @@
-import {Component} from '@angular/core';
-import {GlobalConfigs} from "../configurations/globalConfigs";
-import {SharedService} from "../providers/shared.service";
-import {FinanceService} from "../providers/finance.service";
+import {Component} from "@angular/core";
+import {GlobalConfigs} from "../../configurations/globalConfigs";
+import {SharedService} from "../../providers/shared.service";
+import {FinanceService} from "../../providers/finance.service";
 
 /**
  * This module manage the invoice signature from the employer

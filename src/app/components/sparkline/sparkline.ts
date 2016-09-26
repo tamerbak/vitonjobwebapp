@@ -1,7 +1,7 @@
-import {Directive, ElementRef, Input} from '@angular/core';
+import {Directive, ElementRef, Input} from "@angular/core";
 declare var jQuery: any;
 
-@Directive ({
+@Directive({
   selector: '[jq-sparkline]'
 })
 
@@ -30,7 +30,9 @@ export class JqSparkline {
       let data;
       // Make sure we have an array of numbers
       jQuery.type(model) === 'array' ? data = model : data = model.split(',');
-      jQuery(window).on('sn:resize', () => { this.$el.sparkline(data, options); });
+      jQuery(window).on('sn:resize', () => {
+        this.$el.sparkline(data, options);
+      });
       this.$el.sparkline(data, options);
     }
   }

@@ -1,5 +1,5 @@
-import {Component, ViewEncapsulation} from '@angular/core';
-import {Router} from '@angular/router';
+import {Component, ViewEncapsulation} from "@angular/core";
+import {Router} from "@angular/router";
 
 @Component({
   selector: '[error]',
@@ -11,7 +11,7 @@ import {Router} from '@angular/router';
   styles: [require('./error.scss')]
 })
 export class ErrorPage {
-router: Router;
+  router: Router;
 
   constructor(router: Router) {
     this.router = router;

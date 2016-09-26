@@ -28,20 +28,27 @@
               <legend><strong>Compte</strong></legend>
               <button disabled class="btn btn-primary btn-sm mt">
                 Modifier votre téléphone
-              </button><br>
+              </button>
+              <br>
               <button disabled class="btn btn-primary btn-sm mt">
                 Modifier votre e-mail
-              </button><br>
-              <button [disabled]="phase=='CHANGE_PASSWORD'" class="btn btn-primary btn-sm mt" (click)="initPasswordPhaseForm()">
+              </button>
+              <br>
+              <button [disabled]="phase=='CHANGE_PASSWORD'" class="btn btn-primary btn-sm mt"
+                      (click)="initPasswordPhaseForm()">
                 Modifier votre mot de passe
-              </button><br>
-              <button *ngIf="isEmployer" [disabled]="phase=='CHANGE_MISSION'" class="btn btn-primary btn-sm mt" (click)="initMissionPhaseForm()">
+              </button>
+              <br>
+              <button *ngIf="isEmployer" [disabled]="phase=='CHANGE_MISSION'" class="btn btn-primary btn-sm mt"
+                      (click)="initMissionPhaseForm()">
                 Modifier l'option suivi de mission
-              </button><br><br>
+              </button>
+              <br><br>
               <legend><strong>Sécurité</strong></legend>
               <button disabled class="btn btn-primary btn-sm mt" (click)="lockApp()">
                 Verrouiller votre compte
-              </button><br><br>
+              </button>
+              <br><br>
               <legend><strong>Déconnexion</strong></legend>
               <button class="btn btn-primary btn-sm mt" (click)="logOut()">
                 Se déconnecter
@@ -70,13 +77,15 @@
               <div class="col-md-12 col-xs-12">
 
                 <div class="abc-radio">
-                  <input type="radio" name="radio1" id="radio1" value="1" (click)="watchOption($event)" [checked]="missionOption == '1'">
+                  <input type="radio" name="radio1" id="radio1" value="1" (click)="watchOption($event)"
+                         [checked]="missionOption == '1'">
                   <label for="radio1">
                     Option 1: Fixer les horaires sans intervention du jobyer
                   </label>
                 </div>
                 <div class="abc-radio">
-                  <input type="radio" name="radio1" id="radio2" value="2" (click)="watchOption($event)" [checked]="missionOption == '2'">
+                  <input type="radio" name="radio1" id="radio2" value="2" (click)="watchOption($event)"
+                         [checked]="missionOption == '2'">
                   <label for="radio2">
                     Option 2: Suivi des horaires pointés par le jobyer
                   </label>
@@ -92,12 +101,13 @@
             </div>
 
             <div *ngIf="phase=='CHANGE_PASSWORD'">
-              <div  class="form-group row">
+              <div class="form-group row">
                 <label for="password1" class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Nouveau mot de passe
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input type="password" id="password1" class="form-control" [(ngModel)]="password1" name="password1" (keyup)="watchPassword1($event)">
+                  <input type="password" id="password1" class="form-control" [(ngModel)]="password1" name="password1"
+                         (keyup)="watchPassword1($event)">
                 </div>
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
                   <span class="hint label label-danger">{{password1Hint}}</span>
@@ -105,12 +115,13 @@
               </div>
 
               <div class="form-group row">
-                  <label for="password2" class="col-md-4 col-xs-12 form-control-label text-md-right">
-                    Confirmation du mot de passe
-                  </label>
-                  <div class="col-md-7 col-xs-12">
-                    <input type="password" id="password2" class="form-control" [(ngModel)]="password2" name="password2" (keyup)="watchPassword2($event)">
-                  </div>
+                <label for="password2" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Confirmation du mot de passe
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input type="password" id="password2" class="form-control" [(ngModel)]="password2" name="password2"
+                         (keyup)="watchPassword2($event)">
+                </div>
 
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
                   <span class="hint label label-danger">{{password2Hint}}</span>
@@ -118,21 +129,23 @@
               </div>
             </div>
 
-            </fieldset>
+          </fieldset>
 
-              <div class="clearfix">
-								<div class="btn-toolbar pull-xs-right m-t-1">
-								  <div class="widget-body btn loaderPosition" [hidden]="!validation">
-  									<div class="loader animated fadeIn handle">
+          <div class="clearfix">
+            <div class="btn-toolbar pull-xs-right m-t-1">
+              <div class="widget-body btn loaderPosition" [hidden]="!validation">
+                <div class="loader animated fadeIn handle">
   										<span class="spinner">
   											<i class="fa fa-spinner fa-spin"></i>
   										</span>
-  									</div>
-								  </div>
-				          <button class="btn btn-primary" [disabled]="!isValidForm() || validation" (click)="executePhase()" >Valider</button>
-                  <button class="btn btn-default" (click)="closeForm()" >Annuler</button>
-								</div>
-							</div>
+                </div>
+              </div>
+              <button class="btn btn-primary" [disabled]="!isValidForm() || validation" (click)="executePhase()">
+                Valider
+              </button>
+              <button class="btn btn-default" (click)="closeForm()">Annuler</button>
+            </div>
+          </div>
 
 
         </form>
