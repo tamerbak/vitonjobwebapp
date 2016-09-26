@@ -100,8 +100,8 @@ export class MissionService {
       if (missionPauses[i]) {
         for (var j = 0; j < missionPauses[i].length; j++) {
           //convert startpausehour and endpausehour to minutes
-          var startMinute = this.convertHoursToMinutes(missionPauses[i][j].pause_debut);
-          var endMinute = this.convertHoursToMinutes(missionPauses[i][j].pause_fin);
+          var startMinute = this.convertHoursToMinutes(missionPauses[i][j].pause_debut_temp);
+          var endMinute = this.convertHoursToMinutes(missionPauses[i][j].pause_fin_temp);
           valuesString = valuesString + "(" + missionHours[i].id + ", " + startMinute + ", " + endMinute + "),";
 
         }
@@ -673,7 +673,7 @@ export class MissionService {
         });
     });
   }
-  
+
   getTodayMission(missionHoursTemp){
 		let now = new Date().setHours(0, 0, 0, 0);
 		let missionHoursToday = [];
@@ -685,7 +685,7 @@ export class MissionService {
 		let array = this.constructMissionHoursArray(missionHoursToday);
 		return array;
 	}
-	
+
 	disablePointing(missionHours, missionPauses){
 		let disabled = true;
 		let h = new Date().getHours();
@@ -710,7 +710,7 @@ export class MissionService {
 				if(this.isEmpty(p.pause_debut_new)){
 					let h = (p.pause_debut).split(":")[0];
 					let m = (p.pause_debut).split(":")[1];
-					minutesPause = this.convertHoursToMinutes(h+':'+m);					
+					minutesPause = this.convertHoursToMinutes(h+':'+m);
 				}else{
 					minutesPause = p.pause_debut_new;
 				}
@@ -722,7 +722,7 @@ export class MissionService {
 				if(this.isEmpty(p.pause_fin_new)){
 					let h = (p.pause_fin).split(":")[0];
 					let m = (p.pause_fin).split(":")[1];
-					let minutesPause = this.convertHoursToMinutes(h+':'+m);					
+					let minutesPause = this.convertHoursToMinutes(h+':'+m);
 				}else{
 					minutesPause = p.pause_fin_new;
 				}
@@ -735,7 +735,7 @@ export class MissionService {
 		}
 		return {disabled: disabled, nextPointing: null};
 	}
-	
+
 	isEmpty(str) {
     if (str == '' || str == 'null' || !str)
       return true;
