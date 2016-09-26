@@ -4,6 +4,7 @@ import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {NKDatetime} from "ng2-datetime/ng2-datetime";
+declare var Messenger:any;
 
 @Component({
   selector: '[offer-edit]',
@@ -353,6 +354,11 @@ export class OfferEdit {
           this.currentUser.jobyer.offers.push(JSON.parse(data._body));
         }
         this.sharedService.setCurrentUser(this.currentUser);
+        Messenger().post({
+          message: "l'offre "+"'"+this.offer.title+"'"+" a été ajoutée avec succès",
+          type: 'success',
+          showCloseButton: true
+        });
         this.router.navigate(['app/offer/list']);
       });
     }else{
@@ -366,7 +372,11 @@ export class OfferEdit {
 
     this.offersService.updateOfferJob(this.offer, this.projectTarget);
     this.setOfferInLocal();
-    this.addAlert("success", "Informations enregistrées avec succès.", "general");
+    Messenger().post({
+      message: "Informations enregistrées avec succès.",
+      type: 'success',
+      showCloseButton: true
+    });
   }
 
   resetDatetime(componentId) {

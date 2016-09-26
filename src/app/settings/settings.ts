@@ -50,10 +50,7 @@ export class Settings {
               private authService: AuthenticationService,
               private sharedService: SharedService,
               private router: Router) {
-    Messenger.options = {
-      theme: 'air',
-      extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right'
-    }
+    
 
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {

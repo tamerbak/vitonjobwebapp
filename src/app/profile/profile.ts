@@ -133,11 +133,6 @@ export class Profile {
     if (!this.currentUser) {
       this.router.navigate(['app/dashboard']);
     } else {
-
-      Messenger.options = {
-        theme: 'air',
-        extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right'
-      }
       this.getUserInfos();
       if (this.isNewUser) {
         this.initForm();
@@ -420,8 +415,11 @@ export class Profile {
         .then((data: any) => {
 
           if (!data || data.status == "failure") {
-            // console.log("Scan upload failed !");
-            //this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde du scan");
+            Messenger().post({
+              message: 'Serveur non disponible ou problème de connexion',
+              type: 'error',
+              showCloseButton: true
+            });
             this.currentUser.scanUploaded = false;
             this.sharedService.setCurrentUser(this.currentUser);
           }
@@ -446,14 +444,6 @@ export class Profile {
 
 
   ngAfterViewInit(): void {
-    // if(this.isNewUser){
-    //   Messenger().post({
-    //     message: 'Bienvenue sur Vit-On-Job.<br>Veuillez renseigner les informations de votre profil pour pouvoir créer une offre',
-    //     type: 'info',
-    //     showCloseButton: true,
-    //     hideAfter: '10'
-    //   });
-    // }
     var self = this;
     this._loader.load().then(() => {
       this.autocompletePA = new google.maps.places.Autocomplete(document.getElementById("autocompletePersonal"), this.addressOptions);

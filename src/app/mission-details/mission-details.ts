@@ -11,6 +11,7 @@ import {FinanceService} from "../../providers/finance.service";
 import {ContractService} from "../../providers/contract-service";
 import {DateConverter} from "../../pipes/date-converter/date-converter";
 import {TimeConverter} from "../../pipes/time-converter/time-converter";
+declare var Messenger:any;
 
 @Component({
   selector: '[mission-details]',
@@ -682,6 +683,11 @@ export class MissionDetails {
      });
      */
     this.missionService.saveEndMission(this.contract.pk_user_contrat).then(val => {
+      Messenger().post({
+        message: "Informations enregistrées avec succès.",
+        type: 'success',
+        showCloseButton: true
+      });
       this.missionService.endOfMission(this.contract.pk_user_contrat).then((data: any) => {
         // debugger;
 
