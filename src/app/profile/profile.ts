@@ -504,11 +504,9 @@ export class Profile {
         maximumSelectionLength: 1,
         tokenSeparators: [",", " "],
         createSearchChoice: function(term, data) {
-          if (jQuery(self.communesData).filter(function() {
-            return this.nom.localeCompare(term) === 0;
-          }).length === 0) {
+          if (self.communesData.length == 0) {
             return {
-              id: 0, nom: term, code_insee: "0"
+              id: '0', nom: term, code_insee: "0"
             };
           }
         },
@@ -532,7 +530,7 @@ export class Profile {
             self.communesData = data.data;
             return {results: data.data};
           },
-          cache: true,
+          cache: false,
 
         },
 
@@ -548,12 +546,12 @@ export class Profile {
         },
         minimumInputLength: 3,
       });
-      jQuery('.commune-select').on('change',
+      
+      jQuery('.commune-select').on('select2-selecting',
         (e) => {
-
-          this.selectedCommune = e.added;
+          self.selectedCommune = e.choice;
         }
-      );
+      )
     }
 
     if (!this.isRecruiter && this.isEmployer) {
@@ -1070,14 +1068,12 @@ export class Profile {
 
         var numSS = this.numSS;
         var cni = this.cni;
-        var birthdate = moment(this.birthdateHidden).format('MM/DD/YYYY');//this.birthdateHidden.toLocaleDateString('en-US');
+        var birthdate = moment(this.birthdateHidden).format('MM/DD/YYYY');
         var birthplace = this.selectedCommune.nom;
         var nationalityId = this.nationalityId;
 
         this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthplace)
           .then((res: any) => {
-
-
 
             //case of authentication failure : server unavailable or connection problem
             if (!res || res.status == "failure") {
