@@ -3,6 +3,7 @@ import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {SearchService} from "../../providers/search-service";
 import {SharedService} from "../../providers/shared.service";
+declare var Messenger:any;
 
 @Component({
   selector: 'dashboard',
@@ -49,6 +50,11 @@ export class Dashboard {
         return;
       }
       this.sharedService.setLastResult(data);
+      Messenger().post({
+        message: 'La recherche pour "'+this.scQuery+'" a retourné '+ (data.length == 1 ?'un seul résultat':(data.length+' résultats')),
+        type: 'success',
+        showCloseButton: true
+      });
       this.router.navigate(['app/search/results']);
     });
   }

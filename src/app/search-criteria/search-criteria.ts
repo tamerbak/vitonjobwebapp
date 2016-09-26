@@ -7,7 +7,7 @@ import {NKDatetime} from "ng2-datetime/ng2-datetime";
 import {Configs} from "../../configurations/configs";
 import {CommunesService} from "../../providers/communes.service";
 import {SearchService} from "../../providers/search-service";
-declare var jQuery: any;
+declare var jQuery,Messenger: any;
 
 @Component({
   selector: '[search-criteria]',
@@ -110,6 +110,11 @@ export class SearchCriteria {
     console.log(JSON.stringify(searchFields));
     this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
       this.sharedService.setLastResult(data);
+      Messenger().post({
+        message: "Votre recherche "+(data.length ==0 ?"n'":"")+"a retourné " + (data.length == 0 ?"aucun résultat" : (data.length == 1 ? "un seul résultat":(data.length+' résultats'))),
+        type: 'success',
+        showCloseButton: true
+      });
       this.router.navigate(['app/search/results']);
     });
   }

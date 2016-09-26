@@ -4,6 +4,7 @@ import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {NKDatetime} from "ng2-datetime/ng2-datetime";
+declare var Messenger:any;
 
 @Component({
   selector: '[offer-add]',
@@ -253,6 +254,11 @@ export class OfferAdd {
         this.currentUser.jobyer.offers.push(JSON.parse(data._body));
       }
       this.sharedService.setCurrentUser(this.currentUser);
+      Messenger().post({
+        message: "l'offre "+"'"+this.offer.title+"'"+" a été ajoutée avec succès",
+        type: 'success',
+        showCloseButton: true
+      });
       this.router.navigate(['app/offer/list']);
     });
   }
