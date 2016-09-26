@@ -65,7 +65,7 @@ export class Profile {
   birthdateHint: string = "";
   cniHint: string = "";
   numSSHint: string = "";
-  selectedCommune: any = {id: 0, nom: '', code_insee: ''}
+  selectedCommune: any = {id: '0', nom: '', code_insee: ''}
   dataForNationalitySelectReady = false;
   scanData: string = "";
   //PersonalAddress params
@@ -111,6 +111,7 @@ export class Profile {
   addressOptions = {
     componentRestrictions: {country: "fr"}
   };
+  communesData:any = []
 
   setImgClasses() {
     return {
@@ -339,6 +340,9 @@ export class Profile {
                 this.birthcp = '';
                 jQuery(".cp-select").select2('data', {id:this.selectedCP,code:this.birthcp});
               }
+            }else{
+              this.selectedCommune = {id: '0', nom: _birthplace, code_insee: '0'};
+              jQuery(".commune-select").select2('data', this.selectedCommune);
             }
             this.isValidNumSS = true;
           });
@@ -497,6 +501,17 @@ export class Profile {
 
               var val = ""
       jQuery('.commune-select').select2({
+        maximumSelectionLength: 1,
+        tokenSeparators: [",", " "],
+        createSearchChoice: function(term, data) {
+          if (jQuery(self.communesData).filter(function() {
+            return this.nom.localeCompare(term) === 0;
+          }).length === 0) {
+            return {
+              id: 0, nom: term, code_insee: "0"
+            };
+          }
+        },
         ajax: {
           url: Configs.sqlURL,
           type: 'POST',
@@ -514,9 +529,11 @@ export class Profile {
             }
           },
           results: function (data, page) {
+            self.communesData = data.data;
             return {results: data.data};
           },
-          cache: true
+          cache: true,
+
         },
 
         formatResult: function (item) {
@@ -533,6 +550,7 @@ export class Profile {
       });
       jQuery('.commune-select').on('change',
         (e) => {
+
           this.selectedCommune = e.added;
         }
       );
