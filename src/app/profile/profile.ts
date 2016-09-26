@@ -65,7 +65,7 @@ export class Profile {
   birthdateHint: string = "";
   cniHint: string = "";
   numSSHint: string = "";
-  selectedCommune: any = {id: 0, nom: '', code_insee: ''}
+  selectedCommune: any = {id: '0', nom: '', code_insee: ''}
   dataForNationalitySelectReady = false;
   scanData: string = "";
   //PersonalAddress params
@@ -111,6 +111,7 @@ export class Profile {
   addressOptions = {
     componentRestrictions: {country: "fr"}
   };
+  communesData:any = []
 
   setImgClasses() {
     return {
@@ -339,6 +340,9 @@ export class Profile {
                 this.birthcp = '';
                 jQuery(".cp-select").select2('data', {id:this.selectedCP,code:this.birthcp});
               }
+            }else{
+              this.selectedCommune = {id: '0', nom: _birthplace, code_insee: '0'};
+              jQuery(".commune-select").select2('data', this.selectedCommune);
             }
             this.isValidNumSS = true;
           });
@@ -497,6 +501,15 @@ export class Profile {
 
               var val = ""
       jQuery('.commune-select').select2({
+        maximumSelectionLength: 1,
+        tokenSeparators: [",", " "],
+        createSearchChoice: function(term, data) {
+          if (self.communesData.length == 0) {
+            return {
+              id: '0', nom: term, code_insee: "0"
+            };
+          }
+        },
         ajax: {
           url: Configs.sqlURL,
           type: 'POST',
@@ -514,9 +527,11 @@ export class Profile {
             }
           },
           results: function (data, page) {
+            self.communesData = data.data;
             return {results: data.data};
           },
-          cache: true
+          cache: false,
+
         },
 
         formatResult: function (item) {
@@ -531,11 +546,12 @@ export class Profile {
         },
         minimumInputLength: 3,
       });
-      jQuery('.commune-select').on('change',
+      
+      jQuery('.commune-select').on('select2-selecting',
         (e) => {
-          this.selectedCommune = e.added;
+          self.selectedCommune = e.choice;
         }
-      );
+      )
     }
 
     if (!this.isRecruiter && this.isEmployer) {
@@ -1052,14 +1068,12 @@ export class Profile {
 
         var numSS = this.numSS;
         var cni = this.cni;
-        var birthdate = moment(this.birthdateHidden).format('MM/DD/YYYY');//this.birthdateHidden.toLocaleDateString('en-US');
+        var birthdate = moment(this.birthdateHidden).format('MM/DD/YYYY');
         var birthplace = this.selectedCommune.nom;
         var nationalityId = this.nationalityId;
 
         this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthplace)
           .then((res: any) => {
-
-
 
             //case of authentication failure : server unavailable or connection problem
             if (!res || res.status == "failure") {
