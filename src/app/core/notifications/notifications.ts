@@ -34,31 +34,31 @@ export class Notifications implements OnInit {
   }
 
   launchSearch(offer, noRedirect) {
-      if (!offer){
-          return;
-      }
+    if (!offer){
+      return;
+    }
 
-      let searchFields = {
-          class : 'com.vitonjob.callouts.recherche.SearchQuery',
-          job : offer.jobData.job,
-          metier : '',
-          lieu : '',
-          nom : '',
-          entreprise : '',
-          date : '',
-          table : this.projectTarget == 'jobyer'?'user_offre_entreprise':'user_offre_jobyer',
-          idOffre :'0'
-      };
-      this.searchService.criteriaSearch(searchFields, this.projectTarget).then(data => {
-          this.sharedService.setLastResult(data);
-          if(!noRedirect){
-            if(this.router.url === '/app/search/results'){
-              window.location.reload()
-            }else{
-              this.router.navigate(['app/search/results']);
-            }
-          }
-      });
+    let searchFields = {
+      class : 'com.vitonjob.callouts.recherche.SearchQuery',
+      job : offer.jobData.job,
+      metier : '',
+      lieu : '',
+      nom : '',
+      entreprise : '',
+      date : '',
+      table : this.projectTarget == 'jobyer'?'user_offre_entreprise':'user_offre_jobyer',
+      idOffre :'0'
+    };
+    this.searchService.criteriaSearch(searchFields, this.projectTarget).then(data => {
+      this.sharedService.setLastResult(data);
+      if(!noRedirect){
+        if(this.router.url === '/app/search/results'){
+          window.location.reload()
+        }else{
+          this.router.navigate(['app/search/results']);
+        }
+      }
+    });
   }
 
   moveNotificationsDropdown(): void {
