@@ -38,21 +38,10 @@
             <tr>
               <th colspan="4">
                 Jour {{i + 1}}: {{day.jour_debut | dateConverter:'long'}}
-<<<<<<< HEAD
                 <button class="btn btn-default pull-right" (click)="addPause(i)" [hidden]="!isNewMission || !isEmployer || upperCase(contract.signature_jobyer) == 'NON'">
                   <span class="glyphicon glyphicon-plus">
                     </span> Ajouter pause
                 </button>
-=======
-                <!-- TODO : Add break time -->
-                <!--<button class="btn btn-default pull-right" (click)="onCardClick(i)">-->
-                <!--[{{ !isNewMission || !isEmployer || upperCase(contract.signature_jobyer) == 'NON' }}]-->
-                <!--<span-->
-                <!--[hidden]="!isNewMission || !isEmployer || upperCase(contract.signature_jobyer) == 'NON'"-->
-                <!--class="glyphicon glyphicon-plus"-->
-                <!--&gt;</span> Ajouter pause-->
-                <!--</button>-->
->>>>>>> 6f0390404d45da690dd43d95b69122d24381e1c2
               </th>
             </tr>
             <tr>
@@ -61,8 +50,7 @@
               <th class="text-align-center" *ngIf="isEmployer && upperCase(contract.approuve) == 'NON'">
                 Jobyer
               </th>
-              <th class="text-align-center"
-                  *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && (day.heure_debut_pointe || day.heure_fin_pointe)">
+              <th class="text-align-center" *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && (day.heure_debut_pointe || day.heure_fin_pointe)">
                 {{enterpriseName}}
               </th>
             </tr>
@@ -128,18 +116,18 @@
                       <input type="time" [(ngModel)]="pause.pause_debut_pointe" [hidden]="contract.option_mission == '1.0'|| isNewMission" [style.backgroundColor]="upperCase(pause.is_pause_debut_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_debut_corrigee) == 'NON' ? 'green' : '')" disabled="true"/>
                     </td>
                     <td class="text-align-right" width="100">
-                    <div class="btn-group" *ngIf="isEmployer && upperCase(contract.releve_employeur) == 'NON' && pause.pause_debut_pointe">
-                      <label
-                        class="btn btn-gray btn-sm"
-                        (click)="colorHour(i, j, false, true, true)">
-                        <i class="glyphicon glyphicon-ok"></i> Accepter
-                      </label>
-                      <label
-                        class="btn btn-gray btn-sm"
-                        (click)="colorHour(i, j, false, true, false)">
-                        <i class="glyphicon glyphicon-remove"></i> Refuser
-                      </label>
-                    </div>
+                      <div class="btn-group" *ngIf="isEmployer && upperCase(contract.releve_employeur) == 'NON' && pause.pause_debut_pointe">
+                        <label
+                          class="btn btn-gray btn-sm"
+                          (click)="colorHour(i, j, false, true, true)">
+                          <i class="glyphicon glyphicon-ok"></i> Accepter
+                        </label>
+                        <label
+                          class="btn btn-gray btn-sm"
+                          (click)="colorHour(i, j, false, true, false)">
+                          <i class="glyphicon glyphicon-remove"></i> Refuser
+                        </label>
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -151,18 +139,18 @@
                       <input type="time" [(ngModel)]="pause.pause_fin_pointe" [hidden]="contract.option_mission == '1.0'|| isNewMission" [style.backgroundColor]="upperCase(pause.is_pause_fin_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_fin_corrigee) == 'NON' ? 'green' : '')" disabled="true"/>
                     </td>
                     <td class="text-align-right" width="100">
-                    <div class="btn-group" *ngIf="isEmployer && upperCase(contract.releve_employeur) == 'NON' && pause.pause_fin_pointe">
-                      <label
-                        class="btn btn-gray btn-sm"
-                        (click)="colorHour(i, j, false, false, true)">
-                        <i class="glyphicon glyphicon-ok"></i> Accepter
-                      </label>
-                      <label
-                        class="btn btn-gray btn-sm"
-                        (click)="colorHour(i, j, false, false, false)">
-                        <i class="glyphicon glyphicon-remove"></i> Refuser
-                      </label>
-                    </div>
+                      <div class="btn-group" *ngIf="isEmployer && upperCase(contract.releve_employeur) == 'NON' && pause.pause_fin_pointe">
+                        <label
+                          class="btn btn-gray btn-sm"
+                          (click)="colorHour(i, j, false, false, true)">
+                          <i class="glyphicon glyphicon-ok"></i> Accepter
+                        </label>
+                        <label
+                          class="btn btn-gray btn-sm"
+                          (click)="colorHour(i, j, false, false, false)">
+                          <i class="glyphicon glyphicon-remove"></i> Refuser
+                        </label>
+                      </div>
                     </td>
                   </tr>
                   </tbody>
