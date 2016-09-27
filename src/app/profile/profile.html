@@ -155,14 +155,14 @@
               <div *ngIf="!isEmployer" class="form-group row">
               <label class="col-md-4 col-xs-12 form-control-label text-md-right">Né en France (DOM, TOM, POM)</label>
               <div class="abc-radio">
-                <input type="radio" name="radio1" id="radio1" value="1" (click)="watchIsFrench($event)" checked>
-                <label for="radio1" class="labelRadio">
-                  Oui
-                </label>
-                <input type="radio" name="radio1" id="radio2" value="0" (click)="watchIsFrench($event)">
-                <label for="radio2" class="labelRadio">
-                  Non
-                </label>
+                  <input type="radio" name="radio1" id="radio1" value="1" (click)="watchIsFrench($event)" checked>
+                  <label for="radio1" class="labelRadio">
+                    Oui
+                  </label>
+                  <input type="radio" name="radio1" id="radio2" value="0" (click)="watchIsFrench($event)">
+                  <label for="radio2" class="labelRadio">
+                    Non
+                  </label>
               </div>
             </div>
 
@@ -178,7 +178,7 @@
                 </div>
               </div>
 
-              <div *ngIf="!isEmployer && isFrench" class="form-group row">
+              <div [hidden]="!isEmployer && !isFrench" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right" >
                   Code postal du lieu de naissance
                 </label>
@@ -187,7 +187,7 @@
                 </div>
               </div>
 
-              <div *ngIf="!isEmployer && isFrench" class="form-group row">
+              <div [hidden]="!isEmployer && !isFrench" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="title">
                   Lieu de naissance
                   <span class="help-block">ex: Palaiseau (91)</span>
@@ -264,7 +264,7 @@
                   Titre de séjour délivré le
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input type="date" [(ngModel)]="dateStay" />
+                  <input type="date" class="form-control" [(ngModel)]="dateStay" />
                 </div>
               </div>
 
@@ -273,7 +273,7 @@
                   Titre de séjour valable du
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input type="date" [(ngModel)]="dateFromStay" />
+                  <input type="date" class="form-control" class="form-control" [(ngModel)]="dateFromStay" />
                 </div>
               </div>
 
