@@ -182,72 +182,36 @@ export class ProfileService {
    * @description update jobyer information
    * @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
    */
-  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace, numStay, dateStay, dateFromStay, dateToStay, isFrench, isEuropean) {
+  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, isFrench, isEuropean) {
     var sql = "";
     //building the sql request
+    sql = "update user_jobyer set  " +
+      "titre='" + title + "', " +
+      "nom='" + lastname + "', " +
+      "prenom='" + firstname + "', " +
+      "numero_securite_sociale='" + numSS + "', " +
+      "cni='" + cni + "', " +
+      (!birthdate ? " " : "date_de_naissance ='" + birthdate + "',");
     if(isFrench){
       nationalityId = "91";
-      sql = "update user_jobyer set  " +
-        "titre='" + title + "', " +
-        "nom='" + lastname + "', " +
-        "prenom='" + firstname + "', " +
-        "numero_securite_sociale='" + numSS + "', " +
-        "cni='" + cni + "', " +
-        (!birthdate ? " " : "date_de_naissance ='" + birthdate + "',") +
-        "lieu_de_naissance ='" + birthplace + "', " +
-        "fk_user_nationalite ='" + nationalityId + "' " +
+        sql = sql + " fk_user_nationalite ='" + nationalityId + "', " +
+          "lieu_de_naissance ='" + birthplace + "' ";
+          //birthcp à ajouter
         "where pk_user_jobyer ='" + roleId + "';";
     }else{
-      if(isEuropean == 1){
-        sql = "update user_jobyer set  " +
-          "titre='" + title + "', " +
-          "nom='" + lastname + "', " +
-          "prenom='" + firstname + "', " +
-          "numero_securite_sociale='" + numSS + "', " +
-          "cni='" + cni + "', " +
-          (!birthdate ? " " : "date_de_naissance ='" + birthdate + "',") +
-          "lieu_de_naissance ='" + birthplace + "', " +
-          "fk_user_nationalite ='" + nationalityId + "' " +
-          "fk_user_pays ='" + nationalityId + "' " +
+      if(isEuropean == 0){
+        sql = sql + " fk_user_nationalite ='" + nationalityId + "', " +
+          "fk_user_pays ='" + birthCountryId + "', " +
+          "lieu_de_naissance ='" + birthplace + "', ";
           "where pk_user_jobyer ='" + roleId + "';";
-
       }else{
-        sql = "update user_jobyer set  " +
-          "titre='" + title + "', " +
-          "nom='" + lastname + "', " +
-          "prenom='" + firstname + "', " +
-          "numero_securite_sociale='" + numSS + "', " +
-          "cni='" + cni + "', " +
-          (!birthdate ? " " : "date_de_naissance ='" + birthdate + "',") +
-          "lieu_de_naissance ='" + birthplace + "', " +
-          "fk_user_nationalite ='" + nationalityId + "' " +
+        sql = sql + "numero_titre_sejour ='" + numStay + "', " +
+          "date_de_delivrance='" + dateStay + "', " +
+          "debut_validite='" + dateFromStay + "', " +
+          "fin_validite='" + dateToStay + "' " +
           "where pk_user_jobyer ='" + roleId + "';";
-
       }
     }
-    if (nationalityId) {
-      sql = "update user_jobyer set  " +
-        "titre='" + title + "', " +
-        "nom='" + lastname + "', " +
-        "prenom='" + firstname + "', " +
-        "numero_securite_sociale='" + numSS + "', " +
-        "cni='" + cni + "', " +
-        (!birthdate ? " " : "date_de_naissance ='" + birthdate + "',") +
-        "lieu_de_naissance ='" + birthplace + "', " +
-        "fk_user_nationalite ='" + nationalityId + "' " +
-        "where pk_user_jobyer ='" + roleId + "';";
-    } else {
-      sql = "update user_jobyer set  " +
-        "titre='" + title + "', " +
-        "nom='" + lastname + "', " +
-        "prenom='" + firstname + "', " +
-        "numero_securite_sociale='" + numSS + "', " +
-        "cni='" + cni + "', " +
-        (!birthdate ? " " : "date_de_naissance ='" + birthdate + "',") +
-        "lieu_de_naissance ='" + birthplace + "' " +
-        "where pk_user_jobyer ='" + roleId + "';";
-    }
-
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})

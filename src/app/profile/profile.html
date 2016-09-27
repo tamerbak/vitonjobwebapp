@@ -178,7 +178,7 @@
                 </div>
               </div>
 
-              <div *ngIf="!isEmployer && isFrench" class="form-group row">
+              <div [hidden]="isEmployer || !isFrench" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right" >
                   Code postal du lieu de naissance
                 </label>
@@ -187,7 +187,7 @@
                 </div>
               </div>
 
-              <div *ngIf="!isEmployer && isFrench" class="form-group row">
+              <div [hidden]="isEmployer || !isFrench" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="title">
                   Lieu de naissance
                   <span class="help-block">ex: Palaiseau (91)</span>

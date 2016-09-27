@@ -1099,11 +1099,12 @@ export class Profile {
         var nationalityId = this.nationalityId;
         var birthcp = this.birthcp;
         var numStay = this.numStay;
-        var dateStay = this.dateStay;
-        var dateFromStay = this.dateFromStay;
-        var dateToStay = this.dateToStay;
+        var dateStay = moment(this.dateStay).format('MM/DD/YYYY');
+        var dateFromStay = moment(this.dateFromStay).format('MM/DD/YYYY');
+        var dateToStay = moment(this.dateToStay).format('MM/DD/YYYY');
+        var birthCountryId = this.index;
 
-        this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthplace, numStay, dateStay, dateFromStay, dateToStay, this.isFrench, this.isEuropean)
+        this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, this.isFrench, this.isEuropean)
           .then((res: any) => {
 
             //case of authentication failure : server unavailable or connection problem
