@@ -14,6 +14,7 @@ import {Configs} from "../../configurations/configs";
 import {MapsAPILoader} from "angular2-google-maps/core";
 import {ModalPicture} from "../modal-picture/modal-picture";
 import MaskedInput from "angular2-text-mask";
+
 declare var jQuery, require, Messenger, moment: any;
 declare var google: any;
 
@@ -37,6 +38,9 @@ export class Profile {
   siret: string;
   ape: string;
   birthcp:string;
+  birthcpForeigner: string;
+
+
   selectedCP:any;
   birthdate: Date;
   birthdateHidden: Date;
@@ -111,7 +115,18 @@ export class Profile {
   addressOptions = {
     componentRestrictions: {country: "fr"}
   };
-  communesData:any = []
+  communesData:any = [];
+  isFrench: boolean;
+  isEuropean: number;
+  pays = [];
+  index: number;
+
+  numStay;
+  dateStay;
+  dateFromStay;
+  dateToStay;
+
+
 
   setImgClasses() {
     return {
@@ -144,13 +159,24 @@ export class Profile {
         listService.loadNationalities().then((response: any) => {
           this.nationalities = response.data;
           this.dataForNationalitySelectReady = true;
-          this.scanTitle = " de votre CNI";
+          if(this.isFrench || this.isEuropean) {
+            this.scanTitle = " de votre CNI ou Passeport";
+          }
+          if(!this.isEuropean){
+            this.scanTitle = " de votre titre du séjour";
+          }
         });
 
       } else {
         this.scanTitle = " de votre extrait k-bis";
       }
     }
+    this.isFrench = true;
+
+    //load countries list
+    this.listService.loadCountries("jobyer").then((data: any) => {
+      this.pays = data.data;
+    });
   }
 
   getUserFullname() {
@@ -546,7 +572,7 @@ export class Profile {
         },
         minimumInputLength: 3,
       });
-      
+
       jQuery('.commune-select').on('select2-selecting',
         (e) => {
           self.selectedCommune = e.choice;
@@ -948,6 +974,10 @@ export class Profile {
     this.showForm = false;
   }
 
+  watchIsFrench(e) {
+    this.isFrench = e.target.value == "1" ? true : false;
+  }
+
   updateCivility() {
     if (this.isValidForm()) {
       this.validation = true;
@@ -962,9 +992,6 @@ export class Profile {
         if (this.isRecruiter) {
           this.profileService.updateRecruiterCivility(title, lastname, firstname, accountId)
             .then((res: any) => {
-
-
-
               //case of update failure : server unavailable or connection problem
               if (!res || res.status == "failure") {
                 Messenger().post({
@@ -1065,14 +1092,18 @@ export class Profile {
             });
         }
       } else {
-
         var numSS = this.numSS;
         var cni = this.cni;
         var birthdate = moment(this.birthdateHidden).format('MM/DD/YYYY');
         var birthplace = this.selectedCommune.nom;
         var nationalityId = this.nationalityId;
+        var birthcp = this.birthcp;
+        var numStay = this.numStay;
+        var dateStay = this.dateStay;
+        var dateFromStay = this.dateFromStay;
+        var dateToStay = this.dateToStay;
 
-        this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthplace)
+        this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthplace, numStay, dateStay, dateFromStay, dateToStay, this.isFrench, this.isEuropean)
           .then((res: any) => {
 
             //case of authentication failure : server unavailable or connection problem
@@ -1288,4 +1319,10 @@ export class Profile {
       }
     }
   }
+  selectNationality(e){
+    this.profileService.getIdentifiantNationalityByNationality(e.target.value).then((data: any)=> {
+      this.isEuropean = data.data[0].pk_user_identifiants_nationalite == "42" ? 1 : 0;
+    })
+  }
+
 }

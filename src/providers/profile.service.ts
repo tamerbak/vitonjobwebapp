@@ -182,9 +182,49 @@ export class ProfileService {
    * @description update jobyer information
    * @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
    */
-  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace) {
+  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace, numStay, dateStay, dateFromStay, dateToStay, isFrench, isEuropean) {
     var sql = "";
     //building the sql request
+    if(isFrench){
+      nationalityId = "91";
+      sql = "update user_jobyer set  " +
+        "titre='" + title + "', " +
+        "nom='" + lastname + "', " +
+        "prenom='" + firstname + "', " +
+        "numero_securite_sociale='" + numSS + "', " +
+        "cni='" + cni + "', " +
+        (!birthdate ? " " : "date_de_naissance ='" + birthdate + "',") +
+        "lieu_de_naissance ='" + birthplace + "', " +
+        "fk_user_nationalite ='" + nationalityId + "' " +
+        "where pk_user_jobyer ='" + roleId + "';";
+    }else{
+      if(isEuropean == 1){
+        sql = "update user_jobyer set  " +
+          "titre='" + title + "', " +
+          "nom='" + lastname + "', " +
+          "prenom='" + firstname + "', " +
+          "numero_securite_sociale='" + numSS + "', " +
+          "cni='" + cni + "', " +
+          (!birthdate ? " " : "date_de_naissance ='" + birthdate + "',") +
+          "lieu_de_naissance ='" + birthplace + "', " +
+          "fk_user_nationalite ='" + nationalityId + "' " +
+          "fk_user_pays ='" + nationalityId + "' " +
+          "where pk_user_jobyer ='" + roleId + "';";
+
+      }else{
+        sql = "update user_jobyer set  " +
+          "titre='" + title + "', " +
+          "nom='" + lastname + "', " +
+          "prenom='" + firstname + "', " +
+          "numero_securite_sociale='" + numSS + "', " +
+          "cni='" + cni + "', " +
+          (!birthdate ? " " : "date_de_naissance ='" + birthdate + "',") +
+          "lieu_de_naissance ='" + birthplace + "', " +
+          "fk_user_nationalite ='" + nationalityId + "' " +
+          "where pk_user_jobyer ='" + roleId + "';";
+
+      }
+    }
     if (nationalityId) {
       sql = "update user_jobyer set  " +
         "titre='" + title + "', " +
@@ -284,6 +324,20 @@ export class ProfileService {
           resolve(JSON.parse(data._body));
         });
     });
+  }
+
+  getIdentifiantNationalityByNationality(natId){
+    var sql = "select i.* from user_identifiants_nationalite as i, user_nationalite as n where i.pk_user_identifiants_nationalite = n.fk_user_identifiants_nationalite and n.pk_user_nationalite = '" + natId + "'";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any)=> {
+          resolve(data);
+        });
+    })
+
   }
 
 
