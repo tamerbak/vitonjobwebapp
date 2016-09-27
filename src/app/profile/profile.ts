@@ -125,6 +125,8 @@ export class Profile {
   dateStay;
   dateFromStay;
   dateToStay;
+  whoDeliverStay;
+  regionId;
 
 
 
@@ -177,6 +179,33 @@ export class Profile {
     this.listService.loadCountries("jobyer").then((data: any) => {
       this.pays = data.data;
     });
+    if(!this.isEmployer)
+      this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) =>{
+        data = data.data[0];
+        this.regionId = data.fk_user_identifiants_nationalite;
+        if(this.regionId == '40'){
+          this.isFrench = true;
+        }else{
+          this.index = data.fk_user_pays;
+          if(this.regionId == '42'){
+            this.isEuropean = 1;
+            this.isFrench = false;
+            this.dateStay = new Date();
+            this.dateFromStay = data.debut_validite;
+            this.dateToStay = data.fin_validite;
+            this.whoDeliverStay = data.instance_delivrance;
+            this.numStay = data.numero_titre_sejour;
+            //(<HTMLInputElement>document.getElementById("dateStay")).value = "2016-03-09";
+          }else{
+            this.isEuropean = 0;
+            this.isFrench = false;
+          }
+        }
+    })
+  }
+
+  ngOnInit(): void {
+    //this.index = 33;
   }
 
   getUserFullname() {
@@ -434,6 +463,13 @@ export class Profile {
       }
 
     }
+    (<HTMLInputElement>document.getElementById("dateStay")).value = moment(this.dateStay).format("YYYY-MM-DD");
+    (<HTMLInputElement>document.getElementById("dateFromStay")).value = moment(this.dateFromStay).format("YYYY-MM-DD");
+    (<HTMLInputElement>document.getElementById("dateToStay")).value = moment(this.dateToStay).format("YYYY-MM-DD");
+
+    this.profileService.getPrefecture(this.whoDeliverStay).then((data: any) => {
+      jQuery(".whoDeliver-select").select2('data', {id: data.data[0].id, nom: this.whoDeliverStay});
+    })
   }
 
   updateScan(accountId, userId, role) {
@@ -470,8 +506,9 @@ export class Profile {
         jQuery('.nationalitySelectPicker').selectpicker();
       }
     }
-  }
 
+
+  }
 
   ngAfterViewInit(): void {
     var self = this;
@@ -522,6 +559,7 @@ export class Profile {
                 {
                   self.birthcp = e.added.code;
                   self.selectedCP = e.added.id;
+                  self.selectedCommune = null;
                 }
               );
 
@@ -549,6 +587,7 @@ export class Profile {
             if(!self.selectedCP || self.selectedCP == 0){
               return "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('%"+term+"%') UNION select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('"+term+"') limit 5";
             }else{
+              //return "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('%"+term+"%') and fk_user_code_postal="+self.selectedCP+" UNION select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('"+term+"') and fk_user_code_postal="+self.selectedCP+" limit 5";
               return "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('%"+term+"%') and fk_user_code_postal="+self.selectedCP+" UNION select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('"+term+"') and fk_user_code_postal="+self.selectedCP+" limit 5";
             }
           },
@@ -570,7 +609,7 @@ export class Profile {
         escapeMarkup: function (markup) {
           return markup;
         },
-        minimumInputLength: 3,
+        //minimumInputLength: 3,
       });
 
       jQuery('.commune-select').on('select2-selecting',
@@ -618,8 +657,45 @@ export class Profile {
       );
     }
 
-  }
+    if (!this.isEmployer) {
+      jQuery('.whoDeliver-select').select2({
 
+        ajax: {
+          url: Configs.sqlURL,
+          type: 'POST',
+          dataType: 'json',
+          quietMillis: 250,
+          params: {
+            contentType: "text/plain",
+          },
+          data: function (term, page) {
+            return "select pk_user_prefecture as id, nom from user_prefecture where lower_unaccent(nom) like lower_unaccent('%" + term + "%') limit 10"; // search term
+          },
+          results: function (data, page) {
+            return {results: data.data};
+          },
+          cache: true
+        },
+        formatResult: function (item) {
+          return item.nom;
+        },
+        formatSelection: function (item) {
+          return item.nom;
+        },
+        dropdownCssClass: "bigdrop",
+        escapeMarkup: function (markup) {
+          return markup;
+        },
+        minimumInputLength: 3,
+      });
+      jQuery('.whoDeliver-select').on('change',
+        (e) => {
+          this.whoDeliverStay = e.added.nom;
+        }
+      );
+    }
+
+  }
 
   watchLastname(e) {
     let _name = e.target.value;
@@ -1103,8 +1179,10 @@ export class Profile {
         var dateFromStay = moment(this.dateFromStay).format('MM/DD/YYYY');
         var dateToStay = moment(this.dateToStay).format('MM/DD/YYYY');
         var birthCountryId = this.index;
+        var prefecture = this.whoDeliverStay;
+        var regionId = this.regionId;
 
-        this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, this.isFrench, this.isEuropean)
+        this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, prefecture, this.isFrench, this.isEuropean, regionId)
           .then((res: any) => {
 
             //case of authentication failure : server unavailable or connection problem
@@ -1323,6 +1401,7 @@ export class Profile {
   selectNationality(e){
     this.profileService.getIdentifiantNationalityByNationality(e.target.value).then((data: any)=> {
       this.isEuropean = data.data[0].pk_user_identifiants_nationalite == "42" ? 1 : 0;
+      this.regionId = data.data[0].pk_user_identifiants_nationalite;
     })
   }
 

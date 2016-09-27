@@ -11,6 +11,20 @@ export class ProfileService {
     this.http = http;
   }
 
+  loadAdditionalUserInformations(id){
+    var sql;
+    sql = "select * from user_jobyer where pk_user_jobyer = '" + id + "';";
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
   loadProfilePicture(accountId, tel?, role?) {
     var sql;
     if (!this.isEmpty(accountId)) {
@@ -182,7 +196,7 @@ export class ProfileService {
    * @description update jobyer information
    * @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
    */
-  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, isFrench, isEuropean) {
+  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, prefecture, isFrench, isEuropean, regionId) {
     var sql = "";
     //building the sql request
     sql = "update user_jobyer set  " +
@@ -195,20 +209,24 @@ export class ProfileService {
     if(isFrench){
       nationalityId = "91";
         sql = sql + " fk_user_nationalite ='" + nationalityId + "', " +
-          "lieu_de_naissance ='" + birthplace + "' ";
+          "lieu_de_naissance ='" + birthplace + "', " +
+          "fk_user_identifiants_nationalite='" + regionId + "' " +
           //birthcp à ajouter
         "where pk_user_jobyer ='" + roleId + "';";
     }else{
       if(isEuropean == 0){
         sql = sql + " fk_user_nationalite ='" + nationalityId + "', " +
           "fk_user_pays ='" + birthCountryId + "', " +
-          "lieu_de_naissance ='" + birthplace + "', ";
+          "lieu_de_naissance ='" + birthplace + "', " +
+          "fk_user_identifiants_nationalite='" + regionId + "' " +
           "where pk_user_jobyer ='" + roleId + "';";
       }else{
         sql = sql + "numero_titre_sejour ='" + numStay + "', " +
           "date_de_delivrance='" + dateStay + "', " +
           "debut_validite='" + dateFromStay + "', " +
-          "fin_validite='" + dateToStay + "' " +
+          "fin_validite='" + dateToStay + "', " +
+          "instance_delivrance='" + this.sqlfyText(prefecture) + "', " +
+          "fk_user_identifiants_nationalite='" + regionId + "' " +
           "where pk_user_jobyer ='" + roleId + "';";
       }
     }
@@ -302,6 +320,26 @@ export class ProfileService {
         });
     })
 
+  }
+
+  getPrefecture(nom){
+    var sql = "select pk_user_prefecture as id from user_prefecture where nom = '" + this.sqlfyText(nom) + "'";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any)=> {
+          resolve(data);
+        });
+    })
+
+  }
+
+  sqlfyText(txt){
+    if(!txt || txt.length==0)
+      return "";
+    return txt.replace("'", "''");
   }
 
 
