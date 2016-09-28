@@ -208,6 +208,7 @@ export class ProfileService {
       (!birthdate ? " " : "date_de_naissance ='" + birthdate + "',");
     if(isFrench){
       nationalityId = "91";
+      regionId = "40";
         sql = sql + " fk_user_nationalite ='" + nationalityId + "', " +
           "lieu_de_naissance ='" + birthplace + "', " +
           "fk_user_identifiants_nationalite='" + regionId + "' " +
@@ -222,6 +223,8 @@ export class ProfileService {
           "where pk_user_jobyer ='" + roleId + "';";
       }else{
         sql = sql + "numero_titre_sejour ='" + numStay + "', " +
+          "fk_user_nationalite ='" + nationalityId + "', " +
+          "fk_user_pays ='" + birthCountryId + "', " +
           "date_de_delivrance='" + dateStay + "', " +
           "debut_validite='" + dateFromStay + "', " +
           "fin_validite='" + dateToStay + "', " +

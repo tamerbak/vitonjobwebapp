@@ -161,10 +161,10 @@ export class Profile {
         listService.loadNationalities().then((response: any) => {
           this.nationalities = response.data;
           this.dataForNationalitySelectReady = true;
-          if(this.isFrench || this.isEuropean) {
+          if(this.isFrench || this.isEuropean == 0) {
             this.scanTitle = " de votre CNI ou Passeport";
           }
-          if(!this.isEuropean){
+          if(this.isEuropean == 1){
             this.scanTitle = " de votre titre du séjour";
           }
         });
@@ -179,7 +179,7 @@ export class Profile {
     this.listService.loadCountries("jobyer").then((data: any) => {
       this.pays = data.data;
     });
-    if(!this.isEmployer)
+    if(!this.isEmployer && !this.isNewUser)
       this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) =>{
         data = data.data[0];
         this.regionId = data.fk_user_identifiants_nationalite;
@@ -195,7 +195,7 @@ export class Profile {
             this.dateToStay = data.fin_validite;
             this.whoDeliverStay = data.instance_delivrance;
             this.numStay = data.numero_titre_sejour;
-            //(<HTMLInputElement>document.getElementById("dateStay")).value = "2016-03-09";
+            this.nationalityId = data.numero_titre_sejour;
           }else{
             this.isEuropean = 0;
             this.isFrench = false;
@@ -463,11 +463,15 @@ export class Profile {
       }
 
     }
-    (<HTMLInputElement>document.getElementById("dateStay")).value = moment(this.dateStay).format("YYYY-MM-DD");
+    if((<HTMLInputElement>document.getElementById("dateStay")) != null)
+      (<HTMLInputElement>document.getElementById("dateStay")).value = moment(this.dateStay).format("YYYY-MM-DD");
+    if((<HTMLInputElement>document.getElementById("dateFromStay")) != null)
     (<HTMLInputElement>document.getElementById("dateFromStay")).value = moment(this.dateFromStay).format("YYYY-MM-DD");
+    if((<HTMLInputElement>document.getElementById("dateToStay")) != null)
     (<HTMLInputElement>document.getElementById("dateToStay")).value = moment(this.dateToStay).format("YYYY-MM-DD");
 
     this.profileService.getPrefecture(this.whoDeliverStay).then((data: any) => {
+      if(data && data.status == "success" && data.data && data.data.length != 0)
       jQuery(".whoDeliver-select").select2('data', {id: data.data[0].id, nom: this.whoDeliverStay});
     })
   }
@@ -897,7 +901,7 @@ export class Profile {
 
   checkINSEE(num: string, communeObj: any) {
 
-    let indicator = num.substring(5, 5);
+    let indicator = num.substring(5, 10);
 
     if (communeObj.id != '0') {
       if (indicator != communeObj.code_insee)
@@ -1052,6 +1056,14 @@ export class Profile {
 
   watchIsFrench(e) {
     this.isFrench = e.target.value == "1" ? true : false;
+    if(!this.isFrench)
+      this.isEuropean = 0;
+
+    if(this.isFrench) {
+      this.scanTitle = " de votre CNI ou Passeport";
+    }else{
+      this.scanTitle = " de votre titre du séjour";
+    }
   }
 
   updateCivility() {
@@ -1402,6 +1414,12 @@ export class Profile {
     this.profileService.getIdentifiantNationalityByNationality(e.target.value).then((data: any)=> {
       this.isEuropean = data.data[0].pk_user_identifiants_nationalite == "42" ? 1 : 0;
       this.regionId = data.data[0].pk_user_identifiants_nationalite;
+      if(this.isFrench || this.isEuropean == 0) {
+        this.scanTitle = " de votre CNI ou Passeport";
+      }
+      if(this.isEuropean == 1){
+        this.scanTitle = " de votre titre du séjour";
+      }
     })
   }
 
