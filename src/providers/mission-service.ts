@@ -1,6 +1,6 @@
-import {Injectable} from "@angular/core";
-import {Configs} from "../configurations/configs";
-import {Http, Headers} from "@angular/http";
+import {Injectable} from '@angular/core';
+import {Configs} from '../configurations/configs';
+import {Http, Headers} from '@angular/http';
 
 // import {GlobalConfigs} from '../configurations/globalConfigs';
 // import {Storage, SqlStorage} from 'ionic-angular';
@@ -100,8 +100,8 @@ export class MissionService {
       if (missionPauses[i]) {
         for (var j = 0; j < missionPauses[i].length; j++) {
           //convert startpausehour and endpausehour to minutes
-          var startMinute = this.convertHoursToMinutes(missionPauses[i][j].pause_debut);
-          var endMinute = this.convertHoursToMinutes(missionPauses[i][j].pause_fin);
+          var startMinute = this.convertHoursToMinutes(missionPauses[i][j].pause_debut_temp);
+          var endMinute = this.convertHoursToMinutes(missionPauses[i][j].pause_fin_temp);
           valuesString = valuesString + "(" + missionHours[i].id + ", " + startMinute + ", " + endMinute + "),";
 
         }
@@ -674,11 +674,11 @@ export class MissionService {
     });
   }
 
-  getTodayMission(missionHoursTemp) {
+  getTodayMission(missionHoursTemp){
     let now = new Date().setHours(0, 0, 0, 0);
     let missionHoursToday = [];
-    for (let i = 0; i < missionHoursTemp.length; i++) {
-      if (new Date(missionHoursTemp[i].jour_debut.replace(' ', 'T')).setHours(0, 0, 0, 0) == now || new Date(missionHoursTemp[i].jour_fin.replace(' ', 'T')).setHours(0, 0, 0, 0) == now) {
+    for(let i = 0; i < missionHoursTemp.length; i++){
+      if(new Date(missionHoursTemp[i].jour_debut.replace(' ', 'T')).setHours(0, 0, 0, 0) == now || new Date(missionHoursTemp[i].jour_fin.replace(' ', 'T')).setHours(0, 0, 0, 0) == now){
         missionHoursToday.push(missionHoursTemp[i]);
       }
     }
@@ -686,47 +686,47 @@ export class MissionService {
     return array;
   }
 
-  disablePointing(missionHours, missionPauses) {
+  disablePointing(missionHours, missionPauses){
     let disabled = true;
     let h = new Date().getHours();
     let m = new Date().getMinutes();
-    let minutesNow = this.convertHoursToMinutes(h + ':' + m);
-    for (let i = 0; i < missionHours.length; i++) {
+    let minutesNow = this.convertHoursToMinutes(h+':'+m);
+    for(let i = 0; i < missionHours.length; i++){
       let scheduledHour = this.isEmpty(missionHours[i].heure_debut_new) ? missionHours[i].heure_debut : missionHours[i].heure_debut_new;
-      if (scheduledHour - minutesNow <= 10 && scheduledHour - minutesNow >= 0 && this.isEmpty(missionHours[i].heure_debut_pointe)) {
+      if(scheduledHour - minutesNow <=  10 && scheduledHour - minutesNow >=  0 && this.isEmpty(missionHours[i].heure_debut_pointe)){
         disabled = false;
         let nextPointing = {id: missionHours[i].id, start: true};
         return {disabled: disabled, nextPointing: nextPointing};
       }
       scheduledHour = this.isEmpty(missionHours[i].heure_fin_new) ? missionHours[i].heure_fin : missionHours[i].heure_fin_new;
-      if (scheduledHour - minutesNow <= 10 && scheduledHour - minutesNow >= 0 && (this.isEmpty(missionHours[i].heure_fin_pointe))) {
+      if(scheduledHour - minutesNow <=  10 && scheduledHour - minutesNow >=  0 && (this.isEmpty(missionHours[i].heure_fin_pointe))){
         disabled = false;
         let nextPointing = {id: missionHours[i].id, start: false};
         return {disabled: disabled, nextPointing: nextPointing};
       }
-      for (let j = 0; j < missionPauses[i].length; j++) {
+      for(let j = 0; j < missionPauses[i].length; j++){
         let p = missionPauses[i][j];
         let minutesPause;
-        if (this.isEmpty(p.pause_debut_new)) {
+        if(this.isEmpty(p.pause_debut_new)){
           let h = (p.pause_debut).split(":")[0];
           let m = (p.pause_debut).split(":")[1];
-          minutesPause = this.convertHoursToMinutes(h + ':' + m);
-        } else {
+          minutesPause = this.convertHoursToMinutes(h+':'+m);
+        }else{
           minutesPause = p.pause_debut_new;
         }
-        if (minutesPause - minutesNow <= 10 && minutesPause - minutesNow >= 0 && this.isEmpty(p.pause_debut_pointe)) {
+        if(minutesPause - minutesNow <=  10 && minutesPause - minutesNow >=  0 && this.isEmpty(p.pause_debut_pointe)){
           disabled = false;
           let nextPointing = {id: missionHours[i].id, start: true, id_pause: p.id};
           return {disabled: disabled, nextPointing: nextPointing};
         }
-        if (this.isEmpty(p.pause_fin_new)) {
+        if(this.isEmpty(p.pause_fin_new)){
           let h = (p.pause_fin).split(":")[0];
           let m = (p.pause_fin).split(":")[1];
-          let minutesPause = this.convertHoursToMinutes(h + ':' + m);
-        } else {
+          let minutesPause = this.convertHoursToMinutes(h+':'+m);
+        }else{
           minutesPause = p.pause_fin_new;
         }
-        if (minutesPause - minutesNow <= 10 && minutesPause - minutesNow >= 0 && this.isEmpty(p.pause_fin_pointe)) {
+        if(minutesPause - minutesNow <=  10 && minutesPause - minutesNow >=  0 && this.isEmpty(p.pause_fin_pointe)){
           disabled = false;
           let nextPointing = {id: missionHours[i].id, start: false, id_pause: p.id};
           return {disabled: disabled, nextPointing: nextPointing};
