@@ -6,10 +6,11 @@ import {Notifications} from "../notifications/notifications";
 import {SharedService} from "../../../providers/shared.service";
 import {OffersService} from "../../../providers/offer.service";
 declare var jQuery: any;
+declare var require: any;
 
 @Component({
   selector: '[navbar]',
-  events: ['toggleSidebarEvent', 'toggleChatEvent'],
+  events: ['toggleSidebarEvent', 'toggleAppEvent'],
   directives: [Notifications, TOOLTIP_DIRECTIVES, ROUTER_DIRECTIVES],
   providers: [OffersService],
   template: require('./navbar.html'),
@@ -18,14 +19,15 @@ declare var jQuery: any;
 })
 export class Navbar implements OnInit {
   toggleSidebarEvent: EventEmitter<any> = new EventEmitter();
+  toggleAppEvent: EventEmitter<any> = new EventEmitter();
   $el: any;
   config: any;
   currentUser: any = {nom: "", prenom: ""};
   isEmployer: boolean;
   projectTarget: string;
 
-  allSearchOffers: any = []
-  autoSearchOffers: any = []
+  allSearchOffers: any = [];
+  autoSearchOffers: any = [];
   public loadOffers: Function;
 
   setImgClasses() {
@@ -92,16 +94,35 @@ export class Navbar implements OnInit {
   logOut() {
     this.currentUser = null;
     this.sharedService.logOut();
-    this.router.navigate(['app/dashboard']);
+    this.router.navigate(['app/home']);
   }
 
   toggleSidebar(state): void {
     this.toggleSidebarEvent.emit(state);
   }
 
+  toggleChat(): void {
+    this.toggleAppEvent.emit(null);
+  }
+
   ngOnInit(): void {
     this.loadOffers = this.getOffers.bind(this);
     this.loadOffers = this.refreshOffers.bind(this);
+
+    setTimeout(() => {
+      let $chatNotification = jQuery('#chat-notification');
+      $chatNotification.removeClass('hide').addClass('animated fadeIn')
+        .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', () => {
+          $chatNotification.removeClass('animated fadeIn');
+          setTimeout(() => {
+            $chatNotification.addClass('animated fadeOut')
+              .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', () => {
+                $chatNotification.addClass('hide');
+              });
+          }, 4000);
+        });
+      $chatNotification.siblings('#toggle-chat').append('<i class="chat-notification-sing animated bounceIn"></i>');
+    }, 4000);
 
     this.$el.find('.input-group-addon + .form-control').on('blur focus', function (e): void {
       jQuery(this).parents('.input-group')[e.type === 'focus' ? 'addClass' : 'removeClass']('focus');
@@ -116,6 +137,6 @@ export class Navbar implements OnInit {
     } else {
       this.sharedService.setProjectTarget("employer");
     }
-    this.router.navigate(['app/dashboard']);
+    this.router.navigate(['app/home']);
   }
 }

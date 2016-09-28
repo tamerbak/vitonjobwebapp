@@ -77,7 +77,7 @@ sing-app/
   |   │   │
   |   │   ├───dashboard/                                 * Simple Dashboard page
   |   │   │       dashboard.html
-  |   │   │       dashboard.ts
+  |   │   │       home.ts
   |   │   │
   |   │   ├───error/                                     * Error page
   |   │   │       error.html

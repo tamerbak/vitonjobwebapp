@@ -20,7 +20,7 @@ export class PendingContracts {
               private router: Router) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
-      this.router.navigate(['app/dashboard']);
+      this.router.navigate(['app/home']);
     } else {
 
     }

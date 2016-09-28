@@ -50,7 +50,7 @@
     "./src/app/modal-picture/modal-picture.ts",
     "./src/app/mission-pointing/mission-pointing.ts",
     "./src/app/in-progress/in-progress.ts",
-    "./src/app/dashboard/dashboard.ts",
+    "./src/app/home/home.ts",
     "./src/app/attachements/attachements.ts",
     "./src/app/yousign/yousign.ts",
     "./src/app/mission-list/mission-list.ts",

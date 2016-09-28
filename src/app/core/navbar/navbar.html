@@ -11,12 +11,23 @@
         <!-- shown on xs & sm screen. collapses and expands navigation -->
         <a (click)="toggleSidebar('collapse')" class="hidden-lg-up nav-link" href="#" data-html="true"
            title="Show/hide<br>sidebar" data-placement="bottom">
-          <span class="rounded rounded-lg bg-gray text-white hidden-md-up"><i class="fa fa-bars fa-lg"></i></span>
+          <span class="rounded rounded-lg hidden-md-up" style="color: #555555;"><i class="fa fa-bars fa-lg"></i></span>
           <i class="fa fa-bars fa-lg hidden-sm-down"></i>
         </a>
       </li>
     </ul>
-    <a class="navbar-brand hidden-md-up" href="index.html">
+    <ul class="nav navbar-nav navbar-right">
+      <li class="nav-item">
+        <!-- toggles chat -->
+        <a class="nav-link hidden-md-down" href="#" (click)="toggleChat()">
+          <span class="rounded rounded-lg text-white"><i class="glyphicon glyphicon-th"></i></span>
+        </a>
+        <a class="nav-link hidden-md-up" href="#" (click)="toggleChat()">
+          <span class="rounded rounded-lg" style="color: #555555"><i class="glyphicon glyphicon-th fa-lg"></i></span>
+        </a>
+      </li>
+    </ul>
+    <!--a class="navbar-brand hidden-md-up" href="index.html">
       <i class="fa fa-circle text-gray mr-n-sm"></i>
       <i class="fa fa-circle text-warning"></i>
       &nbsp;
@@ -24,7 +35,26 @@
       &nbsp;
       <i class="fa fa-circle text-warning mr-n-sm"></i>
       <i class="fa fa-circle text-gray"></i>
-    </a>
+    </a-->
+    <ul class="nav navbar-nav pull-xs-right hidden-md-up" (click)="$event.preventDefault()">
+      <li *ngIf="currentUser" class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" style="background-color: transparent;">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;
+          <span class="circle bg-warning fw-bold">
+						{{autoSearchOffers.length}}
+					</span>
+          <b class="caret"></b>
+        </a>
+        <!-- ready to use notifications dropdown-->
+        <notifications [alerts]="autoSearchOffers" [loadOffers]="loadOffers"
+                       class="dropdown-menu dropdown-menu-right animated animated-fast fadeInUp"
+        ></notifications>
+      </li>
+    </ul>
+
   </div>
 
   <!-- this part is hidden for xs screens -->
@@ -53,7 +83,7 @@
 					</span>
           &nbsp;
           {{!sharedService.getCurrentUser().prenom ? "":sharedService.getCurrentUser().prenom }} <strong>{{!sharedService.getCurrentUser().nom?
-          (sharedService.getCurrentUser().estEmployeur ? "Employeur":"Jobyer") : sharedService.getCurrentUser().nom
+          (sharedService.getCurrentUser().eschattEmployeur ? "Employeur":"Jobyer") : sharedService.getCurrentUser().nom
           }}</strong>&nbsp;
           <span class="circle bg-warning fw-bold">
 						{{autoSearchOffers.length}}
