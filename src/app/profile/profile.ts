@@ -613,7 +613,7 @@ export class Profile {
         escapeMarkup: function (markup) {
           return markup;
         },
-        //minimumInputLength: 3,
+        minimumInputLength: 3,
       });
 
       jQuery('.commune-select').on('select2-selecting',
