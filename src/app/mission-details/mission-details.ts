@@ -18,7 +18,6 @@ import {ModalComponent} from "./modal-component/modal-component";
 
 declare var Messenger:any;
 
-
 @Component({
   selector: '[mission-details]',
   template: require('./mission-details.html'),
@@ -70,8 +69,6 @@ export class MissionDetails {
   isInvoiceAvailable: boolean = false;
   isReleveAvailable: boolean = false;
 
-
-
   scheduleStartStatus: string = '-1';
   scheduleEndStatus: string = '-1';
 
@@ -85,22 +82,6 @@ export class MissionDetails {
               private missionService: MissionService,
               private financeService: FinanceService,
               private router: Router) {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     this.currentUser = this.sharedService.getCurrentUser();
     if(!this.currentUser){
@@ -159,7 +140,6 @@ export class MissionDetails {
 //     this.starsText = this.writeStars(this.rating);
 //   });
 
-      console.log(JSON.stringify(this.contract));
       this.financeService.checkInvoice(this.contract.pk_user_contrat).then(
         (invoice: any) => {
           if (invoice) {
@@ -181,76 +161,11 @@ export class MissionDetails {
     if (!this.isNewMission || !this.isEmployer || this.contract.signature_jobyer.toUpperCase() == 'Non'.toUpperCase()) {
       return;
     }
-
-
-
-
-
-
-
-
-
-
-
-
     if (!this.missionPauses[dayIndex]) {
       this.missionPauses[dayIndex] = [{}];
-
-
-
-
-
-
-
-
-
-
-
-
-
     } else {
       this.missionPauses[dayIndex].push([{}]);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   }
 
 
@@ -285,24 +200,17 @@ export class MissionDetails {
         return;
       } else {
 // data saved
-
-
-
         this.addAlert("success", "Vos données ont été bien sauvegardées");
 // Update contract status
         this.contract.vu = 'Oui';
-
-
         var message = "Horaire du contrat n°" + this.contract.numero + " validé";
-
-
-//this.sendInfoBySMS(message, "toJobyer");
+        this.sendInfoBySMS(message, "toJobyer");
         if (this.contract.option_mission != "1.0") {
 //this.missionService.schedulePointeuse(this.contract, this.missionHours, this.missionPauses);
         }
       }
     });
-//this.navigationPreviousPage();
+    this.navigationPreviousPage();
   }
 
   sendPushNotification(message, objectifNotif, who) {
@@ -733,7 +641,6 @@ export class MissionDetails {
 // });
 // this.nav.present(confirm);
 
-
         let idContrat = data.id;
         let idOffre = data.offerId;
         let rate = data.rate;
@@ -779,7 +686,6 @@ export class MissionDetails {
 
   resetForm() {
 //TODO Remove
-    console.log('resetForm()');
     var array = this.missionService.constructMissionHoursArray(this.initialMissionHours);
     this.missionHours = array[0];
     this.missionPauses = array[1];
@@ -850,7 +756,6 @@ export class MissionDetails {
     }
     return disable;
   }
-
 
 // changeOption() {
 //   let modal = Modal.create(ModalTrackMissionPage);
@@ -1100,45 +1005,6 @@ this.nav.present(toast);
 //   this.nav.present(actionSheet);
 // }
 //
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // undoNewHour(i, j, isStartMission, isStartPause) {
 //   //get the initial hour
