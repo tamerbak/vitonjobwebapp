@@ -54,3 +54,54 @@
   margin-right: -20px;
   padding: 0 12px;
 }
+@media screen and (min-width: 300px) and (max-width: 500px) {
+
+  .add-offer{
+    display: table;
+    margin: 0 auto;
+    margin-bottom: 1em;
+    width: 100%;
+  }
+  .btn-grp{
+    display: table!important;
+    margin: 0 auto!important;
+    margin-bottom: 1em;
+  }
+  .title{
+    font-size: 1em;
+  }
+  .btn-detail-offre{
+    width: 100%!important;
+    margin: 0 auto!important;
+    margin-top: 1em!important;
+  }
+
+  .grp-search{
+    width: 100%!important;
+  }
+  .btn-search{
+  width: 100%!important;
+  border-radius: 0.2rem;
+  }
+  .title-2{
+    font-size: 1em;
+  }
+  .btn-detail-offre-2{
+    width: 100%!important;
+    margin: 0 auto!important;
+    margin-top: 1em!important;
+  }
+  .price{
+    text-align: right;
+    margin-top: 1em;
+  }
+  .labelSwitch{
+    float: right;
+    padding-left: 0!important;
+    font-size: 13px;
+  }
+  .radio{
+    margin-top: 1.7em;
+    float: left;
+  }
+}
