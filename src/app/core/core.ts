@@ -4,20 +4,25 @@ import {FORM_PROVIDERS} from "@angular/common";
 import {Sidebar} from "./sidebar/sidebar";
 import {Navbar} from "./navbar/navbar";
 import {ConfigService} from "./config";
+import {AppSidebar} from './app-sidebar/app-sidebar';
 
 declare var Raphael: any;
 declare var jQuery: any;
 declare var Tether: any;
+declare var require: any;
+
+export const REDIRECTTO: string = "/login";
 
 @Component({
   selector: 'app',
   host: {
     '[class.nav-static]': 'config.state["nav-static"]',
+    '[class.chat-sidebar-opened]': 'chatOpened',
     '[class.app]': 'true',
     id: 'app'
   },
   providers: [FORM_PROVIDERS],
-  directives: [Sidebar, Navbar, ROUTER_DIRECTIVES],
+  directives: [Sidebar, Navbar, AppSidebar, ROUTER_DIRECTIVES],
   template: require('./core.html')
 })
 export class Core {
@@ -26,6 +31,7 @@ export class Core {
   $sidebar: any;
   el: ElementRef;
   router: Router;
+  chatOpened: boolean;
 
   constructor(config: ConfigService,
               el: ElementRef,
@@ -38,6 +44,7 @@ export class Core {
     this.config = config.getConfig();
     this.configFn = config;
     this.router = router;
+    this.chatOpened = false;
 
     jQuery.fn.onPositionChanged = function (trigger, millis): any {
       if (millis == null) {
@@ -86,6 +93,25 @@ export class Core {
     let toggleNavigation = state === 'static' ? this.toggleNavigationState : this.toggleNavigationCollapseState;
     toggleNavigation.apply(this);
     localStorage.setItem('nav-static', this.config.state['nav-static']);
+  }
+
+  toggleAppListener(): void {
+    jQuery(this.el.nativeElement).find('.chat-notification-sing').remove();
+    this.chatOpened = !this.chatOpened;
+  }
+  
+  toggleChatListener(): void {
+    jQuery(this.el.nativeElement).find('.chat-notification-sing').remove();
+    this.chatOpened = !this.chatOpened;
+
+    setTimeout(() => {
+      // demo: add class & badge to indicate incoming messages from contact
+      // .js-notification-added ensures notification added only once
+      jQuery('.chat-sidebar-user-group:first-of-type .list-group-item:first-child:not(.js-notification-added)')
+        .addClass('active js-notification-added')
+        .find('.fa-circle')
+        .after('<span class="label label-pill label-danger pull-right animated bounceInDown">3</span>');
+    }, 1000);
   }
 
   toggleNavigationState(): void {

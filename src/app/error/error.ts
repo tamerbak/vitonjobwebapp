@@ -18,7 +18,7 @@ export class ErrorPage {
   }
 
   searchResult(): void {
-    this.router.navigate(['/app', 'dashboard']);
+    this.router.navigate(['/app', 'home']);
   }
 
 }

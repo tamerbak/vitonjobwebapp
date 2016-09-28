@@ -2,8 +2,8 @@ declare let jQuery: any;
 
 export class ConfigService {
   config = {
-    name: 'VitOnJob',
-    title: 'Sing - Dashboard',
+    name: '',
+    title: 'Vit-On-Job',
     version: '2.0.0',
     /**
      * Whether to print and alert some log information

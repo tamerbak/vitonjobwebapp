@@ -20,10 +20,10 @@ import {MissionService} from "../../providers/mission-service";
 import {Helpers} from "../../providers/helpers.service";
 
 /*
- Generated class for the MissionListPage page.
- See http://ionicframework.com/docs/v2/components/#navigation for more info on
- Ionic pages and navigation.
- */
+	Generated class for the MissionListPage page.
+	See http://ionicframework.com/docs/v2/components/#navigation for more info on
+	Ionic pages and navigation.
+*/
 @Component({
   // templateUrl: 'build/pages/mission-list/mission-list.html',
   // pipes: [DateConverter],
@@ -78,7 +78,7 @@ export class MissionList {
 
     console.log(this.currentUser)
     if (!this.currentUser) {
-      this.router.navigate(['app/dashboard']);
+      this.router.navigate(['app/home']);
       return;
     } else {
       this.sharedService.setCurrentMission(null);

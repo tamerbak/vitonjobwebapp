@@ -31,7 +31,7 @@ export class WalletCreate {
               private router: Router) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
-      this.router.navigate(['app/dashboard']);
+      this.router.navigate(['app/home']);
     }
   }
 
@@ -40,7 +40,7 @@ export class WalletCreate {
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
     } else {
-      this.router.navigate(['app/dashboard']);
+      this.router.navigate(['app/home']);
       return;
 
     }

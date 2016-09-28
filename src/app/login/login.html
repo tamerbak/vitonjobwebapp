@@ -2,7 +2,7 @@
   <main id="content" class="widget-login-container" role="main" style="padding-top: 5%">
     <div class="row">
       <div class="col-xl-6 col-md-8 col-xs-12 col-xl-offset-3 col-md-offset-2 col-xs-offset-0">
-        <h5 class="widget-login-logo animated fadeInUp">
+        <h5 class="widget-login-logo animated fadeInUp collapse navbar-collapse">
           <img src="../assets/images/logo.png" style="width: 50%; margin-bottom: 20px;">
         </h5>
         <section class="widget widget-login animated">
@@ -134,31 +134,43 @@
                           [disabled]="isAuthDisabled() || !hideLoader">{{libelleButton}}
                   </button>
                 </div>
+                <div class="btn-toolbar pull-xs-left m-t-1">
+                  <div class="widget-body btn loaderPosition" [hidden]="hideLoader">
+                    <div class="loader animated fadeIn handle">
+											<span class="spinner">
+												<i class="fa fa-spinner fa-spin"></i>
+											</span>
+                    </div>
+                  </div>
+                  <!--button class="btn btn-inverse btn-sm" (click)="authenticate()"
+                          [disabled]="isAuthDisabled() || !hideLoader">Mot de passe oublié
+                  </button-->
+                  <div class="pull-xs-right" style="font-size: small;    width: 130px;;">
+                    <div modal-component ></div>
+                  </div>
+                </div>
+
               </div>
-              <div class="row m-t-1">
-                <div class="col-md-12">
-                  <div class="clearfix">
+              <!--div class="row m-t-1">
+                <!--div class="col-md-12"-->
+                  <!--div class="clearfix">
                     <!--<div class="abc-checkbox widget-login-info pull-xs-right ml-n-lg">
                                             <input type="checkbox" id="checkbox1" value="1">
                                             <label for="checkbox1">Keep me signed in </label>
-                                        </div>-->
-                  </div>
+                                        </div>>
+                  </div-->
                   <div class="row m-t-1">
-                    <div class="col-md-6 col-md-push-6">
+                    <!--div class="col-md-5 col-xs-10"-->
                       <div class="clearfix">
                         <div class="abc-checkbox widget-login-info pull-xs-right ml-n-lg">
                           <input type="checkbox" #checkbox1 id="checkbox1" (change)="isRemembered = checkbox1.checked">
                           <label for="checkbox1">Se souvenir de moi </label>
                         </div>
                       </div>
-                    </div>
-
-                    <div class="col-md-6 col-md-pull-6">
-                      <div modal-component></div>
-                    </div>
+                    <!--/div-->
                   </div>
-                </div>
-              </div>
+                <!--/div-->
+              <!--/div-->
             </form>
           </div>
         </section>
@@ -166,6 +178,6 @@
     </div>
   </main>
   <footer class="page-footer">
-    2015 &copy; Sing. Admin Dashboard Template.
+    2016 &copy; Vit-On-Job est une marque de Manaona.
   </footer>
 </div>
