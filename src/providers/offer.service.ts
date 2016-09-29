@@ -8,9 +8,15 @@ export class OffersService {
   offerList: any;
   listSectors: any;
   listJobs: any;
+  convention : any;
 
   constructor(private http: Http) {
     this.http = http;
+    this.convention = {
+      id:0,
+      code:'',
+      libelle:''
+    };
   }
 
   /**
@@ -500,21 +506,16 @@ export class OffersService {
       "where pk_user_convention_collective in " +
       "(select fk_user_convention_collective from user_job where pk_user_job="+idjob+")";
 
-    console.log(sql);
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          let convention = {
-            id:0,
-            code:'',
-            libelle:''
-          };
+
           if(data.data && data.data.length>0){
-            convention = data.data[0];
+            this.convention = data.data[0];
           }
-          resolve(convention);
+          resolve(this.convention);
         });
     });
   }
@@ -526,7 +527,6 @@ export class OffersService {
    */
   getConventionNiveaux(idConvention){
     let sql = "select pk_user_niveau_convention_collective as id, code, libelle from user_niveau_convention_collective where fk_user_convention_collective="+idConvention;
-    console.log(sql);
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -547,7 +547,6 @@ export class OffersService {
    */
   getConventionCategory(idConvention){
     let sql = "select pk_user_categorie_convention as id, code, libelle from user_categorie_convention where fk_user_convention_collective="+idConvention;
-    console.log(sql);
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -568,7 +567,6 @@ export class OffersService {
    */
   getConventionEchelon(idConvention){
     let sql = "select pk_user_echelon_convention as id, code, libelle from user_echelon_convention where fk_user_convention_collective="+idConvention;
-    console.log(sql);
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -589,7 +587,6 @@ export class OffersService {
    */
   getConventionCoefficients(idConvention){
     let sql = "select pk_user_coefficient_convention as id, code, libelle from user_coefficient_convention where fk_user_convention_collective="+idConvention;
-    console.log(sql);
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -602,6 +599,26 @@ export class OffersService {
         });
     });
   }
+
+  getConventionParameters(idConvention){
+    let sql = "select pk_user_parametrage_convention as id, remuneration_de_reference as rate, " +
+      "fk_user_convention_collective as idcc, fk_user_categorie_convention as idcat, " +
+      "fk_user_echelon_convention as idechelon, fk_user_coefficient_convention as idcoeff " +
+      "from user_parametrage_convention where fk_user_convention_collective="+idConvention;
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let list = [];
+          if(data.data && data.data.length>0)
+            list = data.data;
+          resolve(list);
+        });
+    });
+  }
+
 
   /*
    * USEFUL FUNCTIONS

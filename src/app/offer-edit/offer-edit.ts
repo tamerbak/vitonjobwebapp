@@ -35,6 +35,25 @@ export class OfferEdit {
   hideJobLoader: boolean = true;
   datepickerOpts: any;
   obj: string;
+
+  /*
+   * Collective conventions management
+   */
+  convention : any;
+  niveauxConventions : any = [];
+  selectedNivConvID: number = 0;
+  categoriesConventions : any = [];
+  selectedCatConvID: number = 0;
+  echelonsConventions : any = [];
+  selectedEchConvID: number = 0;
+  coefficientsConventions : any = [];
+  selectedCoefConvID: number = 0;
+  parametersConvention : any = [];
+  selectedParamConvID: number = 0;
+  minHourRate : number = 0;
+  invalidHourRateMessage='';
+  invalidHourRate=false;
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private router: Router,
@@ -42,6 +61,11 @@ export class OfferEdit {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['app/home']);
+    }
+    this.convention = {
+      id : 0,
+      code : '',
+      libelle : ''
     }
   }
 
@@ -155,13 +179,79 @@ export class OfferEdit {
     });
   }
 
+  /**
+   * The job has been selected we will set the offer's job and the conventions data
+   * @param idJob
+   */
   jobSelected(idJob) {
     this.offer.jobData.idJob = idJob;
     var jobsTemp = this.jobs.filter((v)=> {
       return (v.id == idJob);
     });
     this.offer.jobData.job = jobsTemp[0].libelle;
+
+    //  Load collective convention
+    this.offersService.getConvention(idJob).then(c=>{
+      if(c)
+        this.convention = c;
+      if(this.convention.id>0){
+        this.offersService.getConventionNiveaux(this.convention.id).then(data=>{
+          this.niveauxConventions = data;
+        });
+        this.offersService.getConventionCoefficients(this.convention.id).then(data=>{
+          this.coefficientsConventions = data;
+        });
+        this.offersService.getConventionEchelon(this.convention.id).then(data=>{
+          this.echelonsConventions = data;
+        });
+        this.offersService.getConventionCategory(this.convention.id).then(data=>{
+          this.categoriesConventions = data;
+        });
+        this.offersService.getConventionParameters(this.convention.id).then(data=>{
+          this.parametersConvention = data;
+          this.checkHourRate();
+        });
+      }
+    });
   }
+
+  /**
+   * If a collective convention is loaded we need to set the salary to the minimum rate of its parameters
+   */
+  checkHourRate(){
+
+    if(!this.parametersConvention || this.parametersConvention.length==0)
+      return;
+
+    this.selectedParamConvID = this.parametersConvention[0].id;
+    this.minHourRate = this.parametersConvention[0].rate;
+    for(let i=1 ; i < this.parametersConvention.length ; i++){
+      if(this.minHourRate > this.parametersConvention[i].rate){
+        this.selectedParamConvID = this.parametersConvention[i].id;
+        this.minHourRate = this.parametersConvention[i].rate;
+      }
+    }
+
+    this.validateRate(this.offer.jobData.remuneration);
+  }
+
+  /**
+   *
+   * @param rate
+   * @returns {boolean}
+   */
+  validateRate(rate){
+    if(rate>=this.minHourRate){
+      this.invalidHourRateMessage = '';
+      this.invalidHourRate = false;
+      return true;
+    }
+
+    this.invalidHourRateMessage = '* Le taux horaire devrait être supérieur ou égal à '+this.minHourRate;
+    this.invalidHourRate = true;
+    return false;
+  }
+
 
   watchLevel(e) {
     this.offer.jobData.level = e.target.value;
@@ -340,7 +430,7 @@ export class OfferEdit {
   editOffer() {
     if(this.obj == "add"){
       this.offer.calendarData = this.slotsToSave;
-      if (!this.offer.jobData.job || !this.offer.jobData.sector || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0) {
+      if (!this.offer.jobData.job || !this.offer.jobData.sector || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || this.minHourRate<this.offer.jobData.remuneration) {
         this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
         return;
       }
