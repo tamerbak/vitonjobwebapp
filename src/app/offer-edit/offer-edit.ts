@@ -241,7 +241,8 @@ export class OfferEdit {
    * @returns {boolean}
    */
   validateRate(rate){
-    if(rate>=this.minHourRate){
+    let r = parseFloat(rate);
+    if(r>=this.minHourRate){
       this.invalidHourRateMessage = '';
       this.invalidHourRate = false;
       return true;
