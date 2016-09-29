@@ -37,3 +37,7 @@
   padding-left: 20px;
   background: rgb(100, 189, 99);
 }
+
+.nav-item .dropdown .open .nav-link .dropdown-toggle{
+  background-color: transparent;
+}

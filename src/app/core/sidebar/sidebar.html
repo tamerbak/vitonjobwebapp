@@ -4,25 +4,31 @@
   </header>
   <!-- seems like lots of recent admin template have this feature of user info in the sidebar.
   looks good, so adding it and enhancing with notifications -->
-  <div *ngIf="!!currentUser" class="sidebar-status hidden-md-up">
+  <div *ngIf="currentUser" class="sidebar-status hidden-md-up">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-      <span class="thumb-sm avatar pull-xs-right">
+      <span class="thumb-sm avatar pull-xs-left">
         <img class="img-circle" src={{sharedService.getProfilImageUrl()}} alt="...">
       </span>
       <!-- .circle is a pretty cool way to add a bit of beauty to raw data.
       should be used with bg-* and text-* classes for colors -->
-      <span class="circle bg-warning fw-bold text-gray-dark">
-        13
-      </span> &nbsp; {{sharedService.getCurrentUser().prenom}} <strong>{{sharedService.getCurrentUser().nom}}</strong>
+      &nbsp; {{sharedService.getCurrentUser().prenom}} <strong>{{sharedService.getCurrentUser().nom}}</strong>
       <b class="caret"></b>
     </a>
     <!-- #notifications-dropdown-menu goes here when screen collapsed to xs or sm -->
+    <ul class="dropdown-menu dropdown-menu-right" style="width: 204px;">
+      <li><a class="dropdown-item" [routerLink]=" ['profile'] "><i class="glyphicon glyphicon-user"></i> &nbsp; Mon
+        compte</a></li>
+      <li><a class="dropdown-item" [routerLink]=" ['settings'] "><i class="glyphicon glyphicon-cog"></i> &nbsp;
+        Options</a></li>
+      <li class="dropdown-divider"></li>
+      <li><a class="dropdown-item" (click)="logOut()"><i class="fa fa-sign-out"></i> &nbsp; Se déconnecter</a></li>
+    </ul>
   </div>
   <!-- main notification links are placed inside of .sidebar-nav -->
   <ul class="sidebar-nav">
 
     <li>
-      <a [routerLink]=" ['dashboard'] ">
+      <a [routerLink]=" ['home'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-search"></i>
           </span>Recherche
@@ -68,9 +74,18 @@
       <a [routerLink]=" ['pendingContracts'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-th-list"></i>
-          </span> Recrutement Groupé
+          </span> Recrutement groupé
       </a>
     </li>
+
+    <li [hidden]="currentUser">
+      <a [routerLink]=" ['/login'] ">
+        <span class="icon">
+          <i class="glyphicon glyphicon-off"></i>
+        </span>Se connecter
+      </a>
+    </li>
+
     <li>
       <a [routerLink]=" ['about'] ">
         <span class="icon">

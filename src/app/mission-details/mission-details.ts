@@ -85,7 +85,7 @@ export class MissionDetails {
 
     this.currentUser = this.sharedService.getCurrentUser();
     if(!this.currentUser){
-      this.router.navigate(['app/dashboard']);
+      this.router.navigate(['app/home']);
 
     }else{
       this.isEmployer = this.currentUser.estEmployeur;
@@ -685,7 +685,8 @@ export class MissionDetails {
   }
 
   resetForm() {
-//TODO Remove
+    //TODO Remove
+    console.log('resetForm()');
     var array = this.missionService.constructMissionHoursArray(this.initialMissionHours);
     this.missionHours = array[0];
     this.missionPauses = array[1];

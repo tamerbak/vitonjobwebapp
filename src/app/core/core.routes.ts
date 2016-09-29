@@ -1,6 +1,6 @@
 import {RouterConfig} from "@angular/router";
 import {Core} from "./core";
-import {Dashboard} from "./../dashboard/dashboard";
+import {Home} from "./../home/home";
 import {Profile} from "../profile/profile";
 import {Settings} from "../settings/settings";
 import {RecruitList} from "../recruit-list/recruit-list";
@@ -36,7 +36,7 @@ export const CoreRoutes: RouterConfig = [
     children: [
 
       // Application
-      {path: 'dashboard', component: Dashboard},
+      {path: 'home', component: Home},
 
       // User parameters
       {path: 'profile', component: Profile},

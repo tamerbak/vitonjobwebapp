@@ -123,7 +123,7 @@ export class LoginPage {
           if (this.fromPage == "Search") {
             //this.nav.pop();
           } else {
-            this.router.navigate(['app/dashboard']);
+            this.router.navigate(['app/home']);
           }
         }
       });
