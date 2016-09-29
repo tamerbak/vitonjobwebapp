@@ -1,11 +1,9 @@
 @import "../../scss/variables";
 @import "../../../node_modules/bootstrap/scss/_variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
-
 /**
  * Switchery.
  */
-
 .switch {
   box-sizing: content-box;
   margin-left: -20px;
@@ -36,7 +34,7 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, .5);
 }
 
-.switch :checked + i {
+.switch:checked + i {
   padding-right: 0;
   padding-left: 20px;
   background: rgb(100, 189, 99);
@@ -48,59 +46,66 @@
 }
 
 .alertDispo {
-  margin-bottom: -15px;
-  margin-top: 15px;
-  margin-left: -20px;
-  margin-right: -20px;
+  margin: 15px -20px -15px;
   padding: 0 12px;
 }
-@media screen and (min-width: 300px) and (max-width: 500px) {
+@media screen and (min-width: 250px) and (max-width: 530px) {
+  .page-title {
+    font-size: large;
+    width: 100%;
+    text-align: center;
+  }
 
-  .add-offer{
+  .add-offer {
     display: table;
-    margin: 0 auto;
-    margin-bottom: 1em;
+    margin: 0 auto 1em;
     width: 100%;
   }
-  .btn-grp{
+
+  .btn-grp {
     display: table!important;
-    margin: 0 auto!important;
-    margin-bottom: 1em;
-  }
-  .title{
-    font-size: 1em;
-  }
-  .btn-detail-offre{
-    width: 100%!important;
-    margin: 0 auto!important;
-    margin-top: 1em!important;
+    margin: 0 auto 1em !important;
   }
 
-  .grp-search{
-    width: 100%!important;
-  }
-  .btn-search{
-  width: 100%!important;
-  border-radius: 0.2rem;
-  }
-  .title-2{
+  .title {
     font-size: 1em;
   }
-  .btn-detail-offre-2{
+
+  .btn-detail-offre {
     width: 100%!important;
-    margin: 0 auto!important;
-    margin-top: 1em!important;
+    margin: 1em auto 0 !important;
   }
-  .price{
+
+  .grp-search {
+    width: 100%!important;
+  }
+
+  .btn-search {
+    width: 100%!important;
+    border-radius: 0.2rem;
+  }
+
+  .title-2 {
+    font-size: 1em;
+  }
+
+  .btn-detail-offre-2 {
+    width: 100%!important;
+    margin: 1em auto 0 !important;
+  }
+
+  .price {
     text-align: right;
     margin-top: 1em;
   }
-  .labelSwitch{
+
+  .labelSwitch {
     float: right;
-    padding-left: 0!important;
+    padding-left: 0 !important;
     font-size: 13px;
   }
-  .radio{
+
+  .radio {
     margin-top: 1.7em;
     float: left;
   }
