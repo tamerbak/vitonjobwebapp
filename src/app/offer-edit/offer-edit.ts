@@ -494,7 +494,7 @@ export class OfferEdit {
   editOffer() {
     if(this.obj == "add"){
       this.offer.calendarData = this.slotsToSave;
-      if (!this.offer.jobData.job || !this.offer.jobData.sector || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || this.minHourRate<this.offer.jobData.remuneration) {
+      if (!this.offer.jobData.job || !this.offer.jobData.sector || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || this.minHourRate>this.offer.jobData.remuneration) {
         this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
         return;
       }
