@@ -2,6 +2,7 @@
 <nav navbar (toggleSidebarEvent)="toggleSidebarListener($event)" (toggleAppEvent)="toggleAppListener()" class="page-controls navbar navbar-dashboard"></nav>
 <aside app-sidebar class="chat-sidebar"></aside>
 
+<div modal-confirm></div>
 <div class="content-wrap">
   <main id="content" class="content view-animate fade-up" role="main">
     <router-outlet></router-outlet>

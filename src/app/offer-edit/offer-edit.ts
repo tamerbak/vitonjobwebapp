@@ -35,6 +35,9 @@ export class OfferEdit {
   hideJobLoader: boolean = true;
   datepickerOpts: any;
   obj: string;
+
+  dataValidation:boolean = false;
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private router: Router,
@@ -348,6 +351,7 @@ export class OfferEdit {
       this.offer.title = this.offer.jobData.job + " " + level;
       this.offer.identity = (this.projectTarget == 'employer' ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id);
       this.offersService.setOfferInRemote(this.offer, this.projectTarget).then((data: any)=> {
+        this.dataValidation = true;
         if (this.projectTarget == 'employer') {
           this.currentUser.employer.entreprises[0].offers.push(JSON.parse(data._body));
         } else {
@@ -368,6 +372,7 @@ export class OfferEdit {
 
   validateJob() {
     // --> Job state
+    this.dataValidation = true;
     this.offer.title = this.offer.jobData.job + ' ' + ((this.offer.jobData.level != 'junior') ? 'Expérimenté' : 'Débutant');
 
     this.offersService.updateOfferJob(this.offer, this.projectTarget);
@@ -425,5 +430,12 @@ export class OfferEdit {
   ngOnDestroy(): void {
     if(this.obj == "detail")
       this.sharedService.setCurrentOffer(null);
+  }
+
+  formHasChanges(){
+    if(this.dataValidation){
+      return false;
+    }
+    return true;
   }
 }

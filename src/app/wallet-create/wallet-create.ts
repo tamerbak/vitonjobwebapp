@@ -26,6 +26,8 @@ export class WalletCreate {
   cardType: string = "CB";
   walletMsg: any;
 
+  dataValidation:boolean = false;
+
   constructor(private sharedService: SharedService,
               private service: PaylineServices,
               private router: Router) {
@@ -65,6 +67,8 @@ export class WalletCreate {
       expireDate: this.cardExpirationDate,
       cvx: this.cardCvv
     };
+
+    this.dataValidation = false;
     this.hideLoader = false;
     this.service.empreinteCarte(card, this.currentUser).then((data: any) => {
       this.hideLoader = true;
@@ -89,5 +93,12 @@ export class WalletCreate {
       return true;
     else
       return false;
+  }
+
+  formHasChanges(){
+    if(this.dataValidation){
+      return false;
+    }
+    return true;
   }
 }
