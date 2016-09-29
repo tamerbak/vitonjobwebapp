@@ -603,7 +603,7 @@ export class OffersService {
   getConventionParameters(idConvention){
     let sql = "select pk_user_parametrage_convention as id, remuneration_de_reference as rate, " +
       "fk_user_convention_collective as idcc, fk_user_categorie_convention as idcat, " +
-      "fk_user_echelon_convention as idechelon, fk_user_coefficient_convention as idcoeff " +
+      "fk_user_echelon_convention as idechelon, fk_user_coefficient_convention as idcoeff, fk_user_niveau_convention_collective as idniv " +
       "from user_parametrage_convention where fk_user_convention_collective="+idConvention;
 
     return new Promise(resolve => {

@@ -74,6 +74,52 @@
                 </div>
               </div>
             </div>
+
+          </fieldset>
+
+
+          <fieldset *ngIf="convParametersVisible()">
+            <legend><strong>Paramètres de la convention collective</strong></legend>
+            <div class="form-group row" *ngIf="convNiveauxVisible()">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Niveau</label>
+              <div class="col-md-7 col-xs-12">
+                <select class="form-control" [(ngModel)]="selectedNivConvID"
+                        (change)="updateHourRateThreshold('NIV',$event.target.value)" >
+                  <option *ngFor="let s of niveauxConventions" [value]="s.id"> {{s.libelle}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="convEchelonsVisible()">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Echelon</label>
+              <div class="col-md-7 col-xs-12">
+                <select class="form-control" [(ngModel)]="selectedEchConvID"
+                        (change)="updateHourRateThreshold('ECH',$event.target.value)" >
+                  <option *ngFor="let s of echelonsConventions" [value]="s.id"> {{s.libelle}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="convCategoriesVisible()">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Catégorie</label>
+              <div class="col-md-7 col-xs-12">
+                <select class="form-control" [(ngModel)]="selectedCatConvID"
+                        (change)="updateHourRateThreshold('CAT',$event.target.value)" >
+                  <option *ngFor="let s of categoriesConventions" [value]="s.id"> {{s.libelle}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="convCoefficientsVisible()">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Coefficient</label>
+              <div class="col-md-7 col-xs-12">
+                <select class="form-control" [(ngModel)]="selectedCoefConvID"
+                        (change)="updateHourRateThreshold('COEF',$event.target.value)" >
+                  <option *ngFor="let s of coefficientsConventions" [value]="s.id"> {{s.libelle}}</option>
+                </select>
+              </div>
+            </div>
+
+          </fieldset>
+
+          <fieldset>
             <div class="form-group row">
               <label class="col-md-4 col-xs-12 form-control-label text-md-right">Taux horaire</label>
               <div class="col-md-4 col-xs-12">
@@ -87,6 +133,7 @@
             </div>
             <div *ngIf="invalidHourRate"><p class="bg-danger field-format-warning">{{invalidHourRateMessage}}</p></div>
           </fieldset>
+
 
           <fieldset>
             <legend><strong>Disponibilités</strong></legend>

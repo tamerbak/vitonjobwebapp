@@ -254,6 +254,69 @@ export class OfferEdit {
   }
 
 
+  convParametersVisible(){
+    if(!this.parametersConvention || this.parametersConvention.length==0)
+      return false;
+    return true;
+  }
+
+  convNiveauxVisible(){
+    if(!this.niveauxConventions || this.niveauxConventions.length==0)
+      return false;
+    return true;
+  }
+
+  convCoefficientsVisible(){
+    if(!this.coefficientsConventions || this.coefficientsConventions.length==0)
+      return false;
+    return true;
+  }
+
+  convEchelonsVisible(){
+    if(!this.echelonsConventions || this.echelonsConventions.length==0)
+      return false;
+    return true;
+  }
+
+  convCategoriesVisible(){
+    if(!this.categoriesConventions || this.categoriesConventions.length==0)
+      return false;
+    return true;
+  }
+
+  updateHourRateThreshold(field : string, value : number){
+    if(!this.parametersConvention || this.parametersConvention.length==0)
+      return;
+
+    //  Ensure to take the maximum threshold before checking other options
+    for(let i=0 ; i < this.parametersConvention.length ; i++){
+      if(this.minHourRate <= this.parametersConvention[i].rate){
+        this.selectedParamConvID = this.parametersConvention[i].id;
+        this.minHourRate = this.parametersConvention[i].rate;
+      }
+    }
+
+    //  Now let's seek the suitable parameters
+    for(let i=0 ; i < this.parametersConvention.length ; i++){
+
+      if(field == 'CAT' && value > 0 && this.parametersConvention[i].idcat != value)
+        continue;
+      if(field == 'COEF' && value > 0 && this.parametersConvention[i].idcoeff != value)
+        continue;
+      if(field == 'ECH' && value > 0 && this.parametersConvention[i].idechelon != value)
+        continue;
+      if(field == 'NIV' && value > 0 && this.parametersConvention[i].idniv != value)
+        continue;
+
+      if(this.minHourRate > this.parametersConvention[i].rate){
+        this.selectedParamConvID = this.parametersConvention[i].id;
+        this.minHourRate = this.parametersConvention[i].rate;
+      }
+    }
+
+    this.validateRate(this.offer.jobData.remuneration);
+  }
+
   watchLevel(e) {
     this.offer.jobData.level = e.target.value;
   }
