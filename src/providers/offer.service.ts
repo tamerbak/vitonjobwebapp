@@ -485,6 +485,129 @@ export class OffersService {
     });
   }
 
+  /*********************************************************************************************************************
+   *  COLLECTIVE CONVENTIONS MANAGEMENT
+   *********************************************************************************************************************/
+
+  /**
+   * load collective convention based on job ID
+   * @param idjob
+   * @returns {Promise<T>}
+   */
+  getConvention(idjob){
+    let sql = "select pk_user_convention_collective as id, code, libelle " +
+      "from user_convention_collective " +
+      "where pk_user_convention_collective in " +
+      "(select fk_user_convention_collective from user_job where pk_user_job="+idjob+")";
+
+    console.log(sql);
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let convention = {
+            id:0,
+            code:'',
+            libelle:''
+          };
+          if(data.data && data.data.length>0){
+            convention = data.data[0];
+          }
+          resolve(convention);
+        });
+    });
+  }
+
+  /**
+   * Loading all convention levels given convention ID
+   * @param idConvention
+   * @returns {Promise<T>}
+   */
+  getConventionNiveaux(idConvention){
+    let sql = "select pk_user_niveau_convention_collective as id, code, libelle from user_niveau_convention_collective where fk_user_convention_collective="+idConvention;
+    console.log(sql);
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let list = [];
+          if(data.data && data.data.length>0)
+            list = data.data;
+          resolve(list);
+        });
+    });
+  }
+
+  /**
+   * Loading all convention category given convention ID
+   * @param idConvention
+   * @returns {Promise<T>}
+   */
+  getConventionCategory(idConvention){
+    let sql = "select pk_user_categorie_convention as id, code, libelle from user_categorie_convention where fk_user_convention_collective="+idConvention;
+    console.log(sql);
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let list = [];
+          if(data.data && data.data.length>0)
+            list = data.data;
+          resolve(list);
+        });
+    });
+  }
+
+  /**
+   * Loading all convention echelons given convention ID
+   * @param idConvention
+   * @returns {Promise<T>}
+   */
+  getConventionEchelon(idConvention){
+    let sql = "select pk_user_echelon_convention as id, code, libelle from user_echelon_convention where fk_user_convention_collective="+idConvention;
+    console.log(sql);
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let list = [];
+          if(data.data && data.data.length>0)
+            list = data.data;
+          resolve(list);
+        });
+    });
+  }
+
+  /**
+   * Loading all convention coefficients given convention ID
+   * @param idConvention
+   * @returns {Promise<T>}
+   */
+  getConventionCoefficients(idConvention){
+    let sql = "select pk_user_coefficient_convention as id, code, libelle from user_coefficient_convention where fk_user_convention_collective="+idConvention;
+    console.log(sql);
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let list = [];
+          if(data.data && data.data.length>0)
+            list = data.data;
+          resolve(list);
+        });
+    });
+  }
+
+  /*
+   * USEFUL FUNCTIONS
+   */
+
+
   convertToFormattedHour(value) {
     var hours = Math.floor(value / 60);
     var minutes = value % 60;
