@@ -1,3 +1,51 @@
 .mission-list-data {
   text-align: right;
 }
+@media screen and (min-width: 250px) and (max-width: 530px) {
+  .label-btn {
+    width: 100%;
+  }
+
+  .span-btn {
+    width: 100%;
+    margin-bottom: 1em;
+  }
+
+  .page-title {
+    font-size: large;
+    width: 100%;
+    text-align: center;
+  }
+
+  .btn-detail {
+    width: 100%;
+  }
+
+  .mision-list-data {
+    display: none;
+  }
+
+  .mision-list-data-2 {
+    margin: auto;
+    display: table;
+    text-align: center;
+    margin-bottom: 1.5em;
+    width: 100%;
+  }
+  .description {
+    text-align: center;
+  }
+  .search-result-item-heading {
+    text-align: center;
+  }
+}
+@media screen and (max-width: 640px) {
+  .label-btn {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 531px) {
+  .mision-list-data-2 {
+    display: none;
+  }
+}

@@ -77,12 +77,87 @@
             <div class="form-group row">
               <label class="col-md-4 col-xs-12 form-control-label text-md-right">Taux horaire</label>
               <div class="col-md-4 col-xs-12">
-                <input type="number" class="form-control" [(ngModel)]="offer.jobData.remuneration">
+                <input type="number" class="form-control" [(ngModel)]="offer.jobData.remuneration" (change)="validateRate($event.target.value)">
               </div>
               <div class="col-md-3 col-xs-12">
                 <select class="form-control" disabled>
                   <option> EUR</option>
                 </select>
+              </div>
+            </div>
+            <div *ngIf="invalidHourRate"><p class="bg-danger field-format-warning">{{invalidHourRateMessage}}</p></div>
+          </fieldset>
+
+
+          <fieldset *ngIf="convParametersVisible()">
+            <legend><strong>Paramètres de la convention collective</strong></legend>
+            <div class="form-group row" *ngIf="convNiveauxVisible()">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Niveau</label>
+              <div class="col-md-7 col-xs-12">
+                <select class="form-control" [(ngModel)]="selectedNivConvID"
+                        (change)="updateHourRateThreshold('NIV',$event.target.value)" >
+                  <option *ngFor="let s of niveauxConventions" [value]="s.id"> {{s.libelle}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="convEchelonsVisible()">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Echelon</label>
+              <div class="col-md-7 col-xs-12">
+                <select class="form-control" [(ngModel)]="selectedEchConvID"
+                        (change)="updateHourRateThreshold('ECH',$event.target.value)" >
+                  <option *ngFor="let s of echelonsConventions" [value]="s.id"> {{s.libelle}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="convCategoriesVisible()">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Catégorie</label>
+              <div class="col-md-7 col-xs-12">
+                <select class="form-control" [(ngModel)]="selectedCatConvID"
+                        (change)="updateHourRateThreshold('CAT',$event.target.value)" >
+                  <option *ngFor="let s of categoriesConventions" [value]="s.id"> {{s.libelle}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="convCoefficientsVisible()">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Coefficient</label>
+              <div class="col-md-7 col-xs-12">
+                <select class="form-control" [(ngModel)]="selectedCoefConvID"
+                        (change)="updateHourRateThreshold('COEF',$event.target.value)" >
+                  <option *ngFor="let s of coefficientsConventions" [value]="s.id"> {{s.libelle}}</option>
+                </select>
+              </div>
+            </div>
+
+          </fieldset>
+
+          <fieldset *ngIf="convParametersVisible()">
+            <legend><strong>Avantages en nature</strong></legend>
+            <div class="form-group row">
+              <label class="col-md-2 col-xs-2 form-control-label">Code</label>
+              <label class="col-md-10 col-xs-10 form-control-label">Avantage</label>
+            </div>
+            <div class="form-group row" *ngFor="let item of categoriesHeure">
+              <div class="col-md-2 col-xs-2">
+                <span>{{item.code}}</span>
+              </div>
+              <div class="col-md-10 col-xs-10">
+                <span>{{item.libelle}}</span>
+              </div>
+            </div>
+            <div class="form-group row" *ngFor="let item of majorationsHeure">
+              <div class="col-md-2 col-xs-2">
+                <span>{{item.code}}</span>
+              </div>
+              <div class="col-md-10 col-xs-10">
+                <span>{{item.libelle}}</span>
+              </div>
+            </div>
+            <div class="form-group row" *ngFor="let item of indemnites">
+              <div class="col-md-2 col-xs-2">
+                <span>{{item.code}}</span>
+              </div>
+              <div class="col-md-10 col-xs-10">
+                <span>{{item.libelle}}</span>
               </div>
             </div>
           </fieldset>
@@ -128,7 +203,7 @@
               </div>
               <div class="col-md-2 col-xs-12">
                 <button class="btn btn-danger mb-xs" role="button" (click)="addSlot()">
-                  <i class="glyphicon glyphicon-plus"></i>
+                  Ajouter
                 </button>
               </div>
             </div>
@@ -144,8 +219,8 @@
                     </select>
                   </div>
                   <div class="col-md-2 col-xs-12">
-                    <button class="btn btn-danger mb-xs" role="button" (click)="addQuality()">
-                      <i class="glyphicon glyphicon-plus"></i>
+                    <button class="btn btn-danger mb-xs ajouter" role="button" (click)="addQuality()">
+                      Ajouter
                     </button>
                   </div>
                 </div>
@@ -175,8 +250,8 @@
                     </select>
                   </div>
                   <div class="col-md-2 col-xs-12">
-                    <button class="btn btn-danger mb-xs" role="button" (click)="addLanguage()">
-                      <i class="glyphicon glyphicon-plus"></i>
+                    <button class="btn btn-danger mb-xs ajouter" role="button" (click)="addLanguage()">
+                      Ajouter
                     </button>
                   </div>
                 </div>
