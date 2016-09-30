@@ -41,7 +41,7 @@
   <div [hidden]="!showForm" class="col-lg-6 col-xs-12">
     <section class="widget">
       <div class="widget-body">
-        <form class="profile-form form-horizontal" role="form">
+        <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
           <fieldset>
             <legend><strong>Saisie des Informations</strong></legend>
             <alert *ngIf="isNewUser" [type]="'info'+ ' alert-sm'" dismissible="true">
@@ -151,7 +151,7 @@
                   <span class="hint label label-danger">{{birthdateHint}}</span>
                 </div>
               </div>
-              
+
               <div *ngIf="!isEmployer" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="birthcp">
                   Code postal du lieu de naissance

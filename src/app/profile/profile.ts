@@ -1,4 +1,4 @@
-import {Component, NgZone, ViewEncapsulation} from "@angular/core";
+import {Component, NgZone, ViewEncapsulation,ViewChild} from "@angular/core";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {NKDatetime} from "ng2-datetime/ng2-datetime";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
@@ -29,6 +29,7 @@ export class Profile {
   public maskSiret = [/[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/]
   public maskApe = [/[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /^[a-zA-Z]*$/]
 
+  @ViewChild('myForm') form;
 
   title: string = "M.";
   lastname: string;
@@ -228,6 +229,12 @@ export class Profile {
     });
   }
 
+  formHasChanges(){
+    if(this.showForm){
+      return true;
+    }
+    return false;
+  }
 
   initForm() {
     this.showForm = true;
@@ -546,7 +553,7 @@ export class Profile {
         },
         minimumInputLength: 3,
       });
-      
+
       jQuery('.commune-select').on('select2-selecting',
         (e) => {
           self.selectedCommune = e.choice;
