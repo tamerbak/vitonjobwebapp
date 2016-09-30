@@ -6,7 +6,6 @@
 <h1 class="page-title">
   {{currentUser.estEmployeur ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Missions en lignes</span>
 </h1>
-
 <div class="row">
   <div class="col-xs-12">
     <div class="btn-group">
@@ -31,7 +30,7 @@
       <section class="widget" widget *ngFor="let item of missionTypeList" [hidden]="i != typeMissionModel">
         <div class="widget-body row">
 
-          <div class="col-sm-12 mision-list-description">
+          <div class="col-sm-12">
             <h4 class="search-result-item-heading" (click)="goToDetailMission(item)">
               <a href="#">{{ item.titre }}</a>
             </h4>
@@ -40,7 +39,7 @@
               le {{ toStringDate(item.date_signature) }}<br/>
               avec {{ item.prenom }} {{ item.nom }}
             </p>
-            <div class="col-sm-3 col-xs-12 mision-list-data-2">
+            <div class="col-sm-3 col-xs-12 mission-list-data-2">
               <p class="value3 mt-sm">
                 {{ toStringDate(item.date_de_debut) }}
                 {{(toStringDate(item.date_de_fin) != toStringDate(item.date_de_debut))
@@ -72,7 +71,7 @@
 
           </div>
 
-          <div class="col-sm-12 col-xs-12 mision-list-data pull-xs-right">
+          <div class="col-sm-12 col-xs-12 mission-list-data pull-xs-right">
             <p class="value3 mt-sm">
               {{ toStringDate(item.date_de_debut) }}
               {{(toStringDate(item.date_de_fin) != toStringDate(item.date_de_debut))
