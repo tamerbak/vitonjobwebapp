@@ -36,6 +36,28 @@ export class OfferEdit {
   datepickerOpts: any;
   obj: string;
 
+
+  /*
+   * Collective conventions management
+   */
+  convention : any;
+  niveauxConventions : any = [];
+  selectedNivConvID: number = 0;
+  categoriesConventions : any = [];
+  selectedCatConvID: number = 0;
+  echelonsConventions : any = [];
+  selectedEchConvID: number = 0;
+  coefficientsConventions : any = [];
+  selectedCoefConvID: number = 0;
+  parametersConvention : any = [];
+  selectedParamConvID: number = 0;
+  minHourRate : number = 0;
+  invalidHourRateMessage='';
+  invalidHourRate=false;
+
+  categoriesHeure : any = [];
+  majorationsHeure : any = [];
+  indemnites : any = [];
   dataValidation:boolean = false;
 
   constructor(private sharedService: SharedService,
@@ -45,6 +67,11 @@ export class OfferEdit {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['app/home']);
+    }
+    this.convention = {
+      id : 0,
+      code : '',
+      libelle : ''
     }
   }
 
@@ -158,12 +185,152 @@ export class OfferEdit {
     });
   }
 
+  /**
+   * The job has been selected we will set the offer's job and the conventions data
+   * @param idJob
+   */
   jobSelected(idJob) {
     this.offer.jobData.idJob = idJob;
     var jobsTemp = this.jobs.filter((v)=> {
       return (v.id == idJob);
     });
     this.offer.jobData.job = jobsTemp[0].libelle;
+
+    //  Load collective convention
+    this.offersService.getConvention(idJob).then(c=>{
+      if(c)
+        this.convention = c;
+      if(this.convention.id>0){
+        this.offersService.getConventionNiveaux(this.convention.id).then(data=>{
+          this.niveauxConventions = data;
+        });
+        this.offersService.getConventionCoefficients(this.convention.id).then(data=>{
+          this.coefficientsConventions = data;
+        });
+        this.offersService.getConventionEchelon(this.convention.id).then(data=>{
+          this.echelonsConventions = data;
+        });
+        this.offersService.getConventionCategory(this.convention.id).then(data=>{
+          this.categoriesConventions = data;
+        });
+        this.offersService.getConventionParameters(this.convention.id).then(data=>{
+          this.parametersConvention = data;
+          this.checkHourRate();
+        });
+        this.offersService.getHoursCategories(this.convention.id).then(data=>{
+          this.categoriesHeure = data;
+        });
+        this.offersService.getHoursMajoration(this.convention.id).then(data=>{
+          this.majorationsHeure = data;
+        });
+        this.offersService.getIndemnites(this.convention.id).then(data=>{
+          this.indemnites = data;
+        });
+
+      }
+    });
+  }
+
+  /**
+   * If a collective convention is loaded we need to set the salary to the minimum rate of its parameters
+   */
+  checkHourRate(){
+
+    if(!this.parametersConvention || this.parametersConvention.length==0)
+      return;
+
+    this.selectedParamConvID = this.parametersConvention[0].id;
+    this.minHourRate = this.parametersConvention[0].rate;
+    for(let i=1 ; i < this.parametersConvention.length ; i++){
+      if(this.minHourRate > this.parametersConvention[i].rate){
+        this.selectedParamConvID = this.parametersConvention[i].id;
+        this.minHourRate = this.parametersConvention[i].rate;
+      }
+    }
+
+    this.validateRate(this.offer.jobData.remuneration);
+  }
+
+  /**
+   *
+   * @param rate
+   * @returns {boolean}
+   */
+  validateRate(rate){
+    let r = parseFloat(rate);
+    if(r>=this.minHourRate){
+      this.invalidHourRateMessage = '';
+      this.invalidHourRate = false;
+      return true;
+    }
+
+    this.invalidHourRateMessage = '* Le taux horaire devrait être supérieur ou égal à '+this.minHourRate;
+    this.invalidHourRate = true;
+    return false;
+  }
+
+
+  convParametersVisible(){
+    if(!this.parametersConvention || this.parametersConvention.length==0 || !this.offer.jobData.remuneration || this.offer.jobData.remuneration ==0)
+      return false;
+    return true;
+  }
+
+  convNiveauxVisible(){
+    if(!this.niveauxConventions || this.niveauxConventions.length==0)
+      return false;
+    return true;
+  }
+
+  convCoefficientsVisible(){
+    if(!this.coefficientsConventions || this.coefficientsConventions.length==0)
+      return false;
+    return true;
+  }
+
+  convEchelonsVisible(){
+    if(!this.echelonsConventions || this.echelonsConventions.length==0)
+      return false;
+    return true;
+  }
+
+  convCategoriesVisible(){
+    if(!this.categoriesConventions || this.categoriesConventions.length==0)
+      return false;
+    return true;
+  }
+
+  updateHourRateThreshold(field : string, value : number){
+    if(!this.parametersConvention || this.parametersConvention.length==0)
+      return;
+
+    //  Ensure to take the maximum threshold before checking other options
+    for(let i=0 ; i < this.parametersConvention.length ; i++){
+      if(this.minHourRate <= this.parametersConvention[i].rate){
+        this.selectedParamConvID = this.parametersConvention[i].id;
+        this.minHourRate = this.parametersConvention[i].rate;
+      }
+    }
+
+    //  Now let's seek the suitable parameters
+    for(let i=0 ; i < this.parametersConvention.length ; i++){
+
+      if(field == 'CAT' && value > 0 && this.parametersConvention[i].idcat != value)
+        continue;
+      if(field == 'COEF' && value > 0 && this.parametersConvention[i].idcoeff != value)
+        continue;
+      if(field == 'ECH' && value > 0 && this.parametersConvention[i].idechelon != value)
+        continue;
+      if(field == 'NIV' && value > 0 && this.parametersConvention[i].idniv != value)
+        continue;
+
+      if(this.minHourRate > this.parametersConvention[i].rate){
+        this.selectedParamConvID = this.parametersConvention[i].id;
+        this.minHourRate = this.parametersConvention[i].rate;
+      }
+    }
+
+    this.validateRate(this.offer.jobData.remuneration);
   }
 
   watchLevel(e) {
@@ -343,7 +510,7 @@ export class OfferEdit {
   editOffer() {
     if(this.obj == "add"){
       this.offer.calendarData = this.slotsToSave;
-      if (!this.offer.jobData.job || !this.offer.jobData.sector || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0) {
+      if (!this.offer.jobData.job || !this.offer.jobData.sector || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || this.minHourRate>this.offer.jobData.remuneration) {
         this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
         return;
       }
