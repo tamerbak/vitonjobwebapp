@@ -600,6 +600,11 @@ export class OffersService {
     });
   }
 
+  /**
+   * Loading convention parameters
+   * @param idConvention
+   * @returns {Promise<T>}
+   */
   getConventionParameters(idConvention){
     let sql = "select pk_user_parametrage_convention as id, remuneration_de_reference as rate, " +
       "fk_user_convention_collective as idcc, fk_user_categorie_convention as idcat, " +
@@ -619,6 +624,53 @@ export class OffersService {
     });
   }
 
+  /*********************************************************************************************************************
+   *  COLLECTIVE CONVENTIONS ADVANTAGES
+   *********************************************************************************************************************/
+  getHoursCategories(idConv){
+    let sql = "select chc.pk_user_coefficient_heure_conventionnee as id, chc.libelle as libelle, cat.code as code from user_coefficient_heure_conventionnee chc, user_categorie_heures_conventionnees cat where chc.fk_user_categorie_heures_conventionnees=cat.pk_user_categorie_heures_conventionnees and fk_user_convention_collective="+idConv;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let list = [];
+          if(data.data && data.data.length>0)
+            list = data.data;
+          resolve(list);
+        });
+    });
+  }
+
+  getHoursMajoration(idConv){
+    let sql = "select m.pk_user_majoration_heure_conventionnee as id, m.libelle as libelle, c.code as code from user_majoration_heure_conventionnee m, user_categorie_majoration_heure c where m.fk_user_categorie_majoration_heure=c.pk_user_categorie_majoration_heure and fk_user_convention_collective="+idConv;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let list = [];
+          if(data.data && data.data.length>0)
+            list = data.data;
+          resolve(list);
+        });
+    });
+  }
+
+  getIndemnites(idConv){
+    let sql = "select pk_user_indemnite_conventionnee as id, i.libelle as libelle, t.code as code from user_indemnite_conventionnee i, user_type_indemnite t where i.fk_user_type_indemnite = t.pk_user_type_indemnite and fk_user_convention_collective="+idConv;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let list = [];
+          if(data.data && data.data.length>0)
+            list = data.data;
+          resolve(list);
+        });
+    });
+  }
 
   /*
    * USEFUL FUNCTIONS

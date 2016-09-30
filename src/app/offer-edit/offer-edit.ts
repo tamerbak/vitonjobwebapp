@@ -54,6 +54,10 @@ export class OfferEdit {
   invalidHourRateMessage='';
   invalidHourRate=false;
 
+  categoriesHeure : any = [];
+  majorationsHeure : any = [];
+  indemnites : any = [];
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private router: Router,
@@ -211,6 +215,16 @@ export class OfferEdit {
           this.parametersConvention = data;
           this.checkHourRate();
         });
+        this.offersService.getHoursCategories(this.convention.id).then(data=>{
+          this.categoriesHeure = data;
+        });
+        this.offersService.getHoursMajoration(this.convention.id).then(data=>{
+          this.majorationsHeure = data;
+        });
+        this.offersService.getIndemnites(this.convention.id).then(data=>{
+          this.indemnites = data;
+        });
+
       }
     });
   }
