@@ -67,7 +67,7 @@ export class Home {
 
 
   ngOnDestroy(){
-    jQuery('.content').css({"padding":"40px","padding-right":"40px"});
+    jQuery('.content').css({"padding":"40px","padding-top":"60px"});
   }
 
   doSemanticSearch() {
