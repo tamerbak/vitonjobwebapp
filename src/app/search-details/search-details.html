@@ -21,7 +21,7 @@
             <span class="label label-pill label-danger" style="margin-left: 5px">{{(matching.toString().indexOf('.') < 0) ? matching:matching.toString().split('.')[0]}}%</span>
           </p>
         </div>
-        <div *ngIf="projectTarget == 'employer'" class="row col-md-12 col-xs-12"
+        <div class="row col-md-12 col-xs-12"
              style="padding-top: 7px;margin-bottom: 10px;">
           <div class="col-lg-4 col-md-6 col-xs-12">
             <span><i class="fa fa-envelope" aria-hidden="true"></i><b> {{result.email}}</b></span>

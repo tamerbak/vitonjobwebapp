@@ -36,6 +36,7 @@ export class OfferEdit {
   datepickerOpts: any;
   obj: string;
 
+
   /*
    * Collective conventions management
    */
@@ -57,6 +58,7 @@ export class OfferEdit {
   categoriesHeure : any = [];
   majorationsHeure : any = [];
   indemnites : any = [];
+  dataValidation:boolean = false;
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -516,6 +518,7 @@ export class OfferEdit {
       this.offer.title = this.offer.jobData.job + " " + level;
       this.offer.identity = (this.projectTarget == 'employer' ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id);
       this.offersService.setOfferInRemote(this.offer, this.projectTarget).then((data: any)=> {
+        this.dataValidation = true;
         if (this.projectTarget == 'employer') {
           this.currentUser.employer.entreprises[0].offers.push(JSON.parse(data._body));
         } else {
@@ -536,6 +539,7 @@ export class OfferEdit {
 
   validateJob() {
     // --> Job state
+    this.dataValidation = true;
     this.offer.title = this.offer.jobData.job + ' ' + ((this.offer.jobData.level != 'junior') ? 'Expérimenté' : 'Débutant');
 
     this.offersService.updateOfferJob(this.offer, this.projectTarget);
@@ -593,5 +597,12 @@ export class OfferEdit {
   ngOnDestroy(): void {
     if(this.obj == "detail")
       this.sharedService.setCurrentOffer(null);
+  }
+
+  formHasChanges(){
+    if(this.dataValidation){
+      return false;
+    }
+    return true;
   }
 }

@@ -50,7 +50,7 @@ export class Settings {
               private authService: AuthenticationService,
               private sharedService: SharedService,
               private router: Router) {
-    
+
 
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
@@ -63,6 +63,13 @@ export class Settings {
         });
       }
     }
+  }
+
+  formHasChanges(){
+    if(this.showForm){
+      return true;
+    }
+    return false;
   }
 
   getUserFullname() {

@@ -51,7 +51,7 @@
                 type="button"
                 class="btn btn-secondary btn-sm pull-xs-right"
                 style="background-color: #40aea9; color: white;"
-                *ngIf="currentUser.estEmployeur && !isRecruteur"
+                *ngIf="!!currentUser && currentUser.estEmployeur && !isRecruteur"
                 (click)="contract(i)"
               >
                 Recrutement immédiat
@@ -70,7 +70,7 @@
           </div>
         </div>
       </div>
-      <div *ngIf="projectTarget == 'employer'" class="row col-md-12 col-xs-12 mg-tp">
+      <div class="row col-md-12 col-xs-12 mg-tp">
         <div class="col-lg-4 col-md-6 col-xs-12 mg-bt-2">
           <span><i class="fa fa-envelope" aria-hidden="true"></i><b> {{item.email}}</b></span>
         </div>
