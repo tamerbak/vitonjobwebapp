@@ -255,7 +255,7 @@ export class OfferEdit {
 
 
   convParametersVisible(){
-    if(!this.parametersConvention || this.parametersConvention.length==0)
+    if(!this.parametersConvention || this.parametersConvention.length==0 || !this.offer.jobData.remuneration || this.offer.jobData.remuneration ==0)
       return false;
     return true;
   }
