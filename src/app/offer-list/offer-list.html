@@ -5,18 +5,18 @@
 <h1 class="page-title">{{currentUser.estEmployeur ? 'Employeur' : 'Jobyer'}} - <span
   class="fw-semi-bold">Mes offres</span></h1>
 <div class="row">
-  <div class="col-lg-6 col-xs-6">
-    <button type="button" class="btn btn-danger btn-sm" (click)="goToNewOffer()">Créer une offre
+  <div class="col-lg-6 col-xs-12">
+    <button type="button" class="add-offer btn btn-danger btn-sm" (click)="goToNewOffer()">Créer une offre
       {{currentUser.estEmployeur ? " d'emploi" : " de service"}}
     </button>
   </div>
-  <div class="col-lg-6 col-xs-6">
-    <div class="btn-group pull-xs-right">
-      <label class="btn btn-gray" btnRadio="0" [(ngModel)]="typeOfferModel" (click)="watchTypeOfferModel()">
-        Mes offres en ligne
+  <div class="col-lg-6 col-xs-12">
+    <div class="btn-group pull-lg-right pull-md-right pull-sm-right pull-xl-right btn-grp">
+      <label class="btn btn-gray btn-1" btnRadio="0" [(ngModel)]="typeOfferModel" (click)="watchTypeOfferModel()">
+        En ligne
       </label>
-      <label class="btn btn-gray" btnRadio="1" [(ngModel)]="typeOfferModel" (click)="watchTypeOfferModel()">
-        Mes offres en brouillon
+      <label class="btn btn-gray btn-2" btnRadio="1" [(ngModel)]="typeOfferModel" (click)="watchTypeOfferModel()">
+        Brouillon
       </label>
     </div>
   </div>
@@ -28,67 +28,66 @@
 <div class="row">
   <div class="col-lg-12 col-xs-12">
     <div *ngFor="let globalList of globalOfferList" style="margin-bottom: 10px;" [hidden]="globalList.list.length <=0">
-      <section class="widget" widget *ngFor="let item of globalList.list"
-               [hidden]="!item.visible || typeOfferModel == '1'">
+      <section class="widget" widget *ngFor="let item of globalList.list" [hidden]="!item.visible || typeOfferModel == '1'">
         <div class="widget-body row">
-          <div class="col-md-1 col-xs-4">
+          <div class="col-md-1 col-xs-2">
             <button class="btn btn-info mb-xs" role="button" style="border-radius: 50%;" (click)="changePrivacy(item)">
               <i class="glyphicon glyphicon-eye-close" style="font-size: 17px;"></i>
             </button>
           </div>
-          <h5 class="name no-margin mb-xs col-md-8 col-xs-12">{{item.title}}</h5>
-          <div class="col-md-2 col-xs-4" style="padding-left: 20px;">
-            <div class="checkbox-inline checkbox-ios">
+          <h5 class="name no-margin mb-xs col-xs-8 title">{{item.title}}</h5>
+          <div class="pull-right" style="padding-left: 20px;">
+            <div class="checkbox-inline checkbox-ios collapse navbar-collapse">
               <label class="switch">
                 <input type="checkbox" class="ios" [checked]="item.rechercheAutomatique" (click)="autoSearchMode(item)"><i></i>
               </label>
+              <label class="labelSwitch">Activer l'alerte</label>
             </div>
-            <label class="labelSwitch">Activer l'alerte</label>
+            <div class="radio hidden-md-up col-xs-6 pull-right">
+              <label class="labelSwitch">Activer l'alerte</label>
+              <input type="radio" [checked]="item.rechercheAutomatique" (click)="autoSearchMode(item)">
+
+            </div>
           </div>
-          <div class="col-md-1 col-xs-2 pull-xs-right" style="padding-right: 25px;">
-            <h4 class="pull-xs-right" style="margin-bottom:0px"><strong>{{item.jobData.remuneration}} € </strong></h4>
-            <label class="pull-xs-right" style="font-size: small; color: #ccc">DE L'HEURE</label>
+          <div class="col-xs-5 col-md-12 price pull-right">
+            <h4 class="" style="margin-bottom:0px"><strong>{{item.jobData.remuneration}} € </strong></h4>
+            <label class="" style="font-size: small; color: #ccc">DE L'HEURE</label>
           </div>
         </div>
 
         <div class="clearfix">
-          <div class="col-md-1 col-xs-2 pull-xs-right">
-            <div class="input-group-btn">
-              <button type="button" class="btn btn-secondary btn-sm" style="background-color: #40aea9; color: white;"
-                      (click)="launchSearch(item)">Lancer la recherche
-              </button>
-              <button class="btn btn-gray btn-sm" type="button">{{(item.correspondantsCount < 0) ? '' :
-                item.correspondantsCount}}
+          <div class="col-md-1 pull-sm-right pull-md-right pull-lg-right pull-xl-right">
+            <div class="input-group-btn grp-search">
+              <button type="button" class="btn btn-secondary btn-sm btn-search" style="background-color: #40aea9; color: white; border-radius: 0.2rem;" (click)="launchSearch(item)">{{(item.correspondantsCount < 0) ? '' :
+                        item.correspondantsCount}} Resulta trouvé
               </button>
             </div>
           </div>
-          <div class="col-md-1 col-xs-2 pull-xs-right">
-            <button type="button" class="btn btn-secondary btn-sm" (click)="goToDetailOffer(item)">Détails de l'offre
+          <div class="col-md-1 col-xs-2 pull-sm-right pull-md-right pull-lg-right pull-xl-right">
+            <button type="button" class="btn btn-secondary btn-sm btn-detail-offre" (click)="goToDetailOffer(item)">Détails de l'offre
             </button>
           </div>
         </div>
-        <div class="alert alert-warning alert-sm alertDispo" *ngIf="item.obsolete">Cette offre est obsolète. Veuillez
-          mettre à jour les créneaux de disponibilité
+        <div class="alert alert-warning alert-sm alertDispo" *ngIf="item.obsolete">Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilité
         </div>
       </section>
-      <section class="widget" widget *ngFor="let item of globalList.list"
-               [hidden]="item.visible || typeOfferModel == '0'">
+      <section class="widget" widget *ngFor="let item of globalList.list" [hidden]="item.visible || typeOfferModel == '0'">
         <div class="widget-body row">
           <div class="col-md-1 col-xs-4">
             <button class="btn btn-info mb-xs" role="button" style="border-radius: 50%;" (click)="changePrivacy(item)">
               <i class="glyphicon glyphicon-eye-open" style="font-size: 17px;"></i>
             </button>
           </div>
-          <h5 class="name no-margin mb-xs col-md-10 col-xs-12">{{item.title}}</h5>
-          <div class="col-md-1 col-xs-2 pull-xs-right" style="padding-right: 25px;">
-            <h4 class="pull-xs-right" style="margin-bottom:0px"><strong>{{item.jobData.remuneration}} € </strong></h4>
-            <label class="pull-xs-right" style="font-size: small; color: #ccc">DE L'HEURE</label>
+          <h5 class="name no-margin mb-xs col-xs-8 title">{{item.title}}</h5>
+          <div class="col-xs-12 price pull-left" style="padding-right: 25px;">
+            <h4 class="" style="margin-bottom:0px"><strong>{{item.jobData.remuneration}} € </strong></h4>
+            <label class="" style="font-size: small; color: #ccc">DE L'HEURE</label>
           </div>
         </div>
 
         <div class="clearfix">
-          <div class="col-md-1 col-xs-2 pull-xs-right">
-            <button type="button" class="btn btn-secondary btn-sm" (click)="goToDetailOffer(item)">Détails de l'offre
+          <div class="col-md-1 col-xs-2 pull-sm-right pull-md-right pull-lg-right pull-xl-right">
+            <button type="button" class="btn btn-secondary btn-sm btn-detail-offre-2" (click)="goToDetailOffer(item)">Détails de l'offre
             </button>
           </div>
         </div>
