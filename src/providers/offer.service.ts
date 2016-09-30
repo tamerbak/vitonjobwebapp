@@ -518,4 +518,20 @@ export class OffersService {
       return "";
     return text.replace(/'/g, "''")
   }
+
+  deleteOffer(offer, projectTarget){
+
+    let table = projectTarget == 'jobyer'?'user_offre_jobyer':'user_offre_entreprise';
+    let sql = "update "+table+" set dirty='Y' where pk_"+table+"="+offer.idOffer;
+
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+      .map(res => res.json())
+      .subscribe(data => {
+        resolve(data);
+      });
+    });
+  }
 }

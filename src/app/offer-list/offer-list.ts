@@ -1,18 +1,20 @@
-import {Component, ViewEncapsulation} from "@angular/core";
+import {Component,ChangeDetectorRef, ViewEncapsulation} from "@angular/core";
 import {ACCORDION_DIRECTIVES, BUTTON_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap";
 import {OffersService} from "../../providers/offer.service";
 import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {SearchService} from "../../providers/search-service";
+import {ModalDelete} from "../modal-delete-element/modal-delete-element";
+declare var jQuery,Messenger:any;
 
 @Component({
   selector: '[offer-list]',
   template: require('./offer-list.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./offer-list.scss')],
-  directives: [ACCORDION_DIRECTIVES, ROUTER_DIRECTIVES, AlertComponent, BUTTON_DIRECTIVES],
-  providers: [OffersService, SearchService]
+  directives: [ACCORDION_DIRECTIVES, ROUTER_DIRECTIVES, AlertComponent, BUTTON_DIRECTIVES,ModalDelete],
+  providers: [OffersService, SearchService,ChangeDetectorRef]
 })
 export class OfferList {
   globalOfferList = [];
@@ -24,25 +26,37 @@ export class OfferList {
   alerts: Array<Object>;
   typeOfferModel: string = '0';
 
+  deleteParams:{type:string,message:string}={type:'offer',message:'bla'};
+  offerToDelete:any = null;
+  public initOffers: Function;
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private router: Router,
+              private cdr:ChangeDetectorRef,
               private searchService: SearchService) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['app/home']);
     }
+
   }
 
   ngOnInit() {
     this.currentUser = this.sharedService.getCurrentUser();
     this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+    this.initOffers = this.loadOffers.bind(this);
+
+    this.loadOffers();
+
+  }
+
+  loadOffers(){
+    console.log("start")
     this.globalOfferList.length = 0;
     this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
     this.globalOfferList.push({header: 'Mes brouillons', list: []});
-
-    this.offerList = this.projectTarget == 'employer' ? this.currentUser.employer.entreprises[0].offers : this.currentUser.jobyer.offers;
+    this.offerList = this.projectTarget == 'employer' ? this.sharedService.getCurrentUser().employer.entreprises[0].offers : this.sharedService.getCurrentUser().jobyer.offers;
     for (var i = 0; i < this.offerList.length; i++) {
       let offer = this.offerList[i];
       if (!offer || !offer.jobData) {
@@ -79,6 +93,7 @@ export class OfferList {
         offer.correspondantsCount = -1;
         this.globalOfferList[1].list.push(offer);
       }
+
     }
   }
 
@@ -165,4 +180,12 @@ export class OfferList {
     else
       return false;
   }
+
+  deleteOffer(offer){
+    this.deleteParams.message = "Êtes-vous sûr de vouloir supprimer l'offre "+'"'+ offer.title +'"'+" ?";
+    this.sharedService.setCurrentOffer(offer);
+    jQuery("#modal-delete").modal('show')
+  }
+
+
 }

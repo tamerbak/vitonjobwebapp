@@ -63,6 +63,10 @@
             </div>
           </div>
           <div class="col-md-1 col-xs-2 pull-xs-right">
+            <button type="button" class="btn btn-danger btn-sm" (click)="deleteOffer(item)">supprimer l'offre
+            </button>
+          </div>
+          <div class="col-md-1 col-xs-2 pull-xs-right">
             <button type="button" class="btn btn-secondary btn-sm" (click)="goToDetailOffer(item)">Détails de l'offre
             </button>
           </div>
@@ -85,7 +89,10 @@
             <label class="pull-xs-right" style="font-size: small; color: #ccc">DE L'HEURE</label>
           </div>
         </div>
-
+        <div class="col-md-1 col-xs-2 pull-xs-right">
+          <button type="button" class="btn btn-danger btn-sm" (click)="deleteOffer(item)">supprimer l'offre
+          </button>
+        </div>
         <div class="clearfix">
           <div class="col-md-1 col-xs-2 pull-xs-right">
             <button type="button" class="btn btn-secondary btn-sm" (click)="goToDetailOffer(item)">Détails de l'offre
@@ -96,3 +103,4 @@
     </div>
   </div>
 </div>
+<modal-delete [params]="deleteParams" [initItems]="initOffers"></modal-delete>
