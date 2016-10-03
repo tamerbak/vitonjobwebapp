@@ -215,7 +215,7 @@ export class LoginPage {
       var phone_REGEXP = /^0/;
       //check if the phone number start with a zero
       var isMatchRegex = phone_REGEXP.test(tel);
-      if (Number(tel.length) == 9 && !isMatchRegex) {
+      if (Number(tel.toString().length) == 9 && !isMatchRegex) {
         return true;
       }
       else
