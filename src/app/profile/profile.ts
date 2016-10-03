@@ -130,8 +130,6 @@ export class Profile {
   whoDeliverStay;
   regionId;
 
-
-
   setImgClasses() {
     return {
       'img-circle': true,//TODO:this.currentUser && this.currentUser.estEmployeur,
@@ -192,11 +190,11 @@ export class Profile {
           if(this.regionId == '42'){
             this.isEuropean = 1;
             this.isFrench = false;
-            this.dateStay = new Date();
+            this.dateStay = data.date_de_delivrance;
             this.dateFromStay = data.debut_validite;
             this.dateToStay = data.fin_validite;
             this.whoDeliverStay = data.instance_delivrance;
-            this.numStay = data.numero_titre_sejour;
+            this.numStay = !this.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
             this.nationalityId = data.numero_titre_sejour;
           }else{
             this.isEuropean = 0;
@@ -204,10 +202,6 @@ export class Profile {
           }
         }
     })
-  }
-
-  ngOnInit(): void {
-    //this.index = 33;
   }
 
   getUserFullname() {
@@ -1198,7 +1192,7 @@ export class Profile {
         var dateStay = moment(this.dateStay).format('MM/DD/YYYY');
         var dateFromStay = moment(this.dateFromStay).format('MM/DD/YYYY');
         var dateToStay = moment(this.dateToStay).format('MM/DD/YYYY');
-        var birthCountryId = this.index;
+        var birthCountryId = this.profileService.getCountryByIndex(this.index, this.pays).id;
         var prefecture = this.whoDeliverStay;
         var regionId = this.regionId;
 
@@ -1429,6 +1423,13 @@ export class Profile {
         this.scanTitle = " de votre titre du séjour";
       }
     })
+  }
+
+  isEmpty(str) {
+    if (str == '' || str == 'null' || !str)
+      return true;
+    else
+      return false;
   }
 
 }
