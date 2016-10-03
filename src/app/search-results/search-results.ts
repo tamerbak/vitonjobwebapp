@@ -17,6 +17,7 @@ export class SearchResults {
   searchResults: any;
   currentUser: any;
   projectTarget: string;
+  isRecruteur:boolean = false;
 
   constructor(private sharedService: SharedService,
               private router: Router,
@@ -30,6 +31,7 @@ export class SearchResults {
     } else {
       // TODO: If not connected, ask for login or subscribe with message
       this.projectTarget = this.sharedService.getProjectTarget();
+      this.isRecruteur = this.currentUser.estRecruteur;
     }
     //  Retrieving last search
     let jsonResults = this.sharedService.getLastResult();
