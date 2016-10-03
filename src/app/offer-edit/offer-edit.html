@@ -270,8 +270,28 @@
           </div>
           <div class="form-actions">
             <div class="row">
-              <div class="col-md-offset-4 col-md-7 col-xs-12">
-                <button type="submit" class="btn btn-primary" (click)="editOffer()">Sauvegarder</button>
+              <div class="col-md-offset-5 col-sm-offset-2 col-md-2 col-sm-8 col-xs-12">
+                <button type="submit" class="btn btn-primary fwidth" (click)="editOffer()">Sauvegarder</button>
+              </div>
+            </div>
+            <div *ngIf="obj === 'detail'" class="row">
+              <div class="col-md-4 col-xs-12">
+                <button type="submit" class="btn btn-primary fwidth" (click)="copyOffer()">Copier l'offre</button>
+              </div>
+              <div class="col-md-4 col-xs-12">
+                <button type="submit" class="btn btn-primary fwidth" (click)="changePrivacy()">{{offrePrivacyTitle}}</button>
+              </div>
+              <div class="col-md-4 col-xs-12">
+                <button type="submit" class="btn btn-primary fwidth" (click)="launchSearch()">Lancer une recherche</button>
+              </div>
+              <div class="col-md-4 col-xs-12">
+                <button type="submit" class="btn btn-primary fwidth" (click)="autoSearchMode()">{{autoSearchModeTitle}}</button>
+              </div>
+              <div class="col-md-4 col-xs-12">
+                <button type="submit" class="btn btn-primary fwidth" (click)="showQuote()">Consulter le devis</button>
+              </div>
+              <div class="col-md-4 col-xs-12">
+                <button type="submit" class="btn btn-danger fwidth" (click)="deleteOffer()">Supprimer l'offre</button>
               </div>
             </div>
           </div>
@@ -280,3 +300,5 @@
     </section>
   </div>
 </div>
+<modal-options [params]="modalParams" ></modal-options>
+<div modal-offer-temp-quote ></div>
