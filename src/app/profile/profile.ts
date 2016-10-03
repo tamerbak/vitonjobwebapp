@@ -13,6 +13,7 @@ import {AddressUtils} from "../utils/addressUtils";
 import {Configs} from "../../configurations/configs";
 import {MapsAPILoader} from "angular2-google-maps/core";
 import {ModalPicture} from "../modal-picture/modal-picture";
+import {BankAccount} from "../bank-account/bank-account";
 import MaskedInput from "angular2-text-mask";
 
 declare var jQuery, require, Messenger, moment: any;
@@ -21,7 +22,7 @@ declare var google: any;
 @Component({
   selector: '[profile]',
   template: require('./profile.html'),
-  directives: [ROUTER_DIRECTIVES, NKDatetime, AlertComponent, ModalPicture, MaskedInput],
+  directives: [ROUTER_DIRECTIVES, NKDatetime, AlertComponent, ModalPicture, MaskedInput,BankAccount],
   providers: [Utils, ProfileService, CommunesService, LoadListService, MedecineService, AttachementsService],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./profile.scss')]
