@@ -303,6 +303,9 @@ export class LoginPage {
     }else{
       this.isRecruteur = false;
     }
+    if(this.index && this.phone && this.isPhoneNumValid){
+      this.isRegistration(this.index, this.phone);
+    }
   }
 
 
