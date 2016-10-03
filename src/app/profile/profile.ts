@@ -14,6 +14,7 @@ import {Configs} from "../../configurations/configs";
 import {MapsAPILoader} from "angular2-google-maps/core";
 import {ModalPicture} from "../modal-picture/modal-picture";
 import MaskedInput from "angular2-text-mask";
+
 declare var jQuery, require, Messenger, moment: any;
 declare var google: any;
 
@@ -38,6 +39,9 @@ export class Profile {
   siret: string;
   ape: string;
   birthcp:string;
+  birthcpForeigner: string;
+
+
   selectedCP:any;
   birthdate: Date;
   birthdateHidden: Date;
@@ -112,7 +116,20 @@ export class Profile {
   addressOptions = {
     componentRestrictions: {country: "fr"}
   };
-  communesData:any = []
+  communesData:any = [];
+  isFrench: boolean;
+  isEuropean: number;
+  pays = [];
+  index: number;
+
+  numStay;
+  dateStay;
+  dateFromStay;
+  dateToStay;
+  whoDeliverStay;
+  regionId;
+
+
 
   setImgClasses() {
     return {
@@ -145,13 +162,51 @@ export class Profile {
         listService.loadNationalities().then((response: any) => {
           this.nationalities = response.data;
           this.dataForNationalitySelectReady = true;
-          this.scanTitle = " de votre CNI";
+          if(this.isFrench || this.isEuropean == 0) {
+            this.scanTitle = " de votre CNI ou Passeport";
+          }
+          if(this.isEuropean == 1){
+            this.scanTitle = " de votre titre du séjour";
+          }
         });
 
       } else {
         this.scanTitle = " de votre extrait k-bis";
       }
     }
+    this.isFrench = true;
+
+    //load countries list
+    this.listService.loadCountries("jobyer").then((data: any) => {
+      this.pays = data.data;
+    });
+    if(!this.isEmployer && !this.isNewUser)
+      this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) =>{
+        data = data.data[0];
+        this.regionId = data.fk_user_identifiants_nationalite;
+        if(this.regionId == '40'){
+          this.isFrench = true;
+        }else{
+          this.index = data.fk_user_pays;
+          if(this.regionId == '42'){
+            this.isEuropean = 1;
+            this.isFrench = false;
+            this.dateStay = new Date();
+            this.dateFromStay = data.debut_validite;
+            this.dateToStay = data.fin_validite;
+            this.whoDeliverStay = data.instance_delivrance;
+            this.numStay = data.numero_titre_sejour;
+            this.nationalityId = data.numero_titre_sejour;
+          }else{
+            this.isEuropean = 0;
+            this.isFrench = false;
+          }
+        }
+    })
+  }
+
+  ngOnInit(): void {
+    //this.index = 33;
   }
 
   getUserFullname() {
@@ -415,6 +470,17 @@ export class Profile {
       }
 
     }
+    if((<HTMLInputElement>document.getElementById("dateStay")) != null)
+      (<HTMLInputElement>document.getElementById("dateStay")).value = moment(this.dateStay).format("YYYY-MM-DD");
+    if((<HTMLInputElement>document.getElementById("dateFromStay")) != null)
+    (<HTMLInputElement>document.getElementById("dateFromStay")).value = moment(this.dateFromStay).format("YYYY-MM-DD");
+    if((<HTMLInputElement>document.getElementById("dateToStay")) != null)
+    (<HTMLInputElement>document.getElementById("dateToStay")).value = moment(this.dateToStay).format("YYYY-MM-DD");
+
+    this.profileService.getPrefecture(this.whoDeliverStay).then((data: any) => {
+      if(data && data.status == "success" && data.data && data.data.length != 0)
+      jQuery(".whoDeliver-select").select2('data', {id: data.data[0].id, nom: this.whoDeliverStay});
+    })
   }
 
   updateScan(accountId, userId, role) {
@@ -451,8 +517,9 @@ export class Profile {
         jQuery('.nationalitySelectPicker').selectpicker();
       }
     }
-  }
 
+
+  }
 
   ngAfterViewInit(): void {
     var self = this;
@@ -503,6 +570,7 @@ export class Profile {
                 {
                   self.birthcp = e.added.code;
                   self.selectedCP = e.added.id;
+                  self.selectedCommune = null;
                 }
               );
 
@@ -530,6 +598,7 @@ export class Profile {
             if(!self.selectedCP || self.selectedCP == 0){
               return "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('%"+term+"%') UNION select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('"+term+"') limit 5";
             }else{
+              //return "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('%"+term+"%') and fk_user_code_postal="+self.selectedCP+" UNION select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('"+term+"') and fk_user_code_postal="+self.selectedCP+" limit 5";
               return "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('%"+term+"%') and fk_user_code_postal="+self.selectedCP+" UNION select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('"+term+"') and fk_user_code_postal="+self.selectedCP+" limit 5";
             }
           },
@@ -599,8 +668,45 @@ export class Profile {
       );
     }
 
-  }
+    if (!this.isEmployer) {
+      jQuery('.whoDeliver-select').select2({
 
+        ajax: {
+          url: Configs.sqlURL,
+          type: 'POST',
+          dataType: 'json',
+          quietMillis: 250,
+          params: {
+            contentType: "text/plain",
+          },
+          data: function (term, page) {
+            return "select pk_user_prefecture as id, nom from user_prefecture where lower_unaccent(nom) like lower_unaccent('%" + term + "%') limit 10"; // search term
+          },
+          results: function (data, page) {
+            return {results: data.data};
+          },
+          cache: true
+        },
+        formatResult: function (item) {
+          return item.nom;
+        },
+        formatSelection: function (item) {
+          return item.nom;
+        },
+        dropdownCssClass: "bigdrop",
+        escapeMarkup: function (markup) {
+          return markup;
+        },
+        minimumInputLength: 3,
+      });
+      jQuery('.whoDeliver-select').on('change',
+        (e) => {
+          this.whoDeliverStay = e.added.nom;
+        }
+      );
+    }
+
+  }
 
   watchLastname(e) {
     let _name = e.target.value;
@@ -802,7 +908,7 @@ export class Profile {
 
   checkINSEE(num: string, communeObj: any) {
 
-    let indicator = num.substring(5, 5);
+    let indicator = num.substring(5, 10);
 
     if (communeObj.id != '0') {
       if (indicator != communeObj.code_insee)
@@ -955,6 +1061,18 @@ export class Profile {
     this.showForm = false;
   }
 
+  watchIsFrench(e) {
+    this.isFrench = e.target.value == "1" ? true : false;
+    if(!this.isFrench)
+      this.isEuropean = 0;
+
+    if(this.isFrench) {
+      this.scanTitle = " de votre CNI ou Passeport";
+    }else{
+      this.scanTitle = " de votre titre du séjour";
+    }
+  }
+
   updateCivility() {
     if (this.isValidForm()) {
       this.validation = true;
@@ -969,9 +1087,6 @@ export class Profile {
         if (this.isRecruiter) {
           this.profileService.updateRecruiterCivility(title, lastname, firstname, accountId)
             .then((res: any) => {
-
-
-
               //case of update failure : server unavailable or connection problem
               if (!res || res.status == "failure") {
                 Messenger().post({
@@ -1072,14 +1187,21 @@ export class Profile {
             });
         }
       } else {
-
         var numSS = this.numSS;
         var cni = this.cni;
         var birthdate = moment(this.birthdateHidden).format('MM/DD/YYYY');
         var birthplace = this.selectedCommune.nom;
         var nationalityId = this.nationalityId;
+        var birthcp = this.birthcp;
+        var numStay = this.numStay;
+        var dateStay = moment(this.dateStay).format('MM/DD/YYYY');
+        var dateFromStay = moment(this.dateFromStay).format('MM/DD/YYYY');
+        var dateToStay = moment(this.dateToStay).format('MM/DD/YYYY');
+        var birthCountryId = this.index;
+        var prefecture = this.whoDeliverStay;
+        var regionId = this.regionId;
 
-        this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthplace)
+        this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, prefecture, this.isFrench, this.isEuropean, regionId)
           .then((res: any) => {
 
             //case of authentication failure : server unavailable or connection problem
@@ -1295,4 +1417,17 @@ export class Profile {
       }
     }
   }
+  selectNationality(e){
+    this.profileService.getIdentifiantNationalityByNationality(e.target.value).then((data: any)=> {
+      this.isEuropean = data.data[0].pk_user_identifiants_nationalite == "42" ? 1 : 0;
+      this.regionId = data.data[0].pk_user_identifiants_nationalite;
+      if(this.isFrench || this.isEuropean == 0) {
+        this.scanTitle = " de votre CNI ou Passeport";
+      }
+      if(this.isEuropean == 1){
+        this.scanTitle = " de votre titre du séjour";
+      }
+    })
+  }
+
 }

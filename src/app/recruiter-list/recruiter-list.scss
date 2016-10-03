@@ -1,0 +1,16 @@
+@import "../../scss/variables";
+@import "../../../node_modules/bootstrap/scss/_variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+@media screen and (min-width: 250px) and (max-width: 530px) {
+  .page-title {
+    font-size: large;
+    width: 100%;
+    text-align: center;
+  }
+
+  .add-recruiter {
+    display: table;
+    margin: 0 auto 1em;
+    width: 100%;
+  }
+}
