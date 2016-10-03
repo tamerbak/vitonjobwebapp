@@ -29,6 +29,8 @@ export class SearchDetails {
   zoom: number;
   languages: any[];
   qualities: any[];
+  isRecruteur:boolean = false;
+
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -41,6 +43,7 @@ export class SearchDetails {
       this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
     } else {
       this.projectTarget = this.sharedService.getProjectTarget();
+      this.isRecruteur = this.currentUser.estRecruteur;
     }
     this.result = this.sharedService.getSearchResult();
     this.offer = this.sharedService.getCurrentOffer();

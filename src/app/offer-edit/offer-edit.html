@@ -3,7 +3,7 @@
   <li class="active"><a class="breadcrumb-link" [routerLink]="['/app/offer/list']">Mes offres</a></li>
   <li class="active"><a class="breadcrumb-link" [routerLink]="['/app/offer/edit']">{{obj == "add" ? 'Nouvelle offre' : 'Détails de l\'offre'}}</a></li>
 </ol>
-<h1 class="page-title">{{currentUser.estEmployeur ? 'Employeur' : 'Jobyer'}} - <span
+<h1 class="page-title">{{currentUser.estRecruteur ? 'Recruteur' : (currentUser.estEmployeur ? 'Employeur' : 'Jobyer')}} - <span
   class="fw-semi-bold">{{obj == "add" ? 'Nouvelle offre' : 'Détails de l\'offre'}}</span></h1>
 
 <div class="row">

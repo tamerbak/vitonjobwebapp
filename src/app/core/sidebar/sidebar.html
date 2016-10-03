@@ -62,7 +62,7 @@
           </span> Mes Options
       </a>
     </li>
-    <li *ngIf="currentUser">
+    <li *ngIf="currentUser && currentUser.estEmployeur">
       <a [routerLink]=" ['recruiter/list'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-user"></i>

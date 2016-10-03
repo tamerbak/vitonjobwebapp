@@ -4,13 +4,13 @@
   </li>
   <li class="active">Détails</li>
 </ol>
-<h1 class="page-title">{{projectTarget == 'employer' ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Détails de l'offre sélectionnée</span>
+<h1 class="page-title">{{currentUser.estRecruteur ? 'Recruteur' : (currentUser.estEmployeur ? 'Employeur' : 'Jobyer')}} - <span class="fw-semi-bold">Détails de l'offre sélectionnée</span>
 </h1>
 
 <div class="row">
   <div class="col-lg-8 col-xl-offset-2 col-xs-12">
     <section widget class="widget">
-      <div modal-component *ngIf="projectTarget == 'employer'"></div>
+      <div modal-component *ngIf="projectTarget == 'employer' && !isRecruteur"></div>
       <div class="widget-body">
         <div class="post-user mt-n-xs">
 					<span class="thumb pull-left mr">
