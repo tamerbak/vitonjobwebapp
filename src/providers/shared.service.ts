@@ -24,6 +24,8 @@ export class SharedService {
     this.setJobList(null);
     this.setOptionMission(null);
     this.setProfilImageUrl(null);
+    this.setRecruiterList(null);
+    this.setCurrentRecruiter(null);
   }
 
   getStorageType() {
@@ -195,5 +197,21 @@ export class SharedService {
 
   setProfilImageUrl(value) {
     this.setStorageVariableRaw("profilImage", value);
+  }
+
+  getRecruiterList() {
+    return this.getStorageVariable("recruiterList");
+  }
+
+  setRecruiterList(value) {
+    this.setStorageVariable("recruiterList", value);
+  }
+
+  getCurrentRecruiter() {
+    return this.getStorageVariable("currentRecruiter");
+  }
+
+  setCurrentRecruiter(value) {
+    this.setStorageVariable("currentRecruiter", value);
   }
 }

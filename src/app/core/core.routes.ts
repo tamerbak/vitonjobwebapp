@@ -3,7 +3,6 @@ import {Core} from "./core";
 import {Home} from "./../home/home";
 import {Profile} from "../profile/profile";
 import {Settings} from "../settings/settings";
-import {RecruitList} from "../recruit-list/recruit-list";
 import {Attachements} from "../attachements/attachements";
 import {PendingContracts} from "../pending-contracts/pending-contracts";
 import {OfferList} from "../offer-list/offer-list";
@@ -21,6 +20,8 @@ import {Yousign} from "../yousign/yousign";
 import {WalletCreate} from "../wallet-create/wallet-create";
 import {MissionPointing} from "../mission-pointing/mission-pointing";
 import {OfferEdit} from "../offer-edit/offer-edit";
+import {RecruiterList} from "../recruiter-list/recruiter-list";
+import {RecruiterEdit} from "../recruiter-edit/recruiter-edit";
 import {ConfirmExitPage} from "../../providers/routes.service";
 
 /**
@@ -70,12 +71,12 @@ export const CoreRoutes: RouterConfig = [
       {path: 'wallet/create', component: WalletCreate,canDeactivate: [ConfirmExitPage]},
 
       // Grouped recruitment
-      {path: 'recruitList', component: RecruitList},
       {path: 'pendingContracts', component: PendingContracts},
+      {path: 'recruiter/list', component: RecruiterList},
+      {path: 'recruiter/edit', component: RecruiterEdit},
 
       // Attachments chest
       {path: 'attachements', component: Attachements},
-
     ]
   }
 ];
