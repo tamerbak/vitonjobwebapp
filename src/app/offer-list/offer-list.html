@@ -64,10 +64,6 @@
             </div>
           </div>
           <div class="col-md-1 col-xs-2 pull-sm-right pull-md-right pull-lg-right pull-xl-right">
-            <button type="button" class="btn btn-secondary btn-sm btn-detail-offre" (click)="deleteOffer(item)">Supprimer l'offre
-            </button>
-          </div>
-          <div class="col-md-1 col-xs-2 pull-sm-right pull-md-right pull-lg-right pull-xl-right">
             <button type="button" class="btn btn-secondary btn-sm btn-detail-offre" (click)="goToDetailOffer(item)">Détails de l'offre
             </button>
           </div>
@@ -91,10 +87,6 @@
 
         <div class="clearfix">
           <div class="col-md-1 col-xs-2 pull-sm-right pull-md-right pull-lg-right pull-xl-right">
-            <button type="button" class="btn btn-danger btn-sm btn-detail-offre-2" (click)="deleteOffer(item)">Supprimer l'offre
-            </button>
-          </div>
-          <div class="col-md-1 col-xs-2 pull-sm-right pull-md-right pull-lg-right pull-xl-right">
             <button type="button" class="btn btn-secondary btn-sm btn-detail-offre-2" (click)="goToDetailOffer(item)">Détails de l'offre
             </button>
           </div>
@@ -103,4 +95,3 @@
     </div>
   </div>
 </div>
-<modal-delete [params]="deleteParams" [initItems]="initOffers" ></modal-delete>

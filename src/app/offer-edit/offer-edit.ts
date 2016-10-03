@@ -1,18 +1,21 @@
 import {Component, ViewEncapsulation} from "@angular/core";
 import {OffersService} from "../../providers/offer.service";
 import {SharedService} from "../../providers/shared.service";
+import {SearchService} from "../../providers/search-service";
 import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {NKDatetime} from "ng2-datetime/ng2-datetime";
-declare var Messenger:any;
+import {ModalOptions} from "../modal-options/modal-options";
+import {ModalOfferTempQuote} from "../modal-offer-temp-quote/modal-offer-temp-quote";
+declare var Messenger,jQuery:any;
 
 @Component({
   selector: '[offer-edit]',
   template: require('./offer-edit.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./offer-edit.scss')],
-  directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime],
-  providers: [OffersService]
+  directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime,ModalOptions,ModalOfferTempQuote],
+  providers: [OffersService,SearchService]
 })
 
 export class OfferEdit {
@@ -60,8 +63,13 @@ export class OfferEdit {
   indemnites : any = [];
   dataValidation:boolean = false;
 
+  offrePrivacyTitle:string;
+  autoSearchModeTitle:string;
+  modalParams:any={type:'',message:''};
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
+              private searchService: SearchService,
               private router: Router,
               private route: ActivatedRoute) {
     this.currentUser = this.sharedService.getCurrentUser();
@@ -85,6 +93,8 @@ export class OfferEdit {
 
     if(this.obj == "detail") {
       this.offer = this.sharedService.getCurrentOffer();
+      this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée":"Rendre l'offre public";
+      this.autoSearchModeTitle = this.offer.rechercheAutomatique ? "Désactiver la recherche auto":"Activer la recherche auto";
       if (this.offer.obsolete) {
         //display alert if offer is obsolete
         this.addAlert("warning", "Attention: Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilités.", "general");
@@ -604,5 +614,97 @@ export class OfferEdit {
       return false;
     }
     return true;
+  }
+
+  deleteOffer(){
+    this.dataValidation = true;
+    this.modalParams.type = "offer.delete";
+    this.modalParams.message = "Êtes-vous sûr de vouloir supprimer l'offre "+'"'+ this.offer.title +'"'+" ?";
+    this.modalParams.btnTitle = "Supprimer l'offre";
+    this.modalParams.btnClasses = "btn btn-danger";
+    this.modalParams.modalTitle = "Suppression de l'offre"
+    jQuery("#modal-options").modal('show')
+  }
+
+  copyOffer(){
+    this.dataValidation = true;
+    this.modalParams.type = "offer.copy";
+    this.modalParams.message = "Voulez-vous ajouter une nouvelle offre à partir de celle-ci?";
+    this.modalParams.btnTitle = "Copier l'offre";
+    this.modalParams.btnClasses = "btn btn-primary";
+    this.modalParams.modalTitle = "Copie de l'offre"
+    jQuery("#modal-options").modal('show')
+  }
+
+  changePrivacy() {
+    this.dataValidation = true;
+    var offer = this.offer;
+    var statut = offer.visible ? 'Non' : 'Oui';
+    this.offersService.updateOfferStatut(offer.idOffer, statut, this.projectTarget).then(()=> {
+      offer.visible = (statut == 'Non' ? false : true);
+      this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée":"Rendre l'offre public";
+      this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
+      this.sharedService.setCurrentUser(this.currentUser);
+      if (offer.visible) {
+        Messenger().post({
+          message: "Votre offre a bien été déplacé dans «Mes offres en ligne».",
+          type: 'success',
+          showCloseButton: true
+        });
+      } else {
+        Messenger().post({
+          message: "Votre offre a bien été déplacé dans «Mes offres en brouillon».",
+          type: 'success',
+          showCloseButton: true
+        });
+      }
+    });
+  }
+
+  launchSearch() {
+    this.dataValidation = true;
+    var offer = this.offer;
+    if (!offer)
+      return;
+    let searchFields = {
+      class: 'com.vitonjob.callouts.recherche.SearchQuery',
+      job: offer.jobData.job,
+      metier: '',
+      lieu: '',
+      nom: '',
+      entreprise: '',
+      date: '',
+      table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
+      idOffre: '0'
+    };
+    this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
+      this.sharedService.setLastResult(data);
+      this.sharedService.setCurrentOffer(offer);
+      this.router.navigate(['app/search/results']);
+    });
+  }
+
+  autoSearchMode() {
+    this.dataValidation = true;
+    var offer = this.offer;
+    var mode = offer.rechercheAutomatique ? "Non" : "Oui";
+    this.offersService.saveAutoSearchMode(this.projectTarget, offer.idOffer, mode).then((data: any)=> {
+      if (data && data.status == "success") {
+        offer.rechercheAutomatique = !offer.rechercheAutomatique;
+        this.autoSearchModeTitle = offer.rechercheAutomatique ? "Désactiver la recherche auto":"Activer la recherche auto";
+        this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
+        this.sharedService.setCurrentUser(this.currentUser);
+      } else {
+        Messenger().post({
+          message: "Une erreur est survenue lors de la sauvegarde des données.",
+          type: 'success',
+          showCloseButton: true
+        });
+      }
+    });
+  }
+
+  showQuote(){
+    jQuery("#modal-offer-temp-quote").modal('show')
   }
 }

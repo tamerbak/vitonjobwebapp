@@ -5,7 +5,6 @@ import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {SearchService} from "../../providers/search-service";
-import {ModalDelete} from "../modal-delete-element/modal-delete-element";
 declare var jQuery,Messenger:any;
 
 @Component({
@@ -13,7 +12,7 @@ declare var jQuery,Messenger:any;
   template: require('./offer-list.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./offer-list.scss')],
-  directives: [ACCORDION_DIRECTIVES, ROUTER_DIRECTIVES, AlertComponent, BUTTON_DIRECTIVES,ModalDelete],
+  directives: [ACCORDION_DIRECTIVES, ROUTER_DIRECTIVES, AlertComponent, BUTTON_DIRECTIVES],
   providers: [OffersService, SearchService,ChangeDetectorRef]
 })
 export class OfferList {
@@ -25,10 +24,6 @@ export class OfferList {
 
   alerts: Array<Object>;
   typeOfferModel: string = '0';
-
-  deleteParams:{type:string,message:string}={type:'offer',message:'bla'};
-  offerToDelete:any = null;
-  public initOffers: Function;
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -45,14 +40,12 @@ export class OfferList {
   ngOnInit() {
     this.currentUser = this.sharedService.getCurrentUser();
     this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
-    this.initOffers = this.loadOffers.bind(this);
 
     this.loadOffers();
 
   }
 
   loadOffers(){
-    console.log("start")
     this.globalOfferList.length = 0;
     this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
     this.globalOfferList.push({header: 'Mes brouillons', list: []});
@@ -114,6 +107,8 @@ export class OfferList {
       }
     });
   }
+
+
 
   /**
    * @Description : Launch search from current offer-list
@@ -180,12 +175,4 @@ export class OfferList {
     else
       return false;
   }
-
-  deleteOffer(offer){
-    this.deleteParams.message = "Êtes-vous sûr de vouloir supprimer l'offre "+'"'+ offer.title +'"'+" ?";
-    this.sharedService.setCurrentOffer(offer);
-    jQuery("#modal-delete").modal('show')
-  }
-
-
 }

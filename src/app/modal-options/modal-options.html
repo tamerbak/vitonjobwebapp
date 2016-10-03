@@ -1,9 +1,9 @@
-<div class="modal fade" id="modal-delete">
+<div class="modal fade" id="modal-options">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title text-xs-center fw-bold mt">Attention ! Modification non sauvgardée</h4>
+        <h4 class="modal-title text-xs-center fw-bold mt">{{params ? params.modalTitle:''}}</h4>
       </div>
       <div class="modal-body bg-gray-lighter">
         <form class="form-horizontal" role="form">
@@ -17,15 +17,15 @@
       <div class="modal-footer">
         <div class="clearfix">
           <div class="footer btn-toolbar pull-xs-right m-t-1">
-            <div class="widget-body btn loaderPosition" [hidden]="!removing" >
+            <div class="widget-body btn loaderPosition" [hidden]="!processing" >
               <div class="loader animated fadeIn handle">
                 <span class="spinner">
                   <i class="fa fa-spinner fa-spin"></i>
                 </span>
               </div>
             </div>
-            <button class="btn btn-danger" [disabled]="removing" (click)="delete()">
-              Supprimer
+            <button class="{{params? params.btnClasses:''}}" [disabled]="processing" (click)="launchOperation()">
+              {{params ? params.btnTitle:''}}
             </button>
             <button type="button" class="btn btn-gray" data-dismiss="modal">Annuler</button>
           </div>

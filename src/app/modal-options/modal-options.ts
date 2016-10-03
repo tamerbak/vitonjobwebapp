@@ -8,21 +8,19 @@ import {OffersService} from "../../providers/offer.service";
 declare var jQuery, require, Messenger: any;
 
 @Component({
-  selector: 'modal-delete',
+  selector: 'modal-options',
   directives: [ROUTER_DIRECTIVES],
   providers: [OffersService],
-  template: require('./modal-delete-element.html'),
-  styles: [require('./modal-delete-element.scss')]
+  template: require('./modal-options.html'),
+  styles: [require('./modal-options.scss')]
 })
-export class ModalDelete {
+export class ModalOptions {
 
   @Input() params: any;
-  @Input() initItems: Function;
 
   currentUser:any = null;
   projectTarget:any;
-  message:string;
-  removing:boolean = false;
+  processing:boolean = false;
 
 
   constructor(private sharedService: SharedService,
@@ -37,43 +35,37 @@ export class ModalDelete {
                 }
   }
 
-  delete(){
+  launchOperation(){
 
-    if(this.params.type === 'offer'){
+    if(this.params.type === 'offer.delete'){
       this.deleteOffer()
+    }else if(this.params.type === 'offer.copy'){
+      this.copyOffer()
     }
   }
 
   deleteOffer() {
-      this.removing =true;
+      this.processing =true;
       var offer = this.sharedService.getCurrentOffer();
-      console.log(offer);
       if(!offer){
-        this.removing =false;
-        jQuery("#modal-delete").modal('hide');
+        this.processing =false;
+        jQuery("#modal-options").modal('hide');
         return;
       }
       this.offersService.deleteOffer(offer, this.projectTarget).then((data: any)=> {
-        console.log(this.currentUser)
-        console.log(this.projectTarget == 'employer')
-        console.log(offer);
         if (this.projectTarget == 'employer') {
           let rawData = this.currentUser.employer;
-          console.log(rawData)
           if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
               let index = -1;
               for(let i = 0 ; i < this.currentUser.employer.entreprises[0].offers.length ; i++){
-                  console.log(i,this.currentUser.employer.entreprises[0].offers[i].idOffer,offer.idOffer )
                   if(this.currentUser.employer.entreprises[0].offers[i].idOffer == offer.idOffer){
                       index = i;
                       break;
                   }
               }
-              console.log(index)
               if(index>=0){
                   this.currentUser.employer.entreprises[0].offers.splice(index,1);
               }
-              console.log(this.currentUser)
               this.sharedService.setCurrentUser(this.currentUser);
           }
         } else {
@@ -103,11 +95,35 @@ export class ModalDelete {
           showCloseButton: true
         });
         this.sharedService.setCurrentOffer(null);
-        this.removing =false;
-        jQuery("#modal-delete").modal('hide')
-        this.initItems();
+        this.processing =false;
+        jQuery("#modal-options").modal('hide')
+        this.router.navigate(['app/offer/list']);
       });
     }
+
+    copyOffer() {
+        this.processing =true;
+        let offer = this.sharedService.getCurrentOffer();
+        if(!offer){
+          this.processing =false;
+          jQuery("#modal-options").modal('hide');
+          return;
+        }
+
+        offer.title = offer.title + " (Copie)";
+				offer.idOffer = "";
+        this.offersService.setOfferInLocal(offer, this.projectTarget);
+        this.offersService.setOfferInRemote(offer, this.projectTarget).then((data: any)=> {
+          Messenger().post({
+            message: "l'offre "+"'"+offer.title+"'"+" a été copiée avec succès",
+            type: 'success',
+            showCloseButton: true
+          });
+          this.processing =false;
+          jQuery("#modal-options").modal('hide');
+          this.router.navigate(['app/offer/list']);
+        });
+      }
 
 
 
