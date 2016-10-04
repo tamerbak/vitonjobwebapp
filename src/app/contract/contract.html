@@ -7,7 +7,8 @@
         </div>
         <div class="form-group">
           <label for="interimaire">Intérimaire</label>
-          <input type="text" class="form-control" id="interimaire" [(ngModel)]="contractData.interim">
+          <input type="text" class="form-control" id="interimaire" [(ngModel)]="contractData.interim"  aria-describedby="interimaire">
+          <small id="interimaire" class="form-text text-muted"></small>
         </div>
       </div>
     </div>
@@ -20,17 +21,20 @@
       <div class="col-xs-6 pull-left col-1">
         <div class="form-group">
           <label for="societe-utilisatrice">Société utilisatrice</label>
-          <input type="text" class="form-control" id="societe-utilisatrice" [(ngModel)]="companyName">
+          <input type="text" class="form-control" id="societe-utilisatrice" [(ngModel)]="companyName" aria-describedby="societe-utilisatrice">
+          <small id="societe-utilisatrice" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="lieu-de-la-mission">Lieu de la mission</label>
-          <input type="text" class="form-control" id="lieu-de-la-mission" [(ngModel)]="workAdress">
+          <input type="text" class="form-control" id="lieu-de-la-mission" [(ngModel)]="workAdress" aria-describedby="lieu-de-la-mission">
+          <small id="lieu-de-la-mission" class="form-text text-muted"></small>
         </div>
       </div>
       <div class="col-xs-6 pull-right col-2">
         <div class="form-group">
           <label for="contact">Contact</label>
-          <input type="text" class="form-control" id="contact" [(ngModel)]="employerFullName">
+          <input type="text" class="form-control" id="contact" [(ngModel)]="employerFullName" aria-describedby="contact">
+          <small id="contact" class="form-text text-muted"></small>
         </div>
       </div>
     </div>
@@ -43,41 +47,50 @@
       <div class="col-xs-6 pull-left col-1">
         <div class="form-group">
           <label for="nom">Nom</label>
-          <input type="text" class="form-control" id="nom" [(ngModel)]="jobyer.nom">
+          <input type="text" class="form-control" id="nom" [(ngModel)]="jobyer.nom" aria-describedby="nom">
+          <small id="nom" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="prenom">Prénom</label>
-          <input type="text" class="form-control" id="prenom" [(ngModel)]="jobyer.prenom" />
+          <input type="text" class="form-control" id="prenom" [(ngModel)]="jobyer.prenom" aria-describedby="prenom"/>
+          <small id="prenom" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="nss">N° SS</label>
-          <input type="text" class="form-control" id="nss" [(ngModel)]="jobyer.numSS" />
+          <input type="text" class="form-control" id="nss" [(ngModel)]="jobyer.numSS" aria-describedby="nss"/>
+          <small id="nss" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="date-de-naissance">Date de naissance</label>
-          <input type="date" id="date-de-naissance" class="form-control" [(ngModel)]="jobyerBirthDate" />
+          <input type="date" id="date-de-naissance" class="form-control" [(ngModel)]="jobyerBirthDate" aria-describedby="date-de-naissance"/>
+          <small id="date-de-naissance" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="lieu">Lieu de naissance</label>
-          <input type="text" class="form-control" id="lieu" [(ngModel)]="jobyer.lieuNaissance" />
+          <input type="text" class="form-control" id="lieu" [(ngModel)]="jobyer.lieuNaissance" aria-describedby="lieu"/>
+          <small id="lieu" class="form-text text-muted"></small>
         </div>
       </div>
       <div class="col-xs-6 pull-right col-2">
         <div class="form-group">
           <label for="nat">Nationalité</label>
-          <input type="text" id="nat" class="form-control" [(ngModel)]="jobyer.nationaliteLibelle" />
+          <input type="text" id="nat" class="form-control" [(ngModel)]="jobyer.nationaliteLibelle" aria-describedby="nat"/>
+          <small id="nat" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="num">Num. Titre de travail</label>
-          <input type="text" id="num" class="form-control" [(ngModel)]="contractData.numeroTitreTravail" />
+          <input type="text" id="num" class="form-control" [(ngModel)]="contractData.numeroTitreTravail" aria-describedby="num"/>
+          <small id="num" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="val">Valable du</label>
-          <input type="date" id="val" class="form-control" [(ngModel)]="contractData.debutTitreTravail" />
+          <input type="date" id="val" class="form-control" [(ngModel)]="contractData.debutTitreTravail" aria-describedby="val"/>
+          <small id="" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="vala">Valable au</label>
           <input type="date" id="vala" class="form-control" [(ngModel)]="contractData.finTitreTravail" />
+          <small id="val" class="form-text text-muted"></small>
         </div>
       </div>
     </div>
@@ -90,37 +103,45 @@
       <div class="col-xs-6 pull-left col-1">
         <div class="form-group">
           <label for="debut">Début de mission</label>
-          <input type="date" id="debut" class="form-control" [(ngModel)]="contractData.missionStartDate" />
+          <input type="date" id="debut" class="form-control" [(ngModel)]="contractData.missionStartDate" aria-describedby="debut"/>
+          <small id="debut" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="fin">Fin de mission</label>
-          <input type="date" id="fin" class="form-control" [(ngModel)]="contractData.missionEndDate" />
+          <input type="date" id="fin" class="form-control" [(ngModel)]="contractData.missionEndDate" aria-describedby="fin"/>
+          <small id="fin" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="essai">P. essai (J) </label>
-          <input type="text" id="essai" class="form-control" [(ngModel)]="contractData.trialPeriod" />
+          <input type="text" id="essai" class="form-control" [(ngModel)]="contractData.trialPeriod" aria-describedby="essai"/>
+          <small id="essai" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="deb">Début terme </label>
-          <input type="date" id="deb" class="form-control" [(ngModel)]="contractData.termStartDate" />
+          <input type="date" id="deb" class="form-control" [(ngModel)]="contractData.termStartDate" aria-describedby="deb"/>
+          <small id="deb" class="form-text text-muted"></small>
         </div>
       </div>
       <div class="col-xs-6 pull-right col-2">
         <div class="form-group">
           <label for="terme">Fin terme</label>
-          <input type="date" id="terme" class="form-control" [(ngModel)]="contractData.termEndDate" />
+          <input type="date" id="terme" class="form-control" [(ngModel)]="contractData.termEndDate" aria-describedby="terme"/>
+          <small id="terme" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="souplesse">Début de souplesse</label>
-          <input type="date" id="souplesse" class="form-control" [(ngModel)]="contractData.debutSouplesse" />
+          <input type="date" id="souplesse" class="form-control" [(ngModel)]="contractData.debutSouplesse" aria-describedby="souplesse"/>
+          <small id="souplesse" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="fn">Fin de souplesse</label>
-          <input type="date" id="fn" class="form-control" [(ngModel)]="contractData.finSouplesse" />
+          <input type="date" id="fn" class="form-control" [(ngModel)]="contractData.finSouplesse" aria-describedby="fn"/>
+          <small id="fn" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="periode">Période non travaillée</label>
-          <input type="text" id="periode" class="form-control" [(ngModel)]="contractData.periodesNonTravaillees" />
+          <input type="text" id="periode" class="form-control" [(ngModel)]="contractData.periodesNonTravaillees" aria-describedby="periode"/>
+          <small id="periode" class="form-text text-muted"></small>
         </div>
       </div>
     </div>
@@ -133,37 +154,45 @@
       <div class="col-xs-6 pull-left col-1">
         <div class="form-group">
           <label for="qual">Qualification</label>
-          <input type="text" id="qual" class="form-control" [(ngModel)]="contractData.qualification" />
+          <input type="text" id="qual" class="form-control" [(ngModel)]="contractData.qualification" aria-describedby="qual"/>
+          <small id="qual" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="cara">Caractéristiques du poste</label>
-          <input type="text" id="cara" class="form-control" [(ngModel)]="contractData.characteristics" />
+          <input type="text" id="cara" class="form-control" [(ngModel)]="contractData.characteristics" aria-describedby="cara"/>
+          <small id="cara" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="temps">Temps de travail (H)</label>
-          <input type="text" id="temps" class="form-control" [(ngModel)]="contractData.workTimeHours" />
+          <input type="text" id="temps" class="form-control" [(ngModel)]="contractData.workTimeHours" aria-describedby="temps"/>
+          <small id="temps" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="hor">Horaires habituels de travail</label>
-          <input type="text" id="hor" class="form-control" [(ngModel)]="contractData.usualWorkTimeHours" />
+          <input type="text" id="hor" class="form-control" [(ngModel)]="contractData.usualWorkTimeHours" aria-describedby="hor"/>
+          <small id="hor" class="form-text text-muted"></small>
         </div>
       </div>
       <div class="col-xs-6 pull-right col-2">
         <div class="form-group">
           <label for="risques">Risques</label>
-          <input type="text" id="risques" class="form-control" [(ngModel)]="contractData.postRisks" />
+          <input type="text" id="risques" class="form-control" [(ngModel)]="contractData.postRisks" aria-describedby="risques"/>
+          <small id="risques" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="surv">Surveillance médicale</label>
-          <input type="text" id="surv" class="form-control" [(ngModel)]="contractData.medicalSurv" />
+          <input type="text" id="surv" class="form-control" [(ngModel)]="contractData.medicalSurv" aria-describedby="surv"/>
+          <small id="surv" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="epi">EPI</label>
-          <input type="text" id="epi" class="form-control" [(ngModel)]="contractData.epi" />
+          <input type="text" id="epi" class="form-control" [(ngModel)]="contractData.epi" aria-describedby="epi"/>
+          <small id="epi" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="equip">Equipement</label>
-          <input type="text" id="equip" class="form-control" [(ngModel)]="contractData.equipements" />
+          <input type="text" id="equip" class="form-control" [(ngModel)]="contractData.equipements" aria-describedby="equip"/>
+          <small id="equip" class="form-text text-muted"></small>
         </div>
       </div>
     </div>
@@ -176,13 +205,15 @@
       <div class="col-xs-6 pull-left col-1">
         <div class="form-group">
           <label for="sal">Salaire de base</label>
-          <input type="text" id="sal" class="form-control" [(ngModel)]="contractData.baseSalary" />
+          <input type="text" id="sal" class="form-control" [(ngModel)]="contractData.baseSalary" aria-describedby="sal"/>
+          <small id="sal" class="form-text text-muted"></small>
         </div>
       </div>
       <div class="col-xs-6 pull-right col-2">
         <div class="form-group">
           <label for="duree">Durée collective moyenne</label>
-          <input type="text" id="duree" class="form-control" [(ngModel)]="contractData.MonthlyAverageDuration" />
+          <input type="text" id="duree" class="form-control" [(ngModel)]="contractData.MonthlyAverageDuration" aria-describedby="duree"/>
+          <small id="duree" class="form-text text-muted"></small>
         </div>
       </div>
     </div>
@@ -195,29 +226,35 @@
       <div class="col-xs-6 pull-left col-1">
         <div class="form-group">
           <label for="norm">Heures normales</label>
-          <input type="text" id="norm" class="form-control" [(ngModel)]="contractData.salaryNHours" />
+          <input type="text" id="norm" class="form-control" [(ngModel)]="contractData.salaryNHours" aria-describedby="norm"/>
+          <small id="norm" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="hs">HS au-dela de 35H</label>
-          <input type="text" id="hs" class="form-control" [(ngModel)]="contractData.salarySH35" />
+          <input type="text" id="hs" class="form-control" [(ngModel)]="contractData.salarySH35" aria-describedby="hs"/>
+          <small id="hs" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="hs2">HS au-dela de 43H</label>
-          <input type="text" id="hs2" class="form-control" [(ngModel)]="contractData.salarySH43" />
+          <input type="text" id="hs2" class="form-control" [(ngModel)]="contractData.salarySH43" aria-describedby="hs2"/>
+          <small id="hs2" class="form-text text-muted"></small>
         </div>
       </div>
       <div class="col-xs-6 pull-right col-2">
         <div class="form-group">
           <label for="droit">Droit au repos compensateur</label>
-          <input type="text" id="droit" class="form-control" [(ngModel)]="contractData.restRight" />
+          <input type="text" id="droit" class="form-control" [(ngModel)]="contractData.restRight" aria-describedby="droit"/>
+          <small id="droit" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="ind">Ind. fin de mission</label>
-          <input type="text" id="ind" class="form-control" [(ngModel)]="contractData.indemniteFinMission" />
+          <input type="text" id="ind" class="form-control" [(ngModel)]="contractData.indemniteFinMission" aria-describedby="ind"/>
+          <small id="" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="ind2">Ind. congés payés</label>
           <input type="text" id="ind2" class="form-control" [(ngModel)]="contractData.indemniteCongesPayes" />
+          <small id="ind" class="form-text text-muted"></small>
         </div>
       </div>
     </div>
@@ -230,30 +267,36 @@
       <div class="col-xs-6 pull-left col-1">
         <div class="form-group">
           <label for="centre">Centre de médecine ETT</label>
-          <input type="text" id="centre" class="form-control" [(ngModel)]="contractData.centreMedecineETT" />
+          <input type="text" id="centre" class="form-control" [(ngModel)]="contractData.centreMedecineETT" aria-describedby="centre"/>
+          <small id="centre" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="adresse">Adresse Centre de médecine ETT</label>
-          <input type="text" id="adresse" class="form-control" [(ngModel)]="contractData.adresseCentreMedecineETT" />
+          <input type="text" id="adresse" class="form-control" [(ngModel)]="contractData.adresseCentreMedecineETT" aria-describedby="adresse"/>
+          <small id="adresse" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="centre2">Centre de médecine Entreprise</label>
-          <input type="text" id="centre2" class="form-control" [(ngModel)]="contractData.centreMedecineEntreprise" />
+          <input type="text" id="centre2" class="form-control" [(ngModel)]="contractData.centreMedecineEntreprise" aria-describedby="centre2"/>
+          <small id="centre2" class="form-text text-muted"></small>
         </div>
       </div>
       <div class="col-xs-6 pull-right col-2">
 
         <div class="form-group">
           <label for="adresse2">Adresse Centre de médecine Entreprise</label>
-          <input type="text" id="adresse2" class="form-control" [(ngModel)]="contractData.adresseCentreMedecineEntreprise" />
+          <input type="text" id="adresse2" class="form-control" [(ngModel)]="contractData.adresseCentreMedecineEntreprise" aria-describedby="adresse2"/>
+          <small id="adresse2" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="gestion">Gestion intérim</label>
-          <input type="text" id="gestion" class="form-control" [(ngModel)]="contractData.interimAddress" />
+          <input type="text" id="gestion" class="form-control" [(ngModel)]="contractData.interimAddress" aria-describedby="gestion"/>
+          <small id="gestion" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="client">Client</label>
-          <input type="text" id="client" class="form-control" [(ngModel)]="contractData.customer" />
+          <input type="text" id="client" class="form-control" [(ngModel)]="contractData.customer" aria-describedby="client"/>
+          <small id="client" class="form-text text-muted"></small>
         </div>
       </div>
     </div>
@@ -266,33 +309,40 @@
       <div class="col-xs-12 col-md-6 pull-left col-1">
         <div class="form-group">
           <label for="primes">Primes</label>
-          <input type="text" id="primes" class="form-control" [(ngModel)]="contractData.primes" />
+          <input type="text" id="primes" class="form-control" [(ngModel)]="contractData.primes" aria-describedby="primes"/>
+          <small id="primes" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="siege">Siège social</label>
-          <input type="text" id="siege" class="form-control" [(ngModel)]="contractData.headOffice" />
+          <input type="text" id="siege" class="form-control" [(ngModel)]="contractData.headOffice" aria-describedby="siege"/>
+          <small id="siege" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="contenu">Contenu de la mission</label>
-          <input type="text" id="contenu" class="form-control" [(ngModel)]="contractData.missionContent" />
+          <input type="text" id="contenu" class="form-control" [(ngModel)]="contractData.missionContent" aria-describedby="contenu"/>
+          <small id="contenu" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="categorie">Catégorie</label>
-          <input type="text" id="categorie" class="form-control" [(ngModel)]="contractData.category" />
+          <input type="text" id="categorie" class="form-control" [(ngModel)]="contractData.category" aria-describedby="categorie"/>
+          <small id="categorie" class="form-text text-muted"></small>
         </div>
       </div>
       <div class="col-xs-12 col-md-6 pull-right col-2">
         <div class="form-group">
           <label for="filiere">Filière</label>
-          <input type="text" id="filiere" class="form-control" [(ngModel)]="contractData.sector" />
+          <input type="text" id="filiere" class="form-control" [(ngModel)]="contractData.sector" aria-describedby="filiere"/>
+          <small id="filiere" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="transport">Titre de transport</label>
-          <input type="text" id="transport" class="form-control" [(ngModel)]="contractData.titreTransport" />
+          <input type="text" id="transport" class="form-control" [(ngModel)]="contractData.titreTransport" aria-describedby="transport"/>
+          <small id="transport" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="zones">Zones de transport</label>
-          <input type="text" id="zones" class="form-control" [(ngModel)]="contractData.zonesTitre" />
+          <input type="text" id="zones" class="form-control" [(ngModel)]="contractData.zonesTitre" aria-describedby="zones"/>
+          <small id="zones" class="form-text text-muted"></small>
         </div>
       </div>
     </div>
@@ -312,7 +362,8 @@
         </div>
         <div class="form-group">
           <label for="interimaire">Intérimaire</label>
-          <input type="text" class="form-control" id="interimaire" [(ngModel)]="contractData.interim">
+          <input type="text" class="form-control" id="interimaire" [(ngModel)]="contractData.interim" aria-describedby="interimaire"/>
+          <small id="interimaire" class="form-text text-muted"></small>
         </div>
 
         <div class="title">
@@ -321,16 +372,19 @@
 
         <div class="form-group">
           <label for="societe-utilisatrice">Société utilisatrice</label>
-          <input type="text" class="form-control" id="societe-utilisatrice" [(ngModel)]="companyName">
+          <input type="text" class="form-control" id="societe-utilisatrice" [(ngModel)]="companyName" aria-describedby="societe-utilisatrice"/>
+          <small id="societe-utilisatrice" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="lieu-de-la-mission">Lieu de la mission</label>
-          <input type="text" class="form-control" id="lieu-de-la-mission" [(ngModel)]="workAdress">
+          <input type="text" class="form-control" id="lieu-de-la-mission" [(ngModel)]="workAdress" aria-describedby="lieu-de-la-mission"/>
+          <small id="lieu-de-la-mission" class="form-text text-muted"></small>
         </div>
 
         <div class="form-group">
           <label for="contact">Contact</label>
-          <input type="text" class="form-control" id="contact" [(ngModel)]="employerFullName">
+          <input type="text" class="form-control" id="contact" [(ngModel)]="employerFullName" aria-describedby="contact"/>
+          <small id="contact" class="form-text text-muted"></small>
         </div>
 
         <div class="title">
@@ -339,40 +393,49 @@
 
         <div class="form-group">
           <label for="nom">Nom</label>
-          <input type="text" class="form-control" id="nom" [(ngModel)]="jobyer.nom">
+          <input type="text" class="form-control" id="nom" [(ngModel)]="jobyer.nom" aria-describedby="nom"/>
+          <small id="nom" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="prenom">Prénom</label>
-          <input type="text" class="form-control" id="prenom" [(ngModel)]="jobyer.prenom" />
+          <input type="text" class="form-control" id="prenom" [(ngModel)]="jobyer.prenom" aria-describedby="prenom"/>
+          <small id="prenom" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="nss">N° SS</label>
-          <input type="text" class="form-control" id="nss" [(ngModel)]="jobyer.numSS" />
+          <input type="text" class="form-control" id="nss" [(ngModel)]="jobyer.numSS" aria-describedby="nss"/>
+          <small id="nss" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="date-de-naissance">Date de naissance</label>
-          <input type="date" id="date-de-naissance" class="form-control" [(ngModel)]="jobyerBirthDate" />
+          <input type="date" id="date-de-naissance" class="form-control" [(ngModel)]="jobyerBirthDate" aria-describedby="date-de-naissance"/>
+          <small id="" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="lieu">Lieu de naissance</label>
-          <input type="text" class="form-control" id="lieu" [(ngModel)]="jobyer.lieuNaissance" />
+          <input type="text" class="form-control" id="lieu" [(ngModel)]="jobyer.lieuNaissance" aria-describedby="lieu"/>
+          <small id="lieu" class="form-text text-muted"></small>
         </div>
 
         <div class="form-group">
           <label for="nat">Nationalité</label>
-          <input type="text" id="nat" class="form-control" [(ngModel)]="jobyer.nationaliteLibelle" />
+          <input type="text" id="nat" class="form-control" [(ngModel)]="jobyer.nationaliteLibelle" aria-describedby="nat"/>
+          <small id="nat" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="num">Num. Titre de travail</label>
-          <input type="text" id="num" class="form-control" [(ngModel)]="contractData.numeroTitreTravail" />
+          <input type="text" id="num" class="form-control" [(ngModel)]="contractData.numeroTitreTravail" aria-describedby="num"/>
+          <small id="num" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="val">Valable du</label>
-          <input type="date" id="val" class="form-control" [(ngModel)]="contractData.debutTitreTravail" />
+          <input type="date" id="val" class="form-control" [(ngModel)]="contractData.debutTitreTravail" aria-describedby="val"/>
+          <small id="val" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="vala">Valable au</label>
-          <input type="date" id="vala" class="form-control" [(ngModel)]="contractData.finTitreTravail" />
+          <input type="date" id="vala" class="form-control" [(ngModel)]="contractData.finTitreTravail" aria-describedby="vala"/>
+          <small id="vala" class="form-text text-muted"></small>
         </div>
 
         <div class="title">
@@ -381,36 +444,44 @@
 
         <div class="form-group">
           <label for="debut">Début de mission</label>
-          <input type="date" id="debut" class="form-control" [(ngModel)]="contractData.missionStartDate" />
+          <input type="date" id="debut" class="form-control" [(ngModel)]="contractData.missionStartDate" aria-describedby="debut"/>
+          <small id="debut" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="fin">Fin de mission</label>
-          <input type="date" id="fin" class="form-control" [(ngModel)]="contractData.missionEndDate" />
+          <input type="date" id="fin" class="form-control" [(ngModel)]="contractData.missionEndDate" aria-describedby="fin"/>
+          <small id="fin" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="essai">P. essai (J) </label>
-          <input type="text" id="essai" class="form-control" [(ngModel)]="contractData.trialPeriod" />
+          <input type="text" id="essai" class="form-control" [(ngModel)]="contractData.trialPeriod" aria-describedby="essai"/>
+          <small id="essai" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="deb">Début terme </label>
-          <input type="date" id="deb" class="form-control" [(ngModel)]="contractData.termStartDate" />
+          <input type="date" id="deb" class="form-control" [(ngModel)]="contractData.termStartDate" aria-describedby="deb"/>
+          <small id="deb" class="form-text text-muted"></small>
         </div>
 
         <div class="form-group">
           <label for="terme">Fin terme</label>
-          <input type="date" id="terme" class="form-control" [(ngModel)]="contractData.termEndDate" />
+          <input type="date" id="terme" class="form-control" [(ngModel)]="contractData.termEndDate" aria-describedby="terme"/>
+          <small id="terme" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="souplesse">Début de souplesse</label>
-          <input type="date" id="souplesse" class="form-control" [(ngModel)]="contractData.debutSouplesse" />
+          <input type="date" id="souplesse" class="form-control" [(ngModel)]="contractData.debutSouplesse" aria-describedby="souplesse"/>
+          <small id="souplesse" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="fn">Fin de souplesse</label>
-          <input type="date" id="fn" class="form-control" [(ngModel)]="contractData.finSouplesse" />
+          <input type="date" id="fn" class="form-control" [(ngModel)]="contractData.finSouplesse" aria-describedby="fn"/>
+          <small id="fn" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="periode">Période non travaillée</label>
-          <input type="text" id="periode" class="form-control" [(ngModel)]="contractData.periodesNonTravaillees" />
+          <input type="text" id="periode" class="form-control" [(ngModel)]="contractData.periodesNonTravaillees" aria-describedby="periode"/>
+          <small id="periode" class="form-text text-muted"></small>
         </div>
 
 
@@ -420,36 +491,44 @@
 
         <div class="form-group">
           <label for="qual">Qualification</label>
-          <input type="text" id="qual" class="form-control" [(ngModel)]="contractData.qualification" />
+          <input type="text" id="qual" class="form-control" [(ngModel)]="contractData.qualification" aria-describedby="qual"/>
+          <small id="qual" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="cara">Caractéristiques du poste</label>
-          <input type="text" id="cara" class="form-control" [(ngModel)]="contractData.characteristics" />
+          <input type="text" id="cara" class="form-control" [(ngModel)]="contractData.characteristics" aria-describedby="cara"/>
+          <small id="cara" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="temps">Temps de travail (H)</label>
-          <input type="text" id="temps" class="form-control" [(ngModel)]="contractData.workTimeHours" />
+          <input type="text" id="temps" class="form-control" [(ngModel)]="contractData.workTimeHours" aria-describedby="temps"/>
+          <small id="temps" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="hor">Horaires habituels de travail</label>
-          <input type="text" id="hor" class="form-control" [(ngModel)]="contractData.usualWorkTimeHours" />
+          <input type="text" id="hor" class="form-control" [(ngModel)]="contractData.usualWorkTimeHours" aria-describedby="hor"/>
+          <small id="hor" class="form-text text-muted"></small>
         </div>
 
         <div class="form-group">
           <label for="risques">Risques</label>
-          <input type="text" id="risques" class="form-control" [(ngModel)]="contractData.postRisks" />
+          <input type="text" id="risques" class="form-control" [(ngModel)]="contractData.postRisks" aria-describedby="risques"/>
+          <small id="risques" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="surv">Surveillance médicale</label>
-          <input type="text" id="surv" class="form-control" [(ngModel)]="contractData.medicalSurv" />
+          <input type="text" id="surv" class="form-control" [(ngModel)]="contractData.medicalSurv" aria-describedby="surv"/>
+          <small id="surv" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="epi">EPI</label>
-          <input type="text" id="epi" class="form-control" [(ngModel)]="contractData.epi" />
+          <input type="text" id="epi" class="form-control" [(ngModel)]="contractData.epi" aria-describedby="epi"/>
+          <small id="epi" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="equip">Equipement</label>
-          <input type="text" id="equip" class="form-control" [(ngModel)]="contractData.equipements" />
+          <input type="text" id="equip" class="form-control" [(ngModel)]="contractData.equipements" aria-describedby="equip"/>
+          <small id="equip" class="form-text text-muted"></small>
         </div>
 
         <div class="title">
@@ -458,12 +537,14 @@
 
         <div class="form-group">
           <label for="sal">Salaire de base</label>
-          <input type="text" id="sal" class="form-control" [(ngModel)]="contractData.baseSalary" />
+          <input type="text" id="sal" class="form-control" [(ngModel)]="contractData.baseSalary" aria-describedby="sal"/>
+          <small id="sal" class="form-text text-muted"></small>
         </div>
 
         <div class="form-group">
           <label for="duree">Durée collective moyenne</label>
-          <input type="text" id="duree" class="form-control" [(ngModel)]="contractData.MonthlyAverageDuration" />
+          <input type="text" id="duree" class="form-control" [(ngModel)]="contractData.MonthlyAverageDuration" aria-describedby="duree"/>
+          <small id="duree" class="form-text text-muted"></small>
         </div>
 
         <div class="title">
@@ -472,28 +553,34 @@
 
         <div class="form-group">
           <label for="norm">Heures normales</label>
-          <input type="text" id="norm" class="form-control" [(ngModel)]="contractData.salaryNHours" />
+          <input type="text" id="norm" class="form-control" [(ngModel)]="contractData.salaryNHours" aria-describedby="norm"/>
+          <small id="norm" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="hs">HS au-dela de 35H</label>
-          <input type="text" id="hs" class="form-control" [(ngModel)]="contractData.salarySH35" />
+          <input type="text" id="hs" class="form-control" [(ngModel)]="contractData.salarySH35" aria-describedby="hs"/>
+          <small id="hs" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="hs2">HS au-dela de 43H</label>
-          <input type="text" id="hs2" class="form-control" [(ngModel)]="contractData.salarySH43" />
+          <input type="text" id="hs2" class="form-control" [(ngModel)]="contractData.salarySH43" aria-describedby="hs2"/>
+          <small id="hs2" class="form-text text-muted"></small>
         </div>
 
         <div class="form-group">
           <label for="droit">Droit au repos compensateur</label>
-          <input type="text" id="droit" class="form-control" [(ngModel)]="contractData.restRight" />
+          <input type="text" id="droit" class="form-control" [(ngModel)]="contractData.restRight" aria-describedby="droit"/>
+          <small id="droit" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="ind">Ind. fin de mission</label>
-          <input type="text" id="ind" class="form-control" [(ngModel)]="contractData.indemniteFinMission" />
+          <input type="text" id="ind" class="form-control" [(ngModel)]="contractData.indemniteFinMission" aria-describedby="ind"/>
+          <small id="ind" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="ind2">Ind. congés payés</label>
-          <input type="text" id="ind2" class="form-control" [(ngModel)]="contractData.indemniteCongesPayes" />
+          <input type="text" id="ind2" class="form-control" [(ngModel)]="contractData.indemniteCongesPayes" aria-describedby="ind2"/>
+          <small id="ind2" class="form-text text-muted"></small>
         </div>
 
 
@@ -503,29 +590,35 @@
 
         <div class="form-group">
           <label for="centre">Centre de médecine ETT</label>
-          <input type="text" id="centre" class="form-control" [(ngModel)]="contractData.centreMedecineETT" />
+          <input type="text" id="centre" class="form-control" [(ngModel)]="contractData.centreMedecineETT" aria-describedby="centre"/>
+          <small id="centre" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="adresse">Adresse Centre de médecine ETT</label>
-          <input type="text" id="adresse" class="form-control" [(ngModel)]="contractData.adresseCentreMedecineETT" />
+          <input type="text" id="adresse" class="form-control" [(ngModel)]="contractData.adresseCentreMedecineETT" aria-describedby="adresse"/>
+          <small id="adresse" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="centre2">Centre de médecine Entreprise</label>
-          <input type="text" id="centre2" class="form-control" [(ngModel)]="contractData.centreMedecineEntreprise" />
+          <input type="text" id="centre2" class="form-control" [(ngModel)]="contractData.centreMedecineEntreprise" aria-describedby="centre2"/>
+          <small id="centre2" class="form-text text-muted"></small>
         </div>
 
 
         <div class="form-group">
           <label for="adresse2">Adresse Centre de médecine Entreprise</label>
-          <input type="text" id="adresse2" class="form-control" [(ngModel)]="contractData.adresseCentreMedecineEntreprise" />
+          <input type="text" id="adresse2" class="form-control" [(ngModel)]="contractData.adresseCentreMedecineEntreprise" aria-describedby="adresse2"/>
+          <small id="adresse2" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="gestion">Gestion intérim</label>
-          <input type="text" id="gestion" class="form-control" [(ngModel)]="contractData.interimAddress" />
+          <input type="text" id="gestion" class="form-control" [(ngModel)]="contractData.interimAddress" aria-describedby="gestion"/>
+          <small id="gestion" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="client">Client</label>
-          <input type="text" id="client" class="form-control" [(ngModel)]="contractData.customer" />
+          <input type="text" id="client" class="form-control" [(ngModel)]="contractData.customer" aria-describedby="client"/>
+          <small id="client" class="form-text text-muted"></small>
         </div>
 
         <div class="title">
@@ -534,32 +627,39 @@
 
         <div class="form-group">
           <label for="primes">Primes</label>
-          <input type="text" id="primes" class="form-control" [(ngModel)]="contractData.primes" />
+          <input type="text" id="primes" class="form-control" [(ngModel)]="contractData.primes" aria-describedby="primes"/>
+          <small id="primes" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="siege">Siège social</label>
-          <input type="text" id="siege" class="form-control" [(ngModel)]="contractData.headOffice" />
+          <input type="text" id="siege" class="form-control" [(ngModel)]="contractData.headOffice" aria-describedby="siege"/>
+          <small id="siege" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="contenu">Contenu de la mission</label>
-          <input type="text" id="contenu" class="form-control" [(ngModel)]="contractData.missionContent" />
+          <input type="text" id="contenu" class="form-control" [(ngModel)]="contractData.missionContent" aria-describedby="contenu"/>
+          <small id="contenu" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="categorie">Catégorie</label>
-          <input type="text" id="categorie" class="form-control" [(ngModel)]="contractData.category" />
+          <input type="text" id="categorie" class="form-control" [(ngModel)]="contractData.category" aria-describedby="categorie"/>
+          <small id="categorie" class="form-text text-muted"></small>
         </div>
 
         <div class="form-group">
           <label for="filiere">Filière</label>
-          <input type="text" id="filiere" class="form-control" [(ngModel)]="contractData.sector" />
+          <input type="text" id="filiere" class="form-control" [(ngModel)]="contractData.sector" aria-describedby="filiere"/>
+          <small id="filiere" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="transport">Titre de transport</label>
-          <input type="text" id="transport" class="form-control" [(ngModel)]="contractData.titreTransport" />
+          <input type="text" id="transport" class="form-control" [(ngModel)]="contractData.titreTransport" aria-describedby="transport"/>
+          <small id="transport" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label for="zones">Zones de transport</label>
-          <input type="text" id="zones" class="form-control" [(ngModel)]="contractData.zonesTitre" />
+          <input type="text" id="zones" class="form-control" [(ngModel)]="contractData.zonesTitre" aria-describedby="zones"/>
+          <small id="zones" class="form-text text-muted"></small>
         </div>
 
         <div class="row">
