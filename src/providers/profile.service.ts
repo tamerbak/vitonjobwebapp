@@ -361,6 +361,14 @@ export class ProfileService {
     }
   }
 
+  getCountryById(id, countries){
+    for(let i = 0; i < countries.length; i++){
+      if(countries[i].id == id){
+        return countries[i];
+      }
+    }
+  }
+
   sqlfyText(txt){
     if(!txt || txt.length==0)
       return "";
