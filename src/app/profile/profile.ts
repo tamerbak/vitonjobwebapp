@@ -1189,7 +1189,7 @@ export class Profile {
         var nationalityId = this.nationalityId;
         var birthcp = this.birthcp;
         var numStay = this.numStay;
-        var dateStay = moment(this.dateStay).format('MM/DD/YYYY');
+        var dateStay = moment(this.dateStay).format('YYYY-MM-DD');
         var dateFromStay = moment(this.dateFromStay).format('MM/DD/YYYY');
         var dateToStay = moment(this.dateToStay).format('MM/DD/YYYY');
         var birthCountryId;
