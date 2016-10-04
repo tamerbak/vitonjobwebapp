@@ -111,7 +111,7 @@ export class RecruiterEdit {
       //if the send notification button was clicked
       var tel = contact.phone;
       //save existant contact
-      if(this.recruiter && (contact.firstname != this.recruiter.firstname || this.recruiter.lastname != contact.lastname || tel != this.recruiter.phone)){
+      if(this.recruiter){
         this.recruiterService.updateRecruiter(contact, this.currentUser.employer.id).then((data: any) => {
           let recruiterList = this.sharedService.getRecruiterList();
           this.recruiterService.updateRecruiterListInLocal(recruiterList, [contact]).then((data: any) => {

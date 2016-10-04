@@ -45,8 +45,7 @@ export class Yousign {
     this.currentUser = this.sharedService.getCurrentUser();
 
     // Get target to determine configs
-    this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
-
+    this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     // Set local variables and messages
     //get the currentEmployer & call youssign service
     // this.pushNotificationService = pushNotificationService;

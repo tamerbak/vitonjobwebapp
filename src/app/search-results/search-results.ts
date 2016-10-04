@@ -27,7 +27,7 @@ export class SearchResults {
   ngOnInit() {
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
-      this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+      this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     } else {
       // TODO: If not connected, ask for login or subscribe with message
       this.projectTarget = this.sharedService.getProjectTarget();
