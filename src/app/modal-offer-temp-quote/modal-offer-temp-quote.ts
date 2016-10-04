@@ -29,42 +29,44 @@ export class ModalOfferTempQuote {
               private financeService:FinanceService,
               private zone: NgZone,
               private router: Router) {
-                this.currentUser = this.sharedService.getCurrentUser();
-                if (!this.currentUser) {
-                  this.router.navigate(['app/home']);
-                } else {
-                  this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
-                  let offer = this.sharedService.getCurrentOffer().idOffer;
-                  this.financeService.loadPrevQuote(offer.idOffer).then(data=>{
-                    this.quote = data;
-                  });
-                  this.initQuote();
-                }
+    this.currentUser = this.sharedService.getCurrentUser();
+    if (!this.currentUser) {
+      this.router.navigate(['app/home']);
+    } else {
+      this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
+      if(this.sharedService.getCurrentOffer()) {
+        let offer = this.sharedService.getCurrentOffer().idOffer;
+        this.financeService.loadPrevQuote(offer.idOffer).then(data=> {
+          this.quote = data;
+        });
+      }
+      this.initQuote();
+    }
   }
 
   initQuote(){
-        this.quote = {
-            "amountBeforeTaxes": 0.0,
-            "class": "com.vitonjob.callouts.finance.Quote",
-            "dateDevis": 0,
-            "hours": [],
-            "numero": "",
-            "taxeRate": 0.0,
-            "taxes": 0.0,
-            "total": 0.0
-        }
+    this.quote = {
+      "amountBeforeTaxes": 0.0,
+      "class": "com.vitonjob.callouts.finance.Quote",
+      "dateDevis": 0,
+      "hours": [],
+      "numero": "",
+      "taxeRate": 0.0,
+      "taxes": 0.0,
+      "total": 0.0
     }
+  }
 
-    formatHour(minutes){
-        let h = Math.floor(minutes/60);
-        let m = minutes%60;
-        let sh = h<10?'0'+h:''+h;
-        let sm = m<10?'0'+m:''+m;
-        return sh+':'+sm;
-    }
+  formatHour(minutes){
+    let h = Math.floor(minutes/60);
+    let m = minutes%60;
+    let sh = h<10?'0'+h:''+h;
+    let sm = m<10?'0'+m:''+m;
+    return sh+':'+sm;
+  }
 
-    formatPercent(rate){
-        return (rate*100)+' %';
-    }
+  formatPercent(rate){
+    return (rate*100)+' %';
+  }
 
 }
