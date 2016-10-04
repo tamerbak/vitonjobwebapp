@@ -29,9 +29,9 @@ export class SearchResults {
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     } else {
-      // TODO: If not connected, ask for login or subscribe with message
-      this.projectTarget = this.sharedService.getProjectTarget();
-      this.isRecruteur = this.currentUser.estRecruteur;
+      //this.projectTarget = this.sharedService.getProjectTarget();
+      //this.isRecruteur = this.currentUser.estRecruteur;
+      this.router.navigate(['app/home']);
     }
     //  Retrieving last search
     let jsonResults = this.sharedService.getLastResult();

@@ -21,7 +21,7 @@ export class ModalPicture {
   validationImage: boolean = false;
   currentUser: any;
   isEmployer: boolean;
-
+  projectTarget: string;
 
   constructor(private sharedService: SharedService,
               private profileService: ProfileService,
@@ -36,7 +36,8 @@ export class ModalPicture {
     if (!this.currentUser) {
       this.router.navigate(['app/home']);
     } else {
-      this.isEmployer = this.currentUser.estEmployeur;
+      this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
+      this.isEmployer = (this.projectTarget == "employer");
       this.pictureUri = ""
       this.validationImage = false;
     }

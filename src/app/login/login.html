@@ -5,6 +5,11 @@
         <h5 class="widget-login-logo animated fadeInUp collapse navbar-collapse">
           <img src="../assets/images/logo.png" style="width: 50%; margin-bottom: 20px;">
         </h5>
+        <h5 class="widget-login-logo animated fadeInUp collapse navbar-collapse" *ngIf="isRedirectedFromHome">
+          <p class="widget-login-danger">
+            Veuillez vous inscrire ou vous connecter pour rentrer dans le Hub de l'emploi.
+          </p>
+        </h5>
         <section class="widget widget-login animated">
           <header>
             <h3 style="text-align: center;">Bienvenue sur VitOnJob</h3>

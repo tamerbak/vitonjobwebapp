@@ -50,6 +50,8 @@ export class LoginPage {
 
   isRoleTelConform = true;
 
+  isRedirectedFromHome;
+
 
   constructor(private loadListService: LoadListService,
               private authService: AuthenticationService,
@@ -70,6 +72,13 @@ export class LoginPage {
     });
     this.showHidePasswdIcon = "fa fa-eye";
     this.showHidePasswdConfirmIcon = "fa fa-eye";
+
+    let fromPage = this.sharedService.getFromPage();
+    if(fromPage == "home"){
+      this.isRedirectedFromHome = true;
+    }else{
+      this.isRedirectedFromHome = false;
+    }
   }
 
 
@@ -353,5 +362,9 @@ export class LoginPage {
       return true;
     else
       return false;
+  }
+
+  ngOnDestroy(): void {
+    this.sharedService.setFromPage(null);
   }
 }
