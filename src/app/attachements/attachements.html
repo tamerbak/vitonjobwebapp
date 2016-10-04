@@ -3,4 +3,76 @@
   <li class="active"><a class="breadcrumb-link" [routerLink]="['/app/attachements']">Coffre numérique</a></li>
 </ol>
 <h1 class="page-title">Coffre numérique</h1>
-<div in-progress class="col-xs-12"></div>
+
+<div class="col-lg-6 col-xs-12">
+  <section class="widget">
+    <div class="widget-body">
+      <div *ngIf="emptySafe"><p class="bg-info attachments-info-box">Vous n'avez aucun document dans votre coffre numérique. Ajoutez un dès maintenant</p></div>
+      <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
+        <div [hidden]="emptySafe" class="form-group row">
+          <label class="col-md-7 col-xs-7 form-control-label"><strong>Document</strong></label>
+          <label class="col-md-3 col-xs-3 form-control-label"><strong>Date de création</strong></label>
+          <label class="col-md-1 col-xs-1 form-control-label"></label>
+          <label class="col-md-1 col-xs-1 form-control-label"></label>
+        </div>
+        <div [hidden]="emptySafe" class="form-group row" *ngFor="let a of attachments">
+          <div class="col-md-7 col-xs-7">
+            <span>{{a.fileName}}</span>
+          </div>
+          <div class="col-md-3 col-xs-3">
+            <span>{{a.uploadDate}}</span>
+          </div>
+          <div class="col-md-1 col-xs-1">
+            <button (click)="viewFile(a)"><span class="glyphicon glyphicon-picture" aria-hidden="true" ></span></button>
+          </div>
+          <div class="col-md-1 col-xs-1">
+            <button (click)="deleteFile(a)"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+          </div>
+        </div>
+        <div *ngIf="viewMode" class="form-group row">
+          <div class="screen-filler">
+            <button class="screen-filler-btn" (click)="closeModal()" ><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+            <img class="screen-filler-img" alt="{{selFileName}}" src="{{fileContent}}" >
+          </div>
+        </div>
+
+        <fieldset>
+          <legend><strong>Ajouter un nouveau document</strong></legend>
+          <div class="form-group row">
+            <label class="col-md-4 col-xs-12 form-control-label text-md-right">Nom du document</label>
+            <div class="col-md-4 col-xs-12">
+              <input type="text" class="form-control" [(ngModel)]="fileName" >
+            </div>
+
+          </div>
+          <div class="form-group row">
+            <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+              Ajouter un scan
+            </label>
+
+            <div class="col-md-8 col-xs-12">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+                <div class="fileinput-preview thumbnail" data-trigger="fileinput"
+                     style="width: 200px; height: 150px;">
+                </div>
+                <div>
+                <span class="btn btn-default btn-file"><span class="fileinput-new">Choisir</span>
+                <span class="fileinput-exists">Modifier</span><input type="file" name="..."></span>
+                  <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Enlever</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="form-group row">
+          <div class="col-md-12 col-xs-12">
+            <button class="btn success btn-lg attachement-add-btn" (click)="saveFile()" >Ajouter</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </section>
+
+</div>

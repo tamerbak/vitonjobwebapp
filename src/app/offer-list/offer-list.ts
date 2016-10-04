@@ -1,10 +1,11 @@
-import {Component, ViewEncapsulation} from "@angular/core";
+import {Component,ChangeDetectorRef, ViewEncapsulation} from "@angular/core";
 import {ACCORDION_DIRECTIVES, BUTTON_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap";
 import {OffersService} from "../../providers/offer.service";
 import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {SearchService} from "../../providers/search-service";
+declare var jQuery,Messenger:any;
 
 @Component({
   selector: '[offer-list]',
@@ -12,7 +13,7 @@ import {SearchService} from "../../providers/search-service";
   encapsulation: ViewEncapsulation.None,
   styles: [require('./offer-list.scss')],
   directives: [ACCORDION_DIRECTIVES, ROUTER_DIRECTIVES, AlertComponent, BUTTON_DIRECTIVES],
-  providers: [OffersService, SearchService]
+  providers: [OffersService, SearchService,ChangeDetectorRef]
 })
 export class OfferList {
   globalOfferList = [];
@@ -24,25 +25,31 @@ export class OfferList {
   alerts: Array<Object>;
   typeOfferModel: string = '0';
 
-
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private router: Router,
+              private cdr:ChangeDetectorRef,
               private searchService: SearchService) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['app/home']);
     }
+
   }
 
   ngOnInit() {
     this.currentUser = this.sharedService.getCurrentUser();
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
+
+    this.loadOffers();
+
+  }
+
+  loadOffers(){
     this.globalOfferList.length = 0;
     this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
     this.globalOfferList.push({header: 'Mes brouillons', list: []});
-
-    this.offerList = this.projectTarget == 'employer' ? this.currentUser.employer.entreprises[0].offers : this.currentUser.jobyer.offers;
+    this.offerList = this.projectTarget == 'employer' ? this.sharedService.getCurrentUser().employer.entreprises[0].offers : this.sharedService.getCurrentUser().jobyer.offers;
     for (var i = 0; i < this.offerList.length; i++) {
       let offer = this.offerList[i];
       if (!offer || !offer.jobData) {
@@ -79,6 +86,7 @@ export class OfferList {
         offer.correspondantsCount = -1;
         this.globalOfferList[1].list.push(offer);
       }
+
     }
   }
 
@@ -99,6 +107,8 @@ export class OfferList {
       }
     });
   }
+
+
 
   /**
    * @Description : Launch search from current offer-list

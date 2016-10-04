@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Http, Headers} from "@angular/http";
 import {Configs} from "../configurations/configs";
+import { SharedService } from './shared.service';
 
 @Injectable()
 export class OffersService {
@@ -10,7 +11,7 @@ export class OffersService {
   listJobs: any;
   convention : any;
 
-  constructor(private http: Http) {
+  constructor(private http: Http,private sharedService:SharedService) {
     this.http = http;
     this.convention = {
       id:0,
@@ -89,6 +90,38 @@ export class OffersService {
         });
     });
   }
+
+  setOfferInLocal(offerData:any, projectTarget:string) {
+        //  Init project parameters
+        let offers:any;
+        let result:any;
+
+                var data = this.sharedService.getCurrentUser();
+                if (projectTarget === 'employer') {
+                    let rawData = data.employer;
+                    if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
+                        //adding userId for remote storing
+                        offerData.identity = rawData.entreprises[0].id;
+                        offers = rawData.entreprises[0].offers;
+                        offers.push(offerData);
+                        // Save new offer list in SqlStorage :
+                        this.sharedService.setCurrentUser(data);
+                        console.log(data);
+                        console.log(this.sharedService.getCurrentUser())
+                    }
+                } else { // jobyer
+                    let rawData = data.jobyer;
+                    if(rawData)
+                        offerData.identity = rawData.id;
+                    if (rawData && rawData.offers) {
+                        //adding userId for remote storing
+                        offers = rawData.offers;
+                        offers.push(offerData);
+                        // Save new offer list in SqlStorage :
+                        this.sharedService.setCurrentUser(data);
+                    }
+                }
+    }
 
   setOfferInRemote(offerData: any, projectTarget: string) {
     //  Init project parameters
@@ -709,5 +742,21 @@ export class OffersService {
     if (!text || text.length == 0)
       return "";
     return text.replace(/'/g, "''")
+  }
+
+  deleteOffer(offer, projectTarget){
+
+    let table = projectTarget == 'jobyer'?'user_offre_jobyer':'user_offre_entreprise';
+    let sql = "update "+table+" set dirty='Y' where pk_"+table+"="+offer.idOffer;
+
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+      .map(res => res.json())
+      .subscribe(data => {
+        resolve(data);
+      });
+    });
   }
 }

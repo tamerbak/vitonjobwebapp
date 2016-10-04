@@ -11,6 +11,31 @@
 @import "../../../node_modules/jasny-bootstrap/dist/css/jasny-bootstrap";
 
 /**
+ * spinner
+*/
+
+.footer .loaderPosition {
+  position: relative;
+}
+
+/**
+ * #birthdate
+*/
+
+#birthdate .form-inline .input-group {
+  display: flex !important;
+  width: 100%;
+}
+
+/**
+ * #hint error
+*/
+
+.hint {
+  margin-top: 3px;
+}
+
+/**
  * Jasny Bootstrap
  * Fileinput.less
  */
@@ -469,34 +494,4 @@ html[dir="rtl"] .select2-search input {
   > img {
     max-width: 100%;
   }
-}
-
-.attachments-info-box{
-  color:#FFF !important;
-  font-size: x-large;
-  text-align: center;
-}
-
-.screen-filler {
-  position: absolute;
-  top: 0; right: 0; bottom: 0; left: 0;
-  text-align: center;
-  z-index: 1;
-  background: rgba(0, 0, 0, 0.7);
-}
-
-.screen-filler-img{
-  max-width: 300px;
-  max-height: 300px;
-  margin-top: 10%;
-}
-
-.screen-filler-btn{
-  right: 0;
-  top: 0;
-  position: absolute;
-}
-
-.attachement-add-btn{
-  float: right;
 }
