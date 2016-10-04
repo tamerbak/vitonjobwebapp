@@ -71,6 +71,12 @@ export class Home {
   }
 
   doSemanticSearch() {
+    if (!this.currentUser) {
+      this.sharedService.setFromPage("home");
+      this.router.navigate(['app/login']);
+      return;
+    }
+
     if (this.isEmpty(this.scQuery) || !this.scQuery.match(/[a-z]/i)) {
       this.addAlert("warning", "Veuillez saisir un job avant de lancer la recherche");
       return;

@@ -214,4 +214,12 @@ export class SharedService {
   setCurrentRecruiter(value) {
     this.setStorageVariable("currentRecruiter", value);
   }
+
+  getFromPage() {
+    return this.getStorageVariableRaw("fromPage");
+  }
+
+  setFromPage(value) {
+    this.setStorageVariableRaw("fromPage", value);
+  }
 }

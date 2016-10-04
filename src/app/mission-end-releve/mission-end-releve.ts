@@ -2,6 +2,7 @@ import {Component} from "@angular/core";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SharedService} from "../../providers/shared.service";
 import {FinanceService} from "../../providers/finance.service";
+import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 
 /**
  * This module manage the hours record signature from the employer
@@ -10,7 +11,8 @@ import {FinanceService} from "../../providers/finance.service";
   selector: '[mission-end-releve]',
   template: require('./mission-end-releve.html'),
   styles: [require('./mission-end-releve.scss')],
-  providers: [GlobalConfigs, FinanceService]
+  providers: [GlobalConfigs, FinanceService],
+  directives: [ROUTER_DIRECTIVES]
 })
 export class MissionEndReleve {
   currentUser: any;
@@ -20,11 +22,15 @@ export class MissionEndReleve {
   unSigned: boolean = false;
 
   constructor(private sharedService: SharedService,
-              private financeService: FinanceService) {
+              private financeService: FinanceService,
+              private router: Router) {
 
     this.idInvoice = this.sharedService.getCurrentInvoice();
 
     this.currentUser = this.sharedService.getCurrentUser();
+    if (!this.currentUser) {
+      this.router.navigate(['app/home']);
+    }
     this.isEmployer = this.currentUser.estEmployeur;
 
     this.invoice = {
