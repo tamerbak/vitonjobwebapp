@@ -224,4 +224,16 @@ export class RecruiterService {
       resolve(recruiterList);
     });
   }
+
+  deleteRecruiterFromLocal(recruiterList, recruiter){
+    return new Promise(resolve => {
+      for(var i = 0; i < recruiterList.length; i++){
+        if(recruiter.accountid == recruiterList[i].accountid){
+          recruiterList.splice(i, 1);
+          break;
+        }
+      }
+      resolve(recruiterList);
+    });
+  }
 }
