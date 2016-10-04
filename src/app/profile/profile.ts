@@ -186,7 +186,7 @@ export class Profile {
         if(this.regionId == '40'){
           this.isFrench = true;
         }else{
-          this.index = data.fk_user_pays;
+          this.index = this.profileService.getCountryById(data.fk_user_pays, this.pays).indicatif_telephonique;
           if(this.regionId == '42'){
             this.isEuropean = 1;
             this.isFrench = false;
@@ -1192,9 +1192,26 @@ export class Profile {
         var dateStay = moment(this.dateStay).format('MM/DD/YYYY');
         var dateFromStay = moment(this.dateFromStay).format('MM/DD/YYYY');
         var dateToStay = moment(this.dateToStay).format('MM/DD/YYYY');
-        var birthCountryId = this.profileService.getCountryByIndex(this.index, this.pays).id;
+        var birthCountryId;
+        if(this.index)
+          birthCountryId = this.profileService.getCountryByIndex(this.index, this.pays).id;
         var prefecture = this.whoDeliverStay;
-        var regionId = this.regionId;
+        var regionId;
+        if(!this.regionId){
+          if(this.isEuropean == 1){
+            //etranger
+            regionId = 42;
+          }else{
+            if(this.isFrench){
+              regionId = 40;
+            }else{
+              regionId = 41;
+            }
+          }
+        }else{
+          regionId = this.regionId
+        }
+
 
         this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, prefecture, this.isFrench, this.isEuropean, regionId)
           .then((res: any) => {
