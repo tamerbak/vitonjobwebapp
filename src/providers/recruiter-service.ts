@@ -157,17 +157,17 @@ export class RecruiterService {
   }
 
   sendNotificationBySMS(tel, user, passwd){
+
     tel = tel.replace('+', '00');
-    let url = "http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoisms";
-    var msg = user.titre + " " + user.nom + " " + user.prenom + " vous invite à télécharger et installer l'application VitOnJob. http://www.vitonjob.com/telecharger/telecharger-appli-employeurs/\n Votre mot de passe est " + passwd;
+    let url = Configs.smsURL;
+    let msg = user.titre + " " + user.nom + " " + user.prenom + " vous invite à télécharger et installer l'application VitOnJob. http://www.vitonjob.com/telecharger/telecharger-appli-employeurs/\n Votre mot de passe est " + passwd;
     let payload = "<fr.protogen.connector.model.SmsModel>"
       + 	"<telephone>"+tel+"</telephone>"
       + 	"<text>" + msg +"</text>"
       + "</fr.protogen.connector.model.SmsModel>";
 
     return new Promise(resolve => {
-      let headers = new Headers();
-      headers.append("Content-Type", 'text/xml');
+      let headers = Configs.getHttpXmlHeaders();
       this.http.post(url, payload, {headers:headers})
         .subscribe(data => {
           resolve(data);
