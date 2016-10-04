@@ -84,8 +84,7 @@ export class MissionPointing {
     // Retrieve the project target
     this.currentUser = this.sharedService.getCurrentUser();
     this.isEmployer = this.currentUser.estEmployeur;
-    this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
-
+    this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     //get missions
     this.contract = this.sharedService.getCurrentMission();
 

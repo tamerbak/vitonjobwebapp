@@ -37,7 +37,7 @@ export class OfferList {
 
   ngOnInit() {
     this.currentUser = this.sharedService.getCurrentUser();
-    this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+    this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     this.globalOfferList.length = 0;
     this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
     this.globalOfferList.push({header: 'Mes brouillons', list: []});

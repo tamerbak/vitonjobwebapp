@@ -56,7 +56,7 @@ export class Contract {
     this.currentUser = this.sharedService.getCurrentUser();
 
     // Get target to determine configs
-    this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+    this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     this.isEmployer = (this.projectTarget == 'employer');
 
     // Retrieve jobyer

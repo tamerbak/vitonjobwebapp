@@ -41,8 +41,7 @@ export class SearchCriteria {
   ngOnInit(): void {
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
-      this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
-    } else {
+      this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));    } else {
       this.projectTarget = this.sharedService.getProjectTarget();
     }
     this.buildFilters();

@@ -77,7 +77,7 @@ export class OfferEdit {
 
   ngOnInit(): void {
     this.currentUser = this.sharedService.getCurrentUser();
-    this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer')
+    this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     //obj = "add" od "detail"
     this.route.params.forEach((params: Params) => {
       this.obj = params['obj'];
