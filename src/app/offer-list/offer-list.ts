@@ -39,7 +39,7 @@ export class OfferList {
 
   ngOnInit() {
     this.currentUser = this.sharedService.getCurrentUser();
-    this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+    this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
 
     this.loadOffers();
 
@@ -138,13 +138,14 @@ export class OfferList {
    * @Description: Navigating to new offer page
    */
   goToNewOffer() {
-    var isNewUser: boolean = this.isEmpty(this.currentUser.titre);
+    /*var isNewUser: boolean = this.isEmpty(this.currentUser.titre);
     if (isNewUser) {
       this.addAlert("warning", "Veuillez remplir les informations de votre profil avant de créer une offre.");
       return;
     } else {
       this.router.navigate(['app/offer/edit', {obj:'add'}]);
-    }
+    }*/
+    this.router.navigate(['app/offer/edit', {obj:'add'}]);
   }
 
   changePrivacy(offer) {

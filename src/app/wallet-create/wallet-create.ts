@@ -40,7 +40,7 @@ export class WalletCreate {
   ngOnInit(): void {
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
-      this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+      this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     } else {
       this.router.navigate(['app/home']);
       return;

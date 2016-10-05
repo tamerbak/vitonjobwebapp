@@ -54,9 +54,11 @@ export class Contract {
               private router: Router) {
 
     this.currentUser = this.sharedService.getCurrentUser();
-
+    if (!this.currentUser) {
+      this.router.navigate(['app/home']);
+    }
     // Get target to determine configs
-    this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+    this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     this.isEmployer = (this.projectTarget == 'employer');
 
     // Retrieve jobyer

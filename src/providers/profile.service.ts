@@ -209,10 +209,10 @@ export class ProfileService {
     if(isFrench){
       nationalityId = "91";
       regionId = "40";
-        sql = sql + " fk_user_nationalite ='" + nationalityId + "', " +
-          "lieu_de_naissance ='" + birthplace + "', " +
-          "fk_user_identifiants_nationalite='" + regionId + "' " +
-          //birthcp à ajouter
+      sql = sql + " fk_user_nationalite ='" + nationalityId + "', " +
+        "lieu_de_naissance ='" + birthplace + "', " +
+        "fk_user_identifiants_nationalite='" + regionId + "' " +
+        //birthcp à ajouter
         "where pk_user_jobyer ='" + roleId + "';";
     }else{
       if(isEuropean == 0){
@@ -222,14 +222,14 @@ export class ProfileService {
           "fk_user_identifiants_nationalite='" + regionId + "' " +
           "where pk_user_jobyer ='" + roleId + "';";
       }else{
-        sql = sql + "numero_titre_sejour ='" + numStay + "', " +
-          "fk_user_nationalite ='" + nationalityId + "', " +
-          "fk_user_pays ='" + birthCountryId + "', " +
-          "date_de_delivrance='" + dateStay + "', " +
-          "debut_validite='" + dateFromStay + "', " +
-          "fin_validite='" + dateToStay + "', " +
-          "instance_delivrance='" + this.sqlfyText(prefecture) + "', " +
-          "fk_user_identifiants_nationalite='" + regionId + "' " +
+        sql = sql + " fk_user_nationalite ='" + nationalityId + "' " +
+          (!this.isEmpty(numStay) ? (", numero_titre_sejour ='" + numStay + "' ") : "") +
+          (!this.isEmpty(birthCountryId) ? (", fk_user_pays ='" + birthCountryId + "' ") : "") +
+          (!this.isEmpty(dateStay) ? (", date_de_delivrance='" + dateStay + "' ") : "") +
+          (!this.isEmpty(dateFromStay) ? (", debut_validite='" + dateFromStay + "' ") : "") +
+          (!this.isEmpty(dateToStay) ? (", fin_validite='" + dateToStay + "' ") : "") +
+          (!this.isEmpty(prefecture) ? (", instance_delivrance='" + this.sqlfyText(prefecture) + "' ") : "") +
+          (!this.isEmpty(regionId) ? (", fk_user_identifiants_nationalite='" + regionId + "' ") : "") +
           "where pk_user_jobyer ='" + roleId + "';";
       }
     }
@@ -337,6 +337,36 @@ export class ProfileService {
         });
     })
 
+  }
+
+  /*getPaysByIndex(index){
+    var sql = "select pk_user_pays as id from user_prefecture where nom = '" + this.sqlfyText(nom) + "'";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any)=> {
+          resolve(data);
+        });
+    })
+
+  }*/
+
+  getCountryByIndex(index, countries){
+    for(let i = 0; i < countries.length; i++){
+      if(countries[i].indicatif_telephonique == index){
+        return countries[i];
+      }
+    }
+  }
+
+  getCountryById(id, countries){
+    for(let i = 0; i < countries.length; i++){
+      if(countries[i].id == id){
+        return countries[i];
+      }
+    }
   }
 
   sqlfyText(txt){

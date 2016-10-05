@@ -52,7 +52,17 @@ export class RecruiterList {
   }
 
   deleteRecruiter(item){
-
+    this.recruiterService.deleteRecruiter(item.accountid).then((data: any) => {
+      if(!data || data.status == "failure"){
+        //this.addAlert;
+        return;
+      }else{
+        this.recruiterService.deleteRecruiterFromLocal(this.recruiterList, item).then((data: any) => {
+          this.recruiterList = data;
+          this.sharedService.setRecruiterList(data);
+        });
+      }
+    })
   }
 
   isEmpty(str) {

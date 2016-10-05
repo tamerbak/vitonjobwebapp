@@ -35,7 +35,7 @@ export class LoginPage {
   showEmailField: boolean;
   emailExist = false;
   isRecruteur: boolean = false;
-  isNewRecruteur: boolean = false;
+  isNewRecruteur: boolean;
 
 
   libelleButton: string;
@@ -47,6 +47,10 @@ export class LoginPage {
   fromPage: string;
   alerts: Array<Object>;
   hideLoader: boolean = true;
+
+  isRoleTelConform = true;
+
+  isRedirectedFromHome;
 
 
   constructor(private loadListService: LoadListService,
@@ -68,6 +72,13 @@ export class LoginPage {
     });
     this.showHidePasswdIcon = "fa fa-eye";
     this.showHidePasswdConfirmIcon = "fa fa-eye";
+
+    let fromPage = this.sharedService.getFromPage();
+    if(fromPage == "home"){
+      this.isRedirectedFromHome = true;
+    }else{
+      this.isRedirectedFromHome = false;
+    }
   }
 
 
@@ -82,6 +93,7 @@ export class LoginPage {
     let pwd = md5(this.password1);
     if (this.email == null || this.email == 'null')
       this.email = '';
+    this.role = this.role == "jobyer" ? "jobyer" : "employer";
     this.authService.authenticate(this.email, indPhone, pwd, this.role, this.isRecruteur).then((data: any) => {
       this.hideLoader = true;
       //case of authentication failure : server unavailable or connection probleme
@@ -159,23 +171,38 @@ export class LoginPage {
     if (this.isPhoneValid(phone)) {
       //On teste si le tél existe dans la base
       var tel = "+" + index + phone;
-      this.authService.getUserByPhone(tel, this.role).then((data: any) => {
+      let role = this.role == "jobyer" ? "jobyer" : "employer";
+      this.authService.getUserByPhone(tel, role).then((data: any) => {
         if (!data || data.status == "failure") {
           this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
           return;
         }
-        if (!data || data.data.length == 0) {
-          this.showEmailField = true;
-          this.email = "";
-          this.libelleButton = "S'inscrire";
-          //this.isNewRecruteur = false;
-        } else {
-          this.email = data.data[0]["email"];
-          this.libelleButton = "Se connecter";
-          this.showEmailField = false;
-          if (data.data[0]["role"] == "recruteur" && this.role == "employer") {
-            this.isRecruteur = true;
+        this.isRoleTelConform = true;
+        if(!this.isRecruteur) {
+          if ((!data || data.data.length == 0)) {
+            this.showEmailField = true;
             this.email = "";
+            this.libelleButton = "S'inscrire";
+            this.isNewRecruteur = false;
+
+          } else {
+            this.email = data.data[0]["email"];
+            this.libelleButton = "Se connecter";
+            this.showEmailField = false;
+            if (data.data[0]["role"] == "recruteur") {
+              this.isRoleTelConform = false;
+            }
+          }
+        }else{
+          if ((!data || data.data.length == 0)) {
+            this.isRoleTelConform = false;
+            return;
+          }
+          if (data.data[0]["role"] == "recruteur") {
+            this.email = "";
+          }else{
+            this.isRoleTelConform = false;
+            return;
           }
         }
       });
@@ -197,7 +224,7 @@ export class LoginPage {
       var phone_REGEXP = /^0/;
       //check if the phone number start with a zero
       var isMatchRegex = phone_REGEXP.test(tel);
-      if (Number(tel.length) == 9 && !isMatchRegex) {
+      if (Number(tel.toString().length) == 9 && !isMatchRegex) {
         return true;
       }
       else
@@ -218,7 +245,8 @@ export class LoginPage {
 
   isEmailExist(e) {
     //verify if the email exist in the database
-    this.authService.getUserByMail(this.email, this.role).then((data: any) => {
+    let role = this.role == "jobyer" ? "jobyer" : "employer";
+    this.authService.getUserByMail(this.email, role).then((data: any) => {
       if (!data || data.status == "failure") {
         this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
         return;
@@ -272,13 +300,21 @@ export class LoginPage {
       return (!this.index || !this.isIndexValid || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error() || !this.email || this.showEmailError() || this.emailExist || !this.role)
     } else {
       //connection
-      return (!this.index || !this.isIndexValid || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.role)
+      return (!this.index || !this.isIndexValid || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.role || !this.isRoleTelConform)
     }
   }
 
 
   watchRole(e) {
     this.role = e.target.value;
+    if(this.role == "recruiter"){
+      this.isRecruteur = true;
+    }else{
+      this.isRecruteur = false;
+    }
+    if(this.index && this.phone && this.isPhoneNumValid){
+      this.isRegistration(this.index, this.phone);
+    }
   }
 
 
@@ -326,5 +362,9 @@ export class LoginPage {
       return true;
     else
       return false;
+  }
+
+  ngOnDestroy(): void {
+    this.sharedService.setFromPage(null);
   }
 }

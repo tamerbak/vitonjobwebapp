@@ -29,6 +29,8 @@ export class SearchDetails {
   zoom: number;
   languages: any[];
   qualities: any[];
+  isRecruteur:boolean = false;
+
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -38,9 +40,11 @@ export class SearchDetails {
   ngOnInit(): void {
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
-      this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+      this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     } else {
-      this.projectTarget = this.sharedService.getProjectTarget();
+      //this.projectTarget = this.sharedService.getProjectTarget();
+      //this.isRecruteur = this.currentUser.estRecruteur;
+      this.router.navigate(['app/home']);
     }
     this.result = this.sharedService.getSearchResult();
     this.offer = this.sharedService.getCurrentOffer();

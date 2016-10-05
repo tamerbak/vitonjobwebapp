@@ -4,7 +4,7 @@
 </ol>
 
 <h1 class="page-title">
-  {{currentUser.estEmployeur ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Missions en lignes</span>
+  {{currentUser.estRecruteur ? 'Recruteur' : (currentUser.estEmployeur ? 'Employeur' : 'Jobyer')}} - <span class="fw-semi-bold">Missions en lignes</span>
 </h1>
 <div class="row">
   <div class="col-xs-12">

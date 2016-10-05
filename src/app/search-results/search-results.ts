@@ -20,6 +20,8 @@ export class SearchResults {
   searchResults: any;
   currentUser: any;
   projectTarget: string;
+  isRecruteur:boolean = false;
+
   lat:number;
   lng:number;
   searchResultPos:{lat:number,lng:number,info:string}[] = []
@@ -47,10 +49,11 @@ export class SearchResults {
   ngOnInit() {
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
-      this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+      this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     } else {
-      // TODO: If not connected, ask for login or subscribe with message
-      this.projectTarget = this.sharedService.getProjectTarget();
+      //this.projectTarget = this.sharedService.getProjectTarget();
+      //this.isRecruteur = this.currentUser.estRecruteur;
+      this.router.navigate(['app/home']);
     }
     //  Retrieving last search
     this.selected = this.sharedService.getMapView();
@@ -74,13 +77,13 @@ export class SearchResults {
                 info = "<h4>" + r.prenom + ' ' + r.nom.substring(0, 1) + ". <span style='background-color: #14baa6; color: white; font-size: small;border-radius: 25px;'>&nbsp;" + matching + "%&nbsp;</span></h4>" +
                     "<p>" + r.titreOffre + "</p>" +
                     "<p><span style='color: #29bb00; font-size: large;'>&#9679;</span> &nbsp; Disponible</p>" +
-                    "<p style='text-decoration: underline;'>DÃ©tails</p> ";
+                    "<p style='text-decoration: underline;'>Détails</p> ";
 
             } else {
                 info = "<h4>" + r.entreprise + " <span style='background-color: #14baa6; color: white; font-size: small;border-radius: 25px;'>&nbsp;" + matching + "%&nbsp;</span></h4>" +
                     "<p>" + r.titreOffre + "</p>" +
                     "<p><span style='color: #29bb00; font-size: large;'>&#9679;</span> &nbsp; Disponible</p>" +
-                    "<p style='text-decoration: underline;'>DÃ©tails</p> ";
+                    "<p style='text-decoration: underline;'>Détails</p> ";
             }
             this.searchResultPos.push({lat: Number(r.latitude) ,lng: Number(r.longitude),info:info })
         }
