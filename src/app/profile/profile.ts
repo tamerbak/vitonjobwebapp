@@ -540,9 +540,7 @@ export class Profile{
           params: {
             contentType: "text/plain",
           },
-          data: function(term, page){
-            return "select pk_user_code_postal as id, code from user_code_postal where code like '%" + term + "%'" // search term
-          },
+          data: this.communesService.getCodesPostauxByTerm(),
           results: function(data, page){
             return {results: data.data};
           },
@@ -589,13 +587,7 @@ export class Profile{
             contentType: "text/plain",
           },
           data: function(term, page){
-            val = term;
-            if (!self.selectedCP || self.selectedCP == 0) {
-              return "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('%" + term + "%') UNION select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('" + term + "') limit 5";
-            } else {
-              //return "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('%"+term+"%') and fk_user_code_postal="+self.selectedCP+" UNION select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('"+term+"') and fk_user_code_postal="+self.selectedCP+" limit 5";
-              return "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('%" + term + "%') and fk_user_code_postal=" + self.selectedCP + " UNION select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('" + term + "') and fk_user_code_postal=" + self.selectedCP + " limit 5";
-            }
+            return self.communesService.getCommunesByTerm(term,self.selectedCP);
           },
           results: function(data, page){
             self.communesData = data.data;
@@ -636,9 +628,7 @@ export class Profile{
           params: {
             contentType: "text/plain",
           },
-          data: function(term, page){
-            return "select pk_user_medecine_de_travail as id, libelle from user_medecine_de_travail where lower_unaccent(libelle) % lower_unaccent('" + term + "') limit 5"; // search term
-          },
+          data: this.medecineService.getMedecineByTerm(),
           results: function(data, page){
             return {results: data.data};
           },
@@ -658,7 +648,7 @@ export class Profile{
       });
       jQuery('.medecine-select').on('change',
         (e) =>{
-          this.selectedMedecine = e.added;
+          self.selectedMedecine = e.added;
         }
       );
     }
@@ -674,9 +664,7 @@ export class Profile{
           params: {
             contentType: "text/plain",
           },
-          data: function(term, page){
-            return "select pk_user_prefecture as id, nom from user_prefecture where lower_unaccent(nom) like lower_unaccent('%" + term + "%') limit 10"; // search term
-          },
+          data: this.communesService.getPrefecturesByTerm(),
           results: function(data, page){
             return {results: data.data};
           },
@@ -696,7 +684,7 @@ export class Profile{
       });
       jQuery('.whoDeliver-select').on('change',
         (e) =>{
-          this.whoDeliverStay = e.added.nom;
+          self.whoDeliverStay = e.added.nom;
         }
       );
     }
