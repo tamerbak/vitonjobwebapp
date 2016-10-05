@@ -18,7 +18,7 @@ declare var require;
 export class App {
   redirectTo : string;
   constructor(){
-    this.redirectTo = "/login";
+    this.redirectTo = "/app/home";
     Messenger.options = {
       theme: 'air',
       extraClasses: 'messenger-fixed messenger-on-top'
