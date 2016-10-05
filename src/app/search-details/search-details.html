@@ -4,13 +4,13 @@
   </li>
   <li class="active">Détails</li>
 </ol>
-<h1 class="page-title">{{projectTarget == 'employer' ? 'Employeur' : 'Jobyer'}} - <span class="fw-semi-bold">Détails de l'offre sélectionnée</span>
+<h1 class="page-title">{{currentUser.estRecruteur ? 'Recruteur' : (currentUser.estEmployeur ? 'Employeur' : 'Jobyer')}} - <span class="fw-semi-bold">Détails de l'offre sélectionnée</span>
 </h1>
 
 <div class="row">
   <div class="col-lg-8 col-xl-offset-2 col-xs-12">
     <section widget class="widget">
-      <div modal-component *ngIf="projectTarget == 'employer'"></div>
+      <div modal-component *ngIf="projectTarget == 'employer' && !isRecruteur"></div>
       <div class="widget-body">
         <div class="post-user mt-n-xs">
 					<span class="thumb pull-left mr">
@@ -21,7 +21,7 @@
             <span class="label label-pill label-danger" style="margin-left: 5px">{{(matching.toString().indexOf('.') < 0) ? matching:matching.toString().split('.')[0]}}%</span>
           </p>
         </div>
-        <div *ngIf="projectTarget == 'employer'" class="row col-md-12 col-xs-12"
+        <div class="row col-md-12 col-xs-12"
              style="padding-top: 7px;margin-bottom: 10px;">
           <div class="col-lg-4 col-md-6 col-xs-12">
             <span><i class="fa fa-envelope" aria-hidden="true"></i><b> {{result.email}}</b></span>

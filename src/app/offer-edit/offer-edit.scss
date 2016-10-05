@@ -5,6 +5,14 @@
 @import "../../../node_modules/ng2-datetime/src/vendor/bootstrap-timepicker/bootstrap-timepicker.min";
 @import "../../../node_modules/select2/select2";
 @import "../../../node_modules/select2-bootstrap-css/select2-bootstrap";
+.ajouter{
+  margin-top: 1em;
+}
+
+.fwidth{
+  width:100%;
+  margin-bottom: 10px;
+}
 
 .news-list {
   margin-bottom: 0;
@@ -55,4 +63,9 @@
       }
     }
   }
+}
+
+.field-format-warning{
+  text-align: right;
+  color : #fff !important;
 }

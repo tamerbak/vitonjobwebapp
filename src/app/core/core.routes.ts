@@ -3,7 +3,6 @@ import {Core} from "./core";
 import {Home} from "./../home/home";
 import {Profile} from "../profile/profile";
 import {Settings} from "../settings/settings";
-import {RecruitList} from "../recruit-list/recruit-list";
 import {Attachements} from "../attachements/attachements";
 import {PendingContracts} from "../pending-contracts/pending-contracts";
 import {OfferList} from "../offer-list/offer-list";
@@ -21,6 +20,9 @@ import {Yousign} from "../yousign/yousign";
 import {WalletCreate} from "../wallet-create/wallet-create";
 import {MissionPointing} from "../mission-pointing/mission-pointing";
 import {OfferEdit} from "../offer-edit/offer-edit";
+import {RecruiterList} from "../recruiter-list/recruiter-list";
+import {RecruiterEdit} from "../recruiter-edit/recruiter-edit";
+import {ConfirmExitPage} from "../../providers/routes.service";
 
 /**
  * VitOnJob modules
@@ -39,14 +41,14 @@ export const CoreRoutes: RouterConfig = [
       {path: 'home', component: Home},
 
       // User parameters
-      {path: 'profile', component: Profile},
-      {path: 'settings', component: Settings},
+      {path: 'profile', component: Profile,canDeactivate: [ConfirmExitPage]},
+      {path: 'settings', component: Settings,canDeactivate: [ConfirmExitPage]},
 
       // Offers management
       {path: 'offer/list', component: OfferList},
       {path: 'offer/detail', component: OfferDetail},
       {path: 'offer/add', component: OfferAdd},
-      {path: 'offer/edit', component: OfferEdit},
+      {path: 'offer/edit', component: OfferEdit,canDeactivate: [ConfirmExitPage]},
 
       // Search management
       {path: 'search/results', component: SearchResults},
@@ -66,15 +68,15 @@ export const CoreRoutes: RouterConfig = [
       {path: 'contract/invoice', component: MissionEndInvoice},
 
       // Payment
-      {path: 'wallet/create', component: WalletCreate},
+      {path: 'wallet/create', component: WalletCreate,canDeactivate: [ConfirmExitPage]},
 
       // Grouped recruitment
-      {path: 'recruitList', component: RecruitList},
       {path: 'pendingContracts', component: PendingContracts},
+      {path: 'recruiter/list', component: RecruiterList},
+      {path: 'recruiter/edit', component: RecruiterEdit},
 
       // Attachments chest
       {path: 'attachements', component: Attachements},
-
     ]
   }
 ];

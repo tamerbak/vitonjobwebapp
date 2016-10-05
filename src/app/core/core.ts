@@ -5,6 +5,7 @@ import {Sidebar} from "./sidebar/sidebar";
 import {Navbar} from "./navbar/navbar";
 import {ConfigService} from "./config";
 import {AppSidebar} from './app-sidebar/app-sidebar';
+import {ModalConfirm} from "../modal-confirm/modal-confirm";
 
 declare var Raphael: any;
 declare var jQuery: any;
@@ -22,7 +23,7 @@ export const REDIRECTTO: string = "/login";
     id: 'app'
   },
   providers: [FORM_PROVIDERS],
-  directives: [Sidebar, Navbar, AppSidebar, ROUTER_DIRECTIVES],
+  directives: [Sidebar, Navbar, AppSidebar, ROUTER_DIRECTIVES,ModalConfirm],
   template: require('./core.html')
 })
 export class Core {
@@ -99,7 +100,7 @@ export class Core {
     jQuery(this.el.nativeElement).find('.chat-notification-sing').remove();
     this.chatOpened = !this.chatOpened;
   }
-  
+
   toggleChatListener(): void {
     jQuery(this.el.nativeElement).find('.chat-notification-sing').remove();
     this.chatOpened = !this.chatOpened;

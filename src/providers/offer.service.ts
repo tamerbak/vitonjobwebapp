@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Http, Headers} from "@angular/http";
 import {Configs} from "../configurations/configs";
+import { SharedService } from './shared.service';
 
 @Injectable()
 export class OffersService {
@@ -8,9 +9,15 @@ export class OffersService {
   offerList: any;
   listSectors: any;
   listJobs: any;
+  convention : any;
 
-  constructor(private http: Http) {
+  constructor(private http: Http,private sharedService:SharedService) {
     this.http = http;
+    this.convention = {
+      id:0,
+      code:'',
+      libelle:''
+    };
   }
 
   /**
@@ -83,6 +90,38 @@ export class OffersService {
         });
     });
   }
+
+  setOfferInLocal(offerData:any, projectTarget:string) {
+        //  Init project parameters
+        let offers:any;
+        let result:any;
+
+                var data = this.sharedService.getCurrentUser();
+                if (projectTarget === 'employer') {
+                    let rawData = data.employer;
+                    if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
+                        //adding userId for remote storing
+                        offerData.identity = rawData.entreprises[0].id;
+                        offers = rawData.entreprises[0].offers;
+                        offers.push(offerData);
+                        // Save new offer list in SqlStorage :
+                        this.sharedService.setCurrentUser(data);
+                        console.log(data);
+                        console.log(this.sharedService.getCurrentUser())
+                    }
+                } else { // jobyer
+                    let rawData = data.jobyer;
+                    if(rawData)
+                        offerData.identity = rawData.id;
+                    if (rawData && rawData.offers) {
+                        //adding userId for remote storing
+                        offers = rawData.offers;
+                        offers.push(offerData);
+                        // Save new offer list in SqlStorage :
+                        this.sharedService.setCurrentUser(data);
+                    }
+                }
+    }
 
   setOfferInRemote(offerData: any, projectTarget: string) {
     //  Init project parameters
@@ -485,6 +524,192 @@ export class OffersService {
     });
   }
 
+  /*********************************************************************************************************************
+   *  COLLECTIVE CONVENTIONS MANAGEMENT
+   *********************************************************************************************************************/
+
+  /**
+   * load collective convention based on job ID
+   * @param idjob
+   * @returns {Promise<T>}
+   */
+  getConvention(idjob){
+    let sql = "select pk_user_convention_collective as id, code, libelle " +
+      "from user_convention_collective " +
+      "where pk_user_convention_collective in " +
+      "(select fk_user_convention_collective from user_job where pk_user_job="+idjob+")";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+
+          if(data.data && data.data.length>0){
+            this.convention = data.data[0];
+          }
+          resolve(this.convention);
+        });
+    });
+  }
+
+  /**
+   * Loading all convention levels given convention ID
+   * @param idConvention
+   * @returns {Promise<T>}
+   */
+  getConventionNiveaux(idConvention){
+    let sql = "select pk_user_niveau_convention_collective as id, code, libelle from user_niveau_convention_collective where fk_user_convention_collective="+idConvention;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let list = [];
+          if(data.data && data.data.length>0)
+            list = data.data;
+          resolve(list);
+        });
+    });
+  }
+
+  /**
+   * Loading all convention category given convention ID
+   * @param idConvention
+   * @returns {Promise<T>}
+   */
+  getConventionCategory(idConvention){
+    let sql = "select pk_user_categorie_convention as id, code, libelle from user_categorie_convention where fk_user_convention_collective="+idConvention;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let list = [];
+          if(data.data && data.data.length>0)
+            list = data.data;
+          resolve(list);
+        });
+    });
+  }
+
+  /**
+   * Loading all convention echelons given convention ID
+   * @param idConvention
+   * @returns {Promise<T>}
+   */
+  getConventionEchelon(idConvention){
+    let sql = "select pk_user_echelon_convention as id, code, libelle from user_echelon_convention where fk_user_convention_collective="+idConvention;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let list = [];
+          if(data.data && data.data.length>0)
+            list = data.data;
+          resolve(list);
+        });
+    });
+  }
+
+  /**
+   * Loading all convention coefficients given convention ID
+   * @param idConvention
+   * @returns {Promise<T>}
+   */
+  getConventionCoefficients(idConvention){
+    let sql = "select pk_user_coefficient_convention as id, code, libelle from user_coefficient_convention where fk_user_convention_collective="+idConvention;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let list = [];
+          if(data.data && data.data.length>0)
+            list = data.data;
+          resolve(list);
+        });
+    });
+  }
+
+  /**
+   * Loading convention parameters
+   * @param idConvention
+   * @returns {Promise<T>}
+   */
+  getConventionParameters(idConvention){
+    let sql = "select pk_user_parametrage_convention as id, remuneration_de_reference as rate, " +
+      "fk_user_convention_collective as idcc, fk_user_categorie_convention as idcat, " +
+      "fk_user_echelon_convention as idechelon, fk_user_coefficient_convention as idcoeff, fk_user_niveau_convention_collective as idniv " +
+      "from user_parametrage_convention where fk_user_convention_collective="+idConvention;
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let list = [];
+          if(data.data && data.data.length>0)
+            list = data.data;
+          resolve(list);
+        });
+    });
+  }
+
+  /*********************************************************************************************************************
+   *  COLLECTIVE CONVENTIONS ADVANTAGES
+   *********************************************************************************************************************/
+  getHoursCategories(idConv){
+    let sql = "select chc.pk_user_coefficient_heure_conventionnee as id, chc.libelle as libelle, cat.code as code from user_coefficient_heure_conventionnee chc, user_categorie_heures_conventionnees cat where chc.fk_user_categorie_heures_conventionnees=cat.pk_user_categorie_heures_conventionnees and fk_user_convention_collective="+idConv;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let list = [];
+          if(data.data && data.data.length>0)
+            list = data.data;
+          resolve(list);
+        });
+    });
+  }
+
+  getHoursMajoration(idConv){
+    let sql = "select m.pk_user_majoration_heure_conventionnee as id, m.libelle as libelle, c.code as code from user_majoration_heure_conventionnee m, user_categorie_majoration_heure c where m.fk_user_categorie_majoration_heure=c.pk_user_categorie_majoration_heure and fk_user_convention_collective="+idConv;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let list = [];
+          if(data.data && data.data.length>0)
+            list = data.data;
+          resolve(list);
+        });
+    });
+  }
+
+  getIndemnites(idConv){
+    let sql = "select pk_user_indemnite_conventionnee as id, i.libelle as libelle, t.code as code from user_indemnite_conventionnee i, user_type_indemnite t where i.fk_user_type_indemnite = t.pk_user_type_indemnite and fk_user_convention_collective="+idConv;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let list = [];
+          if(data.data && data.data.length>0)
+            list = data.data;
+          resolve(list);
+        });
+    });
+  }
+
+  /*
+   * USEFUL FUNCTIONS
+   */
+
+
   convertToFormattedHour(value) {
     var hours = Math.floor(value / 60);
     var minutes = value % 60;
@@ -517,5 +742,21 @@ export class OffersService {
     if (!text || text.length == 0)
       return "";
     return text.replace(/'/g, "''")
+  }
+
+  deleteOffer(offer, projectTarget){
+
+    let table = projectTarget == 'jobyer'?'user_offre_jobyer':'user_offre_entreprise';
+    let sql = "update "+table+" set dirty='Y' where pk_"+table+"="+offer.idOffer;
+
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+      .map(res => res.json())
+      .subscribe(data => {
+        resolve(data);
+      });
+    });
   }
 }

@@ -2,7 +2,6 @@ import {Injectable} from "@angular/core";
 import "rxjs/add/operator/map";
 import {Http, Headers} from "@angular/http";
 import {Configs} from "../configurations/configs";
-import {GlobalConfigs} from "../configurations/globalConfigs";
 
 
 /*
@@ -18,50 +17,40 @@ export class FinanceService {
   configuration: any;
   projectTarget: any;
 
-  constructor(private http: Http, public gc: GlobalConfigs) {
-    this.projectTarget = gc.getProjectTarget();
-    this.configuration = Configs.setConfigs(this.projectTarget);
+  constructor(private http: Http) {
     this.data = null;
   }
 
-  // loadPrevQuote(id) {
-  //   let bean = {
-  //     'class': 'com.vitonjob.callouts.finance.DocumentQuery',
-  //     idOffre: id,
-  //     documentType: 'PREV'
-  //   };
-  //   console.log(JSON.stringify(bean));
-  //   let encodedArg = btoa(JSON.stringify(bean));
-  //   var payload = {
-  //     'class': 'fr.protogen.masterdata.model.CCallout',
-  //     'id': 225,
-  //     'args': [
-  //       {
-  //         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
-  //         label: 'Document query',
-  //         value: encodedArg
-  //       }
-  //     ]
-  //   };
-  //
-  //   return new Promise(resolve => {
-  //     // We're using Angular Http provider to request the data,
-  //     // then on the response it'll map the JSON data to a parsed JS object.
-  //     // Next we process the data and resolve the promise with the new data.
-  //     let headers = new Headers();
-  //     headers = Configs.getHttpJsonHeaders();
-  //
-  //     this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
-  //       .map(res => res.json())
-  //       .subscribe(data => {
-  //         //// debugger;
-  //         // we've got back the raw data, now generate the core schedule data
-  //         // and save the data for later reference
-  //         this.data = data;
-  //         resolve(this.data);
-  //       });
-  //   });
-  // }
+  loadPrevQuote(id) {
+    let bean = {
+      'class': 'com.vitonjob.callouts.finance.DocumentQuery',
+      idOffre: id,
+      documentType: 'PREV'
+    };
+    let encodedArg = btoa(JSON.stringify(bean));
+    var payload = {
+      'class': 'fr.protogen.masterdata.model.CCallout',
+      'id': 225,
+      'args': [
+        {
+          'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'Document query',
+          value: encodedArg
+        }
+      ]
+    };
+
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpJsonHeaders();
+
+      this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
 
   loadQuote(id, rate) {
     let bean = {
@@ -150,7 +139,7 @@ export class FinanceService {
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
           this.data = data.data[0];
@@ -165,7 +154,7 @@ export class FinanceService {
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
           this.invoiceId = 0;
@@ -179,4 +168,3 @@ export class FinanceService {
     });
   }
 }
-

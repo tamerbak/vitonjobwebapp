@@ -38,6 +38,8 @@ export class Contract {
   recours: any;
   justificatifs: any;
 
+  dataValidation :boolean = false;
+
   dateFormat(d) {
     let m = d.getMonth() + 1;
     let da = d.getDate();
@@ -54,7 +56,7 @@ export class Contract {
     this.currentUser = this.sharedService.getCurrentUser();
 
     // Get target to determine configs
-    this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+    this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     this.isEmployer = (this.projectTarget == 'employer');
 
     // Retrieve jobyer
@@ -389,6 +391,7 @@ export class Contract {
   goToYousignPage() {
     //debugger;
     this.contractService.getNumContract().then((data: any) => {
+      this.dataValidation = true;
 
       if (data && data.length > 0) {
         this.numContrat = this.formatNumContrat(data[0].numct);
@@ -403,6 +406,13 @@ export class Contract {
       this.sharedService.setContractData(this.contractData);
       this.router.navigate(['app/contract/recruitment']);
     });
+  }
+
+  formHasChanges(){
+    if(this.dataValidation){
+      return false;
+    }
+    return true;
   }
 
   // /**

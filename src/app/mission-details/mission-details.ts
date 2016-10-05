@@ -89,7 +89,7 @@ export class MissionDetails {
 
     }else{
       this.isEmployer = this.currentUser.estEmployeur;
-      this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+      this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
 
 //get missions
       this.contract = this.sharedService.getCurrentMission();

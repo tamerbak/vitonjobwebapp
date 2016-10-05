@@ -17,6 +17,7 @@ export class SearchResults {
   searchResults: any;
   currentUser: any;
   projectTarget: string;
+  isRecruteur:boolean = false;
 
   constructor(private sharedService: SharedService,
               private router: Router,
@@ -26,10 +27,11 @@ export class SearchResults {
   ngOnInit() {
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
-      this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+      this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     } else {
       // TODO: If not connected, ask for login or subscribe with message
       this.projectTarget = this.sharedService.getProjectTarget();
+      this.isRecruteur = this.currentUser.estRecruteur;
     }
     //  Retrieving last search
     let jsonResults = this.sharedService.getLastResult();

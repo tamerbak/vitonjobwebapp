@@ -1,0 +1,74 @@
+<ol class="breadcrumb">
+  <li>Vous êtes ici</li>
+  <li class="active"><a class="breadcrumb-link" [routerLink]="['/app/recruiter/list']">Habilitations</a></li>
+  <li class="active"><a class="breadcrumb-link" [routerLink]="['/app/recruiter/edit']">{{obj == "add" ? 'Nouveau recruteur' : 'Détails du recruteur'}}</a></li>
+</ol>
+<h1 class="page-title">{{currentUser.estEmployeur ? 'Employeur' : 'Jobyer'}} - <span
+  class="fw-semi-bold">{{obj == "add" ? 'Nouveau recruteur' : 'Détails du recruteur'}}</span></h1>
+
+<div class="row">
+  <div class="col-lg-8 col-xl-offset-2 col-xs-12">
+    <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
+      <div [innerHTML]="alert.msg"></div>
+    </alert>
+    <section class="widget" widget>
+      <header>
+        <h6>
+          {{obj == "add" ? 'Nouveau recruteur' : 'Détails du recruteur'}}
+        </h6>
+      </header>
+      <div class="widget-body">
+        <form class="form-horizontal" role="form">
+          <fieldset>
+            <div class="form-group row">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Prénom</label>
+              <div class="col-md-7 col-xs-12">
+                <input type="text" class="form-control" [(ngModel)]="firstname">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-4 form-control-label text-md-right">
+                Nom
+              </label>
+              <div class="col-md-7 col-xs-12">
+                <input type="text" class="form-control" [(ngModel)]="lastname">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right">N° de téléphone</label>
+              <div class="col-md-3 col-xs-12">
+                <select class="select2 form-control" [(ngModel)]="index">
+                  <option *ngFor="let p of pays" [value]="p.indicatif_telephonique"> {{p.nom}}
+                    ({{p.indicatif_telephonique}})
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-4 col-xs-12">
+                <input [(ngModel)]="phone" type="number" class="form-control" (keyup)="watchPhone($event)" (change)="validatePhone($event)">
+              </div>
+              <div class="col-md-8 col-xs-12">
+                <ul class="parsley-errors-list filled" [hidden]="isPhoneNumValid">
+                  <li class="parsley-required">Veuillez saisir un numéro de téléphone valide.</li>
+                </ul>
+                <ul class="parsley-errors-list filled" [hidden]="!phoneExist">
+                  <li class="parsley-required">Ce numéro de téléphone existe déjà. Veuillez saisir un autre</li>
+                </ul>
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="form-actions">
+            <div class="row">
+              <div class="col-md-offset-4 col-md-7 col-xs-12">
+                <button type="submit" class="btn btn-primary" (click)="saveContact('save')" [disabled]="isUpdateDisabled()">Valider</button>
+                <button type="submit" class="btn btn-primary" (click)="saveContact('notif')" [disabled]="isUpdateDisabled()">Valider & Notifier</button>
+              </div>
+            </div>
+
+          </div>
+
+        </form>
+      </div>
+    </section>
+  </div>
+</div>

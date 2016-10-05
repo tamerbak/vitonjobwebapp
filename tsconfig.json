@@ -63,6 +63,10 @@
     "./src/app/offer-detail/offer-detail.ts",
     "./src/app/offer-add/offer-add.ts",
     "./src/app/login/login.ts",
+    "./src/app/modal-confirm/modal-confirm.ts",
+    "./src/app/modal-options/modal-options.ts",
+    "./src/app/modal-offer-temp-quote/modal-offer-temp-quote.ts",
+    "./src/app/bank-account/bank-account.ts",
     // Providers
     "./src/providers/validation-data.service.ts",
     "./src/providers/load-list.service.ts",
@@ -79,6 +83,9 @@
     "./src/providers/medecine.service.ts",
     "./src/providers/search-service.ts",
     "./src/providers/authentication.service.ts",
-    "./src/providers/communes.service.ts"
+    "./src/providers/communes.service.ts",
+    "./src/providers/routes.service.ts",
+    "./src/providers/observables.service.ts",
+    "./src/providers/bank-service.ts"
   ]
 }
