@@ -3,7 +3,7 @@ import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {SearchService} from "../../providers/search-service";
 import {ProfileService} from "../../providers/profile.service";
-import {ModalComponent} from "./modal-component/modal-component";
+import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
 import {GOOGLE_MAPS_DIRECTIVES} from "angular2-google-maps/core";
 
 @Component({
@@ -11,7 +11,7 @@ import {GOOGLE_MAPS_DIRECTIVES} from "angular2-google-maps/core";
   template: require('./search-results.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./search-results.scss')],
-  directives: [ROUTER_DIRECTIVES, ModalComponent,GOOGLE_MAPS_DIRECTIVES],
+  directives: [ROUTER_DIRECTIVES, ModalNotificationContract, GOOGLE_MAPS_DIRECTIVES],
   providers: [SearchService, ProfileService]
 })
 export class SearchResults {

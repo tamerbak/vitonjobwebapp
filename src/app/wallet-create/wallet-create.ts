@@ -1,11 +1,11 @@
-import {Component, ViewEncapsulation} from "@angular/core";
+import {Component, ViewEncapsulation, Input} from "@angular/core";
 import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {PaylineServices} from "../../providers/payline-services";
 
 @Component({
-  selector: '[wallet-create]',
+  selector: 'wallet-create',
   template: require('./wallet-create.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./wallet-create.scss')],

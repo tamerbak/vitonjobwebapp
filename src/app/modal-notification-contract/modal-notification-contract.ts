@@ -1,15 +1,15 @@
 import {Component} from "@angular/core";
-import {SharedService} from "../../../providers/shared.service";
+import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 
 declare var jQuery: any;
 
 @Component({
-  selector: '[modal-component]',
-  template: require('./modal-component.html'),
+  selector: '[modal-notification-contract]',
+  template: require('./modal-notification-contract.html'),
   directives: [ROUTER_DIRECTIVES]
 })
-export class ModalComponent {
+export class ModalNotificationContract {
   currentUser: any;
   projectTarget: string;
 
@@ -67,7 +67,7 @@ export class ModalComponent {
   gotoContractForm() {
     jQuery('#my-modal18-content').modal('hide');
     //just for test, to replace with the right redirection
-    this.router.navigate(['app/search/results']);
+    this.router.navigate(['app/contract/recruitment-form']);
   }
 
   close(): void {

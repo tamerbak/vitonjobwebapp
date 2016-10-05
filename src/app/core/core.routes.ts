@@ -23,6 +23,7 @@ import {OfferEdit} from "../offer-edit/offer-edit";
 import {RecruiterList} from "../recruiter-list/recruiter-list";
 import {RecruiterEdit} from "../recruiter-edit/recruiter-edit";
 import {ConfirmExitPage,CanAccessPage} from "../../providers/routes.service";
+import {PaymentMethod} from "../payment-method/payment-method";
 
 /**
  * VitOnJob modules
@@ -69,6 +70,7 @@ export const CoreRoutes: RouterConfig = [
 
       // Payment
       {path: 'wallet/create', component: WalletCreate,canDeactivate: [ConfirmExitPage]},
+      {path: 'payment/method', component: PaymentMethod},
 
       // Grouped recruitment
       {path: 'pendingContracts', component: PendingContracts},

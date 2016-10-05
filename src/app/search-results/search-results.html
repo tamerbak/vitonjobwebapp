@@ -69,15 +69,7 @@
           </div>
           <div class="row">
             <div class="col-md-1 col-xs-2 pull-xs-left">
-              <button
-                type="button"
-                class="btn btn-secondary btn-sm pull-xs-right"
-                style="background-color: #40aea9; color: white;"
-                *ngIf="!!currentUser && currentUser.estEmployeur && !isRecruteur"
-                (click)="contract(i)"
-              >
-                Recrutement immédiat
-              </button>
+              <div modal-notification-contract *ngIf="projectTarget == 'employer' && !isRecruteur"></div>
             </div>
             <div class="col-md-1 col-xs-2">
               <button

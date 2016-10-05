@@ -1,13 +1,13 @@
-<ol class="breadcrumb">
+<!--<ol class="breadcrumb">
   <li>Vous êtes ici</li>
   <li class="active"><a class="breadcrumb-link" [routerLink]="['/app/wallet/create']">Empreinte de carte bancaire</a>
   </li>
 </ol>
 <h1 class="page-title">{{currentUser.estRecruteur ? 'Recruteur' : (currentUser.estEmployeur ? 'Employeur' : 'Jobyer')}} - <span class="fw-semi-bold">Empreinte de carte bancaire</span>
-</h1>
+</h1>-->
 
 <div class="row">
-  <div class="col-lg-8 col-xl-offset-2 col-xs-12">
+  <div class="col-lg-11 col-xl-offset-3 col-xs-12">
     <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
       <div [innerHTML]="alert.msg"></div>
     </alert>
