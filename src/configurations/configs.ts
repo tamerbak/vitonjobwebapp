@@ -123,42 +123,41 @@ class JobyerConfigs implements AbstractConfigs {
 
 
 export class Configs {
-  public static calloutURL: string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business';
-  public static sqlURL: string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/sql';
-  public static yousignURL: string = 'http://ns389914.ovh.net:8080/vitonjobv1/api/callout';
-  public static smsURL: string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoisms';
-  public static emailURL: string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoimail';
-  public static fssURL: string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/fssjs';
 
-  /*
-   public static calloutURL:string = 'https://app.vitonjob.com/api/business';
-   public static sqlURL:string = 'https://app.vitonjob.com/api/sql';
-   public static yousignURL:string = 'https://app.vitonjob.com/api/business';
-   public static smsURL:string = 'https://app.vitonjob.com/api/sms';
-   public static emailURL:string = 'https://app.vitonjob.com/api/email';
-   public static fssURL:string = 'https://app.vitonjob.com/api/fssjs';
-   */
+  // public static calloutURL: string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business';
+  // public static sqlURL: string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/sql';
+  // public static yousignURL: string = 'http://ns389914.ovh.net:8080/vitonjobv1/api/callout';
+  // public static smsURL: string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoisms';
+  // public static emailURL: string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoimail';
+  // public static fssURL: string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/fssjs';
+
+  public static calloutURL: string = 'https://app.vitonjob.com/api/business';
+  public static sqlURL: string = 'https://app.vitonjob.com/api/sql';
+  public static yousignURL: string = 'https://app.vitonjob.com/api/business';
+  public static smsURL: string = 'https://app.vitonjob.com/api/sms';
+  public static emailURL: string = 'https://app.vitonjob.com/api/email';
+  public static fssURL: string = 'https://app.vitonjob.com/api/fssjs';
 
   public static googleMapApiKey: string = 'AIzaSyD6de5QuqKPECTwNSkmBfeRmiTb9147S_Y';
 
   public static getHttpJsonHeaders() {
     let headers = new Headers();
     headers.append("Content-Type", 'application/json');
-    //headers.append("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
+    headers.append("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
     return headers;
   }
 
   public static getHttpTextHeaders() {
     let headers = new Headers();
     headers.append("Content-Type", 'text/plain');
-    //headers.append("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
+    headers.append("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
     return headers;
   }
 
   public static getHttpXmlHeaders() {
     let headers = new Headers();
     headers.append("Content-Type", 'text/xml');
-    //headers.append("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
+    headers.append("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
     return headers;
   }
 
