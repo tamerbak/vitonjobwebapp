@@ -26,6 +26,7 @@ export class SharedService {
     this.setProfilImageUrl(null);
     this.setRecruiterList(null);
     this.setCurrentRecruiter(null);
+    this.setMapView(null);
   }
 
   getStorageType() {
@@ -213,5 +214,13 @@ export class SharedService {
 
   setCurrentRecruiter(value) {
     this.setStorageVariable("currentRecruiter", value);
+  }
+
+  getMapView() {
+    return this.getStorageVariable("mapView");
+  }
+
+  setMapView(value) {
+    this.setStorageVariable("mapView", value);
   }
 }
