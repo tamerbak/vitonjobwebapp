@@ -70,7 +70,7 @@
       </a>
     </li>
 
-    <li *ngIf="currentUser">
+    <li *ngIf="currentUser && currentUser.estEmployeur">
       <a [routerLink]=" ['pendingContracts'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-th-list"></i>
