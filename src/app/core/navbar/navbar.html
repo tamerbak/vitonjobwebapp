@@ -83,7 +83,7 @@
 					</span>
           &nbsp;
           {{!sharedService.getCurrentUser().prenom ? "":sharedService.getCurrentUser().prenom }} <strong>{{!sharedService.getCurrentUser().nom?
-          (sharedService.getCurrentUser().eschattEmployeur ? "Employeur":"Jobyer") : sharedService.getCurrentUser().nom
+          (sharedService.getCurrentUser().estEmployeur ? "Employeur":"Jobyer") : sharedService.getCurrentUser().nom
           }}</strong>&nbsp;
           <span class="circle bg-warning fw-bold">
 						{{autoSearchOffers.length}}

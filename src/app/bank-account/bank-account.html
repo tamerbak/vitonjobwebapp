@@ -11,61 +11,61 @@
             <div class="col-lg-12 col-xs-12">
               <form class="form-horizontal" role="form">
                 <fieldset>
-                  <legend><strong>Coordonnées bancaires</strong></legend>
-                    <div class="form-group row">
-                      <label for="password1" class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        Nom de la banque
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <input type="text" id="bank" class="form-control" [(ngModel)]="bank.nom_de_banque" name="bank"
-                               (keyup)="watchBank($event)">
-                      </div>
-                      <div class="col-md-offset-4 col-md-7 col-xs-12">
-                        <span class="hint label label-danger">{{bankHint}}</span>
-                      </div>
+
+                  <div class="form-group row">
+                    <label for="password1" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                      Nom de la banque
+                    </label>
+                    <div class="col-md-7 col-xs-12">
+                      <input type="text" id="bank" class="form-control" [(ngModel)]="bank.nom_de_banque" name="bank"
+                      (keyup)="watchBank($event)">
+                    </div>
+                    <div class="col-md-offset-4 col-md-7 col-xs-12">
+                      <span class="hint label label-danger">{{bankHint}}</span>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="text" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                      Détenteur du compte
+                    </label>
+                    <div class="col-md-7 col-xs-12">
+                      <input type="text" id="accountHolder" class="form-control" [(ngModel)]="bank.detenteur_du_compte" name="accountHolder"
+                      (keyup)="watchAccountHolder($event)">
                     </div>
 
-                    <div class="form-group row">
-                      <label for="text" class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        Détenteur du compte
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <input type="text" id="accountHolder" class="form-control" [(ngModel)]="bank.detenteur_du_compte" name="accountHolder"
-                               (keyup)="watchAccountHolder($event)">
-                      </div>
+                    <div class="col-md-offset-4 col-md-7 col-xs-12">
+                      <span class="hint label label-danger">{{accountHolderHint}}</span>
+                    </div>
+                  </div>
 
-                      <div class="col-md-offset-4 col-md-7 col-xs-12">
-                        <span class="hint label label-danger">{{accountHolderHint}}</span>
-                      </div>
+                  <div class="form-group row">
+                    <label for="text" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                      IBAN
+                    </label>
+                    <div class="col-md-7 col-xs-12">
+                      <input type="text" id="iban" class="form-control" [(ngModel)]="bank.iban" name="iban"
+                      (keyup)="watchIban($event)">
                     </div>
 
-                    <div class="form-group row">
-                      <label for="text" class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        IBAN
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <input type="text" id="iban" class="form-control" [(ngModel)]="bank.iban" name="iban"
-                               (keyup)="watchIban($event)">
-                      </div>
+                    <div class="col-md-offset-4 col-md-7 col-xs-12">
+                      <span class="hint label label-danger">{{ibanHint}}</span>
+                    </div>
+                  </div>
 
-                      <div class="col-md-offset-4 col-md-7 col-xs-12">
-                        <span class="hint label label-danger">{{ibanHint}}</span>
-                      </div>
+                  <div class="form-group row">
+                    <label for="text" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                      BIC
+                    </label>
+                    <div class="col-md-7 col-xs-12">
+                      <input type="text" id="bic" class="form-control" [(ngModel)]="bank.bic" name="bic"
+                      (keyup)="watchBic($event)">
                     </div>
 
-                    <div class="form-group row">
-                      <label for="text" class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        BIC
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <input type="text" id="bic" class="form-control" [(ngModel)]="bank.bic" name="bic"
-                               (keyup)="watchBic($event)">
-                      </div>
-
-                      <div class="col-md-offset-4 col-md-7 col-xs-12">
-                        <span class="hint label label-danger">{{bicHint}}</span>
-                      </div>
+                    <div class="col-md-offset-4 col-md-7 col-xs-12">
+                      <span class="hint label label-danger">{{bicHint}}</span>
                     </div>
+                  </div>
                 </fieldset>
               </form>
             </div>
