@@ -34,6 +34,7 @@ export class SearchCriteria {
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
+              private communesService : CommunesService,
               private router: Router,
               private searchService: SearchService) {
   }
@@ -130,9 +131,7 @@ export class SearchCriteria {
         params: {
           contentType: "text/plain",
         },
-        data: function (term, page) {
-          return "select pk_user_ville as id, nom from user_ville where lower_unaccent(nom) % lower_unaccent('" + term + "') order by nom asc limit 5";
-        },
+        data: this.communesService.getCitiesByTerm(),
         results: function (data, page) {
           return {results: data.data};
         },

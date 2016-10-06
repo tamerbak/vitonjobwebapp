@@ -660,7 +660,6 @@ export class MissionService {
 
   getOptionMission(id) {
     var sql = "select option_mission from user_account where pk_user_account = '" + id + "'; ";
-    console.log(sql);
 
     return new Promise(resolve => {
       let headers = new Headers();

@@ -11,6 +11,31 @@ export class CommunesService {
   constructor(public http: Http) {
   }
 
+  getCitiesByTerm(){
+    return function (term, page) {
+      return "select pk_user_ville as id, nom from user_ville where lower_unaccent(nom) % lower_unaccent('" + term + "') order by nom asc limit 5";
+    }
+  }
+  getCommunesByTerm(term,selectedCP){
+      if (!selectedCP || selectedCP == 0) {
+        return "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('%" + term + "%') UNION select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('" + term + "') limit 5";
+      } else {
+        return "select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('%" + term + "%') and fk_user_code_postal=" + selectedCP + " UNION select pk_user_commune as id, nom, code_insee from user_commune where lower_unaccent(nom) like lower_unaccent('" + term + "') and fk_user_code_postal=" + selectedCP + " limit 5";
+      }
+  }
+
+  getCodesPostauxByTerm(){
+    return function(term, page){
+      return "select pk_user_code_postal as id, code from user_code_postal where code like '%" + term + "%'" // search term
+    }
+  }
+
+  getPrefecturesByTerm(){
+    return function(term, page){
+      return "select pk_user_prefecture as id, nom from user_prefecture where lower_unaccent(nom) like lower_unaccent('%" + term + "%') limit 10";
+    }
+  }
+
   getCommune(cname){
         let sql = "select c.pk_user_commune as id, c.nom, c.code_insee, c.fk_user_code_postal, cp.code " +
             "from user_commune c left join user_code_postal cp on c.fk_user_code_postal = cp.pk_user_code_postal " +
