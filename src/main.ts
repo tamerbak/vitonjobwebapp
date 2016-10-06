@@ -71,7 +71,7 @@ import {SharedService} from "./providers/shared.service";
 import {App} from "./app";
 import {ConfigService} from "./app/core/config";
 import {Configs} from "./configurations/configs";
-import {ConfirmExitPage} from "./providers/routes.service";
+import {ConfirmExitPage,CanAccessPage} from "./providers/routes.service";
 import {RouteObservable} from "./providers/observables.service";
 
 //
@@ -89,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function main(): void {
     ConfigService,
     RouteObservable,
     ConfirmExitPage,
+    CanAccessPage,
     NgControl,
     GOOGLE_MAPS_PROVIDERS,
     provideLazyMapsAPILoaderConfig({

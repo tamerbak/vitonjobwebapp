@@ -22,7 +22,7 @@ import {MissionPointing} from "../mission-pointing/mission-pointing";
 import {OfferEdit} from "../offer-edit/offer-edit";
 import {RecruiterList} from "../recruiter-list/recruiter-list";
 import {RecruiterEdit} from "../recruiter-edit/recruiter-edit";
-import {ConfirmExitPage} from "../../providers/routes.service";
+import {ConfirmExitPage,CanAccessPage} from "../../providers/routes.service";
 
 /**
  * VitOnJob modules
@@ -63,7 +63,7 @@ export const CoreRoutes: RouterConfig = [
 
       // Contract management
       {path: 'contract/recruitment-form', component: Contract},
-      {path: 'contract/recruitment', component: Yousign},
+      {path: 'contract/recruitment', component: Yousign,canActivate: [CanAccessPage]},
       {path: 'contract/hours-record', component: MissionEndReleve},
       {path: 'contract/invoice', component: MissionEndInvoice},
 
