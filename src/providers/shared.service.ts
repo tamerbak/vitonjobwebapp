@@ -15,18 +15,8 @@ export class SharedService {
   }
 
   logOut() {
-    this.setCurrentUser(null);
-    this.setCurrentOffer(null);
-    this.setLastResult(null);
-    this.setSearchResult(null);
-    this.setLangList(null);
-    this.setQualityList(null);
-    this.setJobList(null);
-    this.setOptionMission(null);
-    this.setProfilImageUrl(null);
-    this.setRecruiterList(null);
-    this.setCurrentRecruiter(null);
-    this.setMapView(null);
+    localStorage.clear();
+    sessionStorage.clear();
   }
 
   getStorageType() {
