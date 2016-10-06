@@ -3,7 +3,9 @@ import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SharedService} from "../../providers/shared.service";
 import {FinanceService} from "../../providers/finance.service";
 import {ContractService} from "../../providers/contract-service";
+import {SmsService} from "../../providers/sms-service";
 import {Helpers} from "../../providers/helpers.service";
+import {Router} from "@angular/router";
 
 /**
  * @author daoudi amine
@@ -13,12 +15,9 @@ import {Helpers} from "../../providers/helpers.service";
 @Component({
   template: require('./yousign.html'),
   styles: [require('./yousign.scss')],
-
-  // templateUrl: 'build/pages/yousign/yousign.html',
-  providers: [FinanceService, GlobalConfigs, ContractService, Helpers]
-  // providers : [PushNotificationService, FinanceService]
+  providers: [FinanceService, GlobalConfigs, ContractService, Helpers, SmsService]
 })
-export class Yousign {
+export class Yousign{
 
   projectTarget: string;
   isEmployer: boolean;
@@ -30,78 +29,45 @@ export class Yousign {
   contractData: any;
 
   currentOffer: any = null;
-  // pushNotificationService:PushNotificationService;
+  hideLoader = false;
 
   constructor(public gc: GlobalConfigs,
-              // public nav: NavController,
-              // private navParams:NavParams,
               private contractService: ContractService,
-              // private userService:UserService,
-              // private smsService:SmsService,
+              private smsService: SmsService,
               private financeService: FinanceService,
-              // pushNotificationService : PushNotificationService,
-              private sharedService: SharedService) {
-
+              private sharedService: SharedService,
+              private router: Router){
     this.currentUser = this.sharedService.getCurrentUser();
-
     // Get target to determine configs
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     // Set local variables and messages
     //get the currentEmployer & call youssign service
-    // this.pushNotificationService = pushNotificationService;
-
-
     this.isEmployer = (this.projectTarget == 'employer');
     this.jobyer = this.sharedService.getCurrentJobyer();
     this.contractData = this.sharedService.getContractData();
     this.currentOffer = this.sharedService.getCurrentOffer();
 
-
-    // TODO : A voir
-    // userService.getCurrentUser(this.projectTarget).then(results =>{
-    //     this.currentUser = JSON.parse(results);
     let currentEmployer = this.currentUser.employer;
-
     if (currentEmployer) {
       this.employer = currentEmployer;
       this.callYousign();
     }
-    //     console.log(currentEmployer);
-    // });
   }
 
-  goToPayment() {
-    // TODO
-    //   this.nav.push(WalletCreatePage);
-  }
-
-  goToMissionsList() {
-    // TODO
-    //   this.nav.push(MissionListPage);
+  goToPaymentMethod(){
+    this.router.navigate(['app/payment/method']);
   }
 
   /**
    * @author daoudi amine
    * @description call yousign service and send sms to the jobyer
    */
-  callYousign() {
-    // let loading = Loading.create({
-    //     content: `
-    //         <div>
-    //             <img src='img/loading.gif' />
-    //         </div>
-    //         `,
-    //     spinner : 'hide'
-    // });
-    // this.nav.present(loading);
-
-    // TODO
-    console.log({'this.currentOffer: ': this.currentOffer});
-
+  callYousign(){
+    this.hideLoader = false;
     this.financeService.loadQuote(
       this.currentOffer.idOffer,
       this.contractData.baseSalary
-    ).then((data: any) => {
+    ).then((data: any) =>{
       this.contractService.callYousign(
         this.currentUser,
         this.employer,
@@ -110,18 +76,15 @@ export class Yousign {
         this.projectTarget,
         this.currentOffer,
         data.quoteId
-      ).then((data: any) => {
-        // loading.dismiss();
-        //// debugger;
-        console.log(JSON.stringify(this.employer));
+      ).then((data: any) =>{
         if (data == null || data.length == 0) {
           console.log("Yousign result is null");
+          this.hideLoader = true;
           return;
         }
 
         let dataValue = data[0]['value'];
         let yousignData = JSON.parse(dataValue);
-        console.log(yousignData);
 
         //change jobyer 'contacted' status
         this.jobyer.contacted = true;
@@ -140,39 +103,22 @@ export class Yousign {
         iframe.style.height = "100%";
         iframe.style.width = "100%";
         iframe.setAttribute("src", yousignEmployerLink);
-        console.log('yousignEmployerLink: ' + yousignEmployerLink);
 
         document.getElementById("iframPlaceHolder").appendChild(iframe);
 
-        // TEL:23082016 : Using inappbrowser plugin :
-        // InAppBrowser.open(yousignEmployerLink, '_blank');
-        //browser.show();
-        // get the yousign link of the contract and the phoneNumber of the jobyer
         let yousignJobyerLink = yousignData.iFrameURLs[0].iFrameURL;
         let jobyerPhoneNumber = this.jobyer.tel;
 
         this.contractData.demandeJobyer = yousignData.idDemands[0].idDemand;
         this.contractData.demandeEmployer = yousignData.idDemands[1].idDemand;
 
-        // TODO
-        // // TEL23082016 : Navigate to credit card page directly :
-        // this.nav.push(WalletCreatePage);
-        //
-        // // Send sms to jobyer
-        // //// debugger;
-        // this.smsService.sendSms(jobyerPhoneNumber, 'Une demande de signature de contrat vous a été adressée. Contrat numéro : '+this.contractData.numero).then((dataSms) => {
-        //     //// debugger;
-        //     console.log("The message was sent successfully");
-        // }).catch(function(err) {
-        //     //// debugger;
-        //     console.log(err);
-        // });
-        // // send notification to jobyer
-        // console.log('jobyer id : '+this.jobyer.id);
-
+        // TEL23082016 : Navigate to credit card page directly :
+        //this.router.navigate(['app/wallet/create']);
+        // Send sms to jobyer
+        this.smsService.sendSms(jobyerPhoneNumber, 'Une demande de signature de contrat vous a été adressée. Contrat numéro : ' + this.contractData.numero);
         //save contract in Database
         this.contractService.getJobyerId(this.jobyer, this.projectTarget).then(
-          (jobyerData: any) => {
+          (jobyerData: any) =>{
             this.contractService.saveContract(
               this.contractData,
               jobyerData.data[0].pk_user_jobyer,
@@ -181,7 +127,7 @@ export class Yousign {
               yousignJobyerLink,
               this.currentUser.id
             ).then(
-              (data: any) => {
+              (data: any) =>{
                 if (this.currentOffer && this.currentOffer != null) {
                   let idContract = 0;
                   if (data && data.data && data.data.length > 0)
@@ -190,34 +136,21 @@ export class Yousign {
                     pk_user_contrat: idContract
                   };
                   this.contractService.setOffer(idContract, this.currentOffer.idOffer);
-                  // TODO : Notification after contract signature
-                  // this.pushNotificationService.getToken(this.jobyer.id, "toJobyer").then(token => {
-                  //     if(token.data && token.data.length>0){
-                  //         let tk = token;
-                  //         var message = "Une demande de signature de contrat vous a été adressée";
-                  //         console.log('message notification : '+message);
-                  //         console.log('token : '+tk);
-                  //         this.pushNotificationService.sendPushNotification(tk, message, contract, "MissionDetailsPage").then(data => {
-                  //             console.log('Notification sent : '+JSON.stringify(data));
-                  //         });
-                  //     }
-                  //
-                  // });
                   this.contractService.generateMission(idContract, this.currentOffer);
+                  this.hideLoader = true;
                 }
               },
-              (err) => {
+              (err) =>{
                 console.log(err);
               })
           },
-          (err) => {
+          (err) =>{
             console.log(err);
           })
-      }).catch(function (err) {
+      }).catch(function(err){
         console.log(err);
       });
     });
-
   }
 }
 

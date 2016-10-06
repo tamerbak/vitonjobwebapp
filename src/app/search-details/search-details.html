@@ -10,7 +10,7 @@
 <div class="row">
   <div class="col-lg-8 col-xl-offset-2 col-xs-12">
     <section widget class="widget">
-      <div modal-component *ngIf="projectTarget == 'employer' && !isRecruteur"></div>
+      <div modal-notification-contract *ngIf="projectTarget == 'employer' && !isRecruteur" [jobyer]="item"></div>
       <div class="widget-body">
         <div class="post-user mt-n-xs">
 					<span class="thumb pull-left mr">
