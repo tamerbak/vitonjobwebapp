@@ -56,6 +56,8 @@ export class WalletCreate {
           msg: 'Si vous désirez utiliser la même carte bancaire que vous avez renseigné au préalable (XXXXXXXXXXXX' + cnum + ') vous pouvez passer cette étape.' + '<a class="btn btn-primary btn-xs pull-xs-right mr-xs" href="#/app/mission/list">Passer</a>'
         }
         this.addAlert("", "");
+      }else{
+        //this.addAlert("success", "Vous avez choisi de payer par carte bancaire.");
       }
     });
   }
@@ -82,7 +84,8 @@ export class WalletCreate {
 
   addAlert(type, msg): void {
     this.alerts = [];
-    this.alerts = [this.walletMsg];
+    if(this.walletMsg)
+      this.alerts = [this.walletMsg];
     if (!this.isEmpty(type)) {
       this.alerts.push({type: type, msg: msg});
     }

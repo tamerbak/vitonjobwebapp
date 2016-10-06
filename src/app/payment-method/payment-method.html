@@ -18,12 +18,14 @@
           <fieldset>
             <div class="row">
               <div class="col-md-6 col-xs-12">
-                <button class="btn btn-success" style="float: right; background-color: #14baa6;" (click)="showWalletCreate()">Payline: Paiement par
+                <button class="btn btn-success" style="float: right; background-color: #14baa6;"
+                        (click)="showWalletCreate()">Payline: Paiement par
                   carte bancaire
                 </button>
               </div>
               <div class="col-md-6 col-xs-12">
-                <button class="btn btn-primary" (click)="showSlimPayFrame()">SlimPay: Paiement par compte bancaire</button>
+                <button class="btn btn-primary" (click)="showSlimPayFrame()">SlimPay: Paiement par compte bancaire
+                </button>
               </div>
             </div>
           </fieldset>
@@ -33,6 +35,27 @@
   </div>
 </div>
 
+<alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
+  <div [innerHTML]="alert.msg"></div>
+</alert>
+
 <div class="row">
-  <wallet-create *ngIf="isPayline"></wallet-create>
+  <!--payline-->
+  <wallet-create *ngIf="isPayline" style="width: 75%"></wallet-create>
+  <!--slimpay-->
+  <div class="col-lg-12 col-xs-12" *ngIf="isSlimPay">
+    <div class="widget-body" *ngIf="!hideLoader">
+      <div class="loader animated fadeIn handle">
+        <span class="spinner">
+            <i class="fa fa-spinner fa-spin"></i>
+        </span>
+      </div>
+    </div>
+    <div id="slimPayIFrame" style="width: 100%;height: 500px;"></div>
+    <div class="col-lg-12 col-xs-12 col-xl-offset-5">
+      <button (click)="checkSEPAState()" class="btn btn-primary">
+        Etape suivante
+      </button>
+    </div>
+  </div>
 </div>

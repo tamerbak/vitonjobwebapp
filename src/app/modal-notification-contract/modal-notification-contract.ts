@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, Input} from "@angular/core";
 import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 
@@ -10,6 +10,9 @@ declare var jQuery: any;
   directives: [ROUTER_DIRECTIVES]
 })
 export class ModalNotificationContract {
+  @Input()
+  jobyer: any;
+
   currentUser: any;
   projectTarget: string;
 
@@ -66,7 +69,12 @@ export class ModalNotificationContract {
 
   gotoContractForm() {
     jQuery('#my-modal18-content').modal('hide');
-    //just for test, to replace with the right redirection
+    let o = this.sharedService.getCurrentOffer();
+    //navigate to contract page
+    if (o != null) {
+      this.sharedService.setCurrentJobyer(this.jobyer);
+      this.router.navigate(['app/contract/recruitment-form']);
+    }
     this.router.navigate(['app/contract/recruitment-form']);
   }
 
