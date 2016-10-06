@@ -551,7 +551,11 @@ export class OfferEdit {
     // --> Job state
     this.dataValidation = true;
     this.offer.title = this.offer.jobData.job + ' ' + ((this.offer.jobData.level != 'junior') ? 'Expérimenté' : 'Débutant');
-
+    if (!this.offer.jobData.job || !this.offer.jobData.sector || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || this.minHourRate>this.offer.jobData.remuneration) {
+      this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
+      return;
+    }
+    this.dataValidation = true;
     this.offersService.updateOfferJob(this.offer, this.projectTarget);
     this.setOfferInLocal();
     Messenger().post({
