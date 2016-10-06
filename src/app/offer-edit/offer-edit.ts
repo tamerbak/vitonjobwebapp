@@ -93,7 +93,7 @@ export class OfferEdit {
 
     if(this.obj == "detail") {
       this.offer = this.sharedService.getCurrentOffer();
-      this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée":"Rendre l'offre public";
+      this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée":"Rendre l'offre publique";
       this.autoSearchModeTitle = this.offer.rechercheAutomatique ? "Désactiver la recherche auto":"Activer la recherche auto";
       if (this.offer.obsolete) {
         //display alert if offer is obsolete
