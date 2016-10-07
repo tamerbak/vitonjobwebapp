@@ -31,6 +31,14 @@ export class SearchResults {
   constructor(private sharedService: SharedService,
               private router: Router,
               private profileService: ProfileService) {
+                this.currentUser = this.sharedService.getCurrentUser();
+                if (this.currentUser) {
+                  this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
+                } else {
+                  //this.projectTarget = this.sharedService.getProjectTarget();
+                  //this.isRecruteur = this.currentUser.estRecruteur;
+                  this.router.navigate(['app/home']);
+                }
   }
 
   onChange(value){
@@ -58,14 +66,6 @@ export class SearchResults {
   }
 
   ngOnInit() {
-    this.currentUser = this.sharedService.getCurrentUser();
-    if (this.currentUser) {
-      this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
-    } else {
-      //this.projectTarget = this.sharedService.getProjectTarget();
-      //this.isRecruteur = this.currentUser.estRecruteur;
-      this.router.navigate(['app/home']);
-    }
     //  Retrieving last search
     this.selected = this.sharedService.getMapView();
     if(this.selected){
