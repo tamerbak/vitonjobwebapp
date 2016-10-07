@@ -15,8 +15,8 @@
           <b>Activer la vue Map</b>
         </label>
       </div>
-      <div class="widget-middle-overflow windget-padding-md clearfix bg-info"  [ngStyle]="{'display':mapDisplay}">
-        <sebm-google-map #Map [latitude]="lat" [longitude]="lng" [zoom]="12" [fitBounds]="true" class="content-map">
+      <div class="widget-middle-overflow windget-padding-md clearfix bg-info" *ngIf="selected" [ngStyle]="{'display':mapDisplay}">
+        <sebm-google-map #Map [latitude]="lat" [longitude]="lng" [zoom]="10"  class="content-map">
           <sebm-google-map-marker *ngFor="let item of searchResultPos, let i=index" [latitude]="item.lat" [longitude]="item.lng">
             <sebm-google-map-info-window>
                 <div [innerHTML]="item.info"></div>
