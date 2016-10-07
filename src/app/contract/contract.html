@@ -121,13 +121,13 @@
           <input type="date"  class="form-control" [(ngModel)]="contractData.termStartDate" aria-describedby="deb"/>
           <small class="form-text text-muted"></small>
         </div>
-      </div>
-      <div class="col-xs-6 pull-right col-2">
         <div class="form-group">
           <label >Fin terme</label>
           <input type="date" class="form-control" [(ngModel)]="contractData.termEndDate" aria-describedby="terme"/>
           <small class="form-text text-muted"></small>
         </div>
+      </div>
+      <div class="col-xs-6 pull-right col-2">
         <div class="form-group">
           <label>Début de souplesse</label>
           <input type="date"  class="form-control" [(ngModel)]="contractData.debutSouplesse" aria-describedby="souplesse"/>
@@ -142,6 +142,26 @@
           <label>Période non travaillée</label>
           <input type="text"  class="form-control" [(ngModel)]="contractData.periodesNonTravaillees" aria-describedby="periode"/>
           <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label>Recours </label>
+
+            <select
+              data-style="btn-secondary"
+              class="recoursSelectPicker form-control" id="recours-select" [(ngModel)]="contractData.motif"
+              name="recours_slct" (change)="recoursSelected($event)">
+              <option *ngFor="let r of recours" value="{{r.libelle}}">{{r.libelle}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+          <label>Motif </label>
+
+            <select
+              data-style="btn-secondary"
+              class="justificationSelectPicker form-control" id="justifications-select" [(ngModel)]="contractData.justification"
+              name="justification_slct">
+              <option *ngFor="let r of justificatifs" value="{{r.libelle}}">{{r.libelle}}</option>
+            </select>
         </div>
       </div>
     </div>
@@ -288,7 +308,7 @@
           <input type="text"  class="form-control" [(ngModel)]="contractData.adresseCentreMedecineEntreprise" aria-describedby="adresse2"/>
           <small class="form-text text-muted"></small>
         </div>
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label>Gestion intérim</label>
           <input type="text" class="form-control" [(ngModel)]="contractData.interimAddress" aria-describedby="gestion"/>
           <small class="form-text text-muted"></small>
@@ -297,7 +317,7 @@
           <label >Client</label>
           <input type="text"  class="form-control" [(ngModel)]="contractData.customer" aria-describedby="client"/>
           <small class="form-text text-muted"></small>
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="row">
