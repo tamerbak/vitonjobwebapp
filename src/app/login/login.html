@@ -163,6 +163,9 @@
             </form>
           </div>
         </section>
+        <h5 style="text-align: center;" [hidden]="hideLoader">
+          {{role == "jobyer" ? 'Bienvenue dans Vit-On-Job. Vous êtes tout près de trouver votre emploi' : 'Bienvenue dans Vit-On-Job. Vous êtes tout près de trouver votre jobyer'}}.
+        </h5>
       </div>
     </div>
   </main>
