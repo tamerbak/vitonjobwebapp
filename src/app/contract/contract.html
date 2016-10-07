@@ -147,9 +147,9 @@
           <label>Recours </label>
 
             <select
-              data-style="btn-secondary"
+              data-style="btn-secondary" #recoursSelect
               class="recoursSelectPicker form-control" id="recours-select" [(ngModel)]="contractData.motif"
-              name="recours_slct" (change)="recoursSelected($event)">
+              name="recours_slct" (change)="recoursSelected(recoursSelect.value)">
               <option *ngFor="let r of recours" value="{{r.libelle}}">{{r.libelle}}</option>
             </select>
         </div>

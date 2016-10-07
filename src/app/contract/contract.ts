@@ -189,11 +189,12 @@ export class Contract {
   recoursSelected(evt) {
     let selectedRecoursLib = evt;
     let id = 40;
-    for (let i = 0; i < this.recours.length; i++)
+    for (let i = 0; i < this.recours.length; i++){
       if (this.recours[i].libelle == selectedRecoursLib) {
         id = this.recours[i].id;
         break;
       }
+    }
 
     this.justificatifs = [];
     this.contractService.loadJustificationsList(id).then(data=> {
