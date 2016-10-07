@@ -202,6 +202,12 @@ export class Contract {
   //   });
   // }
 
+
+      watchTransportTitle(e){
+        this.contractData.titreTransport = e.target.value;
+      }
+
+
   formatNumContrat(num) {
     let snum = num + "";
     let zeros = 10 - snum.length;
