@@ -130,6 +130,12 @@ export class Profile{
   whoDeliverStay;
   regionId;
 
+  /*
+  Conventions collectives
+   */
+  conventionId : number;
+  conventions : any = [];
+
   setImgClasses(){
     return {
       'img-circle': true,//TODO:this.currentUser && this.currentUser.estEmployeur,
@@ -171,6 +177,9 @@ export class Profile{
 
       } else {
         this.scanTitle = " de votre extrait k-bis";
+        listService.loadConventions().then((response: any) =>{
+          this.conventions = response;
+        });
       }
     }
     this.isFrench = true;
@@ -306,6 +315,11 @@ export class Profile{
         this.companyname = this.currentUser.employer.entreprises[0].nom;
         this.siret = this.currentUser.employer.entreprises[0].siret;
         this.ape = this.currentUser.employer.entreprises[0].naf;
+
+        if(this.currentUser.employer.entreprises[0].conventionCollective &&
+          this.currentUser.employer.entreprises[0].conventionCollective.id>0) {
+          this.conventionId = this.currentUser.employer.entreprises[0].conventionCollective.id;
+        }
         this.medecineService.getMedecine(this.currentUser.employer.entreprises[0].id).then((res: any)=>{
           if (res && res != null) {
             this.selectedMedecine = {id: res.id, libelle: res.libelle};
@@ -1115,7 +1129,7 @@ export class Profile{
           var medecineId = this.selectedMedecine.id === "0" ? 0 : parseInt(this.selectedMedecine.id);
           var entrepriseId = this.currentUser.employer.entreprises[0].id;
 
-          this.profileService.updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, userRoleId, entrepriseId, medecineId)
+          this.profileService.updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, userRoleId, entrepriseId, medecineId, this.conventionId)
             .then((res: any) =>{
 
               //case of update failure : server unavailable or connection problem
@@ -1138,6 +1152,24 @@ export class Profile{
                 this.currentUser.employer.entreprises[0].naf = ape;
                 this.currentUser.isNewUser
                 this.currentUser.newAccount = false;
+                let code = '';
+                let libelle = '';
+                if(this.conventionId && this.conventionId>0)
+                {
+                  for(let i = 0 ; i < this.conventions.length ; i++)
+                    if(this.conventions[i].id == this.conventionId){
+                      code =   this.conventions[i].code;
+                      libelle = this.conventions[i].libelle;
+                      break;
+                    }
+
+                }
+
+                this.currentUser.employer.entreprises[0].conventionCollective = {
+                  id: this.conventionId,
+                  code:code,
+                  libelle : libelle
+                };
                 this.sharedService.setCurrentUser(this.currentUser);
                 this.getUserFullname();
 
