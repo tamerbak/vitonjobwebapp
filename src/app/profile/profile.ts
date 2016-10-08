@@ -40,8 +40,9 @@ export class Profile{
   siret: string;
   ape: string;
   birthcp: string;
-  birthcpForeigner: string;
-
+  birthdep: string;
+  birthdepId: string;
+  birthplace: string;
 
   selectedCP: any;
   birthdate: Date;
@@ -129,6 +130,7 @@ export class Profile{
   dateToStay;
   whoDeliverStay;
   regionId;
+  selectedDep;
 
   setImgClasses(){
     return {
@@ -185,6 +187,7 @@ export class Profile{
         this.regionId = data.fk_user_identifiants_nationalite;
         if (this.regionId == '40') {
           this.isFrench = true;
+          this.birthdepId = data.fk_user_departement;
         } else {
           this.index = this.profileService.getCountryById(data.fk_user_pays, this.pays).indicatif_telephonique;
           if (this.regionId == '42') {
@@ -203,6 +206,7 @@ export class Profile{
         }
       })
   }
+
 
   getUserFullname(){
     this.currentUserFullname = (this.currentUser.prenom + " " + this.currentUser.nom).trim();
@@ -404,6 +408,19 @@ export class Profile{
             this.isValidNumSS = true;
           });
         }
+
+        if (this.birthdepId !== null) {
+          this.communesService.getDepartmentById(this.birthdepId).then((res: any) =>{
+            if (res && res.data.length > 0) {
+              this.selectedDep = res.data[0];
+              jQuery(".dep-select").select2('data', this.selectedDep);
+            } else {
+              this.selectedDep = {id: '0', nom: "", numero: ""};
+              jQuery(".dep-select").select2('data', this.selectedDep);
+            }
+          });
+        }
+
         //this.selectedCommune = {id:0, nom: this.currentUser.jobyer.lieuNaissance, code_insee: ''}
         this.isValidNumSS = true;
         this.cni = this.currentUser.jobyer.cni;
@@ -522,16 +539,17 @@ export class Profile{
       this.autocompletePA = new google.maps.places.Autocomplete(document.getElementById("autocompletePersonal"), this.addressOptions);
       this.autocompleteJA = new google.maps.places.Autocomplete(document.getElementById("autocompleteJob"), this.addressOptions);
     });
+
     jQuery('.titleSelectPicker').selectpicker();
     jQuery(document).ready(function(){
       jQuery('.fileinput').on('change.bs.fileinput', function(e, file){
         self.scanData = file.result;
-      })
+      });
     });
 
     if (!this.isRecruiter && !this.isEmployer) {
       var self = this;
-      jQuery('.cp-select').select2({
+      jQuery('.dep-select').select2({
         ajax: {
           url: Configs.sqlURL,
           type: 'POST',
@@ -540,7 +558,7 @@ export class Profile{
           params: {
             contentType: "text/plain",
           },
-          data: this.communesService.getCodesPostauxByTerm(),
+          data: this.communesService.getDepartmentsByTerm(),
           results: function(data, page){
             return {results: data.data};
           },
@@ -548,24 +566,65 @@ export class Profile{
         },
 
         formatResult: function(item){
-          return item.code;
+          return item.numero;
         },
         formatSelection: function(item){
-          return item.code;
+          return item.numero;
         },
         dropdownCssClass: "bigdrop",
         escapeMarkup: function(markup){
           return markup;
         },
-        minimumInputLength: 4,
+        minimumInputLength: 1,
       });
-      jQuery('.cp-select').on('change',
+      jQuery('.dep-select').on('change',
         (e) =>{
-          self.birthcp = e.added.code;
-          self.selectedCP = e.added.id;
-          self.selectedCommune = null;
+          self.birthdep = e.added.numero;
+          self.birthdepId = e.added.id;
+          jQuery('.commune-select').select2("val", "");
         }
       );
+      /*jQuery(".dep-select").select2();
+       jQuery('.dep-select').on('select2-selecting',
+       (e) =>{
+       jQuery('.commune-select').select2("val", "");
+       }
+       )*/
+      /*jQuery('.cp-select').select2({
+       ajax: {
+       url: Configs.sqlURL,
+       type: 'POST',
+       dataType: 'json',
+       quietMillis: 250,
+       params: {
+       contentType: "text/plain",
+       },
+       data: this.communesService.getCodesPostauxByTerm(),
+       results: function(data, page){
+       return {results: data.data};
+       },
+       cache: true
+       },
+
+       formatResult: function(item){
+       return item.code;
+       },
+       formatSelection: function(item){
+       return item.code;
+       },
+       dropdownCssClass: "bigdrop",
+       escapeMarkup: function(markup){
+       return markup;
+       },
+       minimumInputLength: 4,
+       });
+       jQuery('.cp-select').on('change',
+       (e) =>{
+       self.birthcp = e.added.code;
+       self.selectedCP = e.added.id;
+       self.selectedCommune = null;
+       }
+       );*/
 
       var val = ""
       jQuery('.commune-select').select2({
@@ -587,7 +646,8 @@ export class Profile{
             contentType: "text/plain",
           },
           data: function(term, page){
-            return self.communesService.getCommunesByTerm(term,self.selectedCP);
+            //return self.communesService.getCommunesByTerm(term,self.selectedCP);
+            return self.communesService.getCommunesByTerm(term, self.birthdep);
           },
           results: function(data, page){
             self.communesData = data.data;
@@ -607,7 +667,7 @@ export class Profile{
         escapeMarkup: function(markup){
           return markup;
         },
-        minimumInputLength: 3,
+        minimumInputLength: 1,
       });
 
       jQuery('.commune-select').on('select2-selecting',
@@ -1175,7 +1235,8 @@ export class Profile{
         var birthdate = moment(this.birthdateHidden).format('MM/DD/YYYY');
         var birthplace = this.selectedCommune.nom;
         var nationalityId = this.nationalityId;
-        var birthcp = this.birthcp;
+        //var birthcp = this.birthcp;
+        var birthdepId = this.birthdepId;
         var numStay = this.numStay;
         var dateStay = moment(this.dateStay).format('YYYY-MM-DD');
         var dateFromStay = moment(this.dateFromStay).format('MM/DD/YYYY');
@@ -1200,8 +1261,7 @@ export class Profile{
           regionId = this.regionId
         }
 
-
-        this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, prefecture, this.isFrench, this.isEuropean, regionId)
+        this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, prefecture, this.isFrench, this.isEuropean, regionId)
           .then((res: any) =>{
 
             //case of authentication failure : server unavailable or connection problem
@@ -1222,7 +1282,7 @@ export class Profile{
               this.currentUser.jobyer.cni = this.cni;
               this.currentUser.jobyer.numSS = this.numSS;
               this.currentUser.jobyer.natId = this.nationalityId;
-              this.currentUser.jobyer.dateNaissance = Date.parse(moment(this.birthdateHidden).format('MM/DD/YYYY'))
+              this.currentUser.jobyer.dateNaissance = Date.parse(moment(this.birthdateHidden).format('MM/DD/YYYY'));
               this.currentUser.jobyer.lieuNaissance = birthplace;
               this.currentUser.newAccount = false;
               this.sharedService.setCurrentUser(this.currentUser);
