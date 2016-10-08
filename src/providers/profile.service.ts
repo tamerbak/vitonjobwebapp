@@ -244,24 +244,28 @@ export class ProfileService {
   }
 
 
-  updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId, medecineId) {
+  updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId, medecineId, conventionId) {
     var sql = "update user_employeur set ";
     sql = sql + " titre='" + title + "' ";
     sql = sql + ", nom='" + lastname + "', prenom='" + firstname + "' where pk_user_employeur=" + roleId + ";";
     sql = sql + " update user_entreprise set nom_ou_raison_sociale='" + companyname + "' ";
     siret = (!siret ? "" : siret);
     sql = sql + " , siret='" + siret + "' ";
-    //sql = sql + "urssaf='" + numUrssaf + "', ";
-    //debugger;
+    if(conventionId && conventionId>0){
+      sql = sql + " , fk_user_convention_collective='" + conventionId + "' ";
+    }
     if (medecineId && medecineId > 0)
       sql = sql + " , fk_user_medecine_de_travail='" + medecineId + "' ";
     ape = (!ape ? "" : ape);
     sql = sql + " , ape_ou_naf='" + ape + "' where  pk_user_entreprise=" + entrepriseId;
+
+
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
+
           resolve(data);
         });
     })
