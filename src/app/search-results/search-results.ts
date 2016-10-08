@@ -31,6 +31,14 @@ export class SearchResults {
   constructor(private sharedService: SharedService,
               private router: Router,
               private profileService: ProfileService) {
+                this.currentUser = this.sharedService.getCurrentUser();
+                if (this.currentUser) {
+                  this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
+                } else {
+                  //this.projectTarget = this.sharedService.getProjectTarget();
+                  //this.isRecruteur = this.currentUser.estRecruteur;
+                  this.router.navigate(['app/home']);
+                }
   }
 
   onChange(value){
@@ -44,17 +52,20 @@ export class SearchResults {
     setTimeout(function(){
         window.dispatchEvent(new Event("resize"));
       }, 1);
+      if(this.searchResultPos.length >=1){
+        this.lat = +this.searchResultPos[0].lat;
+        this.lng = +this.searchResultPos[0].lng;
+      }
+  }
+
+  centerChange(event){
+    if(this.searchResultPos.length >=1){
+      this.lat = +this.searchResultPos[0].lat;
+      this.lng = +this.searchResultPos[0].lng;
+    }
   }
 
   ngOnInit() {
-    this.currentUser = this.sharedService.getCurrentUser();
-    if (this.currentUser) {
-      this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
-    } else {
-      //this.projectTarget = this.sharedService.getProjectTarget();
-      //this.isRecruteur = this.currentUser.estRecruteur;
-      this.router.navigate(['app/home']);
-    }
     //  Retrieving last search
     this.selected = this.sharedService.getMapView();
     if(this.selected){
@@ -77,20 +88,20 @@ export class SearchResults {
                 info = "<h4>" + r.prenom + ' ' + r.nom.substring(0, 1) + ". <span style='background-color: #14baa6; color: white; font-size: small;border-radius: 25px;'>&nbsp;" + matching + "%&nbsp;</span></h4>" +
                     "<p>" + r.titreOffre + "</p>" +
                     "<p><span style='color: #29bb00; font-size: large;'>&#9679;</span> &nbsp; Disponible</p>" +
-                    "<p style='text-decoration: underline;'>Détails</p> ";
+                    "<p style='text-decoration: underline;'>Dï¿½tails</p> ";
 
             } else {
                 info = "<h4>" + r.entreprise + " <span style='background-color: #14baa6; color: white; font-size: small;border-radius: 25px;'>&nbsp;" + matching + "%&nbsp;</span></h4>" +
                     "<p>" + r.titreOffre + "</p>" +
                     "<p><span style='color: #29bb00; font-size: large;'>&#9679;</span> &nbsp; Disponible</p>" +
-                    "<p style='text-decoration: underline;'>Détails</p> ";
+                    "<p style='text-decoration: underline;'>Dï¿½tails</p> ";
             }
             this.searchResultPos.push({lat: Number(r.latitude) ,lng: Number(r.longitude),info:info })
         }
       }
       if(this.searchResultPos.length >=1){
-        this.lat = this.searchResultPos[0].lat;
-        this.lng = this.searchResultPos[0].lng;
+        this.lat = +this.searchResultPos[0].lat;
+        this.lng = +this.searchResultPos[0].lng;
       }
 
       //load profile pictures

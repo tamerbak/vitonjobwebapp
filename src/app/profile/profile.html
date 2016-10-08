@@ -145,6 +145,21 @@
 
               </div>
 
+              <div *ngIf="isEmployer" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right" >
+                  Convention collective
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <select
+                    placeholder="Convention collective" data-style="btn-secondary"
+                    class="nationalitySelectPicker form-control" id="convention-select"
+                    [(ngModel)]="conventionId"
+                    name="convention_slct" >
+                    <option *ngFor="let c of conventions" value="{{c.id}}">{{c.libelle}} - {{c.libelle}}</option>
+                  </select>
+                </div>
+              </div>
+
               <div *ngIf="!isEmployer" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="birthDate">
                   Date de naissance

@@ -70,7 +70,7 @@ export const CoreRoutes: RouterConfig = [
 
       // Payment
       {path: 'wallet/create', component: WalletCreate,canDeactivate: [ConfirmExitPage]},
-      {path: 'payment/method', component: PaymentMethod},
+      {path: 'payment/method', component: PaymentMethod,canActivate: [CanAccessPage]},
 
       // Grouped recruitment
       {path: 'pendingContracts', component: PendingContracts},

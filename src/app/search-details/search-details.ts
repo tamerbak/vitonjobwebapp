@@ -35,19 +35,20 @@ export class SearchDetails {
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private router: Router) {
+                this.currentUser = this.sharedService.getCurrentUser();
+                if (this.currentUser) {
+                  this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
+                } else {
+                  //this.projectTarget = this.sharedService.getProjectTarget();
+                  //this.isRecruteur = this.currentUser.estRecruteur;
+                  this.router.navigate(['app/home']);
+                }
+                this.result = this.sharedService.getSearchResult();
+                this.offer = this.sharedService.getCurrentOffer();
   }
 
   ngOnInit(): void {
-    this.currentUser = this.sharedService.getCurrentUser();
-    if (this.currentUser) {
-      this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
-    } else {
-      //this.projectTarget = this.sharedService.getProjectTarget();
-      //this.isRecruteur = this.currentUser.estRecruteur;
-      this.router.navigate(['app/home']);
-    }
-    this.result = this.sharedService.getSearchResult();
-    this.offer = this.sharedService.getCurrentOffer();
+
 
     //get offer title, employer/jobyer name and matching
     if (this.result.titreOffre)
