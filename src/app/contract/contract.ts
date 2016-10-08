@@ -423,6 +423,10 @@ export class Contract {
     return true;
   }
 
+  watchMedicalSupervision(e){
+    this.contractData.medicalSurv = e.target.value;
+  }
+
   // /**
   //  * @author daoudi amine
   //  * @description show the menu to edit employer's informations

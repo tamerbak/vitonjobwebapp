@@ -200,9 +200,19 @@
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
-          <label>Surveillance médicale</label>
-          <input type="text"  class="form-control" [(ngModel)]="contractData.medicalSurv" aria-describedby="surv"/>
-          <small class="form-text text-muted"></small>
+          <label>Surveillance médicale renforcée</label>
+          <!--<input type="text"  class="form-control" [(ngModel)]="contractData.medicalSurv" aria-describedby="surv"/>
+          <small class="form-text text-muted"></small>-->
+          <div class="abc-radio">
+            <input type="radio" name="radio1" value="OUI" id="medicalRadio1" (click)="watchMedicalSupervision($event)">
+            <label for="medicalRadio1" class="labelRadio">
+              Oui &nbsp;&nbsp;
+            </label>
+            <input type="radio" name="radio1" value="NON" id="medicalRadio2" (click)="watchMedicalSupervision($event)">
+            <label for="medicalRadio2" class="labelRadio">
+              Non
+            </label>
+          </div>
         </div>
         <div class="form-group">
           <label>EPI</label>
