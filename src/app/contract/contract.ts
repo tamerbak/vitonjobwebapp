@@ -102,7 +102,7 @@ export class Contract {
       finSouplesse: "",
       equipements: "",
 
-      interim: "Groupe 3S",
+      interim: "Tempo'AIR",
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
       trialPeriod: 5,
@@ -320,7 +320,7 @@ export class Contract {
       debutSouplesse: "",
       finSouplesse: "",
       equipements: "",
-      interim: "Groupe 3S",
+      interim: "Tempo'AIR",
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
       trialPeriod: 5,
@@ -421,6 +421,10 @@ export class Contract {
       return false;
     }
     return true;
+  }
+
+  watchMedicalSupervision(e){
+    this.contractData.medicalSurv = e.target.value;
   }
 
   // /**

@@ -6,7 +6,7 @@
           INFORMATIONS GENERALES
         </div>
         <div class="form-group">
-          <label >Intérimaire</label>
+          <label >Agence d'intérim</label>
           <input type="text" name="interimaire" class="form-control"  [(ngModel)]="contractData.interim"  aria-describedby="interimaire" required>
           <small class="form-text text-muted"></small>
         </div>
@@ -199,9 +199,19 @@
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
-          <label>Surveillance médicale</label>
-          <input type="text" name="medicalSurv" class="form-control" [(ngModel)]="contractData.medicalSurv" aria-describedby="surv" required/>
-          <small class="form-text text-muted"></small>
+           <label>Surveillance médicale renforcée</label>
+          <!--<input type="text"  class="form-control" [(ngModel)]="contractData.medicalSurv" aria-describedby="surv"/>
+          <small class="form-text text-muted"></small>-->
+          <div class="abc-radio">
+            <input type="radio" name="radio1" value="OUI" id="medicalRadio1" (click)="watchMedicalSupervision($event)">
+            <label for="medicalRadio1" class="labelRadio">
+              Oui &nbsp;&nbsp;
+            </label>
+            <input type="radio" name="radio1" value="NON" id="medicalRadio2" (click)="watchMedicalSupervision($event)">
+            <label for="medicalRadio2" class="labelRadio">
+              Non
+            </label>
+          </div>
         </div>
         <div class="form-group">
           <label>EPI</label>
@@ -223,7 +233,7 @@
       </div>
       <div class="col-xs-6 pull-left col-1">
         <div class="form-group">
-          <label>Salaire de base</label>
+          <label>Salaire horaire de base</label>
           <input type="text" name="sal" class="form-control" [(ngModel)]="contractData.baseSalary" aria-describedby="sal" required/>
           <small class="form-text text-muted"></small>
         </div>
