@@ -15,6 +15,7 @@ import {MapsAPILoader} from "angular2-google-maps/core";
 import {ModalPicture} from "../modal-picture/modal-picture";
 import {BankAccount} from "../bank-account/bank-account";
 import MaskedInput from "angular2-text-mask";
+import {GlobalConfigs} from "../../configurations/globalConfigs";
 
 declare var jQuery, require, Messenger, moment: any;
 declare var google: any;
@@ -27,7 +28,7 @@ declare var google: any;
   encapsulation: ViewEncapsulation.None,
   styles: [require('./profile.scss')]
 })
-export class Profile{
+export class Profile {
   public maskSiret = [/[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/]
   public maskApe = [/[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /^[a-zA-Z]*$/]
 
@@ -857,17 +858,67 @@ export class Profile{
     this.isValidForm();
   }
 
-  watchCni(e) {
-    var _cni = e.target.value;
+  /**
+   * Controls the national identity card number
+   *
+   * @param number: 1-12 numbers
+   * @param key: 13 number
+   * @returns {boolean}
+   */
+  IsOfficialCni(number, key) {
+    let _factors = [7, 3, 1];
+    let _result = 0;
+    let _offset = 0;
+
+    for (var char of number) {
+      if (char == '<') {
+        char = 0;
+      }
+      else if (RegExp('[a-z]').test(char)) {
+        char = char.charCodeAt(0) - 55;
+      }
+      else if (RegExp('[0-9]').test(char)) {
+        char = Number(char);
+      }
+      else {
+        return false;
+      }
+      _result += char * _factors[_offset % 3];
+      _offset++;
+    }
+    return ((_result % 10) == key);
+  }
+
+  /**
+   * Watches National identity card / passport number
+   * @param e
+   */
+  watchOfficialDocument(e) {
+    var _docId = e.target.value;
+    var _docIdLenght = 12;
 
     let _isValid: boolean = true;
     let _hint: string = "";
 
-    if (_cni.length != 0 && _cni.length != 12) {
-      _hint = "Saisissez les 12 chiffres suivis du CNI";
+    // Check if strict cni mode is activated, if true, the 13th number is required
+    if (GlobalConfigs.global['strict-cni']) {
+      _docIdLenght = 13;
+    }
+
+    if (_docId.length != 0 && _docId.length != 9 && _docId.length != _docIdLenght) {
+      _hint = "Saisissez les " + _docIdLenght + " chiffres de votre CNI ou les 9 chiffres et caractères de votre passeport";
       _isValid = false;
-    } else {
-      _hint = "";
+    }
+
+    // If strict cni mode is activated, control valid CNI
+    if ((GlobalConfigs.global['strict-cni'] == true) && (_docId.length == _docIdLenght)) {
+      if (this.IsOfficialCni(
+          _docId.substr(0, 12), // The 12 first numbers
+          _docId.substr(12, 1) // The 13th number, the key
+        ) === false) {
+        _hint = "Le numéro de votre carte d'identité est éronné : veuillez le vérifier.";
+        _isValid = false;
+      }
     }
 
     this.isValidCni = _isValid;
