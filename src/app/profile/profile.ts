@@ -28,7 +28,7 @@ declare var google: any;
   encapsulation: ViewEncapsulation.None,
   styles: [require('./profile.scss')]
 })
-export class Profile {
+export class Profile{
   public maskSiret = [/[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/]
   public maskApe = [/[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /^[a-zA-Z]*$/]
 
@@ -216,6 +216,7 @@ export class Profile {
             this.isEuropean = 0;
             this.isFrench = false;
             this.isCIN = !this.isEmpty(data.numero_titre_sejour) ? false : true;
+            this.numStay = !this.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
           }
         }
       })
@@ -1175,9 +1176,10 @@ export class Profile {
 
   watchIsFrench(e) {
     this.isFrench = e.target.value == "1" ? true : false;
-    if (!this.isFrench)
+    if (!this.isFrench) {
       this.isEuropean = 0;
-
+      this.regionId = null;
+    }
     if (this.isFrench) {
       this.scanTitle = " de votre CNI ou Passeport";
     } else {
@@ -1328,9 +1330,9 @@ export class Profile {
         var dateFromStay = moment(this.dateFromStay).format('MM/DD/YYYY');
         var dateToStay = moment(this.dateToStay).format('MM/DD/YYYY');
         var isResident = (this.isResident ? 'Oui' : 'Non');
-        if(this.isCIN){
+        if (this.isCIN) {
           this.numStay = "";
-        }else{
+        } else {
           this.cni = "";
         }
         var birthCountryId;
@@ -1583,11 +1585,11 @@ export class Profile {
     })
   }
 
-  watchTypeDocStranger(e){
+  watchTypeDocStranger(e) {
     this.isResident = (e.target.value == '0' ? false : true);
   }
 
-  watchTypeDoc(e){
+  watchTypeDoc(e) {
     this.isCIN = (e.target.value == '0' ? true : false);
   }
 
