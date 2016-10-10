@@ -196,7 +196,7 @@ export class ProfileService{
    * @description update jobyer information
    * @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
    */
-  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, prefecture, isFrench, isEuropean, regionId) {
+  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, isStay, prefecture, isFrench, isEuropean, regionId) {
     var sql = "";
     //building the sql request
     sql = "update user_jobyer set  " +
@@ -226,6 +226,7 @@ export class ProfileService{
         sql = sql + " fk_user_nationalite ='" + nationalityId + "' " +
           (!this.isEmpty(numStay) ? (", numero_titre_sejour ='" + numStay + "' ") : "") +
           (!this.isEmpty(birthCountryId) ? (", fk_user_pays ='" + birthCountryId + "' ") : "") +
+          (!this.isEmpty(isStay) ? (", est_resident='" + isStay + "' ") : "") +
           (!this.isEmpty(dateStay) ? (", date_de_delivrance='" + dateStay + "' ") : "") +
           (!this.isEmpty(dateFromStay) ? (", debut_validite='" + dateFromStay + "' ") : "") +
           (!this.isEmpty(dateToStay) ? (", fin_validite='" + dateToStay + "' ") : "") +

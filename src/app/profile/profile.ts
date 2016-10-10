@@ -132,6 +132,7 @@ export class Profile {
   whoDeliverStay;
   regionId;
   selectedDep;
+  isResident: boolean = true;
 
   /*
    Conventions collectives
@@ -203,6 +204,7 @@ export class Profile {
           if (this.regionId == '42') {
             this.isEuropean = 1;
             this.isFrench = false;
+            this.isResident = (data.est_resident == 'Oui' ? true : false);
             this.dateStay = data.date_de_delivrance;
             this.dateFromStay = data.debut_validite;
             this.dateToStay = data.fin_validite;
@@ -424,7 +426,7 @@ export class Profile {
           });
         }
 
-        if (this.birthdepId !== null) {
+        if (!this.isEmpty(this.birthdepId)) {
           this.communesService.getDepartmentById(this.birthdepId).then((res: any) => {
             if (res && res.data.length > 0) {
               this.selectedDep = res.data[0];
@@ -1323,6 +1325,7 @@ export class Profile {
         var dateStay = moment(this.dateStay).format('YYYY-MM-DD');
         var dateFromStay = moment(this.dateFromStay).format('MM/DD/YYYY');
         var dateToStay = moment(this.dateToStay).format('MM/DD/YYYY');
+        var isResident = (this.isResident ? 'Oui' : 'Non');
         var birthCountryId;
         if (this.index)
           birthCountryId = this.profileService.getCountryByIndex(this.index, this.pays).id;
@@ -1343,7 +1346,7 @@ export class Profile {
           regionId = this.regionId
         }
 
-        this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, prefecture, this.isFrench, this.isEuropean, regionId)
+        this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, isResident, prefecture, this.isFrench, this.isEuropean, regionId)
           .then((res: any) => {
 
             //case of authentication failure : server unavailable or connection problem
@@ -1571,6 +1574,10 @@ export class Profile {
         this.scanTitle = " de votre titre du séjour";
       }
     })
+  }
+
+  watchTypeDocStranger(e){
+    this.isResident = (e.target.value == '0' ? false : true);
   }
 
   isEmpty(str) {

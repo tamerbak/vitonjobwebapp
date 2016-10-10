@@ -277,9 +277,25 @@
                 </div>
               </div>
 
+              <div *ngIf="!isEmployer && !isFrench && isEuropean == 1"  class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">Type de document</label>
+                <div class="abc-radio">
+                  <input type="radio" name="radio2" id="stayRadio" value="0" (click)="watchTypeDocStranger($event)"
+                         [checked]="!isResident">
+                  <label for="stayRadio" class="labelRadio">
+                    Carte de séjour temporaire &nbsp;&nbsp;&nbsp;
+                  </label>
+                  <input type="radio" name="radio2" id="residentRadio" value="1" (click)="watchTypeDocStranger($event)"
+                         [checked]="isResident">
+                  <label for="residentRadio" class="labelRadio">
+                    Carte de résident
+                  </label>
+                </div>
+              </div>
+
               <div *ngIf="!isEmployer && !isFrench && isEuropean == 1" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  N° du titre de séjour
+                  {{!isResident ? 'N° du titre de séjour' : 'N° de la carte résident'}}
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <input type="text" class="form-control" [(ngModel)]="numStay">
@@ -288,7 +304,7 @@
 
               <div *ngIf="!isEmployer && !isFrench && isEuropean == 1" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Titre de séjour délivré le
+                  {{!isResident ? 'Titre de séjour délivré le' : 'Carte résident délivrée le'}}
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <input id="dateStay" type="date" class="form-control" [(ngModel)]="dateStay"/>
@@ -297,7 +313,7 @@
 
               <div *ngIf="!isEmployer && !isFrench && isEuropean == 1" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Titre de séjour valable du
+                  {{!isResident ? 'Titre de séjour valable du' : 'Carte de résident valable du'}}
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <input id="dateFromStay" type="date" class="form-control" [(ngModel)]="dateFromStay"/>
@@ -306,7 +322,7 @@
 
               <div *ngIf="!isEmployer && !isFrench && isEuropean == 1" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Titre de séjour valable au
+                  {{!isResident ? 'Titre de séjour valable au' : 'Carte de résident valable au'}}
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <input id="dateToStay" type="date" class="form-control" [(ngModel)]="dateToStay"/>
