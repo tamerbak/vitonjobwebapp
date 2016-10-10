@@ -55,7 +55,7 @@ export class OfferEdit {
   parametersConvention : any = [];
   selectedParamConvID: number = 0;
   minHourRate : number = 0;
-  invalidHourRateMessage='';
+  invalidHourRateMessage : string='';
   invalidHourRate=false;
 
   categoriesHeure : any = [];
@@ -86,6 +86,44 @@ export class OfferEdit {
   ngOnInit(): void {
     this.currentUser = this.sharedService.getCurrentUser();
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
+
+    if(this.currentUser.estEmployeur && this.currentUser.employer.entreprises[0].conventionCollective.id>0){
+      //  Load collective convention
+      this.offersService.getConvention(this.currentUser.employer.entreprises[0].conventionCollective.id).then(c=>{
+        if(c)
+          this.convention = c;
+        if(this.convention.id>0){
+          this.offersService.getConventionNiveaux(this.convention.id).then(data=>{
+            this.niveauxConventions = data;
+          });
+          this.offersService.getConventionCoefficients(this.convention.id).then(data=>{
+            this.coefficientsConventions = data;
+          });
+          this.offersService.getConventionEchelon(this.convention.id).then(data=>{
+            this.echelonsConventions = data;
+          });
+          this.offersService.getConventionCategory(this.convention.id).then(data=>{
+            this.categoriesConventions = data;
+          });
+          this.offersService.getConventionParameters(this.convention.id).then(data=>{
+            this.parametersConvention = data;
+            this.checkHourRate();
+          });
+          this.offersService.getHoursCategories(this.convention.id).then(data=>{
+            this.categoriesHeure = data;
+          });
+          this.offersService.getHoursMajoration(this.convention.id).then(data=>{
+            this.majorationsHeure = data;
+          });
+          this.offersService.getIndemnites(this.convention.id).then(data=>{
+            this.indemnites = data;
+          });
+
+        }
+      });
+    }
+
+
     //obj = "add" od "detail"
     this.route.params.forEach((params: Params) => {
       this.obj = params['obj'];
@@ -93,7 +131,7 @@ export class OfferEdit {
 
     if(this.obj == "detail") {
       this.offer = this.sharedService.getCurrentOffer();
-      this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée":"Rendre l'offre public";
+      this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée":"Rendre l'offre publique";
       this.autoSearchModeTitle = this.offer.rechercheAutomatique ? "Désactiver la recherche auto":"Activer la recherche auto";
       if (this.offer.obsolete) {
         //display alert if offer is obsolete
@@ -206,39 +244,7 @@ export class OfferEdit {
     });
     this.offer.jobData.job = jobsTemp[0].libelle;
 
-    //  Load collective convention
-    this.offersService.getConvention(idJob).then(c=>{
-      if(c)
-        this.convention = c;
-      if(this.convention.id>0){
-        this.offersService.getConventionNiveaux(this.convention.id).then(data=>{
-          this.niveauxConventions = data;
-        });
-        this.offersService.getConventionCoefficients(this.convention.id).then(data=>{
-          this.coefficientsConventions = data;
-        });
-        this.offersService.getConventionEchelon(this.convention.id).then(data=>{
-          this.echelonsConventions = data;
-        });
-        this.offersService.getConventionCategory(this.convention.id).then(data=>{
-          this.categoriesConventions = data;
-        });
-        this.offersService.getConventionParameters(this.convention.id).then(data=>{
-          this.parametersConvention = data;
-          this.checkHourRate();
-        });
-        this.offersService.getHoursCategories(this.convention.id).then(data=>{
-          this.categoriesHeure = data;
-        });
-        this.offersService.getHoursMajoration(this.convention.id).then(data=>{
-          this.majorationsHeure = data;
-        });
-        this.offersService.getIndemnites(this.convention.id).then(data=>{
-          this.indemnites = data;
-        });
 
-      }
-    });
   }
 
   /**
@@ -269,12 +275,12 @@ export class OfferEdit {
   validateRate(rate){
     let r = parseFloat(rate);
     if(r>=this.minHourRate){
-      this.invalidHourRateMessage = '';
+      this.invalidHourRateMessage = '0.00';
       this.invalidHourRate = false;
       return true;
     }
 
-    this.invalidHourRateMessage = '* Le taux horaire devrait être supérieur ou égal à '+this.minHourRate;
+    this.invalidHourRateMessage = (Math.round(this.minHourRate * 100) / 100)+'';
     this.invalidHourRate = true;
     return false;
   }
@@ -551,7 +557,11 @@ export class OfferEdit {
     // --> Job state
     this.dataValidation = true;
     this.offer.title = this.offer.jobData.job + ' ' + ((this.offer.jobData.level != 'junior') ? 'Expérimenté' : 'Débutant');
-
+    if (!this.offer.jobData.job || !this.offer.jobData.sector || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || this.minHourRate>this.offer.jobData.remuneration) {
+      this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
+      return;
+    }
+    this.dataValidation = true;
     this.offersService.updateOfferJob(this.offer, this.projectTarget);
     this.setOfferInLocal();
     Messenger().post({

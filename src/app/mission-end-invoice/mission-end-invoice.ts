@@ -2,6 +2,7 @@ import {Component} from "@angular/core";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SharedService} from "../../providers/shared.service";
 import {FinanceService} from "../../providers/finance.service";
+import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 
 /**
  * This module manage the invoice signature from the employer
@@ -10,16 +11,23 @@ import {FinanceService} from "../../providers/finance.service";
   selector: '[mission-end-invoice]',
   template: require('./mission-end-invoice.html'),
   styles: [require('./mission-end-invoice.scss')],
-  providers: [GlobalConfigs, FinanceService]
+  providers: [GlobalConfigs, FinanceService],
+  directives: [ROUTER_DIRECTIVES],
 })
 export class MissionEndInvoice {
   invoice: any;
   idInvoice: number;
   unSigned: boolean = false;
+  currentUser: any;
 
   constructor(private sharedService: SharedService,
-              private service: FinanceService) {
+              private service: FinanceService,
+              private router: Router) {
 
+    this.currentUser = this.sharedService.getCurrentUser();
+    if (!this.currentUser) {
+      this.router.navigate(['app/home']);
+    }
     this.idInvoice = this.sharedService.getCurrentInvoice();
     this.invoice = {
       url_signature_de_facture: '',

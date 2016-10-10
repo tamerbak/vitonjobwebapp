@@ -54,7 +54,9 @@ export class Contract {
               private router: Router) {
 
     this.currentUser = this.sharedService.getCurrentUser();
-
+    if (!this.currentUser) {
+      this.router.navigate(['app/home']);
+    }
     // Get target to determine configs
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     this.isEmployer = (this.projectTarget == 'employer');
@@ -100,7 +102,7 @@ export class Contract {
       finSouplesse: "",
       equipements: "",
 
-      interim: "Groupe 3S",
+      interim: "Tempo'AIR",
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
       trialPeriod: 5,
@@ -184,21 +186,27 @@ export class Contract {
     }
   }
 
-  // recoursSelected(evt) {
-  //   debugger;
-  //   let selectedRecoursLib = evt;
-  //   let id = 40;
-  //   for (let i = 0; i < this.recours.length; i++)
-  //     if (this.recours[i].libelle == selectedRecoursLib) {
-  //       id = this.recours[i].id;
-  //       break;
-  //     }
-  //
-  //   this.justificatifs = [];
-  //   this.contractService.loadJustificationsList(id).then(data=> {
-  //     this.justificatifs = data;
-  //   });
-  // }
+  recoursSelected(evt) {
+    let selectedRecoursLib = evt;
+    let id = 40;
+    for (let i = 0; i < this.recours.length; i++){
+      if (this.recours[i].libelle == selectedRecoursLib) {
+        id = this.recours[i].id;
+        break;
+      }
+    }
+
+    this.justificatifs = [];
+    this.contractService.loadJustificationsList(id).then(data=> {
+      this.justificatifs = data;
+    });
+  }
+
+
+      watchTransportTitle(e){
+        this.contractData.titreTransport = e.target.value;
+      }
+
 
   formatNumContrat(num) {
     let snum = num + "";
@@ -312,7 +320,7 @@ export class Contract {
       debutSouplesse: "",
       finSouplesse: "",
       equipements: "",
-      interim: "Groupe 3S",
+      interim: "Tempo'AIR",
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
       trialPeriod: 5,
@@ -413,6 +421,10 @@ export class Contract {
       return false;
     }
     return true;
+  }
+
+  watchMedicalSupervision(e){
+    this.contractData.medicalSurv = e.target.value;
   }
 
   // /**

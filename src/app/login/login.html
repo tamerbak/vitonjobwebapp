@@ -1,9 +1,17 @@
+<div style="display:none;">
+  <div class="content-wrap"></div>
+</div>
 <div class="container">
   <main id="content" class="widget-login-container" role="main" style="padding-top: 5%">
     <div class="row">
       <div class="col-xl-6 col-md-8 col-xs-12 col-xl-offset-3 col-md-offset-2 col-xs-offset-0">
         <h5 class="widget-login-logo animated fadeInUp collapse navbar-collapse">
           <img src="../assets/images/logo.png" style="width: 50%; margin-bottom: 20px;">
+        </h5>
+        <h5 class="widget-login-logo animated fadeInUp collapse navbar-collapse" *ngIf="isRedirectedFromHome">
+          <p class="widget-login-danger">
+            Veuillez vous inscrire ou vous connecter pour rentrer dans le Hub de l'emploi.
+          </p>
         </h5>
         <section class="widget widget-login animated">
           <header>
@@ -155,6 +163,9 @@
             </form>
           </div>
         </section>
+        <h5 style="text-align: center;" [hidden]="hideLoader">
+          {{role == "jobyer" ? 'Bienvenue dans Vit-On-Job. Vous êtes tout près de trouver votre emploi' : 'Bienvenue dans Vit-On-Job. Vous êtes tout près de trouver votre jobyer'}}.
+        </h5>
       </div>
     </div>
   </main>

@@ -4,14 +4,14 @@ import {Configs} from "../configurations/configs";
 
 
 @Injectable()
-export class ProfileService {
+export class ProfileService{
   http: any;
 
   constructor(http: Http) {
     this.http = http;
   }
 
-  loadAdditionalUserInformations(id){
+  loadAdditionalUserInformations(id) {
     var sql;
     sql = "select * from user_jobyer where pk_user_jobyer = '" + id + "';";
     return new Promise(resolve => {
@@ -196,7 +196,7 @@ export class ProfileService {
    * @description update jobyer information
    * @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
    */
-  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, prefecture, isFrench, isEuropean, regionId) {
+  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, prefecture, isFrench, isEuropean, regionId) {
     var sql = "";
     //building the sql request
     sql = "update user_jobyer set  " +
@@ -206,22 +206,23 @@ export class ProfileService {
       "numero_securite_sociale='" + numSS + "', " +
       "cni='" + cni + "', " +
       (!birthdate ? " " : "date_de_naissance ='" + birthdate + "',");
-    if(isFrench){
+    if (isFrench) {
       nationalityId = "91";
       regionId = "40";
       sql = sql + " fk_user_nationalite ='" + nationalityId + "', " +
         "lieu_de_naissance ='" + birthplace + "', " +
+        "fk_user_departement ='" + birthdepId + "', " +
         "fk_user_identifiants_nationalite='" + regionId + "' " +
         //birthcp à ajouter
         "where pk_user_jobyer ='" + roleId + "';";
-    }else{
-      if(isEuropean == 0){
+    } else {
+      if (isEuropean == 0) {
         sql = sql + " fk_user_nationalite ='" + nationalityId + "', " +
           "fk_user_pays ='" + birthCountryId + "', " +
           "lieu_de_naissance ='" + birthplace + "', " +
           "fk_user_identifiants_nationalite='" + regionId + "' " +
           "where pk_user_jobyer ='" + roleId + "';";
-      }else{
+      } else {
         sql = sql + " fk_user_nationalite ='" + nationalityId + "' " +
           (!this.isEmpty(numStay) ? (", numero_titre_sejour ='" + numStay + "' ") : "") +
           (!this.isEmpty(birthCountryId) ? (", fk_user_pays ='" + birthCountryId + "' ") : "") +
@@ -244,15 +245,16 @@ export class ProfileService {
   }
 
 
-  updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId, medecineId) {
+  updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId, medecineId, conventionId) {
     var sql = "update user_employeur set ";
     sql = sql + " titre='" + title + "' ";
     sql = sql + ", nom='" + lastname + "', prenom='" + firstname + "' where pk_user_employeur=" + roleId + ";";
     sql = sql + " update user_entreprise set nom_ou_raison_sociale='" + companyname + "' ";
     siret = (!siret ? "" : siret);
     sql = sql + " , siret='" + siret + "' ";
-    //sql = sql + "urssaf='" + numUrssaf + "', ";
-    //debugger;
+    if (conventionId && conventionId > 0) {
+      sql = sql + " , fk_user_convention_collective='" + conventionId + "' ";
+    }
     if (medecineId && medecineId > 0)
       sql = sql + " , fk_user_medecine_de_travail='" + medecineId + "' ";
     ape = (!ape ? "" : ape);
@@ -262,6 +264,7 @@ export class ProfileService {
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
+
           resolve(data);
         });
     })
@@ -311,7 +314,7 @@ export class ProfileService {
     });
   }
 
-  getIdentifiantNationalityByNationality(natId){
+  getIdentifiantNationalityByNationality(natId) {
     var sql = "select i.* from user_identifiants_nationalite as i, user_nationalite as n where i.pk_user_identifiants_nationalite = n.fk_user_identifiants_nationalite and n.pk_user_nationalite = '" + natId + "'";
 
     return new Promise(resolve => {
@@ -325,7 +328,7 @@ export class ProfileService {
 
   }
 
-  getPrefecture(nom){
+  getPrefecture(nom) {
     var sql = "select pk_user_prefecture as id from user_prefecture where nom = '" + this.sqlfyText(nom) + "'";
 
     return new Promise(resolve => {
@@ -340,37 +343,37 @@ export class ProfileService {
   }
 
   /*getPaysByIndex(index){
-    var sql = "select pk_user_pays as id from user_prefecture where nom = '" + this.sqlfyText(nom) + "'";
+   var sql = "select pk_user_pays as id from user_prefecture where nom = '" + this.sqlfyText(nom) + "'";
 
-    return new Promise(resolve => {
-      let headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe((data: any)=> {
-          resolve(data);
-        });
-    })
+   return new Promise(resolve => {
+   let headers = Configs.getHttpTextHeaders();
+   this.http.post(Configs.sqlURL, sql, {headers: headers})
+   .map(res => res.json())
+   .subscribe((data: any)=> {
+   resolve(data);
+   });
+   })
 
-  }*/
+   }*/
 
-  getCountryByIndex(index, countries){
-    for(let i = 0; i < countries.length; i++){
-      if(countries[i].indicatif_telephonique == index){
+  getCountryByIndex(index, countries) {
+    for (let i = 0; i < countries.length; i++) {
+      if (countries[i].indicatif_telephonique == index) {
         return countries[i];
       }
     }
   }
 
-  getCountryById(id, countries){
-    for(let i = 0; i < countries.length; i++){
-      if(countries[i].id == id){
+  getCountryById(id, countries) {
+    for (let i = 0; i < countries.length; i++) {
+      if (countries[i].id == id) {
         return countries[i];
       }
     }
   }
 
-  sqlfyText(txt){
-    if(!txt || txt.length==0)
+  sqlfyText(txt) {
+    if (!txt || txt.length == 0)
       return "";
     return txt.replace("'", "''");
   }

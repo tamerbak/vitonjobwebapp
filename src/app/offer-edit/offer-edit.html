@@ -49,8 +49,7 @@
 										</span>
                   </div>
                 </div>
-                <select class="form-control" [(ngModel)]="offer.jobData.idJob"
-                        (change)="jobSelected($event.target.value)" [disabled]="!hideJobLoader">
+                <select class="form-control" [(ngModel)]="offer.jobData.idJob" [disabled]="!hideJobLoader">
                   <option *ngFor="let j of jobs" [value]="j.id"> {{j.libelle}}</option>
                 </select>
               </div>
@@ -85,7 +84,7 @@
                 </select>
               </div>
             </div>
-            <div *ngIf="invalidHourRate"><p class="bg-danger field-format-warning">{{invalidHourRateMessage}}</p></div>
+            <div *ngIf="invalidHourRate"><p class="bg-danger field-format-warning">* Le taux horaire devrait être supérieur ou égal à {{invalidHourRateMessage}}</p></div>
           </fieldset>
 
 

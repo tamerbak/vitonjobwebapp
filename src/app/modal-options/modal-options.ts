@@ -31,7 +31,7 @@ export class ModalOptions {
                 if (!this.currentUser) {
                   this.router.navigate(['app/home']);
                 } else {
-                  this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+                  this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
                 }
   }
 

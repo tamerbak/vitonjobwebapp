@@ -81,7 +81,7 @@ export class AuthenticationService {
     var encodedLogin = btoa(login);
     var dataLog = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 240,
+      'id': 283,
       'args': [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'requete authentification',
@@ -89,10 +89,10 @@ export class AuthenticationService {
       }]
     };
     let body = JSON.stringify(dataLog);
-    //debugger;
+    
     return new Promise(resolve => {
       let headers = Configs.getHttpJsonHeaders();
-      this.http.post(this.configuration.calloutURL, body, {headers: headers})
+      this.http.post(Configs.calloutURL, body, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
           resolve(data);

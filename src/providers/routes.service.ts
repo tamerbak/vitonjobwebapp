@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanDeactivate,ActivatedRouteSnapshot,RouterStateSnapshot,Router,NavigationStart,NavigationCancel  } from '@angular/router';
+import { CanActivate,CanDeactivate,ActivatedRouteSnapshot,RouterStateSnapshot,Router,NavigationStart,NavigationCancel  } from '@angular/router';
 import { SharedService } from './shared.service';
 import {RouteObservable} from './observables.service';
 import { Profile } from '../app/profile/profile';
@@ -23,5 +23,27 @@ export class ConfirmExitPage implements CanDeactivate<any> {
       }
     }
     return true;
+  }
+}
+
+@Injectable()
+export class CanAccessPage implements CanActivate {
+
+  constructor(private router:Router,private sharedService:SharedService){
+  }
+
+  canActivate( route: ActivatedRouteSnapshot,state: RouterStateSnapshot):boolean {
+    if(state.url === "/app/contract/recruitment"){
+      if(this.router.url === "/app/contract/recruitment-form"){
+        return true;
+      }
+    }else if(state.url === "/app/payment/method"){
+      if(this.router.url === "/app/contract/recruitment"){
+        return true;
+      }
+    }
+
+
+    this.router.navigate(['app/home']);
   }
 }

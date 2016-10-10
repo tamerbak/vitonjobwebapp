@@ -533,11 +533,10 @@ export class OffersService {
    * @param idjob
    * @returns {Promise<T>}
    */
-  getConvention(idjob){
+  getConvention(id){
     let sql = "select pk_user_convention_collective as id, code, libelle " +
       "from user_convention_collective " +
-      "where pk_user_convention_collective in " +
-      "(select fk_user_convention_collective from user_job where pk_user_job="+idjob+")";
+      "where pk_user_convention_collective ="+id+"";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();

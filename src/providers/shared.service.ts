@@ -15,17 +15,8 @@ export class SharedService {
   }
 
   logOut() {
-    this.setCurrentUser(null);
-    this.setCurrentOffer(null);
-    this.setLastResult(null);
-    this.setSearchResult(null);
-    this.setLangList(null);
-    this.setQualityList(null);
-    this.setJobList(null);
-    this.setOptionMission(null);
-    this.setProfilImageUrl(null);
-    this.setRecruiterList(null);
-    this.setCurrentRecruiter(null);
+    localStorage.clear();
+    sessionStorage.clear();
   }
 
   getStorageType() {
@@ -213,5 +204,21 @@ export class SharedService {
 
   setCurrentRecruiter(value) {
     this.setStorageVariable("currentRecruiter", value);
+  }
+
+  getFromPage() {
+    return this.getStorageVariableRaw("fromPage");
+  }
+
+  setFromPage(value) {
+    this.setStorageVariableRaw("fromPage", value);
+  }
+
+  getMapView() {
+    return this.getStorageVariable("mapView");
+  }
+
+  setMapView(value) {
+    this.setStorageVariable("mapView", value);
   }
 }

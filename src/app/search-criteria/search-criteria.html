@@ -2,7 +2,7 @@
   <li>Vous êtes ici</li>
   <li class="active"><a class="breadcrumb-link" [routerLink]="['/app/search/criteria']">Recherche avancée</a></li>
 </ol>
-<h1 class="page-title">{{currentUser.estRecruteur ? 'Recruteur' : (currentUser.estEmployeur ? 'Employeur' : 'Jobyer')}} - <span class="fw-semi-bold">Recherche avancée</span>
+<h1 class="page-title">{{!currentUser ? "":(currentUser.estRecruteur ? 'Recruteur' : (currentUser.estEmployeur ? 'Employeur' : 'Jobyer'))}} - <span class="fw-semi-bold">Recherche avancée</span>
 </h1>
 
 <div class="row">

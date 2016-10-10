@@ -3,7 +3,7 @@ import {OffersService} from "../../providers/offer.service";
 import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {GOOGLE_MAPS_DIRECTIVES} from "angular2-google-maps/core";
-import {ModalComponent} from "./modal-component/modal-component";
+import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
 
 declare var jQuery: any;
 
@@ -11,7 +11,7 @@ declare var jQuery: any;
   selector: '[search-details]',
   template: require('./search-details.html'),
   styles: [require('./search-details.scss')],
-  directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, ModalComponent],
+  directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, ModalNotificationContract],
   providers: [OffersService]
 })
 
@@ -35,18 +35,20 @@ export class SearchDetails {
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private router: Router) {
+                this.currentUser = this.sharedService.getCurrentUser();
+                if (this.currentUser) {
+                  this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
+                } else {
+                  //this.projectTarget = this.sharedService.getProjectTarget();
+                  //this.isRecruteur = this.currentUser.estRecruteur;
+                  this.router.navigate(['app/home']);
+                }
+                this.result = this.sharedService.getSearchResult();
+                this.offer = this.sharedService.getCurrentOffer();
   }
 
   ngOnInit(): void {
-    this.currentUser = this.sharedService.getCurrentUser();
-    if (this.currentUser) {
-      this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
-    } else {
-      this.projectTarget = this.sharedService.getProjectTarget();
-      this.isRecruteur = this.currentUser.estRecruteur;
-    }
-    this.result = this.sharedService.getSearchResult();
-    this.offer = this.sharedService.getCurrentOffer();
+
 
     //get offer title, employer/jobyer name and matching
     if (this.result.titreOffre)
