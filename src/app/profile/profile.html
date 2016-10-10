@@ -328,8 +328,8 @@
                   CNI ou Passeport
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input type="text" id="cni" class="form-control" [(ngModel)]="cni" name="cni" placeholder="CNI"
-                         (keyup)="watchCni($event)" maxlength="12">
+                  <input type="text" id="cni" class="form-control" [(ngModel)]="cni" name="cni" placeholder="N° du titre"
+                         (keyup)="watchOfficialDocument($event)" maxlength="13">
                 </div>
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
                   <span class="hint label label-danger">{{cniHint}}</span>

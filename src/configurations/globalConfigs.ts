@@ -20,6 +20,11 @@ export class GlobalConfigs {
   // mission mode
   private missionOption: any;
 
+  static global = {
+    // strict-cni: force the user the enter the CNI key, the 13th number
+    "strict-cni": true,
+  };
+
   constructor() {
     this.projectTarget = "employer";
     this.cnxBtnName = "Se connecter / S'inscrire";
