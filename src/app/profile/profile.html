@@ -180,7 +180,7 @@
                   <input type="radio" name="radio1" id="radio1" value="1" (click)="watchIsFrench($event)"
                          [checked]="isFrench">
                   <label for="radio1" class="labelRadio">
-                    Oui
+                    Oui &nbsp;&nbsp;&nbsp;
                   </label>
                   <input type="radio" name="radio1" id="radio2" value="0" (click)="watchIsFrench($event)"
                          [checked]="!isFrench">
@@ -339,7 +339,23 @@
                 </div>
               </div>
 
-              <div [hidden]="isEmployer || isEuropean == 1" class="form-group row">
+              <div [hidden]="isEmployer || isEuropean == 1 || isFrench"  class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">Type de document</label>
+                <div class="abc-radio">
+                  <input type="radio" name="radio3" id="cinRadio" value="0" (click)="watchTypeDoc($event)"
+                         [checked]="isCIN">
+                  <label for="cinRadio" class="labelRadio">
+                    CIN ou passeport &nbsp;&nbsp;&nbsp;
+                  </label>
+                  <input type="radio" name="radio3" id="ueRadio" value="1" (click)="watchTypeDoc($event)"
+                         [checked]="!isCIN">
+                  <label for="ueRadio" class="labelRadio">
+                    Carte de ressortissant d'un état membre de l'UE
+                  </label>
+                </div>
+              </div>
+
+              <div [hidden]="isEmployer || isEuropean == 1 || !isCIN" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   CNI ou Passeport
                 </label>
@@ -349,6 +365,15 @@
                 </div>
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
                   <span class="hint label label-danger">{{cniHint}}</span>
+                </div>
+              </div>
+
+              <div [hidden]="isEmployer || isEuropean == 1 || isCIN || isFrench"  class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  N° de la carte résident
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input type="text" class="form-control" [(ngModel)]="numStay">
                 </div>
               </div>
 

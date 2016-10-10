@@ -133,6 +133,7 @@ export class Profile {
   regionId;
   selectedDep;
   isResident: boolean = true;
+  isCIN: boolean;
 
   /*
    Conventions collectives
@@ -214,6 +215,7 @@ export class Profile {
           } else {
             this.isEuropean = 0;
             this.isFrench = false;
+            this.isCIN = !this.isEmpty(data.numero_titre_sejour) ? false : true;
           }
         }
       })
@@ -1326,6 +1328,11 @@ export class Profile {
         var dateFromStay = moment(this.dateFromStay).format('MM/DD/YYYY');
         var dateToStay = moment(this.dateToStay).format('MM/DD/YYYY');
         var isResident = (this.isResident ? 'Oui' : 'Non');
+        if(this.isCIN){
+          this.numStay = "";
+        }else{
+          this.cni = "";
+        }
         var birthCountryId;
         if (this.index)
           birthCountryId = this.profileService.getCountryByIndex(this.index, this.pays).id;
@@ -1343,7 +1350,7 @@ export class Profile {
             }
           }
         } else {
-          regionId = this.regionId
+          regionId = this.regionId;
         }
 
         this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, isResident, prefecture, this.isFrench, this.isEuropean, regionId)
@@ -1578,6 +1585,10 @@ export class Profile {
 
   watchTypeDocStranger(e){
     this.isResident = (e.target.value == '0' ? false : true);
+  }
+
+  watchTypeDoc(e){
+    this.isCIN = (e.target.value == '0' ? true : false);
   }
 
   isEmpty(str) {
