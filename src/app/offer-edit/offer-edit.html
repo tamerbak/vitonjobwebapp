@@ -38,7 +38,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label for="hint-field" class="col-md-4 form-control-label text-md-right">
+              <label class="col-md-4 form-control-label text-md-right">
                 Job
               </label>
               <div class="col-md-7 col-xs-12">
@@ -49,13 +49,13 @@
 										</span>
                   </div>
                 </div>
-                <select class="form-control" [(ngModel)]="offer.jobData.idJob" [disabled]="!hideJobLoader">
+                <select class="form-control" [(ngModel)]="offer.jobData.idJob" [disabled]="!hideJobLoader"  (change)="jobSelected($event.target.value)">
                   <option *ngFor="let j of jobs" [value]="j.id"> {{j.libelle}}</option>
                 </select>
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="tooltip-enabled">Niveau</label>
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Niveau</label>
               <div class="col-md-7 col-xs-12">
                 <div class="abc-radio">
                   <input type="radio" name="radio3" id="radio5" value="junior"
