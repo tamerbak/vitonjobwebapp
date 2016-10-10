@@ -203,22 +203,22 @@ export class ProfileService{
       "titre='" + title + "', " +
       "nom='" + lastname + "', " +
       "prenom='" + firstname + "', " +
-      "numero_securite_sociale='" + numSS + "', " +
-      "cni='" + cni + "', " +
+      (!this.isEmpty(numSS) ? ("numero_securite_sociale ='" + numSS + "', ") : "") +
+      (!this.isEmpty(cni) ? ("cni ='" + cni + "', ") : "") +
       (!birthdate ? " " : "date_de_naissance ='" + birthdate + "',");
     if (isFrench) {
       nationalityId = "91";
       regionId = "40";
       sql = sql + " fk_user_nationalite ='" + nationalityId + "', " +
         "lieu_de_naissance ='" + birthplace + "', " +
-        "fk_user_departement ='" + birthdepId + "', " +
+        (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "', ") : "") +
         "fk_user_identifiants_nationalite='" + regionId + "' " +
         //birthcp à ajouter
         "where pk_user_jobyer ='" + roleId + "';";
     } else {
       if (isEuropean == 0) {
         sql = sql + " fk_user_nationalite ='" + nationalityId + "', " +
-          "fk_user_pays ='" + birthCountryId + "', " +
+          (!this.isEmpty(birthCountryId) ? ("fk_user_pays ='" + birthCountryId + "', ") : "") +
           "lieu_de_naissance ='" + birthplace + "', " +
           "numero_titre_sejour ='" + numStay + "', " +
           "fk_user_identifiants_nationalite='" + regionId + "' " +

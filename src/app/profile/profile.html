@@ -60,6 +60,7 @@
             <div class="form-group row">
               <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="title">
                 Civilité
+                <span class="asterisk">*</span>
               </label>
               <div class="col-md-7 col-xs-12">
                 <select data-style="btn-secondary"
@@ -74,6 +75,7 @@
             <div class="form-group row">
               <label for="lastname" class="col-md-4 col-xs-12 form-control-label text-md-right">
                 Nom
+                <span class="asterisk">*</span>
               </label>
               <div class="col-md-7 col-xs-12">
                 <input type="text" id="lastname" class="form-control" placeholder="Nom" [(ngModel)]="lastname"
@@ -88,6 +90,7 @@
 
               <label for="firstname" class="col-md-4 col-xs-12 form-control-label text-md-right">
                 Prénom
+                <span class="asterisk">*</span>
               </label>
               <div class="col-md-7 col-xs-12">
                 <input type="text" id="firstname" class="form-control" [(ngModel)]="firstname" name="firstname"
@@ -104,6 +107,7 @@
               <div *ngIf="isEmployer" class="form-group row">
                 <label for="companyname" class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Raison Sociale
+                  <span class="asterisk">*</span>
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <input type="text" id="companyname" class="form-control" [(ngModel)]="companyname" name="companyname"
@@ -146,15 +150,15 @@
               </div>
 
               <div *ngIf="isEmployer" class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right" >
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Convention collective
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <select
-                    placeholder="Convention collective" data-style="btn-secondary"
-                    class="nationalitySelectPicker form-control" id="convention-select"
-                    [(ngModel)]="conventionId"
-                    name="convention_slct" >
+                          placeholder="Convention collective" data-style="btn-secondary"
+                          class="nationalitySelectPicker form-control" id="convention-select"
+                          [(ngModel)]="conventionId"
+                          name="convention_slct">
                     <option *ngFor="let c of conventions" value="{{c.id}}">{{c.libelle}} - {{c.libelle}}</option>
                   </select>
                 </div>
@@ -163,6 +167,7 @@
               <div *ngIf="!isEmployer" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="birthDate">
                   Date de naissance
+                  <span class="asterisk">*</span>
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <datetime id="birthdate" [ngModel]="birthdate" name="birthdate" [timepicker]="false"
@@ -222,14 +227,14 @@
                 <div class="col-md-7 col-xs-12">
                   <!--<input type="hidden" class="select2 cp-select form-control" name="birthcp"
                          placeholder="Code postal du lieu de naissance" [(ngModel)]="birthcp" name="birthcp"/>-->
-                  <input type="hidden" class="select2 dep-select form-control" placeholder="Département de naissance" [(ngModel)]="birthdep" name="birthdep"/>
+                  <input type="hidden" class="select2 dep-select form-control" placeholder="Département de naissance"
+                         [(ngModel)]="birthdep" name="birthdep"/>
                 </div>
               </div>
 
               <div [hidden]="isEmployer || !isFrench" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Lieu de naissance
-                  <span class="help-block">ex: Palaiseau (91)</span>
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <input type="hidden" class="select2 commune-select form-control" name="birthplace"
@@ -277,7 +282,7 @@
                 </div>
               </div>
 
-              <div *ngIf="!isEmployer && !isFrench && isEuropean == 1"  class="form-group row">
+              <div *ngIf="!isEmployer && !isFrench && isEuropean == 1" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">Type de document</label>
                 <div class="abc-radio">
                   <input type="radio" name="radio2" id="stayRadio" value="0" (click)="watchTypeDocStranger($event)"
@@ -339,7 +344,7 @@
                 </div>
               </div>
 
-              <div [hidden]="isEmployer || isEuropean == 1 || isFrench"  class="form-group row">
+              <div [hidden]="isEmployer || isEuropean == 1 || isFrench" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">Type de document</label>
                 <div class="abc-radio">
                   <input type="radio" name="radio3" id="cinRadio" value="0" (click)="watchTypeDoc($event)"
@@ -360,7 +365,7 @@
                   CNI ou Passeport
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input type="text" id="cni" class="form-control" [(ngModel)]="cni" name="cni" placeholder="N° du titre"
+                  <input type="text" id="cni" class="form-control" [(ngModel)]="cni" name="cni"
                          (keyup)="watchOfficialDocument($event)" maxlength="13">
                 </div>
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
@@ -368,7 +373,7 @@
                 </div>
               </div>
 
-              <div [hidden]="isEmployer || isEuropean == 1 || isCIN || isFrench"  class="form-group row">
+              <div [hidden]="isEmployer || isEuropean == 1 || isCIN || isFrench" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   N° de la carte résident
                 </label>
@@ -410,6 +415,7 @@
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   {{personalAddressLabel}}
                 </label>
+                <span class="asterisk">*</span>
                 <div class="col-md-7 col-xs-12">
                   <input id="autocompletePersonal" type="text" class="form-control" placeholder="Rechercher une adresse"
                          [(ngModel)]="personalAddress" (input)="autocompletePersonalAddress()"/>
@@ -420,6 +426,7 @@
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   {{jobAddressLabel}}
                 </label>
+                <span class="asterisk">*</span>
                 <div class="col-md-7 col-xs-12">
                   <input id="autocompleteJob" type="text" class="form-control" placeholder="Rechercher une adresse"
                          [(ngModel)]="jobAddress" (input)="autocompleteJobAddress()"/>

@@ -133,7 +133,7 @@ export class Profile{
   regionId;
   selectedDep;
   isResident: boolean = true;
-  isCIN: boolean;
+  isCIN: boolean = true;
 
   /*
    Conventions collectives
@@ -1093,8 +1093,16 @@ export class Profile{
         _isFormValid = false;
       }
     } else {
-      if (this.isValidFirstname && this.isValidLastname && this.isValidCni && this.isValidNumSS && this.isValidBirthdate && this.isValidPersonalAddress && this.isValidJobAddress) {
-        _isFormValid = true;
+      if (this.isValidFirstname && this.isValidLastname && this.isValidNumSS && this.isValidBirthdate && this.isValidPersonalAddress && this.isValidJobAddress) {
+        if (this.isFrench || this.isEuropean == 0) {
+          if (this.isValidCni) {
+            _isFormValid = true;
+          } else {
+            _isFormValid = false;
+          }
+        } else {
+          _isFormValid = true;
+        }
       } else {
         _isFormValid = false;
       }
