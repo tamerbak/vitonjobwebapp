@@ -1331,9 +1331,9 @@ export class Profile{
         var dateToStay = moment(this.dateToStay).format('MM/DD/YYYY');
         var isResident = (this.isResident ? 'Oui' : 'Non');
         if (this.isCIN) {
-          this.numStay = "";
+          numStay = "";
         } else {
-          this.cni = "";
+          cni = "";
         }
         var birthCountryId;
         if (this.index)
