@@ -247,6 +247,50 @@ export class Profile {
     this.isValidJobAddress = false;
   }
 
+  watchPersonalAddress(e){
+    let _address = e.target.value;
+    let _isValid: boolean = true;
+    let _hint: string = "";
+
+    if (!_address) {
+      _isValid = false;
+    }
+
+    this.namePA = _address;
+    this.streetNumberPA = "";
+    this.streetPA = "";
+    this.zipCodePA = "";
+    this.cityPA = "";
+    this.countryPA = "";
+
+    this.personalAddress = _address;
+    this.isValidPersonalAddress = _isValid;
+    console.log();
+    this.isValidForm();
+  }
+
+  watchJobAddress(e){
+    let _address = e.target.value;
+    let _isValid: boolean = true;
+    let _hint: string = "";
+
+    if (!_address) {
+      _isValid = false;
+    }
+
+    this.nameJA = _address;
+    this.streetNumberJA = "";
+    this.streetJA = "";
+    this.zipCodeJA = "";
+    this.cityJA = "";
+    this.countryJA = "";
+
+    this.jobAddress = _address;
+    this.isValidJobAddress = _isValid;
+    console.log();
+    this.isValidForm();
+  }
+
   autocompletePersonalAddress() {
     this._loader.load().then(() => {
       //let autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocompletePersonal"), {});

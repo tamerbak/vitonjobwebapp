@@ -370,7 +370,7 @@
                   {{personalAddressLabel}}
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input id="autocompletePersonal" type="text" class="form-control" placeholder="Rechercher une adresse"
+                  <input id="autocompletePersonal" type="text" class="form-control" placeholder="Rechercher une adresse" (keyup)="watchPersonalAddress($event)"
                          [(ngModel)]="personalAddress" (input)="autocompletePersonalAddress()"/>
                 </div>
               </div>
@@ -380,7 +380,7 @@
                   {{jobAddressLabel}}
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input id="autocompleteJob" type="text" class="form-control" placeholder="Rechercher une adresse"
+                  <input id="autocompleteJob" type="text" class="form-control" placeholder="Rechercher une adresse" (keyup)="watchJobAddress($event)"
                          [(ngModel)]="jobAddress" (input)="autocompleteJobAddress()"/>
                 </div>
               </div>
