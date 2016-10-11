@@ -1306,3 +1306,15 @@ a.breadcrumb-link {
     color: #14baa6;
   }
 }
+
+/*********************/
+/*      select2      */
+/*********************/
+.select2-container .select2-choice {
+    height: 35px !important;
+    line-height: 1.52857 !important;
+}
+
+.select2-container{
+  height: 32px !important;
+}
