@@ -563,7 +563,19 @@ export class Profile{
     jQuery('.titleSelectPicker').selectpicker();
     jQuery(document).ready(function () {
       jQuery('.fileinput').on('change.bs.fileinput', function (e, file) {
+      if(file === undefined){
+        Messenger().post({
+          message: "Le fichier séléctionné n'est pas un fichier Image valide.",
+          type: 'error',
+          showCloseButton: true
+        });
+        jQuery('.fileinput').fileinput('clear');
+      }else{
         self.scanData = file.result;
+      }
+
+
+
       });
     });
 
