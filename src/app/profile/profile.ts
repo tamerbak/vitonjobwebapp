@@ -55,14 +55,14 @@ export class Profile{
   nationalities = [];
   personalAddress: string;
   jobAddress: string;
-  isValidPersonalAddress: boolean = false;
-  isValidJobAddress: boolean = false;
+  isValidPersonalAddress: boolean = true;
+  isValidJobAddress: boolean = true;
   isValidLastname: boolean = false;
   isValidFirstname: boolean = false;
   isValidCompanyname: boolean = false;
   isValidSiret: boolean = false;
   isValidApe: boolean = false;
-  isValidBirthdate: boolean = false;
+  isValidBirthdate: boolean = true;
   isValidCni: boolean = true;
   isValidNumSS: boolean = true;
   lastnameHint: string = "";
@@ -257,10 +257,6 @@ export class Profile{
     let _isValid: boolean = true;
     let _hint: string = "";
 
-    if (!_address) {
-      _isValid = false;
-    }
-
     this.namePA = _address;
     this.streetNumberPA = "";
     this.streetPA = "";
@@ -278,10 +274,6 @@ export class Profile{
     let _address = e.target.value;
     let _isValid: boolean = true;
     let _hint: string = "";
-
-    if (!_address) {
-      _isValid = false;
-    }
 
     this.nameJA = _address;
     this.streetNumberJA = "";
@@ -381,7 +373,6 @@ export class Profile{
           }
         });
         this.isValidSiret = true;
-        this.isValidApe = true;
         if (!Utils.isEmpty(this.companyname)) {
           this.isValidCompanyname = true;
         }
@@ -406,12 +397,7 @@ export class Profile{
           });
         }
 
-        if (!this.personalAddress) {
-          this.isValidPersonalAddress = false;
-        } else {
-          this.isValidPersonalAddress = true;
-        }
-
+        this.isValidPersonalAddress = true;
         //get Job Address
         this.jobAddress = entreprise.workAdress.fullAdress;
         this.nameJA = entreprise.workAdress.name;
@@ -431,12 +417,7 @@ export class Profile{
             this.countryJA = data[1].country;
           });
         }
-
-        if (!this.jobAddress) {
-          this.isValidJobAddress = false;
-        } else {
-          this.isValidJobAddress = true;
-        }
+        this.isValidJobAddress = true;
       } else {
         if (this.currentUser.jobyer.dateNaissance) {
           var birthDate = moment(new Date(this.currentUser.jobyer.dateNaissance)).format('DD/MM/YYYY');
@@ -447,7 +428,7 @@ export class Profile{
         } else {
           this.birthdate = null;
           this.birthdateHidden = null;
-          this.isValidBirthdate = false;
+          this.isValidBirthdate = true;
         }
         var _birthplace = this.currentUser.jobyer.lieuNaissance;
         if (_birthplace !== null) {
@@ -513,12 +494,8 @@ export class Profile{
             this.countryPA = data[0].country;
           });
         }
-        if (!this.personalAddress) {
-          this.isValidPersonalAddress = false;
-        } else {
-          this.isValidPersonalAddress = true;
-        }
 
+        this.isValidPersonalAddress = true;
         this.jobAddress = this.currentUser.jobyer.workAdress.fullAdress;
         this.nameJA = this.currentUser.jobyer.workAdress.name;
         this.streetNumberJA = this.currentUser.jobyer.workAdress.streetNumber;
@@ -536,13 +513,7 @@ export class Profile{
             this.countryJA = data[1].country;
           });
         }
-
-        if (!this.jobAddress) {
-          this.isValidJobAddress = false;
-        } else {
           this.isValidJobAddress = true;
-        }
-
       }
 
     }
@@ -1142,8 +1113,7 @@ export class Profile{
         _isFormValid = false;
       }
     } else if (this.isEmployer) {
-
-      if (this.isValidFirstname && this.isValidLastname && this.isValidCompanyname && this.isValidSiret && this.isValidApe && this.isValidPersonalAddress && this.isValidJobAddress) {
+      if (this.isValidFirstname && this.isValidLastname && this.isValidCompanyname && this.isValidSiret && this.isValidApe && this.isValidPersonalAddress && this.isValidJobAddress && !this.isEmpty(this.conventionId)) {
         _isFormValid = true;
       } else {
         _isFormValid = false;
@@ -1305,7 +1275,7 @@ export class Profile{
 
         } else {
           var companyname = this.companyname;
-          var siret = this.siret.substring(0, 17);
+          var siret = (!this.isEmpty(this.siret) ? this.siret.substring(0, 17) : "");
           var ape = this.ape.substring(0, 5).toUpperCase();
           var medecineId = this.selectedMedecine.id === "0" ? 0 : parseInt(this.selectedMedecine.id);
           var entrepriseId = this.currentUser.employer.entreprises[0].id;
@@ -1384,7 +1354,9 @@ export class Profile{
       } else {
         var numSS = this.numSS;
         var cni = this.cni;
-        var birthdate = moment(this.birthdateHidden).format('MM/DD/YYYY');
+        var birthdate = "";
+        if(!this.isEmpty(this.birthdateHidden))
+          birthdate = moment(this.birthdateHidden).format('MM/DD/YYYY');
         var birthplace = this.selectedCommune.nom;
         var nationalityId = this.nationalityId;
         //var birthcp = this.birthcp;

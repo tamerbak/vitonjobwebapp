@@ -205,7 +205,7 @@ export class ProfileService{
       "prenom='" + firstname + "', " +
       (!this.isEmpty(numSS) ? ("numero_securite_sociale ='" + numSS + "', ") : "") +
       (!this.isEmpty(cni) ? ("cni ='" + cni + "', ") : "") +
-      (!birthdate ? " " : "date_de_naissance ='" + birthdate + "',");
+      (!this.isEmpty(birthdate) ? ("date_de_naissance ='" + birthdate + "', ") : "");
     if (isFrench) {
       nationalityId = "91";
       regionId = "40";

@@ -137,7 +137,7 @@
               <div *ngIf="isEmployer" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   NAF
-                  <!-- <span class="help-block">9999A</span> -->
+                  <span class="asterisk">*</span>
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <input id="ape" type="text" class="form-control" [textMask]="{mask: maskApe}"
@@ -152,6 +152,7 @@
               <div *ngIf="isEmployer" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Convention collective
+                  <span class="asterisk">*</span>
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <select
@@ -167,7 +168,6 @@
               <div *ngIf="!isEmployer" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="birthDate">
                   Date de naissance
-                  <span class="asterisk">*</span>
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <datetime id="birthdate" [ngModel]="birthdate" name="birthdate" [timepicker]="false"
@@ -415,7 +415,6 @@
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   {{personalAddressLabel}}
                 </label>
-                <span class="asterisk">*</span>
                 <div class="col-md-7 col-xs-12">
                   <input id="autocompletePersonal" type="text" class="form-control" placeholder="Rechercher une adresse" (keyup)="watchPersonalAddress($event)"
                          [(ngModel)]="personalAddress" (input)="autocompletePersonalAddress()"/>
@@ -426,7 +425,6 @@
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   {{jobAddressLabel}}
                 </label>
-                <span class="asterisk">*</span>
                 <div class="col-md-7 col-xs-12">
                   <input id="autocompleteJob" type="text" class="form-control" placeholder="Rechercher une adresse" (keyup)="watchJobAddress($event)"
                          [(ngModel)]="jobAddress" (input)="autocompleteJobAddress()"/>
