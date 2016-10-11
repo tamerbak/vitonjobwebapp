@@ -73,7 +73,7 @@ export class Home {
   doSemanticSearch() {
     if (!this.currentUser) {
       this.sharedService.setFromPage("home");
-      this.router.navigate(['app/login']);
+      this.router.navigate(['login']);
       return;
     }
 
