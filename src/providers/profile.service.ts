@@ -196,36 +196,38 @@ export class ProfileService{
    * @description update jobyer information
    * @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
    */
-  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, prefecture, isFrench, isEuropean, regionId) {
+  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, isStay, prefecture, isFrench, isEuropean, regionId) {
     var sql = "";
     //building the sql request
     sql = "update user_jobyer set  " +
       "titre='" + title + "', " +
       "nom='" + lastname + "', " +
       "prenom='" + firstname + "', " +
-      "numero_securite_sociale='" + numSS + "', " +
-      "cni='" + cni + "', " +
+      (!this.isEmpty(numSS) ? ("numero_securite_sociale ='" + numSS + "', ") : "") +
+      (!this.isEmpty(cni) ? ("cni ='" + cni + "', ") : "") +
       (!birthdate ? " " : "date_de_naissance ='" + birthdate + "',");
     if (isFrench) {
       nationalityId = "91";
       regionId = "40";
       sql = sql + " fk_user_nationalite ='" + nationalityId + "', " +
         "lieu_de_naissance ='" + birthplace + "', " +
-        "fk_user_departement ='" + birthdepId + "', " +
+        (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "', ") : "") +
         "fk_user_identifiants_nationalite='" + regionId + "' " +
         //birthcp à ajouter
         "where pk_user_jobyer ='" + roleId + "';";
     } else {
       if (isEuropean == 0) {
         sql = sql + " fk_user_nationalite ='" + nationalityId + "', " +
-          "fk_user_pays ='" + birthCountryId + "', " +
+          (!this.isEmpty(birthCountryId) ? ("fk_user_pays ='" + birthCountryId + "', ") : "") +
           "lieu_de_naissance ='" + birthplace + "', " +
+          "numero_titre_sejour ='" + numStay + "', " +
           "fk_user_identifiants_nationalite='" + regionId + "' " +
           "where pk_user_jobyer ='" + roleId + "';";
       } else {
         sql = sql + " fk_user_nationalite ='" + nationalityId + "' " +
           (!this.isEmpty(numStay) ? (", numero_titre_sejour ='" + numStay + "' ") : "") +
           (!this.isEmpty(birthCountryId) ? (", fk_user_pays ='" + birthCountryId + "' ") : "") +
+          (!this.isEmpty(isStay) ? (", est_resident='" + isStay + "' ") : "") +
           (!this.isEmpty(dateStay) ? (", date_de_delivrance='" + dateStay + "' ") : "") +
           (!this.isEmpty(dateFromStay) ? (", debut_validite='" + dateFromStay + "' ") : "") +
           (!this.isEmpty(dateToStay) ? (", fin_validite='" + dateToStay + "' ") : "") +

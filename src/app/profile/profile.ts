@@ -28,7 +28,7 @@ declare var google: any;
   encapsulation: ViewEncapsulation.None,
   styles: [require('./profile.scss')]
 })
-export class Profile {
+export class Profile{
   public maskSiret = [/[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/]
   public maskApe = [/[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /^[a-zA-Z]*$/]
 
@@ -132,6 +132,8 @@ export class Profile {
   whoDeliverStay;
   regionId;
   selectedDep;
+  isResident: boolean = true;
+  isCIN: boolean = true;
 
   /*
    Conventions collectives
@@ -203,6 +205,7 @@ export class Profile {
           if (this.regionId == '42') {
             this.isEuropean = 1;
             this.isFrench = false;
+            this.isResident = (data.est_resident == 'Oui' ? true : false);
             this.dateStay = data.date_de_delivrance;
             this.dateFromStay = data.debut_validite;
             this.dateToStay = data.fin_validite;
@@ -212,6 +215,8 @@ export class Profile {
           } else {
             this.isEuropean = 0;
             this.isFrench = false;
+            this.isCIN = !this.isEmpty(data.numero_titre_sejour) ? false : true;
+            this.numStay = !this.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
           }
         }
       })
@@ -468,7 +473,7 @@ export class Profile {
           });
         }
 
-        if (this.birthdepId !== null) {
+        if (!this.isEmpty(this.birthdepId)) {
           this.communesService.getDepartmentById(this.birthdepId).then((res: any) => {
             if (res && res.data.length > 0) {
               this.selectedDep = res.data[0];
@@ -1144,8 +1149,16 @@ export class Profile {
         _isFormValid = false;
       }
     } else {
-      if (this.isValidFirstname && this.isValidLastname && this.isValidCni && this.isValidNumSS && this.isValidBirthdate && this.isValidPersonalAddress && this.isValidJobAddress) {
-        _isFormValid = true;
+      if (this.isValidFirstname && this.isValidLastname && this.isValidNumSS && this.isValidBirthdate && this.isValidPersonalAddress && this.isValidJobAddress) {
+        if (this.isFrench || this.isEuropean == 0) {
+          if (this.isValidCni) {
+            _isFormValid = true;
+          } else {
+            _isFormValid = false;
+          }
+        } else {
+          _isFormValid = true;
+        }
       } else {
         _isFormValid = false;
       }
@@ -1227,9 +1240,10 @@ export class Profile {
 
   watchIsFrench(e) {
     this.isFrench = e.target.value == "1" ? true : false;
-    if (!this.isFrench)
+    if (!this.isFrench) {
       this.isEuropean = 0;
-
+      this.regionId = null;
+    }
     if (this.isFrench) {
       this.scanTitle = " de votre CNI ou Passeport";
     } else {
@@ -1379,6 +1393,12 @@ export class Profile {
         var dateStay = moment(this.dateStay).format('YYYY-MM-DD');
         var dateFromStay = moment(this.dateFromStay).format('MM/DD/YYYY');
         var dateToStay = moment(this.dateToStay).format('MM/DD/YYYY');
+        var isResident = (this.isResident ? 'Oui' : 'Non');
+        if (this.isCIN) {
+          numStay = "";
+        } else {
+          cni = "";
+        }
         var birthCountryId;
         if (this.index)
           birthCountryId = this.profileService.getCountryByIndex(this.index, this.pays).id;
@@ -1396,10 +1416,10 @@ export class Profile {
             }
           }
         } else {
-          regionId = this.regionId
+          regionId = this.regionId;
         }
 
-        this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, prefecture, this.isFrench, this.isEuropean, regionId)
+        this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, isResident, prefecture, this.isFrench, this.isEuropean, regionId)
           .then((res: any) => {
 
             //case of authentication failure : server unavailable or connection problem
@@ -1627,6 +1647,14 @@ export class Profile {
         this.scanTitle = " de votre titre du séjour";
       }
     })
+  }
+
+  watchTypeDocStranger(e) {
+    this.isResident = (e.target.value == '0' ? false : true);
+  }
+
+  watchTypeDoc(e) {
+    this.isCIN = (e.target.value == '0' ? true : false);
   }
 
   isEmpty(str) {
