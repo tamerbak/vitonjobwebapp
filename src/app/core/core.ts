@@ -12,7 +12,7 @@ declare var jQuery: any;
 declare var Tether: any;
 declare var require: any;
 
-export const REDIRECTTO: string = "/login";
+export const REDIRECTTO: string = "/app/home";
 
 @Component({
   selector: 'app',
