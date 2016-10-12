@@ -602,9 +602,6 @@ export class Profile{
           type: 'POST',
           dataType: 'json',
           quietMillis: 250,
-          headers: {
-            "Authorization": 'Basic aGFkZXM6NWV0Y2Fy',
-          },
           transport: function(params){
             params.beforeSend = Configs.getSelect2TextHeaders();
             return jQuery.ajax(params);
