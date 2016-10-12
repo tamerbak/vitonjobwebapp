@@ -160,7 +160,7 @@
                           class="nationalitySelectPicker form-control" id="convention-select"
                           [(ngModel)]="conventionId"
                           name="convention_slct">
-                    <option *ngFor="let c of conventions" value="{{c.id}}">{{c.libelle}} - {{c.libelle}}</option>
+                    <option *ngFor="let c of conventions" value="{{c.id}}">{{c.code}} - {{c.libelle}}</option>
                   </select>
                 </div>
               </div>
