@@ -220,8 +220,8 @@ export class ProfileService{
         sql = sql + " fk_user_nationalite ='" + nationalityId + "', " +
           (!this.isEmpty(birthCountryId) ? ("fk_user_pays ='" + birthCountryId + "', ") : "") +
           "lieu_de_naissance ='" + birthplace + "', " +
-          "numero_titre_sejour ='" + numStay + "', " +
-          "fk_user_identifiants_nationalite='" + regionId + "' " +
+          (!this.isEmpty(regionId) ? ("fk_user_identifiants_nationalite ='" + regionId + "', ") : "") +
+          "numero_titre_sejour ='" + numStay + "' " +
           "where pk_user_jobyer ='" + roleId + "';";
       } else {
         sql = sql + " fk_user_nationalite ='" + nationalityId + "' " +

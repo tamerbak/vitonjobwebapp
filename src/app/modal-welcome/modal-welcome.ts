@@ -3,11 +3,11 @@ import {SharedService} from "../../providers/shared.service";
 declare var jQuery: any;
 
 @Component({
-  selector: '[modal-guide]',
-  template: require('./modal-guide.html')
+  selector: '[modal-welcome]',
+  template: require('./modal-welcome.html')
 })
 
-export class ModalGuide{
+export class ModalWelcome{
   currentUser: any;
   projectTarget: string;
 
@@ -27,7 +27,11 @@ export class ModalGuide{
     }
   }
 
+  goToModalProfile(){
+    this.close();
+  }
+
   close(): void {
-    jQuery('#modal-guide').modal('hide');
+    jQuery('#modal-welcome').modal('hide');
   }
 }

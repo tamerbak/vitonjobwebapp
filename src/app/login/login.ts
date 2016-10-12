@@ -129,7 +129,7 @@ export class LoginPage {
 
         //if user is connected for the first time, redirect him to the page 'civility', otherwise redirect him to the home page
         var isNewUser = data.newAccount;
-        if (isNewUser || this.isNewRecruteur) {
+        /*if (isNewUser || this.isNewRecruteur) {
           this.router.navigate(['app/profile']);
         } else {
           if (this.fromPage == "Search") {
@@ -137,10 +137,9 @@ export class LoginPage {
           } else {
             this.router.navigate(['app/home']);
           }
-        }
+        }*/
+        this.router.navigate(['app/home']);
       });
-
-
     });
   }
 
