@@ -154,6 +154,13 @@ export class Configs {
     return headers;
   }
 
+  public static getSelect2TextHeaders(){
+    return function(request){
+      request.setRequestHeader("Authorization", 'Basic aGFkZXM6NWV0Y2Fy');
+      request.setRequestHeader("Content-Type", 'text/plain');
+    };
+  }
+
   public static setConfigs(type: string): AbstractConfigs {
     if (type === "employer") {
       return new EmployerConfigs();
