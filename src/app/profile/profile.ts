@@ -602,8 +602,9 @@ export class Profile{
           type: 'POST',
           dataType: 'json',
           quietMillis: 250,
-          params: {
-            contentType: "text/plain",
+          transport: function(params){
+            params.beforeSend = Configs.getSelect2TextHeaders();
+            return jQuery.ajax(params);
           },
           data: this.communesService.getDepartmentsByTerm(),
           results: function (data, page) {
@@ -689,8 +690,9 @@ export class Profile{
           type: 'POST',
           dataType: 'json',
           quietMillis: 250,
-          params: {
-            contentType: "text/plain",
+          transport: function(params){
+            params.beforeSend = Configs.getSelect2TextHeaders();
+            return jQuery.ajax(params);
           },
           data: function (term, page) {
             //return self.communesService.getCommunesByTerm(term,self.selectedCP);
@@ -732,8 +734,9 @@ export class Profile{
           type: 'POST',
           dataType: 'json',
           quietMillis: 250,
-          params: {
-            contentType: "text/plain",
+          transport: function(params){
+            params.beforeSend = Configs.getSelect2TextHeaders();
+            return jQuery.ajax(params);
           },
           data: this.medecineService.getMedecineByTerm(),
           results: function (data, page) {
@@ -768,8 +771,9 @@ export class Profile{
           type: 'POST',
           dataType: 'json',
           quietMillis: 250,
-          params: {
-            contentType: "text/plain",
+          transport: function(params){
+            params.beforeSend = Configs.getSelect2TextHeaders();
+            return jQuery.ajax(params);
           },
           data: this.communesService.getPrefecturesByTerm(),
           results: function (data, page) {

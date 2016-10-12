@@ -128,8 +128,9 @@ export class SearchCriteria {
         type: 'POST',
         dataType: 'json',
         quietMillis: 250,
-        params: {
-          contentType: "text/plain",
+        transport: function(params){
+          params.beforeSend = Configs.getSelect2TextHeaders();
+          return jQuery.ajax(params);
         },
         data: this.communesService.getCitiesByTerm(),
         results: function (data, page) {
