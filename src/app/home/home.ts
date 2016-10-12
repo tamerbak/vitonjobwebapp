@@ -4,6 +4,7 @@ import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {SearchService} from "../../providers/search-service";
 import {SharedService} from "../../providers/shared.service";
 import {Configs} from "../../configurations/configs";
+import {ModalGuide} from "../modal-guide/modal-guide";
 
 declare var require: any;
 declare var jQuery: any;
@@ -12,7 +13,7 @@ declare var Messenger:any;
 @Component({
 	selector: 'home',
 	template: require('./home.html'),
-	directives: [ROUTER_DIRECTIVES, AlertComponent],
+	directives: [ROUTER_DIRECTIVES, AlertComponent, ModalGuide],
 	providers: [SearchService],
 	styles: [require('./home.scss')],
 	encapsulation: ViewEncapsulation.None
@@ -34,13 +35,20 @@ export class Home {
   }
 
   ngOnInit(): void {
-
     let myContent = jQuery('.content');
     let myNavBar = jQuery('.navbar-dashboard');
 
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+      if(this.currentUser.titre == "") {
+        //call to open the modal-guide
+        jQuery('#modal-guide').modal({
+          keyboard: false,
+          backdrop: 'static'
+        });
+        jQuery('#modal-guide').modal('show');
+      }
     } else {
       this.projectTarget = this.sharedService.getProjectTarget();
     }
