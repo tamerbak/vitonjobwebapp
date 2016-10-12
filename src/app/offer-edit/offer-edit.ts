@@ -1,5 +1,6 @@
 import {Component, ViewEncapsulation} from "@angular/core";
 import {OffersService} from "../../providers/offer.service";
+import {DomSanitizationService} from '@angular/platform-browser';
 import {SharedService} from "../../providers/shared.service";
 import {SearchService} from "../../providers/search-service";
 import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from "@angular/router";
@@ -39,6 +40,10 @@ export class OfferEdit {
   datepickerOpts: any;
   obj: string;
 
+  videoAvailable : boolean = false;
+  youtubeLink : string;
+  youtubeLinkSafe : any;
+  isLinkValid:boolean = true;
 
   /*
    * Collective conventions management
@@ -70,6 +75,7 @@ export class OfferEdit {
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private searchService: SearchService,
+              private sanitizer: DomSanitizationService,
               private router: Router,
               private route: ActivatedRoute) {
     this.currentUser = this.sharedService.getCurrentUser();
@@ -84,7 +90,6 @@ export class OfferEdit {
   }
 
   ngOnInit(): void {
-    this.currentUser = this.sharedService.getCurrentUser();
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
 
     if(this.currentUser.estEmployeur && this.currentUser.employer.entreprises[0].conventionCollective.id>0){
@@ -131,6 +136,13 @@ export class OfferEdit {
 
     if(this.obj == "detail") {
       this.offer = this.sharedService.getCurrentOffer();
+      if(!this.offer.videolink){
+        this.videoAvailable = false;
+      }else{
+	     this.videoAvailable = true;
+       this.youtubeLink = this.offer.videolink.replace("youtu.be", "www.youtube.com/embed").replace("watch?v=", "embed/");
+       this.youtubeLinkSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.youtubeLink);
+      }
       this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée":"Rendre l'offre publique";
       this.autoSearchModeTitle = this.offer.rechercheAutomatique ? "Désactiver la recherche auto":"Activer la recherche auto";
       if (this.offer.obsolete) {
@@ -624,6 +636,36 @@ export class OfferEdit {
       return false;
     }
     return true;
+  }
+
+  videoUrl(){
+		return this.sanitizer.bypassSecurityTrustResourceUrl(this.youtubeLink);
+	}
+
+  updateVideo(deleteLink){
+    this.isLinkValid = true;
+    if(deleteLink){
+      this.youtubeLink = "";
+    }else{
+      if(this.youtubeLink == "" || (this.youtubeLink.indexOf("youtu.be") == -1 && this.youtubeLink.indexOf("www.youtube.com") == -1)){
+        this.youtubeLink = "";
+        this.isLinkValid = false;
+        return;
+      }
+      this.youtubeLink = this.youtubeLink.replace("youtu.be", "www.youtube.com/embed").replace("watch?v=", "embed/");
+      this.youtubeLinkSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.youtubeLink);
+    }
+    this.offersService.updateVideoLink(this.offer.idOffer, this.youtubeLink, this.projectTarget).then(()=>{
+      if(deleteLink){
+        this.videoAvailable = false;
+      }else{
+        this.videoAvailable = true;
+      }
+      this.offer.videolink = this.youtubeLink;
+      this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, this.offer, this.projectTarget);
+      this.sharedService.setCurrentUser(this.currentUser);
+      this.sharedService.setCurrentOffer(this.offer);
+    });
   }
 
   deleteOffer(){
