@@ -179,7 +179,7 @@ export class Profile {
             this.scanTitle = " de votre CNI ou Passeport";
           }
           if (this.isEuropean == 1) {
-            this.scanTitle = " de votre titre du séjour";
+            this.scanTitle = " de votre titre de séjour";
           }
         });
 
@@ -827,7 +827,7 @@ export class Profile {
     let _hint: string = "";
 
     if (!Utils.isValidName(_name)) {
-      _hint = "Saisissez un nom valide";
+      _hint = "Saisissez un prénom valide";
       _isValid = false;
     } else {
       _hint = "";
@@ -1219,10 +1219,11 @@ export class Profile {
       this.isEuropean = 0;
       this.regionId = null;
     }
-    if (this.isFrench) {
+    if (this.isFrench || this.isEuropean == 0) {
       this.scanTitle = " de votre CNI ou Passeport";
-    } else {
-      this.scanTitle = " de votre titre du séjour";
+    }
+    if (this.isEuropean == 1) {
+      this.scanTitle = " de votre titre de séjour";
     }
   }
 
@@ -1621,7 +1622,7 @@ export class Profile {
         this.scanTitle = " de votre CNI ou Passeport";
       }
       if (this.isEuropean == 1) {
-        this.scanTitle = " de votre titre du séjour";
+        this.scanTitle = " de votre titre de séjour";
       }
     })
   }

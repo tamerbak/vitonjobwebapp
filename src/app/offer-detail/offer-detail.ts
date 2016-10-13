@@ -251,7 +251,7 @@ export class OfferDetail {
   checkHour() {
     this.alertsSlot = [];
     if (this.slot.startHour && this.slot.endHour && this.slot.startHour >= this.slot.endHour) {
-      this.addAlert("warning", "L'heure de début doit être inférieure à l'heure de fin", "slot");
+      this.addAlert("warning", "L'heure de début de mission doit être inférieure à l'heure de fin de mission", "slot");
       this.resetDatetime('slotEHour');
       this.slot.endHour = 0;
       return false;
@@ -262,7 +262,7 @@ export class OfferDetail {
       var m = new Date().getMinutes();
       var minutesNow = this.offersService.convertHoursToMinutes(h + ':' + m);
       if (this.slot.startHour && this.slot.startHour <= new Date()) {
-        this.addAlert("warning", "L'heure de début et de fin doivent être supérieures à l'heure actuelle", "slot");
+        this.addAlert("warning", "L'heure de début et de fin de mission doivent être supérieures à l'heure actuelle", "slot");
         this.resetDatetime('slotSHour');
         this.slot.startHour = 0;
         this.resetDatetime('slotEHour');
