@@ -457,7 +457,7 @@ export class ContractService {
       let headers = new Headers();
       headers.append("Content-Type", 'application/json');
 
-      this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
+      this.http.post(Configs.yousignURL, JSON.stringify(payload), {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
           // debugger;
