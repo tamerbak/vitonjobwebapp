@@ -82,6 +82,64 @@ export class Contract {
       }
     });
 
+
+
+    //  Load recours list
+    this.contractService.loadRecoursList().then(data=> {
+      this.recours = data;
+    });
+
+    // Get the currentEmployer
+    this.currentUser = this.sharedService.getCurrentUser();
+
+    if (this.currentUser) {
+      this.employer = this.currentUser.employer;
+      this.companyName = this.employer.entreprises[0].nom;
+      this.workAdress = this.employer.entreprises[0].workAdress.fullAdress;
+      this.hqAdress = this.employer.entreprises[0].siegeAdress.fullAdress;
+      let civility = this.currentUser.titre;
+      this.employerFullName = civility + " " + this.currentUser.nom + " " + this.currentUser.prenom;
+      this.medecineService.getMedecine(this.employer.entreprises[0].id).then((data: any)=> {
+        if (data && data != null) {
+          //debugger;
+          this.contractData.centreMedecineEntreprise = data.libelle;
+          this.contractData.adresseCentreMedecineEntreprise = data.adresse + ' ' + data.code_postal;
+        }
+
+      });
+    }
+
+    // Check if there is a current offer
+    let trial = 0;
+    this.currentOffer = this.sharedService.getCurrentOffer();
+    if(this.currentOffer){
+      let calendar = this.currentOffer.calendarData;
+      let minDay = new Date(calendar[0].date);
+      let maxDay = new Date(calendar[0].date);
+      debugger;
+      for(let i=1 ; i <calendar.length;i++){
+        let date = new Date(calendar[i].date);
+        if(minDay.getTime()>date.getTime())
+          minDay = date;
+        if(maxDay.getTime()<date.getTime())
+          maxDay = date;
+      }
+
+
+      let timeDiff = Math.abs(maxDay.getTime() - minDay.getTime());
+      let contractLength = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+      if(contractLength <= 1)
+        trial = 0;
+      else if(contractLength<30)
+        trial = 2;
+      else if(contractLength <60)
+        trial = 3;
+      else
+        trial = 5;
+
+    }
+
     // Initialize contract data
     this.contractData = {
       num: "",
@@ -91,8 +149,8 @@ export class Contract {
       centreMedecineETT: "181 - CMIE",
       adresseCentreMedecineETT: "80 RUE DE CLICHY 75009 PARIS",
       contact: this.employerFullName,
-      indemniteFinMission: "0.00",
-      indemniteCongesPayes: "0.00",
+      indemniteFinMission: "10.00%",
+      indemniteCongesPayes: "10.00%",
       moyenAcces: "",
       numeroTitreTravail: "",
       debutTitreTravail: "",
@@ -105,7 +163,7 @@ export class Contract {
       interim: "Tempo'AIR",
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
-      trialPeriod: 5,
+      trialPeriod: trial,
       termStartDate: this.getEndDate(),
       termEndDate: this.getEndDate(),
       motif: "",
@@ -142,34 +200,6 @@ export class Contract {
       elementsNonCotisation: 10.0,
       titre: ''
     };
-
-    //  Load recours list
-    this.contractService.loadRecoursList().then(data=> {
-      this.recours = data;
-    });
-
-    // Get the currentEmployer
-    this.currentUser = this.sharedService.getCurrentUser();
-
-    if (this.currentUser) {
-      this.employer = this.currentUser.employer;
-      this.companyName = this.employer.entreprises[0].nom;
-      this.workAdress = this.employer.entreprises[0].workAdress.fullAdress;
-      this.hqAdress = this.employer.entreprises[0].siegeAdress.fullAdress;
-      let civility = this.currentUser.titre;
-      this.employerFullName = civility + " " + this.currentUser.nom + " " + this.currentUser.prenom;
-      this.medecineService.getMedecine(this.employer.entreprises[0].id).then((data: any)=> {
-        if (data && data != null) {
-          //debugger;
-          this.contractData.centreMedecineEntreprise = data.libelle;
-          this.contractData.adresseCentreMedecineEntreprise = data.adresse + ' ' + data.code_postal;
-        }
-
-      });
-    }
-
-    // Check if there is a current offer
-    this.currentOffer = this.sharedService.getCurrentOffer();
     if (this.currentOffer) {
       this.service.getRates().then((data: any) => {
         // debugger;
@@ -276,6 +306,54 @@ export class Contract {
     return sd;
   }
 
+  getStartActualDate() {
+
+    let d = new Date();
+    let m = d.getMonth() + 1;
+    let da = d.getDate();
+    let sd = d.getFullYear() + "-" + (m < 10 ? '0' : '') + m + "-" + (da < 10 ? '0' : '') + da;
+
+    if (!this.currentOffer) {
+      return sd;
+    }
+    if (!this.currentOffer.calendarData || this.currentOffer.calendarData.length == 0) {
+      return sd;
+    }
+
+    let minDate = this.currentOffer.calendarData[0].date;
+    for (let i = 1; i < this.currentOffer.calendarData.length; i++) {
+      if (this.currentOffer.calendarData[i].date < minDate) {
+        minDate = this.currentOffer.calendarData[i].date;
+      }
+    }
+    d = new Date(minDate);
+
+    return d;
+  }
+
+  getEndActualDate() {
+    let d = new Date();
+    let m = d.getMonth() + 1;
+    let da = d.getDate();
+    let sd = d.getFullYear() + "-" + (m < 10 ? '0' : '') + m + "-" + (da < 10 ? '0' : '') + da;
+
+    if (!this.currentOffer) {
+      return sd;
+    }
+    if (!this.currentOffer.calendarData || this.currentOffer.calendarData.length == 0) {
+      return sd;
+    }
+
+    let maxDate = this.currentOffer.calendarData[0].date;
+    for (let i = 1; i < this.currentOffer.calendarData.length; i++) {
+      if (this.currentOffer.calendarData[i].date > maxDate) {
+        maxDate = this.currentOffer.calendarData[i].date;
+      }
+    }
+
+     return d;
+  }
+
   // selectOffer() {
   //   //debugger;
   //   let m = new Modal(ModalOffersPage);
@@ -301,6 +379,32 @@ export class Contract {
   // }
 
   initContract() {
+
+    let calendar = this.currentOffer.calendarData;
+    let minDay = new Date(calendar[0].date);
+    let maxDay = new Date(calendar[0].date);
+    debugger;
+    for(let i=1 ; i <calendar.length;i++){
+      let date = new Date(calendar[i].date);
+      if(minDay.getTime()>date.getTime())
+        minDay = date;
+      if(maxDay.getTime()<date.getTime())
+        maxDay = date;
+    }
+
+    let trial = 2;
+    let timeDiff = Math.abs(maxDay.getTime() - minDay.getTime());
+    let contractLength = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+    if(contractLength <= 1)
+      trial = 0;
+    else if(contractLength<30)
+      trial = 2;
+    else if(contractLength <60)
+      trial = 3;
+    else
+      trial = 5;
+
     this.contractData = {
       num: this.numContrat,
       centreMedecineEntreprise: "",
@@ -310,8 +414,8 @@ export class Contract {
 
       numero: "",
       contact: this.employerFullName,
-      indemniteFinMission: "0.00",
-      indemniteCongesPayes: "0.00",
+      indemniteFinMission: "10.00%",
+      indemniteCongesPayes: "10.00%",
       moyenAcces: "",
       numeroTitreTravail: "",
       debutTitreTravail: "",
@@ -323,7 +427,7 @@ export class Contract {
       interim: "Tempo'AIR",
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
-      trialPeriod: 5,
+      trialPeriod: trial,
       termStartDate: this.getEndDate(),
       termEndDate: this.getEndDate(),
       motif: "",

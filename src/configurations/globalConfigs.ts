@@ -22,7 +22,8 @@ export class GlobalConfigs {
 
   static global = {
     // strict-cni: force the user the enter the CNI key, the 13th number
-    "strict-cni": true,
+    "strict-cni": false,
+    "electronic-signature": "docusign", // "yousign", "docusign"
   };
 
   constructor() {

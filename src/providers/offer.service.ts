@@ -20,6 +20,19 @@ export class OffersService {
     };
   }
 
+  updateVideoLink(idOffer, youtubeLink, projectTarget){
+    let table = projectTarget == 'jobyer' ? "user_offre_jobyer":"user_offre_entreprise";
+    let sql = "update "+table+" set lien_video='"+this.sqlfyText(youtubeLink)+"' where pk_"+table+"="+idOffer;
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+      .map(res => res.json())
+      .subscribe(data => {
+        resolve(youtubeLink);
+      });
+    });
+  }
   /**
    * @description Get the corresponding candidates of a specific offer
    * @param offer the reference offer

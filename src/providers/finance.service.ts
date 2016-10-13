@@ -23,14 +23,18 @@ export class FinanceService {
 
   loadPrevQuote(id) {
     let bean = {
-      'class': 'com.vitonjob.callouts.finance.DocumentQuery',
-      idOffre: id,
-      documentType: 'PREV'
+      'class' : 'com.vitonjob.api.CalloutConfiguration',
+      idContrat:0,
+      idOffre : id,
+      mode : 'VALEURS',
+      preContract : true,
+      documentType : 'QUOTE'
     };
+    console.log(JSON.stringify(bean));
     let encodedArg = btoa(JSON.stringify(bean));
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 225,
+      'id': 5,
       'args': [
         {
           'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -54,16 +58,18 @@ export class FinanceService {
 
   loadQuote(id, rate) {
     let bean = {
-      'class': 'com.vitonjob.callouts.finance.DocumentQuery',
-      idOffre: id,
-      documentType: 'QUOTE',
-      appliedHourRate: rate
+      'class' : 'com.vitonjob.api.CalloutConfiguration',
+      idContrat:0,
+      idOffre : id,
+      mode : 'VALEURS',
+      preContract : true,
+      documentType : 'QUOTE'
     };
     console.log(JSON.stringify(bean));
     let encodedArg = btoa(JSON.stringify(bean));
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 225,
+      'id': 5,
       'args': [
         {
           'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -104,7 +110,7 @@ export class FinanceService {
     let encodedArg = btoa(JSON.stringify(bean));
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 225,
+      'id': 6,
       'args': [
         {
           'class': 'fr.protogen.masterdata.model.CCalloutArguments',
