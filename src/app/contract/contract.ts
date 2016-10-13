@@ -82,8 +82,17 @@ export class Contract {
       }
     });
 
-    let minDay = this.getStartActualDate();
-    let maxDay = this.getEndActualDate();
+    let calendar = this.currentOffer.calendarData;
+    let minDay = new Date(calendar[0].date);
+    let maxDay = new Date(calendar[0].date);
+    debugger;
+    for(let i=1 ; i <calendar.length;i++){
+      let date = new Date(calendar[i].date);
+      if(minDay.getTime()>date.getTime())
+        minDay = date;
+      if(maxDay.getTime()<date.getTime())
+        maxDay = date;
+    }
 
     let trial = 2;
     let timeDiff = Math.abs(maxDay.getTime() - minDay.getTime());
@@ -366,8 +375,17 @@ export class Contract {
 
   initContract() {
 
-    let minDay = this.getStartActualDate();
-    let maxDay = this.getEndActualDate();
+    let calendar = this.currentOffer.calendarData;
+    let minDay = new Date(calendar[0].date);
+    let maxDay = new Date(calendar[0].date);
+    debugger;
+    for(let i=1 ; i <calendar.length;i++){
+      let date = new Date(calendar[i].date);
+      if(minDay.getTime()>date.getTime())
+        minDay = date;
+      if(maxDay.getTime()<date.getTime())
+        maxDay = date;
+    }
 
     let trial = 2;
     let timeDiff = Math.abs(maxDay.getTime() - minDay.getTime());
