@@ -5,6 +5,18 @@
 @import "../../../node_modules/ng2-datetime/src/vendor/bootstrap-timepicker/bootstrap-timepicker.min";
 @import "../../../node_modules/select2/select2";
 @import "../../../node_modules/select2-bootstrap-css/select2-bootstrap";
+
+.iframe-class{
+  border-width: 0px;
+  border-style: none;
+  border-color: initial;
+  border-image: initial;
+}
+
+.margin-top-10{
+  margin-top: 10px;
+}
+
 .ajouter{
   margin-top: 1em;
 }

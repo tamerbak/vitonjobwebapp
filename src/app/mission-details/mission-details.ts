@@ -16,7 +16,7 @@ import {TimeConverter} from "../../pipes/time-converter/time-converter";
 
 import {ModalComponent} from "./modal-component/modal-component";
 
-declare var Messenger:any;
+declare var Messenger: any;
 
 @Component({
   selector: '[mission-details]',
@@ -84,10 +84,10 @@ export class MissionDetails {
               private router: Router) {
 
     this.currentUser = this.sharedService.getCurrentUser();
-    if(!this.currentUser){
+    if (!this.currentUser) {
       this.router.navigate(['app/home']);
 
-    }else{
+    } else {
       this.isEmployer = this.currentUser.estEmployeur;
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
 
@@ -108,8 +108,8 @@ export class MissionDetails {
             this.missionHours = array[0];
             this.missionPauses = array[1];
 //prepare the mission pauses array to display
-            for(let i = 0; i < this.missionHours.length; i++){
-              for(let j = 0; j < this.missionPauses[i].length; j++){
+            for (let i = 0; i < this.missionHours.length; i++) {
+              for (let j = 0; j < this.missionPauses[i].length; j++) {
                 let pause = this.missionPauses[i][j];
                 this.missionPauses[i][j].pause_debut_temp = (this.isEmpty(pause.pause_debut_new) ? pause.pause_debut : this.missionService.convertToFormattedHour(pause.pause_debut_new));
                 this.missionPauses[i][j].pause_fin_temp = (this.isEmpty(pause.pause_fin_new) ? pause.pause_fin : this.missionService.convertToFormattedHour(pause.pause_fin_new));
@@ -203,7 +203,7 @@ export class MissionDetails {
         this.addAlert("success", "Vos données ont été bien sauvegardées");
 // Update contract status
         this.contract.vu = 'Oui';
-        var message = "Horaire du contrat n°" + this.contract.numero + " validé";
+        var message = "Horaire du contrat numéro : " + this.contract.numero + " validé";
         this.sendInfoBySMS(message, "toJobyer");
         if (this.contract.option_mission != "1.0") {
 //this.missionService.schedulePointeuse(this.contract, this.missionHours, this.missionPauses);
@@ -552,7 +552,7 @@ export class MissionDetails {
     ).then((data: any) => {
       if (data && data.status == "success") {
         console.log("timesheet saved");
-        var message = "Vous avez reçu le relevé d'heure du contrat n°" + this.contract.numero;
+        var message = "Le relevé d'heure du contrat numéro : " + this.contract.numero + "vous a été envoyé";
         var objectifNotif = "MissionDetailsPage";
         this.sendPushNotification(message, objectifNotif, "toJobyer");
         this.sendInfoBySMS(message, "toJobyer");
@@ -575,7 +575,7 @@ export class MissionDetails {
 // data saved
         console.log("schedule signed : " + data.status);
         if (this.contract.option_mission == "2.0" && !this.isEmployer) {
-          var message = "Le relevé d'heure du contrat n° " + this.contract.numero + " a été signé.";
+          var message = "Le relevé d'heure du contrat numéro " + this.contract.numero + " a été signé.";
           var objectifNotif = "MissionDetailsPage";
           this.sendPushNotification(message, objectifNotif, "toEmployer");
           this.sendInfoBySMS(message, "toEmployer");
@@ -644,12 +644,18 @@ export class MissionDetails {
         let idContrat = data.id;
         let idOffre = data.offerId;
         let rate = data.rate;
-// debugger;
+
         this.financeService.loadInvoice(idContrat, idOffre, rate).then((invoiceData: any) => {
-// debugger;
+
+          let partner = GlobalConfigs.global['electronic-signature'];
           let idInvoice = invoiceData.invoiceId;
+
           let bean = {
-            "class": 'com.vitonjob.yousign.callouts.YousignConfig',
+            'class': (partner === 'yousign' ? 'com.vitonjob.yousign.callouts.YousignConfig' :
+                (partner === 'docusign' ? 'com.vitonjob.docusign.model.DSConfig' :
+                    ''
+                )
+            ),
             employerFirstName: data.employerFirstName,
             employerLastName: data.employerLastName,
             employerEmail: data.employerEmail,
@@ -659,12 +665,13 @@ export class MissionDetails {
             jobyerEmail: data.jobyerEmail,
             jobyerPhone: data.jobyerPhone,
             idContract: idContrat,
-            idInvoice: idInvoice
+            idInvoice: idInvoice,
+            idDocument: idInvoice
           };
           this.missionService.signEndOfMission(bean).then(signatureData=> {
-// debugger;
+
             this.financeService.checkInvoice(this.contract.pk_user_contrat).then((invoice: any)=> {
-// debugger;
+
               if (invoice) {
                 this.invoiceId = invoice.pk_user_facture_voj;
 
@@ -899,7 +906,7 @@ this.nav.present(toast);
 // TODO this.nav.present(actionSheet);
   }
 
-  colorHour(i, j, isStartMission, isStartPause, isAccepted){
+  colorHour(i, j, isStartMission, isStartPause, isAccepted) {
     var isCorrected = (isAccepted ? 'Non' : 'Oui');
     var id;
     if (isStartPause) {
