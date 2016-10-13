@@ -82,8 +82,8 @@ export class Contract {
       }
     });
 
-    let minDay = this.getStartDate();
-    let maxDay = this.getEndDate();
+    let minDay = this.getStartActualDate();
+    let maxDay = this.getEndActualDate();
 
     let trial = 2;
     let timeDiff = Math.abs(maxDay.getTime() - minDay.getTime());
@@ -292,6 +292,54 @@ export class Contract {
     return sd;
   }
 
+  getStartActualDate() {
+
+    let d = new Date();
+    let m = d.getMonth() + 1;
+    let da = d.getDate();
+    let sd = d.getFullYear() + "-" + (m < 10 ? '0' : '') + m + "-" + (da < 10 ? '0' : '') + da;
+
+    if (!this.currentOffer) {
+      return sd;
+    }
+    if (!this.currentOffer.calendarData || this.currentOffer.calendarData.length == 0) {
+      return sd;
+    }
+
+    let minDate = this.currentOffer.calendarData[0].date;
+    for (let i = 1; i < this.currentOffer.calendarData.length; i++) {
+      if (this.currentOffer.calendarData[i].date < minDate) {
+        minDate = this.currentOffer.calendarData[i].date;
+      }
+    }
+    d = new Date(minDate);
+
+    return d;
+  }
+
+  getEndActualDate() {
+    let d = new Date();
+    let m = d.getMonth() + 1;
+    let da = d.getDate();
+    let sd = d.getFullYear() + "-" + (m < 10 ? '0' : '') + m + "-" + (da < 10 ? '0' : '') + da;
+
+    if (!this.currentOffer) {
+      return sd;
+    }
+    if (!this.currentOffer.calendarData || this.currentOffer.calendarData.length == 0) {
+      return sd;
+    }
+
+    let maxDate = this.currentOffer.calendarData[0].date;
+    for (let i = 1; i < this.currentOffer.calendarData.length; i++) {
+      if (this.currentOffer.calendarData[i].date > maxDate) {
+        maxDate = this.currentOffer.calendarData[i].date;
+      }
+    }
+
+     return d;
+  }
+
   // selectOffer() {
   //   //debugger;
   //   let m = new Modal(ModalOffersPage);
@@ -318,8 +366,8 @@ export class Contract {
 
   initContract() {
 
-    let minDay = this.getStartDate();
-    let maxDay = this.getEndDate();
+    let minDay = this.getStartActualDate();
+    let maxDay = this.getEndActualDate();
 
     let trial = 2;
     let timeDiff = Math.abs(maxDay.getTime() - minDay.getTime());
