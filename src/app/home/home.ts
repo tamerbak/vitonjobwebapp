@@ -4,7 +4,8 @@ import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {SearchService} from "../../providers/search-service";
 import {SharedService} from "../../providers/shared.service";
 import {Configs} from "../../configurations/configs";
-import {ModalGuide} from "../modal-guide/modal-guide";
+import {ModalWelcome} from "../modal-welcome/modal-welcome";
+import {ModalProfile} from "../modal-profile/modal-profile";
 
 declare var require: any;
 declare var jQuery: any;
@@ -13,7 +14,7 @@ declare var Messenger:any;
 @Component({
 	selector: 'home',
 	template: require('./home.html'),
-	directives: [ROUTER_DIRECTIVES, AlertComponent, ModalGuide],
+	directives: [ROUTER_DIRECTIVES, AlertComponent, ModalWelcome, ModalProfile],
 	providers: [SearchService],
 	styles: [require('./home.scss')],
 	encapsulation: ViewEncapsulation.None
@@ -41,13 +42,20 @@ export class Home {
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
-      if(this.currentUser.titre == "") {
+      if(this.isEmpty(this.currentUser.titre)) {
         //call to open the modal-guide
-        jQuery('#modal-guide').modal({
+        jQuery('#modal-welcome').modal({
           keyboard: false,
           backdrop: 'static'
         });
-        jQuery('#modal-guide').modal('show');
+        jQuery('#modal-welcome').modal('show');
+        $('#modal-welcome').on('hidden.bs.modal', function (e) {
+          jQuery('#modal-profile').modal({
+            keyboard: false,
+            backdrop: 'static'
+          });
+          jQuery('#modal-profile').modal('show');
+        })
       }
     } else {
       this.projectTarget = this.sharedService.getProjectTarget();
@@ -70,6 +78,8 @@ export class Home {
       myContent.css({"background-size":"cover"});
       myNavBar.css({"background-color": "#14baa6","border-color": "#14baa6"});
     }
+
+    this.sharedService.setCurrentOffer(null);
 
   }
 

@@ -9,7 +9,7 @@ declare var jQuery: any;
   template: require('./modal-notification-contract.html'),
   directives: [ROUTER_DIRECTIVES]
 })
-export class ModalNotificationContract {
+export class ModalNotificationContract{
   @Input()
   jobyer: any;
 
@@ -18,11 +18,10 @@ export class ModalNotificationContract {
 
   showContractNotif = false;
   showOfferNotif = false;
-  showProfilNotif = false;
-  showAuthNotif = false;
 
   constructor(private sharedService: SharedService,
               private router: Router) {
+
   }
 
   ngOnInit() {
@@ -31,55 +30,28 @@ export class ModalNotificationContract {
       this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
     }
 
-    if (this.currentUser) {
-      let currentEmployer = this.currentUser.employer;
-      let userData = this.currentUser;
-
-      //verification of employer informations
-      let redirectToCivility = (currentEmployer && currentEmployer.entreprises[0]) ?
-      (userData.titre == "") ||
-      (userData.prenom == "") ||
-      (userData.nom == "") ||
-      (currentEmployer.entreprises[0].nom == "") ||
-      (currentEmployer.entreprises[0].siret == "") ||
-      (currentEmployer.entreprises[0].naf == "") ||
-      (currentEmployer.entreprises[0].siegeAdress.id == 0) ||
-      (currentEmployer.entreprises[0].workAdress.id == 0) : true;
-
-      let isDataValid = !redirectToCivility;
-
-      if (isDataValid) {
-        let o = this.sharedService.getCurrentOffer();
-        //show the contract notification
-        if (o) {
-          this.showContractNotif = true;
-        } else {
-          //show the selection offer notif
-          this.showOfferNotif = true;
-        }
-      } else {
-        //show profil notif
-        this.showProfilNotif = true;
-      }
-    }
-    else {
-      this.showAuthNotif = true;
+    let o = this.sharedService.getCurrentOffer();
+    if (o != null) {
+      this.showOfferNotif = false;
+      this.showContractNotif = true;
+    }else{
+      this.showOfferNotif = true;
+      this.showContractNotif = false;
     }
   }
 
+
   gotoContractForm() {
-    jQuery('#my-modal18-content').modal('hide');
+    jQuery('#modal-notification-contract').modal('hide');
     let o = this.sharedService.getCurrentOffer();
     //navigate to contract page
     if (o != null) {
       this.sharedService.setCurrentJobyer(this.jobyer);
       this.router.navigate(['app/contract/recruitment-form']);
     }
-    this.router.navigate(['app/contract/recruitment-form']);
   }
 
   close(): void {
-    jQuery('#my-modal18-content').modal('hide');
+    jQuery('#modal-notification-contract').modal('hide');
   }
 }
-

@@ -220,8 +220,8 @@ export class ProfileService{
         sql = sql + " fk_user_nationalite ='" + nationalityId + "', " +
           (!this.isEmpty(birthCountryId) ? ("fk_user_pays ='" + birthCountryId + "', ") : "") +
           "lieu_de_naissance ='" + birthplace + "', " +
-          "numero_titre_sejour ='" + numStay + "', " +
-          "fk_user_identifiants_nationalite='" + regionId + "' " +
+          (!this.isEmpty(regionId) ? ("fk_user_identifiants_nationalite ='" + regionId + "', ") : "") +
+          "numero_titre_sejour ='" + numStay + "' " +
           "where pk_user_jobyer ='" + roleId + "';";
       } else {
         sql = sql + " fk_user_nationalite ='" + nationalityId + "' " +
@@ -247,7 +247,7 @@ export class ProfileService{
   }
 
 
-  updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId, medecineId, conventionId) {
+  updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId, medecineId, conventionId, forRecruitment) {
     var sql = "update user_employeur set ";
     sql = sql + " titre='" + title + "' ";
     sql = sql + ", nom='" + lastname + "', prenom='" + firstname + "' where pk_user_employeur=" + roleId + ";";
@@ -267,6 +267,18 @@ export class ProfileService{
         .map(res => res.json())
         .subscribe(data => {
 
+          resolve(data);
+        });
+    })
+  }
+
+  updateEmployerCivilityForRecruitment(siret, entrepriseId) {
+    let sql = " update user_entreprise set siret ='" + siret + "' where  pk_user_entreprise=" + entrepriseId;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
           resolve(data);
         });
     })

@@ -1,4 +1,4 @@
-import {Component, NgZone, ViewEncapsulation, ViewChild} from "@angular/core";
+import {Component, NgZone, ViewEncapsulation, ViewChild, OnChanges, SimpleChange, Input} from "@angular/core";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {NKDatetime} from "ng2-datetime/ng2-datetime";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
@@ -16,19 +16,30 @@ import {ModalPicture} from "../modal-picture/modal-picture";
 import {BankAccount} from "../bank-account/bank-account";
 import MaskedInput from "angular2-text-mask";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
+import {Subject} from "rxjs";
 
 declare var jQuery, require, Messenger, moment: any;
 declare var google: any;
 
 @Component({
-  selector: '[profile]',
-  template: require('./profile.html'),
+  selector: '[modal-profile]',
+  template: require('./modal-profile.html'),
   directives: [ROUTER_DIRECTIVES, NKDatetime, AlertComponent, ModalPicture, MaskedInput, BankAccount],
-  providers: [Utils, ProfileService, CommunesService, LoadListService, MedecineService, AttachementsService],
-  encapsulation: ViewEncapsulation.None,
-  styles: [require('./profile.scss')]
+  providers: [Utils, ProfileService, CommunesService, LoadListService, MedecineService, AttachementsService]
 })
-export class Profile {
+
+export class ModalProfile{
+  @Input()
+  fromPage: string;
+
+  forRecruitment: boolean = false;
+
+  projectTarget: string;
+
+  msgWelcome1: string;
+  msgWelcome2: string;
+
+
   public maskSiret = [/[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/]
   public maskApe = [/[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /^[a-zA-Z]*$/]
 
@@ -55,19 +66,16 @@ export class Profile {
   nationalities = [];
   personalAddress: string;
   jobAddress: string;
-
   isValidPersonalAddress: boolean = true;
   isValidJobAddress: boolean = true;
-  isValidLastname: boolean = true;
-  isValidFirstname: boolean = true;
-  isValidCompanyname: boolean = true;
+  isValidLastname: boolean = false;
+  isValidFirstname: boolean = false;
+  isValidCompanyname: boolean = false;
   isValidSiret: boolean = true;
-  isValidConventionId: boolean = true;
   isValidApe: boolean = true;
   isValidBirthdate: boolean = true;
   isValidCni: boolean = true;
   isValidNumSS: boolean = true;
-
   lastnameHint: string = "";
   firstnameHint: string = "";
   companynameHint: string = "";
@@ -94,7 +102,6 @@ export class Profile {
   streetNumberJA: string;
   nameJA: string;
   zipCodeJA: string;
-
 
   //currentUser object
   currentUser: any;
@@ -138,17 +145,13 @@ export class Profile {
   isResident: boolean = true;
   isCIN: boolean = true;
 
+  isProfileEmpty: boolean;
+
   /*
    Conventions collectives
    */
   conventionId: number;
   conventions: any = [];
-
-  setImgClasses() {
-    return {
-      'img-circle': true,//TODO:this.currentUser && this.currentUser.estEmployeur,
-    };
-  }
 
   constructor(private listService: LoadListService,
               private profileService: ProfileService,
@@ -163,7 +166,7 @@ export class Profile {
     this.currentUser = this.sharedService.getCurrentUser();
 
     if (!this.currentUser) {
-      this.router.navigate(['app/home']);
+      return;
     } else {
       this.getUserInfos();
       if (this.isNewUser) {
@@ -223,6 +226,40 @@ export class Profile {
           }
         }
       })
+
+    if (this.fromPage == "recruitment") {
+      this.isProfileEmpty = false;
+      this.forRecruitment = true;
+    }
+
+
+  }
+
+  ngOnInit() {
+    this.currentUser = this.sharedService.getCurrentUser();
+    if (this.currentUser) {
+      this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+
+      this.msgWelcome1 = "Bienvenue dans Vit-On-Job";
+      this.msgWelcome2 = "Vous êtes tout près de trouver votre " + (this.projectTarget == "jobyer" ? 'emploi.' : 'Jobyer.');
+    }
+
+    if (this.fromPage == "recruitment") {
+      this.isProfileEmpty = false;
+      this.forRecruitment = true;
+    }
+  }
+
+
+  close(): void {
+    jQuery('#modal-profile').modal('hide');
+  }
+
+
+  setImgClasses() {
+    return {
+      'img-circle': true,//TODO:this.currentUser && this.currentUser.estEmployeur,
+    };
   }
 
 
@@ -240,23 +277,20 @@ export class Profile {
     this.isRecruiter = this.currentUser.estRecruteur;
     this.accountId = this.currentUser.id;
     this.userRoleId = this.currentUser.estEmployeur ? this.currentUser.employer.id : this.currentUser.jobyer.id;
+    this.isProfileEmpty = (this.isEmpty(this.currentUser.title) ? true : false);
   }
 
-  /**
-   * Define initial required fields
-   */
   initValidation() {
-
-    // Required field for all roles
-    this.isValidLastname = Utils.isEmpty(this.lastname) ? false : true;
-    this.isValidFirstname = Utils.isEmpty(this.firstname) ? false : true;
-
-    // Required fields for employer
-    if (this.isEmployer) {
-      this.isValidApe = Utils.isEmpty(this.ape) ? false : true;
-      this.isValidCompanyname = Utils.isEmpty(this.companyname) ? false : true;
-      this.isValidConventionId = Utils.isEmpty(this.conventionId) ? false : true;
-    }
+    this.isValidLastname = false;
+    this.isValidFirstname = false;
+    this.isValidCompanyname = false;
+    this.isValidSiret = false;
+    this.isValidApe = false;
+    this.isValidBirthdate = false;
+    this.isValidCni = false;
+    this.isValidNumSS = false;
+    this.isValidPersonalAddress = false;
+    this.isValidJobAddress = false;
   }
 
   watchPersonalAddress(e) {
@@ -348,16 +382,21 @@ export class Profile {
     return false;
   }
 
-  /**
-   * Initialize form with user values
-   */
   initForm() {
     this.showForm = true;
+    this.initValidation();
     this.title = !this.currentUser.titre ? "M." : this.currentUser.titre;
     jQuery('.titleSelectPicker').selectpicker('val', this.title);
     this.lastname = this.currentUser.nom;
     this.firstname = this.currentUser.prenom;
 
+    if (!Utils.isEmpty(this.lastname)) {
+      this.isValidFirstname = true;
+    }
+
+    if (!Utils.isEmpty(this.lastname)) {
+      this.isValidLastname = true;
+    }
     if (!this.isRecruiter) {
       if (this.isEmployer && this.currentUser.employer.entreprises.length != 0) {
         this.companyname = this.currentUser.employer.entreprises[0].nom;
@@ -374,7 +413,10 @@ export class Profile {
             jQuery(".medecine-select").select2('data', this.selectedMedecine);
           }
         });
-
+        this.isValidSiret = true;
+        if (!Utils.isEmpty(this.companyname)) {
+          this.isValidCompanyname = true;
+        }
         //get Personal Address
         var entreprise = this.currentUser.employer.entreprises[0];
         this.personalAddress = entreprise.siegeAdress.fullAdress;
@@ -395,8 +437,8 @@ export class Profile {
             this.countryPA = data[0].country;
           });
         }
-        this.isValidPersonalAddress = true;
 
+        this.isValidPersonalAddress = true;
         //get Job Address
         this.jobAddress = entreprise.workAdress.fullAdress;
         this.nameJA = entreprise.workAdress.name;
@@ -417,11 +459,10 @@ export class Profile {
           });
         }
         this.isValidJobAddress = true;
-
       } else {
         if (this.currentUser.jobyer.dateNaissance) {
           var birthDate = moment(new Date(this.currentUser.jobyer.dateNaissance)).format('DD/MM/YYYY');
-          this.birthdateHidden = new Date(this.currentUser.jobyer.dateNaissance);
+          this.birthdateHidden = new Date(this.currentUser.jobyer.dateNaissance)
           this.isValidBirthdate = true;
           jQuery("#birthdate input").val(birthDate);
 
@@ -527,9 +568,7 @@ export class Profile {
     this.profileService.getPrefecture(this.whoDeliverStay).then((data: any) => {
       if (data && data.status == "success" && data.data && data.data.length != 0)
         jQuery(".whoDeliver-select").select2('data', {id: data.data[0].id, nom: this.whoDeliverStay});
-    });
-
-    this.initValidation();
+    })
   }
 
   updateScan(accountId, userId, role) {
@@ -603,9 +642,8 @@ export class Profile {
           type: 'POST',
           dataType: 'json',
           quietMillis: 250,
-          transport: function (params) {
-            params.beforeSend = Configs.getSelect2TextHeaders();
-            return jQuery.ajax(params);
+          params: {
+            contentType: "text/plain",
           },
           data: this.communesService.getDepartmentsByTerm(),
           results: function (data, page) {
@@ -691,9 +729,8 @@ export class Profile {
           type: 'POST',
           dataType: 'json',
           quietMillis: 250,
-          transport: function (params) {
-            params.beforeSend = Configs.getSelect2TextHeaders();
-            return jQuery.ajax(params);
+          params: {
+            contentType: "text/plain",
           },
           data: function (term, page) {
             //return self.communesService.getCommunesByTerm(term,self.selectedCP);
@@ -735,9 +772,8 @@ export class Profile {
           type: 'POST',
           dataType: 'json',
           quietMillis: 250,
-          transport: function (params) {
-            params.beforeSend = Configs.getSelect2TextHeaders();
-            return jQuery.ajax(params);
+          params: {
+            contentType: "text/plain",
           },
           data: this.medecineService.getMedecineByTerm(),
           results: function (data, page) {
@@ -772,9 +808,8 @@ export class Profile {
           type: 'POST',
           dataType: 'json',
           quietMillis: 250,
-          transport: function (params) {
-            params.beforeSend = Configs.getSelect2TextHeaders();
-            return jQuery.ajax(params);
+          params: {
+            contentType: "text/plain",
           },
           data: this.communesService.getPrefecturesByTerm(),
           results: function (data, page) {
@@ -884,7 +919,7 @@ export class Profile {
     let _isValid: boolean = true;
     let _hint: string = "";
 
-    if (_value.length != 5) {
+    if (_value.length != 0 && _value.length != 5) {
       _hint = "Saisissez les 4 chiffres suivis d'une lettre";
       _isValid = false;
     } else {
@@ -1118,7 +1153,7 @@ export class Profile {
         _isFormValid = false;
       }
     } else if (this.isEmployer) {
-      if (this.isValidFirstname && this.isValidLastname && this.isValidCompanyname && this.isValidSiret && this.isValidApe && this.isValidPersonalAddress && this.isValidJobAddress && !this.isEmpty(this.conventionId)) {
+      if (this.isValidFirstname && this.isValidLastname && this.isValidCompanyname && this.isValidSiret && (this.isValidApe && !this.isEmpty(this.ape)) && this.isValidPersonalAddress && this.isValidJobAddress && !this.isEmpty(this.conventionId)) {
         _isFormValid = true;
       } else {
         _isFormValid = false;
@@ -1141,6 +1176,13 @@ export class Profile {
     return _isFormValid;
   }
 
+  isValidFormForRecruitment() {
+    if (this.isValidSiret && !this.isEmpty(this.siret) && this.isValidPersonalAddress && !this.isEmpty(this.personalAddress) && this.isValidJobAddress && !this.isEmpty(this.jobAddress)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   IsCompanyExist(e, field) {
     //verify if company exists
@@ -1227,7 +1269,8 @@ export class Profile {
   }
 
   updateCivility() {
-    if (this.isValidForm()) {
+    let isFormValid = (this.forRecruitment ? this.isValidFormForRecruitment() : this.isValidForm())
+    if (isFormValid) {
       this.validation = true;
       var title = this.title;
       var firstname = this.firstname;
@@ -1269,7 +1312,7 @@ export class Profile {
                 if (isNewUser) {
                   this.router.navigate(['app/offer/list']);
                 }
-
+                this.close();
               }
 
             })
@@ -1279,13 +1322,13 @@ export class Profile {
             });
 
         } else {
-          var companyname = this.companyname;
-          var siret = this.siret.substring(0, 17);
-          var ape = this.ape.substring(0, 5).toUpperCase();
+          var companyname = (!this.companyname ? this.currentUser.employer.entreprises[0].nom : this.companyname);
+          var siret = (!this.isEmpty(this.siret) ? this.siret.substring(0, 17) : "");
+          var ape = this.ape ? this.ape.substring(0, 5).toUpperCase() : "";
           var medecineId = this.selectedMedecine.id === "0" ? 0 : parseInt(this.selectedMedecine.id);
           var entrepriseId = this.currentUser.employer.entreprises[0].id;
 
-          this.profileService.updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, userRoleId, entrepriseId, medecineId, this.conventionId, false)
+          this.profileService.updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, userRoleId, entrepriseId, medecineId, this.conventionId, this.forRecruitment)
             .then((res: any) => {
 
               //case of update failure : server unavailable or connection problem
@@ -1348,6 +1391,7 @@ export class Profile {
                 if (this.isNewUser) {
                   this.router.navigate(['app/offer/list']);
                 }
+                this.close();
               }
 
             })
@@ -1443,15 +1487,62 @@ export class Profile {
               if (this.isNewUser) {
                 this.router.navigate(['app/offer/list']);
               }
+              this.close();
             }
-
-
           })
           .catch((error: any) => {
             //console.log(error);
             this.validation = false;
           });
 
+      }
+
+    }
+  }
+
+  updateCivilityForRecruitment() {
+    if (this.isValidFormForRecruitment()) {
+      this.validation = true;
+
+      if (this.isEmployer) {
+        var siret = this.siret.substring(0, 17);
+        var entrepriseId = this.currentUser.employer.entreprises[0].id;
+
+        this.profileService.updateEmployerCivilityForRecruitment(siret, entrepriseId).then((res: any) => {
+          //case of update failure : server unavailable or connection problem
+          if (!res || res.status == "failure") {
+            Messenger().post({
+              message: 'Serveur non disponible ou problème de connexion',
+              type: 'error',
+              showCloseButton: true
+            });
+            this.validation = false;
+            return;
+          } else {
+            // data saved
+            this.currentUser.employer.entreprises[0].siret = siret;
+            this.sharedService.setCurrentUser(this.currentUser);
+
+            this.validation = false;
+            if (this.isPersonalAddressModified()) {
+              this.updatePersonalAddress();
+            }
+            if (this.isJobAddressModified()) {
+              this.updateJobAddress();
+            }
+            Messenger().post({
+              message: 'Vos données ont été bien sauvegardées',
+              type: 'success',
+              showCloseButton: true
+            });
+            //redirecting to contract page
+            this.router.navigate(['app/contract/recruitment-form']);
+            this.close();
+          }
+        })
+          .catch((error: any) => {
+            this.validation = false;
+          });
       }
     }
   }

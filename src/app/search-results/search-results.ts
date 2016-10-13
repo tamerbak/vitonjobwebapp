@@ -3,15 +3,17 @@ import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {SearchService} from "../../providers/search-service";
 import {ProfileService} from "../../providers/profile.service";
-import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
+//import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
+import {RecruitButton} from "../components/recruit-button/recruit-button";
 import {GOOGLE_MAPS_DIRECTIVES} from "angular2-google-maps/core";
+declare var jQuery: any;
 
 @Component({
   selector: '[search-results]',
   template: require('./search-results.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./search-results.scss')],
-  directives: [ROUTER_DIRECTIVES, ModalNotificationContract, GOOGLE_MAPS_DIRECTIVES],
+  directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, RecruitButton],
   providers: [SearchService, ProfileService]
 })
 export class SearchResults {
@@ -137,6 +139,12 @@ export class SearchResults {
     this.router.navigate(['app/search/details']);
     //this.router.navigate(['app/search/details', {item, o}]);
   }
+
+  /*onRecruite(obj: string) {
+    if(obj = "contract"){
+      jQuery('#modal-notification-contract').modal('show');
+    }
+  }*/
 
   isEmpty(str) {
     if (str == '' || str == 'null' || !str)
