@@ -649,17 +649,19 @@ export class MissionDetails {
 // debugger;
           let idInvoice = invoiceData.invoiceId;
           let bean = {
-            "class": 'com.vitonjob.yousign.callouts.YousignConfig',
-            employerFirstName: data.employerFirstName,
-            employerLastName: data.employerLastName,
-            employerEmail: data.employerEmail,
-            employerPhone: data.employerPhone,
-            jobyerFirstName: data.jobyerFirstName,
-            jobyerLastName: data.jobyerLastName,
-            jobyerEmail: data.jobyerEmail,
-            jobyerPhone: data.jobyerPhone,
-            idContract: idContrat,
-            idInvoice: idInvoice
+            "class":'com.vitonjob.docusign.model.DSConfig',
+            employerFirstName : data.employerFirstName,
+            employerLastName : data.employerLastName,
+            employerEmail : data.employerEmail,
+            employerPhone : data.employerPhone,
+            jobyerFirstName : data.jobyerFirstName,
+            jobyerLastName : data.jobyerLastName,
+            jobyerEmail : data.jobyerEmail,
+            jobyerPhone : data.jobyerPhone,
+            idContract : idContrat,
+            idInvoice : idInvoice,
+            idDocument : idInvoice
+
           };
           this.missionService.signEndOfMission(bean).then(signatureData=> {
 // debugger;
