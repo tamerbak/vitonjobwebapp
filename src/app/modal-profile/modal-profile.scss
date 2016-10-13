@@ -506,3 +506,7 @@ html[dir="rtl"] .select2-search input {
   padding-right: 20px;
   margin-bottom: 0
 }
+
+.pac-container{
+  z-index: 1051 !important;
+}

@@ -79,6 +79,8 @@ export class Home {
       myNavBar.css({"background-color": "#14baa6","border-color": "#14baa6"});
     }
 
+    this.sharedService.setCurrentOffer(null);
+
   }
 
 

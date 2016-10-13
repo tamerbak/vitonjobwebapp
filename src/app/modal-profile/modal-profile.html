@@ -16,7 +16,7 @@
 
                 <!--Common fields : Employer & Jobyer & Recruiter-->
 
-                <div *ngIf="isProfileEmpty">
+                <div [hidden]="!isProfileEmpty">
                   <div class="form-group row">
                     <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="title">
                       Civilité
@@ -468,7 +468,11 @@
   										</span>
               </div>
             </div>
-            <button class="btn btn-primary" [disabled]="!isValidForm() || validation" (click)="updateCivility()">
+            <button class="btn btn-primary" [disabled]="!isValidForm() || validation" (click)="updateCivility()" *ngIf="isProfileEmpty">
+              Valider
+            </button>
+
+            <button class="btn btn-primary" [disabled]="!isValidFormForRecruitment() || validation" (click)="updateCivilityForRecruitment()" *ngIf="forRecruitment">
               Valider
             </button>
           </div>

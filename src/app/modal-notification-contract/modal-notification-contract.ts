@@ -12,8 +12,6 @@ declare var jQuery: any;
 export class ModalNotificationContract{
   @Input()
   jobyer: any;
-  //@Input()
-  obj: string;
 
   currentUser: any;
   projectTarget: string;
@@ -30,7 +28,15 @@ export class ModalNotificationContract{
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+    }
 
+    let o = this.sharedService.getCurrentOffer();
+    if (o != null) {
+      this.showOfferNotif = false;
+      this.showContractNotif = true;
+    }else{
+      this.showOfferNotif = true;
+      this.showContractNotif = false;
     }
   }
 

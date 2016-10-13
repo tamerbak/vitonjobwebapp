@@ -72,7 +72,7 @@ export class ModalProfile{
   isValidFirstname: boolean = false;
   isValidCompanyname: boolean = false;
   isValidSiret: boolean = true;
-  isValidApe: boolean = false;
+  isValidApe: boolean = true;
   isValidBirthdate: boolean = true;
   isValidCni: boolean = true;
   isValidNumSS: boolean = true;
@@ -227,7 +227,7 @@ export class ModalProfile{
         }
       })
 
-    if (this.fromPage== "recruitment") {
+    if (this.fromPage == "recruitment") {
       this.isProfileEmpty = false;
       this.forRecruitment = true;
     }
@@ -244,7 +244,7 @@ export class ModalProfile{
       this.msgWelcome2 = "Vous êtes tout près de trouver votre " + (this.projectTarget == "jobyer" ? 'emploi.' : 'Jobyer.');
     }
 
-    if (this.fromPage== "recruitment") {
+    if (this.fromPage == "recruitment") {
       this.isProfileEmpty = false;
       this.forRecruitment = true;
     }
@@ -1153,7 +1153,7 @@ export class ModalProfile{
         _isFormValid = false;
       }
     } else if (this.isEmployer) {
-      if (this.isValidFirstname && this.isValidLastname && this.isValidCompanyname && this.isValidSiret && this.isValidApe && this.isValidPersonalAddress && this.isValidJobAddress && !this.isEmpty(this.conventionId)) {
+      if (this.isValidFirstname && this.isValidLastname && this.isValidCompanyname && this.isValidSiret && (this.isValidApe && !this.isEmpty(this.ape)) && this.isValidPersonalAddress && this.isValidJobAddress && !this.isEmpty(this.conventionId)) {
         _isFormValid = true;
       } else {
         _isFormValid = false;
@@ -1176,6 +1176,13 @@ export class ModalProfile{
     return _isFormValid;
   }
 
+  isValidFormForRecruitment() {
+    if (this.isValidSiret && !this.isEmpty(this.siret) && this.isValidPersonalAddress && !this.isEmpty(this.personalAddress) && this.isValidJobAddress && !this.isEmpty(this.jobAddress)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   IsCompanyExist(e, field) {
     //verify if company exists
@@ -1262,7 +1269,8 @@ export class ModalProfile{
   }
 
   updateCivility() {
-    if (this.isValidForm()) {
+    let isFormValid = (this.forRecruitment ? this.isValidFormForRecruitment() : this.isValidForm())
+    if (isFormValid) {
       this.validation = true;
       var title = this.title;
       var firstname = this.firstname;
@@ -1314,13 +1322,13 @@ export class ModalProfile{
             });
 
         } else {
-          var companyname = this.companyname;
+          var companyname = (!this.companyname ? this.currentUser.employer.entreprises[0].nom : this.companyname);
           var siret = (!this.isEmpty(this.siret) ? this.siret.substring(0, 17) : "");
-          var ape = this.ape.substring(0, 5).toUpperCase();
+          var ape = this.ape ? this.ape.substring(0, 5).toUpperCase() : "";
           var medecineId = this.selectedMedecine.id === "0" ? 0 : parseInt(this.selectedMedecine.id);
           var entrepriseId = this.currentUser.employer.entreprises[0].id;
 
-          this.profileService.updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, userRoleId, entrepriseId, medecineId, this.conventionId)
+          this.profileService.updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, userRoleId, entrepriseId, medecineId, this.conventionId, this.forRecruitment)
             .then((res: any) => {
 
               //case of update failure : server unavailable or connection problem
@@ -1489,6 +1497,53 @@ export class ModalProfile{
 
       }
 
+    }
+  }
+
+  updateCivilityForRecruitment() {
+    if (this.isValidFormForRecruitment()) {
+      this.validation = true;
+
+      if (this.isEmployer) {
+        var siret = this.siret.substring(0, 17);
+        var entrepriseId = this.currentUser.employer.entreprises[0].id;
+
+        this.profileService.updateEmployerCivilityForRecruitment(siret, entrepriseId).then((res: any) => {
+          //case of update failure : server unavailable or connection problem
+          if (!res || res.status == "failure") {
+            Messenger().post({
+              message: 'Serveur non disponible ou problème de connexion',
+              type: 'error',
+              showCloseButton: true
+            });
+            this.validation = false;
+            return;
+          } else {
+            // data saved
+            this.currentUser.employer.entreprises[0].siret = siret;
+            this.sharedService.setCurrentUser(this.currentUser);
+
+            this.validation = false;
+            if (this.isPersonalAddressModified()) {
+              this.updatePersonalAddress();
+            }
+            if (this.isJobAddressModified()) {
+              this.updateJobAddress();
+            }
+            Messenger().post({
+              message: 'Vos données ont été bien sauvegardées',
+              type: 'success',
+              showCloseButton: true
+            });
+            //redirecting to contract page
+            this.router.navigate(['app/contract/recruitment-form']);
+            this.close();
+          }
+        })
+          .catch((error: any) => {
+            this.validation = false;
+          });
+      }
     }
   }
 

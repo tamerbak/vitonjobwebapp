@@ -1275,12 +1275,12 @@ export class Profile{
 
         } else {
           var companyname = this.companyname;
-          var siret = (!this.isEmpty(this.siret) ? this.siret.substring(0, 17) : "");
+          var siret = this.siret.substring(0, 17);
           var ape = this.ape.substring(0, 5).toUpperCase();
           var medecineId = this.selectedMedecine.id === "0" ? 0 : parseInt(this.selectedMedecine.id);
           var entrepriseId = this.currentUser.employer.entreprises[0].id;
 
-          this.profileService.updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, userRoleId, entrepriseId, medecineId, this.conventionId)
+          this.profileService.updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, userRoleId, entrepriseId, medecineId, this.conventionId, false)
             .then((res: any) => {
 
               //case of update failure : server unavailable or connection problem
