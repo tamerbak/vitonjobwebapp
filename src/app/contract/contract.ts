@@ -82,30 +82,63 @@ export class Contract {
       }
     });
 
-    let calendar = this.currentOffer.calendarData;
-    let minDay = new Date(calendar[0].date);
-    let maxDay = new Date(calendar[0].date);
-    debugger;
-    for(let i=1 ; i <calendar.length;i++){
-      let date = new Date(calendar[i].date);
-      if(minDay.getTime()>date.getTime())
-        minDay = date;
-      if(maxDay.getTime()<date.getTime())
-        maxDay = date;
+
+
+    //  Load recours list
+    this.contractService.loadRecoursList().then(data=> {
+      this.recours = data;
+    });
+
+    // Get the currentEmployer
+    this.currentUser = this.sharedService.getCurrentUser();
+
+    if (this.currentUser) {
+      this.employer = this.currentUser.employer;
+      this.companyName = this.employer.entreprises[0].nom;
+      this.workAdress = this.employer.entreprises[0].workAdress.fullAdress;
+      this.hqAdress = this.employer.entreprises[0].siegeAdress.fullAdress;
+      let civility = this.currentUser.titre;
+      this.employerFullName = civility + " " + this.currentUser.nom + " " + this.currentUser.prenom;
+      this.medecineService.getMedecine(this.employer.entreprises[0].id).then((data: any)=> {
+        if (data && data != null) {
+          //debugger;
+          this.contractData.centreMedecineEntreprise = data.libelle;
+          this.contractData.adresseCentreMedecineEntreprise = data.adresse + ' ' + data.code_postal;
+        }
+
+      });
     }
 
-    let trial = 2;
-    let timeDiff = Math.abs(maxDay.getTime() - minDay.getTime());
-    let contractLength = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    // Check if there is a current offer
+    let trial = 0;
+    this.currentOffer = this.sharedService.getCurrentOffer();
+    if(this.currentOffer){
+      let calendar = this.currentOffer.calendarData;
+      let minDay = new Date(calendar[0].date);
+      let maxDay = new Date(calendar[0].date);
+      debugger;
+      for(let i=1 ; i <calendar.length;i++){
+        let date = new Date(calendar[i].date);
+        if(minDay.getTime()>date.getTime())
+          minDay = date;
+        if(maxDay.getTime()<date.getTime())
+          maxDay = date;
+      }
 
-    if(contractLength <= 1)
-      trial = 0;
-    else if(contractLength<30)
-      trial = 2;
-    else if(contractLength <60)
-      trial = 3;
-    else
-      trial = 5;
+
+      let timeDiff = Math.abs(maxDay.getTime() - minDay.getTime());
+      let contractLength = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+      if(contractLength <= 1)
+        trial = 0;
+      else if(contractLength<30)
+        trial = 2;
+      else if(contractLength <60)
+        trial = 3;
+      else
+        trial = 5;
+
+    }
 
     // Initialize contract data
     this.contractData = {
@@ -167,34 +200,6 @@ export class Contract {
       elementsNonCotisation: 10.0,
       titre: ''
     };
-
-    //  Load recours list
-    this.contractService.loadRecoursList().then(data=> {
-      this.recours = data;
-    });
-
-    // Get the currentEmployer
-    this.currentUser = this.sharedService.getCurrentUser();
-
-    if (this.currentUser) {
-      this.employer = this.currentUser.employer;
-      this.companyName = this.employer.entreprises[0].nom;
-      this.workAdress = this.employer.entreprises[0].workAdress.fullAdress;
-      this.hqAdress = this.employer.entreprises[0].siegeAdress.fullAdress;
-      let civility = this.currentUser.titre;
-      this.employerFullName = civility + " " + this.currentUser.nom + " " + this.currentUser.prenom;
-      this.medecineService.getMedecine(this.employer.entreprises[0].id).then((data: any)=> {
-        if (data && data != null) {
-          //debugger;
-          this.contractData.centreMedecineEntreprise = data.libelle;
-          this.contractData.adresseCentreMedecineEntreprise = data.adresse + ' ' + data.code_postal;
-        }
-
-      });
-    }
-
-    // Check if there is a current offer
-    this.currentOffer = this.sharedService.getCurrentOffer();
     if (this.currentOffer) {
       this.service.getRates().then((data: any) => {
         // debugger;
