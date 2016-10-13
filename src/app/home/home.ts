@@ -42,7 +42,7 @@ export class Home {
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
-      if(this.currentUser.titre == "") {
+      if(this.isEmpty(this.currentUser.titre)) {
         //call to open the modal-guide
         jQuery('#modal-welcome').modal({
           keyboard: false,
