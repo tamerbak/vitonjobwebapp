@@ -196,7 +196,7 @@ export class AttachementsService {
       this.http.post(Configs.fssURL, stringData, {headers:headers})
         .map(res => res.json())
         .subscribe(data => {
-          debugger;
+          // debugger;
           this.data = data;
           resolve(this.data);
         });

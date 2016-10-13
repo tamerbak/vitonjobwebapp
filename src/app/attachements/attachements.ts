@@ -51,7 +51,7 @@ export class Attachements {
     jQuery(document).ready(function () {
       jQuery('.fileinput').on('change.bs.fileinput', function (e, file) {
         self.scanData = file.result;
-        debugger;
+        // debugger;
       })
     });
   }
@@ -72,7 +72,7 @@ export class Attachements {
     this.selFileName = a.fileName;
     this.attachementSerice.downloadActualFile(a.id, a.fileName).then(data => {
       if(data){
-        debugger;
+        // debugger;
         this.fileContent = data['stream'];
         this.viewMode=true;
       }

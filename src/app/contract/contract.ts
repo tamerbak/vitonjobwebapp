@@ -116,7 +116,7 @@ export class Contract {
       let calendar = this.currentOffer.calendarData;
       let minDay = new Date(calendar[0].date);
       let maxDay = new Date(calendar[0].date);
-      debugger;
+      // debugger;
       for(let i=1 ; i <calendar.length;i++){
         let date = new Date(calendar[i].date);
         if(minDay.getTime()>date.getTime())
@@ -335,7 +335,7 @@ export class Contract {
     let calendar = this.currentOffer.calendarData;
     let minDay = new Date(calendar[0].date);
     let maxDay = new Date(calendar[0].date);
-    debugger;
+    // debugger;
     for(let i=1 ; i <calendar.length;i++){
       let date = new Date(calendar[i].date);
       if(minDay.getTime()>date.getTime())
