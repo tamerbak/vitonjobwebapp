@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {Configs} from "../configurations/configs";
 import {Http, Headers} from "@angular/http";
 import {Helpers} from "./helpers.service";
+import {GlobalConfigs} from "../configurations/globalConfigs";
 
 // HACK: To fix: error TS2307: Cannot find module 'node'.
 declare function unescape(s: string): string;
@@ -124,7 +125,7 @@ export class ContractService {
    * @param employerEntrepriseId
    * @return JSON results in form of created contract Id
    */
-  saveContract(contract: any, jobyerId: Number, employerEntrepriseId: Number, projectTarget: string, yousignJobyerLink, accountId) {
+  saveContract(contract: any, jobyerId: Number, employerEntrepriseId: Number, projectTarget: string, yousignJobyerLink, yousignEmployerLink, accountId) {
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
     var dt = new Date();
@@ -160,7 +161,8 @@ export class ContractService {
       " titre," +
       " demande_employeur," +
       " demande_jobyer," +
-      " option_mission" +
+      " option_mission,"+
+      " lien_employeur"+
       ")" +
       " VALUES ("
       + "'" + contract.missionStartDate + "',"
@@ -194,7 +196,8 @@ export class ContractService {
       + "'" + this.sqlfyText(contract.titre) + "',"
       + "'" + this.sqlfyText(contract.demandeEmployer) + "',"
       + "'" + this.sqlfyText(contract.demandeJobyer) + "',"
-      + "(select option_mission :: numeric from user_account where pk_user_account = '" + accountId + "')"
+      +"(select option_mission :: numeric from user_account where pk_user_account = '" + accountId + "'),"
+      +"'"+this.sqlfyText(yousignEmployerLink)+"'"
       + ")"
       + " RETURNING pk_user_contrat";
 
@@ -407,9 +410,15 @@ export class ContractService {
     //// debugger;
     console.log(JSON.stringify(jsonData));
 
+    let partner = GlobalConfigs.global['electronic-signature'];
+
     var dataSign = JSON.stringify(
       {
-        'class': 'com.vitonjob.yousign.callouts.YousignConfig',
+        'class': (partner === 'yousign' ? 'com.vitonjob.yousign.callouts.YousignConfig' :
+            (partner === 'docusign' ? 'com.vitonjob.docusign.model.DSConfig' :
+                ''
+            )
+        ),
         'employerFirstName': user.prenom,
         'employerLastName': user.nom,
         'employerEmail': user.email,
@@ -419,6 +428,7 @@ export class ContractService {
         'jobyerEmail': jobyer.email,
         'jobyerPhone': jobyer.tel,
         'idQuote': idQuote,
+        'idDocument' : idQuote,
         'data': btoa(unescape(encodeURIComponent(JSON.stringify(jsonData))))
       });
 
@@ -426,7 +436,11 @@ export class ContractService {
 
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 224,
+      'id': (partner === 'yousign' ? 224 :
+          (partner === 'docusign' ? 272 :
+              -1
+          )
+      ),
       'args': [
         {
           'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -443,7 +457,7 @@ export class ContractService {
       let headers = new Headers();
       headers.append("Content-Type", 'application/json');
 
-      this.http.post(Configs.yousignURL, JSON.stringify(payload), {headers: headers})
+      this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
           // debugger;

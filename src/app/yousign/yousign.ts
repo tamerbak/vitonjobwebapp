@@ -17,7 +17,7 @@ import {Router} from "@angular/router";
   styles: [require('./yousign.scss')],
   providers: [FinanceService, GlobalConfigs, ContractService, Helpers, SmsService]
 })
-export class Yousign{
+export class Yousign {
 
   projectTarget: string;
   isEmployer: boolean;
@@ -36,7 +36,7 @@ export class Yousign{
               private smsService: SmsService,
               private financeService: FinanceService,
               private sharedService: SharedService,
-              private router: Router){
+              private router: Router) {
     this.currentUser = this.sharedService.getCurrentUser();
     // Get target to determine configs
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
@@ -54,7 +54,7 @@ export class Yousign{
     }
   }
 
-  goToPaymentMethod(){
+  goToPaymentMethod() {
     this.router.navigate(['app/payment/method']);
   }
 
@@ -62,12 +62,12 @@ export class Yousign{
    * @author daoudi amine
    * @description call yousign service and send sms to the jobyer
    */
-  callYousign(){
+  callYousign() {
     this.hideLoader = false;
     this.financeService.loadQuote(
       this.currentOffer.idOffer,
       this.contractData.baseSalary
-    ).then((data: any) =>{
+    ).then((data: any) => {
       this.contractService.callYousign(
         this.currentUser,
         this.employer,
@@ -76,22 +76,35 @@ export class Yousign{
         this.projectTarget,
         this.currentOffer,
         data.quoteId
-      ).then((data: any) =>{
+      ).then((data: any) => {
+
+        let partner = GlobalConfigs.global['electronic-signature'];
+
         if (data == null || data.length == 0) {
-          console.log("Yousign result is null");
+          console.log("Electronic partner " + partner + " result is null");
           this.hideLoader = true;
           return;
         }
-
-        let dataValue = data[0]['value'];
-        let yousignData = JSON.parse(dataValue);
 
         //change jobyer 'contacted' status
         this.jobyer.contacted = true;
         this.jobyer.date_invit = new Date();
 
-        //get the link yousign of the contract for the employer
-        let yousignEmployerLink = yousignData.iFrameURLs[1].iFrameURL;
+        let dataValue = null;
+        let partnerData = null;
+        let partnerEmployerLink = null;
+
+        if (partner === 'yousign') {
+          dataValue = data[0]['value'];
+          partnerData = JSON.parse(dataValue);
+          //get the link yousign of the contract for the employer
+          partnerEmployerLink = partnerData.iFrameURLs[1].iFrameURL;
+        } else if (partner === 'docusign') {
+          dataValue = data;
+          partnerData = dataValue;
+          //get the link docusign of the contract for the employer
+          partnerEmployerLink = partnerData.Employeur.url;
+        }
 
         //Create to Iframe to show the contract in the NavPage
         let iframe = document.createElement('iframe');
@@ -102,15 +115,29 @@ export class Yousign{
         iframe.style.overflow = "hidden";
         iframe.style.height = "100%";
         iframe.style.width = "100%";
-        iframe.setAttribute("src", yousignEmployerLink);
+        iframe.setAttribute("src", partnerEmployerLink);
 
         document.getElementById("iframPlaceHolder").appendChild(iframe);
 
-        let yousignJobyerLink = yousignData.iFrameURLs[0].iFrameURL;
-        let jobyerPhoneNumber = this.jobyer.tel;
+        // TEL:23082016 : Using inappbrowser plugin :
+        // InAppBrowser.open(partnerEmployerLink, '_blank');
 
-        this.contractData.demandeJobyer = yousignData.idDemands[0].idDemand;
-        this.contractData.demandeEmployer = yousignData.idDemands[1].idDemand;
+        // get the partner link of the contract and the phoneNumber of the jobyer
+        let partnerJobyerLink = null;
+        let jobyerPhoneNumber = null;
+
+        if (partner === 'yousign') {
+          partnerJobyerLink = partnerData.iFrameURLs[0].iFrameURL;
+          jobyerPhoneNumber = this.jobyer.tel;
+          this.contractData.demandeJobyer = partnerData.idDemands[0].idDemand;
+          this.contractData.demandeEmployer = partnerData.idDemands[1].idDemand;
+
+        } else if (partner === 'docusign') {
+          partnerJobyerLink = partnerData.Jobyer.url;
+          jobyerPhoneNumber = this.jobyer.tel;
+          this.contractData.demandeJobyer = partnerData.Jobyer.idContrat;
+          this.contractData.demandeEmployer = partnerData.Employeur.idContrat;
+        }
 
         // TEL23082016 : Navigate to credit card page directly :
         //this.router.navigate(['app/wallet/create']);
@@ -118,16 +145,17 @@ export class Yousign{
         this.smsService.sendSms(jobyerPhoneNumber, 'Une demande de signature de contrat vous a été adressée. Contrat numéro : ' + this.contractData.numero);
         //save contract in Database
         this.contractService.getJobyerId(this.jobyer, this.projectTarget).then(
-          (jobyerData: any) =>{
+          (jobyerData: any) => {
             this.contractService.saveContract(
               this.contractData,
               jobyerData.data[0].pk_user_jobyer,
               this.employer.entreprises[0].id,
               this.projectTarget,
-              yousignJobyerLink,
+              partnerJobyerLink,
+              partnerEmployerLink,
               this.currentUser.id
             ).then(
-              (data: any) =>{
+              (data: any) => {
                 if (this.currentOffer && this.currentOffer != null) {
                   let idContract = 0;
                   if (data && data.data && data.data.length > 0)
@@ -140,14 +168,14 @@ export class Yousign{
                   this.hideLoader = true;
                 }
               },
-              (err) =>{
+              (err) => {
                 console.log(err);
               })
           },
-          (err) =>{
+          (err) => {
             console.log(err);
           })
-      }).catch(function(err){
+      }).catch(function (err) {
         console.log(err);
       });
     });
