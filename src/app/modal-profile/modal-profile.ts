@@ -166,7 +166,6 @@ export class ModalProfile{
     this.currentUser = this.sharedService.getCurrentUser();
 
     if (!this.currentUser) {
-      this.router.navigate(['app/home']);
       return;
     } else {
       this.getUserInfos();
