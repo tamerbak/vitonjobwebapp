@@ -180,7 +180,7 @@ export class ContractService {
       + "'" + employerEntrepriseId + "',"
       + "'" + jobyerId + "',"
       + "'" + this.sqlfyText(yousignJobyerLink) + "',"
-      + "'OUI',"
+      + "'NON',"
       + "'NON',"
       + "10,"
       + "10,"
