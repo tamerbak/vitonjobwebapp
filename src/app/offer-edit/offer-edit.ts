@@ -143,7 +143,13 @@ export class OfferEdit {
        this.youtubeLink = this.offer.videolink.replace("youtu.be", "www.youtube.com/embed").replace("watch?v=", "embed/");
        this.youtubeLinkSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.youtubeLink);
       }
-      this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée":"Rendre l'offre publique";
+      if(this.offer.visible){
+        this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée":"Rendre l'offre privée";
+
+      }
+      else{
+        this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée":"Rendre l'offre publique";
+      }
       this.autoSearchModeTitle = this.offer.rechercheAutomatique ? "Désactiver la recherche auto":"Activer la recherche auto";
       if (this.offer.obsolete) {
         //display alert if offer is obsolete
@@ -694,18 +700,19 @@ export class OfferEdit {
     var statut = offer.visible ? 'Non' : 'Oui';
     this.offersService.updateOfferStatut(offer.idOffer, statut, this.projectTarget).then(()=> {
       offer.visible = (statut == 'Non' ? false : true);
-      this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée":"Rendre l'offre public";
       this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
       this.sharedService.setCurrentUser(this.currentUser);
       if (offer.visible) {
+        this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée":"Rendre l'offre privée";
         Messenger().post({
-          message: "Votre offre a bien été déplacé dans «Mes offres en ligne».",
+          message: "Votre offre a bien été déplacée dans «Mes offres en ligne».",
           type: 'success',
           showCloseButton: true
         });
       } else {
+        this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée":"Rendre l'offre publique";
         Messenger().post({
-          message: "Votre offre a bien été déplacé dans «Mes offres en brouillon».",
+          message: "Votre offre a bien été déplacée dans «Mes offres en brouillon».",
           type: 'success',
           showCloseButton: true
         });
