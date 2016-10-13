@@ -28,7 +28,7 @@ declare var google: any;
   encapsulation: ViewEncapsulation.None,
   styles: [require('./profile.scss')]
 })
-export class Profile{
+export class Profile {
   public maskSiret = [/[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/]
   public maskApe = [/[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /^[a-zA-Z]*$/]
 
@@ -55,16 +55,19 @@ export class Profile{
   nationalities = [];
   personalAddress: string;
   jobAddress: string;
+
   isValidPersonalAddress: boolean = true;
   isValidJobAddress: boolean = true;
-  isValidLastname: boolean = false;
-  isValidFirstname: boolean = false;
-  isValidCompanyname: boolean = false;
-  isValidSiret: boolean = false;
-  isValidApe: boolean = false;
+  isValidLastname: boolean = true;
+  isValidFirstname: boolean = true;
+  isValidCompanyname: boolean = true;
+  isValidSiret: boolean = true;
+  isValidConventionId: boolean = true;
+  isValidApe: boolean = true;
   isValidBirthdate: boolean = true;
   isValidCni: boolean = true;
   isValidNumSS: boolean = true;
+
   lastnameHint: string = "";
   firstnameHint: string = "";
   companynameHint: string = "";
@@ -239,20 +242,24 @@ export class Profile{
     this.userRoleId = this.currentUser.estEmployeur ? this.currentUser.employer.id : this.currentUser.jobyer.id;
   }
 
+  /**
+   * Define initial required fields
+   */
   initValidation() {
-    this.isValidLastname = false;
-    this.isValidFirstname = false;
-    this.isValidCompanyname = false;
-    this.isValidSiret = false;
-    this.isValidApe = false;
-    this.isValidBirthdate = false;
-    this.isValidCni = false;
-    this.isValidNumSS = false;
-    this.isValidPersonalAddress = false;
-    this.isValidJobAddress = false;
+
+    // Required field for all roles
+    this.isValidLastname = Utils.isEmpty(this.lastname) ? false : true;
+    this.isValidFirstname = Utils.isEmpty(this.firstname) ? false : true;
+
+    // Required fields for employer
+    if (this.isEmployer) {
+      this.isValidApe = Utils.isEmpty(this.ape) ? false : true;
+      this.isValidCompanyname = Utils.isEmpty(this.companyname) ? false : true;
+      this.isValidConventionId = Utils.isEmpty(this.conventionId) ? false : true;
+    }
   }
 
-  watchPersonalAddress(e){
+  watchPersonalAddress(e) {
     let _address = e.target.value;
     let _isValid: boolean = true;
     let _hint: string = "";
@@ -270,7 +277,7 @@ export class Profile{
     this.isValidForm();
   }
 
-  watchJobAddress(e){
+  watchJobAddress(e) {
     let _address = e.target.value;
     let _isValid: boolean = true;
     let _hint: string = "";
@@ -341,21 +348,16 @@ export class Profile{
     return false;
   }
 
+  /**
+   * Initialize form with user values
+   */
   initForm() {
     this.showForm = true;
-    this.initValidation();
     this.title = !this.currentUser.titre ? "M." : this.currentUser.titre;
     jQuery('.titleSelectPicker').selectpicker('val', this.title);
     this.lastname = this.currentUser.nom;
     this.firstname = this.currentUser.prenom;
 
-    if (!Utils.isEmpty(this.lastname)) {
-      this.isValidFirstname = true;
-    }
-
-    if (!Utils.isEmpty(this.lastname)) {
-      this.isValidLastname = true;
-    }
     if (!this.isRecruiter) {
       if (this.isEmployer && this.currentUser.employer.entreprises.length != 0) {
         this.companyname = this.currentUser.employer.entreprises[0].nom;
@@ -372,10 +374,7 @@ export class Profile{
             jQuery(".medecine-select").select2('data', this.selectedMedecine);
           }
         });
-        this.isValidSiret = true;
-        if (!Utils.isEmpty(this.companyname)) {
-          this.isValidCompanyname = true;
-        }
+
         //get Personal Address
         var entreprise = this.currentUser.employer.entreprises[0];
         this.personalAddress = entreprise.siegeAdress.fullAdress;
@@ -396,8 +395,8 @@ export class Profile{
             this.countryPA = data[0].country;
           });
         }
-
         this.isValidPersonalAddress = true;
+
         //get Job Address
         this.jobAddress = entreprise.workAdress.fullAdress;
         this.nameJA = entreprise.workAdress.name;
@@ -418,10 +417,11 @@ export class Profile{
           });
         }
         this.isValidJobAddress = true;
+
       } else {
         if (this.currentUser.jobyer.dateNaissance) {
           var birthDate = moment(new Date(this.currentUser.jobyer.dateNaissance)).format('DD/MM/YYYY');
-          this.birthdateHidden = new Date(this.currentUser.jobyer.dateNaissance)
+          this.birthdateHidden = new Date(this.currentUser.jobyer.dateNaissance);
           this.isValidBirthdate = true;
           jQuery("#birthdate input").val(birthDate);
 
@@ -513,7 +513,7 @@ export class Profile{
             this.countryJA = data[1].country;
           });
         }
-          this.isValidJobAddress = true;
+        this.isValidJobAddress = true;
       }
 
     }
@@ -527,7 +527,9 @@ export class Profile{
     this.profileService.getPrefecture(this.whoDeliverStay).then((data: any) => {
       if (data && data.status == "success" && data.data && data.data.length != 0)
         jQuery(".whoDeliver-select").select2('data', {id: data.data[0].id, nom: this.whoDeliverStay});
-    })
+    });
+
+    this.initValidation();
   }
 
   updateScan(accountId, userId, role) {
@@ -578,17 +580,16 @@ export class Profile{
     jQuery('.titleSelectPicker').selectpicker();
     jQuery(document).ready(function () {
       jQuery('.fileinput').on('change.bs.fileinput', function (e, file) {
-      if(file === undefined){
-        Messenger().post({
-          message: "Le fichier séléctionné n'est pas un fichier Image valide.",
-          type: 'error',
-          showCloseButton: true
-        });
-        jQuery('.fileinput').fileinput('clear');
-      }else{
-        self.scanData = file.result;
-      }
-
+        if (file === undefined) {
+          Messenger().post({
+            message: "Le fichier séléctionné n'est pas un fichier Image valide.",
+            type: 'error',
+            showCloseButton: true
+          });
+          jQuery('.fileinput').fileinput('clear');
+        } else {
+          self.scanData = file.result;
+        }
 
 
       });
@@ -602,7 +603,7 @@ export class Profile{
           type: 'POST',
           dataType: 'json',
           quietMillis: 250,
-          transport: function(params){
+          transport: function (params) {
             params.beforeSend = Configs.getSelect2TextHeaders();
             return jQuery.ajax(params);
           },
@@ -690,7 +691,7 @@ export class Profile{
           type: 'POST',
           dataType: 'json',
           quietMillis: 250,
-          transport: function(params){
+          transport: function (params) {
             params.beforeSend = Configs.getSelect2TextHeaders();
             return jQuery.ajax(params);
           },
@@ -734,7 +735,7 @@ export class Profile{
           type: 'POST',
           dataType: 'json',
           quietMillis: 250,
-          transport: function(params){
+          transport: function (params) {
             params.beforeSend = Configs.getSelect2TextHeaders();
             return jQuery.ajax(params);
           },
@@ -771,7 +772,7 @@ export class Profile{
           type: 'POST',
           dataType: 'json',
           quietMillis: 250,
-          transport: function(params){
+          transport: function (params) {
             params.beforeSend = Configs.getSelect2TextHeaders();
             return jQuery.ajax(params);
           },
@@ -883,7 +884,7 @@ export class Profile{
     let _isValid: boolean = true;
     let _hint: string = "";
 
-    if (_value.length != 0 && _value.length != 5) {
+    if (_value.length != 5) {
       _hint = "Saisissez les 4 chiffres suivis d'une lettre";
       _isValid = false;
     } else {
@@ -1359,7 +1360,7 @@ export class Profile{
         var numSS = this.numSS;
         var cni = this.cni;
         var birthdate = "";
-        if(!this.isEmpty(this.birthdateHidden))
+        if (!this.isEmpty(this.birthdateHidden))
           birthdate = moment(this.birthdateHidden).format('MM/DD/YYYY');
         var birthplace = this.selectedCommune.nom;
         var nationalityId = this.nationalityId;
