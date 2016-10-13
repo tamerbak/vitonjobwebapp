@@ -133,7 +133,7 @@
                         </div>
                       </div>
 
-                      <div class="form-group row">
+                      <div class="form-group row" *ngIf="!forRecruitment">
                         <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                           Organisme de médecine de travail
                         </label>
@@ -373,7 +373,7 @@
                   </div>
 
                   <div *ngIf="!isProfileEmpty">
-                    <div class="form-group row">
+                    <div class="form-group row" *ngIf="!forRecruitment">
                       <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                         Joindre une photo {{scanTitle}}
                       </label>
@@ -392,26 +392,28 @@
                       </div>
                     </div>
 
-                    <div class="form-group row">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        {{personalAddressLabel}}
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <input id="autocompletePersonal" type="text" class="form-control"
-                               placeholder="Rechercher une adresse" (keyup)="watchPersonalAddress($event)"
-                               [(ngModel)]="personalAddress" (input)="autocompletePersonalAddress()"/>
+                    <div *ngIf="forRecruitment">
+                      <div class="form-group row">
+                        <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                          {{personalAddressLabel}}
+                        </label>
+                        <div class="col-md-7 col-xs-12">
+                          <input id="autocompletePersonal" type="text" class="form-control"
+                                 placeholder="Rechercher une adresse" (keyup)="watchPersonalAddress($event)"
+                                 [(ngModel)]="personalAddress" (input)="autocompletePersonalAddress()"/>
+                        </div>
                       </div>
-                    </div>
 
-                    <div class="form-group row">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        {{jobAddressLabel}}
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <input id="autocompleteJob" type="text" class="form-control"
-                               placeholder="Rechercher une adresse"
-                               (keyup)="watchJobAddress($event)"
-                               [(ngModel)]="jobAddress" (input)="autocompleteJobAddress()"/>
+                      <div class="form-group row">
+                        <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                          {{jobAddressLabel}}
+                        </label>
+                        <div class="col-md-7 col-xs-12">
+                          <input id="autocompleteJob" type="text" class="form-control"
+                                 placeholder="Rechercher une adresse"
+                                 (keyup)="watchJobAddress($event)"
+                                 [(ngModel)]="jobAddress" (input)="autocompleteJobAddress()"/>
+                        </div>
                       </div>
                     </div>
                   </div>

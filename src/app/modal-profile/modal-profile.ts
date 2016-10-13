@@ -1,4 +1,4 @@
-import {Component, NgZone, ViewEncapsulation, ViewChild} from "@angular/core";
+import {Component, NgZone, ViewEncapsulation, ViewChild, OnChanges, SimpleChange, Input} from "@angular/core";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {NKDatetime} from "ng2-datetime/ng2-datetime";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
@@ -16,6 +16,7 @@ import {ModalPicture} from "../modal-picture/modal-picture";
 import {BankAccount} from "../bank-account/bank-account";
 import MaskedInput from "angular2-text-mask";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
+import {Subject} from "rxjs";
 
 declare var jQuery, require, Messenger, moment: any;
 declare var google: any;
@@ -28,6 +29,11 @@ declare var google: any;
 })
 
 export class ModalProfile{
+  @Input()
+  fromPage: string;
+
+  forRecruitment: boolean = false;
+
   projectTarget: string;
 
   msgWelcome1: string;
@@ -96,7 +102,6 @@ export class ModalProfile{
   streetNumberJA: string;
   nameJA: string;
   zipCodeJA: string;
-
 
   //currentUser object
   currentUser: any;
@@ -221,6 +226,13 @@ export class ModalProfile{
           }
         }
       })
+
+    if (this.fromPage== "recruitment") {
+      this.isProfileEmpty = false;
+      this.forRecruitment = true;
+    }
+
+
   }
 
   ngOnInit() {
@@ -231,13 +243,17 @@ export class ModalProfile{
       this.msgWelcome1 = "Bienvenue dans Vit-On-Job";
       this.msgWelcome2 = "Vous êtes tout près de trouver votre " + (this.projectTarget == "jobyer" ? 'emploi.' : 'Jobyer.');
     }
+
+    if (this.fromPage== "recruitment") {
+      this.isProfileEmpty = false;
+      this.forRecruitment = true;
+    }
   }
 
 
   close(): void {
     jQuery('#modal-profile').modal('hide');
   }
-
 
 
   setImgClasses() {
@@ -277,7 +293,7 @@ export class ModalProfile{
     this.isValidJobAddress = false;
   }
 
-  watchPersonalAddress(e){
+  watchPersonalAddress(e) {
     let _address = e.target.value;
     let _isValid: boolean = true;
     let _hint: string = "";
@@ -295,7 +311,7 @@ export class ModalProfile{
     this.isValidForm();
   }
 
-  watchJobAddress(e){
+  watchJobAddress(e) {
     let _address = e.target.value;
     let _isValid: boolean = true;
     let _hint: string = "";
@@ -603,17 +619,16 @@ export class ModalProfile{
     jQuery('.titleSelectPicker').selectpicker();
     jQuery(document).ready(function () {
       jQuery('.fileinput').on('change.bs.fileinput', function (e, file) {
-        if(file === undefined){
+        if (file === undefined) {
           Messenger().post({
             message: "Le fichier séléctionné n'est pas un fichier Image valide.",
             type: 'error',
             showCloseButton: true
           });
           jQuery('.fileinput').fileinput('clear');
-        }else{
+        } else {
           self.scanData = file.result;
         }
-
 
 
       });
@@ -1381,7 +1396,7 @@ export class ModalProfile{
         var numSS = this.numSS;
         var cni = this.cni;
         var birthdate = "";
-        if(!this.isEmpty(this.birthdateHidden))
+        if (!this.isEmpty(this.birthdateHidden))
           birthdate = moment(this.birthdateHidden).format('MM/DD/YYYY');
         var birthplace = this.selectedCommune.nom;
         var nationalityId = this.nationalityId;
