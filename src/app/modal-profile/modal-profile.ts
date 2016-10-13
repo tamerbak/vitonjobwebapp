@@ -167,6 +167,7 @@ export class ModalProfile{
 
     if (!this.currentUser) {
       this.router.navigate(['app/home']);
+      return;
     } else {
       this.getUserInfos();
       if (this.isNewUser) {
