@@ -3,7 +3,7 @@ import {OffersService} from "../../providers/offer.service";
 import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {GOOGLE_MAPS_DIRECTIVES} from "angular2-google-maps/core";
-import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
+import {RecruitButton} from "../components/recruit-button/recruit-button";
 
 declare var jQuery: any;
 
@@ -11,7 +11,7 @@ declare var jQuery: any;
   selector: '[search-details]',
   template: require('./search-details.html'),
   styles: [require('./search-details.scss')],
-  directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, ModalNotificationContract],
+  directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, RecruitButton],
   providers: [OffersService]
 })
 

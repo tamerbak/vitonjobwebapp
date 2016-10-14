@@ -3,7 +3,6 @@ import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {SearchService} from "../../providers/search-service";
 import {ProfileService} from "../../providers/profile.service";
-//import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
 import {RecruitButton} from "../components/recruit-button/recruit-button";
 import {GOOGLE_MAPS_DIRECTIVES} from "angular2-google-maps/core";
 declare var jQuery: any;
