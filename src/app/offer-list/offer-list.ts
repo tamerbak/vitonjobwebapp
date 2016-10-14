@@ -50,7 +50,7 @@ export class OfferList {
     this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
     this.globalOfferList.push({header: 'Mes brouillons', list: []});
     this.offerList = this.projectTarget == 'employer' ? this.sharedService.getCurrentUser().employer.entreprises[0].offers : this.sharedService.getCurrentUser().jobyer.offers;
-    for (var i = 0; i < this.offerList.length; i++) {
+    for (let i = 0; i < this.offerList.length; i++) {
       let offer = this.offerList[i];
       if (!offer || !offer.jobData) {
         continue;
@@ -60,7 +60,7 @@ export class OfferList {
         offer.correspondantsCount = -1;
 
         //verify if offer is obsolete
-        for (var j = 0; j < offer.calendarData.length; j++) {
+        for (let j = 0; j < offer.calendarData.length; j++) {
           var slotDate = offer.calendarData[j].date;
           var startH = this.offersService.convertToFormattedHour(offer.calendarData[j].startHour);
           slotDate = new Date(slotDate).setHours(+(startH.split(':')[0]), +(startH.split(':')[1]));
@@ -74,9 +74,26 @@ export class OfferList {
         }
 
         this.globalOfferList[0].list.push(offer);
-        this.offersService.getCorrespondingOffers(offer, this.currentUser.role).then((data: any)=> {
+        /*this.offersService.getCorrespondingOffers(offer, this.projectTarget).then((data: any)=> {
           offer.correspondantsCount = data.length;
           // Sort offers corresponding to their search results :
+          this.globalOfferList[0].list.sort((a, b) => {
+            return b.correspondantsCount - a.correspondantsCount;
+          })
+        });*/
+        let searchFields = {
+          class : 'com.vitonjob.callouts.recherche.SearchQuery',
+          job : offer.jobData.job,
+          metier : '',
+          lieu: '',
+          nom: '',
+          entreprise: '',
+          date: '',
+          table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
+          idOffre: '0'
+        };
+        this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
+          offer.correspondantsCount = data.length;
           this.globalOfferList[0].list.sort((a, b) => {
             return b.correspondantsCount - a.correspondantsCount;
           })
