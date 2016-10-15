@@ -125,9 +125,8 @@ export class ModalProfile{
       this.msgWelcome2 = "Vous êtes tout près de trouver votre " + (this.projectTarget == "jobyer" ? 'emploi.' : 'Jobyer.');
 
       this.getUserInfos();
-      if (this.isNewUser) {
-        this.initForm();
-      }
+      this.initForm();
+
       if (!this.isRecruiter && !this.isEmployer) {
         this.personalAddressLabel = "Adresse personnelle";
         this.jobAddressLabel = "Adresse de départ au travail";
