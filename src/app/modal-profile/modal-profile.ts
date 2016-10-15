@@ -1,4 +1,4 @@
-import {Component, NgZone, ViewEncapsulation, ViewChild, EventEmitter, Input, Output } from "@angular/core";
+import {Component, NgZone, ViewEncapsulation, ViewChild, EventEmitter, Input, Output} from "@angular/core";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {NKDatetime} from "ng2-datetime/ng2-datetime";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
@@ -211,7 +211,6 @@ export class ModalProfile{
 
   autocompletePersonalAddress() {
     this._loader.load().then(() => {
-      this.autocompletePA = new google.maps.places.Autocomplete(document.getElementById("autocompletePersonal"), this.addressOptions);
       google.maps.event.addListener(this.autocompletePA, 'place_changed', () => {
         let place = this.autocompletePA.getPlace();
         var addressObj = AddressUtils.decorticateGeolocAddress(place);
@@ -234,7 +233,6 @@ export class ModalProfile{
 
   autocompleteJobAddress() {
     this._loader.load().then(() => {
-      this.autocompleteJA = new google.maps.places.Autocomplete(document.getElementById("autocompleteJob"), this.addressOptions);
       google.maps.event.addListener(this.autocompleteJA, 'place_changed', () => {
         let place = this.autocompleteJA.getPlace();
         var addressObj = AddressUtils.decorticateGeolocAddress(place);
@@ -880,6 +878,13 @@ export class ModalProfile{
           });
       }
     }
+  }
+
+  ngAfterViewInit(): void {
+    this._loader.load().then(() => {
+      this.autocompletePA = new google.maps.places.Autocomplete(document.getElementById("autocompletePersonal"), this.addressOptions);
+      this.autocompleteJA = new google.maps.places.Autocomplete(document.getElementById("autocompleteJob"), this.addressOptions);
+    });
   }
 
   close(): void {
