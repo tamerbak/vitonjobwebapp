@@ -1,4 +1,4 @@
-import {Component, NgZone, ViewEncapsulation, ViewChild, Input} from "@angular/core";
+import {Component, NgZone, ViewEncapsulation, ViewChild, EventEmitter, Input, Output } from "@angular/core";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {NKDatetime} from "ng2-datetime/ng2-datetime";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
@@ -25,6 +25,11 @@ export class ModalProfile{
 
   @Input()
   fromPage: string;
+  @Input()
+  jobyer: any;
+  @Output()
+  onProfileUpdated = new EventEmitter<any>();
+
   msgWelcome1: string;
   msgWelcome2: string;
   forRecruitment: boolean = false;
@@ -711,8 +716,10 @@ export class ModalProfile{
               type: 'success',
               showCloseButton: true
             });
-            //redirecting to contract page
-            this.router.navigate(['app/contract/recruitment-form']);
+            //notify the parent page to open the contract notification modal
+            if (this.fromPage == "recruitment") {
+              this.onProfileUpdated.emit({obj: "contract", jobyer: this.jobyer});
+            }
             this.close();
           }
         })

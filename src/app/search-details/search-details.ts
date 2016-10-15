@@ -4,6 +4,8 @@ import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {GOOGLE_MAPS_DIRECTIVES} from "angular2-google-maps/core";
 import {RecruitButton} from "../components/recruit-button/recruit-button";
+import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
+import {ModalProfile} from "../modal-profile/modal-profile";
 
 declare var jQuery: any;
 
@@ -11,11 +13,11 @@ declare var jQuery: any;
   selector: '[search-details]',
   template: require('./search-details.html'),
   styles: [require('./search-details.scss')],
-  directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, RecruitButton],
+  directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, RecruitButton, ModalNotificationContract, ModalProfile],
   providers: [OffersService]
 })
 
-export class SearchDetails {
+export class SearchDetails{
   currentUser: any;
   projectTarget: string;
   offer: any;
@@ -29,27 +31,26 @@ export class SearchDetails {
   zoom: number;
   languages: any[];
   qualities: any[];
-  isRecruteur:boolean = false;
+  isRecruteur: boolean = false;
 
+  fromPage: string = "recruitment";
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private router: Router) {
-                this.currentUser = this.sharedService.getCurrentUser();
-                if (this.currentUser) {
-                  this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
-                } else {
-                  //this.projectTarget = this.sharedService.getProjectTarget();
-                  //this.isRecruteur = this.currentUser.estRecruteur;
-                  this.router.navigate(['app/home']);
-                }
-                this.result = this.sharedService.getSearchResult();
-                this.offer = this.sharedService.getCurrentOffer();
+    this.currentUser = this.sharedService.getCurrentUser();
+    if (this.currentUser) {
+      this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
+    } else {
+      //this.projectTarget = this.sharedService.getProjectTarget();
+      //this.isRecruteur = this.currentUser.estRecruteur;
+      this.router.navigate(['app/home']);
+    }
+    this.result = this.sharedService.getSearchResult();
+    this.offer = this.sharedService.getCurrentOffer();
   }
 
   ngOnInit(): void {
-
-
     //get offer title, employer/jobyer name and matching
     if (this.result.titreOffre)
       this.fullTitle = this.result.titreOffre;
@@ -78,6 +79,23 @@ export class SearchDetails {
       if (data)
         this.qualities = data;
     });
+  }
+
+  onRecruite(params) {
+    if(params.obj == "contract" || params.obj == "offer"){
+      jQuery('#modal-notification-contract').modal('show');
+    }
+    if(params.obj == "profile"){
+      jQuery('#modal-profile').modal('show');
+    }
+  }
+
+  onProfileUpdated(params) {
+    if (params.obj == "contract") {
+      $('#modal-profile').on('hidden.bs.modal', function (e) {
+        jQuery('#modal-notification-contract').modal('show');
+      })
+    }
   }
 
   isEmpty(str) {
