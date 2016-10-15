@@ -29,13 +29,13 @@ export class FinanceService {
       mode : 'VALEURS',
       preContract : true,
       documentType : 'PREV',
-      env : 'DEV'
+      env : Configs.env
     };
     console.log(JSON.stringify(bean));
     let encodedArg = btoa(JSON.stringify(bean));
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 302,
+      'id': 307,
       'args': [
         {
           'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -52,9 +52,14 @@ export class FinanceService {
       this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          resolve(data);
+          // we've got back the raw data, now generate the core schedule data
+          // and save the data for later reference
+          this.data = data;
+          resolve(this.data);
+
         });
     });
+
   }
 
   loadQuote(id, rate) {
@@ -65,7 +70,7 @@ export class FinanceService {
       mode : 'VALEURS',
       preContract : true,
       documentType : 'QUOTE',
-      env : 'DEV'
+      env : Configs.env
     };
     console.log(JSON.stringify(bean));
     let encodedArg = btoa(JSON.stringify(bean));
@@ -108,7 +113,7 @@ export class FinanceService {
       mode : 'VALEURS',
       preContract : false,
       documentType : 'INVOICE',
-      env : 'DEV'
+      env : Configs.env
     };
     console.log(JSON.stringify(bean));
     let encodedArg = btoa(JSON.stringify(bean));
