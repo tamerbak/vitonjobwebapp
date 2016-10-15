@@ -23,19 +23,19 @@ export class FinanceService {
 
   loadPrevQuote(id) {
     let bean = {
-      'class' : 'com.vitonjob.api.CalloutConfiguration',
-      idContrat:0,
-      idOffre : id,
-      mode : 'VALEURS',
-      preContract : true,
-      documentType : 'PREV',
-      env : 'DEV'
+      'class': 'com.vitonjob.api.CalloutConfiguration',
+      idContrat: 0,
+      idOffre: id,
+      mode: 'VALEURS',
+      preContract: true,
+      documentType: 'PREV',
+      env: Configs.env
     };
-    console.log(JSON.stringify(bean));
+
     let encodedArg = btoa(JSON.stringify(bean));
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 302,
+      'id': 307,
       'args': [
         {
           'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -52,22 +52,27 @@ export class FinanceService {
       this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          resolve(data);
+          // we've got back the raw data, now generate the core schedule data
+          // and save the data for later reference
+          this.data = data;
+          resolve(this.data);
+
         });
     });
+
   }
 
   loadQuote(id, rate) {
     let bean = {
-      'class' : 'com.vitonjob.api.CalloutConfiguration',
-      idContrat:0,
-      idOffre : id,
-      mode : 'VALEURS',
-      preContract : true,
-      documentType : 'QUOTE',
-      env : 'DEV'
+      'class': 'com.vitonjob.api.CalloutConfiguration',
+      idContrat: 0,
+      idOffre: id,
+      mode: 'VALEURS',
+      preContract: true,
+      documentType: 'QUOTE',
+      env: Configs.env
     };
-    console.log(JSON.stringify(bean));
+
     let encodedArg = btoa(JSON.stringify(bean));
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
@@ -102,15 +107,15 @@ export class FinanceService {
 
   loadInvoice(idContrat, id, rate) {
     let bean = {
-      'class' : 'com.vitonjob.api.CalloutConfiguration',
-      idContrat:idContrat,
-      idOffre : id,
-      mode : 'VALEURS',
-      preContract : false,
-      documentType : 'INVOICE',
-      env : 'DEV'
+      'class': 'com.vitonjob.api.CalloutConfiguration',
+      idContrat: idContrat,
+      idOffre: id,
+      mode: 'VALEURS',
+      preContract: false,
+      documentType: 'INVOICE',
+      env: Configs.env
     };
-    console.log(JSON.stringify(bean));
+
     let encodedArg = btoa(JSON.stringify(bean));
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
@@ -145,7 +150,7 @@ export class FinanceService {
 
   loadInvoiceSignature(idInvoice) {
     let sql = "select * from user_facture_voj where pk_user_facture_voj=" + idInvoice;
-    console.log(sql);
+
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
@@ -160,7 +165,7 @@ export class FinanceService {
 
   checkInvoice(idContrat) {
     let sql = "select * from user_facture_voj where fk_user_contrat=" + idContrat;
-    console.log(sql);
+
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
