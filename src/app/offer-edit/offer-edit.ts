@@ -73,8 +73,6 @@ export class OfferEdit {
   autoSearchModeTitle:string;
   modalParams:any={type:'',message:''};
 
-  modalQuoteParams : any = {};
-
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private searchService: SearchService,
