@@ -757,7 +757,7 @@ export class OfferEdit {
         this.sharedService.setCurrentUser(this.currentUser);
       } else {
         Messenger().post({
-          message: "Une erreur est survenue lors de la sauvegarde des données.",
+          message: "Une erreur est survenue lors de l'enregistrement des données.",
           type: 'success',
           showCloseButton: true
         });

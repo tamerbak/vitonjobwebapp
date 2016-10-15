@@ -120,7 +120,7 @@ export class OfferList {
         this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
         this.sharedService.setCurrentUser(this.currentUser);
       } else {
-        this.addAlert("danger", "Une erreur est survenue lors de la sauvegarde des données.");
+        this.addAlert("danger", "Une erreur est survenue lors de l'enregistrement des données.");
       }
     });
   }

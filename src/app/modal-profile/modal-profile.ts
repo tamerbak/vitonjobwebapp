@@ -550,7 +550,7 @@ export class ModalProfile{
 
               this.validation = false;
               Messenger().post({
-                message: 'Vos données ont été bien sauvegardées',
+                message: 'Vos données ont été bien enregistrées',
                 type: 'success',
                 showCloseButton: true
               });
@@ -613,7 +613,7 @@ export class ModalProfile{
                 this.updateJobAddress();
               }
               Messenger().post({
-                message: 'Vos données ont été bien sauvegardées',
+                message: 'Vos données ont été bien enregistrées',
                 type: 'success',
                 showCloseButton: true
               });
@@ -657,7 +657,7 @@ export class ModalProfile{
               this.updateJobAddress();
             }
             Messenger().post({
-              message: 'Vos données ont été bien sauvegardées',
+              message: 'Vos données ont été bien enregistrées',
               type: 'success',
               showCloseButton: true
             });
@@ -707,7 +707,7 @@ export class ModalProfile{
               this.updateJobAddress();
             }
             Messenger().post({
-              message: 'Vos données ont été bien sauvegardées',
+              message: 'Vos données ont été bien enregistrées',
               type: 'success',
               showCloseButton: true
             });
@@ -825,7 +825,7 @@ export class ModalProfile{
           .then((data: any) => {
             if (!data || data.status == "failure") {
               // console.log(data.error);
-              // console.log("VitOnJob", "Erreur lors de la sauvegarde des données");
+              // console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
               this.validation = false;
               return;
             } else {
@@ -853,7 +853,7 @@ export class ModalProfile{
             if (!data || data.status == "failure") {
               // console.log(data.error);
 
-              // console.log("VitOnJob", "Erreur lors de la sauvegarde des données");
+              // console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
               return;
             } else {
               //id address not send by server
