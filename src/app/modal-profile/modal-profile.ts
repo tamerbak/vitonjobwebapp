@@ -881,8 +881,10 @@ export class ModalProfile{
 
   ngAfterViewInit(): void {
     this._loader.load().then(() => {
-      this.autocompletePA = new google.maps.places.Autocomplete(document.getElementById("autocompletePersonal"), this.addressOptions);
-      this.autocompleteJA = new google.maps.places.Autocomplete(document.getElementById("autocompleteJob"), this.addressOptions);
+      if(!Utils.isEmpty(document.getElementById("autocompletePersonal")))
+        this.autocompletePA = new google.maps.places.Autocomplete(document.getElementById("autocompletePersonal"), this.addressOptions);
+      if(!Utils.isEmpty(document.getElementById("autocompleteJob")))
+        this.autocompleteJA = new google.maps.places.Autocomplete(document.getElementById("autocompleteJob"), this.addressOptions);
     });
   }
 
