@@ -31,7 +31,7 @@ export class FinanceService {
       documentType : 'PREV',
       env : Configs.env
     };
-    console.log(JSON.stringify(bean));
+
     let encodedArg = btoa(JSON.stringify(bean));
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
@@ -72,7 +72,7 @@ export class FinanceService {
       documentType : 'QUOTE',
       env : Configs.env
     };
-    console.log(JSON.stringify(bean));
+
     let encodedArg = btoa(JSON.stringify(bean));
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
@@ -115,7 +115,7 @@ export class FinanceService {
       documentType : 'INVOICE',
       env : Configs.env
     };
-    console.log(JSON.stringify(bean));
+
     let encodedArg = btoa(JSON.stringify(bean));
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
@@ -150,7 +150,7 @@ export class FinanceService {
 
   loadInvoiceSignature(idInvoice) {
     let sql = "select * from user_facture_voj where pk_user_facture_voj=" + idInvoice;
-    console.log(sql);
+
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
@@ -165,7 +165,7 @@ export class FinanceService {
 
   checkInvoice(idContrat) {
     let sql = "select * from user_facture_voj where fk_user_contrat=" + idContrat;
-    console.log(sql);
+
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();

@@ -8,6 +8,7 @@ import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {NKDatetime} from "ng2-datetime/ng2-datetime";
 import {ModalOptions} from "../modal-options/modal-options";
 import {ModalOfferTempQuote} from "../modal-offer-temp-quote/modal-offer-temp-quote";
+import {FinanceService} from "../../providers/finance.service";
 declare var Messenger,jQuery:any;
 
 @Component({
@@ -16,7 +17,7 @@ declare var Messenger,jQuery:any;
   encapsulation: ViewEncapsulation.None,
   styles: [require('./offer-edit.scss')],
   directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime,ModalOptions,ModalOfferTempQuote],
-  providers: [OffersService,SearchService]
+  providers: [OffersService,SearchService, FinanceService]
 })
 
 export class OfferEdit {
@@ -72,11 +73,14 @@ export class OfferEdit {
   autoSearchModeTitle:string;
   modalParams:any={type:'',message:''};
 
+  modalQuoteParams : any = {};
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private searchService: SearchService,
               private sanitizer: DomSanitizationService,
               private router: Router,
+              private financeService: FinanceService,
               private route: ActivatedRoute) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
@@ -763,7 +767,17 @@ export class OfferEdit {
     });
   }
 
-  showQuote(){
-    jQuery("#modal-offer-temp-quote").modal('show')
+  showQuote() {
+    let offer = this.sharedService.getCurrentOffer();
+    if (offer != null) {
+      this.financeService.loadPrevQuote(offer.idOffer).then((data: any) => {
+
+        jQuery("#modal-offer-temp-quote").modal('show');
+
+        let iFrame : HTMLIFrameElement = <HTMLIFrameElement>document.getElementById('pdf-stream');
+        iFrame.src = 'data:application/pdf;base64, ' + data.pdf;
+
+      });
+    }
   }
 }
