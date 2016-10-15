@@ -23,13 +23,13 @@ export class FinanceService {
 
   loadPrevQuote(id) {
     let bean = {
-      'class' : 'com.vitonjob.api.CalloutConfiguration',
-      idContrat:0,
-      idOffre : id,
-      mode : 'VALEURS',
-      preContract : true,
-      documentType : 'PREV',
-      env : Configs.env
+      'class': 'com.vitonjob.api.CalloutConfiguration',
+      idContrat: 0,
+      idOffre: id,
+      mode: 'VALEURS',
+      preContract: true,
+      documentType: 'PREV',
+      env: Configs.env
     };
 
     let encodedArg = btoa(JSON.stringify(bean));
@@ -64,13 +64,13 @@ export class FinanceService {
 
   loadQuote(id, rate) {
     let bean = {
-      'class' : 'com.vitonjob.api.CalloutConfiguration',
-      idContrat:0,
-      idOffre : id,
-      mode : 'VALEURS',
-      preContract : true,
-      documentType : 'QUOTE',
-      env : Configs.env
+      'class': 'com.vitonjob.api.CalloutConfiguration',
+      idContrat: 0,
+      idOffre: id,
+      mode: 'VALEURS',
+      preContract: true,
+      documentType: 'QUOTE',
+      env: Configs.env
     };
 
     let encodedArg = btoa(JSON.stringify(bean));
@@ -107,13 +107,13 @@ export class FinanceService {
 
   loadInvoice(idContrat, id, rate) {
     let bean = {
-      'class' : 'com.vitonjob.api.CalloutConfiguration',
-      idContrat:idContrat,
-      idOffre : id,
-      mode : 'VALEURS',
-      preContract : false,
-      documentType : 'INVOICE',
-      env : Configs.env
+      'class': 'com.vitonjob.api.CalloutConfiguration',
+      idContrat: idContrat,
+      idOffre: id,
+      mode: 'VALEURS',
+      preContract: false,
+      documentType: 'INVOICE',
+      env: Configs.env
     };
 
     let encodedArg = btoa(JSON.stringify(bean));

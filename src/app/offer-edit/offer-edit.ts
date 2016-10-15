@@ -774,7 +774,7 @@ export class OfferEdit {
 
         jQuery("#modal-offer-temp-quote").modal('show');
 
-        let iFrame : HTMLIFrameElement = <HTMLIFrameElement>document.getElementById('pdf-stream');
+        let iFrame: HTMLIFrameElement = <HTMLIFrameElement>document.getElementById('pdf-stream');
         iFrame.src = 'data:application/pdf;base64, ' + data.pdf;
 
       });
