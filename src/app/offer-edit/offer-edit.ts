@@ -768,6 +768,10 @@ export class OfferEdit {
   }
 
   showQuote() {
+
+    // In order to retrieve updated quote, save current state
+    this.validateJob();
+
     let offer = this.sharedService.getCurrentOffer();
     if (offer != null) {
       this.financeService.loadPrevQuote(offer.idOffer).then((data: any) => {
