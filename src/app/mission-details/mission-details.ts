@@ -666,7 +666,8 @@ export class MissionDetails {
             jobyerPhone: data.jobyerPhone,
             idContract: idContrat,
             idInvoice: idInvoice,
-            idDocument: idInvoice
+            idDocument: idInvoice,
+            environnement:'DEV'
           };
           this.missionService.signEndOfMission(bean).then(signatureData=> {
 

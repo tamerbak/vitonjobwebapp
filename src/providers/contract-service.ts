@@ -429,7 +429,8 @@ export class ContractService {
         'jobyerPhone': jobyer.tel,
         'idQuote': idQuote,
         'idDocument' : idQuote,
-        'data': btoa(unescape(encodeURIComponent(JSON.stringify(jsonData))))
+        'data': btoa(unescape(encodeURIComponent(JSON.stringify(jsonData)))),
+        'environnement':'DEV'
       });
 
     console.log('dataSign' + JSON.stringify(dataSign));
@@ -437,7 +438,7 @@ export class ContractService {
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
       'id': (partner === 'yousign' ? 224 :
-          (partner === 'docusign' ? 272 :
+          (partner === 'docusign' ? 305 :
               -1
           )
       ),
