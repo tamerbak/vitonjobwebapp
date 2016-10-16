@@ -236,12 +236,36 @@ export class OfferEdit {
       autoclose: true,
       todayHighlight: true,
       format: 'dd/mm/yyyy'
-    }
+    };
+  }
+
+  ngAfterViewInit() {
+    let self = this;
+
+    // Initialize constraint between sector and job
+    let sector = jQuery('.sector-select').select2();
+    let job = jQuery('.job-select').select2();
+
+    sector
+      .val(this.offer.jobData.idSector).trigger("change")
+      .on("change", function (e) {
+        self.sectorSelected(e.val);
+      }
+    );
+
+    job
+      .val(this.offer.jobData.idJob).trigger("change")
+      .on("change", function(e) {
+        self.jobSelected(e.val);
+      }
+    );
+
   }
 
   sectorSelected(sector) {
     //set sector info in jobdata
     this.offer.jobData.idSector = sector;
+    // debugger;
     var sectorsTemp = this.sectors.filter((v)=> {
       return (v.id == sector);
     });

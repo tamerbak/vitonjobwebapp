@@ -9,304 +9,452 @@
     class="fw-semi-bold">{{obj == "add" ? 'Nouvelle offre' : 'Détails de l\'offre'}}</span></h1>
 
 <div class="row">
+
   <div class="col-lg-8 col-xl-offset-2 col-xs-12">
     <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
       <div [innerHTML]="alert.msg"></div>
     </alert>
-    <section class="widget" widget>
-      <header>
-        <h6>
-          {{obj == "add" ? 'Nouvelle offre' : 'Détails de l\'offre'}}
-        </h6>
+
+    <!-- VIDEO -->
+
+    <section widget class="widget widget-offer">
+      <div class="widget-controls">
+        <a href="#"><i class="fa fa-refresh"></i></a>
+        <a href="#" data-widgster="close"><i class="glyphicon glyphicon-remove"></i></a>
+      </div>
+      <header class="bb widget-offer-header">
+        <h6><span class="fw-semi-bold widget-offer-header-title">Vidéo</span></h6>
       </header>
       <div class="widget-body">
-        <form class="form-horizontal" role="form">
 
-          <fieldset>
-            <legend><strong>Vidéo</strong></legend>
-            <div class="form-group row">
-              <div class="col-md-12 col-xs-12">
+        <input
+          id="youtubeLink"
+          class="form-control"
+          name="youtubeLink"
+          placeholder="Lien de vidéo Youtube"
+          type="text"
+          [(ngModel)]="youtubeLink"
+          [hidden]="videoAvailable"
+        >
 
-                <input type="text" id="youtubeLink" class="form-control" [(ngModel)]="youtubeLink" name="youtubeLink"
-                       [hidden]="videoAvailable"
-                       placeholder="Lien de vidéo Youtube">
+        <div *ngIf="videoAvailable">
+          <iframe class="iframe-class" width="100%" height="360px"
+                  [style.display]="videoAvailable?'block':'none'" target="_parent" [src]="youtubeLinkSafe">
+          </iframe>
+        </div>
 
+        <div [hidden]="isLinkValid" class="col-md-12 col-xs-12 row margin-top-10">
+          <span class="hint label label-danger">Le lien de la vidéo est non valide</span>
+        </div>
 
-                <div *ngIf="videoAvailable">
-                  <iframe class="iframe-class" width="100%" height="360px"
-                          [style.display]="videoAvailable?'block':'none'" target="_parent" [src]="youtubeLinkSafe">
-                  </iframe>
-                </div>
-                <div [hidden]="isLinkValid" class="col-md-12 col-xs-12 row margin-top-10">
-                  <span class="hint label label-danger">Le lien de la vidéo est non valide</span>
-                </div>
-                <div class="button-footer" class="col-md-12 col-xs-12 pull-xs-right row margin-top-10">
-                  <button class="btn btn-primary" (click)="updateVideo(false)" [hidden]="videoAvailable">
-                    <i class="glyphicon glyphicon-facetime-video"></i>
-                    Modifier
-                  </button>
-                  <button class="btn btn-danger" (click)="updateVideo(true)" [hidden]="!videoAvailable">
-                    <i class="glyphicon glyphicon-trash"></i>
-                    Supprimer
-                  </button>
-                </div>
+        <button class="btn btn-primary" (click)="updateVideo(false)" [hidden]="videoAvailable">
+          <i class="glyphicon glyphicon-facetime-video"></i>
+          Modifier
+        </button>
 
+        <button class="btn btn-danger" (click)="updateVideo(true)" [hidden]="!videoAvailable">
+          <i class="glyphicon glyphicon-trash"></i>
+          Supprimer
+        </button>
+
+      </div>
+    </section>
+
+    <!-- !VIDEO -->
+    <!-- JOB -->
+
+    <section widget class="widget widget-offer">
+      <div class="widget-controls">
+        <a href="#"><i class="fa fa-refresh"></i></a>
+        <a href="#" data-widgster="close"><i class="glyphicon glyphicon-remove"></i></a>
+      </div>
+      <header class="bb widget-offer-header">
+        <h6><span class="fw-semi-bold widget-offer-header-title">Job</span></h6>
+      </header>
+      <div class="widget-body">
+
+        <legend><strong>Détails du job</strong></legend>
+
+        <!-- Secteur -->
+        <div class="form-group row required">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+            Secteur
+          </label>
+          <div class="col-md-8 col-xs-12">
+            <div class="widget-body btn loaderPosition" [hidden]="hideJobLoader">
+              <div class="loader animated fadeIn handle">
+                <span class="spinner">
+                  <i class="fa fa-spinner fa-spin"></i>
+                </span>
               </div>
             </div>
-          </fieldset>
+            <select
+              data-minimum-results-for-search="10"
+              data-placeholder="Recherchez votre secteur"
+              class="sector-select select2 form-control"
+              tabindex="-1"
+              name="sector"
+              id="sector"
+              [disabled]="!hideJobLoader"
+            >
+              <option value=""></option>
+              <option *ngFor="let s of sectors" [value]="s.id">{{s.libelle}}</option>
+            </select>
+          </div>
+        </div>
 
-          <fieldset>
-            <legend><strong>Job</strong></legend>
-            <div class="form-group row">
-              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Secteur</label>
-              <div class="col-md-7 col-xs-12">
-                <div class="widget-body btn loaderPosition" [hidden]="hideJobLoader">
-                  <div class="loader animated fadeIn handle">
-                      <span class="spinner">
-                        <i class="fa fa-spinner fa-spin"></i>
-                      </span>
-                  </div>
-                </div>
-                <select class="form-control" [(ngModel)]="offer.jobData.idSector"
-                        (change)="sectorSelected($event.target.value)" [disabled]="!hideJobLoader">
-                  <option *ngFor="let s of sectors" [value]="s.id">{{s.libelle}}</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-md-4 form-control-label text-md-right">
-                Job
-              </label>
-              <div class="col-md-7 col-xs-12">
-                <div class="widget-body btn loaderPosition" [hidden]="hideJobLoader">
-                  <div class="loader animated fadeIn handle">
+        <!-- Job -->
+        <div class="form-group row required">
+          <label class="col-md-4 form-control-label text-md-right">
+            Job
+          </label>
+          <div class="col-md-8 col-xs-12">
+            <div class="widget-body btn loaderPosition" [hidden]="hideJobLoader">
+              <div class="loader animated fadeIn handle">
                     <span class="spinner">
                       <i class="fa fa-spinner fa-spin"></i>
                     </span>
-                  </div>
-                </div>
-                <select class="form-control" [(ngModel)]="offer.jobData.idJob" [disabled]="!hideJobLoader"
-                        (change)="jobSelected($event.target.value)">
-                  <option *ngFor="let j of jobs" [value]="j.id">{{j.libelle}}</option>
-                </select>
               </div>
             </div>
-            <div class="form-group row">
-              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Niveau</label>
-              <div class="col-md-7 col-xs-12">
-                <div class="abc-radio">
-                  <input type="radio" name="radio3" id="radio5" value="junior"
-                         [checked]="offer.jobData.level == 'junior'" (click)="watchLevel($event)">
-                  <label for="radio5">
-                    Débutant
-                  </label>
-                </div>
-                <div class="abc-radio abc-radio-warning">
-                  <input type="radio" name="radio3" id="radio6" value="senior"
-                         [checked]="offer.jobData.level != 'junior'" (click)="watchLevel($event)">
-                  <label for="radio6">
-                    Expérimenté
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Taux horaire</label>
-              <div class="col-md-4 col-xs-12">
-                <input type="number" step="0.01" class="form-control" [(ngModel)]="offer.jobData.remuneration"
-                       (change)="validateRate($event.target.value)">
-              </div>
-              <div class="col-md-3 col-xs-12">
-                <select class="form-control" disabled>
-                  <option> EUR</option>
-                </select>
-              </div>
-            </div>
-            <div *ngIf="invalidHourRate"><p class="bg-danger field-format-warning">* Le taux horaire devrait être
-              supérieur ou égal à {{invalidHourRateMessage}}</p></div>
-          </fieldset>
+            <select
+              data-minimum-results-for-search="10"
+              data-placeholder="Recherchez votre job"
+              class="job-select select2 form-control"
+              tabindex="-1"
+              name="job"
+              id="job"
+              [disabled]="!hideJobLoader || !offer.jobData.idSector"
+            >
+              <option value=""></option>
+              <option *ngFor="let j of jobs" [value]="j.id">{{j.libelle}}</option>
+            </select>
+          </div>
+        </div>
 
-          <fieldset *ngIf="convParametersVisible()">
-            <legend><strong>Paramètres de la convention collective</strong></legend>
-            <div class="form-group row" *ngIf="convNiveauxVisible()">
-              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Niveau</label>
-              <div class="col-md-7 col-xs-12">
-                <select class="form-control" [(ngModel)]="selectedNivConvID"
-                        (change)="updateHourRateThreshold('NIV',$event.target.value)">
-                  <option *ngFor="let s of niveauxConventions" [value]="s.id">{{s.libelle}}</option>
-                </select>
-              </div>
+        <!-- Niveau -->
+        <div class="form-group row required">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+            Niveau
+          </label>
+          <div class="col-md-8 col-xs-12">
+            <div class="abc-radio">
+              <input type="radio" name="radio3" id="radio5" value="junior"
+                     [checked]="offer.jobData.level == 'junior'" (click)="watchLevel($event)">
+              <label for="radio5">
+                Débutant
+              </label>
             </div>
-            <div class="form-group row" *ngIf="convEchelonsVisible()">
-              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Echelon</label>
-              <div class="col-md-7 col-xs-12">
-                <select class="form-control" [(ngModel)]="selectedEchConvID"
-                        (change)="updateHourRateThreshold('ECH',$event.target.value)">
-                  <option *ngFor="let s of echelonsConventions" [value]="s.id">{{s.libelle}}</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row" *ngIf="convCategoriesVisible()">
-              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Catégorie</label>
-              <div class="col-md-7 col-xs-12">
-                <select class="form-control" [(ngModel)]="selectedCatConvID"
-                        (change)="updateHourRateThreshold('CAT',$event.target.value)">
-                  <option *ngFor="let s of categoriesConventions" [value]="s.id">{{s.libelle}}</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row" *ngIf="convCoefficientsVisible()">
-              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Coefficient</label>
-              <div class="col-md-7 col-xs-12">
-                <select class="form-control" [(ngModel)]="selectedCoefConvID"
-                        (change)="updateHourRateThreshold('COEF',$event.target.value)">
-                  <option *ngFor="let s of coefficientsConventions" [value]="s.id">{{s.libelle}}</option>
-                </select>
-              </div>
-            </div>
-          </fieldset>
-
-          <fieldset *ngIf="convParametersVisible()">
-            <legend><strong>Avantages en nature</strong></legend>
-            <div class="form-group row">
-              <label class="col-md-2 col-xs-2 form-control-label">Code</label>
-              <label class="col-md-10 col-xs-10 form-control-label">Avantage</label>
-            </div>
-            <div class="form-group row" *ngFor="let item of categoriesHeure">
-              <div class="col-md-2 col-xs-2">
-                <span>{{item.code}}</span>
-              </div>
-              <div class="col-md-10 col-xs-10">
-                <span>{{item.libelle}}</span>
-              </div>
-            </div>
-            <div class="form-group row" *ngFor="let item of majorationsHeure">
-              <div class="col-md-2 col-xs-2">
-                <span>{{item.code}}</span>
-              </div>
-              <div class="col-md-10 col-xs-10">
-                <span>{{item.libelle}}</span>
-              </div>
-            </div>
-            <div class="form-group row" *ngFor="let item of indemnites">
-              <div class="col-md-2 col-xs-2">
-                <span>{{item.code}}</span>
-              </div>
-              <div class="col-md-10 col-xs-10">
-                <span>{{item.libelle}}</span>
-              </div>
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend><strong>Disponibilités</strong></legend>
-            <alert *ngFor="let alert of alertsSlot; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
-              <div [innerHTML]="alert.msg"></div>
-            </alert>
-            <div class="form-group row">
-              <label class="col-md-6 col-xs-6 form-control-label">Créneaux</label>
-              <label class="col-md-2 col-xs-2 form-control-label">De</label>
-              <label class="col-md-2 col-xs-2 form-control-label">A</label>
-            </div>
-            <div class="form-group row" *ngFor="let item of slots, let j = index">
-              <div class="col-md-6 col-xs-12">
-                <input class="form-control" [(ngModel)]="item.date" disabled/>
-              </div>
-              <div class="col-md-2 col-xs-12">
-                <input class="form-control" [(ngModel)]="item.startHour" disabled/>
-              </div>
-              <div class="col-md-2 col-xs-12">
-                <input class="form-control" [(ngModel)]="item.endHour" disabled/>
-              </div>
-              <div class="col-md-2 col-xs-12">
-                <button class="btn btn-secondary mb-xs" role="button" (click)="removeSlot(j)">
-                  <i class="glyphicon glyphicon-trash"></i>
-                </button>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-md-6 col-xs-12">
-                <datetime id="slotDate" [timepicker]="false" [datepicker]="datepickerOpts"
-                          [(ngModel)]="slot.date"></datetime>
-              </div>
-              <div class="col-md-2 col-xs-12">
-                <datetime id="slotSHour" [datepicker]="false" [timepicker]="{ showMeridian: false, minuteStep: 15 }"
-                          [(ngModel)]="slot.startHour"></datetime>
-              </div>
-              <div class="col-md-2 col-xs-12">
-                <datetime id="slotEHour" [datepicker]="false" [timepicker]="{ showMeridian: false, minuteStep: 15 }"
-                          [(ngModel)]="slot.endHour"></datetime>
-              </div>
-              <div class="col-md-2 col-xs-12">
-                <button class="btn btn-danger mb-xs" role="button" (click)="addSlot()">
-                  Ajouter
-                </button>
-              </div>
-            </div>
-          </fieldset>
-
-          <div class="row">
-            <div class="col-md-6 col-xs-12">
-              <fieldset>
-                <legend><strong>Qualités</strong></legend>
-                <div class="form-group row">
-                  <div class="col-md-10 col-xs-12">
-                    <select class="form-control" [(ngModel)]="selectedQuality">
-                      <option *ngFor="let q of qualities" [value]="q.idQuality">{{q.libelle}}</option>
-                    </select>
-                  </div>
-                  <div class="col-md-2 col-xs-12">
-                    <button class="btn btn-danger mb-xs offer-add-button" role="button" (click)="addQuality()">
-                      Ajouter
-                    </button>
-                  </div>
-                </div>
-                <div class="form-group row" *ngFor="let item of offer.qualityData">
-                  <label class="col-md-10 col-xs-6 form-control-label">{{item.libelle}}</label>
-                  <div class="col-md-2 col-xs-12">
-                    <button class="btn btn-secondary mb-xs" role="button">
-                      <i class="glyphicon glyphicon-trash" (click)="removeQuality(item)"></i>
-                    </button>
-                  </div>
-                </div>
-              </fieldset>
-            </div>
-            <div class="col-md-6 col-xs-12">
-              <fieldset>
-                <legend><strong>Langues</strong></legend>
-                <div class="form-group row">
-                  <div class="col-md-6 col-xs-12">
-                    <select class="form-control" [(ngModel)]="selectedLang">
-                      <option *ngFor="let l of langs" [value]="l.idLanguage">{{l.libelle}}</option>
-                    </select>
-                  </div>
-                  <div class="col-md-4 col-xs-12">
-                    <select class="form-control" [(ngModel)]="selectedLevel">
-                      <option value="junior">Débutant</option>
-                      <option value="senior">Courant</option>
-                    </select>
-                  </div>
-                  <div class="col-md-2 col-xs-12">
-                    <button class="btn btn-danger mb-xs offer-add-button" role="button" (click)="addLanguage()">
-                      Ajouter
-                    </button>
-                  </div>
-                </div>
-                <div class="form-group row" *ngFor="let item of offer.languageData">
-                  <label class="col-md-6 col-xs-6 form-control-label">{{item.libelle}}</label>
-                  <label class="col-md-4 col-xs-6 form-control-label">
-                    {{item.level == 'junior' ? 'Débutant' : 'Courant'}}
-                  </label>
-                  <div class="col-md-2 col-xs-12">
-                    <button class="btn btn-secondary mb-xs" role="button">
-                      <i class="glyphicon glyphicon-trash" (click)="removeLanguage(item)"></i>
-                    </button>
-                  </div>
-                </div>
-              </fieldset>
+            <div class="abc-radio">
+              <input type="radio" name="radio3" id="radio6" value="senior"
+                     [checked]="offer.jobData.level != 'junior'" (click)="watchLevel($event)">
+              <label for="radio6">
+                Expérimenté
+              </label>
             </div>
           </div>
+        </div>
 
+        <!-- Taux horaire -->
+        <div class="form-group row required">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+            Taux horaire
+          </label>
+          <div class="col-md-6 col-xs-8">
+            <input
+              type="number"
+              step="0.01"
+              class="form-control"
+              min="0"
+              [(ngModel)]="offer.jobData.remuneration"
+              (change)="validateRate($event.target.value)"
+            >
+          </div>
+          <div class="col-md-2 col-xs-4">
+            <select class="form-control" disabled>
+              <option>EUR</option>
+            </select>
+          </div>
+        </div>
+        <alert *ngIf="invalidHourRate" [type]="'danger alert-sm'">
+          <div [innerHTML]="'* Le taux horaire devrait être supérieur ou égal à ' + invalidHourRateMessage"></div>
+        </alert>
+      </div>
+
+      <fieldset *ngIf="convParametersVisible()">
+        <legend><strong>Paramètres de la convention collective</strong></legend>
+        <div class="form-group row" *ngIf="convNiveauxVisible()">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">Niveau</label>
+          <div class="col-md-8 col-xs-12">
+            <select class="form-control" [(ngModel)]="selectedNivConvID"
+                    (change)="updateHourRateThreshold('NIV',$event.target.value)">
+              <option *ngFor="let s of niveauxConventions" [value]="s.id">{{s.libelle}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="convEchelonsVisible()">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">Echelon</label>
+          <div class="col-md-8 col-xs-12">
+            <select class="form-control" [(ngModel)]="selectedEchConvID"
+                    (change)="updateHourRateThreshold('ECH',$event.target.value)">
+              <option *ngFor="let s of echelonsConventions" [value]="s.id">{{s.libelle}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="convCategoriesVisible()">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">Catégorie</label>
+          <div class="col-md-8 col-xs-12">
+            <select class="form-control" [(ngModel)]="selectedCatConvID"
+                    (change)="updateHourRateThreshold('CAT',$event.target.value)">
+              <option *ngFor="let s of categoriesConventions" [value]="s.id">{{s.libelle}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="convCoefficientsVisible()">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">Coefficient</label>
+          <div class="col-md-8 col-xs-12">
+            <select class="form-control" [(ngModel)]="selectedCoefConvID"
+                    (change)="updateHourRateThreshold('COEF',$event.target.value)">
+              <option *ngFor="let s of coefficientsConventions" [value]="s.id">{{s.libelle}}</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset *ngIf="convParametersVisible()">
+        <legend><strong>Avantages en nature</strong></legend>
+        <div class="form-group row required">
+          <label class="col-md-2 col-xs-2 form-control-label">Code</label>
+          <label class="col-md-10 col-xs-10 form-control-label">Avantage</label>
+        </div>
+        <div class="form-group row" *ngFor="let item of categoriesHeure">
+          <div class="col-md-2 col-xs-2">
+            <span>{{item.code}}</span>
+          </div>
+          <div class="col-md-10 col-xs-10">
+            <span>{{item.libelle}}</span>
+          </div>
+        </div>
+        <div class="form-group row" *ngFor="let item of majorationsHeure">
+          <div class="col-md-2 col-xs-2">
+            <span>{{item.code}}</span>
+          </div>
+          <div class="col-md-10 col-xs-10">
+            <span>{{item.libelle}}</span>
+          </div>
+        </div>
+        <div class="form-group row" *ngFor="let item of indemnites">
+          <div class="col-md-2 col-xs-2">
+            <span>{{item.code}}</span>
+          </div>
+          <div class="col-md-10 col-xs-10">
+            <span>{{item.libelle}}</span>
+          </div>
+        </div>
+      </fieldset>
+
+    </section>
+
+    <!-- !JOB -->
+    <!-- DISPO -->
+
+    <section widget class="widget widget-offer">
+      <div class="widget-controls">
+        <a href="#"><i class="fa fa-refresh"></i></a>
+        <a href="#" data-widgster="close"><i class="glyphicon glyphicon-remove"></i></a>
+      </div>
+      <header class="bb widget-offer-header">
+        <h6><span class="fw-semi-bold widget-offer-header-title">Disponibilités</span></h6>
+      </header>
+      <div class="widget-body">
+
+        <legend><strong>Créneaux</strong></legend>
+
+        <alert *ngFor="let alert of alertsSlot; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
+          <div [innerHTML]="alert.msg"></div>
+        </alert>
+
+        <!-- Créneaux --
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th class="col-md-6 col-xs-12">Créneaux</th>
+            <th class="offer-availability-hours">De</th>
+            <th class="offer-availability-hours">A</th>
+            <th class="col-md-2 col-xs-12"></th>
+          </tr>
+          </thead>
+          <tbody>
+
+          <tr *ngFor="let item of slots, let j = index">
+            <td class="col-md-6 col-xs-12">{{ item.date }}</td>
+            <td class="offer-availability-hours">{{ item.startHour }}</td>
+            <td class="offer-availability-hours">{{ item.endHour }}</td>
+            <td class="col-md-2 col-xs-12">
+              <button class="btn btn-secondary mb-xs" role="button" (click)="removeSlot(j)">
+                <i class="glyphicon glyphicon-trash"></i>
+              </button>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="col-md-6 col-xs-12">
+              <datetime
+                id="slotDate"
+                [timepicker]="false"
+                [datepicker]="datepickerOpts"
+                [(ngModel)]="slot.date"
+              ></datetime>
+            </td>
+            <td class="offer-availability-hours">
+              <datetime
+                id="slotSHour"
+                [datepicker]="false"
+                [timepicker]="{ showMeridian: false, minuteStep: 15 }"
+                [(ngModel)]="slot.startHour"
+              ></datetime>
+            </td>
+            <td class="offer-availability-hours">
+              <datetime
+                id="slotEHour"
+                [datepicker]="false"
+                [timepicker]="{ showMeridian: false, minuteStep: 15 }"
+                [(ngModel)]="slot.endHour"
+              ></datetime>
+            </td>
+            <td class="col-md-2 col-xs-12">
+              <button class="btn btn-danger mb-xs" role="button" (click)="addSlot()">
+                Ajouter
+              </button>
+            </td>
+          </tr>
+
+          </tbody>
+        </table>
+
+        <!-- Créneaux -->
+        <!--<div class="form-group row required">-->
+        <!--<label class="col-md-6 col-xs-6 form-control-label">Créneaux</label>-->
+        <!--<label class="col-md-2 col-xs-2 form-control-label">De</label>-->
+        <!--<label class="col-md-2 col-xs-2 form-control-label">A</label>-->
+        <!--</div>-->
+
+        <!--<div class="form-group row" *ngFor="let item of slots, let j = index">-->
+        <!--<div class="col-md-6 col-xs-12">-->
+        <!--<input class="form-control" [(ngModel)]="item.date" disabled/>-->
+        <!--</div>-->
+        <!--<div class="col-md-2 col-xs-12">-->
+        <!--<input class="form-control" [(ngModel)]="item.startHour" disabled/>-->
+        <!--</div>-->
+        <!--<div class="col-md-2 col-xs-12">-->
+        <!--<input class="form-control" [(ngModel)]="item.endHour" disabled/>-->
+        <!--</div>-->
+        <!--<div class="col-md-2 col-xs-12">-->
+        <!--<button class="btn btn-secondary mb-xs" role="button" (click)="removeSlot(j)">-->
+        <!--<i class="glyphicon glyphicon-trash"></i>-->
+        <!--</button>-->
+        <!--</div>-->
+        <!--</div>-->
+
+        <!--<div class="form-group row required">-->
+        <!--<div class="col-md-6 col-xs-12">-->
+        <!--<datetime id="slotDate" [timepicker]="false" [datepicker]="datepickerOpts"-->
+        <!--[(ngModel)]="slot.date"></datetime>-->
+        <!--</div>-->
+        <!--<div class="col-md-2 col-xs-12">-->
+        <!--<datetime id="slotSHour" [datepicker]="false" [timepicker]="{ showMeridian: false, minuteStep: 15 }"-->
+        <!--[(ngModel)]="slot.startHour"></datetime>-->
+        <!--</div>-->
+        <!--<div class="col-md-2 col-xs-12">-->
+        <!--<datetime id="slotEHour" [datepicker]="false" [timepicker]="{ showMeridian: false, minuteStep: 15 }"-->
+        <!--[(ngModel)]="slot.endHour"></datetime>-->
+        <!--</div>-->
+        <!--<div class="col-md-2 col-xs-12">-->
+        <!--<button class="btn btn-danger mb-xs" role="button" (click)="addSlot()">-->
+        <!--Ajouter-->
+        <!--</button>-->
+        <!--</div>-->
+        <!--</div>-->
+
+      </div>
+    </section>
+
+    <!-- !DISPO -->
+    <!-- PROFILE -->
+
+    <section widget class="widget widget-offer">
+      <div class="widget-controls">
+        <a href="#"><i class="fa fa-refresh"></i></a>
+        <a href="#" data-widgster="close"><i class="glyphicon glyphicon-remove"></i></a>
+      </div>
+      <header class="bb widget-offer-header">
+        <h6><span class="fw-semi-bold widget-offer-header-title">Profil</span></h6>
+      </header>
+      <div class="widget-body">
+
+        <!-- Qualités -->
+        <div class="form-group row required">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">Qualités</label>
+          <div class="col-md-10 col-xs-12">
+            <select class="form-control" [(ngModel)]="selectedQuality">
+              <option *ngFor="let q of qualities" [value]="q.idQuality">{{q.libelle}}</option>
+            </select>
+          </div>
+          <div class="col-md-2 col-xs-12">
+            <button class="btn btn-danger mb-xs offer-add-button" role="button" (click)="addQuality()">
+              Ajouter
+            </button>
+          </div>
+        </div>
+        <div class="form-group row" *ngFor="let item of offer.qualityData">
+          <label class="col-md-10 col-xs-6 form-control-label">{{item.libelle}}</label>
+          <div class="col-md-2 col-xs-12">
+            <button class="btn btn-secondary mb-xs" role="button">
+              <i class="glyphicon glyphicon-trash" (click)="removeQuality(item)"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Langues -->
+        <div class="form-group row required">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">Langues</label>
+          <div class="col-md-6 col-xs-12">
+            <select class="form-control" [(ngModel)]="selectedLang">
+              <option *ngFor="let l of langs" [value]="l.idLanguage">{{l.libelle}}</option>
+            </select>
+          </div>
+          <div class="col-md-4 col-xs-12">
+            <select class="form-control" [(ngModel)]="selectedLevel">
+              <option value="junior">Débutant</option>
+              <option value="senior">Courant</option>
+            </select>
+          </div>
+          <div class="col-md-2 col-xs-12">
+            <button class="btn btn-danger mb-xs offer-add-button" role="button" (click)="addLanguage()">
+              Ajouter
+            </button>
+          </div>
+        </div>
+        <div class="form-group row" *ngFor="let item of offer.languageData">
+          <label class="col-md-6 col-xs-6 form-control-label">{{item.libelle}}</label>
+          <label class="col-md-4 col-xs-6 form-control-label">
+            {{item.level == 'junior' ? 'Débutant' : 'Courant'}}
+          </label>
+          <div class="col-md-2 col-xs-12">
+            <button class="btn btn-secondary mb-xs" role="button">
+              <i class="glyphicon glyphicon-trash" (click)="removeLanguage(item)"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- !PROFILE -->
+    <!-- ACTIONS -->
+
+    <section class="widget" widget>
+
+      <div class="widget-body">
+        <form class="form-horizontal" role="form">
           <div class="form-actions">
             <div class="container-fluid">
               <div class="row">
@@ -354,8 +502,12 @@
         </form>
       </div>
     </section>
+
+    <!-- !ACTIONS -->
+
   </div>
 </div>
 
+<!-- MODALS -->
 <modal-options [params]="modalParams"></modal-options>
 <modal-offer-temp-quote></modal-offer-temp-quote>
