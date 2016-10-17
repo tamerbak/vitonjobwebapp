@@ -29,5 +29,17 @@
         <button type="button" class="btn btn-success" (click)="close($event)">OK</button>
       </div>
     </div>
+
+    <div class="modal-content" *ngIf="showAuthNotif">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel18">VitOnJob</h4>
+        <p class="text-xs-center text-muted mt-sm" style="line-height: 2;">Veuillez vous connecter pour pouvoir contacter ce profil.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" (click)="close($event)">OK</button>
+      </div>
+    </div>
+
   </div>
 </div>

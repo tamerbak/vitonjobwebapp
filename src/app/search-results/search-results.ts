@@ -42,7 +42,8 @@ export class SearchResults{
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     } else {
-      this.router.navigate(['app/home']);
+      this.projectTarget = this.sharedService.getProjectTarget();
+      // this.router.navigate(['app/home']);
     }
   }
   ngOnInit() {
@@ -64,7 +65,7 @@ export class SearchResults{
         if (r.latitude !== '0' && r.longitude !== '0') {
           var info = "";
           let matching: string = (r.matching.toString().indexOf('.') < 0) ? r.matching : r.matching.toString().split('.')[0];
-          if (this.currentUser.estEmployeur) {
+          if (this.projectTarget == 'employer') {
             info = "<h4>" + r.prenom + ' ' + r.nom.substring(0, 1) + ". <span style='background-color: #14baa6; color: white; font-size: small;border-radius: 25px;'>&nbsp;" + matching + "%&nbsp;</span></h4>" +
               "<p>" + r.titreOffre + "</p>" +
               "<p><span style='color: #29bb00; font-size: large;'>&#9679;</span> &nbsp; Disponible</p>" +
@@ -143,11 +144,10 @@ export class SearchResults{
 
   onRecruite(params) {
     this.currentJobyer = params.jobyer;
-    if (params.obj == "contract" || params.obj == "offer") {
-      jQuery('#modal-notification-contract').modal('show');
-    }
     if (params.obj == "profile") {
       jQuery('#modal-profile').modal('show');
+    }else{
+      jQuery('#modal-notification-contract').modal('show');
     }
   }
 
