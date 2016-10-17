@@ -538,8 +538,21 @@ export class OfferEdit {
   checkHour() {
     this.alertsSlot = [];
 
+    // Compute Minutes format start and end hour of the new slot
+    let startHourH = this.slot.startHour.getHours();
+    let startHourM = this.slot.startHour.getMinutes();
+    let startHourTotMinutes = this.offersService.convertHoursToMinutes(startHourH + ':' + startHourM);
+    let endHourH = this.slot.endHour.getHours();
+    let endHourM = this.slot.endHour.getMinutes();
+    let endHourTotMinutes = this.offersService.convertHoursToMinutes(endHourH + ':' + endHourM);
+
+    // If end hour is 0:00, force 23:59 such as midnight minute
+    if (endHourTotMinutes == 0) {
+      endHourTotMinutes = (60 * 24) - 1;
+    }
+
     // Check that end hour is over than begin hour
-    if (this.slot.startHour && this.slot.endHour && this.slot.startHour >= this.slot.endHour) {
+    if (startHourTotMinutes >= endHourTotMinutes) {
       this.addAlert("danger", "L'heure de début doit être inférieure à l'heure de fin", "slot");
       return false;
     }
@@ -554,14 +567,6 @@ export class OfferEdit {
         return false;
       }
     }
-
-    // Compute Minutes format start and end hour of the new slot
-    let startHourH = this.slot.startHour.getHours();
-    let startHourM = this.slot.startHour.getMinutes();
-    let startHourTotMinutes = this.offersService.convertHoursToMinutes(startHourH + ':' + startHourM);
-    let endHourH = this.slot.endHour.getHours();
-    let endHourM = this.slot.endHour.getMinutes();
-    let endHourTotMinutes = this.offersService.convertHoursToMinutes(endHourH + ':' + endHourM);
 
     // Check that the slot is not overwriting an other one
     for (let i = 0; i < this.slots.length; i++) {
