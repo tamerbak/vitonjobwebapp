@@ -52,7 +52,7 @@
           Modifier
         </button>
 
-        <button class="btn btn-danger" (click)="updateVideo(true)" [hidden]="!videoAvailable">
+        <button class="btn btn-success" (click)="updateVideo(true)" [hidden]="!videoAvailable">
           <i class="glyphicon glyphicon-trash"></i>
           Supprimer
         </button>
@@ -273,107 +273,74 @@
           <div [innerHTML]="alert.msg"></div>
         </alert>
 
-        <!-- Créneaux --
-        <table class="table table-striped">
-          <thead>
-          <tr>
-            <th class="col-md-6 col-xs-12">Créneaux</th>
-            <th class="offer-availability-hours">De</th>
-            <th class="offer-availability-hours">A</th>
-            <th class="col-md-2 col-xs-12"></th>
-          </tr>
-          </thead>
-          <tbody>
+        <!-- Créneaux -->
+        <div class="form-group row">
+          <label class="col-md-6 col-xs-6 form-control-label">Créneaux</label>
+          <label class="col-md-2 col-xs-2 form-control-label">De</label>
+          <label class="col-md-2 col-xs-2 form-control-label">A</label>
+        </div>
 
-          <tr *ngFor="let item of slots, let j = index">
-            <td class="col-md-6 col-xs-12">{{ item.date }}</td>
-            <td class="offer-availability-hours">{{ item.startHour }}</td>
-            <td class="offer-availability-hours">{{ item.endHour }}</td>
-            <td class="col-md-2 col-xs-12">
-              <button class="btn btn-secondary mb-xs" role="button" (click)="removeSlot(j)">
+        <div *ngFor="let item of slots, let j = index">
+          <div class="form-group row">
+            <div class="col-md-6 col-sm-5 col-xs-12">
+              <input class="form-control" [(ngModel)]="item.date" disabled/>
+            </div>
+            <div class="col-md-2 col-sm-2 col-xs-4 offer-hour-new">
+              <input class="form-control" [(ngModel)]="item.startHour" disabled/>
+            </div>
+            <div class="col-md-2 col-sm-2 col-xs-4 offer-hour-new">
+              <input class="form-control" [(ngModel)]="item.endHour" disabled/>
+            </div>
+            <div class="col-md-2 col-sm-3 col-xs-4 offer-hour-action-button">
+              <button
+                style="display: block; width: 100%;"
+                class="btn btn-danger mb-xs col-md-2 col-xs-12"
+                role="button"
+                (click)="removeSlot(j)"
+              >
                 <i class="glyphicon glyphicon-trash"></i>
               </button>
-            </td>
-          </tr>
+            </div>
+          </div>
+        </div>
 
-          <tr>
-            <td class="col-md-6 col-xs-12">
-              <datetime
-                id="slotDate"
-                [timepicker]="false"
-                [datepicker]="datepickerOpts"
-                [(ngModel)]="slot.date"
-              ></datetime>
-            </td>
-            <td class="offer-availability-hours">
-              <datetime
-                id="slotSHour"
-                [datepicker]="false"
-                [timepicker]="{ showMeridian: false, minuteStep: 15 }"
-                [(ngModel)]="slot.startHour"
-              ></datetime>
-            </td>
-            <td class="offer-availability-hours">
-              <datetime
-                id="slotEHour"
-                [datepicker]="false"
-                [timepicker]="{ showMeridian: false, minuteStep: 15 }"
-                [(ngModel)]="slot.endHour"
-              ></datetime>
-            </td>
-            <td class="col-md-2 col-xs-12">
-              <button class="btn btn-danger mb-xs" role="button" (click)="addSlot()">
-                Ajouter
-              </button>
-            </td>
-          </tr>
-
-          </tbody>
-        </table>
-
-        <!-- Créneaux -->
-        <!--<div class="form-group row required">-->
-        <!--<label class="col-md-6 col-xs-6 form-control-label">Créneaux</label>-->
-        <!--<label class="col-md-2 col-xs-2 form-control-label">De</label>-->
-        <!--<label class="col-md-2 col-xs-2 form-control-label">A</label>-->
-        <!--</div>-->
-
-        <!--<div class="form-group row" *ngFor="let item of slots, let j = index">-->
-        <!--<div class="col-md-6 col-xs-12">-->
-        <!--<input class="form-control" [(ngModel)]="item.date" disabled/>-->
-        <!--</div>-->
-        <!--<div class="col-md-2 col-xs-12">-->
-        <!--<input class="form-control" [(ngModel)]="item.startHour" disabled/>-->
-        <!--</div>-->
-        <!--<div class="col-md-2 col-xs-12">-->
-        <!--<input class="form-control" [(ngModel)]="item.endHour" disabled/>-->
-        <!--</div>-->
-        <!--<div class="col-md-2 col-xs-12">-->
-        <!--<button class="btn btn-secondary mb-xs" role="button" (click)="removeSlot(j)">-->
-        <!--<i class="glyphicon glyphicon-trash"></i>-->
-        <!--</button>-->
-        <!--</div>-->
-        <!--</div>-->
-
-        <!--<div class="form-group row required">-->
-        <!--<div class="col-md-6 col-xs-12">-->
-        <!--<datetime id="slotDate" [timepicker]="false" [datepicker]="datepickerOpts"-->
-        <!--[(ngModel)]="slot.date"></datetime>-->
-        <!--</div>-->
-        <!--<div class="col-md-2 col-xs-12">-->
-        <!--<datetime id="slotSHour" [datepicker]="false" [timepicker]="{ showMeridian: false, minuteStep: 15 }"-->
-        <!--[(ngModel)]="slot.startHour"></datetime>-->
-        <!--</div>-->
-        <!--<div class="col-md-2 col-xs-12">-->
-        <!--<datetime id="slotEHour" [datepicker]="false" [timepicker]="{ showMeridian: false, minuteStep: 15 }"-->
-        <!--[(ngModel)]="slot.endHour"></datetime>-->
-        <!--</div>-->
-        <!--<div class="col-md-2 col-xs-12">-->
-        <!--<button class="btn btn-danger mb-xs" role="button" (click)="addSlot()">-->
-        <!--Ajouter-->
-        <!--</button>-->
-        <!--</div>-->
-        <!--</div>-->
+        <div class="form-group row required">
+          <div class="col-md-6 col-sm-6 col-xs-12">
+            <datetime
+              id="slotDate"
+              style="display: block; width: 100%;"
+              [timepicker]="false"
+              [datepicker]="datepickerOpts"
+              [(ngModel)]="slot.date"
+            ></datetime>
+          </div>
+          <div class="col-md-2 col-sm-3 col-xs-6 offer-hour-new">
+            <datetime
+              id="slotSHour"
+              [datepicker]="false"
+              [timepicker]="{ showMeridian: false, minuteStep: 15 }"
+              [(ngModel)]="slot.startHour"
+            ></datetime>
+          </div>
+          <div class="col-md-2 col-sm-3 col-xs-6 offer-hour-new">
+            <datetime
+              id="slotEHour"
+              [datepicker]="false"
+              [timepicker]="{ showMeridian: false, minuteStep: 15 }"
+              [(ngModel)]="slot.endHour"
+            ></datetime>
+          </div>
+          <div class="col-md-2 col-xs-12 offer-hour-action-button">
+            <button
+              style="display: block; width: 100%;"
+              class="btn btn-success mb-xs"
+              role="button"
+              (click)="addSlot()"
+            >
+              Ajouter
+            </button>
+          </div>
+        </div>
 
       </div>
     </section>
@@ -400,7 +367,7 @@
             </select>
           </div>
           <div class="col-md-2 col-xs-12">
-            <button class="btn btn-danger mb-xs offer-add-button" role="button" (click)="addQuality()">
+            <button class="btn btn-success mb-xs offer-add-button" role="button" (click)="addQuality()">
               Ajouter
             </button>
           </div>
@@ -429,7 +396,7 @@
             </select>
           </div>
           <div class="col-md-2 col-xs-12">
-            <button class="btn btn-danger mb-xs offer-add-button" role="button" (click)="addLanguage()">
+            <button class="btn btn-success mb-xs offer-add-button" role="button" (click)="addLanguage()">
               Ajouter
             </button>
           </div>
@@ -491,7 +458,7 @@
                   </button>
                 </div>
                 <div class="col-lg-6 col-md-6 col-xs-12">
-                  <button type="submit" class="btn btn-danger fwidth" (click)="deleteOffer()">
+                  <button type="submit" class="btn btn-success fwidth" (click)="deleteOffer()">
                     Supprimer l'offre
                   </button>
                 </div>

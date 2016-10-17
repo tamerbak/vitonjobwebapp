@@ -49,7 +49,11 @@ export class OfferList {
     this.globalOfferList.length = 0;
     this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
     this.globalOfferList.push({header: 'Mes brouillons', list: []});
-    this.offerList = this.projectTarget == 'employer' ? this.sharedService.getCurrentUser().employer.entreprises[0].offers : this.sharedService.getCurrentUser().jobyer.offers;
+    this.offerList = this.projectTarget == 'employer'
+      ? this.sharedService.getCurrentUser().employer.entreprises[0].offers
+      : this.sharedService.getCurrentUser().jobyer.offers
+    ;
+    console.log(this.offerList);
     for (let i = 0; i < this.offerList.length; i++) {
       let offer = this.offerList[i];
       if (!offer || !offer.jobData) {

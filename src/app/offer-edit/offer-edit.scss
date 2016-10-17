@@ -277,6 +277,18 @@
   .offer-availability-hours {
     width: 115px;
   }
+
+  @media (max-width: map_get($grid-breakpoints, sm)) {
+    .offer-hour-new {
+      margin-top: 5px;
+    }
+  }
+
+  @media (max-width: map_get($grid-breakpoints, md)) {
+    .offer-hour-action-button {
+      margin-top: 5px;
+    }
+  }
 }
 
 /**
