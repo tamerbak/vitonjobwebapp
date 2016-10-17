@@ -1368,9 +1368,9 @@ export class Profile {
         //var birthcp = this.birthcp;
         var birthdepId = this.birthdepId;
         var numStay = this.numStay;
-        var dateStay = moment(this.dateStay).format('YYYY-MM-DD');
-        var dateFromStay = moment(this.dateFromStay).format('MM/DD/YYYY');
-        var dateToStay = moment(this.dateToStay).format('MM/DD/YYYY');
+        var dateStay = (!Utils.isEmpty(this.dateStay) ? moment(this.dateStay).format('YYYY-MM-DD') : null);
+        var dateFromStay = (!Utils.isEmpty(this.dateFromStay) ? moment(this.dateFromStay).format('MM/DD/YYYY') : null);
+        var dateToStay = (!Utils.isEmpty(this.dateToStay) ? moment(this.dateToStay).format('MM/DD/YYYY') : null);
         var isResident = (this.isResident ? 'Oui' : 'Non');
         if (this.isCIN) {
           numStay = "";
