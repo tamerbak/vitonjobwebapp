@@ -1,4 +1,4 @@
-import {Component, NgZone, ViewEncapsulation, ViewChild, Input} from "@angular/core";
+import {Component, NgZone, ViewEncapsulation, ViewChild, EventEmitter, Input, Output} from "@angular/core";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {NKDatetime} from "ng2-datetime/ng2-datetime";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
@@ -25,6 +25,11 @@ export class ModalProfile{
 
   @Input()
   fromPage: string;
+  @Input()
+  jobyer: any;
+  @Output()
+  onProfileUpdated = new EventEmitter<any>();
+
   msgWelcome1: string;
   msgWelcome2: string;
   forRecruitment: boolean = false;
@@ -120,9 +125,8 @@ export class ModalProfile{
       this.msgWelcome2 = "Vous êtes tout près de trouver votre " + (this.projectTarget == "jobyer" ? 'emploi.' : 'Jobyer.');
 
       this.getUserInfos();
-      if (this.isNewUser) {
-        this.initForm();
-      }
+      this.initForm();
+
       if (!this.isRecruiter && !this.isEmployer) {
         this.personalAddressLabel = "Adresse personnelle";
         this.jobAddressLabel = "Adresse de départ au travail";
@@ -206,7 +210,6 @@ export class ModalProfile{
 
   autocompletePersonalAddress() {
     this._loader.load().then(() => {
-      this.autocompletePA = new google.maps.places.Autocomplete(document.getElementById("autocompletePersonal"), this.addressOptions);
       google.maps.event.addListener(this.autocompletePA, 'place_changed', () => {
         let place = this.autocompletePA.getPlace();
         var addressObj = AddressUtils.decorticateGeolocAddress(place);
@@ -229,7 +232,6 @@ export class ModalProfile{
 
   autocompleteJobAddress() {
     this._loader.load().then(() => {
-      this.autocompleteJA = new google.maps.places.Autocomplete(document.getElementById("autocompleteJob"), this.addressOptions);
       google.maps.event.addListener(this.autocompleteJA, 'place_changed', () => {
         let place = this.autocompleteJA.getPlace();
         var addressObj = AddressUtils.decorticateGeolocAddress(place);
@@ -711,8 +713,10 @@ export class ModalProfile{
               type: 'success',
               showCloseButton: true
             });
-            //redirecting to contract page
-            this.router.navigate(['app/contract/recruitment-form']);
+            //notify the parent page to open the contract notification modal
+            if (this.fromPage == "recruitment") {
+              this.onProfileUpdated.emit({obj: "contract", jobyer: this.jobyer});
+            }
             this.close();
           }
         })
@@ -873,6 +877,15 @@ export class ModalProfile{
           });
       }
     }
+  }
+
+  ngAfterViewInit(): void {
+    this._loader.load().then(() => {
+      if(!Utils.isEmpty(document.getElementById("autocompletePersonal")))
+        this.autocompletePA = new google.maps.places.Autocomplete(document.getElementById("autocompletePersonal"), this.addressOptions);
+      if(!Utils.isEmpty(document.getElementById("autocompleteJob")))
+        this.autocompleteJA = new google.maps.places.Autocomplete(document.getElementById("autocompleteJob"), this.addressOptions);
+    });
   }
 
   close(): void {

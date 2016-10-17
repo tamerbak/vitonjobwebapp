@@ -69,7 +69,7 @@
           </div>
           <div class="row">
             <div class="col-md-1 col-xs-2 pull-xs-left">
-              <recruit-button [jobyer]="item" *ngIf="projectTarget == 'employer' && !isRecruteur"></recruit-button>
+              <recruit-button [jobyer]="item" (onRecruite)="onRecruite($event)" *ngIf="projectTarget == 'employer' && !isRecruteur"></recruit-button>
             </div>
             <div class="col-md-1 col-xs-2">
               <button
@@ -96,4 +96,5 @@
     </section>
   </div>
 </div>
-
+<div modal-notification-contract [jobyer]="currentJobyer" *ngIf="projectTarget == 'employer' && !isRecruteur"></div>
+<div modal-profile [fromPage]="fromPage" [jobyer]="currentJobyer" (onProfileUpdated)="onProfileUpdated($event)"></div>
