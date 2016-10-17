@@ -269,12 +269,8 @@
 
         <legend><strong>Créneaux</strong></legend>
 
-        <alert *ngFor="let alert of alertsSlot; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
-          <div [innerHTML]="alert.msg"></div>
-        </alert>
-
         <!-- Créneaux -->
-        <div class="form-group row">
+        <div class="form-group row required">
           <label class="col-md-6 col-xs-6 form-control-label">Créneaux</label>
           <label class="col-md-2 col-xs-2 form-control-label">De</label>
           <label class="col-md-2 col-xs-2 form-control-label">A</label>
@@ -303,6 +299,13 @@
             </div>
           </div>
         </div>
+
+        <alert *ngFor="let alert of alertsSlot; let i = index" [type]="alert.type + ' alert-sm'" dismissible="false">
+          <div [innerHTML]="alert.msg"></div>
+        </alert>
+        <alert *ngIf="slots.length == 0" [type]="'danger alert-sm'">
+          <div [innerHTML]="'* Veuillez renseigner au moins un créneau'"></div>
+        </alert>
 
         <div class="form-group row required">
           <div class="col-md-6 col-sm-6 col-xs-12">
