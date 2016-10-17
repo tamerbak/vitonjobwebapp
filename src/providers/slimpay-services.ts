@@ -19,7 +19,7 @@ export class SlimPayService {
 
     var payload = {
       class : 'fr.protogen.masterdata.model.CCallout',
-      'id': 2,
+      'id': 310,
       'args': [
         {
           class : 'fr.protogen.masterdata.model.CCalloutArguments',
