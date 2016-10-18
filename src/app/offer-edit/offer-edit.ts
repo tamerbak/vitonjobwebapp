@@ -72,6 +72,7 @@ export class OfferEdit {
   offrePrivacyTitle: string;
   autoSearchModeTitle: string;
   modalParams: any = {type: '', message: ''};
+  keepCurrentOffer: boolean = false;
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -708,7 +709,7 @@ export class OfferEdit {
   }
 
   ngOnDestroy(): void {
-    if (this.obj == "detail")
+    if (this.obj == "detail" && this.keepCurrentOffer === false)
       this.sharedService.setCurrentOffer(null);
   }
 
@@ -813,6 +814,7 @@ export class OfferEdit {
     this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
       this.sharedService.setLastResult(data);
       this.sharedService.setCurrentOffer(offer);
+      this.keepCurrentOffer = true;
       this.router.navigate(['app/search/results']);
     });
   }
