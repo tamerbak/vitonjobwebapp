@@ -512,6 +512,7 @@ export class OfferEdit {
         return;
       }
       this.offer.qualityData.push(qualitiesTemp[0]);
+      this.selectedQuality = "";
     }
   }
 
@@ -531,7 +532,7 @@ export class OfferEdit {
     var langTemp = this.langs.filter((v)=> {
       return (v.idLanguage == this.selectedLang);
     });
-    //delete the lang from the cyurrent offer lang list, if already existant
+    //delete the lang from the current offer lang list, if already existant
     if (this.offer.languageData.indexOf(langTemp[0]) != -1) {
       this.offer.languageData.splice(this.offer.languageData.indexOf(langTemp[0]), 1);
     }
@@ -541,6 +542,7 @@ export class OfferEdit {
       this.offersService.updateOfferLanguages(this.offer, this.projectTarget);
       this.setOfferInLocal();
     }
+    this.selectedLang = "";
   }
 
   checkHour() {

@@ -190,7 +190,7 @@
             <alert *ngIf="triedValidate && !offer.jobData.remuneration" [type]="'danger alert-sm'">
               <div [innerHTML]="'* Veuillez renseigner le taux horaire'"></div>
             </alert>
-            <alert *ngIf="invalidHourRate" [type]="'danger alert-sm'">
+            <alert *ngIf="invalidHourRate && offer.jobData.remuneration" [type]="'danger alert-sm'">
               <div [innerHTML]="'* Le taux horaire devrait être supérieur ou égal à ' + invalidHourRateMessage"></div>
             </alert>
           </div>
@@ -357,7 +357,7 @@
               class="btn btn-success mb-xs"
               role="button"
               (click)="addSlot()"
-              [disabled]="!(slot.date && slot.startHour && slot.endtHour)"
+              [disabled]="!(slot.date && slot.startHour && slot.endHour)"
             >
               Ajouter
             </button>
@@ -433,7 +433,7 @@
 
             <!-- Selected Languages -->
             <div class="form-group row" *ngFor="let item of offer.languageData">
-              <div class="col-md-6 col-xs-">
+              <div class="col-md-6 col-xs-6">
                 <input class="form-control" value="{{item.libelle}}" disabled/>
               </div>
               <div class="col-md-3 col-xs-6">
@@ -442,7 +442,7 @@
               <div class="col-md-3 col-xs-12">
                 <button
                   style="display: block; width: 100%;"
-                  class="btn btn-danger mb-xs"
+                  class="btn btn-danger mb-xs btn-remove-language"
                   role="button"
                   (click)="removeLanguage(item)"
                 >
