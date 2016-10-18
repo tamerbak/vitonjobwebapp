@@ -1,83 +1,61 @@
-@import "../../scss/variables";
-@import "../../../node_modules/bootstrap/scss/_variables";
-@import "../../../node_modules/bootstrap/scss/mixins";
 @import "../../../node_modules/ng2-datetime/src/vendor/bootstrap-datepicker/bootstrap-datepicker3.min";
 @import "../../../node_modules/ng2-datetime/src/vendor/bootstrap-timepicker/bootstrap-timepicker.min";
+@import "../../../node_modules/bootstrap-select/dist/css/bootstrap-select";
+@import "../../../node_modules/bootstrap/scss/_variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
 @import "../../../node_modules/select2/select2";
 @import "../../../node_modules/select2-bootstrap-css/select2-bootstrap";
-
-.iframe-class{
-  border-width: 0px;
-  border-style: none;
-  border-color: initial;
-  border-image: initial;
-}
-
-.margin-top-10{
-  margin-top: 10px;
-}
-
-.ajouter{
-  margin-top: 1em;
-}
+//@import "../../../node_modules/jasny-bootstrap/dist/css/jasny-bootstrap";
+@import "../../scss/variables";
 
 .fwidth{
   width:100%;
   margin-bottom: 10px;
 }
 
-.news-list {
-  margin-bottom: 0;
-  padding-left: 0;
+.widget-offer {
 
-  li {
-    list-style: none;
-    box-sizing: content-box;
-    border-top: 1px solid $gray-lighter;
-    padding: 12px;
-    cursor: pointer;
-    @include transition(background-color .2s ease-out);
+  .widget-offer-header {
+    background-color: $navbar-dashboard-bg;
+    border-color: $navbar-dashboard-border;
+    border-radius: 4px 4px 0 0;
+    margin-bottom: 0px;
+    table-layout: fixed;
+  }
 
-    &:hover {
-      background: $body-bg-light;
+  .widget-offer-header-title {
+    color: white;
+  }
+
+  .required > label:after {
+    content: " *";
+    color: red;
+  }
+
+  select {
+    height: 35px;
+  }
+
+  .offer-availability-hours {
+    width: 115px;
+  }
+
+  @media (max-width: map_get($grid-breakpoints, sm)) {
+    .offer-hour-new {
+      margin-top: 5px;
     }
-
-    &:last-child {
-      margin-bottom: -10px;
-    }
-  }
-
-  img,
-  .icon {
-    float: left;
-    height: 50px;
-    width: 50px;
-  }
-
-  .icon {
-    line-height: 50px;
-    border-radius: 50%;
-    text-align: center;
-    font-size: 28px;
-  }
-
-  .news-item-info {
-    margin-left: 62px; /*50 + 12px padding*/
-  }
-
-  .name {
-    text-transform: uppercase;
-
-    a {
-      text-decoration: none;
-      &:hover {
-        color: $link-color;
-      }
+    .offer-video-btn {
+      margin-top: 5px;
     }
   }
-}
 
-.field-format-warning{
-  text-align: right;
-  color : #fff !important;
+  @media (max-width: map_get($grid-breakpoints, md)) {
+    .offer-hour-action-button {
+      margin-top: 5px;
+    }
+
+    .btn-success {
+      margin-top: 5px;
+    }
+  }
 }
