@@ -421,9 +421,17 @@ export class Profile {
       } else {
         if (this.currentUser.jobyer.dateNaissance) {
           var birthDate = moment(new Date(this.currentUser.jobyer.dateNaissance)).format('DD/MM/YYYY');
+
           this.birthdateHidden = new Date(this.currentUser.jobyer.dateNaissance);
           this.isValidBirthdate = true;
-          jQuery("#birthdate input").val(birthDate);
+
+          var elements = [];
+          jQuery("div[id^='q-datepicker_']").each(function(){
+             elements.push(this.id);
+          });
+
+          jQuery('#'+elements[0]).datepicker('update', birthDate);
+          //jQuery("#birthdate input").val(birthDate);
 
         } else {
           this.birthdate = null;
