@@ -426,6 +426,12 @@ export class OfferEdit {
     h = this.slot.endHour.getHours() * 60;
     m = this.slot.endHour.getMinutes();
     this.slot.endHour = h + m;
+
+    // If end hour is 0:00, force 23:59 such as midnight minute
+    if (this.slot.endHour == 0) {
+      this.slot.endHour = (60 * 24) - 1;
+    }
+
     if (this.obj == "add") {
       var s = this.convertSlotsForDisplay(this.slot);
       this.slots.push(s);
@@ -576,6 +582,11 @@ export class OfferEdit {
         // Compute Minutes format start and end hour of existing slot
         let slotStartTotMinutes = this.offersService.convertHoursToMinutes(this.slots[i].startHour);
         let slotEndTotMinutes = this.offersService.convertHoursToMinutes(this.slots[i].endHour);
+
+        // If end hour is 0:00, force 23:59 such as midnight minute
+        if (slotEndTotMinutes == 0) {
+          slotEndTotMinutes = (60 * 24) - 1;
+        }
 
         // HACK:
         // First >= : Because a new slot can't start at the same time as previous start hour one's
