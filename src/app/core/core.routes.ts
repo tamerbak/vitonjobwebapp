@@ -6,8 +6,7 @@ import {Settings} from "../settings/settings";
 import {Attachements} from "../attachements/attachements";
 import {PendingContracts} from "../pending-contracts/pending-contracts";
 import {OfferList} from "../offer-list/offer-list";
-import {OfferDetail} from "../offer-detail/offer-detail";
-import {OfferAdd} from "../offer-add/offer-add";
+import {OfferEdit} from "../offer-edit/offer-edit";
 import {SearchResults} from "../search-results/search-results";
 import {SearchDetails} from "../search-details/search-details";
 import {SearchCriteria} from "../search-criteria/search-criteria";
@@ -19,10 +18,9 @@ import {Contract} from "../contract/contract";
 import {Yousign} from "../yousign/yousign";
 import {WalletCreate} from "../wallet-create/wallet-create";
 import {MissionPointing} from "../mission-pointing/mission-pointing";
-import {OfferEdit} from "../offer-edit/offer-edit";
 import {RecruiterList} from "../recruiter-list/recruiter-list";
 import {RecruiterEdit} from "../recruiter-edit/recruiter-edit";
-import {ConfirmExitPage,CanAccessPage} from "../../providers/routes.service";
+import {ConfirmExitPage, CanAccessPage} from "../../providers/routes.service";
 import {PaymentMethod} from "../payment-method/payment-method";
 
 /**
@@ -42,14 +40,12 @@ export const CoreRoutes: RouterConfig = [
       {path: 'home', component: Home},
 
       // User parameters
-      {path: 'profile', component: Profile,canDeactivate: [ConfirmExitPage]},
-      {path: 'settings', component: Settings,canDeactivate: [ConfirmExitPage]},
+      {path: 'profile', component: Profile, canDeactivate: [ConfirmExitPage]},
+      {path: 'settings', component: Settings, canDeactivate: [ConfirmExitPage]},
 
       // Offers management
       {path: 'offer/list', component: OfferList},
-      {path: 'offer/detail', component: OfferDetail},
-      {path: 'offer/add', component: OfferAdd},
-      {path: 'offer/edit', component: OfferEdit,canDeactivate: [ConfirmExitPage]},
+      {path: 'offer/edit', component: OfferEdit, canDeactivate: [ConfirmExitPage]},
 
       // Search management
       {path: 'search/results', component: SearchResults},
@@ -64,13 +60,13 @@ export const CoreRoutes: RouterConfig = [
 
       // Contract management
       {path: 'contract/recruitment-form', component: Contract},
-      {path: 'contract/recruitment', component: Yousign,canActivate: [CanAccessPage]},
+      {path: 'contract/recruitment', component: Yousign, canActivate: [CanAccessPage]},
       {path: 'contract/hours-record', component: MissionEndReleve},
       {path: 'contract/invoice', component: MissionEndInvoice},
 
       // Payment
-      {path: 'wallet/create', component: WalletCreate,canDeactivate: [ConfirmExitPage]},
-      {path: 'payment/method', component: PaymentMethod,canActivate: [CanAccessPage]},
+      {path: 'wallet/create', component: WalletCreate, canDeactivate: [ConfirmExitPage]},
+      {path: 'payment/method', component: PaymentMethod, canActivate: [CanAccessPage]},
 
       // Grouped recruitment
       {path: 'pendingContracts', component: PendingContracts},
