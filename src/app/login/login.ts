@@ -116,29 +116,33 @@ export class LoginPage {
       } else {
         this.sharedService.setStorageType("session");
       }
-      this.sharedService.setCurrentUser(data);
-      //get current user profile picture
-      this.profileService.loadProfilePicture(data.id).then((pic: any) => {
-        var userImageURL;
-        if (!this.isEmpty(pic.data[0].encode)) {
-          userImageURL = pic.data[0].encode;
-          this.sharedService.setProfilImageUrl(pic.data[0].encode);
-        } else {
-          this.sharedService.setProfilImageUrl(null);
-        }
-
-        //if user is connected for the first time, redirect him to the page 'civility', otherwise redirect him to the home page
-        var isNewUser = data.newAccount;
-        /*if (isNewUser || this.isNewRecruteur) {
-          this.router.navigate(['app/profile']);
-        } else {
-          if (this.fromPage == "Search") {
-            //this.nav.pop();
+      //get current user profile picture and password status
+      var tel = "+" + indPhone;
+      this.authService.getPasswordStatus(tel).then((dataPwd: any) => {
+        data.mot_de_passe_reinitialise = dataPwd.data[0].mot_de_passe_reinitialise;
+        this.sharedService.setCurrentUser(data);
+        this.profileService.loadProfilePicture(data.id).then((pic: any) => {
+          var userImageURL;
+          if (!this.isEmpty(pic.data[0].encode)) {
+            userImageURL = pic.data[0].encode;
+            this.sharedService.setProfilImageUrl(pic.data[0].encode);
           } else {
-            this.router.navigate(['app/home']);
+            this.sharedService.setProfilImageUrl(null);
           }
-        }*/
-        this.router.navigate(['app/home']);
+
+          //if user is connected for the first time, redirect him to the page 'civility', otherwise redirect him to the home page
+          var isNewUser = data.newAccount;
+          /*if (isNewUser || this.isNewRecruteur) {
+            this.router.navigate(['app/profile']);
+          } else {
+            if (this.fromPage == "Search") {
+              //this.nav.pop();
+            } else {
+              this.router.navigate(['app/home']);
+            }
+          }*/
+          this.router.navigate(['app/home']);
+        });
       });
     });
   }

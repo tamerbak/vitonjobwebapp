@@ -76,7 +76,7 @@ export class ModalComponent{
       if (data && data.password.length != 0) {
         let newPasswd = data.password;
         if (canal == 'sms') {
-          this.authService.updatePasswordByPhone(tel, md5(newPasswd)).then((data) => {
+          this.authService.updatePasswordByPhone(tel, md5(newPasswd),"Oui").then((data) => {
             if (!data) {
               this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
               return;
@@ -92,7 +92,7 @@ export class ModalComponent{
             });
           });
         } else {
-          this.authService.updatePasswordByMail(email, md5(newPasswd)).then((data: any) => {
+          this.authService.updatePasswordByMail(email, md5(newPasswd),"Oui").then((data: any) => {
             if (!data) {
               this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
               return;
