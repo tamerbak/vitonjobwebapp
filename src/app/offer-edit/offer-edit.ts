@@ -628,7 +628,7 @@ export class OfferEdit {
           type: 'success',
           showCloseButton: true
         });
-        this.router.navigate(['app/offer/list']);
+        this.router.navigate(['app/offer/list', {typeOfferModel: '1'}]);
       });
     } else {
       this.validateJob();

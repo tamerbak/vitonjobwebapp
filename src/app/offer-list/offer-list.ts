@@ -2,7 +2,7 @@ import {Component,ChangeDetectorRef, ViewEncapsulation} from "@angular/core";
 import {ACCORDION_DIRECTIVES, BUTTON_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap";
 import {OffersService} from "../../providers/offer.service";
 import {SharedService} from "../../providers/shared.service";
-import {ROUTER_DIRECTIVES, Router} from "@angular/router";
+import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {SearchService} from "../../providers/search-service";
 declare var jQuery,Messenger:any;
@@ -29,7 +29,8 @@ export class OfferList {
               public offersService: OffersService,
               private router: Router,
               private cdr:ChangeDetectorRef,
-              private searchService: SearchService) {
+              private searchService: SearchService,
+              private route: ActivatedRoute) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['app/home']);
@@ -38,6 +39,12 @@ export class OfferList {
   }
 
   ngOnInit() {
+
+    //obj = "add" od "detail"
+    this.route.params.forEach((params: Params) => {
+      this.typeOfferModel = params['typeOfferModel'];
+    });
+
     this.currentUser = this.sharedService.getCurrentUser();
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
 

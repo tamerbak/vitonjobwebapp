@@ -27,36 +27,45 @@
       </header>
       <div class="widget-body">
 
-        <input
-          id="youtubeLink"
-          class="form-control"
-          name="youtubeLink"
-          placeholder="Lien de vidéo Youtube"
-          type="text"
-          [(ngModel)]="youtubeLink"
-          [hidden]="videoAvailable"
-        >
-
-        <div *ngIf="videoAvailable">
-          <iframe class="iframe-class" width="100%" height="360px"
-                  [style.display]="videoAvailable?'block':'none'" target="_parent" [src]="youtubeLinkSafe">
-          </iframe>
+        <div class="col-md-4 col-xs-12">
+          <div *ngIf="videoAvailable">
+            <iframe class="iframe-class" width="100%" height="360px"
+                    [style.display]="videoAvailable?'block':'none'" target="_parent" [src]="youtubeLinkSafe">
+            </iframe>
+          </div>
         </div>
 
-        <div [hidden]="isLinkValid" class="col-md-12 col-xs-12 row margin-top-10">
-          <span class="hint label label-danger">Le lien de la vidéo est non valide</span>
+        <div class="form-group row required">
+          <div [hidden]="isLinkValid" class="col-md-12 col-xs-12 row margin-top-10">
+            <span class="hint label label-danger">Le lien de la vidéo est non valide</span>
+          </div>
+          <div class="col-sm-9 col-xs-12">
+            <input
+              id="youtubeLink"
+              class="form-control"
+              name="youtubeLink"
+              placeholder="Lien de vidéo Youtube"
+              type="text"
+              [(ngModel)]="youtubeLink"
+              [hidden]="videoAvailable"
+            >
+          </div>
+          <div class="col-sm-3 col-xs-12">
+          <button class="btn btn-primary" (click)="updateVideo(false)" [hidden]="videoAvailable">
+            <i class="glyphicon glyphicon-facetime-video"></i>
+            Modifier
+          </button>
+          <button
+            class="btn btn-success"
+            (click)="updateVideo(true)"
+            [hidden]="!videoAvailable"
+          >
+            <i class="glyphicon glyphicon-trash"></i>
+            Supprimer
+          </button>
         </div>
 
-        <button class="btn btn-primary" (click)="updateVideo(false)" [hidden]="videoAvailable">
-          <i class="glyphicon glyphicon-facetime-video"></i>
-          Modifier
-        </button>
-
-        <button class="btn btn-success" (click)="updateVideo(true)" [hidden]="!videoAvailable">
-          <i class="glyphicon glyphicon-trash"></i>
-          Supprimer
-        </button>
-
+        </div>
       </div>
     </section>
 
@@ -333,7 +342,7 @@
               [(ngModel)]="slot.endHour"
             ></datetime>
           </div>
-          <div class="col-md-2 col-xs-12 offer-hour-action-button">
+          <div class="col-md-2 col-xs-12">
             <button
               style="display: block; width: 100%;"
               class="btn btn-success mb-xs"
@@ -361,58 +370,106 @@
       </header>
       <div class="widget-body">
 
-        <!-- Qualités -->
-        <div class="form-group row required">
-          <label class="col-md-4 col-xs-12 form-control-label text-md-right">Qualités</label>
-          <div class="col-md-10 col-xs-12">
-            <select class="form-control" [(ngModel)]="selectedQuality">
-              <option *ngFor="let q of qualities" [value]="q.idQuality">{{q.libelle}}</option>
-            </select>
-          </div>
-          <div class="col-md-2 col-xs-12">
-            <button class="btn btn-success mb-xs offer-add-button" role="button" (click)="addQuality()">
-              Ajouter
-            </button>
-          </div>
-        </div>
-        <div class="form-group row" *ngFor="let item of offer.qualityData">
-          <label class="col-md-10 col-xs-6 form-control-label">{{item.libelle}}</label>
-          <div class="col-md-2 col-xs-12">
-            <button class="btn btn-secondary mb-xs" role="button">
-              <i class="glyphicon glyphicon-trash" (click)="removeQuality(item)"></i>
-            </button>
+        <legend><strong>Détails du job</strong></legend>
+
+        <!-- Qualities -->
+        <div class="form-group row">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+            Qualités
+          </label>
+
+          <div class="col-md-8 col-xs-12">
+
+            <!-- Selected Qualities -->
+            <div class="form-group row" *ngFor="let item of offer.qualityData">
+              <div class="col-md-9 col-xs-9">
+                <input class="form-control" value="{{item.libelle}}" disabled/>
+              </div>
+              <div class="col-md-3 col-xs-3">
+                <button
+                  style="display: block; width: 100%;"
+                  class="btn btn-danger mb-xs"
+                  role="button"
+                  (click)="removeQuality(item)"
+                >
+                  <i class="glyphicon glyphicon-trash"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- New quality input -->
+            <div class="row">
+              <div class="col-md-9 col-xs-12">
+                <select class="form-control" [(ngModel)]="selectedQuality">
+                  <option *ngFor="let q of qualities" [value]="q.idQuality">{{q.libelle}}</option>
+                </select>
+              </div>
+              <div class="col-md-3 col-xs-12">
+                <button
+                  style="display: block; width: 100%;"
+                  class="btn btn-success mb-xs offer-add-button"
+                  role="button"
+                  (click)="addQuality()"
+                >
+                  Ajouter
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
         <!-- Langues -->
-        <div class="form-group row required">
-          <label class="col-md-4 col-xs-12 form-control-label text-md-right">Langues</label>
-          <div class="col-md-6 col-xs-12">
-            <select class="form-control" [(ngModel)]="selectedLang">
-              <option *ngFor="let l of langs" [value]="l.idLanguage">{{l.libelle}}</option>
-            </select>
-          </div>
-          <div class="col-md-4 col-xs-12">
-            <select class="form-control" [(ngModel)]="selectedLevel">
-              <option value="junior">Débutant</option>
-              <option value="senior">Courant</option>
-            </select>
-          </div>
-          <div class="col-md-2 col-xs-12">
-            <button class="btn btn-success mb-xs offer-add-button" role="button" (click)="addLanguage()">
-              Ajouter
-            </button>
-          </div>
-        </div>
-        <div class="form-group row" *ngFor="let item of offer.languageData">
-          <label class="col-md-6 col-xs-6 form-control-label">{{item.libelle}}</label>
-          <label class="col-md-4 col-xs-6 form-control-label">
-            {{item.level == 'junior' ? 'Débutant' : 'Courant'}}
+        <div class="form-group row">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+            Langues
           </label>
-          <div class="col-md-2 col-xs-12">
-            <button class="btn btn-secondary mb-xs" role="button">
-              <i class="glyphicon glyphicon-trash" (click)="removeLanguage(item)"></i>
-            </button>
+
+          <div class="col-md-8 col-xs-12">
+
+            <!-- Selected Languages -->
+            <div class="form-group row" *ngFor="let item of offer.languageData">
+              <div class="col-md-6 col-xs-">
+                <input class="form-control" value="{{item.libelle}}" disabled/>
+              </div>
+              <div class="col-md-3 col-xs-6">
+                <input class="form-control" value="{{item.level == 'junior' ? 'Débutant' : 'Courant'}}" disabled/>
+              </div>
+              <div class="col-md-3 col-xs-12">
+                <button
+                  style="display: block; width: 100%;"
+                  class="btn btn-danger mb-xs"
+                  role="button"
+                  (click)="removeLanguage(item)"
+                >
+                  <i class="glyphicon glyphicon-trash"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- New language input -->
+            <div class="row">
+              <div class="col-md-6 col-xs-6">
+                <select class="form-control" [(ngModel)]="selectedLang">
+                  <option *ngFor="let l of langs" [value]="l.idLanguage">{{l.libelle}}</option>
+                </select>
+              </div>
+              <div class="col-md-3 col-xs-6">
+                <select class="form-control" [(ngModel)]="selectedLevel">
+                  <option value="junior">Débutant</option>
+                  <option value="senior">Courant</option>
+                </select>
+              </div>
+              <div class="col-md-3 col-xs-12">
+                <button
+                  style="display: block; width: 100%;"
+                  class="btn btn-success mb-xs"
+                  role="button"
+                  (click)="addLanguage()"
+                >
+                  Ajouter
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
