@@ -4,7 +4,7 @@
   </li>
   <li class="active">Détails</li>
 </ol>
-<h1 class="page-title">{{currentUser.estRecruteur ? 'Recruteur' : (currentUser.estEmployeur ? 'Employeur' : 'Jobyer')}} - <span class="fw-semi-bold">Détails de l'offre sélectionnée</span>
+<h1 class="page-title">{{(currentUser && currentUser.estRecruteur) ? 'Recruteur' : (projectTarget == 'employer' ? 'Employeur' : 'Jobyer')}} - <span class="fw-semi-bold">Détails de l'offre sélectionnée</span>
 </h1>
 
 <div class="row">

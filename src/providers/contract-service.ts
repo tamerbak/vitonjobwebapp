@@ -517,5 +517,17 @@ export class ContractService {
         });
     });
   }
-}
 
+  checkDocusignSignatureState(contractId) {
+    let sql = 'select signature_employeur as etat from user_contrat where pk_user_contrat=' + contractId;
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+}

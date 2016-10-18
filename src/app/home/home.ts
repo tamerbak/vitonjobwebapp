@@ -98,11 +98,11 @@ export class Home {
   }
 
   doSemanticSearch() {
-    if (!this.currentUser) {
+    /*if (!this.currentUser) {
       this.sharedService.setFromPage("home");
       this.router.navigate(['login']);
       return;
-    }
+    }*/
 
     if (this.isEmpty(this.scQuery) || !this.scQuery.match(/[a-z]/i)) {
       this.addAlert("warning", "Veuillez saisir un job avant de lancer la recherche");
