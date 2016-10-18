@@ -282,6 +282,9 @@
     .offer-hour-new {
       margin-top: 5px;
     }
+    .offer-video-btn {
+      margin-top: 5px;
+    }
   }
 
   @media (max-width: map_get($grid-breakpoints, md)) {
@@ -289,7 +292,7 @@
       margin-top: 5px;
     }
 
-    .btn-success{
+    .btn-success {
       margin-top: 5px;
     }
   }

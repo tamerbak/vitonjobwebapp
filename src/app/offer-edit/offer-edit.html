@@ -25,7 +25,7 @@
       <header class="bb widget-offer-header">
         <h6><span class="fw-semi-bold widget-offer-header-title">Vidéo</span></h6>
       </header>
-      <div class="widget-body">
+      <div class="widget-body widget-offer">
 
         <div class="col-md-4 col-xs-12">
           <div *ngIf="videoAvailable">
@@ -51,19 +51,24 @@
             >
           </div>
           <div class="col-sm-3 col-xs-12">
-          <button class="btn btn-primary" (click)="updateVideo(false)" [hidden]="videoAvailable">
-            <i class="glyphicon glyphicon-facetime-video"></i>
-            Modifier
-          </button>
-          <button
-            class="btn btn-success"
-            (click)="updateVideo(true)"
-            [hidden]="!videoAvailable"
-          >
-            <i class="glyphicon glyphicon-trash"></i>
-            Supprimer
-          </button>
-        </div>
+            <button
+              class="btn btn-primary offer-video-btn"
+              style="display: block; width: 100%;"
+              (click)="updateVideo(false)"
+              [hidden]="videoAvailable">
+              <i class="glyphicon glyphicon-facetime-video"></i>
+              Modifier
+            </button>
+            <button
+              class="btn btn-success offer-video-btn"
+              style="display: block; width: 100%;"
+              (click)="updateVideo(true)"
+              [hidden]="!videoAvailable"
+            >
+              <i class="glyphicon glyphicon-trash"></i>
+              Supprimer
+            </button>
+          </div>
 
         </div>
       </div>
@@ -168,7 +173,7 @@
           <label class="col-md-4 col-xs-12 form-control-label text-md-right">
             Taux horaire
           </label>
-          <div class="col-md-6 col-xs-8">
+          <div class="col-md-6 col-xs-6">
             <input
               type="number"
               step="0.01"
@@ -178,7 +183,7 @@
               (change)="validateRate($event.target.value)"
             >
           </div>
-          <div class="col-md-2 col-xs-4">
+          <div class="col-md-2 col-xs-6">
             <select class="form-control" disabled>
               <option>EUR</option>
             </select>
@@ -281,8 +286,8 @@
         <!-- Créneaux -->
         <div class="form-group row required">
           <label class="col-md-6 col-xs-6 form-control-label">Créneaux</label>
-          <label class="col-md-2 col-xs-2 form-control-label">De</label>
-          <label class="col-md-2 col-xs-2 form-control-label">A</label>
+          <label class="col-md-2 col-xs-3 form-control-label">De</label>
+          <label class="col-md-2 col-xs-3 form-control-label">A</label>
         </div>
 
         <div *ngFor="let item of slots, let j = index">
