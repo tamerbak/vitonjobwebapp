@@ -754,17 +754,17 @@ export class OfferEdit {
     this.modalParams.message = "Êtes-vous sûr de vouloir supprimer l'offre " + '"' + this.offer.title + '"' + " ?";
     this.modalParams.btnTitle = "Supprimer l'offre";
     this.modalParams.btnClasses = "btn btn-danger";
-    this.modalParams.modalTitle = "Suppression de l'offre"
+    this.modalParams.modalTitle = "Suppression de l'offre";
     jQuery("#modal-options").modal('show')
   }
 
   copyOffer() {
     this.dataValidation = true;
     this.modalParams.type = "offer.copy";
-    this.modalParams.message = "Voulez-vous ajouter une nouvelle offre à partir de celle-ci?";
+    this.modalParams.message = "Voulez-vous ajouter une nouvelle offre à partir de celle-ci ?";
     this.modalParams.btnTitle = "Copier l'offre";
     this.modalParams.btnClasses = "btn btn-primary";
-    this.modalParams.modalTitle = "Copie de l'offre"
+    this.modalParams.modalTitle = "Copie de l'offre";
     jQuery("#modal-options").modal('show')
   }
 
