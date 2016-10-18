@@ -1,85 +1,33 @@
-import {Widget} from "../core/widget/widget";
 import {Component} from "@angular/core";
-import {ROUTER_DIRECTIVES, Router, ActivatedRoute} from "@angular/router";
-import {AlertComponent} from "ng2-bootstrap/components/alert";
-import {BUTTON_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap";
-import {NKDatetime} from "ng2-datetime/ng2-datetime";
-import {GlobalConfigs} from "../../configurations/globalConfigs";
+import {Router} from "@angular/router";
 import {SharedService} from "../../providers/shared.service";
 import {MissionService} from "../../providers/mission-service";
-import {FinanceService} from "../../providers/finance.service";
-import {ContractService} from "../../providers/contract-service";
 import {DateConverter} from "../../pipes/date-converter/date-converter";
 import {TimeConverter} from "../../pipes/time-converter/time-converter";
+import {Utils} from "../utils/utils";
 
 @Component({
   selector: '[mission-pointing]',
   template: require('./mission-pointing.html'),
   styles: [require('./mission-pointing.scss')],
   pipes: [DateConverter, TimeConverter],
-  providers: [ContractService, SharedService, MissionService, FinanceService, GlobalConfigs],
-  directives: [ROUTER_DIRECTIVES, AlertComponent, Widget, NKDatetime, BUTTON_DIRECTIVES]
+  providers: [SharedService, MissionService],
 })
 export class MissionPointing {
-  // TODO Set dynamically
   projectTarget: string = 'employer';
   isEmployer: boolean;
-  themeColor: string;
-
-  contract: any;
-  missionDetailsTitle: string;
-
-  missionIndex: number;
-  missionDayIndex: number;
-  missionTimeIsFirst: boolean;
-  missionTimeIsStart: boolean;
-
-  //records of user_heure_mission of a contract
-  missionHours = [];
-  initialMissionHours = [];
-
-  //two dimensional array of pauses of mission days
-  isNewMission = true;
-  contractSigned = false;
-
-  store: Storage;
-  invoiceReady: boolean = false;
-
-  rating: number = 0;
-  starsText: string = '';
-  db: Storage;
-
-  optionMission: string;
-  backgroundImage: string;
-
-  enterpriseName: string = "--";
-  jobyerName: string = "--";
   currentUser: any;
 
-  /*
-   *   Invoice management
-   */
-  invoiceId: number;
-  isInvoiceAvailable: boolean = false;
-  isReleveAvailable: boolean = false;
-
-  alerts: Array<Object>;
-
-  scheduleStartStatus: string = '-1';
-  scheduleEndStatus: string = '-1';
-
+  contract: any;
+  //records of user_heure_mission of a contract
+  missionHours = [];
   missionPauses = [];
-
-  pointingClassSwitch = {'non': 'success', 'oui': 'danger'};
 
   disableBtnPointing;
   nextPointing;
 
-
-  constructor(private route: ActivatedRoute,
-              private sharedService: SharedService,
+  constructor(private sharedService: SharedService,
               private missionService: MissionService,
-              private financeService: FinanceService,
               private router: Router) {
     // Retrieve the project target
     this.currentUser = this.sharedService.getCurrentUser();
@@ -87,10 +35,8 @@ export class MissionPointing {
       this.router.navigate(['app/home']);
     }
     this.isEmployer = this.currentUser.estEmployeur;
-    this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     //get missions
     this.contract = this.sharedService.getCurrentMission();
-
 
     //retrieve mission hours of today
     this.missionService.listMissionHours(this.contract, true).then((data: any) => {
@@ -99,13 +45,19 @@ export class MissionPointing {
         let array = this.missionService.getTodayMission(missionHoursTemp);
         this.missionHours = array[0];
         this.missionPauses = array[1];
+        //prepare the mission pauses array to display
+        for (let i = 0; i < this.missionHours.length; i++) {
+          let day = this.missionHours[i];
+          if (this.missionPauses[i] && this.missionPauses[i].length != 0) {
+            for (let j = 0; j < this.missionPauses[i].length; j++) {
+              let pause = this.missionPauses[i][j];
+              this.missionPauses[i][j].pause_debut_temp = (this.isEmpty(pause.pause_debut_new) ? pause.pause_debut : this.missionService.convertToFormattedHour(pause.pause_debut_new));
+              this.missionPauses[i][j].pause_fin_temp = (this.isEmpty(pause.pause_fin_new) ? pause.pause_fin : this.missionService.convertToFormattedHour(pause.pause_fin_new));
+            }
+          }
+        }
         this.disableBtnPointing = this.missionService.disablePointing(this.missionHours, this.missionPauses).disabled;
         this.nextPointing = this.missionService.disablePointing(this.missionHours, this.missionPauses).nextPointing;
-        /*let autoPointing = navParams.get('autoPointing');
-         if(autoPointing){
-         this.nextPointing = navParams.get('nextPointing')
-         this.pointHour(true);
-         }*/
       }
     });
   }
@@ -117,7 +69,7 @@ export class MissionPointing {
       let minutesNow = this.missionService.convertHoursToMinutes(h + ':' + m);
       this.nextPointing.pointe = minutesNow;
       this.missionService.savePointing(this.nextPointing).then((data: any) => {
-        //retrieve mission hours of tody
+        //retrieve mission hours of today
         this.missionService.listMissionHours(this.contract, true).then((data: any) => {
           if (data.data) {
             let missionHoursTemp = data.data;
@@ -125,7 +77,7 @@ export class MissionPointing {
             this.missionHours = array[0];
             this.missionPauses = array[1];
             this.disableBtnPointing = true;
-          }
+            this.router.navigate(['app/mission/details']);          }
         });
       });
     }
@@ -142,12 +94,5 @@ export class MissionPointing {
       return true;
     else
       return false;
-  }
-
-  /**
-   * Return to the list page in order to refresh all data
-   */
-  navigationPreviousPage() {
-    this.router.navigate(['app/mission/list']);
   }
 }

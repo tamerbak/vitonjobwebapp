@@ -240,8 +240,7 @@
                             type="button" class="btn btn-primary btn-sm"
                             (click)="generateTimesheet()"
                             [style.color]="themeColor"
-                            *ngIf="!(missionHours && missionHours.length == 0) && isEmployer && contract.option_mission != '1.0' && !isNewMission && upperCase(contract.releve_employeur) != 'OUI'"
-                    >
+                            *ngIf="!(missionHours && missionHours.length == 0) && isEmployer && contract.option_mission != '1.0' && !isNewMission && upperCase(contract.releve_employeur) != 'OUI'" [disabled]="disableTimesheetButton()">
                         Générer et envoyer le relevé d'heure
                     </button>
                     <button
