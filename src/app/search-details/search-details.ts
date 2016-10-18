@@ -42,9 +42,8 @@ export class SearchDetails{
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     } else {
-      //this.projectTarget = this.sharedService.getProjectTarget();
-      //this.isRecruteur = this.currentUser.estRecruteur;
-      this.router.navigate(['app/home']);
+      this.projectTarget = this.sharedService.getProjectTarget();
+      //this.router.navigate(['app/home']);
     }
     this.result = this.sharedService.getSearchResult();
     this.offer = this.sharedService.getCurrentOffer();
@@ -82,11 +81,10 @@ export class SearchDetails{
   }
 
   onRecruite(params) {
-    if(params.obj == "contract" || params.obj == "offer"){
-      jQuery('#modal-notification-contract').modal('show');
-    }
-    if(params.obj == "profile"){
+    if (params.obj == "profile") {
       jQuery('#modal-profile').modal('show');
+    }else{
+      jQuery('#modal-notification-contract').modal('show');
     }
   }
 
