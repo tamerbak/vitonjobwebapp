@@ -23,19 +23,22 @@
       </header>
       <div class="widget-body widget-offer">
 
-        <div class="col-md-4 col-xs-12">
-          <div *ngIf="videoAvailable">
+        <div *ngIf="videoAvailable" class="form-group row required">
+          <div class="col-xs-12">
             <iframe class="iframe-class" width="100%" height="360px"
                     [style.display]="videoAvailable?'block':'none'" target="_parent" [src]="youtubeLinkSafe">
             </iframe>
           </div>
         </div>
 
-        <div class="form-group row required">
-          <div [hidden]="isLinkValid" class="col-md-12 col-xs-12 row margin-top-10">
-            <span class="hint label label-danger">Le lien de la vidéo est non valide</span>
+        <div *ngIf="!videoAvailable" class="form-group row">
+          <div *ngIf="!isLinkValid" class="col-xs-12">
+            <alert [type]="'danger alert-sm'">
+              <div [innerHTML]="'Le lien de la vidéo est non valide'"></div>
+            </alert>
           </div>
-          <div class="col-sm-9 col-xs-12">
+
+          <div class="col-xs-12">
             <input
               id="youtubeLink"
               class="form-control"
@@ -43,30 +46,34 @@
               placeholder="Lien de vidéo Youtube"
               type="text"
               [(ngModel)]="youtubeLink"
-              [hidden]="videoAvailable"
             >
           </div>
-          <div class="col-sm-3 col-xs-12">
+          <div class="col-xs-12">
             <button
               class="btn btn-primary offer-video-btn"
               style="display: block; width: 100%;"
               (click)="updateVideo(false)"
-              [hidden]="videoAvailable">
+              [disabled]="!youtubeLink"
+            >
               <i class="glyphicon glyphicon-facetime-video"></i>
-              Modifier
+              Ajouter
             </button>
+          </div>
+        </div>
+
+        <div *ngIf="videoAvailable" class="form-group row required">
+          <div class="col-xs-12">
             <button
               class="btn btn-success offer-video-btn"
               style="display: block; width: 100%;"
               (click)="updateVideo(true)"
-              [hidden]="!videoAvailable"
             >
               <i class="glyphicon glyphicon-trash"></i>
               Supprimer
             </button>
           </div>
-
         </div>
+
       </div>
     </section>
 

@@ -729,7 +729,6 @@ export class OfferEdit {
       this.youtubeLink = "";
     } else {
       if (this.youtubeLink == "" || (this.youtubeLink.indexOf("youtu.be") == -1 && this.youtubeLink.indexOf("www.youtube.com") == -1)) {
-        this.youtubeLink = "";
         this.isLinkValid = false;
         return;
       }
