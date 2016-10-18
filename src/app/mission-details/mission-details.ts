@@ -15,8 +15,10 @@ import {DateConverter} from "../../pipes/date-converter/date-converter";
 import {TimeConverter} from "../../pipes/time-converter/time-converter";
 
 import {ModalComponent} from "./modal-component/modal-component";
+import {Utils} from "../utils/utils";
 
 declare var Messenger: any;
+declare var jQuery: any;
 
 @Component({
   selector: '[mission-details]',
@@ -26,7 +28,7 @@ declare var Messenger: any;
   providers: [ContractService, SharedService, MissionService, FinanceService, GlobalConfigs],
   directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime, BUTTON_DIRECTIVES, ModalComponent],
 })
-export class MissionDetails {
+export class MissionDetails{
 // TODO Set dynamically
   projectTarget: string = 'employer';
   isEmployer: boolean;
@@ -109,10 +111,12 @@ export class MissionDetails {
             this.missionPauses = array[1];
 //prepare the mission pauses array to display
             for (let i = 0; i < this.missionHours.length; i++) {
-              for (let j = 0; j < this.missionPauses[i].length; j++) {
-                let pause = this.missionPauses[i][j];
-                this.missionPauses[i][j].pause_debut_temp = (this.isEmpty(pause.pause_debut_new) ? pause.pause_debut : this.missionService.convertToFormattedHour(pause.pause_debut_new));
-                this.missionPauses[i][j].pause_fin_temp = (this.isEmpty(pause.pause_fin_new) ? pause.pause_fin : this.missionService.convertToFormattedHour(pause.pause_fin_new));
+              if (this.missionPauses[i] && this.missionPauses[i].length != 0) {
+                for (let j = 0; j < this.missionPauses[i].length; j++) {
+                  let pause = this.missionPauses[i][j];
+                  this.missionPauses[i][j].pause_debut_temp = (this.isEmpty(pause.pause_debut_new) ? pause.pause_debut : this.missionService.convertToFormattedHour(pause.pause_debut_new));
+                  this.missionPauses[i][j].pause_fin_temp = (this.isEmpty(pause.pause_fin_new) ? pause.pause_fin : this.missionService.convertToFormattedHour(pause.pause_fin_new));
+                }
               }
             }
           }
@@ -152,12 +156,13 @@ export class MissionDetails {
 
             this.isInvoiceAvailable = invoice.facture_signee == 'Non' && this.projectTarget == 'employer';
           }
+
         });
     }
+
   }
 
   addPause(dayIndex) {
-
     if (!this.isNewMission || !this.isEmployer || this.contract.signature_jobyer.toUpperCase() == 'Non'.toUpperCase()) {
       return;
     }
@@ -168,9 +173,7 @@ export class MissionDetails {
     }
   }
 
-
   deletePause(dayIndex, pauseIndex) {
-
     if (!this.isNewMission || !this.isEmployer) {
       return;
     }
@@ -179,14 +182,19 @@ export class MissionDetails {
   }
 
   validatePauses() {
-//verify if there are empty pause hours
     for (var i = 0; i < this.missionHours.length; i++) {
       if (this.missionPauses[i]) {
         for (var j = 0; j < this.missionPauses[i].length; j++) {
-          if (this.isEmpty(this.missionPauses[i][j].pause_debut_temp) || this.isEmpty(this.missionPauses[i][j].pause_fin_temp)) {
-
+          //verify if there are empty pause hours
+          if (Utils.isEmpty(this.missionPauses[i][j].pause_debut_temp) || this.isEmpty(this.missionPauses[i][j].pause_fin_temp)) {
             this.addAlert("warning", "Veuillez renseigner toutes les heures de pauses avant de valider.");
             return;
+          }else{
+            //verify if pause hours are valid
+            if(!this.isHourValid(i, j, true, false, this.missionService.convertHoursToMinutes(this.missionPauses[i][j].pause_debut_temp)))
+              return;
+            if(!this.isHourValid(i, j, false, false, this.missionService.convertHoursToMinutes(this.missionPauses[i][j].pause_fin_temp)))
+              return;
           }
         }
       }
@@ -194,19 +202,17 @@ export class MissionDetails {
 
     this.missionService.addPauses(this.missionHours, this.missionPauses, this.contract.pk_user_contrat).then((data: any) => {
       if (!data || data.status == "failure") {
-
-
         this.addAlert("danger", "Erreur lors de l'enregistrement des données");
         return;
       } else {
-// data saved
+        // data saved
         this.addAlert("success", "Vos données ont été bien enregistrées");
-// Update contract status
+        // Update contract status
         this.contract.vu = 'Oui';
         var message = "Horaire du contrat numéro : " + this.contract.numero + " validé";
-        this.sendInfoBySMS(message, "toJobyer");
+        //this.sendInfoBySMS(message, "toJobyer");
         if (this.contract.option_mission != "1.0") {
-//this.missionService.schedulePointeuse(this.contract, this.missionHours, this.missionPauses);
+          //this.missionService.schedulePointeuse(this.contract, this.missionHours, this.missionPauses);
         }
       }
     });
@@ -234,282 +240,104 @@ export class MissionDetails {
     }
   }
 
-// checkPauseHours(i, j, isStartPause, isStartMission) {
-//   var startMission = this.missionHours[i].heure_debut;
-//   var endMission = this.missionHours[i].heure_fin;
-//   if (j >= 0) {
-//     var startPause = this.missionService.convertHoursToMinutes(this.missionPauses[i][j].pause_debut);
-//     var endPause = this.missionService.convertHoursToMinutes(this.missionPauses[i][j].pause_fin);
-//   }
-//
-//   if (isStartPause) {
-//     if (startMission >= startPause) {
-//       this.missionPauses[i][j].pause_debut = "";
-//       this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être supérieure à l'heure de début de travail.");
-//       return;
-//     }
-//     if (endMission <= startPause) {
-//       this.missionPauses[i][j].pause_debut = "";
-//       this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieure à l'heure de fin de travail.");
-//       return;
-//     }
-//     if (endPause <= startPause && endPause != "") {
-//       this.missionPauses[i][j].pause_debut = "";
-//       this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieure à l'heure de fin de pause.");
-//       return;
-//     }
-//     for (var k = 0; k < this.missionPauses[i].length; k++) {
-//       var startOtherPause = this.missionPauses[i][k].pause_debut;
-//       var endOtherPause = this.missionPauses[i][k].pause_fin;
-//       if (j < k && ((startPause >= startOtherPause && startOtherPause != "") || (startPause >= endOtherPause && endOtherPause != ""))) {
-//         this.missionPauses[i][j].pause_debut = "";
-//         this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieure aux heures de pauses postérieurs.");
-//         return;
-//       }
-//       if (j > k && ((startPause <= startOtherPause && startOtherPause != "") || (startPause <= endOtherPause && endOtherPause != ""))) {
-//         this.missionPauses[i][j].pause_debut = "";
-//         this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être supérieure aux heures de pauses antérieurs.");
-//         return;
-//       }
-//     }
-//   } else {
-//     if (j >= 0) {
-//       if (startMission >= endPause && startMission != "") {
-//         this.missionPauses[i][j].pause_fin = "";
-//         this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être supérieure à l'heure de début de travail.");
-//         return;
-//       }
-//       if (endMission <= endPause && endMission != "") {
-//         this.missionPauses[i][j].pause_fin = "";
-//         this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être inférieure à l'heure de fin de travail.");
-//         return;
-//       }
-//       if (endPause <= startPause && startPause != "") {
-//         this.missionPauses[i][j].pause_fin = "";
-//         this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être supérieure à l'heure de début de pause.");
-//         return;
-//       }
-//       for (var k = 0; k < this.missionPauses[i].length; k++) {
-//         var startOtherPause = this.missionPauses[i][k].pause_debut;
-//         var endOtherPause = this.missionPauses[i][k].pause_fin;
-//         if (j < k && ((endPause >= startOtherPause && startOtherPause != "") || (endPause >= endOtherPause && endOtherPause != ""))) {
-//           this.missionPauses[i][j].pause_fin = "";
-//           this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être inférieure aux heures de pauses postérieurs.");
-//           return;
-//         }
-//         if (j > k && ((endPause <= startOtherPause && startOtherPause != "") || (endPause <= endOtherPause && endOtherPause != ""))) {
-//           this.missionPauses[i][j].pause_fin = "";
-//           this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être supérieure aux heures de pauses antérieurs.");
-//           return;
-//         }
-//       }
-//     }
-//   }
-// }
-//
-// checkPointedHours(i, j, isStartPause, isStartMission) {
-//   var startMission = this.missionHours[i].heure_debut_pointe;
-//   var endMission = this.missionHours[i].heure_fin_pointe;
-//   if (j >= 0) {
-//     var startPause = this.missionPauses[i][j].pause_debut_pointe;
-//     var endPause = this.missionPauses[i][j].pause_fin_pointe;
-//   }
-//
-//   if (isStartPause) {
-//     if (startMission >= startPause && startMission != "") {
-//       this.missionPauses[i][j].pause_debut_pointe = "";
-//       this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être supérieure à l'heure de début de travail.");
-//       return;
-//     }
-//     if (endMission <= startPause && endMission != "") {
-//       this.missionPauses[i][j].pause_debut_pointe = "";
-//       this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieure à l'heure de fin de travail.");
-//       return;
-//     }
-//     if (endPause <= startPause && endPause != "") {
-//       this.missionPauses[i][j].pause_debut_pointe = "";
-//       this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieure à l'heure de fin de pause.");
-//       return;
-//     }
-//     for (var k = 0; k < this.missionPauses[i].length; k++) {
-//       var startOtherPause = this.missionPauses[i][k].pause_debut_pointe;
-//       var endOtherPause = this.missionPauses[i][k].pause_fin_pointe;
-//       if (j < k && ((startPause >= startOtherPause && startOtherPause != "") || (startPause >= endOtherPause && endOtherPause != ""))) {
-//         this.missionPauses[i][j].pause_debut_pointe = "";
-//         this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieure aux heures de pauses postérieurs.");
-//         return;
-//       }
-//       if (j > k && ((startPause <= startOtherPause && startOtherPause != "") || (startPause <= endOtherPause && endOtherPause != ""))) {
-//         this.missionPauses[i][j].pause_debut_pointe = "";
-//         this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être supérieure aux heures de pauses antérieurs.");
-//         return;
-//       }
-//     }
-//   } else {
-//     if (j >= 0) {
-//       if (startMission >= endPause && startMission != "") {
-//         this.missionPauses[i][j].pause_fin_pointe = "";
-//         this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être supérieure à l'heure de début de travail.");
-//         return;
-//       }
-//       if (endMission <= endPause && endMission != "") {
-//         this.missionPauses[i][j].pause_fin_pointe = "";
-//         this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être inférieure à l'heure de fin de travail.");
-//         return;
-//       }
-//       if (endPause <= startPause && startPause != "") {
-//         this.missionPauses[i][j].pause_fin_pointe = "";
-//         this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être supérieure à l'heure de début de pause.");
-//         return;
-//       }
-//       for (var k = 0; k < this.missionPauses[i].length; k++) {
-//         var startOtherPause = this.missionPauses[i][k].pause_debut_pointe;
-//         var endOtherPause = this.missionPauses[i][k].pause_fin_pointe;
-//         if (j < k && ((endPause >= startOtherPause && startOtherPause != "") || (endPause >= endOtherPause && endOtherPause != ""))) {
-//           this.missionPauses[i][j].pause_fin_pointe = "";
-//           this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être inférieure aux heures de pauses postérieurs.");
-//           return;
-//         }
-//         if (j > k && ((endPause <= startOtherPause && startOtherPause != "") || (endPause <= endOtherPause && endOtherPause != ""))) {
-//           this.missionPauses[i][j].pause_fin_pointe = "";
-//           this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être supérieure aux heures de pauses antérieurs.");
-//           return;
-//         }
-//       }
-//     }
-//   }
-//   if (isStartMission) {
-//     if (startMission >= endMission && endMission != "") {
-//       this.missionHours[i].heure_debut_pointe = "";
-//       this.globalService.showAlertValidation("VitOnJob", "L'heure de début de travail doit être inférieure à l'heure de fin de travail.");
-//       return;
-//     }
-//     for (var k = 0; k < this.missionPauses[i].length; k++) {
-//       var startOtherPause = this.missionPauses[i][k].pause_debut_pointe;
-//       var endOtherPause = this.missionPauses[i][k].pause_fin_pointe;
-//       if ((startMission >= startOtherPause && startOtherPause != "") || (startMission >= endOtherPause && endOtherPause != "")) {
-//         this.missionHours[i].heure_debut_pointe = "";
-//         this.globalService.showAlertValidation("VitOnJob", "L'heure de début de travail doit être inférieure aux heures de pauses.");
-//         return;
-//       }
-//     }
-//   } else {
-//     if ((!j && j != 0) || j < 0) {
-//       if (startMission >= endMission && startMission != "") {
-//         this.missionHours[i].heure_fin_pointe = "";
-//         this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de travail doit être supérieure à l'heure de début de travail.");
-//         return;
-//       }
-//       for (var k = 0; k < this.missionPauses[i].length; k++) {
-//         var startOtherPause = this.missionPauses[i][k].pause_debut_pointe;
-//         var endOtherPause = this.missionPauses[i][k].pause_fin_pointe;
-//         if ((endMission <= startOtherPause && startOtherPause != "") || (endMission <= endOtherPause && endOtherPause != "")) {
-//           this.missionHours[i].heure_fin_pointe = "";
-//           this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de travail doit être supérieure aux heures de pauses.");
-//           return;
-//         }
-//       }
-//     }
-//   }
-// }
-//
-// isHourValid(i, j, isStartPause, isStartMission, newHour) {
-//   var startMission = this.isEmpty(this.missionHours[i].heure_debut_new) ? this.missionHours[i].heure_debut : this.missionHours[i].heure_debut_new;
-//   var endMission = this.isEmpty(this.missionHours[i].heure_fin_new) ? this.missionHours[i].heure_fin : this.missionHours[i].heure_fin_new;
-//   if (j >= 0) {
-//     var startPause = this.isEmpty(this.missionPauses[i][j].pause_debut_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][j].pause_debut) : this.missionPauses[i][j].pause_debut_new;
-//     var endPause = this.isEmpty(this.missionPauses[i][j].pause_fin_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][j].pause_fin) : this.missionPauses[i][j].pause_fin_new;
-//   }
-//
-//   if (isStartPause) {
-//     if (startMission >= newHour && startMission != "") {
-//       this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être supérieure à l'heure de début de travail.");
-//       return false;
-//     }
-//     if (endMission <= newHour && endMission != "") {
-//       this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieure à l'heure de fin de travail.");
-//       return false;
-//     }
-//     if (endPause <= newHour && endPause != "") {
-//       this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieure à l'heure de fin de pause.");
-//       return false;
-//     }
-//     for (var k = 0; k < this.missionPauses[i].length; k++) {
-//       var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_debut) : this.missionPauses[i][k].pause_debut_new;
-//       var endOtherPause = this.isEmpty(this.missionPauses[i][k].pause_fin_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_fin) : this.missionPauses[i][k].pause_fin_new;
-//       if (j < k && ((newHour >= startOtherPause && startOtherPause != "") || (newHour >= endOtherPause && endOtherPause != ""))) {
-//         this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être inférieure aux heures de pauses postérieurs.");
-//         return false;
-//       }
-//       if (j > k && ((newHour <= startOtherPause && startOtherPause != "") || (newHour <= endOtherPause && endOtherPause != ""))) {
-//         this.globalService.showAlertValidation("VitOnJob", "L'heure de début de pause doit être supérieure aux heures de pauses antérieurs.");
-//         return false;
-//       }
-//     }
-//   } else {
-//     if (j >= 0) {
-//       if (startMission >= newHour && startMission != "") {
-//         this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être supérieure à l'heure de début de travail.");
-//         return false;
-//       }
-//       if (endMission <= newHour && endMission != "") {
-//         this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être inférieure à l'heure de fin de travail.");
-//         return false;
-//       }
-//       if (newHour <= startPause && startPause != "") {
-//         this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être supérieure à l'heure de début de pause.");
-//         return false;
-//       }
-//       for (var k = 0; k < this.missionPauses[i].length; k++) {
-//         var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_debut) : this.missionPauses[i][k].pause_debut_new;
-//         var endOtherPause = this.isEmpty(this.missionPauses[i][k].pause_fin_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_fin) : this.missionPauses[i][k].pause_fin_new;
-//         if (j < k && ((newHour >= startOtherPause && startOtherPause != "") || (newHour >= endOtherPause && endOtherPause != ""))) {
-//           this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être inférieure aux heures de pauses postérieurs.");
-//           return false;
-//         }
-//         if (j > k && ((newHour <= startOtherPause && startOtherPause != "") || (newHour <= endOtherPause && endOtherPause != ""))) {
-//           this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de pause doit être supérieure aux heures de pauses antérieurs.");
-//           return false;
-//         }
-//       }
-//     }
-//   }
-//
-//   if (isStartMission) {
-//     if (newHour >= endMission && endMission != "") {
-//       this.globalService.showAlertValidation("VitOnJob", "L'heure de début de travail doit être inférieure à l'heure de fin de travail.");
-//       return false;
-//     }
-//     if (this.missionPauses[i]) {
-//       for (var k = 0; k < this.missionPauses[i].length; k++) {
-//         var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_debut) : this.missionPauses[i][k].pause_debut_new;
-//         var endOtherPause = this.isEmpty(this.missionPauses[i][k].pause_fin_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_fin) : this.missionPauses[i][k].pause_fin_new;
-//         if ((newHour >= startOtherPause && startOtherPause != "") || (newHour >= endOtherPause && endOtherPause != "")) {
-//           this.globalService.showAlertValidation("VitOnJob", "L'heure de début de travail doit être inférieure aux heures de pauses.");
-//           return false;
-//         }
-//       }
-//     }
-//   } else {
-//     if ((!j && j != 0) || j < 0) {
-//       if (startMission >= newHour && startMission != "") {
-//         this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de travail doit être supérieure à l'heure de début de travail.");
-//         return false;
-//       }
-//       if (this.missionPauses[i]) {
-//         for (var k = 0; k < this.missionPauses[i].length; k++) {
-//           var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_debut) : this.missionPauses[i][k].pause_debut_new;
-//           var endOtherPause = this.isEmpty(this.missionPauses[i][k].pause_fin_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_fin) : this.missionPauses[i][k].pause_fin_new;
-//           if ((newHour <= startOtherPause && startOtherPause != "") || (newHour <= endOtherPause && endOtherPause != "")) {
-//             this.globalService.showAlertValidation("VitOnJob", "L'heure de fin de travail doit être supérieure aux heures de pauses.");
-//             return false;
-//           }
-//         }
-//       }
-//     }
-//   }
-//   return true;
-// }
+  isHourValid(i, j, isStartPause, isStartMission, newHour) {
+    var startMission = this.isEmpty(this.missionHours[i].heure_debut_new) ? this.missionHours[i].heure_debut : this.missionHours[i].heure_debut_new;
+    var endMission = this.isEmpty(this.missionHours[i].heure_fin_new) ? this.missionHours[i].heure_fin : this.missionHours[i].heure_fin_new;
+    if (j >= 0) {
+      var startPause = this.isEmpty(this.missionPauses[i][j].pause_debut_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][j].pause_debut_temp) : this.missionPauses[i][j].pause_debut_new;
+      var endPause = this.isEmpty(this.missionPauses[i][j].pause_fin_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][j].pause_fin_temp) : this.missionPauses[i][j].pause_fin_new;
+    }
+
+    if (isStartPause) {
+      if (+startMission >= +newHour && startMission != "") {
+        this.addAlert("danger", "L'heure de début de pause doit être supérieure à l'heure de début de travail.");
+        return false;
+      }
+      if (+endMission <= +newHour && endMission != "") {
+        this.addAlert("danger", "L'heure de début de pause doit être inférieure à l'heure de fin de travail.");
+        return false;
+      }
+      if (+endPause <= +newHour && endPause != "") {
+        this.addAlert("danger", "L'heure de début de pause doit être inférieure à l'heure de fin de pause.");
+        return false;
+      }
+      for (var k = 0; k < this.missionPauses[i].length; k++) {
+        var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_debut_temp) : this.missionPauses[i][k].pause_debut_new;
+        var endOtherPause = this.isEmpty(this.missionPauses[i][k].pause_fin_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_fin_temp) : this.missionPauses[i][k].pause_fin_new;
+        if (j < k && ((+newHour >= +startOtherPause && startOtherPause != "") || (+newHour >= +endOtherPause && endOtherPause != ""))) {
+          this.addAlert("danger", "L'heure de début de pause doit être inférieure aux heures de pauses postérieurs.");
+          return false;
+        }
+        if (j > k && ((+newHour <= +startOtherPause && startOtherPause != "") || (+newHour <= +endOtherPause && endOtherPause != ""))) {
+          this.addAlert("danger", "L'heure de début de pause doit être supérieure aux heures de pauses antérieurs.");
+          return false;
+        }
+      }
+    } else {
+      if (j >= 0) {
+        if (+startMission >= +newHour && startMission != "") {
+          this.addAlert("danger", "L'heure de fin de pause doit être supérieure à l'heure de début de travail.");
+          return false;
+        }
+        if (+endMission <= +newHour && endMission != "") {
+          this.addAlert("danger", "L'heure de fin de pause doit être inférieure à l'heure de fin de travail.");
+          return false;
+        }
+        if (+newHour <= +startPause && startPause != "") {
+          this.addAlert("danger", "L'heure de fin de pause doit être supérieure à l'heure de début de pause.");
+          return false;
+        }
+        for (var k = 0; k < this.missionPauses[i].length; k++) {
+          var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_debut_temp) : this.missionPauses[i][k].pause_debut_new;
+          var endOtherPause = this.isEmpty(this.missionPauses[i][k].pause_fin_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_fin_temp) : this.missionPauses[i][k].pause_fin_new;
+          if (j < k && ((+newHour >= +startOtherPause && startOtherPause != "") || (+newHour >= +endOtherPause && endOtherPause != ""))) {
+            this.addAlert("danger", "L'heure de fin de pause doit être inférieure aux heures de pauses postérieurs.");
+            return false;
+          }
+          if (j > k && ((+newHour <= +startOtherPause && startOtherPause != "") || (+newHour <= +endOtherPause && endOtherPause != ""))) {
+            this.addAlert("danger", "L'heure de fin de pause doit être supérieure aux heures de pauses antérieurs.");
+            return false;
+          }
+        }
+      }
+    }
+
+    if (isStartMission) {
+      if (+newHour >= +endMission && endMission != "") {
+        this.addAlert("danger", "L'heure de début de travail doit être inférieure à l'heure de fin de travail.");
+        return false;
+      }
+      if (this.missionPauses[i]) {
+        for (var k = 0; k < this.missionPauses[i].length; k++) {
+          var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_debut_temp) : this.missionPauses[i][k].pause_debut_new;
+          var endOtherPause = this.isEmpty(this.missionPauses[i][k].pause_fin_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_fin_temp) : this.missionPauses[i][k].pause_fin_new;
+          if ((+newHour >= +startOtherPause && startOtherPause != "") || (+newHour >= +endOtherPause && endOtherPause != "")) {
+            this.addAlert("danger", "L'heure de début de travail doit être inférieure aux heures de pauses.");
+            return false;
+          }
+        }
+      }
+    } else {
+      if ((!j && j != 0) || j < 0) {
+        if (+startMission >= +newHour && startMission != "") {
+          this.addAlert("danger", "L'heure de fin de travail doit être supérieure à l'heure de début de travail.");
+          return false;
+        }
+        if (this.missionPauses[i]) {
+          for (var k = 0; k < this.missionPauses[i].length; k++) {
+            var startOtherPause = this.isEmpty(this.missionPauses[i][k].pause_debut_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_debut_temp) : this.missionPauses[i][k].pause_debut_new;
+            var endOtherPause = this.isEmpty(this.missionPauses[i][k].pause_fin_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][k].pause_fin_temp) : this.missionPauses[i][k].pause_fin_new;
+            if ((+newHour <= +startOtherPause && startOtherPause != "") || (+newHour <= +endOtherPause && endOtherPause != "")) {
+              this.addAlert("danger", "L'heure de fin de travail doit être supérieure aux heures de pauses.");
+              return false;
+            }
+          }
+        }
+      }
+    }
+    return true;
+  }
+
 //
 // saveCorrectedHours(i, j, isStartPause, isStartMission) {
 //   if (isStartPause) {
@@ -667,7 +495,7 @@ export class MissionDetails {
             idContract: idContrat,
             idInvoice: idInvoice,
             idDocument: idInvoice,
-            environnement:'DEV'
+            environnement: 'DEV'
           };
           this.missionService.signEndOfMission(bean).then(signatureData=> {
 
@@ -1110,6 +938,24 @@ this.nav.present(toast);
     } else {
       this.optionMission = "Mode de suivi de mission n°" + this.contract.option_mission.substring(0, 1);
     }
+  }
+
+  launchContractModal() {
+    //jQuery('#modal-contract').modal('show');
+    //Create to Iframe to show the contract in the modal
+    let iframe = document.createElement('iframe');
+    iframe.frameBorder = "0";
+    iframe.width = "100%";
+    iframe.height = "100%";
+    iframe.id = "docuSign";
+    iframe.style.overflow = "hidden";
+    iframe.style.height = "100%";
+    iframe.style.width = "100%";
+    iframe.setAttribute("src", this.contract.jobyer);
+    //iframe.setAttribute("src", "https://demo.docusign.net/Signing/startinsession.aspx?t=fbfcf9f4-4188-4e94-8f64-641c2f16b653");
+
+    document.getElementById("iframPlaceHolder").appendChild(iframe);
+
   }
 
   addAlert(type, msg): void {
