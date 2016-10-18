@@ -3,7 +3,7 @@ import {Http, Headers} from "@angular/http";
 import {Configs} from "../configurations/configs";
 
 @Injectable()
-export class SlimPayService {
+export class SlimPayService{
 
   constructor(public http: Http) {
   }
@@ -12,17 +12,17 @@ export class SlimPayService {
     //Prepare the request
     let bean: any =
     {
-      class : 'com.vitonjob.slimpay.model.SlimpayConfig',
-      idEntreprise : entrepriseId
+      class: 'com.vitonjob.slimpay.model.SlimpayConfig',
+      idEntreprise: entrepriseId
     };
     let encodedArg = btoa(JSON.stringify(bean));
 
     var payload = {
-      class : 'fr.protogen.masterdata.model.CCallout',
-      'id': 2,
+      class: 'fr.protogen.masterdata.model.CCallout',
+      'id': 310,
       'args': [
         {
-          class : 'fr.protogen.masterdata.model.CCalloutArguments',
+          class: 'fr.protogen.masterdata.model.CCalloutArguments',
           value: encodedArg
         }
       ]

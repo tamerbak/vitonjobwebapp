@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
   <li>VOUS ÊTES ICI</li>
-  <li class="active"><a class="breadcrumb-link" [routerLink]="['/app/search/details']">Résultats de la recherche</a>
+  <li class="active"><a class="breadcrumb-link" [routerLink]="['/app/search/results']">Résultats de la recherche</a>
   </li>
   <li class="active">Détails</li>
 </ol>
@@ -10,7 +10,7 @@
 <div class="row">
   <div class="col-lg-8 col-xl-offset-2 col-xs-12">
     <section widget class="widget">
-      <recruit-button [jobyer]="item" *ngIf="projectTarget == 'employer' && !isRecruteur" class="top-element"></recruit-button>
+      <recruit-button [jobyer]="result" (onRecruite)="onRecruite($event)" *ngIf="projectTarget == 'employer' && !isRecruteur" class="top-element"></recruit-button>
       <div class="widget-body">
         <div class="post-user mt-n-xs">
 					<span class="thumb pull-left mr">
@@ -55,5 +55,7 @@
       </footer>
     </section>
   </div>
-
 </div>
+
+<div modal-notification-contract [jobyer]="result" *ngIf="projectTarget == 'employer' && !isRecruteur"></div>
+<div modal-profile [fromPage]="fromPage" [jobyer]="result" (onProfileUpdated)="onProfileUpdated($event)"></div>

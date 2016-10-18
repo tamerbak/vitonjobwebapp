@@ -196,11 +196,11 @@ export class MissionDetails {
       if (!data || data.status == "failure") {
 
 
-        this.addAlert("danger", "Erreur lors de la sauvegarde des données");
+        this.addAlert("danger", "Erreur lors de l'enregistrement des données");
         return;
       } else {
 // data saved
-        this.addAlert("success", "Vos données ont été bien sauvegardées");
+        this.addAlert("success", "Vos données ont été bien enregistrées");
 // Update contract status
         this.contract.vu = 'Oui';
         var message = "Horaire du contrat numéro : " + this.contract.numero + " validé";
@@ -569,7 +569,7 @@ export class MissionDetails {
       if (!data || data.status == "failure") {
         console.log(data.error);
 // TODO : loading.dismiss();
-// TODO : this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+// TODO : this.globalService.showAlertValidation("VitOnJob", "Erreur lors de l'enregistrement des données");
         return;
       } else {
 // data saved
@@ -666,7 +666,8 @@ export class MissionDetails {
             jobyerPhone: data.jobyerPhone,
             idContract: idContrat,
             idInvoice: idInvoice,
-            idDocument: idInvoice
+            idDocument: idInvoice,
+            environnement:'DEV'
           };
           this.missionService.signEndOfMission(bean).then(signatureData=> {
 
@@ -719,7 +720,7 @@ export class MissionDetails {
 //       if (!data || data.status == "failure") {
 //         console.log(data.error);
 //         loading.dismiss();
-//         this.globalService.showAlertValidation("VitOnJob", "Erreur lors de la sauvegarde des données");
+//         this.globalService.showAlertValidation("VitOnJob", "Erreur lors de l'enregistrement des données");
 //         return;
 //       } else {
 //         // data saved
@@ -772,7 +773,7 @@ export class MissionDetails {
 //     if (selectedOption) {
 //       this.missionService.updateOptionMission(selectedOption, this.contract.pk_user_contrat).then((data) => {
 //         if (!data || data.status == 'failure') {
-//           this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de la sauvegarde des données.");
+//           this.globalService.showAlertValidation("VitOnJob", "Une erreur est survenue lors de l'enregistrement des données.");
 //         } else {
 //           console.log("option mission saved successfully");
 //           this.contract.option_mission = selectedOption;

@@ -5,6 +5,7 @@ import {SharedService} from "../../providers/shared.service";
 import {ContractService} from "../../providers/contract-service";
 import {MedecineService} from "../../providers/medecine.service";
 import {ParametersService} from "../../providers/parameters-service";
+import {Utils} from "../utils/utils";
 
 /**
  * @author daoudi amine
@@ -64,11 +65,15 @@ export class Contract {
     // Retrieve jobyer
     this.jobyer = this.sharedService.getCurrentJobyer();
 
-    let bd = new Date(this.jobyer.dateNaissance);
 
     this.jobyerFirstName = this.jobyer.prenom;
     this.jobyerLastName = this.jobyer.nom;
-    this.jobyerBirthDate = this.dateFormat(bd);
+    if(!Utils.isEmpty(this.jobyer.dateNaissance)) {
+      let bd = new Date(this.jobyer.dateNaissance);
+      this.jobyerBirthDate = this.dateFormat(bd);
+    }else{
+      this.jobyerBirthDate = '';
+    }
     this.jobyer.id = 0;
     this.jobyer.numSS = '';
     this.jobyer.nationaliteLibelle = '';
@@ -190,7 +195,7 @@ export class Contract {
       primes: "",
       headOffice: "",
       missionContent: "",
-      category: "",
+      category: "Employé",
       sector: "",
       companyName: '',
       titreTransport: 'NON',
@@ -406,7 +411,7 @@ export class Contract {
       primes: "",
       headOffice: this.hqAdress,
       missionContent: "",
-      category: this.currentOffer.jobData.job,
+      category: 'Employé',
       sector: this.currentOffer.jobData.sector,
       companyName: this.companyName,
       workAdress: this.workAdress,

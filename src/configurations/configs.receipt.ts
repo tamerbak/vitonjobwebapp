@@ -124,6 +124,8 @@ class JobyerConfigs implements AbstractConfigs {
 
 export class Configs {
 
+  public static env: string = 'DEV';
+
   public static calloutURL: string = ' http://vojrecette.us-west-2.elasticbeanstalk.com/api/business';
   public static sqlURL: string = ' http://vojrecette.us-west-2.elasticbeanstalk.com/api/sql';
   public static yousignURL: string = ' http://vojrecette.us-west-2.elasticbeanstalk.com/api/business';

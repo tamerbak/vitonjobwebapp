@@ -248,23 +248,8 @@
           <input type="text" name="norm" class="form-control" [(ngModel)]="contractData.salaryNHours" aria-describedby="norm" required/>
           <small class="form-text text-muted"></small>
         </div>
-        <div class="form-group">
-          <label>HS au-dela de 35H</label>
-          <input type="text" name="hs" class="form-control" [(ngModel)]="contractData.salarySH35" aria-describedby="hs" required/>
-          <small class="form-text text-muted"></small>
-        </div>
-        <div class="form-group">
-          <label>HS au-dela de 43H</label>
-          <input type="text" name="hs2" class="form-control" [(ngModel)]="contractData.salarySH43" aria-describedby="hs2" required/>
-          <small class="form-text text-muted"></small>
-        </div>
       </div>
       <div class="col-xs-6 pull-right col-2">
-        <div class="form-group">
-          <label>Droit au repos compensateur</label>
-          <input type="text" name="droit" class="form-control" [(ngModel)]="contractData.restRight" aria-describedby="droit" required/>
-          <small class="form-text text-muted"></small>
-        </div>
         <div class="form-group">
           <label >Ind. fin de mission</label>
           <input type="text" name="ind" class="form-control" [(ngModel)]="contractData.indemniteFinMission" aria-describedby="ind" disabled />
@@ -343,6 +328,15 @@
         </div>
         <div class="form-group">
           <label >Catégorie</label>
+          <select
+            data-style="btn-secondary" class="recoursSelectPicker form-control" id="categorie-select" [(ngModel)]="contractData.category"
+            name="categorie_slct"  required>
+            <option value="Employé" >Employé</option>
+            <option value="Ouvrier" >Ouvrier</option>
+            <option value="Technicien" >Technicien</option>
+            <option value="AM" >AM</option>
+            <option value="Cadre" >Cadre</option>
+          </select>
           <input type="text" name="category" class="form-control" [(ngModel)]="contractData.category" aria-describedby="categorie" required/>
           <small class="form-text text-muted"></small>
         </div>

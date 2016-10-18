@@ -124,6 +124,8 @@ class JobyerConfigs implements AbstractConfigs {
 
 export class Configs {
 
+  public static env: string = 'DEV';
+
   public static calloutURL: string = 'https://bopreprod.vitonjob.com/api/business';
   public static sqlURL: string = 'https://bopreprod.vitonjob.com/api/sql';
   public static yousignURL: string = 'https://bopreprod.vitonjob.com/api/business';

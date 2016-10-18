@@ -1,32 +1,25 @@
-import {Component, Input} from "@angular/core";
+import {Component, EventEmitter, Input, Output } from "@angular/core";
 import {SharedService} from "../../../providers/shared.service";
-import {ModalNotificationContract} from "../../modal-notification-contract/modal-notification-contract";
-import {ModalProfile} from "../../modal-profile/modal-profile";
-import {Subject} from "rxjs";
 
 declare var jQuery: any;
 
 @Component({
   selector: 'recruit-button',
   template: require('./recruit-button.html'),
-  directives: [ModalNotificationContract, ModalProfile]
 })
 
 export class RecruitButton {
-  //@Output() onRecruite = new EventEmitter<string>();
-  //obj: string;
-
   @Input()
   jobyer: any;
+  @Output()
+  onRecruite = new EventEmitter<any>();
 
   currentUser: any;
   projectTarget: string;
 
   obj: string;
-  fromPage: string;
 
   constructor(private sharedService: SharedService) {
-    this.fromPage = "recruitment";
   }
 
   recruitJobyer() {
@@ -60,32 +53,12 @@ export class RecruitButton {
           this.obj = "profile";
         }
       }
-      this.openModal(this.obj);
+      this.onRecruite.emit({obj: this.obj, jobyer: this.jobyer});
     }
     else {
       return;
     }
   }
-
-  openModal(obj){
-    if(obj == "contract" || obj == "offer"){
-      jQuery('#modal-notification-contract').modal('show');
-    }
-    if(obj == "profile"){
-      jQuery('#modal-profile').modal('show');
-    }
-  }
-
-  /*gotoContractForm() {
-    jQuery('#my-modal18-content').modal('hide');
-    let o = this.sharedService.getCurrentOffer();
-    //navigate to contract page
-    if (o != null) {
-      this.sharedService.setCurrentJobyer(this.jobyer);
-      this.router.navigate(['app/contract/recruitment-form']);
-    }
-    this.router.navigate(['app/contract/recruitment-form']);
-  }*/
 
   isEmpty(str) {
     if (str == '' || str == 'null' || !str)
