@@ -73,6 +73,7 @@ export class OfferEdit {
   autoSearchModeTitle: string;
   modalParams: any = {type: '', message: ''};
   keepCurrentOffer: boolean = false;
+  triedValidate: boolean = false;
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -618,6 +619,8 @@ export class OfferEdit {
   }
 
   editOffer() {
+    this.triedValidate = true;
+
     if (this.obj == "add") {
       this.offer.calendarData = this.slotsToSave;
       if (!this.offer.jobData.job || !this.offer.jobData.sector || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || this.minHourRate > this.offer.jobData.remuneration) {

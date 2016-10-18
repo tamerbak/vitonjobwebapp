@@ -113,6 +113,9 @@
               <option value=""></option>
               <option *ngFor="let s of sectors" [value]="s.id">{{s.libelle}}</option>
             </select>
+            <alert *ngIf="triedValidate && !offer.jobData.idSector" [type]="'danger alert-sm'">
+              <div [innerHTML]="'* Veuillez renseigner le secteur'"></div>
+            </alert>
           </div>
         </div>
 
@@ -141,6 +144,9 @@
               <option value=""></option>
               <option *ngFor="let j of jobs" [value]="j.id">{{j.libelle}}</option>
             </select>
+            <alert *ngIf="triedValidate && !offer.jobData.idJob" [type]="'danger alert-sm'">
+              <div [innerHTML]="'* Veuillez renseigner le job'"></div>
+            </alert>
           </div>
         </div>
 
@@ -180,7 +186,13 @@
               min="0"
               [(ngModel)]="offer.jobData.remuneration"
               (change)="validateRate($event.target.value)"
-            >
+            />
+            <alert *ngIf="triedValidate && !offer.jobData.remuneration" [type]="'danger alert-sm'">
+              <div [innerHTML]="'* Veuillez renseigner le taux horaire'"></div>
+            </alert>
+            <alert *ngIf="invalidHourRate" [type]="'danger alert-sm'">
+              <div [innerHTML]="'* Le taux horaire devrait être supérieur ou égal à ' + invalidHourRateMessage"></div>
+            </alert>
           </div>
           <div class="col-md-2 col-xs-6">
             <select class="form-control" disabled>
@@ -188,9 +200,6 @@
             </select>
           </div>
         </div>
-        <alert *ngIf="invalidHourRate" [type]="'danger alert-sm'">
-          <div [innerHTML]="'* Le taux horaire devrait être supérieur ou égal à ' + invalidHourRateMessage"></div>
-        </alert>
       </div>
 
       <fieldset *ngIf="convParametersVisible()">
@@ -312,7 +321,7 @@
         <alert *ngFor="let alert of alertsSlot; let i = index" [type]="alert.type + ' alert-sm'" dismissible="false">
           <div [innerHTML]="alert.msg"></div>
         </alert>
-        <alert *ngIf="slots.length == 0" [type]="'danger alert-sm'">
+        <alert *ngIf="triedValidate && slots.length == 0" [type]="'danger alert-sm'">
           <div [innerHTML]="'* Veuillez renseigner au moins un créneau'"></div>
         </alert>
 
@@ -348,6 +357,7 @@
               class="btn btn-success mb-xs"
               role="button"
               (click)="addSlot()"
+              [disabled]="!(slot.date && slot.startHour && slot.endtHour)"
             >
               Ajouter
             </button>
@@ -365,8 +375,6 @@
         <h6><span class="fw-semi-bold widget-offer-header-title">Profil</span></h6>
       </header>
       <div class="widget-body">
-
-        <legend><strong>Détails du job</strong></legend>
 
         <!-- Qualities -->
         <div class="form-group row">
@@ -406,6 +414,7 @@
                   class="btn btn-success mb-xs offer-add-button"
                   role="button"
                   (click)="addQuality()"
+                  [disabled]="!selectedQuality"
                 >
                   Ajouter
                 </button>
@@ -461,6 +470,7 @@
                   class="btn btn-success mb-xs"
                   role="button"
                   (click)="addLanguage()"
+                  [disabled]="!(selectedLang && selectedLevel)"
                 >
                   Ajouter
                 </button>
