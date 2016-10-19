@@ -14,7 +14,7 @@ import {ContractService} from "../../providers/contract-service";
 import {DateConverter} from "../../pipes/date-converter/date-converter";
 import {TimeConverter} from "../../pipes/time-converter/time-converter";
 
-import {ModalComponent} from "./modal-component/modal-component";
+import {ModalModifySchedule} from "./modal-modify-schedule/modal-modify-schedule";
 import {Utils} from "../utils/utils";
 
 declare var Messenger: any;
@@ -26,7 +26,7 @@ declare var jQuery: any;
   styles: [require('./mission-details.scss')],
   pipes: [DateConverter, TimeConverter],
   providers: [ContractService, SharedService, MissionService, FinanceService, GlobalConfigs],
-  directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime, BUTTON_DIRECTIVES, ModalComponent],
+  directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime, BUTTON_DIRECTIVES, ModalModifySchedule],
 })
 export class MissionDetails{
 // TODO Set dynamically
@@ -109,8 +109,11 @@ export class MissionDetails{
             var array = this.missionService.constructMissionHoursArray(this.initialMissionHours);
             this.missionHours = array[0];
             this.missionPauses = array[1];
-//prepare the mission pauses array to display
+            //prepare the mission pauses array to display
             for (let i = 0; i < this.missionHours.length; i++) {
+              let day = this.missionHours[i];
+              this.missionHours[i].heure_debut_temp = (Utils.isEmpty(day.heure_debut_new) ? this.missionService.convertToFormattedHour(day.heure_debut) : this.missionService.convertToFormattedHour(day.heure_debut_new));
+              this.missionHours[i].heure_fin_temp = (Utils.isEmpty(day.heure_fin_new) ? this.missionService.convertToFormattedHour(day.heure_fin) : this.missionService.convertToFormattedHour(day.heure_fin_new));
               if (this.missionPauses[i] && this.missionPauses[i].length != 0) {
                 for (let j = 0; j < this.missionPauses[i].length; j++) {
                   let pause = this.missionPauses[i][j];
@@ -186,7 +189,7 @@ export class MissionDetails{
       if (this.missionPauses[i]) {
         for (var j = 0; j < this.missionPauses[i].length; j++) {
           //verify if there are empty pause hours
-          if (Utils.isEmpty(this.missionPauses[i][j].pause_debut_temp) || this.isEmpty(this.missionPauses[i][j].pause_fin_temp)) {
+          if (Utils.isEmpty(this.missionPauses[i][j].pause_debut_temp) || Utils.isEmpty(this.missionPauses[i][j].pause_fin_temp)) {
             this.addAlert("warning", "Veuillez renseigner toutes les heures de pauses avant de valider.");
             return;
           }else{
@@ -382,30 +385,23 @@ export class MissionDetails{
         console.log("timesheet saved");
         var message = "Le relevé d'heure du contrat numéro : " + this.contract.numero + "vous a été envoyé";
         var objectifNotif = "MissionDetailsPage";
-        this.sendPushNotification(message, objectifNotif, "toJobyer");
         this.sendInfoBySMS(message, "toJobyer");
 
-// Return to the list
+        // Return to the list
         this.navigationPreviousPage();
       }
     });
   }
 
   signSchedule() {
-
     this.missionService.signSchedule(this.contract).then((data: any) => {
       if (!data || data.status == "failure") {
-        console.log(data.error);
-// TODO : loading.dismiss();
-// TODO : this.globalService.showAlertValidation("VitOnJob", "Erreur lors de l'enregistrement des données");
+        this.addAlert("danger", "Erreur lors de l'enregistrement des données");
         return;
       } else {
-// data saved
-        console.log("schedule signed : " + data.status);
+        // data saved
         if (this.contract.option_mission == "2.0" && !this.isEmployer) {
           var message = "Le relevé d'heure du contrat numéro " + this.contract.numero + " a été signé.";
-          var objectifNotif = "MissionDetailsPage";
-          this.sendPushNotification(message, objectifNotif, "toEmployer");
           this.sendInfoBySMS(message, "toEmployer");
         }
       }
@@ -956,6 +952,14 @@ this.nav.present(toast);
 
     document.getElementById("iframPlaceHolder").appendChild(iframe);
 
+  }
+
+  openModifyScheduleModal(){
+    jQuery('#modal-modify-schedule').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+    jQuery('#modal-modify-schedule').modal('show');
   }
 
   addAlert(type, msg): void {
