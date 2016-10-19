@@ -1,60 +1,64 @@
 <ol class="breadcrumb">
-  <li>VOUS ÊTES ICI</li>
-  <li class="active"><a class="breadcrumb-link" [routerLink]="['/app/mission/list']">Mes missions</a></li>
-  <li class="active"><a class="breadcrumb-link" [routerLink]="['/app/mission/details']">Détails de la mission</a></li>
+    <li>VOUS ÊTES ICI</li>
+    <li class="active"><a class="breadcrumb-link" [routerLink]="['/app/mission/list']">Mes missions</a></li>
+    <li class="active"><a class="breadcrumb-link" [routerLink]="['/app/mission/details']">Détails de la mission</a></li>
 </ol>
 
 <div class="row">
-  <div class="col-lg-8 col-xl-offset-2 col-xs-12">
+    <div class="col-lg-8 col-xl-offset-2 col-xs-12">
 
-    <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
-      <div [innerHTML]="alert.msg"></div>
-    </alert>
+        <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
+            <div [innerHTML]="alert.msg"></div>
+        </alert>
 
-    <section class="widget" widget>
-      <header>
-        <h4>
-          {{ contract.titre }}
-        </h4>
-      </header>
-      <div class="widget-body">
+        <section class="widget" widget>
+            <header>
+                <h4>
+                    {{ contract.titre }}
+                </h4>
+            </header>
+            <div class="widget-body">
 
-        <h5>Relevé d'heures de travail du contract avec {{ contract.prenom }} {{ contract.nom }}.</h5>
+                <h5>Relevé d'heures de travail du contract avec {{ contract.prenom }} {{ contract.nom }}.</h5>
 
-        <div *ngFor="let day of missionHours, let i=index">
+                <!--<button type="button" class="btn btn-secondary btn-sm" (click)="launchContractModal()"
+                        *ngIf="!isEmployer && upperCase(contract.signature_jobyer) == 'NON'">Signer le contrat
+                </button>-->
 
+                <div *ngFor="let day of missionHours, let i=index">
+                    <table class="table table-striped table-condensed" width="400">
 
-          <table class="table table-striped table-condensed" width="400">
-
-            <thead class="no-bd col-xs-12">
-            <tr>
-              <th colspan="4">
-                Jour {{i + 1}}: {{day.jour_debut | dateConverter:'long'}}
-                <button class="btn btn-default pull-right" (click)="addPause(i)" [hidden]="!isNewMission || !isEmployer || upperCase(contract.signature_jobyer) == 'NON'">
+                        <thead class="no-bd col-xs-12">
+                        <tr>
+                            <th colspan="4">
+                                Jour {{i + 1}}: {{day.jour_debut | dateConverter:'long'}}
+                                <button class="btn btn-default pull-right" (click)="addPause(i)"
+                                        [hidden]="!isNewMission || !isEmployer || upperCase(contract.signature_jobyer) == 'NON'">
                   <span class="glyphicon glyphicon-plus">
                     </span> Ajouter pause
-                </button>
-              </th>
-            </tr>
-            <tr>
-              <th>Heure</th>
-              <th class="text-align-right">Prévu</th>
-              <th class="text-align-center" *ngIf="isEmployer && upperCase(contract.approuve) == 'NON'">
-                Jobyer
-              </th>
-              <th class="text-align-center" *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && (day.heure_debut_pointe || day.heure_fin_pointe)">
-                {{enterpriseName}}
-              </th>
-            </tr>
-            </thead>
+                                </button>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>Heure</th>
+                            <th class="text-align-right">Prévu</th>
+                            <th class="text-align-center" *ngIf="isEmployer && upperCase(contract.approuve) == 'NON'">
+                                Jobyer
+                            </th>
+                            <th class="text-align-center"
+                                *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && (day.heure_debut_pointe || day.heure_fin_pointe)">
+                                {{enterpriseName}}
+                            </th>
+                        </tr>
+                        </thead>
 
-            <tbody>
-            <tr>
-              <td class="text-align-right" width="100">Début</td>
-              <td class="text-align-right" width="100">{{ day.heure_debut | timeConverter: 'minute' }}</td>
-              <td class="text-align-center" width="100">
-                <span
-                  class="label label-{{ (
+                        <tbody>
+                        <tr>
+                            <td class="text-align-right" width="100">Début</td>
+                            <td class="text-align-right" width="100">{{ day.heure_debut | timeConverter: 'minute' }}
+                            </td>
+                            <td class="text-align-center" width="100">
+                <span class="label label-{{ (
                     upperCase(day.is_heure_debut_corrigee) == 'NON'
                       ? 'success'
                       : (upperCase(day.is_heure_debut_corrigee) == 'OUI'
@@ -65,208 +69,217 @@
                 >
                   {{ (day.heure_debut_pointe) ? day.heure_debut_pointe : '--:--' }}
                 </span>
-              </td>
-              <td
-                class="text-align-center"
-                width="100"
-              >
-                <div class="btn-group" *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && day.heure_debut_pointe">
-                  <label
-                    class="btn btn-gray btn-sm"
-                    (click)="onPointedHourClick(i, j, true, false, 'approve')"
-                  >
-                    <i class="glyphicon glyphicon-ok"></i> Accepter
-                  </label>
-                  <label
-                    class="btn btn-gray btn-sm"
-                    (click)="onPointedHourClick(i, j, true, false, 'decline')"
-                  >
-                    <i class="glyphicon glyphicon-remove"></i> Refuser
-                  </label>
-                </div>
+                            </td>
+                            <td class="text-align-center"
+                                width="100">
+                                <div class="btn-group"
+                                     *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && day.heure_debut_pointe">
+                                    <label
+                                            class="btn btn-gray btn-sm"
+                                            (click)="onPointedHourClick(i, j, true, false, 'approve')">
+                                        <i class="glyphicon glyphicon-ok"></i> Accepter
+                                    </label>
+                                    <label
+                                            class="btn btn-gray btn-sm"
+                                            (click)="onPointedHourClick(i, j, true, false, 'decline')">
+                                        <i class="glyphicon glyphicon-remove"></i> Refuser
+                                    </label>
+                                </div>
 
-              </td>
-            </tr>
-            <tr *ngFor="let pause of missionPauses[i], let j=index">
-              <td colspan="4" style="padding: 0; padding-top: 10px;">
-                <table class="table table-striped table-condensed" width="400">
-                  <tbody>
-                  <tr>
-                    <td class="text-align-right" width="100">Pause {{j + 1}}</td>
-                    <td class="text-align-right" colspan="3" >
-                      <button (click)="deletePause(i, j)" [hidden]="!isNewMission || !isEmployer">
-                        <i class="glyphicon glyphicon-ok"></i>
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="text-align-right" width="100">Début</td>
-                    <td class="text-align-right" width="100">
-                      <input type="time" [(ngModel)]="pause.pause_debut_temp" [style.backgroundColor]="!isEmpty(pause.pause_debut_new) ? 'orange' : 'gray'" [disabled]="!isEmployer || upperCase(contract.vu) == 'OUI'"/>
-                    </td>
-                    <td class="text-align-right" width="100">
-                      <input type="time" [(ngModel)]="pause.pause_debut_pointe" [hidden]="contract.option_mission == '1.0'|| isNewMission" [style.backgroundColor]="upperCase(pause.is_pause_debut_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_debut_corrigee) == 'NON' ? 'green' : '')" disabled="true"/>
-                    </td>
-                    <td class="text-align-right" width="100">
-                      <div class="btn-group" *ngIf="isEmployer && upperCase(contract.releve_employeur) == 'NON' && pause.pause_debut_pointe">
-                        <label
-                          class="btn btn-gray btn-sm"
-                          (click)="colorHour(i, j, false, true, true)">
-                          <i class="glyphicon glyphicon-ok"></i> Accepter
-                        </label>
-                        <label
-                          class="btn btn-gray btn-sm"
-                          (click)="colorHour(i, j, false, true, false)">
-                          <i class="glyphicon glyphicon-remove"></i> Refuser
-                        </label>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="text-align-right" width="100">Fin</td>
-                    <td class="text-align-right" width="100">
-                      <input type="time" [(ngModel)]="pause.pause_fin_temp" [style.backgroundColor]="!isEmpty(pause.pause_fin_new) ? 'orange' : 'gray'" [disabled]="!isEmployer || upperCase(contract.vu) == 'OUI'"/>
-                    </td>
-                    <td class="text-align-right" width="100">
-                      <input type="time" [(ngModel)]="pause.pause_fin_pointe" [hidden]="contract.option_mission == '1.0'|| isNewMission" [style.backgroundColor]="upperCase(pause.is_pause_fin_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_fin_corrigee) == 'NON' ? 'green' : '')" disabled="true"/>
-                    </td>
-                    <td class="text-align-right" width="100">
-                      <div class="btn-group" *ngIf="isEmployer && upperCase(contract.releve_employeur) == 'NON' && pause.pause_fin_pointe">
-                        <label
-                          class="btn btn-gray btn-sm"
-                          (click)="colorHour(i, j, false, false, true)">
-                          <i class="glyphicon glyphicon-ok"></i> Accepter
-                        </label>
-                        <label
-                          class="btn btn-gray btn-sm"
-                          (click)="colorHour(i, j, false, false, false)">
-                          <i class="glyphicon glyphicon-remove"></i> Refuser
-                        </label>
-                      </div>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </td>
-            </tr>
+                            </td>
+                        </tr>
+                        <tr *ngFor="let pause of missionPauses[i], let j=index">
+                            <td colspan="4" style="padding: 0; padding-top: 10px;">
+                                <table class="table table-striped table-condensed" width="400">
+                                    <tbody>
+                                    <tr>
+                                        <td class="text-align-right" width="100">Pause {{j + 1}}</td>
+                                        <td class="text-align-right" colspan="3">
+                                            <button (click)="deletePause(i, j)" [hidden]="!isNewMission || !isEmployer">
+                                                <i class="glyphicon glyphicon-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-align-right" width="100">Début</td>
+                                        <td class="text-align-right" width="100">
+                                            <input type="time" [(ngModel)]="pause.pause_debut_temp"
+                                                   [style.backgroundColor]="!isEmpty(pause.pause_debut_new) ? 'orange' : 'gray'"
+                                                   [disabled]="!isEmployer || upperCase(contract.vu) == 'OUI'"/>
+                                        </td>
+                                        <td class="text-align-right" width="100">
+                                            <input type="time" [(ngModel)]="pause.pause_debut_pointe"
+                                                   [hidden]="contract.option_mission == '1.0'|| isNewMission"
+                                                   [style.backgroundColor]="upperCase(pause.is_pause_debut_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_debut_corrigee) == 'NON' ? 'green' : '')"
+                                                   disabled="true"/>
+                                        </td>
+                                        <td class="text-align-right" width="100">
+                                            <div class="btn-group"
+                                                 *ngIf="isEmployer && upperCase(contract.releve_employeur) == 'NON' && pause.pause_debut_pointe">
+                                                <label
+                                                        class="btn btn-gray btn-sm"
+                                                        (click)="colorHour(i, j, false, true, true)">
+                                                    <i class="glyphicon glyphicon-ok"></i> Accepter
+                                                </label>
+                                                <label
+                                                        class="btn btn-gray btn-sm"
+                                                        (click)="colorHour(i, j, false, true, false)">
+                                                    <i class="glyphicon glyphicon-remove"></i> Refuser
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-align-right" width="100">Fin</td>
+                                        <td class="text-align-right" width="100">
+                                            <input type="time" [(ngModel)]="pause.pause_fin_temp"
+                                                   [style.backgroundColor]="!isEmpty(pause.pause_fin_new) ? 'orange' : 'gray'"
+                                                   [disabled]="!isEmployer || upperCase(contract.vu) == 'OUI'"/>
+                                        </td>
+                                        <td class="text-align-right" width="100">
+                                            <input type="time" [(ngModel)]="pause.pause_fin_pointe"
+                                                   [hidden]="contract.option_mission == '1.0'|| isNewMission"
+                                                   [style.backgroundColor]="upperCase(pause.is_pause_fin_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_fin_corrigee) == 'NON' ? 'green' : '')"
+                                                   disabled="true"/>
+                                        </td>
+                                        <td class="text-align-right" width="100">
+                                            <div class="btn-group"
+                                                 *ngIf="isEmployer && upperCase(contract.releve_employeur) == 'NON' && pause.pause_fin_pointe">
+                                                <label
+                                                        class="btn btn-gray btn-sm"
+                                                        (click)="colorHour(i, j, false, false, true)">
+                                                    <i class="glyphicon glyphicon-ok"></i> Accepter
+                                                </label>
+                                                <label
+                                                        class="btn btn-gray btn-sm"
+                                                        (click)="colorHour(i, j, false, false, false)">
+                                                    <i class="glyphicon glyphicon-remove"></i> Refuser
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
 
-            <tr>
-              <td class="text-align-right" width="100">Fin</td>
-              <td class="text-align-right" width="100">{{ day.heure_fin | timeConverter: 'minute' }}</td>
-              <td class="text-align-center" width="100">
+                        <tr>
+                            <td class="text-align-right" width="100">Fin</td>
+                            <td class="text-align-right" width="100">{{ day.heure_fin | timeConverter: 'minute' }}</td>
+                            <td class="text-align-center" width="100">
                 <span
-                  class="label label-{{ (
+                        class="label label-{{ (
                     upperCase(day.is_heure_fin_corrigee) == 'NON'
                       ? 'success'
                       : (upperCase(day.is_heure_fin_corrigee) == 'OUI'
                         ? 'danger'
                         : 'default'
                     ))
-                  }}"
-                >
+                  }}">
                   {{ (day.heure_fin_pointe) ? day.heure_fin_pointe : '--:--' }}
                 </span>
-              </td>
-              <td
-                class="text-align-center"
-                width="100"
-              >
-                <div class="btn-group"  *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && day.heure_fin_pointe">
-                  <label
-                    class="btn btn-gray btn-sm"
-                    (click)="onPointedHourClick(i, j, false, false, 'approve')"
-                  >
-                    <i class="glyphicon glyphicon-ok"></i> Accepter
-                  </label>
-                  <label
-                    class="btn btn-gray btn-sm"
-                    (click)="onPointedHourClick(i, j, false, false, 'decline')"
-                  >
-                    <i class="glyphicon glyphicon-remove"></i> Refuser
-                  </label>
+                            </td>
+                            <td
+                                    class="text-align-center"
+                                    width="100">
+                                <div class="btn-group"
+                                     *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && day.heure_fin_pointe">
+                                    <label
+                                            class="btn btn-gray btn-sm"
+                                            (click)="onPointedHourClick(i, j, false, false, 'approve')">
+                                        <i class="glyphicon glyphicon-ok"></i> Accepter
+                                    </label>
+                                    <label
+                                            class="btn btn-gray btn-sm"
+                                            (click)="onPointedHourClick(i, j, false, false, 'decline')">
+                                        <i class="glyphicon glyphicon-remove"></i> Refuser
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
                 </div>
-              </td>
-            </tr>
-            </tbody>
-          </table>
+                <div class="col-xs-12">
 
-        </div>
-        <div class="col-xs-12">
+                    <div modal-component
+                         *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && upperCase(contract.vu) == 'OUI'"></div>
+                    <br>
+                    <button
+                            type="button" class="btn btn-primary btn-sm"
+                            (click)="validateWork()"
+                            [style.color]="themeColor"
+                            *ngIf="isEmployer && !isNewMission && upperCase(contract.approuve) == 'OUI' && !(upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0')"
+                    >
+                        {{ !isEmployer }} - {{ isNewMission }} - {{ upperCase(contract.approuve) != 'OUI' }} - {{
+                        (upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0') }}
+                        Fin de mission
+                    </button>
+                    <button
+                            type="button" class="btn btn-primary btn-sm"
+                            (click)="eomReleve()"
+                            [style.color]="themeColor"
+                            *ngIf="isReleveAvailable"
+                    >
+                        Signer le relevé
+                    </button>
+                    <button
+                            type="button" class="btn btn-primary btn-sm"
+                            (click)="eomInvoice()"
+                            [style.color]="themeColor"
+                            *ngIf="isInvoiceAvailable"
+                    >
+                        Signer la facture
+                    </button>
+                    <button
+                            type="button" class="btn btn-primary btn-sm"
+                            (click)="generateTimesheet()"
+                            [style.color]="themeColor"
+                            *ngIf="!(missionHours && missionHours.length == 0) && isEmployer && contract.option_mission != '1.0' && !isNewMission && upperCase(contract.releve_employeur) != 'OUI'"
+                    >
+                        Générer et envoyer le relevé d'heure
+                    </button>
+                    <button
+                            type="button" class="btn btn-primary btn-sm"
+                            (click)="validatePauses()"
+                            [style.color]="themeColor"
+                            *ngIf="isNewMission && !(missionHours && missionHours.length == 0) && isEmployer && upperCase(contract.signature_jobyer) != 'NON'"
+                    >
+                        Valider et notifier le Jobyer
+                    </button>
+                    <button
+                            type="button" class="btn btn-primary btn-sm"
+                            (click)="signSchedule()"
+                            [style.color]="themeColor"
+                            *ngIf="!isNewMission && isEmployer && upperCase(contract.approuve) != 'OUI' && !(contract.option_mission == '2.0' && upperCase(contract.releve_employeur) == 'NON')"
+                    >
+                        Signer les horaires
+                    </button>
+                    <button
+                            type="button" class="btn btn-primary btn-sm"
+                            (click)="resetForm()"
+                            [style.color]="themeColor"
+                            *ngIf="isNewMission && !(missionHours && missionHours.length == 0) && isEmployer && upperCase(contract.signature_jobyer) != 'NON'"
+                    >
+                        Réinitialiser
+                    </button>
+                </div>
 
-          <div modal-component [hidden]="!isEmployer || upperCase(contract.approuve) == 'OUI' || upperCase(contract.vu) == 'NON'"></div>
-          <br>
-          <button
-            type="button" class="btn btn-primary btn-sm"
-            (click)="validateWork()"
-            [style.color]="themeColor"
-            *ngIf="isEmployer && !isNewMission && upperCase(contract.approuve) == 'OUI' && !(upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0')"
-          >
-            {{ !isEmployer }} - {{ isNewMission }} - {{ upperCase(contract.approuve) != 'OUI' }} - {{
-            (upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0') }}
-            Fin de mission
-          </button>
-          <button
-            type="button" class="btn btn-primary btn-sm"
-            (click)="eomReleve()"
-            [style.color]="themeColor"
-            *ngIf="isReleveAvailable"
-          >
-            Signer le relevé
-          </button>
-          <button
-            type="button" class="btn btn-primary btn-sm"
-            (click)="eomInvoice()"
-            [style.color]="themeColor"
-            *ngIf="isInvoiceAvailable"
-          >
-            Signer la facture
-          </button>
-          <button
-            type="button" class="btn btn-primary btn-sm"
-            (click)="generateTimesheet()"
-            [style.color]="themeColor"
-            *ngIf="!(missionHours && missionHours.length == 0) && isEmployer && contract.option_mission != '1.0' && !isNewMission && upperCase(contract.releve_employeur) != 'OUI'"
-          >
-            Générer et envoyer le relevé d'heure
-          </button>
-          <button
-            type="button" class="btn btn-primary btn-sm"
-            (click)="validatePauses()"
-            [style.color]="themeColor"
-            *ngIf="isNewMission && !(missionHours && missionHours.length == 0) && isEmployer && upperCase(contract.signature_jobyer) != 'NON'"
-          >
-            Valider et notifier le Jobyer
-          </button>
-          <button
-            type="button" class="btn btn-primary btn-sm"
-            (click)="signSchedule()"
-            [style.color]="themeColor"
-            *ngIf="!isNewMission && isEmployer && upperCase(contract.approuve) != 'OUI' && !(contract.option_mission == '2.0' && upperCase(contract.releve_employeur) == 'NON')"
-          >
-            Signer les horaires
-          </button>
-          <button
-            type="button" class="btn btn-primary btn-sm"
-            (click)="resetForm()"
-            [style.color]="themeColor"
-            *ngIf="isNewMission && !(missionHours && missionHours.length == 0) && isEmployer && upperCase(contract.signature_jobyer) != 'NON'"
-          >
-            Réinitialiser
-          </button>
-        </div>
+                <div class="col-xs-12">
+                    <h5>Informations :</h5>
+                    <ul>
+                        <li><span class="label label-success">Horaire</span> validé par l'employeur</li>
+                        <li><span class="label label-danger">Horaire</span> invalidé par l'employeur</li>
+                        <li><span class="label label-warning">Horaire</span> prévu modifié et validé par l'employeur
+                        </li>
+                        <li><span class="label label-default">Horaire</span> prévu et validé par l'employeur</li>
+                    </ul>
+                </div>
 
-        <div class="col-xs-12">
-          <h5>Informations :</h5>
-          <ul>
-            <li><span class="label label-success">Horaire</span> validé par l'employeur</li>
-            <li><span class="label label-danger">Horaire</span> invalidé par l'employeur</li>
-            <li><span class="label label-warning">Horaire</span> prévu modifié et validé par l'employeur</li>
-            <li><span class="label label-default">Horaire</span> prévu et validé par l'employeur</li>
-          </ul>
-        </div>
+            </div>
+        </section>
 
-      </div>
-    </section>
-
-  </div>
+    </div>
 </div>
+<!--<div id="iframPlaceHolder" style="width: 100%;height: 500px;"></div>-->

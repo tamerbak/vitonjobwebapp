@@ -95,10 +95,12 @@ export class ModalComponent {
             let day = this.missionHours[i];
             this.missionHours[i].heure_debut_temp = (this.isEmpty(day.heure_debut_new) ? day.heure_debut : this.missionService.convertToFormattedHour(day.heure_debut_new));
             this.missionHours[i].heure_fin_temp = (this.isEmpty(day.heure_fin_new) ? day.heure_fin : this.missionService.convertToFormattedHour(day.heure_fin_new));
-            for(let j = 0; j < this.missionPauses[i].length; j++){
-              let pause = this.missionPauses[i][j];
-              this.missionPauses[i][j].pause_debut_temp = (this.isEmpty(pause.pause_debut_new) ? pause.pause_debut : this.missionService.convertToFormattedHour(pause.pause_debut_new));
-              this.missionPauses[i][j].pause_fin_temp = (this.isEmpty(pause.pause_fin_new) ? pause.pause_fin : this.missionService.convertToFormattedHour(pause.pause_fin_new));
+            if(this.missionPauses[i] && this.missionPauses[i].length != 0) {
+              for (let j = 0; j < this.missionPauses[i].length; j++) {
+                let pause = this.missionPauses[i][j];
+                this.missionPauses[i][j].pause_debut_temp = (this.isEmpty(pause.pause_debut_new) ? pause.pause_debut : this.missionService.convertToFormattedHour(pause.pause_debut_new));
+                this.missionPauses[i][j].pause_fin_temp = (this.isEmpty(pause.pause_fin_new) ? pause.pause_fin : this.missionService.convertToFormattedHour(pause.pause_fin_new));
+              }
             }
           }
         }
