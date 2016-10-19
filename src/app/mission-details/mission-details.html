@@ -55,7 +55,7 @@
                         <tbody>
                         <tr>
                             <td class="text-align-right" width="100">Début</td>
-                            <td class="text-align-right" width="100">{{ day.heure_debut | timeConverter: 'minute' }}
+                            <td class="text-align-right" width="100" [style.color]="!isEmpty(day.heure_debut_new) ? 'orange' : 'gray'">{{ day.heure_debut_temp }}
                             </td>
                             <td class="text-align-center" width="100">
                 <span class="label label-{{ (
@@ -165,7 +165,7 @@
 
                         <tr>
                             <td class="text-align-right" width="100">Fin</td>
-                            <td class="text-align-right" width="100">{{ day.heure_fin | timeConverter: 'minute' }}</td>
+                            <td class="text-align-right" width="100" [style.color]="!isEmpty(day.heure_fin_new) ? 'orange' : 'gray'">{{ day.heure_fin_temp }}</td>
                             <td class="text-align-center" width="100">
                 <span
                         class="label label-{{ (
@@ -202,9 +202,13 @@
 
                 </div>
                 <div class="col-xs-12">
+                    <button
+                            type="button" class="btn btn-primary btn-sm"
+                            (click)="openModifyScheduleModal()"
+                            *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && upperCase(contract.vu) == 'OUI'">
+                        Modifier les horaires prévus
+                    </button>
 
-                    <div modal-component
-                         *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && upperCase(contract.vu) == 'OUI'"></div>
                     <br>
                     <button
                             type="button" class="btn btn-primary btn-sm"
@@ -283,3 +287,6 @@
     </div>
 </div>
 <!--<div id="iframPlaceHolder" style="width: 100%;height: 500px;"></div>-->
+
+<div modal-modify-schedule [missionHours] = "missionHours" [missionPauses] = "missionPauses"
+     *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && upperCase(contract.vu) == 'OUI'"></div>

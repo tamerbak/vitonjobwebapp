@@ -14,7 +14,7 @@ import {ContractService} from "../../providers/contract-service";
 import {DateConverter} from "../../pipes/date-converter/date-converter";
 import {TimeConverter} from "../../pipes/time-converter/time-converter";
 
-import {ModalComponent} from "./modal-component/modal-component";
+import {ModalModifySchedule} from "./modal-modify-schedule/modal-modify-schedule";
 import {Utils} from "../utils/utils";
 
 declare var Messenger: any;
@@ -26,7 +26,7 @@ declare var jQuery: any;
   styles: [require('./mission-details.scss')],
   pipes: [DateConverter, TimeConverter],
   providers: [ContractService, SharedService, MissionService, FinanceService, GlobalConfigs],
-  directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime, BUTTON_DIRECTIVES, ModalComponent],
+  directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime, BUTTON_DIRECTIVES, ModalModifySchedule],
 })
 export class MissionDetails{
 // TODO Set dynamically
@@ -109,8 +109,11 @@ export class MissionDetails{
             var array = this.missionService.constructMissionHoursArray(this.initialMissionHours);
             this.missionHours = array[0];
             this.missionPauses = array[1];
-//prepare the mission pauses array to display
+            //prepare the mission pauses array to display
             for (let i = 0; i < this.missionHours.length; i++) {
+              let day = this.missionHours[i];
+              this.missionHours[i].heure_debut_temp = (Utils.isEmpty(day.heure_debut_new) ? this.missionService.convertToFormattedHour(day.heure_debut) : this.missionService.convertToFormattedHour(day.heure_debut_new));
+              this.missionHours[i].heure_fin_temp = (Utils.isEmpty(day.heure_fin_new) ? this.missionService.convertToFormattedHour(day.heure_fin) : this.missionService.convertToFormattedHour(day.heure_fin_new));
               if (this.missionPauses[i] && this.missionPauses[i].length != 0) {
                 for (let j = 0; j < this.missionPauses[i].length; j++) {
                   let pause = this.missionPauses[i][j];
@@ -186,7 +189,7 @@ export class MissionDetails{
       if (this.missionPauses[i]) {
         for (var j = 0; j < this.missionPauses[i].length; j++) {
           //verify if there are empty pause hours
-          if (Utils.isEmpty(this.missionPauses[i][j].pause_debut_temp) || this.isEmpty(this.missionPauses[i][j].pause_fin_temp)) {
+          if (Utils.isEmpty(this.missionPauses[i][j].pause_debut_temp) || Utils.isEmpty(this.missionPauses[i][j].pause_fin_temp)) {
             this.addAlert("warning", "Veuillez renseigner toutes les heures de pauses avant de valider.");
             return;
           }else{
@@ -956,6 +959,14 @@ this.nav.present(toast);
 
     document.getElementById("iframPlaceHolder").appendChild(iframe);
 
+  }
+
+  openModifyScheduleModal(){
+    jQuery('#modal-modify-schedule').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+    jQuery('#modal-modify-schedule').modal('show');
   }
 
   addAlert(type, msg): void {
