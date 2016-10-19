@@ -89,7 +89,7 @@ export class AuthenticationService {
       }]
     };
     let body = JSON.stringify(dataLog);
-    
+
     return new Promise(resolve => {
       let headers = Configs.getHttpJsonHeaders();
       this.http.post(Configs.calloutURL, body, {headers: headers})
@@ -122,12 +122,25 @@ export class AuthenticationService {
     });
   }
 
-  updatePasswordByPhone(tel, password) {
-    let sql = "update user_account set mot_de_passe = '" + password + "' where telephone = '" + tel + "';";
+  getPasswordStatus(tel) {
+    var sql = "select mot_de_passe_reinitialise from user_account where telephone = '" + tel + "'";
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    })
+  }
+
+  updatePasswordByPhone(tel, passwd,reset) {
+    //var sql = "update user_account set mot_de_passe = '" + passwd + "' where pk_user_account = '" + id + "';";
+    var sql = "update user_account set mot_de_passe = '" + passwd + "' , mot_de_passe_reinitialise = '" + reset + "' where telephone = '" + tel + "';";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
           resolve(data);
@@ -173,8 +186,9 @@ export class AuthenticationService {
     })
   }
 
-  updatePasswordByMail(email, password) {
-    let sql = "update user_account set mot_de_passe = '" + password + "' where email = '" + email + "';";
+  updatePasswordByMail(email, password,reset) {
+    let sql = "update user_account set mot_de_passe = '" + password + "' , mot_de_passe_reinitialise = '" + reset + "' where email = '" + email + "';";
+    //let sql = "update user_account set mot_de_passe = '" + password + "' where email = '" + email + "';";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -186,15 +200,15 @@ export class AuthenticationService {
     })
   }
 
-  updatePasswd(passwd, id) {
-    var sql = "update user_account set mot_de_passe = '" + passwd + "' where pk_user_account = '" + id + "';";
+  updatePasswd(passwd, id,reset) {
+    //var sql = "update user_account set mot_de_passe = '" + passwd + "' where pk_user_account = '" + id + "';";
+    var sql = "update user_account set mot_de_passe = '" + passwd + "' , mot_de_passe_reinitialise = '" + reset + "' where pk_user_account = '" + id + "';";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          console.log(data);
           resolve(data);
         });
     })

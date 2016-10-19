@@ -94,6 +94,8 @@ export class Settings {
   }
 
   initPasswordPhaseForm() {
+    this.password1 ="";
+    this.password2 ="";
     this.phaseTitle = "Modification du mot de passe"
     this.showForm = true;
     this.phase = "CHANGE_PASSWORD";
@@ -115,8 +117,13 @@ export class Settings {
     if (_name.length < 6) {
       _hint = "Taille minimale: 6 caractères";
       _isValid = false;
+    }else if (this.password2 && _name !== this.password2) {
+      this.password2Hint = "Les deux mots de passe doivent être identiques!";
+      _isValid = false;
     } else {
       _hint = "";
+      this.password2Hint ="";
+      this.isValidPassword2 = true;
     }
 
     this.isValidPassword1 = _isValid;
@@ -218,7 +225,7 @@ export class Settings {
       var password1 = this.password1;
       var password2 = this.password2;
       var password = md5(this.password1);
-      this.authService.updatePasswd(password, this.currentUser.id)
+      this.authService.updatePasswordByPhone(this.currentUser.tel,password,"Non")
         .then((res: any) => {
 
           //case of modification failure : server unavailable or connection problem
@@ -236,6 +243,8 @@ export class Settings {
             type: 'success',
             showCloseButton: true
           });
+          this.currentUser.mot_de_passe_reinitialise="Non";
+          this.sharedService.setCurrentUser(this.currentUser);
           this.validation = false;
           this.closeForm()
         })
