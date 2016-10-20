@@ -46,7 +46,7 @@
                                 Jobyer
                             </th>
                             <th class="text-align-center"
-                                *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && (day.heure_debut_pointe || day.heure_fin_pointe)">
+                                *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && (day.heure_debut_pointe || day.heure_fin_pointe) && upperCase(contract.releve_employeur) == 'NON'">
                                 {{enterpriseName}}
                             </th>
                         </tr>
@@ -73,7 +73,7 @@
                             <td class="text-align-center"
                                 width="100">
                                 <div class="btn-group"
-                                     *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && day.heure_debut_pointe">
+                                     *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && day.heure_debut_pointe && upperCase(contract.releve_employeur) == 'NON'">
                                     <label
                                             class="btn btn-gray btn-sm"
                                             (click)="onPointedHourClick(i, j, true, false, 'approve')">
@@ -183,7 +183,7 @@
                                     class="text-align-center"
                                     width="100">
                                 <div class="btn-group"
-                                     *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && day.heure_fin_pointe">
+                                     *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && day.heure_fin_pointe && upperCase(contract.releve_employeur) == 'NON'">
                                     <label
                                             class="btn btn-gray btn-sm"
                                             (click)="onPointedHourClick(i, j, false, false, 'approve')">
@@ -205,7 +205,7 @@
                     <button
                             type="button" class="btn btn-primary btn-sm"
                             (click)="openModifyScheduleModal()"
-                            *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && upperCase(contract.vu) == 'OUI'">
+                            *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && upperCase(contract.vu) == 'OUI' && upperCase(contract.releve_employeur) == 'NON'">
                         Modifier les horaires prévus
                     </button>
 

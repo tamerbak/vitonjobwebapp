@@ -121,8 +121,10 @@ export class ModalModifySchedule{
       let newHour = h + m;
       this.missionService.saveNewHour(i, j, isStartMission, isStartPause, id, newHour).then((data) => {
         jQuery('#modal-modify-schedule').modal('hide');
+        return;
       });
     }
+    jQuery('#modal-modify-schedule').modal('hide');
   }
 
   checkHoursValidity() {
@@ -131,9 +133,9 @@ export class ModalModifySchedule{
         this.addAlert("warning", "Veuillez renseigner toutes les heures de missions avant de valider.");
         return false;
       } else {
-        if (!this.isHourValid(i, j, false, true, this.missionService.convertHoursToMinutes(this.missionHours[i].heure_debut_temp)))
+        if (!this.isHourValid(i, -1, false, true, this.missionService.convertHoursToMinutes(this.missionHours[i].heure_debut_temp)))
           return false;
-        if (!this.isHourValid(i, j, false, false, this.missionService.convertHoursToMinutes(this.missionHours[i].heure_fin_temp)))
+        if (!this.isHourValid(i, -1, false, false, this.missionService.convertHoursToMinutes(this.missionHours[i].heure_fin_temp)))
           return false;
       }
       if (this.missionPauses[i] && this.missionPauses[i].length != 0) {

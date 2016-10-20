@@ -385,30 +385,23 @@ export class MissionDetails{
         console.log("timesheet saved");
         var message = "Le relevé d'heure du contrat numéro : " + this.contract.numero + "vous a été envoyé";
         var objectifNotif = "MissionDetailsPage";
-        this.sendPushNotification(message, objectifNotif, "toJobyer");
         this.sendInfoBySMS(message, "toJobyer");
 
-// Return to the list
+        // Return to the list
         this.navigationPreviousPage();
       }
     });
   }
 
   signSchedule() {
-
     this.missionService.signSchedule(this.contract).then((data: any) => {
       if (!data || data.status == "failure") {
-        console.log(data.error);
-// TODO : loading.dismiss();
-// TODO : this.globalService.showAlertValidation("VitOnJob", "Erreur lors de l'enregistrement des données");
+        this.addAlert("danger", "Erreur lors de l'enregistrement des données");
         return;
       } else {
-// data saved
-        console.log("schedule signed : " + data.status);
+        // data saved
         if (this.contract.option_mission == "2.0" && !this.isEmployer) {
           var message = "Le relevé d'heure du contrat numéro " + this.contract.numero + " a été signé.";
-          var objectifNotif = "MissionDetailsPage";
-          this.sendPushNotification(message, objectifNotif, "toEmployer");
           this.sendInfoBySMS(message, "toEmployer");
         }
       }

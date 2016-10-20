@@ -77,7 +77,8 @@ export class MissionPointing {
             this.missionHours = array[0];
             this.missionPauses = array[1];
             this.disableBtnPointing = true;
-            this.router.navigate(['app/mission/details']);          }
+            //this.router.navigate(['app/mission/details']);
+          }
         });
       });
     }
