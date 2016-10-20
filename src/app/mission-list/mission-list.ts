@@ -161,11 +161,9 @@ export class MissionList{
   }
 
   goToDetailMission(mission) {
-    // this.nav.push(MissionDetailsPage, {contract: contract});
     this.sharedService.setCurrentMission(mission);
     this.router.navigate(['app/mission/details']);
-    console.log('goToDetailMission');
-  }
+    }
 
   goToMissionPointingPage(mission) {
     this.sharedService.setCurrentMission(mission);

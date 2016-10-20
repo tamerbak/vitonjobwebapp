@@ -2,7 +2,7 @@ import {Component} from "@angular/core";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SharedService} from "../../providers/shared.service";
 import {FinanceService} from "../../providers/finance.service";
-import {ROUTER_DIRECTIVES, Router} from "@angular/router";
+import {Router} from "@angular/router";
 
 /**
  * This module manage the invoice signature from the employer
@@ -11,9 +11,9 @@ import {ROUTER_DIRECTIVES, Router} from "@angular/router";
   selector: '[mission-end-invoice]',
   template: require('./mission-end-invoice.html'),
   styles: [require('./mission-end-invoice.scss')],
-  providers: [GlobalConfigs, FinanceService],
-  directives: [ROUTER_DIRECTIVES],
+  providers: [GlobalConfigs, FinanceService]
 })
+
 export class MissionEndInvoice {
   invoice: any;
   idInvoice: number;
@@ -27,6 +27,7 @@ export class MissionEndInvoice {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['app/home']);
+      return;
     }
     this.idInvoice = this.sharedService.getCurrentInvoice();
     this.invoice = {
@@ -63,6 +64,6 @@ export class MissionEndInvoice {
   }
 
   getBackToMissions() {
-    // this.nav.pop();
+    this.router.navigate(['app/mission/details']);
   }
 }
