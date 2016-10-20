@@ -198,7 +198,7 @@ export class Yousign{
         let state = data.data[0].etat;
         if (state.toLowerCase() == "oui") {
           //TODO : Ceci force la signature du contrat jobyer. C'est temporaire en attendant la résolution du problème de l'affichage du contrat jobyer
-          this.missionService.signContract(this.contractId);
+          //this.missionService.signContract(this.contractId);
           this.goToPaymentMethod();
         } else {
           this.addAlert("warning", "Veuillez signer le contrat avant de passer à l'étape suivante");

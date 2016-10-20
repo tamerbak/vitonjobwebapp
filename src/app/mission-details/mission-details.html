@@ -21,9 +21,9 @@
 
                 <h5>Relevé d'heures de travail du contract avec {{ contract.prenom }} {{ contract.nom }}.</h5>
 
-                <!--<button type="button" class="btn btn-secondary btn-sm" (click)="launchContractModal()"
+                <button type="button" class="btn btn-secondary btn-sm" (click)="launchContractModal()"
                         *ngIf="!isEmployer && upperCase(contract.signature_jobyer) == 'NON'">Signer le contrat
-                </button>-->
+                </button>
 
                 <div *ngFor="let day of missionHours, let i=index">
                     <table class="table table-striped table-condensed" width="400">
@@ -285,7 +285,7 @@
 
     </div>
 </div>
-<!--<div id="iframPlaceHolder" style="width: 100%;height: 500px;"></div>-->
+<div id="iframPlaceHolder" style="width: 100%;height: 500px;"></div>
 
 <div modal-modify-schedule [missionHours] = "missionHours" [missionPauses] = "missionPauses"
      *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && upperCase(contract.vu) == 'OUI'"></div>

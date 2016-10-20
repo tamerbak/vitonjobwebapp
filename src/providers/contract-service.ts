@@ -112,6 +112,7 @@ export class ContractService {
       this.http.post(this.configuration.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
+          debugger;
           this.data = data;
           resolve(this.data);
         });

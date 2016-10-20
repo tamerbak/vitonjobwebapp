@@ -937,6 +937,7 @@ this.nav.present(toast);
   }
 
   launchContractModal() {
+    //debugger;
     //jQuery('#modal-contract').modal('show');
     //Create to Iframe to show the contract in the modal
     let iframe = document.createElement('iframe');
@@ -947,7 +948,7 @@ this.nav.present(toast);
     iframe.style.overflow = "hidden";
     iframe.style.height = "100%";
     iframe.style.width = "100%";
-    iframe.setAttribute("src", this.contract.jobyer);
+    iframe.setAttribute("src", this.contract.lien_jobyer);
     //iframe.setAttribute("src", "https://demo.docusign.net/Signing/startinsession.aspx?t=fbfcf9f4-4188-4e94-8f64-641c2f16b653");
 
     document.getElementById("iframPlaceHolder").appendChild(iframe);
