@@ -215,6 +215,7 @@ export class Profile {
             this.whoDeliverStay = data.instance_delivrance;
             this.numStay = !this.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
             this.nationalityId = data.numero_titre_sejour;
+            this.isCIN = false;
           } else {
             this.isEuropean = 0;
             this.isFrench = false;
