@@ -1,15 +1,3 @@
-// import {Component} from '@angular/core';
-// import {NavController} from 'ionic-angular';
-// import {Configs} from '../../configurations/configs';
-// import {GlobalConfigs} from '../../configurations/globalConfigs';
-// import {ContractService} from '../../../providers/contract-service/contract-service';
-// import {DatePicker} from 'ionic-native';
-// import {MissionDetailsPage} from '../mission-details/mission-details';
-// import {Storage, SqlStorage} from 'ionic-angular';
-// import {DateConverter} from '../../pipes/date-converter/date-converter';
-// import {MissionPointingPage} from "../mission-pointing/mission-pointing";
-
-// Import updated from mobile to web
 import {ContractService} from "../../providers/contract-service";
 import {Component, ViewEncapsulation} from "@angular/core";
 import {ACCORDION_DIRECTIVES, BUTTON_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap";
@@ -19,29 +7,17 @@ import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {MissionService} from "../../providers/mission-service";
 import {Helpers} from "../../providers/helpers.service";
 
-/*
-	Generated class for the MissionListPage page.
-	See http://ionicframework.com/docs/v2/components/#navigation for more info on
-	Ionic pages and navigation.
-*/
 @Component({
-  // templateUrl: 'build/pages/mission-list/mission-list.html',
-  // pipes: [DateConverter],
-  // providers: [ContractService]
-
   selector: '[mission-list]',
   template: require('./mission-list.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./mission-list.scss')],
-  directives: [ACCORDION_DIRECTIVES, ROUTER_DIRECTIVES, AlertComponent, BUTTON_DIRECTIVES],
+  directives: [ROUTER_DIRECTIVES, BUTTON_DIRECTIVES],
   providers: [ContractService, MissionService, Helpers]
-  // providers: [missionsService, SearchService]
-
 })
-export class MissionList {
+export class MissionList{
   projectTarget: string;
   isEmployer: boolean;
-  themeColor: string;
 
   employer: any;
   jobyer: any;

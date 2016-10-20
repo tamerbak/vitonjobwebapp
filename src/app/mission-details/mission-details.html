@@ -214,10 +214,7 @@
                             type="button" class="btn btn-primary btn-sm"
                             (click)="validateWork()"
                             [style.color]="themeColor"
-                            *ngIf="isEmployer && !isNewMission && upperCase(contract.approuve) == 'OUI' && !(upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0')"
-                    >
-                        {{ !isEmployer }} - {{ isNewMission }} - {{ upperCase(contract.approuve) != 'OUI' }} - {{
-                        (upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0') }}
+                            *ngIf="isEmployer && !isNewMission && upperCase(contract.approuve) == 'OUI' && !(upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0') && upperCase(contract.accompli) == 'NON'" >
                         Fin de mission
                     </button>
                     <button
@@ -289,3 +286,5 @@
 
 <div modal-modify-schedule [missionHours] = "missionHours" [missionPauses] = "missionPauses"
      *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && upperCase(contract.vu) == 'OUI'"></div>
+
+<div modal-info [msg] = "endMissionMsg" *ngIf="isEmployer && !isNewMission && upperCase(contract.approuve) == 'OUI' && !(upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0')"></div>
