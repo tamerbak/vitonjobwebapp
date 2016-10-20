@@ -59,6 +59,16 @@ export class ModalNotificationContract{
     }
   }
 
+  gotoOffers() {
+    jQuery('#modal-notification-contract').modal('hide');
+    this.router.navigate(['app/offer/list']);
+  }
+
+  gotoNewOffer() {
+    jQuery('#modal-notification-contract').modal('hide');
+    this.router.navigate(['app/offer/edit', {obj:'add'}]);
+  }
+
   close(): void {
     jQuery('#modal-notification-contract').modal('hide');
   }

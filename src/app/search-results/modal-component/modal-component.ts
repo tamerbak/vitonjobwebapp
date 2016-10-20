@@ -70,8 +70,17 @@ export class ModalComponent {
     this.router.navigate(['app/search/details']);
   }
 
+  gotoOffers() {
+    jQuery('#my-modal18-content').modal('hide');
+    this.router.navigate(['app/offer/list']);
+  }
+
+  gotoNewOffer() {
+    jQuery('#my-modal18-content').modal('hide');
+    this.router.navigate(['app/offer/edit', {obj:'add'}]);
+  }
+
   close(): void {
     jQuery('#my-modal18-content').modal('hide');
   }
 }
-
