@@ -35,6 +35,20 @@ export class AuthenticationService {
     })
   }
 
+  getUserByPhoneAndRole(tel, role) {
+    //  Init project parameters
+    role = role == "employer" ? "employeur":role;
+    var sql = "select email, role,mot_de_passe from user_account where role= '"+role+"' and telephone = '" + tel + "'";
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+      .map(res => res.json())
+      .subscribe(data => {
+        resolve(data);
+      });
+    })
+  }
+
   /**
    * @description get user information by his mail and role
    * @param mail, role
