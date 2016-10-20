@@ -7,6 +7,7 @@ import {SmsService} from "../../providers/sms-service";
 import {Helpers} from "../../providers/helpers.service";
 import {Router} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
+import {MissionService} from "../../providers/mission-service";
 
 /**
  * @author daoudi amine
@@ -17,7 +18,7 @@ import {AlertComponent} from "ng2-bootstrap/components/alert";
   template: require('./yousign.html'),
   styles: [require('./yousign.scss')],
   directives: [AlertComponent],
-  providers: [FinanceService, GlobalConfigs, ContractService, Helpers, SmsService]
+  providers: [FinanceService, GlobalConfigs, ContractService, Helpers, SmsService, MissionService]
 })
 export class Yousign{
 
@@ -41,6 +42,7 @@ export class Yousign{
               private smsService: SmsService,
               private financeService: FinanceService,
               private sharedService: SharedService,
+              private missionService: MissionService,
               private router: Router) {
     this.currentUser = this.sharedService.getCurrentUser();
     // Get target to determine configs
@@ -195,6 +197,8 @@ export class Yousign{
       this.contractService.checkDocusignSignatureState(this.contractId).then((data: any) => {
         let state = data.data[0].etat;
         if (state.toLowerCase() == "oui") {
+          //TODO : Ceci force la signature du contrat jobyer. C'est temporaire en attendant la résolution du problème de l'affichage du contrat jobyer
+          this.missionService.signContract(this.contractId);
           this.goToPaymentMethod();
         } else {
           this.addAlert("warning", "Veuillez signer le contrat avant de passer à l'étape suivante");
