@@ -26,7 +26,7 @@
         <p class="text-xs-center text-muted mt-sm" style="line-height: 2;">Veuillez sélectionner une offre existante, ou en créer une nouvelle pour pouvoir recruter ce jobyer.</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" (click)="gotoOffers()">Liste des Offres</button>
+        <button type="button" class="btn btn-success" (click)="gotoModalOffers()">Liste des Offres</button>
         <button type="button" class="btn btn-success" (click)="gotoNewOffer()">Nouvelle offre</button>
         <button type="button" class="btn btn-default" (click)="close($event)">Annuler</button>
       </div>
@@ -45,3 +45,4 @@
 
   </div>
 </div>
+<div modal-offers (refresh)="initState()" *ngIf="projectTarget == 'employer' && !isRecruteur"></div>
