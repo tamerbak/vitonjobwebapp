@@ -100,7 +100,7 @@ export class ModalOffers{
   recruite(item) {
     this.sharedService.setCurrentOffer(item);
     jQuery('#modal-offers').modal('hide');
-    this.refresh.emit({});
+    this.refresh.emit({init:true});
     jQuery('#modal-offers').on('hidden.bs.modal', function () {
       jQuery('#modal-notification-contract').modal('show');
       jQuery('#modal-notification-contract').unbind('hidden');
@@ -125,6 +125,11 @@ export class ModalOffers{
     this.isRecruiter = this.currentUser.estRecruteur;
     this.accountId = this.currentUser.id;
     this.userRoleId = this.currentUser.estEmployeur ? this.currentUser.employer.id : this.currentUser.jobyer.id;
+  }
+
+  close(): void {
+    this.sharedService.setCurrentOffer(null);
+    jQuery('#modal-offers').modal('hide');
   }
 
 }

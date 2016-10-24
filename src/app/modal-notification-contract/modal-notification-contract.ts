@@ -20,7 +20,7 @@ export class ModalNotificationContract{
   showContractNotif = false;
   showOfferNotif = false;
   showAuthNotif = false;
-
+  initByModalOffers = false;
   constructor(private sharedService: SharedService,
               private router: Router) {
 
@@ -37,10 +37,11 @@ export class ModalNotificationContract{
       return;
     }
 
-    this.initState()
+    this.initState({})
   }
 
-  initState(){
+  initState(params){
+    this.initByModalOffers = params.init;
     let o = this.sharedService.getCurrentOffer();
     if (o != null) {
       this.showOfferNotif = false;
@@ -67,6 +68,10 @@ export class ModalNotificationContract{
 
     jQuery('#modal-notification-contract').modal('hide');
     jQuery('#modal-notification-contract').on('hidden.bs.modal', function () {
+      jQuery('#modal-offers').modal({
+        keyboard: false,
+        backdrop: 'static'
+      });
       jQuery('#modal-offers').modal('show');
       jQuery('#modal-notification-contract').unbind('hidden');
     })
@@ -80,6 +85,11 @@ export class ModalNotificationContract{
   }
 
   close(): void {
-    jQuery('#modal-notification-contract').modal('hide');
+     jQuery('#modal-notification-contract').modal('hide');
+     if(this.initByModalOffers == true){
+       this.jobyer ==null;
+       this.sharedService.setCurrentOffer(null);
+       this.initState({init:true});
+     }
   }
 }
