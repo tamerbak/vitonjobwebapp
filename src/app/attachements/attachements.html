@@ -23,10 +23,10 @@
             <span>{{a.uploadDate}}</span>
           </div>
           <div class="col-md-1 col-xs-1">
-            <button (click)="viewFile(a)"><span class="glyphicon glyphicon-picture" aria-hidden="true" ></span></button>
+            <button class="btn btn-primary" (click)="viewFile(a)"><span><i class="glyphicon glyphicon-picture" aria-hidden="true" ></i></span></button>
           </div>
           <div class="col-md-1 col-xs-1">
-            <button (click)="deleteFile(a)"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+            <button class="btn btn-danger" (click)="deleteFile(a)"><span><i class="glyphicon glyphicon-trash" aria-hidden="true" ></i></span></button>
           </div>
         </div>
         <div *ngIf="viewMode" class="form-group row">
