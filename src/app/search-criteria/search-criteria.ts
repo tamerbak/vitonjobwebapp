@@ -31,6 +31,7 @@ export class SearchCriteria {
   alerts: Array<Object>;
   city: any;
   filters: any = [];
+  datepickerOpts: any;
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -63,6 +64,16 @@ export class SearchCriteria {
         this.sharedService.setJobList(data);
       })
     }
+
+    //initialize options for datepicker
+    //dateoption for slotDate
+    this.datepickerOpts = {
+      startDate: new Date(),
+      autoclose: true,
+      todayHighlight: true,
+      format: 'dd/mm/yyyy',
+      language: 'fr'
+    };
   }
 
   sectorSelected(sector) {
