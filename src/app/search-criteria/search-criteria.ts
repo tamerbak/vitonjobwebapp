@@ -7,6 +7,7 @@ import {NKDatetime} from "ng2-datetime/ng2-datetime";
 import {Configs} from "../../configurations/configs";
 import {CommunesService} from "../../providers/communes.service";
 import {SearchService} from "../../providers/search-service";
+import {Utils} from "../utils/utils";
 declare var jQuery,Messenger: any;
 
 @Component({
@@ -31,6 +32,7 @@ export class SearchCriteria {
   alerts: Array<Object>;
   city: any;
   filters: any = [];
+  hideJobLoader: boolean = true;
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -56,25 +58,29 @@ export class SearchCriteria {
         this.sectors = data;
       })
     }
+
     //load all jobs, if not yet loaded in local
-    let jobList = this.sharedService.getJobList();
+    var jobList = this.sharedService.getJobList();
     if (!jobList || jobList.length == 0) {
+      this.hideJobLoader = false;
       this.offersService.loadJobsToLocal().then((data: any) => {
         this.sharedService.setJobList(data);
+        this.hideJobLoader = true;
       })
     }
   }
 
   sectorSelected(sector) {
+    jQuery('.job-select').select2("val", "");
     let sectorsTemp = this.sectors.filter((v)=> {
       return (v.id == sector);
     });
+    this.sector = sectorsTemp[0].libelle;
     //get job list
     let jobList = this.sharedService.getJobList();
     this.jobs = jobList.filter((v)=> {
       return (v.idsector == sector);
     });
-    this.sector = sectorsTemp[0].libelle;
   }
 
   jobSelected(idJob) {
@@ -86,11 +92,11 @@ export class SearchCriteria {
 
   validateSearch() {
     let ignoreSector: boolean = false;
-    if (this.isEmpty(this.sector) || (this.job && this.job.length > 0))
+    if (Utils.isEmpty(this.sector) || (this.job && this.job.length > 0))
       ignoreSector = true;
-    if (this.isEmpty(this.job))
+    if (Utils.isEmpty(this.job))
       this.job = '';
-    if (this.isEmpty(this.city))
+    if (Utils.isEmpty(this.city))
       this.city = '';
 
     let date = '';
@@ -122,6 +128,7 @@ export class SearchCriteria {
   }
 
   ngAfterViewInit() {
+    //city select
     jQuery('.city').select2({
       ajax: {
         url: Configs.sqlURL,
@@ -155,6 +162,26 @@ export class SearchCriteria {
         this.city = e.added.nom;
       }
     );
+
+    //sector and job select
+    let self = this;
+    // Initialize constraint between sector and job
+    let sector = jQuery('.sector-select').select2();
+    let job = jQuery('.job-select').select2();
+
+    sector
+      .val(this.idSector).trigger("change")
+      .on("change", function (e) {
+          self.sectorSelected(e.val);
+        }
+      );
+
+    job
+      .val(this.idJob).trigger("change")
+      .on("change", function (e) {
+          self.jobSelected(e.val);
+        }
+      );
   }
 
   /**
@@ -312,12 +339,5 @@ export class SearchCriteria {
 
   addAlert(type, msg): void {
     this.alerts = [{type: type, msg: msg}];
-  }
-
-  isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
   }
 }
