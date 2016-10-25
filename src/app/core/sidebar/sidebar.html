@@ -11,7 +11,7 @@
       </span>
       <!-- .circle is a pretty cool way to add a bit of beauty to raw data.
       should be used with bg-* and text-* classes for colors -->
-      &nbsp; {{!sharedService.getCurrentUser().nom ? (sharedService.getCurrentUser().estEmployeur ? "Employeur":"Jobyer") : sharedService.getCurrentUser().nom}} <strong>{{!sharedService.getCurrentUser().prenom ? "":sharedService.getCurrentUser().prenom}}</strong>
+      &nbsp; {{sharedService.getCurrentUser().titre}} {{!sharedService.getCurrentUser().prenom ? (sharedService.getCurrentUser().estEmployeur ? "Employeur":"Jobyer") : sharedService.getCurrentUser().prenom}} <strong>{{!sharedService.getCurrentUser().nom ? "":sharedService.getCurrentUser().nom}}</strong>
       <b class="caret"></b>
     </a>
     <!-- #notifications-dropdown-menu goes here when screen collapsed to xs or sm -->

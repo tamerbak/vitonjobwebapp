@@ -81,9 +81,9 @@
 					<span class="thumb-sm avatar pull-xs-left">
 						<img [ngClass]="setImgClasses()" src={{sharedService.getProfilImageUrl()}} alt="...">
 					</span>
-          &nbsp;
-          <strong>{{!sharedService.getCurrentUser()?"":(!sharedService.getCurrentUser().nom ? (sharedService.getCurrentUser().estEmployeur ? "Employeur":"Jobyer") : sharedService.getCurrentUser().nom)}} </strong>&nbsp;
+          &nbsp;{{!sharedService.getCurrentUser()?"":sharedService.getCurrentUser().titre}}
           {{!sharedService.getCurrentUser()?"":!sharedService.getCurrentUser().prenom ? "":sharedService.getCurrentUser().prenom }}
+          <strong>{{!sharedService.getCurrentUser()?"":(!sharedService.getCurrentUser().nom ? (sharedService.getCurrentUser().estEmployeur ? "Employeur":"Jobyer") : sharedService.getCurrentUser().nom)}} </strong>&nbsp;
           {{!sharedService.getCurrentUser()?"":((sharedService.getCurrentUser().estEmployeur && sharedService.getCurrentUser().employer.entreprises && sharedService.getCurrentUser().employer.entreprises.length > 0)?
            ("- " + sharedService.getCurrentUser().employer.entreprises[0].nom):"")
          }}
