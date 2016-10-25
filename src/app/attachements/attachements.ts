@@ -62,8 +62,11 @@ export class Attachements {
     }
 
     this.attachementSerice.uploadFile(this.currentUser, this.fileName, this.scanData).then(data =>{
-      if(data)
+      if(data){
         this.attachments.push(data);
+        jQuery('.fileinput').fileinput('clear')
+        this.fileName ='';
+      }
     });
   }
 
