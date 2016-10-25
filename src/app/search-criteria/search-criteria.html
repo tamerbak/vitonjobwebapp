@@ -22,23 +22,50 @@
             <div class="form-group row">
               <label class="col-md-4 col-xs-12 form-control-label text-md-right">Secteur</label>
               <div class="col-md-7 col-xs-12">
-                <select class="form-control" [(ngModel)]="idSector" (change)="sectorSelected($event.target.value)">
+                <div class="widget-body btn loaderPosition" [hidden]="hideJobLoader">
+                  <div class="loader animated fadeIn handle">
+                <span class="spinner">
+                  <i class="fa fa-spinner fa-spin"></i>
+                </span>
+                  </div>
+                </div>
+                <select data-minimum-results-for-search="10"
+                        data-placeholder="Recherchez votre secteur"
+                        class="sector-select select2 form-control"
+                        tabindex="-1"
+                        name="sector"
+                        id="sector"
+                        [disabled]="!hideJobLoader">
+                  <option value=""></option>
                   <option *ngFor="let s of sectors" [value]="s.id"> {{s.libelle}}</option>
                 </select>
               </div>
             </div>
             <div class="form-group row">
-              <label for="hint-field" class="col-md-4 form-control-label text-md-right">
+              <label class="col-md-4 form-control-label text-md-right">
                 Job
               </label>
               <div class="col-md-7 col-xs-12">
-                <select class="form-control" [(ngModel)]="idJob" (change)="jobSelected($event.target.value)">
+                <div class="widget-body btn loaderPosition" [hidden]="hideJobLoader">
+                  <div class="loader animated fadeIn handle">
+                    <span class="spinner">
+                      <i class="fa fa-spinner fa-spin"></i>
+                    </span>
+                  </div>
+                </div>
+                <select  data-minimum-results-for-search="10"
+                         data-placeholder="Recherchez votre job"
+                         class="job-select select2 form-control"
+                         tabindex="-1"
+                         name="job"
+                         id="job"
+                         [disabled]="!hideJobLoader || !sector">
                   <option *ngFor="let j of jobs" [value]="j.id"> {{j.libelle}}</option>
                 </select>
               </div>
             </div>
             <div class="form-group row">
-              <label for="hint-field" class="col-md-4 form-control-label text-md-right">
+              <label class="col-md-4 form-control-label text-md-right">
                 Date de disponibilité
               </label>
               <div class="col-md-7 col-xs-12">
@@ -47,7 +74,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label for="hint-field" class="col-md-4 form-control-label text-md-right">
+              <label class="col-md-4 form-control-label text-md-right">
                 Ville
               </label>
               <div class="col-md-7 col-xs-12">
