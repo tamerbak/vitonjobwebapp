@@ -6,6 +6,7 @@ import {SharedService} from "../../providers/shared.service";
 import {Configs} from "../../configurations/configs";
 import {ModalWelcome} from "../modal-welcome/modal-welcome";
 import {ModalProfile} from "../modal-profile/modal-profile";
+import {ModalUpdatePassword} from "../modal-update-password/modal-update-password";
 
 declare var require: any;
 declare var jQuery: any;
@@ -14,7 +15,7 @@ declare var Messenger:any;
 @Component({
 	selector: 'home',
 	template: require('./home.html'),
-	directives: [ROUTER_DIRECTIVES, AlertComponent, ModalWelcome, ModalProfile],
+	directives: [ROUTER_DIRECTIVES, AlertComponent, ModalWelcome, ModalProfile,ModalUpdatePassword],
 	providers: [SearchService],
 	styles: [require('./home.scss')],
 	encapsulation: ViewEncapsulation.None
@@ -42,6 +43,14 @@ export class Home {
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+			if(this.currentUser.mot_de_passe_reinitialise =="Oui"){
+				jQuery('#modal-update-password').modal({
+					keyboard: false,
+					backdrop: 'static'
+				});
+				jQuery('#modal-update-password').modal('show');
+			}
+
       if(this.isEmpty(this.currentUser.titre)) {
         //call to open the modal-guide
         jQuery('#modal-welcome').modal({
@@ -89,11 +98,11 @@ export class Home {
   }
 
   doSemanticSearch() {
-    if (!this.currentUser) {
+    /*if (!this.currentUser) {
       this.sharedService.setFromPage("home");
       this.router.navigate(['login']);
       return;
-    }
+    }*/
 
     if (this.isEmpty(this.scQuery) || !this.scQuery.match(/[a-z]/i)) {
       this.addAlert("warning", "Veuillez saisir un job avant de lancer la recherche");

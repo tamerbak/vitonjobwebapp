@@ -1,1 +1,9 @@
+<h5 *ngIf="!unSigned">
+    Le relevé de cette mission a déjà été signé
+</h5>
 <div id="iframPlaceHolder" style="width: 100%;height: 500px;"></div>
+<button
+        type="button" class="btn btn-primary btn-sm"
+        (click)="gotoInvoice()">
+    Terminer
+</button>

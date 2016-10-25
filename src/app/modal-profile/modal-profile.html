@@ -39,8 +39,7 @@
                       <span class="asterisk">*</span>
                     </label>
                     <div class="col-md-7 col-xs-12">
-                      <input type="text" id="lastname" class="form-control" placeholder="Nom" [(ngModel)]="lastname"
-                             name="lastname" (keyup)="watchLastname($event)">
+                      <input type="text" id="lastname" class="form-control" placeholder="Nom" [(ngModel)]="lastname" name="lastname" (keyup)="watchLastname($event)">
                     </div>
                     <div class="col-md-offset-4 col-md-7 col-xs-12">
                       <span class="hint label label-danger">{{lastnameHint}}</span>
@@ -53,8 +52,7 @@
                       <span class="asterisk">*</span>
                     </label>
                     <div class="col-md-7 col-xs-12">
-                      <input type="text" id="firstname" class="form-control" [(ngModel)]="firstname" name="firstname"
-                             placeholder="Prénom" (keyup)="watchFirstname($event)">
+                      <input type="text" id="firstname" class="form-control" [(ngModel)]="firstname" name="firstname" placeholder="Prénom" (keyup)="watchFirstname($event)">
                     </div>
                     <div class="col-md-offset-4 col-md-7 col-xs-12">
                       <span class="hint label label-danger">{{firstnameHint}}</span>
@@ -74,10 +72,7 @@
                           <span class="asterisk">*</span>
                         </label>
                         <div class="col-md-7 col-xs-12">
-                          <input type="text" id="companyname" class="form-control" [(ngModel)]="companyname"
-                                 name="companyname"
-                                 placeholder="Raison Sociale" (keyup)="watchCompanyname($event)"
-                                 (change)="IsCompanyExist($event, 'companyname')">
+                          <input type="text" id="companyname" class="form-control" [(ngModel)]="companyname" name="companyname" placeholder="Raison Sociale" (keyup)="watchCompanyname($event)" (change)="IsCompanyExist($event, 'companyname')">
                         </div>
                         <div class="col-md-offset-4 col-md-7 col-xs-12">
                           <span class="hint label label-danger">{{companynameHint}}</span>
@@ -128,266 +123,10 @@
                           <span class="hint label label-danger">{{siretHint}}</span>
                         </div>
                       </div>
-
-                      <div class="form-group row" *ngIf="!forRecruitment">
-                        <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                          Organisme de médecine de travail
-                        </label>
-                        <div class="col-md-7 col-xs-12">
-                          <input type="hidden" class="select2 medecine-select form-control" name="medecineTravail"
-                                 placeholder="Organisme de médecine de travail" [(ngModel)]="medecineTravail"
-                                 name="medecineTravail"/>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!--Jobyer fields-->
-
-                  <div *ngIf="!isEmployer && !isProfileEmpty">
-                    <div class="form-group row">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="birthDate">
-                        Date de naissance
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <datetime id="birthdate" [ngModel]="birthdate" name="birthdate" [timepicker]="false"
-                                  [datepicker]="{autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}"
-                                  (ngModelChange)="watchBirthdate($event)"></datetime>
-                      </div>
-                      <div class="col-md-offset-4 col-md-7 col-xs-12">
-                        <span class="hint label label-danger">{{birthdateHint}}</span>
-                      </div>
-                    </div>
-
-                    <div class="form-group row">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">Né en France (DOM, TOM,
-                        POM)</label>
-                      <div class="abc-radio">
-                        <input type="radio" name="radio1" id="radio1" value="1" (click)="watchIsFrench($event)"
-                               [checked]="isFrench">
-                        <label for="radio1" class="labelRadio">
-                          Oui
-                        </label>
-                        <input type="radio" name="radio1" id="radio2" value="0" (click)="watchIsFrench($event)"
-                               [checked]="!isFrench">
-                        <label for="radio2" class="labelRadio">
-                          Non
-                        </label>
-                      </div>
-                    </div>
-
-                    <div *ngIf="!isFrench" class="form-group row">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        Pays de naissance
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <select class="select2 form-control" [(ngModel)]="index">
-                          <option *ngFor="let p of pays" [value]="p.indicatif_telephonique"> {{p.nom}}
-                          </option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div *ngIf="!isFrench" class="form-group row">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        Code postal du lieu de naissance
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <div class="input-group">
-                          <span class="input-group-addon">99</span>
-                          <input id="combined-input" class="form-control" type="text" [(ngModel)]="index" disabled>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div [hidden]="!isFrench" class="form-group row">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        <!--Code postal du lieu de naissance-->
-                        Département de naissance
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <!--<input type="hidden" class="select2 cp-select form-control" name="birthcp"
-                               placeholder="Code postal du lieu de naissance" [(ngModel)]="birthcp" name="birthcp"/>-->
-                        <input type="hidden" class="select2 dep-select form-control"
-                               placeholder="Département de naissance"
-                               [(ngModel)]="birthdep" name="birthdep"/>
-                      </div>
-                    </div>
-
-                    <div [hidden]="!isFrench" class="form-group row">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        Lieu de naissance
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <input type="hidden" class="select2 commune-select form-control" name="birthplace"
-                               placeholder="Lieu de naissance" [(ngModel)]="birthplace" name="birthplace"/>
-                      </div>
-                    </div>
-
-                    <div class="form-group row">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        N° de sécurité sociale
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <input type="text" id="numSS" class="form-control" [(ngModel)]="numSS" name="numSS"
-                               placeholder="N° de sécurité sociale" (keyup)="watchNumSS($event)" maxlength="15">
-                      </div>
-                      <div class="col-md-offset-4 col-md-7 col-xs-12">
-                        <span class="hint label label-danger">{{numSSHint}}</span>
-                      </div>
-                    </div>
-
-                    <div *ngIf="!isFrench" class="form-group row">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        Nationalité
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <select
-                                placeholder="Nationalité" data-style="btn-secondary"
-                                class="nationalitySelectPicker form-control" id="nationality-select"
-                                [(ngModel)]="nationalityId"
-                                name="nationality_slct" (change)="selectNationality($event)">
-                          <option *ngFor="let n of nationalities" value="{{n.pk_user_nationalite}}">{{n.libelle}}
-                          </option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div class="form-group row" *ngIf="!isFrench">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        Identifiant de nationalité
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <select class="select2 form-control" [(ngModel)]="isEuropean" disabled>
-                          <option value="0"> EU, EEE</option>
-                          <option value="1"> Autre</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div *ngIf="!isFrench && isEuropean == 1" class="form-group row">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">Type de document</label>
-                      <div class="abc-radio">
-                        <input type="radio" name="radio2" id="stayRadio" value="0"
-                               (click)="watchTypeDocStranger($event)"
-                               [checked]="!isResident">
-                        <label for="stayRadio" class="labelRadio">
-                          Carte de séjour temporaire
-                        </label>
-                        <input type="radio" name="radio2" id="residentRadio" value="1"
-                               (click)="watchTypeDocStranger($event)"
-                               [checked]="isResident">
-                        <label for="residentRadio" class="labelRadio">
-                          Carte de résident
-                        </label>
-                      </div>
-                    </div>
-
-                    <div *ngIf="!isFrench && isEuropean == 1" class="form-group row">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        {{!isResident ? 'N° du titre de séjour' : 'N° de la carte résident'}}
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <input type="text" class="form-control" [(ngModel)]="numStay">
-                      </div>
-                    </div>
-
-                    <div *ngIf="!isFrench && isEuropean == 1" class="form-group row">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        {{!isResident ? 'Titre de séjour délivré le' : 'Carte résident délivrée le'}}
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <input id="dateStay" type="date" class="form-control" [(ngModel)]="dateStay"/>
-                      </div>
-                    </div>
-
-                    <div *ngIf="!isFrench && isEuropean == 1" class="form-group row">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        {{!isResident ? 'Titre de séjour valable du' : 'Carte de résident valable du'}}
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <input id="dateFromStay" type="date" class="form-control" [(ngModel)]="dateFromStay"/>
-                      </div>
-                    </div>
-
-                    <div *ngIf="!isFrench && isEuropean == 1" class="form-group row">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        {{!isResident ? 'Titre de séjour valable au' : 'Carte de résident valable au'}}
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <input id="dateToStay" type="date" class="form-control" [(ngModel)]="dateToStay"/>
-                      </div>
-                    </div>
-
-                    <div [hidden]="isEuropean == 0 || isFrench" class="form-group row">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        Délivré par
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <input type="hidden" class="select2 whoDeliver-select form-control" name="whoDeliverStay"
-                               [(ngModel)]="whoDeliverStay" name="whoDeliverStay"/>
-                      </div>
-                    </div>
-
-                    <div [hidden]="isEuropean == 1 || isFrench" class="form-group row">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">Type de document</label>
-                      <div class="abc-radio">
-                        <input type="radio" name="radio3" id="cinRadio" value="0" (click)="watchTypeDoc($event)"
-                               [checked]="isCIN">
-                        <label for="cinRadio" class="labelRadio">
-                          CIN ou passeport
-                        </label>
-                        <input type="radio" name="radio3" id="ueRadio" value="1" (click)="watchTypeDoc($event)"
-                               [checked]="!isCIN">
-                        <label for="ueRadio" class="labelRadio">
-                          Carte de ressortissant d'un état membre de l'UE
-                        </label>
-                      </div>
-                    </div>
-
-                    <div [hidden]="isEuropean == 1 || !isCIN" class="form-group row">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        CNI ou Passeport
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <input type="text" id="cni" class="form-control" [(ngModel)]="cni" name="cni"
-                               (keyup)="watchOfficialDocument($event)" maxlength="13">
-                      </div>
-                      <div class="col-md-offset-4 col-md-7 col-xs-12">
-                        <span class="hint label label-danger">{{cniHint}}</span>
-                      </div>
-                    </div>
-
-                    <div [hidden]="isEuropean == 1 || isCIN || isFrench" class="form-group row">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        N° de la carte résident
-                      </label>
-                      <div class="col-md-7 col-xs-12">
-                        <input type="text" class="form-control" [(ngModel)]="numStay">
-                      </div>
                     </div>
                   </div>
 
                   <div *ngIf="!isProfileEmpty">
-                    <div class="form-group row" *ngIf="!forRecruitment">
-                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        Joindre une photo {{scanTitle}}
-                      </label>
-                      <div class="col-md-8 col-xs-12">
-                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                          <div class="fileinput-preview thumbnail" data-trigger="fileinput"
-                               style="width: 200px; height: 150px;">
-                          </div>
-                          <div>
-                      <span class="btn btn-default btn-file"><span class="fileinput-new">Choisir</span><span
-                              class="fileinput-exists">Modifier</span><input type="file" name="..."
-                                                                             accept="image/*"></span>
-                            <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Enlever</a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
                     <div *ngIf="forRecruitment">
                       <div class="form-group row">
                         <label class="col-md-4 col-xs-12 form-control-label text-md-right">

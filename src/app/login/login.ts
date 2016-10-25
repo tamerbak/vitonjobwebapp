@@ -94,51 +94,63 @@ export class LoginPage {
     if (this.email == null || this.email == 'null')
       this.email = '';
     this.role = this.role == "jobyer" ? "jobyer" : "employer";
-    this.authService.authenticate(this.email, indPhone, pwd, this.role, this.isRecruteur).then((data: any) => {
-      this.hideLoader = true;
-      //case of authentication failure : server unavailable or connection probleme
-      if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
-        this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
+    var reverseRole = this.role == "jobyer" ? "employer" : "jobyer";
+    this.authService.getUserByPhoneAndRole("+"+indPhone, reverseRole).then((data0: any) => {
+      if(data0 && data0.data.length !=0 && (data0.data[0].mot_de_passe != pwd)){
+        this.addAlert("danger", "Votre mot de passe est incorrect.");
+        this.hideLoader = true;
         return;
       }
-      //case of authentication failure : incorrect password
-      if (data.id == 0 && data.status == "passwordError") {
-        if (!this.showEmailField) {
-          this.addAlert("danger", "Votre mot de passe est incorrect.");
-        } else {
-          this.addAlert("danger", "Cette adresse email a été déjà utilisé. Veuillez en choisir une autre.");
+      this.authService.authenticate(this.email, indPhone, pwd, this.role, this.isRecruteur).then((data: any) => {
+        this.hideLoader = true;
+        //case of authentication failure : server unavailable or connection probleme
+        if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
+          this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
+          return;
         }
-        return;
-      }
-      //store current user in session
-      if (this.isRemembered) {
-        this.sharedService.setStorageType("local");
-      } else {
-        this.sharedService.setStorageType("session");
-      }
-      this.sharedService.setCurrentUser(data);
-      //get current user profile picture
-      this.profileService.loadProfilePicture(data.id).then((pic: any) => {
-        var userImageURL;
-        if (!this.isEmpty(pic.data[0].encode)) {
-          userImageURL = pic.data[0].encode;
-          this.sharedService.setProfilImageUrl(pic.data[0].encode);
-        } else {
-          this.sharedService.setProfilImageUrl(null);
-        }
-
-        //if user is connected for the first time, redirect him to the page 'civility', otherwise redirect him to the home page
-        var isNewUser = data.newAccount;
-        /*if (isNewUser || this.isNewRecruteur) {
-          this.router.navigate(['app/profile']);
-        } else {
-          if (this.fromPage == "Search") {
-            //this.nav.pop();
+        //case of authentication failure : incorrect password
+        if (data.id == 0 && data.status == "passwordError") {
+          if (!this.showEmailField) {
+            this.addAlert("danger", "Votre mot de passe est incorrect.");
           } else {
-            this.router.navigate(['app/home']);
+            this.addAlert("danger", "Cette adresse email a été déjà utilisé. Veuillez en choisir une autre.");
           }
-        }*/
-        this.router.navigate(['app/home']);
+          return;
+        }
+        //store current user in session
+        if (this.isRemembered) {
+          this.sharedService.setStorageType("local");
+        } else {
+          this.sharedService.setStorageType("session");
+        }
+        //get current user profile picture and password status
+        var tel = "+" + indPhone;
+        this.authService.getPasswordStatus(tel).then((dataPwd: any) => {
+          data.mot_de_passe_reinitialise = dataPwd.data[0].mot_de_passe_reinitialise;
+          this.sharedService.setCurrentUser(data);
+          this.profileService.loadProfilePicture(data.id).then((pic: any) => {
+            var userImageURL;
+            if (!this.isEmpty(pic.data[0].encode)) {
+              userImageURL = pic.data[0].encode;
+              this.sharedService.setProfilImageUrl(pic.data[0].encode);
+            } else {
+              this.sharedService.setProfilImageUrl(null);
+            }
+
+            //if user is connected for the first time, redirect him to the page 'civility', otherwise redirect him to the home page
+            var isNewUser = data.newAccount;
+            /*if (isNewUser || this.isNewRecruteur) {
+              this.router.navigate(['app/profile']);
+            } else {
+              if (this.fromPage == "Search") {
+                //this.nav.pop();
+              } else {
+                this.router.navigate(['app/home']);
+              }
+            }*/
+            this.router.navigate(['app/home']);
+          });
+        });
       });
     });
   }

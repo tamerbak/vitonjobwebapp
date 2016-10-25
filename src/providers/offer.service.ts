@@ -378,7 +378,7 @@ export class OffersService {
   loadQualities(projectTarget: string) {
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
-    let type = (projectTarget == "jobyer") ? 'jobyer' : 'employeur';
+    let type = (projectTarget != "jobyer") ? 'jobyer' : 'employeur';
     var sql = "select pk_user_indispensable as \"idQuality\", libelle as libelle from user_indispensable where type='" + type + "'";
     return new Promise(resolve => {
       let headers = new Headers();

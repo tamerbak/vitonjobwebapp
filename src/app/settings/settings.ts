@@ -20,15 +20,19 @@ export class Settings {
 
   password1: string;
   password2: string;
+  oldPassword: string;
   missionOption: string;
 
   isValidPassword1: boolean = false;
   isValidPassword2: boolean = false;
+  isValidOldPassword: boolean = false;
 
   password1Hint: string = "";
   password2Hint: string = "";
+  oldPasswordHint: string = "";
 
   //currentUser params
+  projectTarget:string;
   currentUser: any;
   currentUserFullname: string;
   phoneNumber: string;
@@ -57,6 +61,7 @@ export class Settings {
       this.router.navigate(['app/home']);
     } else {
       this.getUserInfos();
+      this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
       if (this.isEmployer) {
         this.missionService.getOptionMission(this.currentUser.id).then((opt: any) => {
           this.missionOption = opt.data[0].option_mission
@@ -94,6 +99,9 @@ export class Settings {
   }
 
   initPasswordPhaseForm() {
+    this.password1 ="";
+    this.password2 ="";
+    this.oldPassword = "";
     this.phaseTitle = "Modification du mot de passe"
     this.showForm = true;
     this.phase = "CHANGE_PASSWORD";
@@ -115,8 +123,13 @@ export class Settings {
     if (_name.length < 6) {
       _hint = "Taille minimale: 6 caractères";
       _isValid = false;
+    }else if (this.password2 && _name !== this.password2) {
+      this.password2Hint = "Les deux mots de passe doivent être identiques!";
+      _isValid = false;
     } else {
       _hint = "";
+      this.password2Hint ="";
+      this.isValidPassword2 = true;
     }
 
     this.isValidPassword1 = _isValid;
@@ -143,10 +156,28 @@ export class Settings {
     this.isValidForm();
   }
 
+  watchOldPassword(e) {
+    let _name = e.target.value;
+    let _isValid: boolean = true;
+    let _hint: string = "";
+
+    if (!_name) {
+      _hint = "Ce champ est obligatoire!";
+      _isValid = false;
+    } else {
+      _hint = "";
+    }
+
+    this.isValidOldPassword = _isValid;
+    this.oldPasswordHint = _hint;
+    console.log();
+    this.isValidForm();
+  }
+
   isValidForm() {
     var _isFormValid = false;
     if (this.phase === "CHANGE_PASSWORD") {
-      if (this.isValidPassword1 && this.isValidPassword2) {
+      if (this.isValidOldPassword && this.isValidPassword1 && this.isValidPassword2) {
         _isFormValid = true;
       } else {
         _isFormValid = false;
@@ -218,30 +249,53 @@ export class Settings {
       var password1 = this.password1;
       var password2 = this.password2;
       var password = md5(this.password1);
-      this.authService.updatePasswd(password, this.currentUser.id)
-        .then((res: any) => {
+      var oldPassword = md5(this.oldPassword);
 
-          //case of modification failure : server unavailable or connection problem
-          if (!res || res.length == 0 || res.status == "failure") {
-            Messenger().post({
-              message: 'Serveur non disponible ou problème de connexion',
-              type: 'error',
-              showCloseButton: true
-            });
-            this.validation = false;
-            return;
-          }
+      this.authService.authenticate(this.currentUser.email, this.currentUser.tel, oldPassword, this.projectTarget, false).then((data: any) => {
+        //case of authentication failure : server unavailable or connection probleme
+        if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
           Messenger().post({
-            message: 'Votre mot de passe a été modifié avec succès',
-            type: 'success',
+            message: 'Serveur non disponible ou problème de connexion',
+            type: 'error',
             showCloseButton: true
           });
           this.validation = false;
-          this.closeForm()
-        })
-        .catch((error: any) => {
+          return;
+        }
+        //case of authentication failure : incorrect password
+        if (data.id == 0 && data.status == "passwordError") {
+          this.oldPasswordHint = "Votre mot de passe est incorrect.";
           this.validation = false;
-          // console.log(error);
+          return;
+        }
+
+        this.authService.updatePasswordByPhone(this.currentUser.tel,password,"Non")
+          .then((res: any) => {
+
+            //case of modification failure : server unavailable or connection problem
+            if (!res || res.length == 0 || res.status == "failure") {
+              Messenger().post({
+                message: 'Serveur non disponible ou problème de connexion',
+                type: 'error',
+                showCloseButton: true
+              });
+              this.validation = false;
+              return;
+            }
+            Messenger().post({
+              message: 'Votre mot de passe a été modifié avec succès',
+              type: 'success',
+              showCloseButton: true
+            });
+            this.currentUser.mot_de_passe_reinitialise="Non";
+            this.sharedService.setCurrentUser(this.currentUser);
+            this.validation = false;
+            this.closeForm()
+          })
+          .catch((error: any) => {
+            this.validation = false;
+            // console.log(error);
+          });
         });
     }
   }

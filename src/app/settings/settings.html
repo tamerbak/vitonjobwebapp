@@ -61,11 +61,6 @@
   </div>
   <div [hidden]="!showForm" class="col-lg-6 col-xs-12">
     <section class="widget">
-      <header>
-        <div class="widget-controls">
-          <a href="#" data-widgster="close"><i class="glyphicon glyphicon-remove"></i></a>
-        </div>
-      </header>
       <div class="widget-body">
         <form class="settings-form form-horizontal" role="form">
           <fieldset>
@@ -101,6 +96,19 @@
             </div>
 
             <div *ngIf="phase=='CHANGE_PASSWORD'">
+              <div class="form-group row">
+                <label for="password1" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Mot de passe actuel
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input type="password" id="oldPassword" class="form-control" [(ngModel)]="oldPassword" name="oldPassword"
+                         (keyup)="watchOldPassword($event)">
+                </div>
+                <div class="col-md-offset-4 col-md-7 col-xs-12">
+                  <span class="hint label label-danger">{{oldPasswordHint}}</span>
+                </div>
+              </div>
+
               <div class="form-group row">
                 <label for="password1" class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Nouveau mot de passe

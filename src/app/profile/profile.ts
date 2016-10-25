@@ -215,6 +215,7 @@ export class Profile {
             this.whoDeliverStay = data.instance_delivrance;
             this.numStay = !this.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
             this.nationalityId = data.numero_titre_sejour;
+            this.isCIN = false;
           } else {
             this.isEuropean = 0;
             this.isFrench = false;
@@ -421,9 +422,17 @@ export class Profile {
       } else {
         if (this.currentUser.jobyer.dateNaissance) {
           var birthDate = moment(new Date(this.currentUser.jobyer.dateNaissance)).format('DD/MM/YYYY');
+
           this.birthdateHidden = new Date(this.currentUser.jobyer.dateNaissance);
           this.isValidBirthdate = true;
-          jQuery("#birthdate input").val(birthDate);
+
+          var elements = [];
+          jQuery("div[id^='q-datepicker_']").each(function(){
+             elements.push(this.id);
+          });
+
+          jQuery('#'+elements[0]).datepicker('update', birthDate);
+          //jQuery("#birthdate input").val(birthDate);
 
         } else {
           this.birthdate = null;
@@ -1261,7 +1270,7 @@ export class Profile {
 
                 this.validation = false;
                 Messenger().post({
-                  message: 'Vos données ont été bien sauvegardées',
+                  message: 'Vos données ont été bien enregistrées',
                   type: 'success',
                   showCloseButton: true
                 });
@@ -1340,7 +1349,7 @@ export class Profile {
                   this.updateJobAddress();
                 }
                 Messenger().post({
-                  message: 'Vos données ont été bien sauvegardées',
+                  message: 'Vos données ont été bien enregistrées',
                   type: 'success',
                   showCloseButton: true
                 });
@@ -1368,9 +1377,9 @@ export class Profile {
         //var birthcp = this.birthcp;
         var birthdepId = this.birthdepId;
         var numStay = this.numStay;
-        var dateStay = moment(this.dateStay).format('YYYY-MM-DD');
-        var dateFromStay = moment(this.dateFromStay).format('MM/DD/YYYY');
-        var dateToStay = moment(this.dateToStay).format('MM/DD/YYYY');
+        var dateStay = (!Utils.isEmpty(this.dateStay) ? moment(this.dateStay).format('YYYY-MM-DD') : null);
+        var dateFromStay = (!Utils.isEmpty(this.dateFromStay) ? moment(this.dateFromStay).format('MM/DD/YYYY') : null);
+        var dateToStay = (!Utils.isEmpty(this.dateToStay) ? moment(this.dateToStay).format('MM/DD/YYYY') : null);
         var isResident = (this.isResident ? 'Oui' : 'Non');
         if (this.isCIN) {
           numStay = "";
@@ -1434,7 +1443,7 @@ export class Profile {
                 this.updateJobAddress();
               }
               Messenger().post({
-                message: 'Vos données ont été bien sauvegardées',
+                message: 'Vos données ont été bien enregistrées',
                 type: 'success',
                 showCloseButton: true
               });
@@ -1477,7 +1486,7 @@ export class Profile {
           .then((data: any) => {
             if (!data || data.status == "failure") {
               // console.log(data.error);
-              // console.log("VitOnJob", "Erreur lors de la sauvegarde des données");
+              // console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
               this.validation = false;
               return;
             } else {
@@ -1505,7 +1514,7 @@ export class Profile {
             if (!data || data.status == "failure") {
               // console.log(data.error);
 
-              // console.log("VitOnJob", "Erreur lors de la sauvegarde des données");
+              // console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
               return;
             } else {
               this.validation = false;
@@ -1564,7 +1573,7 @@ export class Profile {
           .then((data: any) => {
             if (!data || data.status == "failure") {
               // console.log(data.error);
-              // console.log("VitOnJob", "Erreur lors de la sauvegarde des données");
+              // console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
               this.validation = false;
               return;
             } else {
@@ -1592,7 +1601,7 @@ export class Profile {
             if (!data || data.status == "failure") {
               // console.log(data.error);
 
-              // console.log("VitOnJob", "Erreur lors de la sauvegarde des données");
+              // console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
               return;
             } else {
               //id address not send by server

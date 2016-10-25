@@ -18,6 +18,7 @@ export class ModalNotificationContract{
 
   showContractNotif = false;
   showOfferNotif = false;
+  showAuthNotif = false;
 
   constructor(private sharedService: SharedService,
               private router: Router) {
@@ -28,15 +29,22 @@ export class ModalNotificationContract{
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+    }else{
+      this.showOfferNotif = false;
+      this.showContractNotif = false;
+      this.showAuthNotif = true;
+      return;
     }
 
     let o = this.sharedService.getCurrentOffer();
     if (o != null) {
       this.showOfferNotif = false;
       this.showContractNotif = true;
+      this.showAuthNotif = false;
     }else{
       this.showOfferNotif = true;
       this.showContractNotif = false;
+      this.showAuthNotif = false;
     }
   }
 

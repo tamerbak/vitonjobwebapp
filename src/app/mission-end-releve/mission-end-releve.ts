@@ -30,6 +30,7 @@ export class MissionEndReleve {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['app/home']);
+      return;
     }
     this.isEmployer = this.currentUser.estEmployeur;
 
@@ -94,8 +95,8 @@ export class MissionEndReleve {
     document.getElementById("iframPlaceHolder").appendChild(iframe);
   }
 
-  gotoInvoice() {
-    // this.nav.pop();
+  gotoInvoice(){
+    this.router.navigate(['app/mission/details']);
   }
 }
 

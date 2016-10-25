@@ -6,6 +6,8 @@ import {ContractService} from "../../providers/contract-service";
 import {SmsService} from "../../providers/sms-service";
 import {Helpers} from "../../providers/helpers.service";
 import {Router} from "@angular/router";
+import {AlertComponent} from "ng2-bootstrap/components/alert";
+import {MissionService} from "../../providers/mission-service";
 
 /**
  * @author daoudi amine
@@ -15,9 +17,10 @@ import {Router} from "@angular/router";
 @Component({
   template: require('./yousign.html'),
   styles: [require('./yousign.scss')],
-  providers: [FinanceService, GlobalConfigs, ContractService, Helpers, SmsService]
+  directives: [AlertComponent],
+  providers: [FinanceService, GlobalConfigs, ContractService, Helpers, SmsService, MissionService]
 })
-export class Yousign {
+export class Yousign{
 
   projectTarget: string;
   isEmployer: boolean;
@@ -30,12 +33,16 @@ export class Yousign {
 
   currentOffer: any = null;
   hideLoader = false;
+  contractId: number;
+
+  alerts: Array<Object>;
 
   constructor(public gc: GlobalConfigs,
               private contractService: ContractService,
               private smsService: SmsService,
               private financeService: FinanceService,
               private sharedService: SharedService,
+              private missionService: MissionService,
               private router: Router) {
     this.currentUser = this.sharedService.getCurrentUser();
     // Get target to determine configs
@@ -158,8 +165,10 @@ export class Yousign {
               (data: any) => {
                 if (this.currentOffer && this.currentOffer != null) {
                   let idContract = 0;
-                  if (data && data.data && data.data.length > 0)
+                  if (data && data.data && data.data.length > 0) {
                     idContract = data.data[0].pk_user_contrat;
+                  }
+                  this.contractId = idContract;
                   let contract = {
                     pk_user_contrat: idContract
                   };
@@ -179,6 +188,27 @@ export class Yousign {
         console.log(err);
       });
     });
+  }
+
+  checkDocusignSignatureState() {
+    if (this.contractId == 0) {
+      this.addAlert("warning", "Veuillez signer le contrat avant de passer à l'étape suivante");
+    } else {
+      this.contractService.checkDocusignSignatureState(this.contractId).then((data: any) => {
+        let state = data.data[0].etat;
+        if (state.toLowerCase() == "oui") {
+          //TODO : Ceci force la signature du contrat jobyer. C'est temporaire en attendant la résolution du problème de l'affichage du contrat jobyer
+          this.missionService.signContract(this.contractId);
+          this.goToPaymentMethod();
+        } else {
+          this.addAlert("warning", "Veuillez signer le contrat avant de passer à l'étape suivante");
+        }
+      });
+    }
+  }
+
+  addAlert(type, msg): void {
+    this.alerts = [{type: type, msg: msg}];
   }
 }
 

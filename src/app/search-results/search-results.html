@@ -3,7 +3,7 @@
   <li class="active"><a class="breadcrumb-link" [routerLink]="['/app/search/results']">Résultats de la recherche</a>
   </li>
 </ol>
-<h1 class="page-title">{{currentUser.estRecruteur ? 'Recruteur' : (currentUser.estEmployeur ? 'Employeur' : 'Jobyer')}} - <span class="fw-semi-bold">Résultats de la recherche</span>
+<h1 class="page-title">{{(currentUser && currentUser.estRecruteur) ? 'Recruteur' : (projectTarget == 'employer' ? 'Employeur' : 'Jobyer')}} - <span class="fw-semi-bold">Résultats de la recherche</span>
 </h1>
 
 <div class="row">
@@ -69,7 +69,7 @@
           </div>
           <div class="row">
             <div class="col-md-1 col-xs-2 pull-xs-left">
-              <recruit-button [jobyer]="item" *ngIf="projectTarget == 'employer' && !isRecruteur"></recruit-button>
+              <recruit-button [jobyer]="item" (onRecruite)="onRecruite($event)" *ngIf="projectTarget == 'employer' && !isRecruteur"></recruit-button>
             </div>
             <div class="col-md-1 col-xs-2">
               <button
@@ -96,4 +96,5 @@
     </section>
   </div>
 </div>
-
+<div modal-notification-contract [jobyer]="currentJobyer" *ngIf="projectTarget == 'employer' && !isRecruteur"></div>
+<div modal-profile [fromPage]="fromPage" [jobyer]="currentJobyer" (onProfileUpdated)="onProfileUpdated($event)"></div>
