@@ -629,7 +629,7 @@ export class OfferEdit {
         this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
         return;
       }
-      let level = (this.offer.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant'
+      let level = (this.offer.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant';
       this.offer.title = this.offer.jobData.job + " " + level;
       this.offer.identity = (this.projectTarget == 'employer' ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id);
       this.offersService.setOfferInRemote(this.offer, this.projectTarget).then((data: any)=> {
@@ -645,7 +645,8 @@ export class OfferEdit {
           type: 'success',
           showCloseButton: true
         });
-        this.router.navigate(['app/offer/list', {typeOfferModel: '1'}]);
+        //redirect to offer-list and display public offers
+        this.router.navigate(['app/offer/list', {typeOfferModel: '0'}]);
       });
     } else {
       this.validateJob();
