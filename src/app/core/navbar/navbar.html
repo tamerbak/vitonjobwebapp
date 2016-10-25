@@ -82,9 +82,9 @@
 						<img [ngClass]="setImgClasses()" src={{sharedService.getProfilImageUrl()}} alt="...">
 					</span>
           &nbsp;
-          <strong>{{(!sharedService.getCurrentUser().nom ? (sharedService.getCurrentUser().estEmployeur ? "Employeur":"Jobyer") : sharedService.getCurrentUser().nom)}} </strong>&nbsp;
-          {{!sharedService.getCurrentUser().prenom ? "":sharedService.getCurrentUser().prenom }}
-          {{((sharedService.getCurrentUser().estEmployeur && sharedService.getCurrentUser().employer.entreprises && sharedService.getCurrentUser().employer.entreprises.length > 0)?
+          <strong>{{!sharedService.getCurrentUser()?"":(!sharedService.getCurrentUser().nom ? (sharedService.getCurrentUser().estEmployeur ? "Employeur":"Jobyer") : sharedService.getCurrentUser().nom)}} </strong>&nbsp;
+          {{!sharedService.getCurrentUser()?"":!sharedService.getCurrentUser().prenom ? "":sharedService.getCurrentUser().prenom }}
+          {{!sharedService.getCurrentUser()?"":((sharedService.getCurrentUser().estEmployeur && sharedService.getCurrentUser().employer.entreprises && sharedService.getCurrentUser().employer.entreprises.length > 0)?
            ("- " + sharedService.getCurrentUser().employer.entreprises[0].nom):"")
          }}
           <span class="circle bg-warning fw-bold">
