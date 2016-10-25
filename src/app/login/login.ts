@@ -166,6 +166,7 @@ export class LoginPage {
       }
       if (e.target.value.length > 9) {
         e.target.value = e.target.value.substring(0, 9);
+        this.phone = e.target.value;
       }
       if (e.target.value.length == 9) {
         this.isRegistration(this.index, e.target.value);
