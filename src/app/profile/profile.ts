@@ -16,6 +16,7 @@ import {ModalPicture} from "../modal-picture/modal-picture";
 import {BankAccount} from "../bank-account/bank-account";
 import MaskedInput from "angular2-text-mask";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
+import {AccountConstraints} from "../../validators/account-constraints";
 
 declare var jQuery, require, Messenger, moment: any;
 declare var google: any;
@@ -24,11 +25,11 @@ declare var google: any;
   selector: '[profile]',
   template: require('./profile.html'),
   directives: [ROUTER_DIRECTIVES, NKDatetime, AlertComponent, ModalPicture, MaskedInput, BankAccount],
-  providers: [Utils, ProfileService, CommunesService, LoadListService, MedecineService, AttachementsService],
+  providers: [Utils, ProfileService, CommunesService, LoadListService, MedecineService, AttachementsService, AccountConstraints],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./profile.scss')]
 })
-export class Profile {
+export class Profile{
   public maskSiret = [/[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/]
   public maskApe = [/[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /^[a-zA-Z]*$/]
 
@@ -213,14 +214,14 @@ export class Profile {
             this.dateFromStay = data.debut_validite;
             this.dateToStay = data.fin_validite;
             this.whoDeliverStay = data.instance_delivrance;
-            this.numStay = !this.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
+            this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
             this.nationalityId = data.numero_titre_sejour;
             this.isCIN = false;
           } else {
             this.isEuropean = 0;
             this.isFrench = false;
-            this.isCIN = !this.isEmpty(data.numero_titre_sejour) ? false : true;
-            this.numStay = !this.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
+            this.isCIN = !Utils.isEmpty(data.numero_titre_sejour) ? false : true;
+            this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
           }
         }
       })
@@ -427,11 +428,11 @@ export class Profile {
           this.isValidBirthdate = true;
 
           var elements = [];
-          jQuery("div[id^='q-datepicker_']").each(function(){
-             elements.push(this.id);
+          jQuery("div[id^='q-datepicker_']").each(function () {
+            elements.push(this.id);
           });
 
-          jQuery('#'+elements[0]).datepicker('update', birthDate);
+          jQuery('#' + elements[0]).datepicker('update', birthDate);
           //jQuery("#birthdate input").val(birthDate);
 
         } else {
@@ -463,7 +464,7 @@ export class Profile {
           });
         }
 
-        if (!this.isEmpty(this.birthdepId)) {
+        if (!Utils.isEmpty(this.birthdepId)) {
           this.communesService.getDepartmentById(this.birthdepId).then((res: any) => {
             if (res && res.data.length > 0) {
               this.selectedDep = res.data[0];
@@ -812,312 +813,6 @@ export class Profile {
 
   }
 
-  watchLastname(e) {
-    let _name = e.target.value;
-    let _isValid: boolean = true;
-    let _hint: string = "";
-
-    if (!Utils.isValidName(_name)) {
-      _hint = "Saisissez un nom valide";
-      _isValid = false;
-    } else {
-      _hint = "";
-    }
-
-    this.isValidLastname = _isValid;
-    this.lastnameHint = _hint;
-    console.log();
-    this.isValidForm();
-  }
-
-  watchFirstname(e) {
-    let _name = e.target.value;
-    let _isValid: boolean = true;
-    let _hint: string = "";
-
-    if (!Utils.isValidName(_name)) {
-      _hint = "Saisissez un prénom valide";
-      _isValid = false;
-    } else {
-      _hint = "";
-    }
-
-    this.isValidFirstname = _isValid;
-    this.firstnameHint = _hint;
-    console.log();
-    this.isValidForm();
-  }
-
-  watchCompanyname(e) {
-    let _name = e.target.value;
-    let _isValid: boolean = true;
-    let _hint: string = "";
-
-    if (!_name) {
-      _hint = "Veuillez saisir le nom de votre entreprise";
-      _isValid = false;
-    } else {
-      _hint = "";
-    }
-
-    this.isValidCompanyname = _isValid;
-    this.companynameHint = _hint;
-    console.log();
-    this.isValidForm();
-  }
-
-  watchSiret(e) {
-    var _regex = new RegExp('_', 'g')
-    var _rawvalue = e.target.value.replace(_regex, '')
-    var _value = (_rawvalue === '' ? '' : _rawvalue).trim();
-    let _isValid: boolean = true;
-    let _hint: string = "";
-
-    if (_value.length != 0 && _value.length != 17) {
-      _hint = "Saisissez les 14 chiffres du SIRET";
-      _isValid = false;
-    } else {
-      _hint = "";
-    }
-
-    this.isValidSiret = _isValid;
-    this.siretHint = _hint;
-    this.isValidForm();
-  }
-
-  watchApe(e) {
-    var _regex = new RegExp('_', 'g')
-    var _rawvalue = e.target.value.replace(_regex, '')
-
-    var _value = (_rawvalue === '' ? '' : _rawvalue).trim();
-    let _isValid: boolean = true;
-    let _hint: string = "";
-
-    if (_value.length != 5) {
-      _hint = "Saisissez les 4 chiffres suivis d'une lettre";
-      _isValid = false;
-    } else {
-      _hint = "";
-    }
-    this.isValidApe = _isValid;
-    this.apeHint = _hint;
-    this.isValidForm();
-  }
-
-  /**
-   * Controls the national identity card number
-   *
-   * @param number: 1-12 numbers
-   * @param key: 13 number
-   * @returns {boolean}
-   */
-  IsOfficialCni(number, key) {
-    let _factors = [7, 3, 1];
-    let _result = 0;
-    let _offset = 0;
-
-    for (var char of number) {
-      if (char == '<') {
-        char = 0;
-      }
-      else if (RegExp('[a-z]').test(char)) {
-        char = char.charCodeAt(0) - 55;
-      }
-      else if (RegExp('[0-9]').test(char)) {
-        char = Number(char);
-      }
-      else {
-        return false;
-      }
-      _result += char * _factors[_offset % 3];
-      _offset++;
-    }
-    return ((_result % 10) == key);
-  }
-
-  /**
-   * Watches National identity card / passport number
-   * @param e
-   */
-  watchOfficialDocument(e) {
-    var _docId = e.target.value;
-    var _docIdLenght = 12;
-
-    let _isValid: boolean = true;
-    let _hint: string = "";
-
-    // Check if strict cni mode is activated, if true, the 13th number is required
-    if (GlobalConfigs.global['strict-cni']) {
-      _docIdLenght = 13;
-    }
-
-    if (_docId.length != 0 && _docId.length != 9 && _docId.length != _docIdLenght) {
-      _hint = "Saisissez les " + _docIdLenght + " chiffres de votre CNI ou les 9 chiffres et caractères de votre passeport";
-      _isValid = false;
-    }
-
-    // If strict cni mode is activated, control valid CNI
-    if ((GlobalConfigs.global['strict-cni'] == true) && (_docId.length == _docIdLenght)) {
-      if (this.IsOfficialCni(
-          _docId.substr(0, 12), // The 12 first numbers
-          _docId.substr(12, 1) // The 13th number, the key
-        ) === false) {
-        _hint = "Le numéro de votre carte d'identité est éronné : veuillez le vérifier.";
-        _isValid = false;
-      }
-    }
-
-    this.isValidCni = _isValid;
-    this.cniHint = _hint;
-    console.log();
-    this.isValidForm();
-  }
-
-  watchNumSS(e) {
-    var _numSS = e.target.value;
-
-    let _isValid: boolean = true;
-    let _hint: string = "";
-    if (_numSS.length != 0 && _numSS.length != 15) {
-      _hint = "Saisissez les 15 chiffres du n° SS";
-      _isValid = false;
-    } else if (_numSS.length == 15) {
-
-      if (_numSS.length == 15 && !this.checkGender(_numSS, this.title)) {
-        _hint = "* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles";
-        _isValid = false;
-      }
-      else if (_numSS.length == 15 && !this.checkBirthYear(_numSS, this.birthdateHidden)) {
-        _hint = "* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles";
-        _isValid = false;
-      }
-      else if (_numSS.length == 15 && !this.checkBirthMonth(_numSS, this.birthdateHidden)) {
-        _hint = "* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles";
-        _isValid = false;
-      }
-      else if (_numSS.length == 15 && !this.checkINSEE(_numSS, this.selectedCommune)) {
-        _hint = "* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles";
-        _isValid = false;
-      }
-      else if (_numSS.length == 15 && !this.checkModKey(_numSS)) {
-        _hint = "* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles";
-        _isValid = false;
-      } else {
-        _hint = "";
-      }
-    } else {
-      _hint = "";
-    }
-
-    this.isValidNumSS = _isValid;
-    this.numSSHint = _hint;
-    console.log();
-    this.isValidForm();
-  }
-
-  checkGender(num: string, title: string) {
-
-    let indicator = num.charAt(0);
-    if ((indicator === '1' && title === 'M.') || (indicator === '2' && title !== 'M.')) {
-
-      return true;
-    } else {
-
-      return false;
-    }
-  }
-
-  checkBirthYear(num: string, date: any) {
-    if (date == null) {
-      return false
-    }
-    let indicator = num.charAt(1) + num.charAt(2);
-
-    var birthYear = "" + date.getFullYear()
-    birthYear = birthYear.substring(2);
-
-    if (indicator == birthYear)
-      return true;
-    else
-      return false;
-  }
-
-  checkBirthMonth(num: string, date: any) {
-
-    if (!date) {
-      return false
-    }
-    let indicator = num.charAt(3) + num.charAt(4);
-
-    let birthMonth = 1 + date.getMonth() + ""
-
-    if (birthMonth.length == 1)
-      birthMonth = "0" + birthMonth;
-
-    if (indicator == birthMonth)
-      return true;
-    else
-      return false;
-  }
-
-  checkINSEE(num: string, communeObj: any) {
-
-    let indicator = num.substring(5, 10);
-
-    if (communeObj.id != '0') {
-      if (indicator != communeObj.code_insee)
-        return false;
-      else
-        return true;
-    }
-
-    if (indicator.charAt(0) != '9')
-      return false;
-    else
-      return true;
-  }
-
-  checkModKey(num: string) {
-
-    try {
-      let indicator = num.substr(0, 13);
-      let key = num.substr(13);
-      let number = parseInt(indicator);
-      let nkey = parseInt(key);
-      let modulo = number % 97;
-      if (nkey == 97 - modulo)
-        return true;
-      else
-        return false;
-    }
-    catch (err) {
-      return false;
-    }
-  }
-
-  watchBirthdate(e) {
-    var _date = e;
-    let _isValid: boolean = true;
-    let _hint: string = "";
-
-    var ageDifMs = Date.now() - new Date(_date).getTime();
-    var ageDate = new Date(ageDifMs);
-    var _diff = Math.abs(ageDate.getUTCFullYear() - 1970);
-    if (_diff < 18) {
-      _isValid = false;
-      _hint = "* Vous devez avoir plus de 18 ans pour pouvoir valider votre profil";
-    } else {
-      _hint = "";
-    }
-
-    this.birthdateHidden = e;
-    this.isValidBirthdate = _isValid;
-    this.birthdateHint = _hint;
-    console.log();
-    this.isValidForm();
-
-  }
-
   isValidForm() {
     var _isFormValid = false;
     if (this.isRecruiter) {
@@ -1127,7 +822,7 @@ export class Profile {
         _isFormValid = false;
       }
     } else if (this.isEmployer) {
-      if (this.isValidFirstname && this.isValidLastname && this.isValidCompanyname && this.isValidSiret && this.isValidApe && this.isValidPersonalAddress && this.isValidJobAddress && !this.isEmpty(this.conventionId)) {
+      if (this.isValidFirstname && this.isValidLastname && this.isValidCompanyname && this.isValidSiret && this.isValidApe && this.isValidPersonalAddress && this.isValidJobAddress && !Utils.isEmpty(this.conventionId)) {
         _isFormValid = true;
       } else {
         _isFormValid = false;
@@ -1149,7 +844,6 @@ export class Profile {
     }
     return _isFormValid;
   }
-
 
   IsCompanyExist(e, field) {
     //verify if company exists
@@ -1370,7 +1064,7 @@ export class Profile {
         var numSS = this.numSS;
         var cni = this.cni;
         var birthdate = "";
-        if (!this.isEmpty(this.birthdateHidden))
+        if (!Utils.isEmpty(this.birthdateHidden))
           birthdate = moment(this.birthdateHidden).format('MM/DD/YYYY');
         var birthplace = this.selectedCommune.nom;
         var nationalityId = this.nationalityId;
@@ -1644,10 +1338,68 @@ export class Profile {
     this.isCIN = (e.target.value == '0' ? true : false);
   }
 
-  isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
+  //<editor-fold desc="Watching input functions">
+
+  watchLastname(e) {
+    let nameChecked = AccountConstraints.checkName(e, "lastname");
+    this.isValidLastname = nameChecked.isValid;
+    this.lastnameHint = nameChecked.hint;
+    this.isValidForm();
   }
+
+  watchFirstname(e) {
+    let nameChecked = AccountConstraints.checkName(e, "firstname");
+    this.isValidFirstname = nameChecked.isValid;
+    this.firstnameHint = nameChecked.hint;
+    this.isValidForm();
+  }
+
+  watchCompanyname(e) {
+    let companynameChecked = AccountConstraints.checkCompanyName(e);
+    this.isValidCompanyname = companynameChecked.isValid;
+    this.companynameHint = companynameChecked.hint;
+    this.isValidForm();
+  }
+
+  watchSiret(e) {
+    let siretChecked = AccountConstraints.checkSiret(e);
+    this.isValidSiret = siretChecked.isValid;
+    this.siretHint = siretChecked.hint;
+    this.isValidForm();
+  }
+
+  watchApe(e) {
+    let apeChecked = AccountConstraints.checkApe(e);
+    this.isValidApe = apeChecked.isValid;
+    this.apeHint = apeChecked.hint;
+    this.isValidForm();
+  }
+
+  /**
+   * Watches National identity card / passport number
+   * @param e
+   */
+  watchOfficialDocument(e) {
+    let officialDocChecked = AccountConstraints.checkOfficialDocument(e);
+    this.isValidCni = officialDocChecked.isValid;
+    this.cniHint = officialDocChecked.hint;
+    this.isValidForm();
+  }
+
+  watchNumSS(e) {
+    let numssChecked = AccountConstraints.checkNumss(e, this.title, this.birthdateHidden, this.selectedCommune);
+    this.isValidNumSS = numssChecked.isValid;
+    this.numSSHint = numssChecked.hint;
+    this.isValidForm();
+  }
+
+  watchBirthdate(e) {
+    let birthdateChecked = AccountConstraints.checkBirthDate(e);
+    this.birthdateHidden = e;
+    this.isValidBirthdate = birthdateChecked.isValid;
+    this.birthdateHint = birthdateChecked.hint;
+    this.isValidForm();
+  }
+
+  //</editor-fold>
 }

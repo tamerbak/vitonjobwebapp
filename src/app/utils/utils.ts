@@ -52,6 +52,13 @@ export class Utils {
     return checksum;
   }
 
+  public static getRawValueFromMask(e){
+    let _regex = new RegExp('_', 'g');
+    let _rawvalue = e.target.value.replace(_regex, '');
+
+    return (_rawvalue === '' ? '' : _rawvalue).trim();
+  }
+
   public static isEmpty(str) {
     if (str == '' || str == 'null' || !str)
     return true;
