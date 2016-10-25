@@ -2,6 +2,11 @@
   <li>VOUS ÊTES ICI</li>
   <li class="active"><a class="breadcrumb-link" [routerLink]="['/app/profile']">Mon compte</a></li>
 </ol>
+<div class="row">
+  <div class="col-xs-12 pull-right" style="margin-bottom: 1em;">
+    <a href="javascript:history.go(-1)"><button type="button" class="btn btn-secondary btn-sm" name="button"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Retour</button></a>
+  </div>
+</div>
 <h1 class="page-title">{{currentUser.estRecruteur ? 'Recruteur' : (currentUser.estEmployeur ? 'Employeur' : 'Jobyer')}}
   - <span class="fw-semi-bold">Profil</span>
 </h1>
