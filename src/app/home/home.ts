@@ -118,7 +118,7 @@ export class Home {
       }
       this.sharedService.setLastResult(data);
       Messenger().post({
-        message: 'La recherche pour "'+this.scQuery+'" a retourné '+ (data.length == 1 ?'un seul résultat':(data.length+' résultats')),
+        message: 'La recherche pour "'+this.scQuery+'" a donné '+ (data.length == 1 ?'un seul résultat':(data.length+' résultats')),
         type: 'success',
         showCloseButton: true
       });
