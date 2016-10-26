@@ -924,6 +924,7 @@ export class Profile{
     }
     if (this.isFrench || this.isEuropean == 0) {
       this.scanTitle = " de votre CNI ou Passeport";
+      this.isCIN = true;
     }
     if (this.isEuropean == 1) {
       this.scanTitle = " de votre titre de séjour";
