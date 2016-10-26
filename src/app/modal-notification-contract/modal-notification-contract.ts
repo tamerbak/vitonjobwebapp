@@ -37,7 +37,7 @@ export class ModalNotificationContract{
       return;
     }
 
-    this.initState({})
+    this.initState({});
   }
 
   initState(params){
@@ -87,7 +87,6 @@ export class ModalNotificationContract{
   close(): void {
      jQuery('#modal-notification-contract').modal('hide');
      if(this.initByModalOffers == true){
-       this.jobyer ==null;
        this.sharedService.setCurrentOffer(null);
        this.initState({init:true});
      }

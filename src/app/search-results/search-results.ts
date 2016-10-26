@@ -8,7 +8,6 @@ import {GOOGLE_MAPS_DIRECTIVES} from "angular2-google-maps/core";
 import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
 import {ModalProfile} from "../modal-profile/modal-profile";
 
-
 declare var jQuery: any;
 
 @Component({
