@@ -295,6 +295,13 @@
   margin:10px;
   width: 100%;
   background-color: rgba(250,250,250, 0.7);
+
+  .list-home-element {
+    margin-bottom: 5px;
+  }
+  .on-right {
+    text-align: right;
+  }
 }
 .list-home-title{
   margin-top:10px;
@@ -324,4 +331,42 @@
   width: calc(100% - 10px);
   bottom: 0px;
   left: 5px;
+}
+
+
+/***********************************/
+/**          Post Links           **/
+/***********************************/
+
+.post-links {
+  margin-bottom: 0;
+  font-size: $font-size-sm;
+  padding-left: 0;
+  @include clearfix();
+  > li {
+    float: left;
+    list-style: none;
+
+    + li {
+      &:before {
+        color: #999;
+        content: "\25cf";
+        padding: 0 8px;
+      }
+    }
+    > a {
+      text-decoration: none;
+      color: $text-muted;
+      &:hover {
+        color: $text-muted;
+      }
+    }
+  }
+
+  &.no-separator > li + li {
+    margin-left: 12px;
+    &:before {
+      content: normal;
+    }
+  }
 }

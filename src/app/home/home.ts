@@ -286,7 +286,7 @@ export class Home {
     let offset = this.homeServiceData.query.startIndexOffers + this.homeServiceData.query.resultCapacityOffers;
     this.homeServiceData.query.startIndexOffers = offset;
     this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then((data: any)=> {
-      debugger;
+      //debugger;
       let newData = data.recentOffers;
       let max = newData.length > this.maxLines ? this.maxLines : newData.length;
       for (let i = 0; i < max; i++) {
@@ -349,5 +349,33 @@ export class Home {
     str = str + (d.getMonth() + 1) + "/";
     str = str + d.getFullYear();
     return str;
+  }
+
+  searchOffer(o) {
+    let jobTitle = o.jobTitle;
+    let searchFields = {
+      class: 'com.vitonjob.callouts.recherche.SearchQuery',
+      job: jobTitle,
+      metier: '',
+      lieu: '',
+      nom: '',
+      entreprise: '',
+      date: '',
+      table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
+      idOffre: '0'
+    };
+
+    this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
+      debugger;
+      console.log(data);
+      for (let i = 0; i < data.length; i++) {
+        let r = data[i];
+        if (r.idOffre == o.idOffer) {
+          this.sharedService.setSearchResult(r);
+          this.router.navigate(['app/search/details']);
+          break;
+        }
+      }
+    });
   }
 }
