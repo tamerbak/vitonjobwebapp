@@ -18,9 +18,9 @@
               <input type="text" class="form-control" placeholder="Veuillez saisir votre recherche..."
                      [(ngModel)]="scQuery" (keyup)="checkForEnterKey($event)">
               <span class="input-group-btn">
-								<button class="btn btn-secondary" type="button" (click)="doSemanticSearch()">Go!</button>
+								<button class="btn btn-sm btn-secondary" type="button" (click)="doSemanticSearch()">Go!</button>
 							</span>
-              <div class="widget-body btn loaderPosition" [hidden]="hideLoader"
+              <div class="widget-body btn btn-sm loaderPosition" [hidden]="hideLoader"
                    style="background-color: #f8f8f8; margin-left: 5px;">
                 <div class="loader animated fadeIn handle">
 									<span class="spinner">
@@ -75,8 +75,8 @@
               <li class="list-group-item on-right">
                 <ul class="post-links">
                   <li>
-                    <a class="btn btn-primary" style="color: white; font-weight: normal" (click)="searchOffer(o)">Détails</a>
-                    <a class="btn btn-primary" style="color: white; font-weight: normal" >Rectrutement immédiat</a>
+                    <a class="btn btn-sm btn-primary" style="color: white; font-weight: normal" (click)="searchOffer(o)">Détails</a>
+                    <recruit-button (onRecruite)="onRecruite(o)" *ngIf="projectTarget == 'employer' && !isRecruteur"></recruit-button>
                   </li>
                 </ul>
               </li>
@@ -85,70 +85,6 @@
           </div>
         </div>
       </div>
-      <!--<div class="col-xs-5" *ngFor="let o of upcomingOffers">-->
-
-
-        <!--<ul class="list-group widget-chat-list-group" data-ui-jq="slimscroll"-->
-            <!--data-ui-options="{ height: '287px', size: '4px', borderRadius: '1px', opacity: .3 }"-->
-            <!--style="overflow: hidden; width: auto; height: 287px;">-->
-          <!--<li class="list-group-item on-right"><span class="thumb">-->
-            <!--<img class="img-circle"-->
-                 <!--src="{{projectTarget == 'jobyer'?'../../assets/images/people/employer.jpg':'../../assets/images/people/jobyer.jpg'}}"-->
-                 <!--alt="..."-->
-            <!--/></span>-->
-            <!--&lt;!&ndash;<time class="time">10 sec ago</time>&ndash;&gt;-->
-            <!--<h5 class="sender">{{o.title}}</h5>-->
-            <!--<p class="body">-->
-              <!--Offre créée le {{simplifyDate(o.creationDate)}}<br />-->
-              <!--{{projectTarget == 'jobyer'?'Disponible à partir du':'Début de mission'}} {{simplifyDate(o.startAvailability)}}-->
-            <!--</p>-->
-          <!--</li>-->
-        <!--</ul>-->
-        <!--<ul class="post-links">-->
-          <!--<li><a href="#">1 hour</a></li>-->
-          <!--<li><a href="#"><span class="text-danger"><i class="fa fa-heart"></i> Like</span></a></li>-->
-          <!--<li><a href="#">Comment</a></li>-->
-        <!--</ul>-->
-
-        <!--&lt;!&ndash;<footer class="bg-body-light">&ndash;&gt;-->
-          <!--&lt;!&ndash;<ul class="post-links">&ndash;&gt;-->
-            <!--&lt;!&ndash;<li><a href="#">1 hour</a></li>&ndash;&gt;-->
-            <!--&lt;!&ndash;<li><a href="#"><span class="text-danger"><i class="fa fa-heart"></i> Like</span></a></li>&ndash;&gt;-->
-            <!--&lt;!&ndash;<li><a href="#">Comment</a></li>&ndash;&gt;-->
-          <!--&lt;!&ndash;</ul>&ndash;&gt;-->
-          <!--&lt;!&ndash;<ul class="post-comments mt mb-0">&ndash;&gt;-->
-            <!--&lt;!&ndash;<li><span class="thumb-xs avatar pull-left mr-sm"><img class="img-circle" src="assets/images/people/a1.jpg"&ndash;&gt;-->
-                                                                   <!--&lt;!&ndash;alt="..."></span>&ndash;&gt;-->
-              <!--&lt;!&ndash;<div class="comment-body">&ndash;&gt;-->
-                <!--&lt;!&ndash;<h6 class="author fw-semi-bold">Ignacio Abad&ndash;&gt;-->
-                  <!--&lt;!&ndash;<small>6 mins ago</small>&ndash;&gt;-->
-                <!--&lt;!&ndash;</h6>&ndash;&gt;-->
-                <!--&lt;!&ndash;<p>Hey, have you heard anything about that?</p></div>&ndash;&gt;-->
-            <!--&lt;!&ndash;</li>&ndash;&gt;-->
-            <!--&lt;!&ndash;<li><span class="thumb-xs avatar pull-left mr-sm"><img class="img-circle" src="assets/images/avatar.png"&ndash;&gt;-->
-                                                                   <!--&lt;!&ndash;alt="..."></span>&ndash;&gt;-->
-              <!--&lt;!&ndash;<div class="comment-body"><input class="form-control input-sm" type="text"&ndash;&gt;-->
-                                               <!--&lt;!&ndash;placeholder="Write your comment..."></div>&ndash;&gt;-->
-            <!--&lt;!&ndash;</li>&ndash;&gt;-->
-          <!--&lt;!&ndash;</ul>&ndash;&gt;-->
-        <!--&lt;!&ndash;</footer>&ndash;&gt;-->
-
-        <!--<div class="card home-card">-->
-          <!--<img class="card-img-top"-->
-               <!--src="{{projectTarget == 'jobyer'?'../../assets/images/people/employer.jpg':'../../assets/images/people/jobyer.jpg'}}"-->
-               <!--alt="">-->
-          <!--<div class="card-block">-->
-            <!--<h5 class="card-title">{{o.title}}</h5>-->
-            <!--<p class="card-text">-->
-              <!--<span>Offre créée le &nbsp;</span>{{simplifyDate(o.creationDate)}}<br/>-->
-              <!--<span>{{projectTarget == 'jobyer'?'Disponible à partir du':'Début de mission'}} &nbsp;</span>{{simplifyDate(o.startAvailability)}}<br/>-->
-
-            <!--</p>-->
-            <!--<a href="#" class="btn btn-primary home-card-button" (click)="goToDetails(o)" >Détails</a>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
-
       <div class="col-sm-1 col-xs-2">
         <button class="arrow-key-button" (click)="nextOffers()"><span
           class="glyphicon glyphicon-chevron-right arrow-key-span"></span></button>
@@ -162,28 +98,47 @@
       <div class="col-xl-12"><h2>Offres Récemment créées</h2></div>
     </div>
     <div class="row">
-      <div class="col-xs-1">
+      <div class="col-sm-1 col-xs-2">
         <button (click)="previousOffers()" class="arrow-key-button"><span
           class="glyphicon glyphicon-chevron-left arrow-key-span"></span></button>
       </div>
-      <div class="col-xs-2" *ngFor="let o of recentOffers">
-        <div class="card home-card">
-          <img class="card-img-top"
-               src="{{projectTarget == 'jobyer'?'../../assets/images/people/employer.jpg':'../../assets/images/people/jobyer.jpg'}}"
-               alt="">
-          <div class="card-block">
-            <h5 class="card-title">{{o.title}}</h5>
-            <p class="card-text">
-              <span>Offre créée le &nbsp;</span>{{simplifyDate(o.creationDate)}}<br/>
-              <span>{{projectTarget == 'jobyer'?'Disponible à partir du':'Début de mission'}} &nbsp;</span>{{simplifyDate(o.startAvailability)}}<br/>
+      <div class="col-sm-10 col-xs-8">
+        <div class="row">
+      <div class="col-sm-6 col-xs-12" *ngFor="let o of recentOffers">
 
+        <ul class="list-group widget-chat-list-group">
+          <li class="list-group-item on-right">
+            <div class="row">
+                  <span class="thumb">
+                    <img class="img-circle"
+                         src="{{projectTarget == 'jobyer'?'../../assets/images/people/employer.jpg':'../../assets/images/people/jobyer.jpg'}}"
+                         alt="..."
+                    />
+                  </span>
+              <h5 class="sender">{{o.title}}</h5>
+            </div>
+            <p class="body" style="color: #999999; text-align: right">
+              <small>
+                Offre créée le {{simplifyDate(o.creationDate)}}<br />
+                {{projectTarget == 'jobyer'?'Disponible à partir du':'Début de mission'}} {{simplifyDate(o.startAvailability)}}
+              </small>
             </p>
-            <a href="#" class="btn btn-primary home-card-button" (click)="goToDetails(o)" >Détails</a>
-          </div>
+          </li>
+          <li class="list-group-item on-right">
+            <ul class="post-links">
+              <li>
+                <a class="btn btn-sm btn-primary" style="color: white; font-weight: normal" (click)="searchOffer(o)">Détails</a>
+                <recruit-button (onRecruite)="onRecruite(o)" *ngIf="projectTarget == 'employer' && !isRecruteur"></recruit-button>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+      </div>
         </div>
       </div>
 
-      <div class="col-1">
+        <div class="col-sm-1 col-xs-2">
         <button class="arrow-key-button" (click)="nextOffers()" > <span class="glyphicon glyphicon-chevron-right arrow-key-span"></span> </button>
       </div>
     </div>
@@ -206,7 +161,7 @@
               <span>A rejoint Vitonjob le &nbsp;</span>{{simplifyDate(o.creationDate)}}<br/>
 
             </p>
-            <a href="#" class="btn btn-primary home-card-button">Contacter</a>
+            <a href="#" class="btn btn-sm btn-primary home-card-button">Contacter</a>
           </div>
         </div>
       </div>
@@ -223,3 +178,4 @@
   </footer>
 </div>
 <div modal-update-password></div>
+<div modal-notification-contract [jobyer]="currentJobyer" *ngIf="projectTarget == 'employer' && !isRecruteur"></div>

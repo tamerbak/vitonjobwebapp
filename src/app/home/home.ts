@@ -8,6 +8,8 @@ import {Configs} from "../../configurations/configs";
 import {ModalWelcome} from "../modal-welcome/modal-welcome";
 import {ModalProfile} from "../modal-profile/modal-profile";
 import {ModalUpdatePassword} from "../modal-update-password/modal-update-password";
+import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
+import {RecruitButton} from "../components/recruit-button/recruit-button";
 
 declare var require: any;
 declare var jQuery: any;
@@ -16,7 +18,7 @@ declare var Messenger:any;
 @Component({
 	selector: 'home',
 	template: require('./home.html'),
-	directives: [ROUTER_DIRECTIVES, AlertComponent, ModalWelcome, ModalProfile,ModalUpdatePassword],
+	directives: [ROUTER_DIRECTIVES, AlertComponent, ModalWelcome, ModalProfile,ModalUpdatePassword, ModalNotificationContract, RecruitButton],
 	providers: [SearchService, HomeService],
 	styles: [require('./home.scss')],
 	encapsulation: ViewEncapsulation.None
@@ -44,6 +46,8 @@ export class Home {
     nextRecentUsers: any = [];
     homeServiceData: any = [];
     maxLines: number = 5;
+
+    currentJobyer: any;
 
   constructor(private router: Router,
               private searchService: SearchService,
@@ -378,4 +382,43 @@ export class Home {
       }
     });
   }
+
+  onRecruite(o) {
+    let jobTitle = o.jobTitle;
+    let searchFields = {
+      class: 'com.vitonjob.callouts.recherche.SearchQuery',
+      job: jobTitle,
+      metier: '',
+      lieu: '',
+      nom: '',
+      entreprise: '',
+      date: '',
+      table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
+      idOffre: '0'
+    };
+
+    this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
+      debugger;
+      console.log(data);
+      for (let i = 0; i < data.length; i++) {
+        let r = data[i];
+        if (r.idOffre == o.idOffer) {
+
+          this.currentJobyer = r.jobyer;
+          if (r.obj == "profile") {
+            jQuery('#modal-profile').modal('show');
+          }else{
+            jQuery('#modal-notification-contract').modal('show');
+          }
+
+
+          // this.sharedService.setSearchResult(r);
+          // this.router.navigate(['app/search/details']);
+          break;
+        }
+      }
+    });
+
+  }
+
 }
