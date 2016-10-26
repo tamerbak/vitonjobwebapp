@@ -56,21 +56,47 @@
 
             <ul class="list-group widget-chat-list-group">
               <li class="list-group-item on-right">
-                <div class="row">
-                  <span class="thumb">
-                    <img class="img-circle"
-                      src="{{projectTarget == 'jobyer'?'../../assets/images/people/employer.jpg':'../../assets/images/people/jobyer.jpg'}}"
-                      alt="..."
-                    />
-                  </span>
-                  <h5 class="sender">{{o.title}}</h5>
-                </div>
-                <p class="body" style="color: #999999; text-align: right">
-                  <small>
-                    Offre créée le {{simplifyDate(o.creationDate)}}<br />
-                    {{projectTarget == 'jobyer'?'Disponible à partir du':'Début de mission'}} {{simplifyDate(o.startAvailability)}}
-                  </small>
-                </p>
+                <table>
+                  <tr>
+                    <td style="text-align: center;">
+                      <span class="thumb">
+                        <img class="img-circle"
+                             src="{{ projectTarget == 'jobyer'
+                             ? '../../assets/images/people/employer.jpg'
+                             : '../../assets/images/people/jobyer.jpg'
+                             }}" alt="..."
+                        />
+                      </span>
+                    </td>
+                    <td><h5 class="sender">{{o.title}}</h5></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">
+                      <p class="body" style="color: #999999; text-align: right">
+                        <small>
+                          Offre créée le {{simplifyDate(o.creationDate)}}<br/>
+                          {{projectTarget == 'jobyer'?'Disponible à partir du':'Début de mission'}}
+                          {{simplifyDate(o.startAvailability)}}
+                        </small>
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+                <!--<div class="row">-->
+                  <!--<span class="thumb-xlg">-->
+                    <!--<img class="img-circle"-->
+                      <!--src="{{projectTarget == 'jobyer'?'../../assets/images/people/employer.jpg':'../../assets/images/people/jobyer.jpg'}}"-->
+                      <!--alt="..."-->
+                    <!--/>-->
+                  <!--</span>-->
+                  <!--<h5 class="sender">{{o.title}}</h5>-->
+                <!--</div>-->
+                <!--<p class="body" style="color: #999999; text-align: right">-->
+                  <!--<small>-->
+                    <!--Offre créée le {{simplifyDate(o.creationDate)}}<br />-->
+                    <!--{{projectTarget == 'jobyer'?'Disponible à partir du':'Début de mission'}} {{simplifyDate(o.startAvailability)}}-->
+                  <!--</small>-->
+                <!--</p>-->
               </li>
               <li class="list-group-item on-right">
                 <ul class="post-links">
@@ -104,25 +130,36 @@
       </div>
       <div class="col-sm-10 col-xs-8">
         <div class="row">
-      <div class="col-sm-6 col-xs-12" *ngFor="let o of recentOffers">
+      <div class="col-sm-6 col-xs-12 list-home-element" *ngFor="let o of recentOffers">
 
         <ul class="list-group widget-chat-list-group">
           <li class="list-group-item on-right">
-            <div class="row">
-                  <span class="thumb">
+            <table>
+              <tr>
+                <td>
+                      <span class="thumb">
                     <img class="img-circle"
-                         src="{{projectTarget == 'jobyer'?'../../assets/images/people/employer.jpg':'../../assets/images/people/jobyer.jpg'}}"
-                         alt="..."
+                         src="{{ projectTarget == 'jobyer'
+                         ? '../../assets/images/people/employer.jpg'
+                         : '../../assets/images/people/jobyer.jpg'
+                         }}" alt="..."
                     />
                   </span>
-              <h5 class="sender">{{o.title}}</h5>
-            </div>
-            <p class="body" style="color: #999999; text-align: right">
-              <small>
-                Offre créée le {{simplifyDate(o.creationDate)}}<br />
-                {{projectTarget == 'jobyer'?'Disponible à partir du':'Début de mission'}} {{simplifyDate(o.startAvailability)}}
-              </small>
-            </p>
+                </td>
+                <td><h5 class="sender">{{o.title}}</h5></td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <p class="body" style="color: #999999; text-align: right">
+                    <small>
+                      Offre créée le {{simplifyDate(o.creationDate)}}<br/>
+                      {{projectTarget == 'jobyer'?'Disponible à partir du':'Début de mission'}}
+                      {{simplifyDate(o.startAvailability)}}
+                    </small>
+                  </p>
+                </td>
+              </tr>
+            </table>
           </li>
           <li class="list-group-item on-right">
             <ul class="post-links">
@@ -148,13 +185,15 @@
     <div class="row list-home-title">
       <div class="col-xl-12"><h2>{{projectTarget == 'jobyer'?'Nouvelles entreprises':'Nouveaux Jobyers'}}</h2></div>
     </div>
-    <div class="row">
+    <div class="row" style="text-align: center">
       <div class="col-xs-1">
         <button (click)="previousUsers()" class="arrow-key-button" > <span class="glyphicon glyphicon-chevron-left arrow-key-span"></span> </button>
       </div>
       <div class="col-xs-2" *ngFor="let o of recentUsers">
         <div class="card home-card" >
-          <img class="card-img-top" src="{{projectTarget == 'jobyer'?'../../assets/images/people/employer.jpg':'../../assets/images/people/jobyer.jpg'}}" alt="">
+          <span class="thumb-xlg">
+            <img class="img-circle" src="{{projectTarget == 'jobyer'?'../../assets/images/people/employer.jpg':'../../assets/images/people/jobyer.jpg'}}" alt="">
+          </span>
           <div class="card-block">
             <h5 class="card-title">{{o.name}}</h5>
             <p class="card-text">
