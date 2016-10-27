@@ -348,14 +348,7 @@
                 style="display: block; width: 100%;"
                 class="btn btn-danger mb-xs col-md-2 col-xs-12"
                 role="button"
-                (click)="removeSlot(j)" *ngIf="!isDeleteSlotHidden">
-                <i class="glyphicon glyphicon-trash"></i>
-              </button>
-              <button
-                      style="display: block; width: 100%;"
-                      class="btn btn-danger mb-xs col-md-2 col-xs-12"
-                      role="button" *ngIf="isDeleteSlotHidden"
-                      data-toggle="tooltip" data-placement="top" data-original-title="Veuillez ajouter un créneau pour pouvoir supprimer celui-ci">
+                (click)="removeSlot(j)" [disabled]="isDeleteSlotDisabled()">
                 <i class="glyphicon glyphicon-trash"></i>
               </button>
             </div>

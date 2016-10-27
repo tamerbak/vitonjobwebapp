@@ -83,10 +83,6 @@ export class OfferEdit{
   prerequisObList : any = [];
   prerequisObligatoires : any = [];
 
-  //slots
-  isDeleteSlotHidden: boolean;
-  tooltipLabel: string;
-
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private searchService: SearchService,
@@ -257,7 +253,6 @@ export class OfferEdit{
       todayHighlight: true,
       format: 'dd/mm/yyyy'
     };
-    this.desactivateDeleteSlot();
   }
 
   ngAfterViewInit() {
@@ -392,15 +387,11 @@ export class OfferEdit{
     if (this.obj != "detail") {
       this.slots.splice(i, 1);
     } else {
-      if(this.desactivateDeleteSlot()){
-        return;
-      }
       this.offer.calendarData.splice(i, 1);
       this.offersService.updateOfferCalendar(this.offer, this.projectTarget);
       this.sharedService.setCurrentOffer(this.offer);
       this.slots = [];
       this.convertDetailSlotsForDisplay();
-      this.desactivateDeleteSlot();
     }
   }
 
@@ -447,7 +438,6 @@ export class OfferEdit{
       startHour: 0,
       endHour: 0
     };
-    this.desactivateDeleteSlot();
   }
 
   convertSlotsForDisplay(s) {
@@ -542,14 +532,8 @@ export class OfferEdit{
     (<HTMLInputElement>elements[0]).value = null;
   }
 
-  desactivateDeleteSlot() {
-    if(this.slots && this.slots.length > 1){
-      this.isDeleteSlotHidden = false;
-      return false;
-    }else{
-      this.isDeleteSlotHidden = true;
-      return true;
-    }
+  isDeleteSlotDisabled() {
+    return (this.obj == "detail" && this.slots && this.slots.length == 1);
   }
 
   //</editor-fold>
