@@ -675,7 +675,7 @@ export class OfferEdit{
           //redirect to offer-list and display public offers
           this.router.navigate(['app/offer/list', {typeOfferModel: '0'}]);
         else
-          this.sharedService.setCurrentOffer(createdOffer);
+          this.sharedService.setCurrentOffer(offer);
           this.router.navigate(['app/search/results', {obj: 'recruit'}]);
       });
     } else {

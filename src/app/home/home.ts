@@ -53,7 +53,8 @@ export class Home{
   constructor(private router: Router,
               private searchService: SearchService,
               private homeService: HomeService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private sharedService: SharedService) {
   }
 
   ngOnInit(): void {
