@@ -1,6 +1,7 @@
 <div class="container-home">
   <div align="center" class="video">
-  <video class="collapse navbar-collapse" style="padding-left: 0;padding-right: 0" autoplay loop muted src="assets/video/Fotolia_115061056_V_HD720.mov" *ngIf="!isTablet"></video>
+    <video class="collapse navbar-collapse" style="padding-left: 0;padding-right: 0" autoplay loop muted
+           src="assets/video/Fotolia_115061056_V_HD720.mov" *ngIf="!isTablet"></video>
 
     <div class="hidden-lg-up" style="width: 100%; top:15%; position: absolute">
       <img src="../../assets/images/logo/logo.png" style="width: 70%">
@@ -17,9 +18,9 @@
               <input type="text" class="form-control" placeholder="Veuillez saisir votre recherche..."
                      [(ngModel)]="scQuery" (keyup)="checkForEnterKey($event)">
               <span class="input-group-btn">
-								<button class="btn btn-secondary" type="button" (click)="doSemanticSearch()">Go!</button>
+								<button class="btn btn-sm btn-secondary" type="button" (click)="doSemanticSearch()">Go!</button>
 							</span>
-              <div class="widget-body btn loaderPosition" [hidden]="hideLoader"
+              <div class="widget-body btn btn-sm loaderPosition" [hidden]="hideLoader"
                    style="background-color: #f8f8f8; margin-left: 5px;">
                 <div class="loader animated fadeIn handle">
 									<span class="spinner">
@@ -38,49 +39,182 @@
 
     </div>
 
-    <!--div class="div-play">
-      <a class="play" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="glyphicon glyphicon-play"></i></a>
-    </div-->
-    </div>
-  <!--div align="center" class="video">
-    <div class="modal bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-         aria-hidden="true">
+  </div>
 
-
-      <video src="assets/video/vitonjob.mp4" controls loop muted></video>
+  <div class="container-fluid list-home-container" [hidden]="upcomingOffers.length==0">
+    <div class="row list-home-title">
+      <div class="col-xl-12"><h2>Offre imminentes</h2></div>
     </div>
-    <video autoplay loop muted src="assets/video/job1.mp4">
-    </video>
-    <div class="div-search">
-      <div class="search">
-        <div class="input-search">
-          <div class="col-lg-6">
-            <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
-              <div [innerHTML]="alert.msg"></div>
-            </alert>
-            <div class="input-group">
-              <input type="text" class="form-control" placeholder="Veuillez saisir votre recherche..."
-                     [(ngModel)]="scQuery" (keyup)="checkForEnterKey($event)">
-              <span class="input-group-btn">
-								<button class="btn btn-secondary" type="button" (click)="doSemanticSearch()">Go!</button>
-							</span>
-              <div class="widget-body btn loaderPosition" [hidden]="hideLoader"
-                   style="background-color: #f8f8f8; margin-left: 5px;">
-                <div class="loader animated fadeIn handle">
-									<span class="spinner">
-										<i class="fa fa-spinner fa-spin"></i>
-									</span>
-                </div>
-              </div>
-            </div>
+    <div class="row">
+      <div class="col-sm-1 col-xs-2">
+        <button (click)="previousOffers()" class="arrow-key-button"><span
+          class="glyphicon glyphicon-chevron-left arrow-key-span"></span></button>
+      </div>
+      <div class="col-sm-10 col-xs-8">
+        <div class="row">
+          <div class="col-sm-6 col-xs-12 list-home-element" *ngFor="let o of upcomingOffers">
+
+            <ul class="list-group widget-chat-list-group">
+              <li class="list-group-item on-right">
+                <table>
+                  <tr>
+                    <td style="text-align: center;">
+                      <span class="thumb">
+                        <img class="img-circle"
+                             src="{{ projectTarget == 'jobyer'
+                             ? '../../assets/images/people/employer.jpg'
+                             : '../../assets/images/people/jobyer.jpg'
+                             }}" alt="..."
+                        />
+                      </span>
+                    </td>
+                    <td><h5 class="sender">{{o.title}}</h5></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">
+                      <p class="body" style="color: #999999; text-align: right">
+                        <small>
+                          Offre créée le {{simplifyDate(o.creationDate)}}<br/>
+                          {{projectTarget == 'jobyer'?'Disponible à partir du':'Début de mission'}}
+                          {{simplifyDate(o.startAvailability)}}
+                        </small>
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+                <!--<div class="row">-->
+                  <!--<span class="thumb-xlg">-->
+                    <!--<img class="img-circle"-->
+                      <!--src="{{projectTarget == 'jobyer'?'../../assets/images/people/employer.jpg':'../../assets/images/people/jobyer.jpg'}}"-->
+                      <!--alt="..."-->
+                    <!--/>-->
+                  <!--</span>-->
+                  <!--<h5 class="sender">{{o.title}}</h5>-->
+                <!--</div>-->
+                <!--<p class="body" style="color: #999999; text-align: right">-->
+                  <!--<small>-->
+                    <!--Offre créée le {{simplifyDate(o.creationDate)}}<br />-->
+                    <!--{{projectTarget == 'jobyer'?'Disponible à partir du':'Début de mission'}} {{simplifyDate(o.startAvailability)}}-->
+                  <!--</small>-->
+                <!--</p>-->
+              </li>
+              <li class="list-group-item on-right">
+                <ul class="post-links">
+                  <li>
+                    <a class="btn btn-sm btn-primary" style="color: white; font-weight: normal" (click)="searchOffer(o)">Détails</a>
+                    <recruit-button (onRecruite)="onRecruite(o)" *ngIf="projectTarget == 'employer' && !isRecruteur"></recruit-button>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+
           </div>
         </div>
-        <a class="adv-search" [routerLink]=" ['../search/criteria'] ">Recherche avancée</a>
+      </div>
+      <div class="col-sm-1 col-xs-2">
+        <button class="arrow-key-button" (click)="nextOffers()"><span
+          class="glyphicon glyphicon-chevron-right arrow-key-span"></span></button>
+
       </div>
     </div>
-  </div-->
+  </div>
+
+  <div class="container-fluid list-home-container" [hidden]="recentOffers.length==0">
+    <div class="row list-home-title">
+      <div class="col-xl-12"><h2>Offres récemment créées</h2></div>
+    </div>
+    <div class="row">
+      <div class="col-sm-1 col-xs-2">
+        <button (click)="previousOffers()" class="arrow-key-button"><span
+          class="glyphicon glyphicon-chevron-left arrow-key-span"></span></button>
+      </div>
+      <div class="col-sm-10 col-xs-8">
+        <div class="row">
+      <div class="col-sm-6 col-xs-12 list-home-element" *ngFor="let o of recentOffers">
+
+        <ul class="list-group widget-chat-list-group">
+          <li class="list-group-item on-right">
+            <table>
+              <tr>
+                <td>
+                      <span class="thumb">
+                    <img class="img-circle"
+                         src="{{ projectTarget == 'jobyer'
+                         ? '../../assets/images/people/employer.jpg'
+                         : '../../assets/images/people/jobyer.jpg'
+                         }}" alt="..."
+                    />
+                  </span>
+                </td>
+                <td><h5 class="sender">{{o.title}}</h5></td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <p class="body" style="color: #999999; text-align: right">
+                    <small>
+                      Offre créée le {{simplifyDate(o.creationDate)}}<br/>
+                      {{projectTarget == 'jobyer'?'Disponible à partir du':'Début de mission'}}
+                      {{simplifyDate(o.startAvailability)}}
+                    </small>
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </li>
+          <li class="list-group-item on-right">
+            <ul class="post-links">
+              <li>
+                <a class="btn btn-sm btn-primary" style="color: white; font-weight: normal" (click)="searchOffer(o)">Détails</a>
+                <recruit-button (onRecruite)="onRecruite(o)" *ngIf="projectTarget == 'employer' && !isRecruteur"></recruit-button>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+      </div>
+        </div>
+      </div>
+
+        <div class="col-sm-1 col-xs-2">
+        <button class="arrow-key-button" (click)="nextOffers()" > <span class="glyphicon glyphicon-chevron-right arrow-key-span"></span> </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid list-home-container" [hidden]="recentUsers.length==0">
+    <div class="row list-home-title">
+      <div class="col-xl-12"><h2>{{projectTarget == 'jobyer'?'Nouvelles entreprises':'Nouveaux Jobyers'}}</h2></div>
+    </div>
+    <div class="row" style="text-align: center">
+      <div class="col-xs-1">
+        <button (click)="previousUsers()" class="arrow-key-button" > <span class="glyphicon glyphicon-chevron-left arrow-key-span"></span> </button>
+      </div>
+      <div class="col-xs-2" *ngFor="let o of recentUsers">
+        <div class="card home-card" >
+          <span class="thumb-xlg">
+            <img class="img-circle" src="{{projectTarget == 'jobyer'?'../../assets/images/people/employer.jpg':'../../assets/images/people/jobyer.jpg'}}" alt="">
+          </span>
+          <div class="card-block">
+            <h5 class="card-title">{{o.name}}</h5>
+            <p class="card-text">
+              <span>A rejoint Vit-On-Job le &nbsp;</span>{{simplifyDate(o.creationDate)}}<br/>
+
+            </p>
+            <a href="#" class="btn btn-sm btn-primary home-card-button">Contacter</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-1">
+        <button class="arrow-key-button" (click)="nextUsers()" > <span class="glyphicon glyphicon-chevron-right arrow-key-span"></span> </button>
+      </div>
+    </div>
+  </div>
+
+
   <footer class="page-footer collapse navbar-collapse" style="text-align: center;">
     2016 &copy; Vit-On-Job est une marque de Manaona.
   </footer>
 </div>
 <div modal-update-password></div>
+<div modal-notification-contract [jobyer]="currentJobyer" *ngIf="projectTarget == 'employer' && !isRecruteur"></div>
