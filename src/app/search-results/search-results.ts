@@ -7,6 +7,7 @@ import {RecruitButton} from "../components/recruit-button/recruit-button";
 import {GOOGLE_MAPS_DIRECTIVES} from "angular2-google-maps/core";
 import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
 import {ModalProfile} from "../modal-profile/modal-profile";
+import {Utils} from "../utils/utils";
 
 declare var jQuery: any;
 
@@ -99,7 +100,7 @@ export class SearchResults{
         var role = this.projectTarget == 'employer' ? "jobyer" : "employeur";
         this.profileService.loadProfilePicture(null, this.searchResults[i].tel, role).then((data: any) => {
           //regex to test if the returned data is base64
-          if (data && data.data && data.data[0] && !this.isEmpty(data.data[0].encode) && data.data[0].encode.startsWith("data:image/")) {
+          if (data && data.data && data.data[0] && !Utils.isEmpty(data.data[0].encode) && data.data[0].encode.startsWith("data:image/")) {
             this.searchResults[i].avatar = data.data[0].encode;
           }
         });
@@ -178,8 +179,27 @@ export class SearchResults{
 
   showAppropriateModal(obj) {
     if (obj == "recruit") {
-      if (!this.currentUser) {
-
+      //verify if employer profile is filled
+      let userData = this.currentUser;
+      let currentEmployer = this.currentUser.employer;
+      //verification of employer informations
+      let redirectToCivility = (currentEmployer && currentEmployer.entreprises[0]) ?
+      (Utils.isEmpty(userData.titre)) ||
+      (Utils.isEmpty(userData.prenom)) ||
+      (Utils.isEmpty(userData.nom)) ||
+      (Utils.isEmpty(currentEmployer.entreprises[0].nom)) ||
+      (Utils.isEmpty(currentEmployer.entreprises[0].siret)) ||
+      (Utils.isEmpty(currentEmployer.entreprises[0].naf)) ||
+      (currentEmployer.entreprises[0].conventionCollective.id == 0) ||
+      (currentEmployer.entreprises[0].siegeAdress.id == 0) ||
+      (currentEmployer.entreprises[0].workAdress.id == 0) : true;
+      let isDataValid = !redirectToCivility;
+      if (!isDataValid) {
+        jQuery('#modal-profile').modal({
+          keyboard: false,
+          backdrop: 'static'
+        });
+        jQuery('#modal-profile').modal('show');
       } else {
         //TODO: ajouter le cas ou le profil n'est pas complet
         let o = this.sharedService.getCurrentOffer()
@@ -191,13 +211,5 @@ export class SearchResults{
         jQuery('#modal-notification-contract').modal('show');
       }
     }
-  }
-
-
-  isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
   }
 }
