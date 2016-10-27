@@ -73,9 +73,12 @@ export class ContractService {
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
     var dt = new Date();
-    var sql = "select user_jobyer.pk_user_jobyer as id, user_jobyer.numero_securite_sociale as numss, user_pays.nom as nationalite from user_jobyer, user_pays " +
+    var sql = "select user_jobyer.pk_user_jobyer as id, user_jobyer.numero_securite_sociale as numss, user_pays.nom as nationalite, cni, numero_titre_sejour, debut_validite, fin_validite from user_jobyer, user_pays " +
       " where user_jobyer.fk_user_pays=user_pays.pk_user_pays " +
       " and fk_user_account in (select pk_user_account from user_account where email='" + jobyer.email + "' or telephone='" + jobyer.tel + "') limit 1";
+
+    console.log(sql);
+
 
     return new Promise(resolve => {
       let headers = new Headers();
@@ -129,6 +132,7 @@ export class ContractService {
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
     var dt = new Date();
+    let epi = (contract.epi?'OUI':'NON');
     var sql = "INSERT INTO user_contrat (" +
       " date_de_debut," +
       " date_de_fin," +
@@ -161,8 +165,12 @@ export class ContractService {
       " titre," +
       " demande_employeur," +
       " demande_jobyer," +
-      " option_mission,"+
-      " lien_employeur"+
+      " option_mission," +
+      " lien_employeur," +
+      " equipements_fournis_par_l_ai," +
+      " fk_user_periodicite_des_paiements," +
+      " embauche_autorise," +
+      " rapatriement_a_la_charge_de_l_ai" +
       ")" +
       " VALUES ("
       + "'" + contract.missionStartDate + "',"
@@ -196,8 +204,12 @@ export class ContractService {
       + "'" + this.sqlfyText(contract.titre) + "',"
       + "'" + this.sqlfyText(contract.demandeEmployer) + "',"
       + "'" + this.sqlfyText(contract.demandeJobyer) + "',"
-      +"(select option_mission :: numeric from user_account where pk_user_account = '" + accountId + "'),"
-      +"'"+this.sqlfyText(yousignEmployerLink)+"'"
+      + "(select option_mission :: numeric from user_account where pk_user_account = '" + accountId + "'),"
+      + "'" + this.sqlfyText(yousignEmployerLink) + "',"
+      + "'"+epi+"',"
+      + "'"+contract.periodicite+"',"
+      + "'OUI',"
+      + "'OUI'"
       + ")"
       + " RETURNING pk_user_contrat";
 
@@ -211,6 +223,7 @@ export class ContractService {
         .map(res => res.json())
         .subscribe(data => {
           this.data = data;
+
           resolve(this.data);
         });
     });
@@ -244,6 +257,22 @@ export class ContractService {
    */
   loadRecoursList() {
     let sql = "select pk_user_recours as id, libelle from user_recours";
+    console.log(sql);
+
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          this.data = data.data;
+          resolve(this.data);
+        });
+    });
+  }
+
+  loadPeriodicites(){
+    let sql = "select pk_user_periodicite_des_paiements as id, libelle from user_periodicite_des_paiements";
     console.log(sql);
 
 
