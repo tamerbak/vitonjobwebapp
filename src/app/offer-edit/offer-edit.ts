@@ -669,6 +669,9 @@ export class OfferEdit {
       type: 'success',
       showCloseButton: true
     });
+    //redirect to offer-list and display public offers
+    this.router.navigate(['app/offer/list', {typeOfferModel: '0'}]);
+
   }
 
   resetDatetime(componentId) {
