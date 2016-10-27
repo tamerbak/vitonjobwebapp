@@ -6,6 +6,7 @@ import {ContractService} from "../../providers/contract-service";
 import {MedecineService} from "../../providers/medecine.service";
 import {ParametersService} from "../../providers/parameters-service";
 import {Utils} from "../utils/utils";
+import {isUndefined} from "es7-reflect-metadata/dist/dist/helper/is-undefined";
 
 /**
  * @author daoudi amine
@@ -41,7 +42,13 @@ export class Contract {
 
   dataValidation :boolean = false;
 
+  embaucheAutorise : boolean=false;
+  rapatriement : boolean=false;
+  periodicites : any = [];
+
   dateFormat(d) {
+    if(!d || typeof d === 'undefined')
+      return '';
     let m = d.getMonth() + 1;
     let da = d.getDate();
     let sd = d.getFullYear() + "-" + (m < 10 ? '0' : '') + m + "-" + (da < 10 ? '0' : '') + da;
@@ -84,6 +91,25 @@ export class Contract {
         this.jobyer.id = datum.id;
         this.jobyer.numSS = datum.numss;
         this.jobyer.nationaliteLibelle = datum.nationalite;
+        this.jobyer.titreTravail = '';
+        this.jobyer.debutTitreTravail = new Date();
+        this.jobyer.finTitreTravail = new Date();
+        if(datum.cni && datum.cni.length>0 && datum.cni != "null")
+          this.jobyer.titreTravail = datum.cni;
+        else if (datum.numero_titre_sejour && datum.numero_titre_sejour.length>0 && datum.numero_titre_sejour != "null")
+          this.jobyer.titreTravail = datum.numero_titre_sejour;
+        if(datum.debut_validite && datum.debut_validite.length>0 && datum.debut_validite != "null"){
+          let d = new Date(datum.debut_validite);
+          this.jobyer.debutTitreTravail = d;
+        }
+        if(datum.fin_validite && datum.debut_validite.length>0 && datum.fin_validite != "null"){
+          let d = new Date(datum.debut_validite);
+          this.jobyer.finTitreTravail = d;
+        }
+
+        this.contractData.numeroTitreTravail = this.jobyer.titreTravail;
+        this.contractData.debutTitreTravail = this.dateFormat(this.jobyer.debutTitreTravail);
+        this.contractData.finTitreTravail = this.dateFormat(this.jobyer.finTitreTravail);
       }
     });
 
@@ -93,6 +119,11 @@ export class Contract {
     this.contractService.loadRecoursList().then(data=> {
       this.recours = data;
     });
+
+    this.contractService.loadPeriodicites().then(data=>{
+      this.periodicites = data;
+    });
+
 
     // Get the currentEmployer
     this.currentUser = this.sharedService.getCurrentUser();
@@ -165,7 +196,7 @@ export class Contract {
       finSouplesse: "",
       equipements: "",
 
-      interim: "Tempo'AIR",
+      interim: "Groupe 3S",
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
       trialPeriod: trial,
@@ -183,7 +214,7 @@ export class Contract {
       workHourVariable: "",
       postRisks: "",
       medicalSurv: "",
-      epi: "",
+      epi: false,
       baseSalary: 0,
       MonthlyAverageDuration: "0",
       salaryNHours: "00,00€ B/H",
@@ -192,7 +223,7 @@ export class Contract {
       restRight: "00%",
       interimAddress: "",
       customer: "",
-      primes: "",
+      primes: 0,
       headOffice: "",
       missionContent: "",
       category: "Employé",
@@ -203,11 +234,11 @@ export class Contract {
       risques: '',
       elementsCotisation: 0.0,
       elementsNonCotisation: 10.0,
-      titre: ''
+      titre: '',
+      periodicite : ''
     };
     if (this.currentOffer) {
       this.service.getRates().then((data: any) => {
-        // debugger;
         for (let i = 0; i < data.length; i++) {
           if (this.currentOffer.jobData.remuneration < data[i].taux_horaire) {
             this.rate = parseFloat(data[i].coefficient) * this.currentOffer.jobData.remuneration;
@@ -311,30 +342,6 @@ export class Contract {
     return sd;
   }
 
-  // selectOffer() {
-  //   //debugger;
-  //   let m = new Modal(ModalOffersPage);
-  //   m.onDismiss(data => {
-  //     this.currentOffer = data;
-  //     console.log(JSON.stringify(data));
-  //     //debugger;
-  //     this.service.getRates().then(data => {
-  //       //debugger;
-  //       for (let i = 0; i < data.length; i++) {
-  //         if (this.currentOffer.jobData.remuneration < data[i].taux_horaire) {
-  //           this.rate = parseFloat(data[i].coefficient) * this.currentOffer.jobData.remuneration;
-  //           this.contractData.elementsCotisation = this.rate;
-  //           break;
-  //         }
-  //       }
-  //
-  //
-  //     });
-  //     this.initContract();
-  //   });
-  //   this.nav.present(m);
-  // }
-
   initContract() {
 
     let calendar = this.currentOffer.calendarData;
@@ -374,9 +381,9 @@ export class Contract {
       indemniteFinMission: "10.00%",
       indemniteCongesPayes: "10.00%",
       moyenAcces: "",
-      numeroTitreTravail: "",
-      debutTitreTravail: "",
-      finTitreTravail: "",
+      numeroTitreTravail: this.jobyer.titreTravail,
+      debutTitreTravail: this.dateFormat(this.jobyer.debutTitreTravail),
+      finTitreTravail: this.dateFormat(this.jobyer.finTitreTravail),
       periodesNonTravaillees: "",
       debutSouplesse: "",
       finSouplesse: "",
@@ -399,7 +406,7 @@ export class Contract {
       workHourVariable: "",
       postRisks: "",
       medicalSurv: "",
-      epi: "",
+      epi: false,
       baseSalary: this.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2),
       MonthlyAverageDuration: "0",
       salaryNHours: this.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2) + " € B/H",
@@ -408,7 +415,7 @@ export class Contract {
       restRight: "00%",
       interimAddress: "",
       customer: "",
-      primes: "",
+      primes: 0,
       headOffice: this.hqAdress,
       missionContent: "",
       category: 'Employé',
@@ -421,7 +428,8 @@ export class Contract {
       risques: '',
       elementsCotisation: this.rate,
       elementsNonCotisation: 10.0,
-      titre: this.currentOffer.title
+      titre: this.currentOffer.title,
+      periodicite : ''
     };
 
     // console.log(JSON.stringify(this.contractData));
@@ -458,7 +466,6 @@ export class Contract {
   }
 
   goToYousignPage() {
-    //debugger;
     this.contractService.getNumContract().then((data: any) => {
       this.dataValidation = true;
 
@@ -467,6 +474,7 @@ export class Contract {
         this.contractData.num = this.numContrat;
         this.contractData.numero = this.numContrat;
         this.contractData.adresseInterim = this.workAdress;
+        this.contractData.workAdress = this.workAdress;
       }
 
       // Go to yousign
@@ -488,44 +496,6 @@ export class Contract {
     this.contractData.medicalSurv = e.target.value;
   }
 
-  // /**
-  //  * @author daoudi amine
-  //  * @description show the menu to edit employer's informations
-  //  */
-  // showMenuToEditContract() {
-  //   let actionSheet = ActionSheet.create({
-  //     title: 'Editer le contrat',
-  //     buttons: [
-  //       {
-  //         text: 'Civilité',
-  //         icon: 'md-person',
-  //         handler: () => {
-  //           this.nav.push(CivilityPage);
-  //         }
-  //       }, {
-  //         text: 'Siège social',
-  //         icon: 'md-locate',
-  //         handler: () => {
-  //           this.nav.push(JobAddressPage);
-  //         }
-  //       }, {
-  //         text: 'Adresse de travail',
-  //         icon: 'md-locate',
-  //         handler: () => {
-  //           this.nav.push(PersonalAddressPage);
-  //         }
-  //       }, {
-  //         text: 'Annuler',
-  //         role: 'cancel',
-  //         icon: 'md-close',
-  //         handler: () => {
-  //
-  //         }
-  //       }
-  //     ]
-  //   });
-  //
-  //   this.nav.present(actionSheet);
-  // };
+
 
 }
