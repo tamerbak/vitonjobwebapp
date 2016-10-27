@@ -66,16 +66,16 @@ export class SearchResults{
           var info = "";
           let matching: string = (r.matching.toString().indexOf('.') < 0) ? r.matching : r.matching.toString().split('.')[0];
           if (this.projectTarget == 'employer') {
-            info = "<h4>" + r.prenom + ' ' + r.nom.substring(0, 1) + ". <span style='background-color: #14baa6; color: white; font-size: small;border-radius: 25px;'>&nbsp;" + matching + "%&nbsp;</span></h4>" +
+            info = "<h4>" + r.prenom + ' ' + r.nom.substring(0, 1) + ".&nbsp&nbsp<span class='label label-pill label-success'>&nbsp"+matching+"'%&nbsp</span></h4>" +
               "<p>" + r.titreOffre + "</p>" +
-              "<p><span style='color: #29bb00; font-size: large;'>&#9679;</span> &nbsp; Disponible</p>" +
-              "<p style='text-decoration: underline;'>D�tails</p> ";
+              "<p><span class='dispo'>&#9679;</span> &nbsp; Disponible</p>" +
+              "<p class='underline'>Détails</p> ";
 
           } else {
-            info = "<h4>" + r.entreprise + " <span style='background-color: #14baa6; color: white; font-size: small;border-radius: 25px;'>&nbsp;" + matching + "%&nbsp;</span></h4>" +
+            info = "<h4>" + r.entreprise + "&nbsp&nbsp<span class='label label-pill label-success'>&nbsp"+matching+"'%&nbsp</span></h4>" +
               "<p>" + r.titreOffre + "</p>" +
-              "<p><span style='color: #29bb00; font-size: large;'>&#9679;</span> &nbsp; Disponible</p>" +
-              "<p style='text-decoration: underline;'>D�tails</p> ";
+              "<p><span class='dispo''>&#9679;</span> &nbsp; Disponible</p>" +
+              "<p style='underline'>Détails</p> ";
           }
           this.searchResultPos.push({lat: Number(r.latitude), lng: Number(r.longitude), info: info})
         }
