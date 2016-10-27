@@ -10,6 +10,10 @@
   color: $text-color;
 }
 
+ul.messenger.messenger-fixed.messenger-on-top {
+    top: 85px !important;
+}
+
 .sidebar {
   position: fixed;
   z-index: 0;

@@ -130,7 +130,7 @@ export class SearchCriteria {
     this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
       this.sharedService.setLastResult(data);
       Messenger().post({
-        message: "Votre recherche "+(data.length ==0 ?"n'":"")+"a retourné " + (data.length == 0 ?"aucun résultat" : (data.length == 1 ? "un seul résultat":(data.length+' résultats'))),
+        message: "Votre recherche "+(data.length ==0 ?"n'":"")+"a donné " + (data.length == 0 ?"aucun résultat" : (data.length == 1 ? "un seul résultat":(data.length+' résultats'))),
         type: 'success',
         showCloseButton: true
       });
