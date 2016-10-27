@@ -1,13 +1,14 @@
 import {Component, Input} from "@angular/core";
 import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
+import {ModalOffers} from "../modal-offers/modal-offers";
 
 declare var jQuery: any;
 
 @Component({
   selector: '[modal-notification-contract]',
   template: require('./modal-notification-contract.html'),
-  directives: [ROUTER_DIRECTIVES]
+  directives: [ROUTER_DIRECTIVES,ModalOffers]
 })
 export class ModalNotificationContract{
   @Input()
@@ -19,7 +20,7 @@ export class ModalNotificationContract{
   showContractNotif = false;
   showOfferNotif = false;
   showAuthNotif = false;
-
+  initByModalOffers = false;
   constructor(private sharedService: SharedService,
               private router: Router) {
 
@@ -36,6 +37,11 @@ export class ModalNotificationContract{
       return;
     }
 
+    this.initState({});
+  }
+
+  initState(params){
+    this.initByModalOffers = params.init;
     let o = this.sharedService.getCurrentOffer();
     if (o != null) {
       this.showOfferNotif = false;
@@ -48,7 +54,6 @@ export class ModalNotificationContract{
     }
   }
 
-
   gotoContractForm() {
     jQuery('#modal-notification-contract').modal('hide');
     let o = this.sharedService.getCurrentOffer();
@@ -59,7 +64,31 @@ export class ModalNotificationContract{
     }
   }
 
-  close(): void {
+  gotoModalOffers() {
+
     jQuery('#modal-notification-contract').modal('hide');
+    jQuery('#modal-notification-contract').on('hidden.bs.modal', function () {
+      jQuery('#modal-offers').modal({
+        keyboard: false,
+        backdrop: 'static'
+      });
+      jQuery('#modal-offers').modal('show');
+      jQuery('#modal-notification-contract').unbind('hidden');
+    })
+
+  }
+
+  gotoNewOffer() {
+    jQuery('#modal-notification-contract').modal('hide');
+    //this.sharedService.setCurrentJobyer(this.jobyer);
+    this.router.navigate(['app/offer/edit', {obj:'add'}]);
+  }
+
+  close(): void {
+     jQuery('#modal-notification-contract').modal('hide');
+     if(this.initByModalOffers == true){
+       this.sharedService.setCurrentOffer(null);
+       this.initState({init:true});
+     }
   }
 }

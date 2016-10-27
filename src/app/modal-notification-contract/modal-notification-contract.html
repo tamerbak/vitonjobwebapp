@@ -2,7 +2,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content" *ngIf="showContractNotif">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <button type="button" class="close" (click)="close()" aria-hidden="true">&times;</button>
         <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel18">VitOnJob</h4>
         <p class="text-xs-center text-muted mt-sm" style="line-height: 2;">Vous êtes sur le point de procéder à la
           validation, complétion et éventuellement modifications des informations qui vont être installées sur votre
@@ -16,6 +16,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-success" (click)="gotoContractForm($event)">Je confirme avoir lu et compris
         </button>
+        <button type="button" class="btn btn-default" (click)="close()">Annuler</button>
       </div>
     </div>
 
@@ -26,7 +27,9 @@
         <p class="text-xs-center text-muted mt-sm" style="line-height: 2;">Veuillez sélectionner une offre existante, ou en créer une nouvelle pour pouvoir recruter ce jobyer.</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" (click)="close($event)">OK</button>
+        <button type="button" class="btn btn-success" (click)="gotoModalOffers()">Liste des offres</button>
+        <button type="button" class="btn btn-success" (click)="gotoNewOffer()">Nouvelle offre</button>
+        <button type="button" class="btn btn-default" (click)="close()">Annuler</button>
       </div>
     </div>
 
@@ -37,9 +40,10 @@
         <p class="text-xs-center text-muted mt-sm" style="line-height: 2;">Veuillez vous connecter pour pouvoir contacter ce profil.</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" (click)="close($event)">OK</button>
+        <button type="button" class="btn btn-success" (click)="close()">OK</button>
       </div>
     </div>
 
   </div>
 </div>
+<div modal-offers (refresh)="initState($event)" *ngIf="projectTarget == 'employer' && !isRecruteur"></div>

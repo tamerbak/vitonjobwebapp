@@ -147,6 +147,10 @@ export class SearchResults{
     if (params.obj == "profile") {
       jQuery('#modal-profile').modal('show');
     }else{
+      jQuery('#modal-notification-contract').modal({
+        keyboard: false,
+        backdrop: 'static'
+      });
       jQuery('#modal-notification-contract').modal('show');
     }
   }
@@ -154,7 +158,7 @@ export class SearchResults{
   onProfileUpdated(params) {
     this.currentJobyer = params.jobyer;
     if (params.obj == "contract") {
-      $('#modal-profile').on('hidden.bs.modal', function (e) {
+      jQuery('#modal-profile').on('hidden.bs.modal', function (e) {
         jQuery('#modal-notification-contract').modal('show');
       })
     }

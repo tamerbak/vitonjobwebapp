@@ -1,0 +1,40 @@
+<div class="modal fade" id="modal-offers">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel1">Proposition</h4>
+        <h5 class="modal-title text-xs-center fw-bold mt">Offres disponibles</h5>
+      </div>
+
+      <div class="col-lg-12 col-xs-12">
+          <div class="widget-body">
+            <div class="form-group row" *ngFor="let item of offerListToShow">
+              <div class="col-xs-10">
+                <button class="btn btn-toolbar btn-default text-md-left full-width" (click)="recruite(item)" >
+                  {{item.title}}
+                </button>
+              </div>
+              <div class="col-xs-2 align-rg">
+                <button class="btn btn-toolbar btn-success full-width" (click)="goToDetailOffer(item)" >
+                  Détails
+                </button>
+              </div>
+            </div>
+          </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="clearfix">
+          <div class="btn-toolbar m-t-1">
+            <button class="btn btn-success" (click)="gotoNewOffer()" >
+              Créer une nouvelle offre
+            </button>
+            <button class="btn btn-default" (click)="close()" >
+              Annuler
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
