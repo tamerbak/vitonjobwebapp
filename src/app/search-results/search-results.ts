@@ -1,6 +1,6 @@
 import {Component, ViewEncapsulation, ViewChildren} from "@angular/core";
 import {SharedService} from "../../providers/shared.service";
-import {ROUTER_DIRECTIVES, Router} from "@angular/router";
+import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from "@angular/router";
 import {SearchService} from "../../providers/search-service";
 import {ProfileService} from "../../providers/profile.service";
 import {RecruitButton} from "../components/recruit-button/recruit-button";
@@ -34,10 +34,13 @@ export class SearchResults{
 
   currentJobyer: any;
   fromPage: string = "recruitment";
+  obj: string;
 
   constructor(private sharedService: SharedService,
               private router: Router,
-              private profileService: ProfileService) {
+              private profileService: ProfileService,
+              private route: ActivatedRoute) {
+
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
@@ -45,7 +48,13 @@ export class SearchResults{
       this.projectTarget = this.sharedService.getProjectTarget();
       // this.router.navigate(['app/home']);
     }
+
+    //get params
+    this.route.params.forEach((params: Params) => {
+      this.obj = params['obj'];
+    });
   }
+
   ngOnInit() {
     //  Retrieving last search
     this.selected = this.sharedService.getMapView();
@@ -66,13 +75,13 @@ export class SearchResults{
           var info = "";
           let matching: string = (r.matching.toString().indexOf('.') < 0) ? r.matching : r.matching.toString().split('.')[0];
           if (this.projectTarget == 'employer') {
-            info = "<h4>" + r.prenom + ' ' + r.nom.substring(0, 1) + ".&nbsp&nbsp<span class='label label-pill label-success'>&nbsp"+matching+"'%&nbsp</span></h4>" +
+            info = "<h4>" + r.prenom + ' ' + r.nom.substring(0, 1) + ".&nbsp&nbsp<span class='label label-pill label-success'>&nbsp" + matching + "'%&nbsp</span></h4>" +
               "<p>" + r.titreOffre + "</p>" +
               "<p><span class='dispo'>&#9679;</span> &nbsp; Disponible</p>" +
               "<p class='underline'>Détails</p> ";
 
           } else {
-            info = "<h4>" + r.entreprise + "&nbsp&nbsp<span class='label label-pill label-success'>&nbsp"+matching+"'%&nbsp</span></h4>" +
+            info = "<h4>" + r.entreprise + "&nbsp&nbsp<span class='label label-pill label-success'>&nbsp" + matching + "'%&nbsp</span></h4>" +
               "<p>" + r.titreOffre + "</p>" +
               "<p><span class='dispo''>&#9679;</span> &nbsp; Disponible</p>" +
               "<p style='underline'>Détails</p> ";
@@ -96,6 +105,8 @@ export class SearchResults{
         });
       }
     }
+
+    this.showAppropriateModal(this.obj);
   }
 
   onChange(value) {
@@ -144,9 +155,10 @@ export class SearchResults{
 
   onRecruite(params) {
     this.currentJobyer = params.jobyer;
+    this.sharedService.setCurrentJobyer(this.currentJobyer);
     if (params.obj == "profile") {
       jQuery('#modal-profile').modal('show');
-    }else{
+    } else {
       jQuery('#modal-notification-contract').modal({
         keyboard: false,
         backdrop: 'static'
@@ -161,6 +173,23 @@ export class SearchResults{
       jQuery('#modal-profile').on('hidden.bs.modal', function (e) {
         jQuery('#modal-notification-contract').modal('show');
       })
+    }
+  }
+
+  showAppropriateModal(obj) {
+    if (obj == "recruit") {
+      if (!this.currentUser) {
+
+      } else {
+        //TODO: ajouter le cas ou le profil n'est pas complet
+        let o = this.sharedService.getCurrentOffer()
+        this.currentJobyer = this.sharedService.getCurrentJobyer();
+        jQuery('#modal-notification-contract').modal({
+          keyboard: false,
+          backdrop: 'static'
+        });
+        jQuery('#modal-notification-contract').modal('show');
+      }
     }
   }
 

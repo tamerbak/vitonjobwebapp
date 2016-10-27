@@ -1,5 +1,5 @@
 import {Component, ViewEncapsulation} from "@angular/core";
-import {ROUTER_DIRECTIVES, Router} from "@angular/router";
+import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {SearchService} from "../../providers/search-service";
 import {SharedService} from "../../providers/shared.service";
@@ -10,48 +10,55 @@ import {ModalUpdatePassword} from "../modal-update-password/modal-update-passwor
 
 declare var require: any;
 declare var jQuery: any;
-declare var Messenger:any;
+declare var Messenger: any;
 
 @Component({
-	selector: 'home',
-	template: require('./home.html'),
-	directives: [ROUTER_DIRECTIVES, AlertComponent, ModalWelcome, ModalProfile,ModalUpdatePassword],
-	providers: [SearchService],
-	styles: [require('./home.scss')],
-	encapsulation: ViewEncapsulation.None
+  selector: 'home',
+  template: require('./home.html'),
+  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalWelcome, ModalProfile, ModalUpdatePassword],
+  providers: [SearchService],
+  styles: [require('./home.scss')],
+  encapsulation: ViewEncapsulation.None
 })
 
-export class Home {
-	currentUser: any;
-	projectTarget: string;
-	scQuery: string;
-	alerts: Array<Object>;
-	hideLoader: boolean = true;
+export class Home{
+  currentUser: any;
+  projectTarget: string;
+  scQuery: string;
+  alerts: Array<Object>;
+  hideLoader: boolean = true;
   config: any;
   isTablet: boolean = false;
+  obj: string;
 
 
   constructor(private router: Router,
               private searchService: SearchService,
-              private sharedService: SharedService) {
+              private sharedService: SharedService,
+              private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
     let myContent = jQuery('.content');
     let myNavBar = jQuery('.navbar-dashboard');
 
+    //get params
+    this.route.params.forEach((params: Params) => {
+      this.obj = params['obj'];
+    });
+
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
-			if(this.currentUser.mot_de_passe_reinitialise =="Oui"){
-				jQuery('#modal-update-password').modal({
-					keyboard: false,
-					backdrop: 'static'
-				});
-				jQuery('#modal-update-password').modal('show');
-			}
+      if (this.currentUser.mot_de_passe_reinitialise == "Oui") {
+        jQuery('#modal-update-password').modal({
+          keyboard: false,
+          backdrop: 'static'
+        });
+        jQuery('#modal-update-password').modal('show');
+      }
 
-      if(this.isEmpty(this.currentUser.titre)) {
+      if (this.isEmpty(this.currentUser.titre)) {
         //call to open the modal-guide
         jQuery('#modal-welcome').modal({
           keyboard: false,
@@ -72,20 +79,20 @@ export class Home {
 
     this.config = Configs.setConfigs(this.projectTarget);
 
-    myContent.css({"padding":"0","padding-right":"0"});
+    myContent.css({"padding": "0", "padding-right": "0"});
     if (screen.width <= 480) {
       myContent.css(this.config.backgroundImage);
       myContent.css({"background-size": "cover"});
       myNavBar.css({"background-color": "transparent", "border-color": "transparent"});
     } else if (screen.width <= 768) {
       myContent.css(this.config.backgroundImage);
-      myContent.css({"background-size":"cover"});
-      myNavBar.css({"background-color": "#14baa6","border-color": "#14baa6"});
+      myContent.css({"background-size": "cover"});
+      myNavBar.css({"background-color": "#14baa6", "border-color": "#14baa6"});
       this.isTablet = true;
     } else {
-      myContent.css({"background-image":""});
-      myContent.css({"background-size":"cover"});
-      myNavBar.css({"background-color": "#14baa6","border-color": "#14baa6"});
+      myContent.css({"background-image": ""});
+      myContent.css({"background-size": "cover"});
+      myNavBar.css({"background-color": "#14baa6", "border-color": "#14baa6"});
     }
 
     this.sharedService.setCurrentOffer(null);
@@ -93,16 +100,16 @@ export class Home {
   }
 
 
-  ngOnDestroy(){
-    jQuery('.content').css({"padding":"40px","padding-top":"60px"});
+  ngOnDestroy() {
+    jQuery('.content').css({"padding": "40px", "padding-top": "60px"});
   }
 
   doSemanticSearch() {
     /*if (!this.currentUser) {
-      this.sharedService.setFromPage("home");
-      this.router.navigate(['login']);
-      return;
-    }*/
+     this.sharedService.setFromPage("home");
+     this.router.navigate(['login']);
+     return;
+     }*/
 
     if (this.isEmpty(this.scQuery) || !this.scQuery.match(/[a-z]/i)) {
       this.addAlert("warning", "Veuillez saisir un job avant de lancer la recherche");
@@ -118,7 +125,7 @@ export class Home {
       }
       this.sharedService.setLastResult(data);
       Messenger().post({
-        message: 'La recherche pour "'+this.scQuery+'" a donné '+ (data.length == 1 ?'un seul résultat':(data.length+' résultats')),
+        message: 'La recherche pour "' + this.scQuery + '" a donné ' + (data.length == 1 ? 'un seul résultat' : (data.length + ' résultats')),
         type: 'success',
         showCloseButton: true
       });

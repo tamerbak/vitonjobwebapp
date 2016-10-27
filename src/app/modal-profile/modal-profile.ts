@@ -27,6 +27,8 @@ export class ModalProfile{
   fromPage: string;
   @Input()
   jobyer: any;
+  @Input()
+  obj: string;
   @Output()
   onProfileUpdated = new EventEmitter<any>();
 
@@ -621,8 +623,14 @@ export class ModalProfile{
               });
 
               //redirecting to offers page if new User
-              if (this.isNewUser) {
+              if (this.isNewUser && this.obj != "recruit") {
                 this.router.navigate(['app/offer/list']);
+              }
+              if (this.obj == "recruit") {
+                var self = this;
+                jQuery('#modal-profile').on('hidden.bs.modal', function (e) {
+                  self.router.navigate(['app/search/results', {obj: "recruit"}]);
+                })
               }
               this.close();
             }
