@@ -9,6 +9,7 @@ import {NKDatetime} from "ng2-datetime/ng2-datetime";
 import {ModalOptions} from "../modal-options/modal-options";
 import {ModalOfferTempQuote} from "../modal-offer-temp-quote/modal-offer-temp-quote";
 import {FinanceService} from "../../providers/finance.service";
+import {Configs} from "../../configurations/configs";
 declare var Messenger, jQuery: any;
 
 @Component({
@@ -74,6 +75,13 @@ export class OfferEdit {
   modalParams: any = {type: '', message: ''};
   keepCurrentOffer: boolean = false;
   triedValidate: boolean = false;
+
+  /*
+   * PREREQUIS
+   */
+  prerequisOb : string = '';
+  prerequisObList : any = [];
+  prerequisObligatoires : any = [];
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -160,7 +168,12 @@ export class OfferEdit {
         this.addAlert("warning", "Attention: Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilités.", "general");
         //display calendar slots of the current offer
       }
+      if(this.offer.jobData.prerequisObligatoires && this.offer.jobData.prerequisObligatoires.length>0)
+        this.prerequisObligatoires = this.offer.jobData.prerequisObligatoires;
+      else
+        this.prerequisObligatoires = [];
       this.convertDetailSlotsForDisplay();
+
     } else {
       var jobData = {
         'class': "com.vitonjob.callouts.auth.model.JobData",
@@ -171,7 +184,8 @@ export class OfferEdit {
         level: 'junior',
         remuneration: null,
         currency: 'euro',
-        validated: false
+        validated: false,
+        prerequisObligatoires : []
       };
       this.offer = {
         jobData: jobData, calendarData: [], qualityData: [], languageData: [],
@@ -262,6 +276,78 @@ export class OfferEdit {
         }
       );
 
+
+    /*
+     * PREREQUIS
+     */
+    jQuery('.prerequis-select').select2({
+      maximumSelectionLength: 1,
+      tokenSeparators: [",", " "],
+      createSearchChoice: function (term, data) {
+        if (self.prerequisObList.length == 0) {
+          return {
+            id: '0', libelle: term
+          };
+        }
+      },
+      ajax: {
+        url: Configs.sqlURL,
+        type: 'POST',
+        dataType: 'json',
+        quietMillis: 250,
+        transport: function (params) {
+          params.beforeSend = Configs.getSelect2TextHeaders();
+          return jQuery.ajax(params);
+        },
+        data: function (term, page) {
+          return self.offersService.selectPrerequis(term);
+        },
+        results: function (data, page) {
+          self.prerequisObList = data.data;
+          return {results: data.data};
+        },
+        cache: false,
+
+      },
+
+      formatResult: function (item) {
+        return item.libelle;
+      },
+      formatSelection: function (item) {
+        return item.libelle;
+      },
+      dropdownCssClass: "bigdrop",
+      escapeMarkup: function (markup) {
+        return markup;
+      },
+      minimumInputLength: 1
+    });
+    jQuery('.prerequis-select').on('select2-selecting',
+      (e) => {
+        self.prerequisOb = e.choice.libelle;
+      }
+    )
+  }
+
+  addPrerequis(){
+    if(!this.prerequisOb || this.prerequisOb == '')
+      return;
+    this.prerequisObligatoires.push(this.prerequisOb);
+    this.prerequisOb = '';
+  }
+
+  removePrerequis(p){
+    let index = -1;
+    for(let i = 0 ; i < this.prerequisObligatoires.length ; i++)
+      if(this.prerequisObligatoires[i] == p){
+        index = i;
+        break;
+      }
+
+    if(index<0)
+      return;
+
+    this.prerequisObligatoires.splice(index, 1);
   }
 
   sectorSelected(sector) {
@@ -615,6 +701,8 @@ export class OfferEdit {
 
   setOfferInLocal() {
     //set offer in local
+    if(this.prerequisObligatoires && this.prerequisObligatoires.length>0)
+      this.offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
     this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, this.offer, this.projectTarget);
     this.sharedService.setCurrentUser(this.currentUser);
     this.sharedService.setCurrentOffer(this.offer);
@@ -632,12 +720,26 @@ export class OfferEdit {
       let level = (this.offer.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant';
       this.offer.title = this.offer.jobData.job + " " + level;
       this.offer.identity = (this.projectTarget == 'employer' ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id);
+
+      //  Deal with requirements
+      if(this.prerequisObligatoires && this.prerequisObligatoires.length>0){
+        this.offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
+      }else{
+        this.offer.jobData.prerequisObligatoires = [];
+      }
+
+
       this.offersService.setOfferInRemote(this.offer, this.projectTarget).then((data: any)=> {
         this.dataValidation = true;
+        let offer = JSON.parse(data._body);
+
         if (this.projectTarget == 'employer') {
-          this.currentUser.employer.entreprises[0].offers.push(JSON.parse(data._body));
+          if(this.prerequisObligatoires && this.prerequisObligatoires.length>0){
+            offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
+          }
+          this.currentUser.employer.entreprises[0].offers.push(offer);
         } else {
-          this.currentUser.jobyer.offers.push(JSON.parse(data._body));
+          this.currentUser.jobyer.offers.push(offer);
         }
         this.sharedService.setCurrentUser(this.currentUser);
         Messenger().post({

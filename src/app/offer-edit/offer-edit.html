@@ -279,6 +279,39 @@
         </div>
       </fieldset>
 
+      <fieldset [hidden]="projectTarget=='jobyer'">
+        <legend><strong>Prérequis obligatoires</strong></legend>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-xs-10">
+              <input type="hidden" class="select2 prerequis-select form-control" name="prerequis"
+                     placeholder="Prérequis" [(ngModel)]="prerequisOb" />
+            </div>
+            <div class="col-xs-2">
+              <button class="btn btn-primary"
+                      role="button" (click)="addPrerequis()" >
+                <span class="glyphicon glyphicon-plus"></span>
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">&nbsp;</div>
+          </div>
+          <div *ngFor="let p of prerequisObligatoires" class="row" style="margin-bottom: 5px">
+            <div class="col-xs-2">
+              <button class="btn btn-danger"
+                      role="button" (click)="removePrerequis(p)" >
+                <span class="glyphicon glyphicon-minus"></span>
+              </button>
+            </div>
+            <div class="col-xs-10" style="font-size: medium">
+              {{p}}
+            </div>
+          </div>
+        </div>
+
+      </fieldset>
+
     </section>
 
     <!-- !JOB -->

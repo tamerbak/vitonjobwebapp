@@ -63,6 +63,13 @@ export class OfferList {
     console.log(this.offerList);
     for (let i = 0; i < this.offerList.length; i++) {
       let offer = this.offerList[i];
+
+      this.offersService.loadOfferPrerequisObligatoires(this.offerList[i].idOffer).then((data:any)=>{
+        this.offerList[i].jobData.prerequisObligatoires = [];
+        for(let j = 0 ; j < data.length ; j++)
+          this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
+      });
+
       if (!offer || !offer.jobData) {
         continue;
       }
