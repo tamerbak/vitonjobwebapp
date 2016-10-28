@@ -81,6 +81,7 @@ export class SearchDetails{
   }
 
   onRecruite(params) {
+    this.sharedService.setCurrentJobyer(params.jobyer);
     if (params.obj == "profile") {
       jQuery('#modal-profile').modal('show');
     }else{
