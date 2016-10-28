@@ -79,9 +79,9 @@ export class OfferEdit{
   /*
    * PREREQUIS
    */
-  prerequisOb : string = '';
-  prerequisObList : any = [];
-  prerequisObligatoires : any = [];
+  prerequisOb: string = '';
+  prerequisObList: any = [];
+  prerequisObligatoires: any = [];
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -168,7 +168,7 @@ export class OfferEdit{
         this.addAlert("warning", "Attention: Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilités.", "general");
         //display calendar slots of the current offer
       }
-      if(this.offer.jobData.prerequisObligatoires && this.offer.jobData.prerequisObligatoires.length>0)
+      if (this.offer.jobData.prerequisObligatoires && this.offer.jobData.prerequisObligatoires.length > 0)
         this.prerequisObligatoires = this.offer.jobData.prerequisObligatoires;
       else
         this.prerequisObligatoires = [];
@@ -185,7 +185,7 @@ export class OfferEdit{
         remuneration: null,
         currency: 'euro',
         validated: false,
-        prerequisObligatoires : []
+        prerequisObligatoires: []
       };
       this.offer = {
         jobData: jobData, calendarData: [], qualityData: [], languageData: [],
@@ -329,22 +329,22 @@ export class OfferEdit{
     )
   }
 
-  addPrerequis(){
-    if(!this.prerequisOb || this.prerequisOb == '')
+  addPrerequis() {
+    if (!this.prerequisOb || this.prerequisOb == '')
       return;
     this.prerequisObligatoires.push(this.prerequisOb);
     this.prerequisOb = '';
   }
 
-  removePrerequis(p){
+  removePrerequis(p) {
     let index = -1;
-    for(let i = 0 ; i < this.prerequisObligatoires.length ; i++)
-      if(this.prerequisObligatoires[i] == p){
+    for (let i = 0; i < this.prerequisObligatoires.length; i++)
+      if (this.prerequisObligatoires[i] == p) {
         index = i;
         break;
       }
 
-    if(index<0)
+    if (index < 0)
       return;
 
     this.prerequisObligatoires.splice(index, 1);
@@ -610,7 +610,7 @@ export class OfferEdit{
 
   setOfferInLocal() {
     //set offer in local
-    if(this.prerequisObligatoires && this.prerequisObligatoires.length>0)
+    if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0)
       this.offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
     this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, this.offer, this.projectTarget);
     this.sharedService.setCurrentUser(this.currentUser);
@@ -631,9 +631,9 @@ export class OfferEdit{
       this.offer.identity = (this.projectTarget == 'employer' ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id);
 
       //  Deal with requirements
-      if(this.prerequisObligatoires && this.prerequisObligatoires.length>0){
+      if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0) {
         this.offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
-      }else{
+      } else {
         this.offer.jobData.prerequisObligatoires = [];
       }
 
@@ -643,7 +643,7 @@ export class OfferEdit{
         let offer = JSON.parse(data._body);
 
         if (this.projectTarget == 'employer') {
-          if(this.prerequisObligatoires && this.prerequisObligatoires.length>0){
+          if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0) {
             offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
           }
           this.currentUser.employer.entreprises[0].offers.push(offer);
@@ -656,12 +656,13 @@ export class OfferEdit{
           type: 'success',
           showCloseButton: true
         });
-        if(this.obj == "add")
+        if (this.obj == "add") {
           //redirect to offer-list and display public offers
           this.router.navigate(['app/offer/list', {typeOfferModel: '0'}]);
-        else
+        } else {
           this.sharedService.setCurrentOffer(offer);
           this.router.navigate(['app/search/results', {obj: 'recruit'}]);
+        }
       });
     } else {
       this.validateJob();
