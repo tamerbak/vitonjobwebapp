@@ -388,10 +388,11 @@ export class OfferEdit{
       this.slots.splice(i, 1);
     } else {
       this.offer.calendarData.splice(i, 1);
-      this.offersService.updateOfferCalendar(this.offer, this.projectTarget);
-      this.sharedService.setCurrentOffer(this.offer);
-      this.slots = [];
-      this.convertDetailSlotsForDisplay();
+      this.offersService.updateOfferCalendar(this.offer, this.projectTarget).then(() => {
+        this.setOfferInLocal();
+        this.slots = [];
+        this.convertDetailSlotsForDisplay();
+      });
     }
   }
 
@@ -424,7 +425,7 @@ export class OfferEdit{
     } else {
       this.offer.calendarData.push(this.slot);
       this.offersService.updateOfferCalendar(this.offer, this.projectTarget).then(() => {
-        this.sharedService.setCurrentOffer(this.offer);
+        this.setOfferInLocal();
         this.slots = [];
         this.convertDetailSlotsForDisplay();
       });
