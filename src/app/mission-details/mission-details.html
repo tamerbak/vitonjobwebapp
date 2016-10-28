@@ -46,7 +46,7 @@
                     </div>
                   </div>
 
-                  <button type="button" class="btn btn-secondary btn-sm" (click)="launchContractModal()">
+                  <button type="button" class="btn btn-secondary btn-sm" (click)="launchContractModal()" *ngIf="!isEmployer && upperCase(contract.signature_jobyer) == 'NON'">
                     Signer le contrat
                   </button>
                 </fieldset>
