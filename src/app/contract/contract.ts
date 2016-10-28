@@ -6,6 +6,7 @@ import {ContractService} from "../../providers/contract-service";
 import {MedecineService} from "../../providers/medecine.service";
 import {ParametersService} from "../../providers/parameters-service";
 import {Utils} from "../utils/utils";
+import {NKDatetime} from "ng2-datetime/ng2-datetime";
 import {isUndefined} from "es7-reflect-metadata/dist/dist/helper/is-undefined";
 
 /**
@@ -16,6 +17,7 @@ import {isUndefined} from "es7-reflect-metadata/dist/dist/helper/is-undefined";
 @Component({
   template: require('./contract.html'),
   styles: [require('./contract.scss')],
+  directives: [NKDatetime],
   providers: [ContractService, MedecineService, ParametersService, Helpers]
 })
 export class Contract {
@@ -45,6 +47,8 @@ export class Contract {
   embaucheAutorise : boolean=false;
   rapatriement : boolean=false;
   periodicites : any = [];
+
+  datepickerOpts: any;
 
   dateFormat(d) {
     if(!d || typeof d === 'undefined')
@@ -137,7 +141,7 @@ export class Contract {
       this.employerFullName = civility + " " + this.currentUser.nom + " " + this.currentUser.prenom;
       this.medecineService.getMedecine(this.employer.entreprises[0].id).then((data: any)=> {
         if (data && data != null) {
-          //debugger;
+          //
           this.contractData.centreMedecineEntreprise = data.libelle;
           this.contractData.adresseCentreMedecineEntreprise = data.adresse + ' ' + data.code_postal;
         }
@@ -152,7 +156,7 @@ export class Contract {
       let calendar = this.currentOffer.calendarData;
       let minDay = new Date(calendar[0].date);
       let maxDay = new Date(calendar[0].date);
-      // debugger;
+      //
       for(let i=1 ; i <calendar.length;i++){
         let date = new Date(calendar[i].date);
         if(minDay.getTime()>date.getTime())
@@ -209,8 +213,8 @@ export class Contract {
       workTimeHours: 0,
       workTimeVariable: 0,
       usualWorkTimeHours: "8H00/17H00 variables",
-      workStartHour: "08:00",
-      workEndHour: "17:00",
+      workStartHour: this.initWorkStartHour(),
+      workEndHour: this.initWorkEndHour(),
       workHourVariable: "",
       postRisks: "",
       medicalSurv: "",
@@ -347,7 +351,7 @@ export class Contract {
     let calendar = this.currentOffer.calendarData;
     let minDay = new Date(calendar[0].date);
     let maxDay = new Date(calendar[0].date);
-    // debugger;
+    //
     for(let i=1 ; i <calendar.length;i++){
       let date = new Date(calendar[i].date);
       if(minDay.getTime()>date.getTime())
@@ -401,8 +405,8 @@ export class Contract {
       workTimeHours: this.calculateOfferHours(),
       workTimeVariable: 0,
       usualWorkTimeHours: "8H00/17H00 variables",
-      workStartHour: "08:00",
-      workEndHour: "17:00",
+      workStartHour: this.initWorkStartHour(),
+      workEndHour: this.initWorkEndHour(),
       workHourVariable: "",
       postRisks: "",
       medicalSurv: "",
@@ -435,13 +439,28 @@ export class Contract {
     // console.log(JSON.stringify(this.contractData));
 
     this.medecineService.getMedecine(this.employer.entreprises[0].id).then((data: any)=> {
-      // debugger;
+      //
       if (data && data != null) {
         this.contractData.centreMedecineEntreprise = data.libelle;
         this.contractData.adresseCentreMedecineEntreprise = data.adresse + ' ' + data.code_postal;
       }
 
     });
+  }
+
+  initWorkStartHour(){
+    let today = new Date();
+    today.setHours(8);
+    today.setMinutes(0);
+    return today;
+
+  }
+
+  initWorkEndHour(){
+    let today = new Date();
+    today.setHours(17);
+    today.setMinutes(0);
+    return today;
   }
 
   parseNumber(str) {
@@ -466,6 +485,7 @@ export class Contract {
   }
 
   goToYousignPage() {
+
     this.contractService.getNumContract().then((data: any) => {
       this.dataValidation = true;
 

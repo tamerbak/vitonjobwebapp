@@ -75,7 +75,7 @@ export class Yousign{
       this.currentOffer.idOffer,
       this.contractData.baseSalary
     ).then((data: any) => {
-      debugger;
+
       this.financeService.loadPrevQuote(this.currentOffer.idOffer).then((results : any)=>{
         let lines = results.lignes;
         let cfix = 0;
