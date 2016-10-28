@@ -348,8 +348,7 @@
                 style="display: block; width: 100%;"
                 class="btn btn-danger mb-xs col-md-2 col-xs-12"
                 role="button"
-                (click)="removeSlot(j)"
-              >
+                (click)="removeSlot(j)" [disabled]="isDeleteSlotDisabled()">
                 <i class="glyphicon glyphicon-trash"></i>
               </button>
             </div>

@@ -21,7 +21,7 @@ declare var Messenger, jQuery: any;
   providers: [OffersService, SearchService, FinanceService]
 })
 
-export class OfferEdit {
+export class OfferEdit{
   offer: any;
   sectors: any = [];
   jobs: any = [];
@@ -141,7 +141,7 @@ export class OfferEdit {
     }
 
 
-    //obj = "add" od "detail"
+    //obj = "add", "detail", or "recruit"
     this.route.params.forEach((params: Params) => {
       this.obj = params['obj'];
     });
@@ -357,12 +357,12 @@ export class OfferEdit {
     var sectorsTemp = this.sectors.filter((v)=> {
       return (v.id == sector);
     });
-    this.offer.jobData.sector = sectorsTemp[0].libelle;
     //get job list
     var jobList = this.sharedService.getJobList();
     this.jobs = jobList.filter((v)=> {
       return (v.idsector == sector);
     });
+    this.offer.jobData.sector = sectorsTemp[0].libelle;
   }
 
   /**
@@ -375,118 +375,16 @@ export class OfferEdit {
       return (v.id == idJob);
     });
     this.offer.jobData.job = jobsTemp[0].libelle;
-
-
-  }
-
-  /**
-   * If a collective convention is loaded we need to set the salary to the minimum rate of its parameters
-   */
-  checkHourRate() {
-
-    if (!this.parametersConvention || this.parametersConvention.length == 0)
-      return;
-
-    this.selectedParamConvID = this.parametersConvention[0].id;
-    this.minHourRate = this.parametersConvention[0].rate;
-    for (let i = 1; i < this.parametersConvention.length; i++) {
-      if (this.minHourRate > this.parametersConvention[i].rate) {
-        this.selectedParamConvID = this.parametersConvention[i].id;
-        this.minHourRate = this.parametersConvention[i].rate;
-      }
-    }
-
-    this.validateRate(this.offer.jobData.remuneration);
-  }
-
-  /**
-   *
-   * @param rate
-   * @returns {boolean}
-   */
-  validateRate(rate) {
-    let r = parseFloat(rate);
-    if (r >= this.minHourRate) {
-      this.invalidHourRateMessage = '0.00';
-      this.invalidHourRate = false;
-      return true;
-    }
-
-    this.invalidHourRateMessage = (Math.round(this.minHourRate * 100) / 100) + '';
-    this.invalidHourRate = true;
-    return false;
-  }
-
-
-  convParametersVisible() {
-    if (!this.parametersConvention || this.parametersConvention.length == 0 || !this.offer.jobData.remuneration || this.offer.jobData.remuneration == 0)
-      return false;
-    return true;
-  }
-
-  convNiveauxVisible() {
-    if (!this.niveauxConventions || this.niveauxConventions.length == 0)
-      return false;
-    return true;
-  }
-
-  convCoefficientsVisible() {
-    if (!this.coefficientsConventions || this.coefficientsConventions.length == 0)
-      return false;
-    return true;
-  }
-
-  convEchelonsVisible() {
-    if (!this.echelonsConventions || this.echelonsConventions.length == 0)
-      return false;
-    return true;
-  }
-
-  convCategoriesVisible() {
-    if (!this.categoriesConventions || this.categoriesConventions.length == 0)
-      return false;
-    return true;
-  }
-
-  updateHourRateThreshold(field: string, value: number) {
-    if (!this.parametersConvention || this.parametersConvention.length == 0)
-      return;
-
-    //  Ensure to take the maximum threshold before checking other options
-    for (let i = 0; i < this.parametersConvention.length; i++) {
-      if (this.minHourRate <= this.parametersConvention[i].rate) {
-        this.selectedParamConvID = this.parametersConvention[i].id;
-        this.minHourRate = this.parametersConvention[i].rate;
-      }
-    }
-
-    //  Now let's seek the suitable parameters
-    for (let i = 0; i < this.parametersConvention.length; i++) {
-
-      if (field == 'CAT' && value > 0 && this.parametersConvention[i].idcat != value)
-        continue;
-      if (field == 'COEF' && value > 0 && this.parametersConvention[i].idcoeff != value)
-        continue;
-      if (field == 'ECH' && value > 0 && this.parametersConvention[i].idechelon != value)
-        continue;
-      if (field == 'NIV' && value > 0 && this.parametersConvention[i].idniv != value)
-        continue;
-
-      if (this.minHourRate > this.parametersConvention[i].rate) {
-        this.selectedParamConvID = this.parametersConvention[i].id;
-        this.minHourRate = this.parametersConvention[i].rate;
-      }
-    }
-
-    this.validateRate(this.offer.jobData.remuneration);
   }
 
   watchLevel(e) {
     this.offer.jobData.level = e.target.value;
   }
 
+  //<editor-fold desc="Slots management">
+
   removeSlot(i) {
-    if (this.obj == "add") {
+    if (this.obj != "detail") {
       this.slots.splice(i, 1);
     } else {
       this.offer.calendarData.splice(i, 1);
@@ -504,7 +402,7 @@ export class OfferEdit {
     if (this.checkHour() == false)
       return;
 
-    if (this.obj == "add") {
+    if (this.obj != "detail") {
       this.slotsToSave.push(this.slot);
     }
     this.slot.date = this.slot.date.getTime();
@@ -520,7 +418,7 @@ export class OfferEdit {
       this.slot.endHour = (60 * 24) - 1;
     }
 
-    if (this.obj == "add") {
+    if (this.obj != "detail") {
       var s = this.convertSlotsForDisplay(this.slot);
       this.slots.push(s);
     } else {
@@ -561,6 +459,84 @@ export class OfferEdit {
       this.slots.push(slotTemp);
     }
   }
+
+  checkHour() {
+    this.alertsSlot = [];
+
+    // Compute Minutes format start and end hour of the new slot
+    let startHourH = this.slot.startHour.getHours();
+    let startHourM = this.slot.startHour.getMinutes();
+    let startHourTotMinutes = this.offersService.convertHoursToMinutes(startHourH + ':' + startHourM);
+    let endHourH = this.slot.endHour.getHours();
+    let endHourM = this.slot.endHour.getMinutes();
+    let endHourTotMinutes = this.offersService.convertHoursToMinutes(endHourH + ':' + endHourM);
+
+    // If end hour is 0:00, force 23:59 such as midnight minute
+    if (endHourTotMinutes == 0) {
+      endHourTotMinutes = (60 * 24) - 1;
+    }
+
+    // Check that end hour is over than begin hour
+    if (startHourTotMinutes >= endHourTotMinutes) {
+      this.addAlert("danger", "L'heure de début doit être inférieure à l'heure de fin", "slot");
+      return false;
+    }
+
+    // Check if chosen hour and date are lower than today date and hour
+    if (this.slot.date && new Date(this.slot.date).setHours(0, 0, 0, 0) == new Date().setHours(0, 0, 0, 0)) {
+      var h = new Date().getHours();
+      var m = new Date().getMinutes();
+      var minutesNow = this.offersService.convertHoursToMinutes(h + ':' + m);
+      if (this.slot.startHour && this.slot.startHour <= new Date()) {
+        this.addAlert("danger", "L'heure de début et de fin doivent être supérieures à l'heure actuelle", "slot");
+        return false;
+      }
+    }
+
+    // Check that the slot is not overwriting an other one
+    for (let i = 0; i < this.slots.length; i++) {
+      if (this.slot.date &&
+        new Date(this.slot.date).setHours(0, 0, 0, 0) == new Date(this.slots[i].date).setHours(0, 0, 0, 0)
+      ) {
+        // Compute Minutes format start and end hour of existing slot
+        let slotStartTotMinutes = this.offersService.convertHoursToMinutes(this.slots[i].startHour);
+        let slotEndTotMinutes = this.offersService.convertHoursToMinutes(this.slots[i].endHour);
+
+        // If end hour is 0:00, force 23:59 such as midnight minute
+        if (slotEndTotMinutes == 0) {
+          slotEndTotMinutes = (60 * 24) - 1;
+        }
+
+        // HACK:
+        // First >= : Because a new slot can't start at the same time as previous start hour one's
+        // Second check < : because a new slot cans start directly after the end of the previous one
+        if (startHourTotMinutes >= slotStartTotMinutes && startHourTotMinutes < slotEndTotMinutes) {
+          this.addAlert("danger", "L'heure de début chevauche avec un autre créneau", "slot");
+          return false;
+        }
+
+        // HACK:
+        // First > : because a new slot cans finish at the time previous one start
+        // Second check <= : because a new slot can't finish at the same time as previous finish
+        if (endHourTotMinutes > slotStartTotMinutes && endHourTotMinutes <= slotEndTotMinutes) {
+          this.addAlert("danger", "L'heure de fin chevauche avec un autre créneau", "slot");
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  resetDatetime(componentId) {
+    let elements: NodeListOf<Element> = document.getElementById(componentId).getElementsByClassName('form-control');
+    (<HTMLInputElement>elements[0]).value = null;
+  }
+
+  isDeleteSlotDisabled() {
+    return (this.obj == "detail" && this.slots && this.slots.length == 1);
+  }
+
+  //</editor-fold>
 
   removeQuality(item) {
     this.offer.qualityData.splice(this.offer.qualityData.indexOf(item), 1);
@@ -631,74 +607,6 @@ export class OfferEdit {
     this.selectedLang = "";
   }
 
-  checkHour() {
-    this.alertsSlot = [];
-
-    // Compute Minutes format start and end hour of the new slot
-    let startHourH = this.slot.startHour.getHours();
-    let startHourM = this.slot.startHour.getMinutes();
-    let startHourTotMinutes = this.offersService.convertHoursToMinutes(startHourH + ':' + startHourM);
-    let endHourH = this.slot.endHour.getHours();
-    let endHourM = this.slot.endHour.getMinutes();
-    let endHourTotMinutes = this.offersService.convertHoursToMinutes(endHourH + ':' + endHourM);
-
-    // If end hour is 0:00, force 23:59 such as midnight minute
-    if (endHourTotMinutes == 0) {
-      endHourTotMinutes = (60 * 24) - 1;
-    }
-
-    // Check that end hour is over than begin hour
-    if (startHourTotMinutes >= endHourTotMinutes) {
-      this.addAlert("danger", "L'heure de début doit être inférieure à l'heure de fin", "slot");
-      return false;
-    }
-
-    // Check if chosen hour and date are lower than today date and hour
-    if (this.slot.date && new Date(this.slot.date).setHours(0, 0, 0, 0) == new Date().setHours(0, 0, 0, 0)) {
-      var h = new Date().getHours();
-      var m = new Date().getMinutes();
-      var minutesNow = this.offersService.convertHoursToMinutes(h + ':' + m);
-      if (this.slot.startHour && this.slot.startHour <= new Date()) {
-        this.addAlert("danger", "L'heure de début et de fin doivent être supérieures à l'heure actuelle", "slot");
-        return false;
-      }
-    }
-
-    // Check that the slot is not overwriting an other one
-    for (let i = 0; i < this.slots.length; i++) {
-      if (this.slot.date &&
-        new Date(this.slot.date).setHours(0, 0, 0, 0) == new Date(this.slots[i].date).setHours(0, 0, 0, 0)
-      ) {
-        // Compute Minutes format start and end hour of existing slot
-        let slotStartTotMinutes = this.offersService.convertHoursToMinutes(this.slots[i].startHour);
-        let slotEndTotMinutes = this.offersService.convertHoursToMinutes(this.slots[i].endHour);
-
-        // If end hour is 0:00, force 23:59 such as midnight minute
-        if (slotEndTotMinutes == 0) {
-          slotEndTotMinutes = (60 * 24) - 1;
-        }
-
-        // HACK:
-        // First >= : Because a new slot can't start at the same time as previous start hour one's
-        // Second check < : because a new slot cans start directly after the end of the previous one
-        if (startHourTotMinutes >= slotStartTotMinutes && startHourTotMinutes < slotEndTotMinutes) {
-          this.addAlert("danger", "L'heure de début chevauche avec un autre créneau", "slot");
-          return false;
-        }
-
-        // HACK:
-        // First > : because a new slot cans finish at the time previous one start
-        // Second check <= : because a new slot can't finish at the same time as previous finish
-        if (endHourTotMinutes > slotStartTotMinutes && endHourTotMinutes <= slotEndTotMinutes) {
-          this.addAlert("danger", "L'heure de fin chevauche avec un autre créneau", "slot");
-          return false;
-        }
-      }
-    }
-
-    return true;
-  }
-
   setOfferInLocal() {
     //set offer in local
     if(this.prerequisObligatoires && this.prerequisObligatoires.length>0)
@@ -711,7 +619,7 @@ export class OfferEdit {
   editOffer() {
     this.triedValidate = true;
 
-    if (this.obj == "add") {
+    if (this.obj != "detail") {
       this.offer.calendarData = this.slotsToSave;
       if (!this.offer.jobData.job || !this.offer.jobData.sector || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || this.minHourRate > this.offer.jobData.remuneration) {
         this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
@@ -743,12 +651,16 @@ export class OfferEdit {
         }
         this.sharedService.setCurrentUser(this.currentUser);
         Messenger().post({
-          message: "l'offre " + "'" + this.offer.title + "'" + " a été ajoutée avec succès",
+          message: "L'offre " + "'" + this.offer.title + "'" + " a été ajoutée avec succès",
           type: 'success',
           showCloseButton: true
         });
-        //redirect to offer-list and display public offers
-        this.router.navigate(['app/offer/list', {typeOfferModel: '0'}]);
+        if(this.obj == "add")
+          //redirect to offer-list and display public offers
+          this.router.navigate(['app/offer/list', {typeOfferModel: '0'}]);
+        else
+          this.sharedService.setCurrentOffer(offer);
+          this.router.navigate(['app/search/results', {obj: 'recruit'}]);
       });
     } else {
       this.validateJob();
@@ -771,11 +683,6 @@ export class OfferEdit {
       type: 'success',
       showCloseButton: true
     });
-  }
-
-  resetDatetime(componentId) {
-    let elements: NodeListOf<Element> = document.getElementById(componentId).getElementsByClassName('form-control');
-    (<HTMLInputElement>elements[0]).value = null;
   }
 
   /**
@@ -964,4 +871,109 @@ export class OfferEdit {
       });
     }
   }
+
+
+  //<editor-fold desc="Convention collective management">
+  /**
+   * If a collective convention is loaded we need to set the salary to the minimum rate of its parameters
+   */
+  checkHourRate() {
+    if (!this.parametersConvention || this.parametersConvention.length == 0)
+      return;
+
+    this.selectedParamConvID = this.parametersConvention[0].id;
+    this.minHourRate = this.parametersConvention[0].rate;
+    for (let i = 1; i < this.parametersConvention.length; i++) {
+      if (this.minHourRate > this.parametersConvention[i].rate) {
+        this.selectedParamConvID = this.parametersConvention[i].id;
+        this.minHourRate = this.parametersConvention[i].rate;
+      }
+    }
+
+    this.validateRate(this.offer.jobData.remuneration);
+  }
+
+  /**
+   *
+   * @param rate
+   * @returns {boolean}
+   */
+  validateRate(rate) {
+    let r = parseFloat(rate);
+    if (r >= this.minHourRate) {
+      this.invalidHourRateMessage = '0.00';
+      this.invalidHourRate = false;
+      return true;
+    }
+
+    this.invalidHourRateMessage = (Math.round(this.minHourRate * 100) / 100) + '';
+    this.invalidHourRate = true;
+    return false;
+  }
+
+
+  convParametersVisible() {
+    if (!this.parametersConvention || this.parametersConvention.length == 0 || !this.offer.jobData.remuneration || this.offer.jobData.remuneration == 0)
+      return false;
+    return true;
+  }
+
+  convNiveauxVisible() {
+    if (!this.niveauxConventions || this.niveauxConventions.length == 0)
+      return false;
+    return true;
+  }
+
+  convCoefficientsVisible() {
+    if (!this.coefficientsConventions || this.coefficientsConventions.length == 0)
+      return false;
+    return true;
+  }
+
+  convEchelonsVisible() {
+    if (!this.echelonsConventions || this.echelonsConventions.length == 0)
+      return false;
+    return true;
+  }
+
+  convCategoriesVisible() {
+    if (!this.categoriesConventions || this.categoriesConventions.length == 0)
+      return false;
+    return true;
+  }
+
+  updateHourRateThreshold(field: string, value: number) {
+    if (!this.parametersConvention || this.parametersConvention.length == 0)
+      return;
+
+    //  Ensure to take the maximum threshold before checking other options
+    for (let i = 0; i < this.parametersConvention.length; i++) {
+      if (this.minHourRate <= this.parametersConvention[i].rate) {
+        this.selectedParamConvID = this.parametersConvention[i].id;
+        this.minHourRate = this.parametersConvention[i].rate;
+      }
+    }
+
+    //  Now let's seek the suitable parameters
+    for (let i = 0; i < this.parametersConvention.length; i++) {
+
+      if (field == 'CAT' && value > 0 && this.parametersConvention[i].idcat != value)
+        continue;
+      if (field == 'COEF' && value > 0 && this.parametersConvention[i].idcoeff != value)
+        continue;
+      if (field == 'ECH' && value > 0 && this.parametersConvention[i].idechelon != value)
+        continue;
+      if (field == 'NIV' && value > 0 && this.parametersConvention[i].idniv != value)
+        continue;
+
+      if (this.minHourRate > this.parametersConvention[i].rate) {
+        this.selectedParamConvID = this.parametersConvention[i].id;
+        this.minHourRate = this.parametersConvention[i].rate;
+      }
+    }
+
+    this.validateRate(this.offer.jobData.remuneration);
+  }
+
+  //</editor-fold>
 }
