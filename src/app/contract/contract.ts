@@ -7,6 +7,7 @@ import {MedecineService} from "../../providers/medecine.service";
 import {ParametersService} from "../../providers/parameters-service";
 import {Utils} from "../utils/utils";
 import {isUndefined} from "es7-reflect-metadata/dist/dist/helper/is-undefined";
+import {AlertComponent} from "ng2-bootstrap";
 
 /**
  * @author daoudi amine
@@ -16,7 +17,8 @@ import {isUndefined} from "es7-reflect-metadata/dist/dist/helper/is-undefined";
 @Component({
   template: require('./contract.html'),
   styles: [require('./contract.scss')],
-  providers: [ContractService, MedecineService, ParametersService, Helpers]
+  providers: [ContractService, MedecineService, ParametersService, Helpers],
+  directives: [AlertComponent],
 })
 export class Contract {
 
@@ -92,8 +94,8 @@ export class Contract {
         this.jobyer.numSS = datum.numss;
         this.jobyer.nationaliteLibelle = datum.nationalite;
         this.jobyer.titreTravail = '';
-        this.jobyer.debutTitreTravail = new Date();
-        this.jobyer.finTitreTravail = new Date();
+        // this.jobyer.debutTitreTravail = new Date();
+        // this.jobyer.finTitreTravail = new Date();
         if(datum.cni && datum.cni.length>0 && datum.cni != "null")
           this.jobyer.titreTravail = datum.cni;
         else if (datum.numero_titre_sejour && datum.numero_titre_sejour.length>0 && datum.numero_titre_sejour != "null")
@@ -108,8 +110,8 @@ export class Contract {
         }
 
         this.contractData.numeroTitreTravail = this.jobyer.titreTravail;
-        this.contractData.debutTitreTravail = this.dateFormat(this.jobyer.debutTitreTravail);
-        this.contractData.finTitreTravail = this.dateFormat(this.jobyer.finTitreTravail);
+        // this.contractData.debutTitreTravail = this.dateFormat(this.jobyer.debutTitreTravail);
+        // this.contractData.finTitreTravail = this.dateFormat(this.jobyer.finTitreTravail);
       }
     });
 
@@ -177,66 +179,66 @@ export class Contract {
     }
 
     // Initialize contract data
-    this.contractData = {
-      num: "",
-      numero: "",
-      centreMedecineEntreprise: "",
-      adresseCentreMedecineEntreprise: "",
-      centreMedecineETT: "181 - CMIE",
-      adresseCentreMedecineETT: "80 RUE DE CLICHY 75009 PARIS",
-      contact: this.employerFullName,
-      indemniteFinMission: "10.00%",
-      indemniteCongesPayes: "10.00%",
-      moyenAcces: "",
-      numeroTitreTravail: "",
-      debutTitreTravail: "",
-      finTitreTravail: "",
-      periodesNonTravaillees: "",
-      debutSouplesse: "",
-      finSouplesse: "",
-      equipements: "",
-
-      interim: "Groupe 3S",
-      missionStartDate: this.getStartDate(),
-      missionEndDate: this.getEndDate(),
-      trialPeriod: trial,
-      termStartDate: this.getEndDate(),
-      termEndDate: this.getEndDate(),
-      motif: "",
-      justification: "",
-      qualification: "",
-      characteristics: "",
-      workTimeHours: 0,
-      workTimeVariable: 0,
-      usualWorkTimeHours: "8H00/17H00 variables",
-      workStartHour: "08:00",
-      workEndHour: "17:00",
-      workHourVariable: "",
-      postRisks: "",
-      medicalSurv: "",
-      epi: false,
-      baseSalary: 0,
-      MonthlyAverageDuration: "0",
-      salaryNHours: "00,00€ B/H",
-      salarySH35: "+00%",
-      salarySH43: "+00%",
-      restRight: "00%",
-      interimAddress: "",
-      customer: "",
-      primes: 0,
-      headOffice: "",
-      missionContent: "",
-      category: "Employé",
-      sector: "",
-      companyName: '',
-      titreTransport: 'NON',
-      zonesTitre: '',
-      risques: '',
-      elementsCotisation: 0.0,
-      elementsNonCotisation: 10.0,
-      titre: '',
-      periodicite : ''
-    };
+    // this.contractData = {
+    //   num: "",
+    //   numero: "",
+    //   centreMedecineEntreprise: "",
+    //   adresseCentreMedecineEntreprise: "",
+    //   centreMedecineETT: "181 - CMIE",
+    //   adresseCentreMedecineETT: "80 RUE DE CLICHY 75009 PARIS",
+    //   contact: this.employerFullName,
+    //   indemniteFinMission: "10.00%",
+    //   indemniteCongesPayes: "10.00%",
+    //   moyenAcces: "",
+    //   numeroTitreTravail: "",
+    //   debutTitreTravail: "",
+    //   finTitreTravail: "",
+    //   periodesNonTravaillees: "",
+    //   debutSouplesse: "",
+    //   finSouplesse: "",
+    //   equipements: "",
+    //
+    //   interim: "Groupe 3S",
+    //   missionStartDate: this.getStartDate(),
+    //   missionEndDate: this.getEndDate(),
+    //   trialPeriod: trial,
+    //   termStartDate: this.getEndDate(),
+    //   termEndDate: this.getEndDate(),
+    //   motif: "",
+    //   justification: "",
+    //   qualification: "",
+    //   characteristics: "",
+    //   workTimeHours: 0,
+    //   workTimeVariable: 0,
+    //   usualWorkTimeHours: "8H00/17H00 variables",
+    //   workStartHour: "08:00",
+    //   workEndHour: "17:00",
+    //   workHourVariable: "",
+    //   postRisks: "",
+    //   medicalSurv: "",
+    //   epi: false,
+    //   baseSalary: 0,
+    //   MonthlyAverageDuration: "0",
+    //   salaryNHours: "00,00€ B/H",
+    //   salarySH35: "+00%",
+    //   salarySH43: "+00%",
+    //   restRight: "00%",
+    //   interimAddress: "",
+    //   customer: "",
+    //   primes: 0,
+    //   headOffice: "",
+    //   missionContent: "",
+    //   category: "Employé",
+    //   sector: "",
+    //   companyName: '',
+    //   titreTransport: 'NON',
+    //   zonesTitre: '',
+    //   risques: '',
+    //   elementsCotisation: 0.0,
+    //   elementsNonCotisation: 10.0,
+    //   titre: '',
+    //   periodicite : ''
+    // };
     if (this.currentOffer) {
       this.service.getRates().then((data: any) => {
         for (let i = 0; i < data.length; i++) {
@@ -382,8 +384,8 @@ export class Contract {
       indemniteCongesPayes: "10.00%",
       moyenAcces: "",
       numeroTitreTravail: this.jobyer.titreTravail,
-      debutTitreTravail: this.dateFormat(this.jobyer.debutTitreTravail),
-      finTitreTravail: this.dateFormat(this.jobyer.finTitreTravail),
+      debutTitreTravail: this.jobyer.debutTitreTravail ? this.dateFormat(this.jobyer.debutTitreTravail) : "",
+      finTitreTravail: this.jobyer.finTitreTravail ? this.dateFormat(this.jobyer.finTitreTravail) : "",
       periodesNonTravaillees: "",
       debutSouplesse: "",
       finSouplesse: "",
