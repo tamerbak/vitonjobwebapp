@@ -403,7 +403,7 @@ export class ContractService {
         "43h": contract.salarySH43,
       },
       "droitRepos": contract.restRight,
-      "adresseInterim": contract.interimAddress,
+      "adresseInterim": contract.workAdress,
       "client": contract.customer,
       "primeDiverses": contract.primes,
       "SiegeSocial": contract.headOffice,
