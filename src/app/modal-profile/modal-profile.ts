@@ -353,7 +353,7 @@ export class ModalProfile{
     let _hint: string = "";
 
     if (!Utils.isValidName(_name)) {
-      _hint = "Saisissez un nom valide";
+      _hint = "Saisissez un prénom valide";
       _isValid = false;
     } else {
       _hint = "";
