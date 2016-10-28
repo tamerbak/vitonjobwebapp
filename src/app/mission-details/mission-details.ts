@@ -65,6 +65,8 @@ export class MissionDetails{
    */
   prerequisObligatoires : any = [];
 
+  isSignContractClicked: boolean = false;
+
   constructor(private sharedService: SharedService,
               private missionService: MissionService,
               private financeService: FinanceService,
@@ -596,6 +598,7 @@ this.nav.present(toast);
     //debugger;
     //jQuery('#modal-contract').modal('show');
     //Create to Iframe to show the contract in the modal
+    this.isSignContractClicked = true;
     let iframe = document.createElement('iframe');
     iframe.frameBorder = "0";
     iframe.width = "100%";
