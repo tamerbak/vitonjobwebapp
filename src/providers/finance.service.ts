@@ -28,11 +28,12 @@ export class FinanceService {
       idOffre: id,
       mode: 'VALEURS',
       preContract: true,
-      documentType: 'PREV',
+      documentType: 'NONE',
       env: Configs.env
     };
 
-    let encodedArg = btoa(JSON.stringify(bean));
+    let str = JSON.stringify(bean);
+    let encodedArg = btoa(str);
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
       'id': 321,
