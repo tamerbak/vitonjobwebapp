@@ -168,7 +168,7 @@ export class OffersService {
 
     let payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      id: 327,
+      id: 332,
       args: [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'creation offre',
