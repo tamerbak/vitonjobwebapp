@@ -35,12 +35,10 @@ export class OfferList {
     if (!this.currentUser) {
       this.router.navigate(['app/home']);
     }
-
   }
 
   ngOnInit() {
-
-    //obj = "add" od "detail"
+    //get params : obj = "add" od "detail"
     this.route.params.forEach((params: Params) => {
       this.typeOfferModel = params['typeOfferModel'];
     });
@@ -58,9 +56,8 @@ export class OfferList {
     this.globalOfferList.push({header: 'Mes brouillons', list: []});
     this.offerList = this.projectTarget == 'employer'
       ? this.sharedService.getCurrentUser().employer.entreprises[0].offers
-      : this.sharedService.getCurrentUser().jobyer.offers
-    ;
-    console.log(this.offerList);
+      : this.sharedService.getCurrentUser().jobyer.offers;
+
     for (let i = 0; i < this.offerList.length; i++) {
       let offer = this.offerList[i];
 
@@ -112,9 +109,6 @@ export class OfferList {
         };
         this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
           offer.correspondantsCount = data.length;
-          this.globalOfferList[0].list.sort((a, b) => {
-            return b.correspondantsCount - a.correspondantsCount;
-          })
         });
       } else {
         offer.color = 'grey';
@@ -123,6 +117,12 @@ export class OfferList {
       }
 
     }
+  }
+
+  sortOffers(){
+    this.globalOfferList[0].list.sort((a, b) => {
+     return b.correspondantsCount - a.correspondantsCount;
+     })
   }
 
   goToDetailOffer(offer) {
@@ -203,12 +203,5 @@ export class OfferList {
 
   addAlert(type, msg): void {
     this.alerts = [{type: type, msg: msg}];
-  }
-
-  isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
   }
 }
