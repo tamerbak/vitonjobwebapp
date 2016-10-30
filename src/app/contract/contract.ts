@@ -9,6 +9,8 @@ import {Utils} from "../utils/utils";
 import {AlertComponent} from "ng2-bootstrap";
 import {SmsService} from "../../providers/sms-service";
 
+declare var Messenger: any;
+
 /**
  * @author daoudi amine
  * @description Generate contract informations and call yousign service
@@ -533,6 +535,7 @@ export class Contract {
     if (!previousNotif) {
       previousNotif = [];
     }
+    let nextNotifInto;
 
     // Check the delay between 2 notification
     if (previousNotif && previousNotif.length > 0) {
@@ -542,6 +545,7 @@ export class Contract {
           let currentTimestamp = currentDate.getTime();
           if (nextNotif > currentTimestamp) {
             toSend = false;
+            nextNotifInto = Math.ceil((nextNotif - currentTimestamp) / (1000 * 60));
           }
         }
       }
@@ -549,6 +553,11 @@ export class Contract {
 
     if (toSend == true) {
       this.smsService.sendSms(this.jobyer.tel, message);
+      Messenger().post({
+        message: 'Une notification a été envoyée au jobyer',
+        type: 'success',
+        showCloseButton: true
+      });
 
       previousNotif.push({
         'offerId': this.currentOffer.idOffer,
@@ -556,10 +565,12 @@ export class Contract {
       });
       this.sharedService.setPreviousNotifs(previousNotif);
     } else {
-      alert(
-        'Une notification a déjà envoyée au jobyer.'
-        + ' Veuillez attendre ' + delayBetweenNotif + ' minutes de pouvoir le relancer.'
-      );
+      Messenger().post({
+        message: 'Une notification a déjà envoyée au jobyer.'
+        + ' Veuillez attendre ' + (nextNotifInto) + ' minutes avant de pouvoir le relancer.',
+        type: 'info',
+        showCloseButton: true
+      });
     }
   }
 
