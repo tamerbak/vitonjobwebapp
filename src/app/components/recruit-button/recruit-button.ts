@@ -26,33 +26,33 @@ export class RecruitButton{
   recruitJobyer() {
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser && this.currentUser.employer) {
-      let o = this.sharedService.getCurrentOffer();
-      //if there is no selected offer
-      if (!o || o == null) {
-        this.obj = "offer";
-      } else {
-        //verify if employer profile is filled
-        let userData = this.currentUser;
-        let currentEmployer = this.currentUser.employer;
-        //verification of employer informations
-        let redirectToCivility = (currentEmployer && currentEmployer.entreprises[0]) ?
-        (Utils.isEmpty(userData.titre)) ||
-        (Utils.isEmpty(userData.prenom)) ||
-        (Utils.isEmpty(userData.nom)) ||
-        (Utils.isEmpty(currentEmployer.entreprises[0].nom)) ||
-        (Utils.isEmpty(currentEmployer.entreprises[0].siret)) ||
-        (Utils.isEmpty(currentEmployer.entreprises[0].naf)) ||
-        (currentEmployer.entreprises[0].conventionCollective.id == 0) ||
-        (currentEmployer.entreprises[0].siegeAdress.id == 0) ||
-        (currentEmployer.entreprises[0].workAdress.id == 0) : true;
-        let isDataValid = !redirectToCivility;
-        if (isDataValid) {
+      //verify if employer profile is filled
+      let userData = this.currentUser;
+      let currentEmployer = this.currentUser.employer;
+      //verification of employer informations
+      let redirectToCivility = (currentEmployer && currentEmployer.entreprises[0]) ?
+      (Utils.isEmpty(userData.titre)) ||
+      (Utils.isEmpty(userData.prenom)) ||
+      (Utils.isEmpty(userData.nom)) ||
+      (Utils.isEmpty(currentEmployer.entreprises[0].nom)) ||
+      (Utils.isEmpty(currentEmployer.entreprises[0].siret)) ||
+      (Utils.isEmpty(currentEmployer.entreprises[0].naf)) ||
+      (currentEmployer.entreprises[0].conventionCollective.id == 0) ||
+      (currentEmployer.entreprises[0].siegeAdress.id == 0) ||
+      (currentEmployer.entreprises[0].workAdress.id == 0) : true;
+      let isDataValid = !redirectToCivility;
+      if (isDataValid) {
+        let o = this.sharedService.getCurrentOffer();
+        if(o && o != null) {
           //show the contract notification
           this.obj = "contract";
-        } else {
-          //show profil notif
-          this.obj = "profile";
+        }else{
+          //if there is no selected offer
+          this.obj = "offer";
         }
+      }else{
+        //show profil notif
+        this.obj = "profile";
       }
     } else {
       //show auth notif

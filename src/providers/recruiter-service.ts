@@ -160,7 +160,7 @@ export class RecruiterService {
 
     tel = tel.replace('+', '00');
     let url = Configs.smsURL;
-    let msg = user.titre + " " + user.nom + " " + user.prenom + " vous invite à télécharger et installer l'application VitOnJob. http://www.vitonjob.com/telecharger/telecharger-appli-employeurs/\n Votre mot de passe est " + passwd;
+    let msg = user.titre + " " + user.nom + " " + user.prenom + " vous invite à télécharger et installer l'application Vit-On-Job. http://www.vitonjob.com/telecharger/telecharger-appli-employeurs/\n Votre mot de passe est " + passwd;
     let payload = "<fr.protogen.connector.model.SmsModel>"
       + 	"<telephone>"+tel+"</telephone>"
       + 	"<text>" + msg +"</text>"

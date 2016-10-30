@@ -60,6 +60,12 @@ export class MissionDetails{
 
   //end mission
   endMissionMsg: string;
+  /*
+   * PREREQUIS
+   */
+  prerequisObligatoires : any = [];
+
+  isSignContractClicked: boolean = false;
 
   constructor(private sharedService: SharedService,
               private missionService: MissionService,
@@ -77,6 +83,17 @@ export class MissionDetails{
       this.contract = this.sharedService.getCurrentMission();
 
       this.refreshGraphicalData();
+
+      /*
+       * Prerequis
+       */
+      if(this.isNewMission){
+        this.missionService.getPrerequisObligatoires(this.contract.pk_user_contrat).then(data=>{
+          this.prerequisObligatoires = data;
+        });
+      } else {
+        this.prerequisObligatoires = [];
+      }
 
       var forPointing = this.contract.option_mission != "1.0" ? true : false;
       this.missionService.listMissionHours(this.contract, forPointing).then(
@@ -581,6 +598,7 @@ this.nav.present(toast);
     //debugger;
     //jQuery('#modal-contract').modal('show');
     //Create to Iframe to show the contract in the modal
+    this.isSignContractClicked = true;
     let iframe = document.createElement('iframe');
     iframe.frameBorder = "0";
     iframe.width = "100%";

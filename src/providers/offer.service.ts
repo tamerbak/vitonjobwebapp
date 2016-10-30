@@ -183,7 +183,97 @@ export class OffersService {
       let headers = new Headers();
       headers = Configs.getHttpJsonHeaders();
       this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
+        .subscribe((data:any) => {
+          let idOffer = JSON.parse(data._body).idOffer;
+          if(offerData.jobData.prerequisObligatoires && offerData.jobData.prerequisObligatoires.length>0){
+
+            this.updatePrerequisObligatoires(idOffer,offerData.jobData.prerequisObligatoires);
+          }
+          resolve(data);
+        });
+    });
+  }
+
+  updatePrerequisObligatoires(idOffer,plist){
+    let sql = "delete from user_prerequis_obligatoires where fk_user_offre_entreprise="+idOffer;
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
         .subscribe(data => {
+
+          for(let i = 0 ; i < plist.length ; i++){
+            this.getPrerequis(plist[i]).then(id=>{
+              if(id>0){
+                this.doUpdatePrerequisObligatoire(idOffer, id);
+              }else{
+                this.insertPrerequis(plist[i]).then(id=>{
+                  this.doUpdatePrerequisObligatoire(idOffer, id);
+                });
+              }
+            });
+          }
+          resolve(data);
+        });
+    });
+  }
+
+  getPrerequis(p){
+    let sql = "select pk_user_prerquis as id from user_prerquis where lower_unaccent(libelle) = lower_unaccent('"+p+"')";
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+
+          let id = -1;
+          if(data.data && data.data.length>0)
+            id = data.data[0].id;
+          resolve(id);
+        });
+    });
+  }
+
+  insertPrerequis(p){
+    let sql = "insert into user_prerquis (libelle) values ('"+p+"') returning pk_user_prerquis";
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+
+          let id = -1;
+          if(data.data && data.data.length>0)
+            id = data.data[0].pk_user_prerquis;
+          resolve(id);
+        });
+    });
+  }
+
+  doUpdatePrerequisObligatoire(idOffer, idp){
+    let sql = "insert into user_prerequis_obligatoires (fk_user_offre_entreprise, fk_user_prerquis) values ("+idOffer+","+idp+")";
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+
           resolve(data);
         });
     });
@@ -217,6 +307,7 @@ export class OffersService {
         .subscribe(data => {
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
+
           resolve(data);
         });
     });
@@ -253,6 +344,11 @@ export class OffersService {
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
+          debugger;
+          if(offer.jobData.prerequisObligatoires){
+
+            this.updatePrerequisObligatoires(offer.idOffer,offer.jobData.prerequisObligatoires);
+          }
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
           resolve(data);
@@ -713,6 +809,30 @@ export class OffersService {
           if(data.data && data.data.length>0)
             list = data.data;
           resolve(list);
+        });
+    });
+  }
+
+  selectPrerequis(kw){
+    let sql = "select pk_user_prerquis as id, libelle from user_prerquis where lower_unaccent(libelle) like lower_unaccent('%"+kw+"%') or lower_unaccent(libelle) % lower_unaccent('"+kw+"')";
+
+    return sql;
+  }
+
+  loadOfferPrerequisObligatoires(oid){
+    let sql = "select libelle from user_prerquis where pk_user_prerquis in (select fk_user_prerquis from user_prerequis_obligatoires where fk_user_offre_entreprise="+oid+")";
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          // we've got back the raw data, now generate the core schedule data
+          // and save the data for later reference
+          console.log(data);
+          resolve(data.data);
         });
     });
   }

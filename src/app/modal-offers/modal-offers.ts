@@ -99,7 +99,7 @@ export class ModalOffers{
 
   gotoNewOffer() {
     jQuery('#modal-offers').modal('hide');
-    this.router.navigate(['app/offer/edit', {obj:'add'}]);
+    this.router.navigate(['app/offer/edit', {obj:'recruit'}]);
   }
 
 
