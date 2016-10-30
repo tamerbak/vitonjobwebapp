@@ -6,8 +6,8 @@ import {ContractService} from "../../providers/contract-service";
 import {MedecineService} from "../../providers/medecine.service";
 import {ParametersService} from "../../providers/parameters-service";
 import {Utils} from "../utils/utils";
-import {isUndefined} from "es7-reflect-metadata/dist/dist/helper/is-undefined";
 import {AlertComponent} from "ng2-bootstrap";
+import {SmsService} from "../../providers/sms-service";
 
 /**
  * @author daoudi amine
@@ -17,7 +17,7 @@ import {AlertComponent} from "ng2-bootstrap";
 @Component({
   template: require('./contract.html'),
   styles: [require('./contract.scss')],
-  providers: [ContractService, MedecineService, ParametersService, Helpers],
+  providers: [ContractService, MedecineService, ParametersService, Helpers, SmsService],
   directives: [AlertComponent],
 })
 export class Contract {
@@ -61,6 +61,7 @@ export class Contract {
               private service: ParametersService,
               private contractService: ContractService,
               private sharedService: SharedService,
+              private smsService: SmsService,
               private router: Router) {
 
     this.currentUser = this.sharedService.getCurrentUser();
@@ -252,6 +253,10 @@ export class Contract {
 
       this.initContract();
     }
+
+    // Notify the jobyer that a new contract was created
+    this.notifyJobyerNewContract();
+
   }
 
   recoursSelected(evt) {
@@ -498,6 +503,64 @@ export class Contract {
     this.contractData.medicalSurv = e.target.value;
   }
 
+  notifyJobyerNewContract() {
+    var message = "Une proposition de recrutement vous a été adressée.";
+    let jobyer = this.jobyer;
+    let contractData = this.contractData;
+    let jobyerBirthDate = this.jobyerBirthDate;
+    if (
+      !jobyer.nom || !jobyer.prenom || !jobyer.numSS || !jobyerBirthDate || !jobyer.lieuNaissance || !jobyer.nationaliteLibelle || !contractData.numeroTitreTravail || !contractData.debutTitreTravail || !contractData.finTitreTravail || !contractData.qualification
+    ) {
+      message = message + " Certaines informations de votre compte sont manquantes, veuillez les renseigner.";
+    }
+    this.notifyJobyer(message);
 
+  }
+
+  notifyJobyerMissingData() {
+    let message = "Rappel :"
+        + " Une proposition de recrutement vous a été adressée"
+        + " Certaines informations de votre compte sont toujours manquantes, veuillez les renseigner."
+      ;
+    this.notifyJobyer(message);
+  }
+
+  notifyJobyer(message) {
+    let currentDate = new Date();
+    let delayBetweenNotif = 60; // minutes
+    let toSend = true;
+    let previousNotif = this.sharedService.getPreviousNotifs();
+    if (!previousNotif) {
+      previousNotif = [];
+    }
+
+    // Check the delay between 2 notification
+    if (previousNotif && previousNotif.length > 0) {
+      for (let i = 0; i < previousNotif.length; i++) {
+        if (previousNotif[i].offerId == this.currentOffer.idOffer) {
+          let nextNotif = previousNotif[i].lastNotif + (1000 * 60 * delayBetweenNotif);
+          let currentTimestamp = currentDate.getTime();
+          if (nextNotif > currentTimestamp) {
+            toSend = false;
+          }
+        }
+      }
+    }
+
+    if (toSend == true) {
+      this.smsService.sendSms(this.jobyer.tel, message);
+
+      previousNotif.push({
+        'offerId': this.currentOffer.idOffer,
+        'lastNotif': currentDate.getTime()
+      });
+      this.sharedService.setPreviousNotifs(previousNotif);
+    } else {
+      alert(
+        'Une notification a déjà envoyée au jobyer.'
+        + ' Veuillez attendre ' + delayBetweenNotif + ' minutes de pouvoir le relancer.'
+      );
+    }
+  }
 
 }

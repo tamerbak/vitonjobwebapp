@@ -221,4 +221,12 @@ export class SharedService {
   setMapView(value) {
     this.setStorageVariable("mapView", value);
   }
+
+  getPreviousNotifs() {
+    return this.getStorageVariable("lastNotif");
+  }
+
+  setPreviousNotifs(value) {
+    this.setStorageVariable("lastNotif", value);
+  }
 }

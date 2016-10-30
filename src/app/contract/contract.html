@@ -1,4 +1,4 @@
-<div class="row contract-page computer">
+<div class="row contract-page">
   <form #formCtrl="ngForm" name="contractForm"  (ngSubmit)="goToYousignPage()">
     <div class="row">
       <div class="col-xs-12 title-form">
@@ -109,12 +109,13 @@
         </div>
 
       </div>
-      <div class="col-xs-12">
-        <alert [type]="'info alert-sm'"
-          *ngIf="!jobyer.nom || !jobyer.prenom || !jobyer.numSS || !jobyerBirthDate || !jobyer.lieuNaissance || !jobyer.nationaliteLibelle || !contractData.numeroTitreTravail || !contractData.debutTitreTravail || !contractData.finTitreTravail || !contractData.qualification"
-        >
+      <div class="col-xs-12"
+           *ngIf="!jobyer.nom || !jobyer.prenom || !jobyer.numSS || !jobyerBirthDate || !jobyer.lieuNaissance || !jobyer.nationaliteLibelle || !contractData.numeroTitreTravail || !contractData.debutTitreTravail || !contractData.finTitreTravail || !contractData.qualification"
+      >
+        <alert [type]="'info alert-sm'">
           <div [innerHTML]="'Le Jobyer est en train de saisir ses informations'"></div>
         </alert>
+        <span class="btn btn-primary" (click)="notifyJobyerMissingData()">Relancer le jobyer</span>
       </div>
     </div>
     <div class="row">
