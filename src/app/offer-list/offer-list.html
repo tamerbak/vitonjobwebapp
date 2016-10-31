@@ -14,6 +14,10 @@
     <button type="button" class="add-offer btn btn-danger btn-sm" (click)="goToNewOffer()">Créer une offre
       {{currentUser.estEmployeur ? " d'emploi" : " de service"}}
     </button>
+      <button class="btn btn-info mb-xs" role="button" (click)="sortOffers()">
+          Trier les offres
+      </button>
+
   </div>
   <div class="col-lg-6 col-xs-12">
     <div class="btn-group pull-lg-right pull-md-right pull-sm-right pull-xl-right btn-grp">
@@ -63,8 +67,8 @@
         <div class="clearfix">
           <div class="col-md-1 pull-sm-right pull-md-right pull-lg-right pull-xl-right">
             <div class="input-group-btn grp-search">
-              <button type="button" class="btn btn-secondary btn-sm btn-search" style="background-color: #40aea9; color: white; border-radius: 0.2rem;" (click)="launchSearch(item)">{{(item.correspondantsCount < 0) ? '' :
-                        item.correspondantsCount}} Resultats trouvés
+              <button type="button" class="btn btn-secondary btn-sm btn-search" style="background-color: #40aea9; color: white; border-radius: 0.2rem;" (click)="launchSearch(item)" *ngIf="!item.obsolete">{{(item.correspondantsCount < 0) ? '' :
+                        item.correspondantsCount}} Résultats trouvés
               </button>
             </div>
           </div>

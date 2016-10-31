@@ -205,6 +205,15 @@
             </select>
           </div>
         </div>
+        <div class="form-group row required">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+            Adresse de la mission
+          </label>
+          <div class="col-md-7 col-xs-12">
+            <input id="autocompleteOfferAdress" type="text" class="form-control" placeholder="Rechercher une adresse" (keyup)="watchOfferAddress($event)"
+                   [(ngModel)]="offerAddress" (input)="autocompleteOfferAddress()"/>
+          </div>
+        </div>
       </div>
 
       <fieldset *ngIf="convParametersVisible()">
@@ -529,7 +538,7 @@
             <div class="container-fluid">
               <div class="row">
                 <div class="col-xs-12">
-                  <button type="submit" class="btn btn-success fwidth" (click)="editOffer()">
+                  <button type="button" class="btn btn-success fwidth" (click)="editOffer()">
                     Enregistrer
                   </button>
                 </div>
@@ -545,16 +554,19 @@
                     {{offrePrivacyTitle}}
                   </button>
                 </div>
-                <div class="col-lg-6 col-md-6 col-xs-12">
-                  <button type="submit" class="btn btn-primary fwidth" (click)="launchSearch()">
-                    Lancer une recherche
-                  </button>
-                </div>
+
                 <div class="col-lg-6 col-md-6 col-xs-12">
                   <button type="submit" class="btn btn-primary fwidth" (click)="autoSearchMode()">
                     {{autoSearchModeTitle}}
                   </button>
                 </div>
+
+                <div class="col-lg-6 col-md-6 col-xs-12">
+                  <button type="submit" class="btn btn-primary fwidth" (click)="launchSearch()" *ngIf="!offer.obsolete">
+                    Lancer une recherche
+                  </button>
+                </div>
+
                 <div class="col-lg-6 col-md-6 col-xs-12">
                   <button type="submit" class="btn btn-primary fwidth" (click)="showQuote()" *ngIf="currentUser.estEmployeur">
                     Enregistrer et consulter le devis

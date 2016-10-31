@@ -8,7 +8,13 @@ import {ParametersService} from "../../providers/parameters-service";
 import {ProfileService} from "../../providers/profile.service";
 import {LoadListService} from "../../providers/load-list.service";
 import {Utils} from "../utils/utils";
+import {NKDatetime} from "ng2-datetime/ng2-datetime";
 import {isUndefined} from "es7-reflect-metadata/dist/dist/helper/is-undefined";
+import {OffersService} from "../../providers/offer.service";
+import {AlertComponent} from "ng2-bootstrap";
+import {SmsService} from "../../providers/sms-service";
+
+declare var Messenger: any;
 
 /**
  * @author daoudi amine
@@ -18,7 +24,8 @@ import {isUndefined} from "es7-reflect-metadata/dist/dist/helper/is-undefined";
 @Component({
   template: require('./contract.html'),
   styles: [require('./contract.scss')],
-  providers: [ContractService, MedecineService, ParametersService, Helpers,ProfileService,LoadListService]
+  directives: [AlertComponent, NKDatetime],
+  providers: [ContractService, MedecineService, ParametersService, Helpers,SmsService, OffersService,ProfileService,LoadListService]
 })
 export class Contract {
 
@@ -49,6 +56,7 @@ export class Contract {
   rapatriement : boolean=false;
   periodicites : any = [];
 
+  datepickerOpts: any;
   //jobyer Data
   pays:any;
   index:any;
@@ -81,6 +89,8 @@ export class Contract {
               private sharedService: SharedService,
               private profileService: ProfileService,
               private listService: LoadListService,
+              private offersService : OffersService,
+              private smsService: SmsService,
               private router: Router) {
 
     this.currentUser = this.sharedService.getCurrentUser();
@@ -127,8 +137,9 @@ export class Contract {
         this.jobyer.numSS = datum.numss = "null" ? '':datum.numss;
         this.jobyer.nationaliteLibelle = datum.nationalite = "null"? '':datum.nationalite;
         this.jobyer.titreTravail = '';
-        this.jobyer.debutTitreTravail = new Date();
-        this.jobyer.finTitreTravail = new Date();
+        this.jobyer.debutTitreTravail = '';
+        this.jobyer.finTitreTravail = '';
+
         if(datum.cni && datum.cni.length>0 && datum.cni != "null")
           this.jobyer.titreTravail = datum.cni;
         else if (datum.numero_titre_sejour && datum.numero_titre_sejour.length>0 && datum.numero_titre_sejour != "null")
@@ -136,15 +147,17 @@ export class Contract {
         if(datum.debut_validite && datum.debut_validite.length>0 && datum.debut_validite != "null"){
           let d = new Date(datum.debut_validite);
           this.jobyer.debutTitreTravail = d;
+          this.contractData.debutTitreTravail = this.simpleDateFormat(this.jobyer.debutTitreTravail);
         }
-        if(datum.fin_validite && datum.debut_validite.length>0 && datum.fin_validite != "null"){
-          let d = new Date(datum.debut_validite);
+        if(datum.fin_validite && datum.fin_validite.length>0 && datum.fin_validite != "null"){
+          let d = new Date(datum.fin_validite);
           this.jobyer.finTitreTravail = d;
+          this.contractData.finTitreTravail = this.simpleDateFormat(this.jobyer.finTitreTravail);
         }
 
         this.contractData.numeroTitreTravail = this.jobyer.titreTravail;
-        this.contractData.debutTitreTravail = this.dateFormat(this.jobyer.debutTitreTravail);
-        this.contractData.finTitreTravail = this.dateFormat(this.jobyer.finTitreTravail);
+
+
 
         this.profileService.loadAdditionalUserInformations(this.jobyer.id).then((data: any) => {
           data = data.data[0];
@@ -214,13 +227,12 @@ export class Contract {
     if (this.currentUser) {
       this.employer = this.currentUser.employer;
       this.companyName = this.employer.entreprises[0].nom;
-      this.workAdress = this.employer.entreprises[0].workAdress.fullAdress;
       this.hqAdress = this.employer.entreprises[0].siegeAdress.fullAdress;
       let civility = this.currentUser.titre;
       this.employerFullName = civility + " " + this.currentUser.nom + " " + this.currentUser.prenom;
       this.medecineService.getMedecine(this.employer.entreprises[0].id).then((data: any)=> {
         if (data && data != null) {
-          //debugger;
+          //
           this.contractData.centreMedecineEntreprise = data.libelle;
           this.contractData.adresseCentreMedecineEntreprise = data.adresse + ' ' + data.code_postal;
         }
@@ -235,7 +247,7 @@ export class Contract {
       let calendar = this.currentOffer.calendarData;
       let minDay = new Date(calendar[0].date);
       let maxDay = new Date(calendar[0].date);
-      // debugger;
+      //
       for(let i=1 ; i <calendar.length;i++){
         let date = new Date(calendar[i].date);
         if(minDay.getTime()>date.getTime())
@@ -257,6 +269,9 @@ export class Contract {
       else
         trial = 5;
 
+      this.offersService.loadOfferAdress(this.currentOffer.idOffer, "employeur").then((data:any)=>{
+        this.workAdress = data;
+      });
     }
 
     // Initialize contract data
@@ -292,8 +307,8 @@ export class Contract {
       workTimeHours: 0,
       workTimeVariable: 0,
       usualWorkTimeHours: "8H00/17H00 variables",
-      workStartHour: "08:00",
-      workEndHour: "17:00",
+      workStartHour: this.initWorkStartHour(),
+      workEndHour: this.initWorkEndHour(),
       workHourVariable: "",
       postRisks: "",
       medicalSurv: "",
@@ -333,10 +348,14 @@ export class Contract {
 
       this.initContract();
     }
+
+    // Notify the jobyer that a new contract was created
+    this.notifyJobyerNewContract();
+
   }
 
   recoursSelected(evt) {
-    let selectedRecoursLib = evt;
+    let selectedRecoursLib = evt.target.value;
     let id = 40;
     for (let i = 0; i < this.recours.length; i++){
       if (this.recours[i].libelle == selectedRecoursLib) {
@@ -430,7 +449,11 @@ export class Contract {
     let calendar = this.currentOffer.calendarData;
     let minDay = new Date(calendar[0].date);
     let maxDay = new Date(calendar[0].date);
-    // debugger;
+    this.offersService.loadOfferAdress(this.currentOffer.idOffer, "employeur").then((data:any)=>{
+      this.workAdress = data;
+    });
+    //
+    //
     for(let i=1 ; i <calendar.length;i++){
       let date = new Date(calendar[i].date);
       if(minDay.getTime()>date.getTime())
@@ -452,6 +475,7 @@ export class Contract {
     else
       trial = 5;
 
+
     this.contractData = {
       num: this.numContrat,
       centreMedecineEntreprise: "",
@@ -465,8 +489,8 @@ export class Contract {
       indemniteCongesPayes: "10.00%",
       moyenAcces: "",
       numeroTitreTravail: this.jobyer.titreTravail,
-      debutTitreTravail: this.dateFormat(this.jobyer.debutTitreTravail),
-      finTitreTravail: this.dateFormat(this.jobyer.finTitreTravail),
+      debutTitreTravail: this.jobyer.debutTitreTravail ? this.dateFormat(this.jobyer.debutTitreTravail) : "",
+      finTitreTravail: this.jobyer.finTitreTravail ? this.dateFormat(this.jobyer.finTitreTravail) : "",
       periodesNonTravaillees: "",
       debutSouplesse: "",
       finSouplesse: "",
@@ -484,8 +508,8 @@ export class Contract {
       workTimeHours: this.calculateOfferHours(),
       workTimeVariable: 0,
       usualWorkTimeHours: "8H00/17H00 variables",
-      workStartHour: "08:00",
-      workEndHour: "17:00",
+      workStartHour: this.initWorkStartHour(),
+      workEndHour: this.initWorkEndHour(),
       workHourVariable: "",
       postRisks: "",
       medicalSurv: "",
@@ -516,13 +540,28 @@ export class Contract {
     };
 
     this.medecineService.getMedecine(this.employer.entreprises[0].id).then((data: any)=> {
-      // debugger;
+      //
       if (data && data != null) {
         this.contractData.centreMedecineEntreprise = data.libelle;
         this.contractData.adresseCentreMedecineEntreprise = data.adresse + ' ' + data.code_postal;
       }
 
     });
+  }
+
+  initWorkStartHour(){
+    let today = new Date();
+    today.setHours(8);
+    today.setMinutes(0);
+    return today;
+
+  }
+
+  initWorkEndHour(){
+    let today = new Date();
+    today.setHours(17);
+    today.setMinutes(0);
+    return today;
   }
 
   parseNumber(str) {
@@ -547,6 +586,7 @@ export class Contract {
   }
 
   goToYousignPage() {
+
     this.contractService.getNumContract().then((data: any) => {
       this.dataValidation = true;
 
@@ -577,6 +617,80 @@ export class Contract {
     this.contractData.medicalSurv = e.target.value;
   }
 
+  notifyJobyerNewContract() {
+    var message = "Une proposition de recrutement vous a été adressée.";
+    let jobyer = this.jobyer;
+    let contractData = this.contractData;
+    let jobyerBirthDate = this.jobyerBirthDate;
+    if (
+      !jobyer.nom || !jobyer.prenom || !jobyer.numSS || !jobyerBirthDate || !jobyer.lieuNaissance || !jobyer.nationaliteLibelle || !contractData.numeroTitreTravail || !contractData.debutTitreTravail || !contractData.finTitreTravail || !contractData.qualification
+    ) {
+      message = message + " Certaines informations de votre compte sont manquantes, veuillez les renseigner.";
+    }
+    this.notifyJobyer(message);
 
+  }
+
+  notifyJobyerMissingData() {
+    let message = "Rappel :"
+        + " Une proposition de recrutement vous a été adressée"
+        + " Certaines informations de votre compte sont toujours manquantes, veuillez les renseigner."
+      ;
+    this.notifyJobyer(message);
+  }
+
+  notifyJobyer(message) {
+    let currentDate = new Date();
+    let delayBetweenNotif = 60; // minutes
+    let toSend = true;
+    let previousNotif = this.sharedService.getPreviousNotifs();
+    if (!previousNotif) {
+      previousNotif = [];
+    }
+    let nextNotifInto;
+
+    // Check the delay between 2 notification
+    if (previousNotif && previousNotif.length > 0) {
+      for (let i = 0; i < previousNotif.length; i++) {
+        if (previousNotif[i].offerId == this.currentOffer.idOffer) {
+          let nextNotif = previousNotif[i].lastNotif + (1000 * 60 * delayBetweenNotif);
+          let currentTimestamp = currentDate.getTime();
+          if (nextNotif > currentTimestamp) {
+            toSend = false;
+            nextNotifInto = Math.ceil((nextNotif - currentTimestamp) / (1000 * 60));
+          }
+        }
+      }
+    }
+
+    if (toSend == true) {
+      this.smsService.sendSms(this.jobyer.tel, message);
+      Messenger().post({
+        message: 'Une notification a été envoyée au jobyer',
+        type: 'success',
+        showCloseButton: true
+      });
+
+      previousNotif.push({
+        'offerId': this.currentOffer.idOffer,
+        'lastNotif': currentDate.getTime()
+      });
+      this.sharedService.setPreviousNotifs(previousNotif);
+    } else {
+      Messenger().post({
+        message: 'Une notification a déjà été envoyée au jobyer.'
+        + ' Veuillez attendre ' + (nextNotifInto) + ' minutes avant de pouvoir le relancer.',
+        type: 'info',
+        showCloseButton: true
+      });
+    }
+  }
+
+  simpleDateFormat(d:Date){
+    let m = d.getMonth() + 1;
+    let da = d.getDate();
+    let sd = (da < 10 ? '0' : '')+da+'/' + (m < 10 ? '0' : '') + m + "/" +d.getFullYear() ;
+    return sd
+  }
 
 }
