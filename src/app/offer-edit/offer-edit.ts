@@ -183,7 +183,7 @@ export class OfferEdit{
 
       }
       else {
-        this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée" : "Rendre l'offre publique";
+        this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée" : "Mettre l'offre en ligne";
       }
       this.autoSearchModeTitle = this.offer.rechercheAutomatique ? "Désactiver la recherche auto" : "Activer la recherche auto";
       if (this.offer.obsolete) {
@@ -886,7 +886,7 @@ export class OfferEdit{
           showCloseButton: true
         });
       } else {
-        this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée" : "Rendre l'offre publique";
+        this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée" : "Mettre l'offre en ligne";
         Messenger().post({
           message: "Votre offre a bien été déplacée dans «Mes offres en brouillon».",
           type: 'success',
