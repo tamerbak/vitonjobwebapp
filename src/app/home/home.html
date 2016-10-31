@@ -18,7 +18,7 @@
               <input type="text" class="form-control" placeholder="Veuillez saisir votre recherche..."
                      [(ngModel)]="scQuery" (keyup)="checkForEnterKey($event)">
               <span class="input-group-btn">
-								<button class="btn btn-sm btn-secondary" type="button" (click)="doSemanticSearch()">Go!</button>
+								<button class="btn btn-sm btn-secondary" type="button" style="height: 100%;" (click)="doSemanticSearch()">Go !</button>
 							</span>
               <div class="widget-body btn btn-sm loaderPosition" [hidden]="hideLoader"
                    style="background-color: #f8f8f8; margin-left: 5px;">
