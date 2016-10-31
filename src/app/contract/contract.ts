@@ -7,6 +7,7 @@ import {MedecineService} from "../../providers/medecine.service";
 import {ParametersService} from "../../providers/parameters-service";
 import {Utils} from "../utils/utils";
 import {isUndefined} from "es7-reflect-metadata/dist/dist/helper/is-undefined";
+import {OffersService} from "../../providers/offer.service";
 
 /**
  * @author daoudi amine
@@ -16,7 +17,7 @@ import {isUndefined} from "es7-reflect-metadata/dist/dist/helper/is-undefined";
 @Component({
   template: require('./contract.html'),
   styles: [require('./contract.scss')],
-  providers: [ContractService, MedecineService, ParametersService, Helpers]
+  providers: [ContractService, OffersService, MedecineService, ParametersService, Helpers]
 })
 export class Contract {
 
@@ -59,6 +60,7 @@ export class Contract {
               private service: ParametersService,
               private contractService: ContractService,
               private sharedService: SharedService,
+              private offersService : OffersService,
               private router: Router) {
 
     this.currentUser = this.sharedService.getCurrentUser();
@@ -131,7 +133,6 @@ export class Contract {
     if (this.currentUser) {
       this.employer = this.currentUser.employer;
       this.companyName = this.employer.entreprises[0].nom;
-      this.workAdress = this.employer.entreprises[0].workAdress.fullAdress;
       this.hqAdress = this.employer.entreprises[0].siegeAdress.fullAdress;
       let civility = this.currentUser.titre;
       this.employerFullName = civility + " " + this.currentUser.nom + " " + this.currentUser.prenom;
@@ -174,6 +175,9 @@ export class Contract {
       else
         trial = 5;
 
+      this.offersService.loadOfferAdress(this.currentOffer.idOffer, "employeur").then((data:any)=>{
+        this.workAdress = data;
+      });
     }
 
     // Initialize contract data
@@ -347,6 +351,9 @@ export class Contract {
     let calendar = this.currentOffer.calendarData;
     let minDay = new Date(calendar[0].date);
     let maxDay = new Date(calendar[0].date);
+    this.offersService.loadOfferAdress(this.currentOffer.idOffer, "employeur").then((data:any)=>{
+      this.workAdress = data;
+    });
     // debugger;
     for(let i=1 ; i <calendar.length;i++){
       let date = new Date(calendar[i].date);
