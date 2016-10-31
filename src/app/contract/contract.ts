@@ -5,6 +5,8 @@ import {SharedService} from "../../providers/shared.service";
 import {ContractService} from "../../providers/contract-service";
 import {MedecineService} from "../../providers/medecine.service";
 import {ParametersService} from "../../providers/parameters-service";
+import {ProfileService} from "../../providers/profile.service";
+import {LoadListService} from "../../providers/load-list.service";
 import {Utils} from "../utils/utils";
 import {isUndefined} from "es7-reflect-metadata/dist/dist/helper/is-undefined";
 
@@ -16,7 +18,7 @@ import {isUndefined} from "es7-reflect-metadata/dist/dist/helper/is-undefined";
 @Component({
   template: require('./contract.html'),
   styles: [require('./contract.scss')],
-  providers: [ContractService, MedecineService, ParametersService, Helpers]
+  providers: [ContractService, MedecineService, ParametersService, Helpers,ProfileService,LoadListService]
 })
 export class Contract {
 
@@ -39,12 +41,30 @@ export class Contract {
   rate: number = 0.0;
   recours: any;
   justificatifs: any;
+  nationalities: any;
 
   dataValidation :boolean = false;
 
   embaucheAutorise : boolean=false;
   rapatriement : boolean=false;
   periodicites : any = [];
+
+  //jobyer Data
+  pays:any;
+  index:any;
+  isFrench:any;
+  isEuropean:any;
+  regionId:any;
+  birthdepId:any;
+  isResident:any;
+  dateStay:any;
+  dateFromStay:any;
+  dateToStay:any;
+  whoDeliverStay:any;
+  numStay:any;
+  nationalityId:any;
+  isCIN:any;
+  cni:any;
 
   dateFormat(d) {
     if(!d || typeof d === 'undefined')
@@ -59,6 +79,8 @@ export class Contract {
               private service: ParametersService,
               private contractService: ContractService,
               private sharedService: SharedService,
+              private profileService: ProfileService,
+              private listService: LoadListService,
               private router: Router) {
 
     this.currentUser = this.sharedService.getCurrentUser();
@@ -70,7 +92,18 @@ export class Contract {
     this.isEmployer = (this.projectTarget == 'employer');
 
     // Retrieve jobyer
+
     this.jobyer = this.sharedService.getCurrentJobyer();
+
+    //load countries list
+    this.listService.loadCountries("jobyer").then((data: any) => {
+      this.pays = data.data;
+    });
+
+    listService.loadNationalities().then((response: any) => {
+      this.nationalities = response.data;
+    });
+
 
 
     this.jobyerFirstName = this.jobyer.prenom;
@@ -84,13 +117,15 @@ export class Contract {
     this.jobyer.id = 0;
     this.jobyer.numSS = '';
     this.jobyer.nationaliteLibelle = '';
+    this.jobyer.lieuNaissance = '';
+
 
     this.contractService.getJobyerComplementData(this.jobyer, this.projectTarget).then((data: any)=> {
-      if (data) {
+      if (data && data.length > 0) {
         let datum = data[0];
         this.jobyer.id = datum.id;
-        this.jobyer.numSS = datum.numss;
-        this.jobyer.nationaliteLibelle = datum.nationalite;
+        this.jobyer.numSS = datum.numss = "null" ? '':datum.numss;
+        this.jobyer.nationaliteLibelle = datum.nationalite = "null"? '':datum.nationalite;
         this.jobyer.titreTravail = '';
         this.jobyer.debutTitreTravail = new Date();
         this.jobyer.finTitreTravail = new Date();
@@ -110,6 +145,54 @@ export class Contract {
         this.contractData.numeroTitreTravail = this.jobyer.titreTravail;
         this.contractData.debutTitreTravail = this.dateFormat(this.jobyer.debutTitreTravail);
         this.contractData.finTitreTravail = this.dateFormat(this.jobyer.finTitreTravail);
+
+        this.profileService.loadAdditionalUserInformations(this.jobyer.id).then((data: any) => {
+          data = data.data[0];
+          this.regionId = data.fk_user_identifiants_nationalite;
+          if (this.regionId == '40') {
+            this.isFrench = true;
+            this.isEuropean = 1;
+            this.birthdepId = data.fk_user_departement;
+          } else {
+            this.index = this.profileService.getCountryById(data.fk_user_pays, this.pays).indicatif_telephonique;
+            this.cni = data.cni;
+            if(data.fk_user_nationalite !== "null"){
+              listService.loadNationality(data.fk_user_nationalite).then((res: any) => {
+                if(res && res.data && res.data.length > 0 ){
+                  this.jobyer.nationaliteLibelle = res.data[0].libelle;
+                }
+              });
+            }else{
+              this.jobyer.nationaliteLibelle = 'non';
+            }
+            if(data.fk_user_pays !== "null"){
+              listService.loadCountry(data.fk_user_pays).then((res: any) => {
+                if(res && res.data && res.data.length > 0 ){
+                  this.jobyer.lieuNaissance = res.data[0].nom;
+                }
+              });
+            }else{
+              this.jobyer.lieuNaissance = 'non';
+            }
+            if (this.regionId == '42') {
+              this.isEuropean = 1;
+              this.isFrench = false;
+              this.isResident = (data.est_resident == 'Oui' ? true : false);
+              this.dateStay = data.date_de_delivrance;
+              this.dateFromStay = data.debut_validite;
+              this.dateToStay = data.fin_validite;
+              this.whoDeliverStay = data.instance_delivrance;
+              this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
+              this.isCIN = !Utils.isEmpty(this.cni) ? true : false;
+            } else {
+              this.isEuropean = 0;
+              this.isFrench = false;
+              this.isCIN = !Utils.isEmpty(data.numero_titre_sejour) ? false : true;
+              this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
+            }
+          }
+        })
+
       }
     });
 
@@ -431,8 +514,6 @@ export class Contract {
       titre: this.currentOffer.title,
       periodicite : ''
     };
-
-    // console.log(JSON.stringify(this.contractData));
 
     this.medecineService.getMedecine(this.employer.entreprises[0].id).then((data: any)=> {
       // debugger;

@@ -77,7 +77,27 @@
           <input type="text" name="nationality" class="form-control" [(ngModel)]="jobyer.nationaliteLibelle" aria-describedby="nat" readonly/>
           <small class="form-text text-muted"></small>
         </div>
-        <div class="form-group">
+        <div class="form-group" *ngIf="jobyer.nationaliteLibelle !== '' && isEuropean==1 && isCIN">
+          <label>CNI ou Passeport</label>
+          <input type="text" name="cni" class="form-control" [(ngModel)]="cni" readonly/>
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group" *ngIf="jobyer.nationaliteLibelle !== '' && isEuropean == 0 && isCIN">
+          <label>CNI ou Passeport</label>
+          <input id="combined-input" class="form-control" type="text" [(ngModel)]="cni" readonly>
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group" *ngIf="jobyer.nationaliteLibelle !== '' && isEuropean == 1 && !isCIN">
+          <label>N° de la carte résident</label>
+          <input id="combined-input" class="form-control" type="text" [(ngModel)]="numStay" readonly>
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group" *ngIf="jobyer.nationaliteLibelle !== '' && isEuropean == 0 && !isCIN">
+          <label>{{!isResident ? 'N° du titre de séjour' : 'N° de la carte résident'}}</label>
+          <input id="combined-input" class="form-control" type="text" [(ngModel)]="numStay" readonly>
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group" *ngIf="jobyer.nationaliteLibelle == ''">
           <label>Num. Titre de travail</label>
           <input type="text" name="numTitreTravail" class="form-control" [(ngModel)]="contractData.numeroTitreTravail" aria-describedby="num" readonly/>
           <small class="form-text text-muted"></small>
