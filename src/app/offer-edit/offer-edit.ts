@@ -1,4 +1,4 @@
-import {Component, ViewEncapsulation} from "@angular/core";
+import {Component, NgZone, ViewEncapsulation} from "@angular/core";
 import {OffersService} from "../../providers/offer.service";
 import {DomSanitizationService} from '@angular/platform-browser';
 import {SharedService} from "../../providers/shared.service";
@@ -10,7 +10,12 @@ import {ModalOptions} from "../modal-options/modal-options";
 import {ModalOfferTempQuote} from "../modal-offer-temp-quote/modal-offer-temp-quote";
 import {FinanceService} from "../../providers/finance.service";
 import {Configs} from "../../configurations/configs";
+import {MapsAPILoader} from "angular2-google-maps/core";
+import {AddressUtils} from "../utils/addressUtils";
+
+
 declare var Messenger, jQuery: any;
+declare var google: any;
 
 @Component({
   selector: '[offer-edit]',
@@ -83,13 +88,31 @@ export class OfferEdit{
   prerequisObList: any = [];
   prerequisObligatoires: any = [];
 
+  /*
+   * Offer adress
+   */
+  autocompleteOA : any;
+  offerAddress: string;
+  nameOA : string;
+  streetNumberOA : string;
+  streetOA : string;
+  zipCodeOA : string;
+  cityOA : string;
+  countryOA : string;
+  addressOptions = {
+    componentRestrictions: {country: "fr"}
+  };
+
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private searchService: SearchService,
               private sanitizer: DomSanitizationService,
               private router: Router,
               private financeService: FinanceService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private zone: NgZone,
+              private _loader: MapsAPILoader) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['app/home']);
@@ -156,7 +179,7 @@ export class OfferEdit{
         this.youtubeLinkSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.youtubeLink);
       }
       if (this.offer.visible) {
-        this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée" : "Rendre l'offre privée";
+        this.offrePrivacyTitle = this.offer.visible ? "Rendre l'offre privée" : "Rendre l'offre privée";
 
       }
       else {
@@ -172,6 +195,9 @@ export class OfferEdit{
         this.prerequisObligatoires = this.offer.jobData.prerequisObligatoires;
       else
         this.prerequisObligatoires = [];
+      this.offersService.loadOfferAdress(this.offer.idOffer, this.projectTarget).then((data:any)=>{
+        this.offerAddress = data;
+      });
       this.convertDetailSlotsForDisplay();
 
     } else {
@@ -256,7 +282,12 @@ export class OfferEdit{
   }
 
   ngAfterViewInit() {
-    let self = this;
+    var self = this;
+    this._loader.load().then(() => {
+      this.autocompleteOA = new google.maps.places.Autocomplete(document.getElementById("autocompleteOfferAdress"), this.addressOptions);
+
+    });
+
 
     // Initialize constraint between sector and job
     let sector = jQuery('.sector-select').select2();
@@ -353,7 +384,7 @@ export class OfferEdit{
   sectorSelected(sector) {
     //set sector info in jobdata
     this.offer.jobData.idSector = sector;
-    // debugger;
+    //
     var sectorsTemp = this.sectors.filter((v)=> {
       return (v.id == sector);
     });
@@ -608,7 +639,7 @@ export class OfferEdit{
     this.selectedLang = "";
   }
 
-  setOfferInLocal() {
+   setOfferInLocal() {
     //set offer in local
     if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0)
       this.offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
@@ -642,12 +673,37 @@ export class OfferEdit{
         this.dataValidation = true;
         let offer = JSON.parse(data._body);
 
+        debugger;
+
         if (this.projectTarget == 'employer') {
           if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0) {
             offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
           }
+
+          if(this.offerAddress){
+
+            this.offersService.saveOfferAdress(offer,
+              this.offerAddress, this.streetNumberOA,
+              this.streetOA, this.cityOA, this.zipCodeOA,
+              this.nameOA, this.countryOA,
+              this.currentUser.employer.entreprises[0].id,
+              "employeur").then(data=>{
+
+              offer.adresse = this.offerAddress;
+            });
+          }
           this.currentUser.employer.entreprises[0].offers.push(offer);
         } else {
+          if(this.offerAddress && this.cityOA && this.cityOA.length>0){
+            this.offersService.saveOfferAdress(offer,
+              this.offerAddress, this.streetNumberOA,
+              this.streetOA, this.cityOA, this.zipCodeOA,
+              this.nameOA, this.countryOA,
+              this.currentUser.jobyer.id,
+              "jobyer").then(data=>{
+              offer.adresse = this.offerAddress;
+            });
+          }
           this.currentUser.jobyer.offers.push(offer);
         }
         this.sharedService.setCurrentUser(this.currentUser);
@@ -665,7 +721,31 @@ export class OfferEdit{
         }
       });
     } else {
+      if (this.projectTarget == 'employer') {
+        if(this.offerAddress && this.cityOA && this.cityOA.length>0){
+          this.offersService.saveOfferAdress(this.offer,
+            this.offerAddress, this.streetNumberOA,
+            this.streetOA, this.cityOA, this.zipCodeOA,
+            this.nameOA, this.countryOA,
+            this.currentUser.employer.entreprises[0].id,
+            "employer").then(data=>{
+            this.offer.adresse = this.offerAddress;
+          });
+        }
+      } else {
+        if(this.offerAddress && this.cityOA && this.cityOA.length>0){
+          this.offersService.saveOfferAdress(this.offer,
+            this.offerAddress, this.streetNumberOA,
+            this.streetOA, this.cityOA, this.zipCodeOA,
+            this.nameOA, this.countryOA,
+            this.currentUser.jobyer.id,
+            "jobyer").then(data=>{
+            this.offer.adresse = this.offerAddress;
+          });
+        }
+      }
       this.validateJob();
+
     }
   }
 
@@ -685,6 +765,10 @@ export class OfferEdit{
       type: 'success',
       showCloseButton: true
     });
+    //redirect to offer-list and display public offers
+    var typeOffer = this.offer.visible ? 0:1;
+    this.router.navigate(['app/offer/list', {typeOfferModel: typeOffer}]);
+
   }
 
   /**
@@ -795,7 +879,7 @@ export class OfferEdit{
       this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
       this.sharedService.setCurrentUser(this.currentUser);
       if (offer.visible) {
-        this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée" : "Rendre l'offre privée";
+        this.offrePrivacyTitle = this.offer.visible ? "Rendre l'offre privée" : "Rendre l'offre privée";
         Messenger().post({
           message: "Votre offre a bien été déplacée dans «Mes offres en ligne».",
           type: 'success',
@@ -977,5 +1061,41 @@ export class OfferEdit{
     this.validateRate(this.offer.jobData.remuneration);
   }
 
-  //</editor-fold>
+  watchOfferAddress(e){
+
+    let _address = e.target.value;
+    let _hint: string = "";
+
+    this.nameOA = _address;
+    this.streetNumberOA = "";
+    this.streetOA = "";
+    this.zipCodeOA = "";
+    this.cityOA = "";
+    this.countryOA = "";
+
+    this.offerAddress = _address;
+  }
+
+  autocompleteOfferAddress(){
+
+    this._loader.load().then(() => {
+
+      //let autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocompletePersonal"), {});
+      google.maps.event.addListener(this.autocompleteOA, 'place_changed', () => {
+        let place = this.autocompleteOA.getPlace();
+        var addressObj = AddressUtils.decorticateGeolocAddress(place);
+
+        this.offerAddress = place['formatted_address'];
+        this.zone.run(()=> {
+          this.nameOA = !addressObj.name ? '' : addressObj.name.replace("&#39;", "'");
+          this.streetNumberOA = addressObj.streetNumber.replace("&#39;", "'");
+          this.streetOA = addressObj.street.replace("&#39;", "'");
+          this.zipCodeOA = addressObj.zipCode;
+          this.cityOA = addressObj.city.replace("&#39;", "'");
+          this.countryOA = (addressObj.country.replace("&#39;", "'") == "" ? 'France' : addressObj.country.replace("&#39;", "'"));
+
+        });
+      });
+    });
+  }
 }
