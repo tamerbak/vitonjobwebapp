@@ -70,7 +70,7 @@ export class SearchResults{
       for (let i = 0; i < this.searchResults.length; i++) {
         let r = this.searchResults[i];
 
-        if (this.projectTarget == 'jobyer' && r.accepteCandidature == 'false') {
+        if (this.projectTarget == 'jobyer' && r.accepteCandidature == false) {
           continue;
         }
 

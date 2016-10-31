@@ -73,7 +73,12 @@ export class Settings {
       }
 
       // Check if user accepts spontaneous contact
-      this.spontaneousContact = this.profileService.getIsSpontaneousContact(this.currentUser.id);
+      this.profileService.getIsSpontaneousContact(this.currentUser.id).then((data: any) => {
+        this.spontaneousContact = (data.accepte_candidatures && data.accepte_candidatures.toUpperCase()) == 'OUI'
+          ? 'OUI'
+          : 'NON'
+        ;
+      });
     }
   }
 
@@ -124,13 +129,14 @@ export class Settings {
 
   isSpontaneousContact() {
     if (this.currentUser.estEmployeur) {
-      return (this.spontaneousContact == 'OUI');
+      return (this.spontaneousContact && this.spontaneousContact.toUpperCase() == 'OUI');
     }
+    return false;
   }
 
   activateSpontaneousContact() {
     if (this.currentUser.estEmployeur) {
-      if (this.spontaneousContact == 'OUI') {
+      if (this.spontaneousContact.toUpperCase() == 'OUI') {
         this.profileService.updateSpontaneousContact('NON', this.currentUser.id);
         this.spontaneousContact = 'NON';
       } else {

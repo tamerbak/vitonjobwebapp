@@ -419,7 +419,7 @@ export class ProfileService{
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe((data: any)=> {
-          resolve(data.accepte_candidatures);
+          resolve(data.data[0]);
         });
     })
 
