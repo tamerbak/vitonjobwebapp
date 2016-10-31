@@ -22,7 +22,7 @@ export class Navbar implements OnInit {
   toggleAppEvent: EventEmitter<any> = new EventEmitter();
   $el: any;
   config: any;
-  currentUser: any = {nom: "", prenom: ""};
+  currentUser: any;
   isEmployer: boolean;
   projectTarget: string;
 
