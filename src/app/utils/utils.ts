@@ -66,4 +66,9 @@ export class Utils {
     return false;
   }
 
+  public static isNumber(char){
+    let re = /^(0|[1-9][0-9]*)$/;
+    return re.test(char);
+  }
+
 }

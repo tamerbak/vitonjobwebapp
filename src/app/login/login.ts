@@ -7,6 +7,7 @@ import {SharedService} from "../../providers/shared.service";
 import {ProfileService} from "../../providers/profile.service";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {ModalComponent} from "./modal-component/modal-component";
+import {Utils} from "../utils/utils";
 declare function md5(value: string): string;
 
 @Component({
@@ -52,6 +53,7 @@ export class LoginPage{
 
   isRedirectedFromHome;
   obj: string;
+  oldPhoneValue: number;
 
 
   constructor(private loadListService: LoadListService,
@@ -177,6 +179,10 @@ export class LoginPage{
    */
   watchPhone(e) {
     if (this.phone) {
+      if (!Utils.isNumber(e.target.value)) {
+        this.phone = this.oldPhoneValue;
+        return;
+      }
       if (e.target.value.substring(0, 1) == '0') {
         e.target.value = e.target.value.substring(1, e.target.value.length);
       }
@@ -189,6 +195,7 @@ export class LoginPage{
         this.isPhoneNumValid = true;
       }
     }
+    this.oldPhoneValue = this.phone;
   }
 
 
