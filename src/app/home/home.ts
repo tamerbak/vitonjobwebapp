@@ -94,11 +94,12 @@ export class Home{
       }
     } else {
       this.projectTarget = this.sharedService.getProjectTarget();
-      this.homeService.loadHomeData((this.projectTarget)).then(data=> {
-        this.homeServiceData = data;
-        this.initHomeList();
-      });
     }
+
+    this.homeService.loadHomeData((this.projectTarget)).then(data=> {
+      this.homeServiceData = data;
+      this.initHomeList();
+    });
 
     this.config = Configs.setConfigs(this.projectTarget);
 
