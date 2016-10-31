@@ -38,8 +38,12 @@ export class ModalNotificationContract{
       this.showAuthNotif = true;
       return;
     }
-    let offers = this.currentUser.employer.entreprises[0].offers;
-    this.hasOffers = (offers && offers.length > 0);
+    if (this.currentUser.estEmployeur) {
+      let offers = this.currentUser.employer.entreprises[0].offers;
+      this.hasOffers = (offers && offers.length > 0);
+    } else {
+      this.hasOffers = false;
+    }
     this.initState({});
   }
 
