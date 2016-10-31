@@ -270,7 +270,7 @@ export class Contract {
   }
 
   recoursSelected(evt) {
-    let selectedRecoursLib = evt;
+    let selectedRecoursLib = evt.target.value;
     let id = 40;
     for (let i = 0; i < this.recours.length; i++){
       if (this.recours[i].libelle == selectedRecoursLib) {
