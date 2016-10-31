@@ -48,7 +48,17 @@
                       (click)="initMissionPhaseForm()">
                 Modifier l'option suivi de mission
               </button>
-              <br><br>
+              <br>
+              <button *ngIf="isEmployer && !isSpontaneousContact()" class="btn btn-primary btn-sm mt"
+                      (click)="activateSpontaneousContact()">
+                Accepter les candidatures spontannées
+              </button>
+              <button *ngIf="isEmployer && isSpontaneousContact()" class="btn btn-primary btn-sm mt"
+                      (click)="activateSpontaneousContact()">
+                Refuser les candidatures spontannées
+              </button>
+              <br>
+              <br>
               <legend><strong>Sécurité</strong></legend>
               <button disabled class="btn btn-primary btn-sm mt" (click)="lockApp()">
                 Verrouiller votre compte

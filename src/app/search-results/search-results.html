@@ -35,70 +35,79 @@
     </section>
   </div>
   <div class="col-lg-12 col-xs-12">
-    <section class="widget" widget *ngFor="let item of searchResults, let i=index">
-      <div class="widget-body row">
-        <div class="col-md-1 col-xs-4">
-					<span class="thumb-sm pull-xs-left mr" style="width: 100%;">
-						<img class="img-circle" [src]="item.avatar">
-					</span>
-        </div>
-        <div class="col-md-8 col-xs-4">
-          <div class="row">
-            <h4 class="name no-margin mb-xs col-md-10 col-xs-12" style="color: #40aea9;"><strong>
-              {{projectTarget == 'employer' ? item.prenom + ' ' + item.nom : item.entreprise}}</strong></h4>
+    <div *ngFor="let item of searchResults, let i=index">
+      <section
+        class="widget" widget
+        *ngIf="item.accepteCandidature == 'true' || projectTarget == 'employer'"
+      >
+        <div class="widget-body row">
+          <div class="col-md-1 col-xs-4">
+            <span class="thumb-sm pull-xs-left mr" style="width: 100%;">
+                <img class="img-circle" [src]="item.avatar">
+            </span>
           </div>
-          <div class="row">
-            <h5 class="name no-margin mb-xs col-md-8 col-xs-12">{{item.titreoffre}}</h5>
-          </div>
-          <!--<div class="row" style="margin-top: 10px;" [hidden]="!languages[i] || languages[i].length==0">
-                        <h6 class="name no-margin mb-xs col-md-8 col-xs-12">Langues {{currentUser.estEmployeur?"maîtrisées":"requises"}} : <label *ngFor="let l of languages[i]" style="margin-bottom: -10px;">
-                            <p>{{l.libelle}} </p>
-                        </label></h6>
-                    </div>
-                    <div class="row" [hidden]="!qualities[i] || qualities[i].length==0">
-                        <h6 class="name no-margin mb-xs col-md-9 col-xs-12">Qualités {{currentUser.estEmployeur?"acquises":"requises"}} : <label *ngFor="let q of qualities[i]">
-                            <p>{{q.libelle}} </p>
-                        </label></h6>
-                    </div>-->
-        </div>
-        <div class="col-md-3 col-xs-4">
-          <div class="row">
-            <h4 class="pull-xs-right" style="margin-bottom:0px">
-              <strong>
-                {{(item.matching.toString().indexOf('.') < 0) ? item.matching:item.matching.toString().split('.')[0]}}%
-              </strong>
-            </h4>
-          </div>
-          <div class="row">
-            <label class="pull-xs-right" style="font-size: small; color: #ccc">de correspondance avec l'offre</label>
-          </div>
-          <div class="row">
-            <div class="col-md-1 col-xs-2 pull-xs-left">
-              <recruit-button [jobyer]="item" (onRecruite)="onRecruite($event)" *ngIf="projectTarget == 'employer' && !isRecruteur"></recruit-button>
+          <div class="col-md-8 col-xs-4">
+            <div class="row">
+              <h4 class="name no-margin mb-xs col-md-10 col-xs-12" style="color: #40aea9;"><strong>
+                {{projectTarget == 'employer' ? item.prenom + ' ' + item.nom : item.entreprise}}</strong></h4>
             </div>
-            <div class="col-md-1 col-xs-2">
-              <button
-                type="button"
-                class="btn btn-secondary btn-sm pull-xs-right"
-                style="background-color: #40aea9; color: white;"
-                (click)="itemSelected(item)"
-              >
-                Détails
-              </button>
+            <div class="row">
+              <h5 class="name no-margin mb-xs col-md-8 col-xs-12">{{item.titreoffre}}</h5>
+            </div>
+            <!--<div class="row" style="margin-top: 10px;" [hidden]="!languages[i] || languages[i].length==0">
+                          <h6 class="name no-margin mb-xs col-md-8 col-xs-12">Langues {{currentUser.estEmployeur?"maîtrisées":"requises"}} : <label *ngFor="let l of languages[i]" style="margin-bottom: -10px;">
+                              <p>{{l.libelle}} </p>
+                          </label></h6>
+                      </div>
+                      <div class="row" [hidden]="!qualities[i] || qualities[i].length==0">
+                          <h6 class="name no-margin mb-xs col-md-9 col-xs-12">Qualités {{currentUser.estEmployeur?"acquises":"requises"}} : <label *ngFor="let q of qualities[i]">
+                              <p>{{q.libelle}} </p>
+                          </label></h6>
+                      </div>-->
+          </div>
+          <div class="col-md-3 col-xs-4">
+            <div class="row">
+              <h4 class="pull-xs-right" style="margin-bottom:0px">
+                <strong>
+                  {{(item.matching.toString().indexOf('.') < 0) ?
+                  item.matching:item.matching.toString().split('.')[0]}}%
+                </strong>
+              </h4>
+            </div>
+            <div class="row">
+              <label class="pull-xs-right" style="font-size: small; color: #ccc">de correspondance avec l'offre</label>
+            </div>
+            <div class="row">
+              <div class="col-md-1 col-xs-2 pull-xs-left">
+                <recruit-button
+                  [jobyer]="item" (onRecruite)="onRecruite($event)"
+                  *ngIf="projectTarget == 'employer' && !isRecruteur"
+                ></recruit-button>
+              </div>
+              <div class="col-md-1 col-xs-2">
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-sm pull-xs-right"
+                  style="background-color: #40aea9; color: white;"
+                  (click)="itemSelected(item)"
+                >
+                  Détails
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="row col-md-12 col-xs-12 mg-tp">
-        <div class="col-lg-4 col-md-6 col-xs-12 mg-bt-2">
-          <span><i class="fa fa-envelope" aria-hidden="true"></i><b> {{item.email}}</b></span>
+        <div class="row col-md-12 col-xs-12 mg-tp">
+          <div class="col-lg-4 col-md-6 col-xs-12 mg-bt-2">
+            <span><i class="fa fa-envelope" aria-hidden="true"></i><b> {{item.email}}</b></span>
+          </div>
+          <div class="col-lg-4 col-md-6 col-xs-12 mg-bt-2">
+            <span><i class="fa fa-phone" aria-hidden="true"></i><b> {{item.tel}}</b></span>
+          </div>
         </div>
-        <div class="col-lg-4 col-md-6 col-xs-12 mg-bt-2">
-          <span><i class="fa fa-phone" aria-hidden="true"></i><b> {{item.tel}}</b></span>
-        </div>
-      </div>
-      <!--<div class="alert alert-warning alert-sm alertDispo" *ngIf="currentUser.estEmployeur && item.checkedContract">Ce jobyer est sélectionné pour l'établissement d'un contrat, vous pouvez consulter les détails dans l'écran "Recrutement groupé"</div> -->
-    </section>
+        <!--<div class="alert alert-warning alert-sm alertDispo" *ngIf="currentUser.estEmployeur && item.checkedContract">Ce jobyer est sélectionné pour l'établissement d'un contrat, vous pouvez consulter les détails dans l'écran "Recrutement groupé"</div> -->
+      </section>
+    </div>
   </div>
 </div>
 <div modal-notification-contract [jobyer]="currentJobyer"></div>

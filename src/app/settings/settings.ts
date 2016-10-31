@@ -6,13 +6,14 @@ import {MissionService} from "../../providers/mission-service";
 import {AuthenticationService} from "../../providers/authentication.service";
 import {SharedService} from "../../providers/shared.service";
 import {Utils} from "../utils/utils";
+import {ProfileService} from "../../providers/profile.service";
 declare var md5, Messenger, jQuery, require: any;
 
 @Component({
   selector: '[settings]',
   template: require('./settings.html'),
   directives: [ROUTER_DIRECTIVES, NKDatetime, AlertComponent],
-  providers: [Utils, MissionService, AuthenticationService],
+  providers: [Utils, MissionService, AuthenticationService, ProfileService],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./settings.scss')]
 })
@@ -49,8 +50,11 @@ export class Settings {
   phaseTitle: string = "";
   validation: boolean = false;
 
+  spontaneousContact: any;
+
 
   constructor(private missionService: MissionService,
+              private profileService: ProfileService,
               private authService: AuthenticationService,
               private sharedService: SharedService,
               private router: Router) {
@@ -67,6 +71,14 @@ export class Settings {
           this.missionOption = opt.data[0].option_mission
         });
       }
+
+      // Check if user accepts spontaneous contact
+      this.profileService.getIsSpontaneousContact(this.currentUser.id).then((data: any) => {
+        this.spontaneousContact = (data.accepte_candidatures && data.accepte_candidatures.toUpperCase()) == 'OUI'
+          ? 'OUI'
+          : 'NON'
+        ;
+      });
     }
   }
 
@@ -113,6 +125,25 @@ export class Settings {
     this.showForm = true;
     this.phase = "CHANGE_MISSION";
     this.initValidation();
+  }
+
+  isSpontaneousContact() {
+    if (this.currentUser.estEmployeur) {
+      return (this.spontaneousContact && this.spontaneousContact.toUpperCase() == 'OUI');
+    }
+    return false;
+  }
+
+  activateSpontaneousContact() {
+    if (this.currentUser.estEmployeur) {
+      if (this.spontaneousContact.toUpperCase() == 'OUI') {
+        this.profileService.updateSpontaneousContact('NON', this.currentUser.id);
+        this.spontaneousContact = 'NON';
+      } else {
+        this.profileService.updateSpontaneousContact('OUI', this.currentUser.id);
+        this.spontaneousContact = 'OUI';
+      }
+    }
   }
 
   watchPassword1(e) {

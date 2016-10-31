@@ -189,8 +189,21 @@ export class Home{
         return;
       }
       this.sharedService.setLastResult(data);
+
+      // If jobyer research, count only offers that employer accept contact
+      let count = 0;
+      if (this.projectTarget == 'jobyer') {
+        for (let i = 0; i < data.length; i++) {
+          if (data[i].accepteCandidature == 'true') {
+            count++;
+          }
+        }
+      } else {
+        count = data.length;
+      }
+
       Messenger().post({
-        message: 'La recherche pour "' + this.scQuery + '" a donné ' + (data.length == 1 ? 'un seul résultat' : (data.length + ' résultats')),
+        message: 'La recherche pour "' + this.scQuery + '" a donné ' + (count == 1 ? 'un seul résultat' : (count + ' résultats')),
         type: 'success',
         showCloseButton: true
       });
