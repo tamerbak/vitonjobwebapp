@@ -23,8 +23,7 @@ declare var Messenger: any;
   template: require('./contract.html'),
   styles: [require('./contract.scss')],
   directives: [NKDatetime],
-  providers: [ContractService, MedecineService, ParametersService, Helpers, SmsService, OffersService],
-  directives: [AlertComponent],
+  providers: [AlertComponent, ContractService, MedecineService, ParametersService, Helpers, SmsService, OffersService]
 })
 export class Contract {
 
