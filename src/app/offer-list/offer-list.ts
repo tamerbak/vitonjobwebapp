@@ -5,6 +5,7 @@ import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {SearchService} from "../../providers/search-service";
+import {Utils} from "../utils/utils";
 declare var jQuery,Messenger:any;
 
 @Component({
@@ -43,6 +44,10 @@ export class OfferList {
       this.typeOfferModel = params['typeOfferModel'];
     });
 
+    if(Utils.isEmpty(this.typeOfferModel)){
+      this.typeOfferModel = '0';
+    }
+
     this.currentUser = this.sharedService.getCurrentUser();
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
 
@@ -58,6 +63,7 @@ export class OfferList {
       ? this.sharedService.getCurrentUser().employer.entreprises[0].offers
       : this.sharedService.getCurrentUser().jobyer.offers;
 
+    let obsoleteOffers = [];
     for (let i = 0; i < this.offerList.length; i++) {
       let offer = this.offerList[i];
 
@@ -67,9 +73,10 @@ export class OfferList {
           this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
       });
 
-      if (!offer || !offer.jobData) {
+      if (!offer || !offer.jobData || !offer.calendarData ||(offer.calendarData && offer.calendarData.length == 0)) {
         continue;
       }
+
       if (offer.visible) {
         offer.color = 'black';
         offer.correspondantsCount = -1;
@@ -82,13 +89,15 @@ export class OfferList {
           var dateNow = new Date().getTime();
           if (slotDate <= dateNow) {
             offer.obsolete = true;
+            obsoleteOffers.push(offer);
             break;
           } else {
             offer.obsolete = false;
+            this.globalOfferList[0].list.push(offer);
           }
         }
 
-        this.globalOfferList[0].list.push(offer);
+
         /*this.offersService.getCorrespondingOffers(offer, this.projectTarget).then((data: any)=> {
           offer.correspondantsCount = data.length;
           // Sort offers corresponding to their search results :
@@ -96,20 +105,22 @@ export class OfferList {
             return b.correspondantsCount - a.correspondantsCount;
           })
         });*/
-        let searchFields = {
-          class : 'com.vitonjob.callouts.recherche.SearchQuery',
-          job : offer.jobData.job,
-          metier : '',
-          lieu: '',
-          nom: '',
-          entreprise: '',
-          date: '',
-          table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
-          idOffre: '0'
-        };
-        this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
-          offer.correspondantsCount = data.length;
-        });
+        if(!offer.obsolete) {
+          let searchFields = {
+            class: 'com.vitonjob.callouts.recherche.SearchQuery',
+            job: offer.jobData.job,
+            metier: '',
+            lieu: '',
+            nom: '',
+            entreprise: '',
+            date: '',
+            table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
+            idOffre: '0'
+          };
+          this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
+            offer.correspondantsCount = data.length;
+          });
+        }
       } else {
         offer.color = 'grey';
         offer.correspondantsCount = -1;
@@ -117,6 +128,8 @@ export class OfferList {
       }
 
     }
+    //placing obsolete offers in the botton of the list
+    this.globalOfferList[0].list = this.globalOfferList[0].list.concat(obsoleteOffers);
   }
 
   sortOffers(){
