@@ -22,8 +22,8 @@ declare var Messenger: any;
 @Component({
   template: require('./contract.html'),
   styles: [require('./contract.scss')],
-  directives: [NKDatetime],
-  providers: [AlertComponent, ContractService, MedecineService, ParametersService, Helpers, SmsService, OffersService]
+  directives: [AlertComponent, NKDatetime],
+  providers: [ContractService, MedecineService, ParametersService, Helpers, SmsService, OffersService]
 })
 export class Contract {
 
