@@ -69,6 +69,11 @@ export class SearchResults{
       this.searchResults = jsonResults;
       for (let i = 0; i < this.searchResults.length; i++) {
         let r = this.searchResults[i];
+
+        if (this.projectTarget == 'jobyer' && r.accepteCandidature == 'false') {
+          continue;
+        }
+
         r.matching = Number(r.matching).toFixed(2);
         r.index = i + 1;
         r.avatar = "../assets/images/avatar.png";
