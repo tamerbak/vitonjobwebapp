@@ -1,4 +1,4 @@
-<div class="row contract-page computer">
+<div class="row contract-page">
   <form #formCtrl="ngForm" name="contractForm"  (ngSubmit)="goToYousignPage()">
     <div class="row">
       <div class="col-xs-12 title-form">
@@ -36,6 +36,11 @@
           <input type="text" name="workAddress" class="form-control"  [(ngModel)]="workAdress" aria-describedby="lieu-de-la-mission" required>
           <small class="form-text text-muted"></small>
         </div>
+        <div class="form-group">
+          <label>Moyen d'accès</label>
+          <input type="text" name="moyenAcces" class="form-control"  [(ngModel)]="contractData.moyenAcces" aria-describedby="moyen-acces" >
+          <small class="form-text text-muted"></small>
+        </div>
       </div>
     </div>
     <div class="row">
@@ -47,26 +52,31 @@
       <div class="col-xs-6 pull-left col-1">
         <div class="form-group">
           <label>Nom</label>
+          <span class="asterisk">*</span>
           <input type="text" name="lastname" class="form-control" [(ngModel)]="jobyer.nom" aria-describedby="nom" readonly>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label>Prénom</label>
+          <span class="asterisk">*</span>
           <input type="text" name="firstname" class="form-control"  [(ngModel)]="jobyer.prenom" aria-describedby="prenom" readonly/>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label >N° SS</label>
+          <span class="asterisk">*</span>
           <input type="text" name="numss" class="form-control" [(ngModel)]="jobyer.numSS" aria-describedby="nss" readonly/>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label>Date de naissance</label>
+          <span class="asterisk">*</span>
           <input type="date" name="birthdate" class="form-control" [(ngModel)]="jobyerBirthDate" aria-describedby="date-de-naissance" readonly/>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label>Lieu de naissance</label>
+          <span class="asterisk">*</span>
           <input type="text" name="birthplace" class="form-control"  [(ngModel)]="jobyer.lieuNaissance" aria-describedby="lieu" readonly/>
           <small class="form-text text-muted"></small>
         </div>
@@ -74,30 +84,43 @@
       <div class="col-xs-6 pull-right col-2">
         <div class="form-group">
           <label>Nationalité</label>
+          <span class="asterisk">*</span>
           <input type="text" name="nationality" class="form-control" [(ngModel)]="jobyer.nationaliteLibelle" aria-describedby="nat" readonly/>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label>Num. Titre de travail</label>
+          <span class="asterisk">*</span>
           <input type="text" name="numTitreTravail" class="form-control" [(ngModel)]="contractData.numeroTitreTravail" aria-describedby="num" readonly/>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label>Valable du</label>
+          <span class="asterisk">*</span>
           <input type="date" name="debutTitreTravail" class="form-control" [(ngModel)]="contractData.debutTitreTravail" aria-describedby="val" readonly/>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label >Valable au</label>
+          <span class="asterisk">*</span>
           <input type="date" name="finTitreTravail" class="form-control" [(ngModel)]="contractData.finTitreTravail" readonly/>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label>Qualification</label>
+          <span class="asterisk">*</span>
           <input type="text" name="qualification" class="form-control" [(ngModel)]="contractData.qualification" aria-describedby="qual" readonly/>
           <small class="form-text text-muted"></small>
         </div>
 
+      </div>
+      <div class="col-xs-12"
+           *ngIf="!jobyer.nom || !jobyer.prenom || !jobyer.numSS || !jobyerBirthDate || !jobyer.lieuNaissance || !jobyer.nationaliteLibelle || !contractData.numeroTitreTravail || !contractData.debutTitreTravail || !contractData.finTitreTravail || !contractData.qualification"
+      >
+        <alert [type]="'info alert-sm'">
+          <div [innerHTML]="'Le Jobyer est en train de saisir ses informations'"></div>
+        </alert>
+        <span class="btn btn-primary" (click)="notifyJobyerMissingData()">Relancer le jobyer</span>
       </div>
     </div>
     <div class="row">

@@ -9,6 +9,10 @@ import {Utils} from "../utils/utils";
 import {NKDatetime} from "ng2-datetime/ng2-datetime";
 import {isUndefined} from "es7-reflect-metadata/dist/dist/helper/is-undefined";
 import {OffersService} from "../../providers/offer.service";
+import {AlertComponent} from "ng2-bootstrap";
+import {SmsService} from "../../providers/sms-service";
+
+declare var Messenger: any;
 
 /**
  * @author daoudi amine
@@ -18,8 +22,8 @@ import {OffersService} from "../../providers/offer.service";
 @Component({
   template: require('./contract.html'),
   styles: [require('./contract.scss')],
-  directives: [NKDatetime],
-  providers: [ContractService, OffersService, MedecineService, ParametersService, Helpers]
+  directives: [AlertComponent, NKDatetime],
+  providers: [ContractService, MedecineService, ParametersService, Helpers, SmsService, OffersService]
 })
 export class Contract {
 
@@ -65,6 +69,7 @@ export class Contract {
               private contractService: ContractService,
               private sharedService: SharedService,
               private offersService : OffersService,
+              private smsService: SmsService,
               private router: Router) {
 
     this.currentUser = this.sharedService.getCurrentUser();
@@ -98,8 +103,8 @@ export class Contract {
         this.jobyer.numSS = datum.numss;
         this.jobyer.nationaliteLibelle = datum.nationalite;
         this.jobyer.titreTravail = '';
-        this.jobyer.debutTitreTravail = new Date();
-        this.jobyer.finTitreTravail = new Date();
+        // this.jobyer.debutTitreTravail = new Date();
+        // this.jobyer.finTitreTravail = new Date();
         if(datum.cni && datum.cni.length>0 && datum.cni != "null")
           this.jobyer.titreTravail = datum.cni;
         else if (datum.numero_titre_sejour && datum.numero_titre_sejour.length>0 && datum.numero_titre_sejour != "null")
@@ -114,8 +119,8 @@ export class Contract {
         }
 
         this.contractData.numeroTitreTravail = this.jobyer.titreTravail;
-        this.contractData.debutTitreTravail = this.dateFormat(this.jobyer.debutTitreTravail);
-        this.contractData.finTitreTravail = this.dateFormat(this.jobyer.finTitreTravail);
+        // this.contractData.debutTitreTravail = this.dateFormat(this.jobyer.debutTitreTravail);
+        // this.contractData.finTitreTravail = this.dateFormat(this.jobyer.finTitreTravail);
       }
     });
 
@@ -258,6 +263,10 @@ export class Contract {
 
       this.initContract();
     }
+
+    // Notify the jobyer that a new contract was created
+    this.notifyJobyerNewContract();
+
   }
 
   recoursSelected(evt) {
@@ -394,8 +403,8 @@ export class Contract {
       indemniteCongesPayes: "10.00%",
       moyenAcces: "",
       numeroTitreTravail: this.jobyer.titreTravail,
-      debutTitreTravail: this.dateFormat(this.jobyer.debutTitreTravail),
-      finTitreTravail: this.dateFormat(this.jobyer.finTitreTravail),
+      debutTitreTravail: this.jobyer.debutTitreTravail ? this.dateFormat(this.jobyer.debutTitreTravail) : "",
+      finTitreTravail: this.jobyer.finTitreTravail ? this.dateFormat(this.jobyer.finTitreTravail) : "",
       periodesNonTravaillees: "",
       debutSouplesse: "",
       finSouplesse: "",
@@ -524,6 +533,73 @@ export class Contract {
     this.contractData.medicalSurv = e.target.value;
   }
 
+  notifyJobyerNewContract() {
+    var message = "Une proposition de recrutement vous a été adressée.";
+    let jobyer = this.jobyer;
+    let contractData = this.contractData;
+    let jobyerBirthDate = this.jobyerBirthDate;
+    if (
+      !jobyer.nom || !jobyer.prenom || !jobyer.numSS || !jobyerBirthDate || !jobyer.lieuNaissance || !jobyer.nationaliteLibelle || !contractData.numeroTitreTravail || !contractData.debutTitreTravail || !contractData.finTitreTravail || !contractData.qualification
+    ) {
+      message = message + " Certaines informations de votre compte sont manquantes, veuillez les renseigner.";
+    }
+    this.notifyJobyer(message);
 
+  }
+
+  notifyJobyerMissingData() {
+    let message = "Rappel :"
+        + " Une proposition de recrutement vous a été adressée"
+        + " Certaines informations de votre compte sont toujours manquantes, veuillez les renseigner."
+      ;
+    this.notifyJobyer(message);
+  }
+
+  notifyJobyer(message) {
+    let currentDate = new Date();
+    let delayBetweenNotif = 60; // minutes
+    let toSend = true;
+    let previousNotif = this.sharedService.getPreviousNotifs();
+    if (!previousNotif) {
+      previousNotif = [];
+    }
+    let nextNotifInto;
+
+    // Check the delay between 2 notification
+    if (previousNotif && previousNotif.length > 0) {
+      for (let i = 0; i < previousNotif.length; i++) {
+        if (previousNotif[i].offerId == this.currentOffer.idOffer) {
+          let nextNotif = previousNotif[i].lastNotif + (1000 * 60 * delayBetweenNotif);
+          let currentTimestamp = currentDate.getTime();
+          if (nextNotif > currentTimestamp) {
+            toSend = false;
+            nextNotifInto = Math.ceil((nextNotif - currentTimestamp) / (1000 * 60));
+          }
+        }
+      }
+    }
+
+    if (toSend == true) {
+      this.smsService.sendSms(this.jobyer.tel, message);
+      Messenger().post({
+        message: 'Une notification a été envoyée au jobyer',
+        type: 'success',
+        showCloseButton: true
+      });
+
+      previousNotif.push({
+        'offerId': this.currentOffer.idOffer,
+        'lastNotif': currentDate.getTime()
+      });
+      this.sharedService.setPreviousNotifs(previousNotif);
+    } else {
+      Messenger().post({
+        message: 'Une notification a déjà envoyée au jobyer.'
+        + ' Veuillez attendre ' + (nextNotifInto) + ' minutes avant de pouvoir le relancer.',
+        type: 'info',
+        showCloseButton: true
+      });
+    }
+  }
 
 }
