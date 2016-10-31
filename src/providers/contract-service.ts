@@ -115,7 +115,7 @@ export class ContractService {
       this.http.post(this.configuration.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          debugger;
+
           this.data = data;
           resolve(this.data);
         });
@@ -355,11 +355,14 @@ export class ContractService {
   callYousign(user: any, employer: any, jobyer: any, contract: any, projectTarget: string, currentOffer: any, idQuote: any) {
 
     let horaires = '';
-    //// debugger;
     if (currentOffer) {
       horaires = this.prepareHoraire(currentOffer.calendarData);
     }
     //get configuration
+    let d = new Date(contract.workStartHour);
+    let sh = d.getHours()+":"+d.getMinutes();
+    d = new Date(contract.workEndHour);
+    let eh = d.getHours()+":"+d.getMinutes();
     this.configuration = Configs.setConfigs(projectTarget);
     var jsonData = {
       "titre": employer.titre,
@@ -388,8 +391,8 @@ export class ContractService {
         "variables": contract.workTimeVariable,
       },
       "horaireHabituel": {
-        "debut": contract.workStartHour,
-        "fin": contract.workEndHour,
+        "debut": sh,
+        "fin": eh,
         "variables": contract.workHourVariable,
       },
       "posteARisque": contract.postRisks,
@@ -410,8 +413,8 @@ export class ContractService {
       "ContenuMission": contract.headOffice,
       "categorie": contract.category,
       "filiere": contract.sector,
-      "HeureDebutMission": contract.workStartHour,
-      "HeureFinMission": contract.workEndHour,
+      "HeureDebutMission": sh,
+      "HeureFinMission": eh,
       "num": contract.num,
 
       "numero": contract.num,
@@ -437,7 +440,7 @@ export class ContractService {
       "elementsNonCotisation": contract.elementsNonCotisation,
       "horaires": horaires
     };
-    //// debugger;
+    ////
     console.log(JSON.stringify(jsonData));
 
     let partner = GlobalConfigs.global['electronic-signature'];
@@ -491,7 +494,7 @@ export class ContractService {
       this.http.post(Configs.yousignURL, JSON.stringify(payload), {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          // debugger;
+          //
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
           this.data = data;
