@@ -395,6 +395,36 @@ export class ProfileService{
 
   }
 
+  updateSpontaneousContact(value, accountid) {
+    var sql = "update user_account set ";
+    sql = sql + " accepte_candidatures='" + this.sqlfyText(value) + "'";
+    sql = sql + " where pk_user_account=" + accountid + ";";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any)=> {
+          resolve(data);
+        });
+    })
+
+  }
+
+  getIsSpontaneousContact(accountid) {
+    var sql = "select accepte_candidatures from user_account where pk_user_account = " + accountid + ";";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any)=> {
+          resolve(data.accepte_candidatures);
+        });
+    })
+
+  }
+
   /*getPaysByIndex(index){
    var sql = "select pk_user_pays as id from user_prefecture where nom = '" + this.sqlfyText(nom) + "'";
 
