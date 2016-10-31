@@ -103,8 +103,9 @@ export class Contract {
         this.jobyer.numSS = datum.numss;
         this.jobyer.nationaliteLibelle = datum.nationalite;
         this.jobyer.titreTravail = '';
-        // this.jobyer.debutTitreTravail = new Date();
-        // this.jobyer.finTitreTravail = new Date();
+        this.jobyer.debutTitreTravail = '';
+        this.jobyer.finTitreTravail = '';
+
         if(datum.cni && datum.cni.length>0 && datum.cni != "null")
           this.jobyer.titreTravail = datum.cni;
         else if (datum.numero_titre_sejour && datum.numero_titre_sejour.length>0 && datum.numero_titre_sejour != "null")
@@ -112,15 +113,17 @@ export class Contract {
         if(datum.debut_validite && datum.debut_validite.length>0 && datum.debut_validite != "null"){
           let d = new Date(datum.debut_validite);
           this.jobyer.debutTitreTravail = d;
+          this.contractData.debutTitreTravail = this.simpleDateFormat(this.jobyer.debutTitreTravail);
         }
-        if(datum.fin_validite && datum.debut_validite.length>0 && datum.fin_validite != "null"){
-          let d = new Date(datum.debut_validite);
+        if(datum.fin_validite && datum.fin_validite.length>0 && datum.fin_validite != "null"){
+          let d = new Date(datum.fin_validite);
           this.jobyer.finTitreTravail = d;
+          this.contractData.finTitreTravail = this.simpleDateFormat(this.jobyer.finTitreTravail);
         }
 
         this.contractData.numeroTitreTravail = this.jobyer.titreTravail;
-        // this.contractData.debutTitreTravail = this.dateFormat(this.jobyer.debutTitreTravail);
-        // this.contractData.finTitreTravail = this.dateFormat(this.jobyer.finTitreTravail);
+
+
       }
     });
 
@@ -367,7 +370,7 @@ export class Contract {
     this.offersService.loadOfferAdress(this.currentOffer.idOffer, "employeur").then((data:any)=>{
       this.workAdress = data;
     });
-    // debugger;
+    //
     //
     for(let i=1 ; i <calendar.length;i++){
       let date = new Date(calendar[i].date);
@@ -389,6 +392,7 @@ export class Contract {
       trial = 3;
     else
       trial = 5;
+
 
     this.contractData = {
       num: this.numContrat,
@@ -600,6 +604,13 @@ export class Contract {
         showCloseButton: true
       });
     }
+  }
+
+  simpleDateFormat(d:Date){
+    let m = d.getMonth() + 1;
+    let da = d.getDate();
+    let sd = (da < 10 ? '0' : '')+da+'/' + (m < 10 ? '0' : '') + m + "/" +d.getFullYear() ;
+    return sd
   }
 
 }

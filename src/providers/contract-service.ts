@@ -73,12 +73,11 @@ export class ContractService {
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
     var dt = new Date();
-    var sql = "select user_jobyer.pk_user_jobyer as id, user_jobyer.numero_securite_sociale as numss, user_pays.nom as nationalite, cni, numero_titre_sejour, debut_validite, fin_validite from user_jobyer, user_pays " +
+    var sql = "select user_jobyer.pk_user_jobyer as id, user_jobyer.numero_securite_sociale as numss, " +
+      "user_pays.nom as nationalite, cni, numero_titre_sejour, debut_validite, fin_validite " +
+      " from user_jobyer, user_pays " +
       " where user_jobyer.fk_user_pays=user_pays.pk_user_pays " +
       " and fk_user_account in (select pk_user_account from user_account where email='" + jobyer.email + "' or telephone='" + jobyer.tel + "') limit 1";
-
-    console.log(sql);
-
 
     return new Promise(resolve => {
       let headers = new Headers();
