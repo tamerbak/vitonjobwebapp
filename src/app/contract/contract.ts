@@ -594,7 +594,7 @@ export class Contract {
       this.sharedService.setPreviousNotifs(previousNotif);
     } else {
       Messenger().post({
-        message: 'Une notification a déjà envoyée au jobyer.'
+        message: 'Une notification a déjà été envoyée au jobyer.'
         + ' Veuillez attendre ' + (nextNotifInto) + ' minutes avant de pouvoir le relancer.',
         type: 'info',
         showCloseButton: true
