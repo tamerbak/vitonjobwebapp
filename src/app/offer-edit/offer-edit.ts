@@ -179,7 +179,7 @@ export class OfferEdit{
         this.youtubeLinkSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.youtubeLink);
       }
       if (this.offer.visible) {
-        this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée" : "Rendre l'offre privée";
+        this.offrePrivacyTitle = this.offer.visible ? "Rendre l'offre privée" : "Rendre l'offre privée";
 
       }
       else {
@@ -765,6 +765,10 @@ export class OfferEdit{
       type: 'success',
       showCloseButton: true
     });
+    //redirect to offer-list and display public offers
+    var typeOffer = this.offer.visible ? 0:1;
+    this.router.navigate(['app/offer/list', {typeOfferModel: typeOffer}]);
+
   }
 
   /**
@@ -875,7 +879,7 @@ export class OfferEdit{
       this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
       this.sharedService.setCurrentUser(this.currentUser);
       if (offer.visible) {
-        this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée" : "Rendre l'offre privée";
+        this.offrePrivacyTitle = this.offer.visible ? "Rendre l'offre privée" : "Rendre l'offre privée";
         Messenger().post({
           message: "Votre offre a bien été déplacée dans «Mes offres en ligne».",
           type: 'success',
