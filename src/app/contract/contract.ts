@@ -19,7 +19,6 @@ import {OffersService} from "../../providers/offer.service";
   template: require('./contract.html'),
   styles: [require('./contract.scss')],
   directives: [NKDatetime],
-  providers: [ContractService, MedecineService, ParametersService, Helpers]
   providers: [ContractService, OffersService, MedecineService, ParametersService, Helpers]
 })
 export class Contract {

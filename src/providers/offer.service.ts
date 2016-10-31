@@ -296,7 +296,7 @@ export class OffersService {
       'id': ""+idTiers,
       'type': 'travaille'
     };
-    debugger;
+
     let addressDataStr = JSON.stringify(addressData);
     let encodedAddress = btoa(addressDataStr);
     let data = {
@@ -309,13 +309,13 @@ export class OffersService {
       }]
     };
     var stringData = JSON.stringify(data);
-    debugger;
+
     return new Promise(resolve => {
       let headers = Configs.getHttpJsonHeaders();
       this.http.post(Configs.calloutURL, stringData, {headers: headers})
         .map(res => res.json())
         .subscribe((data: any) => {
-          debugger;
+
           let id = data.id;
           this.updateOfferAdress(id, offer.idOffer, type);
           resolve(data);
@@ -329,7 +329,7 @@ export class OffersService {
     let field = type =='jobyer'?'fk_user_adresse_jobyer':'fk_user_adresse_entreprise';
 
     let sql = "update "+table+" set "+field+"="+id+" where pk_"+table+"="+idOffer;
-    debugger;
+
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
       // then on the response it'll map the JSON data to a parsed JS object.
@@ -339,7 +339,7 @@ export class OffersService {
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          debugger;
+
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
 
@@ -356,7 +356,7 @@ export class OffersService {
                     "select fk_"+table+" from "+to+" where pk_"+to+"="+idOffer+"" +
                   ")" +
               ")";
-    debugger;
+
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
       // then on the response it'll map the JSON data to a parsed JS object.
@@ -366,7 +366,7 @@ export class OffersService {
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe((data : any) => {
-          debugger;
+
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
           let adr = '';
@@ -442,7 +442,7 @@ export class OffersService {
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          debugger;
+
           if(offer.jobData.prerequisObligatoires){
 
             this.updatePrerequisObligatoires(offer.idOffer,offer.jobData.prerequisObligatoires);
@@ -455,7 +455,7 @@ export class OffersService {
   }
 
   updateOfferEntrepriseTitle(offer) {
-    //debugger;
+    //
     let sql = "update user_offre_entreprise set titre='" + this.sqlfyText(offer.title) + "', tarif_a_l_heure='" + offer.jobData.remuneration + "' where pk_user_offre_entreprise=" + offer.idOffer;
 
     return new Promise(resolve => {

@@ -471,7 +471,7 @@ export class ContractService {
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
       'id': (partner === 'yousign' ? 224 :
-          (partner === 'docusign' ? 305 :
+          (partner === 'docusign' ? 338 :
               -1
           )
       ),
