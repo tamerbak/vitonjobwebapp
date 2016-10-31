@@ -6,6 +6,9 @@ import {ContractService} from "../../providers/contract-service";
 import {MedecineService} from "../../providers/medecine.service";
 import {ParametersService} from "../../providers/parameters-service";
 import {Utils} from "../utils/utils";
+import {NKDatetime} from "ng2-datetime/ng2-datetime";
+import {isUndefined} from "es7-reflect-metadata/dist/dist/helper/is-undefined";
+import {OffersService} from "../../providers/offer.service";
 import {AlertComponent} from "ng2-bootstrap";
 import {SmsService} from "../../providers/sms-service";
 
@@ -19,7 +22,8 @@ declare var Messenger: any;
 @Component({
   template: require('./contract.html'),
   styles: [require('./contract.scss')],
-  providers: [ContractService, MedecineService, ParametersService, Helpers, SmsService],
+  directives: [NKDatetime],
+  providers: [ContractService, MedecineService, ParametersService, Helpers, SmsService, OffersService],
   directives: [AlertComponent],
 })
 export class Contract {
@@ -50,6 +54,8 @@ export class Contract {
   rapatriement : boolean=false;
   periodicites : any = [];
 
+  datepickerOpts: any;
+
   dateFormat(d) {
     if(!d || typeof d === 'undefined')
       return '';
@@ -63,6 +69,7 @@ export class Contract {
               private service: ParametersService,
               private contractService: ContractService,
               private sharedService: SharedService,
+              private offersService : OffersService,
               private smsService: SmsService,
               private router: Router) {
 
@@ -136,13 +143,12 @@ export class Contract {
     if (this.currentUser) {
       this.employer = this.currentUser.employer;
       this.companyName = this.employer.entreprises[0].nom;
-      this.workAdress = this.employer.entreprises[0].workAdress.fullAdress;
       this.hqAdress = this.employer.entreprises[0].siegeAdress.fullAdress;
       let civility = this.currentUser.titre;
       this.employerFullName = civility + " " + this.currentUser.nom + " " + this.currentUser.prenom;
       this.medecineService.getMedecine(this.employer.entreprises[0].id).then((data: any)=> {
         if (data && data != null) {
-          //debugger;
+          //
           this.contractData.centreMedecineEntreprise = data.libelle;
           this.contractData.adresseCentreMedecineEntreprise = data.adresse + ' ' + data.code_postal;
         }
@@ -157,7 +163,7 @@ export class Contract {
       let calendar = this.currentOffer.calendarData;
       let minDay = new Date(calendar[0].date);
       let maxDay = new Date(calendar[0].date);
-      // debugger;
+      //
       for(let i=1 ; i <calendar.length;i++){
         let date = new Date(calendar[i].date);
         if(minDay.getTime()>date.getTime())
@@ -179,69 +185,72 @@ export class Contract {
       else
         trial = 5;
 
+      this.offersService.loadOfferAdress(this.currentOffer.idOffer, "employeur").then((data:any)=>{
+        this.workAdress = data;
+      });
     }
 
     // Initialize contract data
-    // this.contractData = {
-    //   num: "",
-    //   numero: "",
-    //   centreMedecineEntreprise: "",
-    //   adresseCentreMedecineEntreprise: "",
-    //   centreMedecineETT: "181 - CMIE",
-    //   adresseCentreMedecineETT: "80 RUE DE CLICHY 75009 PARIS",
-    //   contact: this.employerFullName,
-    //   indemniteFinMission: "10.00%",
-    //   indemniteCongesPayes: "10.00%",
-    //   moyenAcces: "",
-    //   numeroTitreTravail: "",
-    //   debutTitreTravail: "",
-    //   finTitreTravail: "",
-    //   periodesNonTravaillees: "",
-    //   debutSouplesse: "",
-    //   finSouplesse: "",
-    //   equipements: "",
-    //
-    //   interim: "Groupe 3S",
-    //   missionStartDate: this.getStartDate(),
-    //   missionEndDate: this.getEndDate(),
-    //   trialPeriod: trial,
-    //   termStartDate: this.getEndDate(),
-    //   termEndDate: this.getEndDate(),
-    //   motif: "",
-    //   justification: "",
-    //   qualification: "",
-    //   characteristics: "",
-    //   workTimeHours: 0,
-    //   workTimeVariable: 0,
-    //   usualWorkTimeHours: "8H00/17H00 variables",
-    //   workStartHour: "08:00",
-    //   workEndHour: "17:00",
-    //   workHourVariable: "",
-    //   postRisks: "",
-    //   medicalSurv: "",
-    //   epi: false,
-    //   baseSalary: 0,
-    //   MonthlyAverageDuration: "0",
-    //   salaryNHours: "00,00€ B/H",
-    //   salarySH35: "+00%",
-    //   salarySH43: "+00%",
-    //   restRight: "00%",
-    //   interimAddress: "",
-    //   customer: "",
-    //   primes: 0,
-    //   headOffice: "",
-    //   missionContent: "",
-    //   category: "Employé",
-    //   sector: "",
-    //   companyName: '',
-    //   titreTransport: 'NON',
-    //   zonesTitre: '',
-    //   risques: '',
-    //   elementsCotisation: 0.0,
-    //   elementsNonCotisation: 10.0,
-    //   titre: '',
-    //   periodicite : ''
-    // };
+    this.contractData = {
+      num: "",
+      numero: "",
+      centreMedecineEntreprise: "",
+      adresseCentreMedecineEntreprise: "",
+      centreMedecineETT: "181 - CMIE",
+      adresseCentreMedecineETT: "80 RUE DE CLICHY 75009 PARIS",
+      contact: this.employerFullName,
+      indemniteFinMission: "10.00%",
+      indemniteCongesPayes: "10.00%",
+      moyenAcces: "",
+      numeroTitreTravail: "",
+      debutTitreTravail: "",
+      finTitreTravail: "",
+      periodesNonTravaillees: "",
+      debutSouplesse: "",
+      finSouplesse: "",
+      equipements: "",
+
+      interim: "Groupe 3S",
+      missionStartDate: this.getStartDate(),
+      missionEndDate: this.getEndDate(),
+      trialPeriod: trial,
+      termStartDate: this.getEndDate(),
+      termEndDate: this.getEndDate(),
+      motif: "",
+      justification: "",
+      qualification: "",
+      characteristics: "",
+      workTimeHours: 0,
+      workTimeVariable: 0,
+      usualWorkTimeHours: "8H00/17H00 variables",
+      workStartHour: this.initWorkStartHour(),
+      workEndHour: this.initWorkEndHour(),
+      workHourVariable: "",
+      postRisks: "",
+      medicalSurv: "",
+      epi: false,
+      baseSalary: 0,
+      MonthlyAverageDuration: "0",
+      salaryNHours: "00,00€ B/H",
+      salarySH35: "+00%",
+      salarySH43: "+00%",
+      restRight: "00%",
+      interimAddress: "",
+      customer: "",
+      primes: 0,
+      headOffice: "",
+      missionContent: "",
+      category: "Employé",
+      sector: "",
+      companyName: '',
+      titreTransport: 'NON',
+      zonesTitre: '',
+      risques: '',
+      elementsCotisation: 0.0,
+      elementsNonCotisation: 10.0,
+      titre: '',
+      periodicite : ''
+    };
     if (this.currentOffer) {
       this.service.getRates().then((data: any) => {
         for (let i = 0; i < data.length; i++) {
@@ -356,7 +365,11 @@ export class Contract {
     let calendar = this.currentOffer.calendarData;
     let minDay = new Date(calendar[0].date);
     let maxDay = new Date(calendar[0].date);
+    this.offersService.loadOfferAdress(this.currentOffer.idOffer, "employeur").then((data:any)=>{
+      this.workAdress = data;
+    });
     // debugger;
+    //
     for(let i=1 ; i <calendar.length;i++){
       let date = new Date(calendar[i].date);
       if(minDay.getTime()>date.getTime())
@@ -410,8 +423,8 @@ export class Contract {
       workTimeHours: this.calculateOfferHours(),
       workTimeVariable: 0,
       usualWorkTimeHours: "8H00/17H00 variables",
-      workStartHour: "08:00",
-      workEndHour: "17:00",
+      workStartHour: this.initWorkStartHour(),
+      workEndHour: this.initWorkEndHour(),
       workHourVariable: "",
       postRisks: "",
       medicalSurv: "",
@@ -444,13 +457,28 @@ export class Contract {
     // console.log(JSON.stringify(this.contractData));
 
     this.medecineService.getMedecine(this.employer.entreprises[0].id).then((data: any)=> {
-      // debugger;
+      //
       if (data && data != null) {
         this.contractData.centreMedecineEntreprise = data.libelle;
         this.contractData.adresseCentreMedecineEntreprise = data.adresse + ' ' + data.code_postal;
       }
 
     });
+  }
+
+  initWorkStartHour(){
+    let today = new Date();
+    today.setHours(8);
+    today.setMinutes(0);
+    return today;
+
+  }
+
+  initWorkEndHour(){
+    let today = new Date();
+    today.setHours(17);
+    today.setMinutes(0);
+    return today;
   }
 
   parseNumber(str) {
@@ -475,6 +503,7 @@ export class Contract {
   }
 
   goToYousignPage() {
+
     this.contractService.getNumContract().then((data: any) => {
       this.dataValidation = true;
 

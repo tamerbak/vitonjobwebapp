@@ -14,6 +14,10 @@
     <button type="button" class="add-offer btn btn-danger btn-sm" (click)="goToNewOffer()">Créer une offre
       {{currentUser.estEmployeur ? " d'emploi" : " de service"}}
     </button>
+      <button class="btn btn-info mb-xs" role="button" (click)="sortOffers()">
+          Trier les offres
+      </button>
+
   </div>
   <div class="col-lg-6 col-xs-12">
     <div class="btn-group pull-lg-right pull-md-right pull-sm-right pull-xl-right btn-grp">
