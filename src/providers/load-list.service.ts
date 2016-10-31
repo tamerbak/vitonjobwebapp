@@ -36,6 +36,22 @@ export class LoadListService {
     });
   }
 
+
+  loadCountry(paysId) {
+    //  Init project parameters
+    var sql = "SELECT pk_user_pays as id, nom, indicatif_telephonique FROM user_pays where pk_user_pays ="+ paysId;
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
   /**
    * @description load a list of nationalities
    * @return JSON results
@@ -49,6 +65,21 @@ export class LoadListService {
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
+          resolve(data);
+        });
+    })
+  }
+
+  loadNationality(nationalityId) {
+    var sql = "SELECT pk_user_nationalite, libelle FROM user_nationalite WHERE  pk_user_nationalite='"+nationalityId +"' and dirty = 'N' ORDER BY libelle";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          console.log("done",data);
           resolve(data);
         });
     })
