@@ -15,7 +15,6 @@ import {MapsAPILoader} from "angular2-google-maps/core";
 import {ModalPicture} from "../modal-picture/modal-picture";
 import {BankAccount} from "../bank-account/bank-account";
 import MaskedInput from "angular2-text-mask";
-import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {AccountConstraints} from "../../validators/account-constraints";
 
 declare var jQuery, require, Messenger, moment: any;
@@ -145,6 +144,15 @@ export class Profile{
   conventionId: number;
   conventions: any = [];
 
+  offerStats: any = {
+    published_offers: '',
+  };
+
+  missionStats: any = {
+    pending_recruitments: '',
+    missions_in_progress: '',
+  };
+
   setImgClasses() {
     return {
       'img-circle': true,//TODO:this.currentUser && this.currentUser.estEmployeur,
@@ -242,6 +250,16 @@ export class Profile{
     this.isRecruiter = this.currentUser.estRecruteur;
     this.accountId = this.currentUser.id;
     this.userRoleId = this.currentUser.estEmployeur ? this.currentUser.employer.id : this.currentUser.jobyer.id;
+
+    if (this.currentUser.estEmployeur) {
+      let id = this.currentUser.employer.entreprises[0].id;
+      this.profileService.getEmployerOfferStats(id).then((data: any) => {
+        this.offerStats = data;
+      });
+      this.profileService.getEmployerMissionStats(id).then((data: any) => {
+        this.missionStats = data;
+      });
+    }
   }
 
   /**

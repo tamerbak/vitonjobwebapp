@@ -65,18 +65,18 @@
               </ul>
             </div>
           </div>
-          <div class="col-lg-8 col-md-7 col-xs-12">
+          <div *ngIf="isEmployer || isRecruiter" class="col-lg-8 col-md-7 col-xs-12">
             <div class="stats-row stats-row-profile mt text-xs-right">
               <div class="stat-item">
-                <p class="value text-xs-right">xx</p>
-                <h6 class="name">Offres publiques</h6>
+                <p class="value text-xs-right">{{ offerStats.published_offers }}</p>
+                <h6 class="name">Offres publiées</h6>
               </div>
               <div class="stat-item">
-                <p class="value text-xs-right">xx</p>
+                <p class="value text-xs-right">{{ missionStats.pending_recruitments }}</p>
                 <h6 class="name">Recrutement en cours</h6>
               </div>
               <div class="stat-item">
-                <p class="value text-xs-right">xx</p>
+                <p class="value text-xs-right">{{ missionStats.missions_in_progress }}</p>
                 <h6 class="name">Contrats en cours</h6>
               </div>
             </div>
