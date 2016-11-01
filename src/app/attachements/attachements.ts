@@ -25,6 +25,7 @@ export class Attachements {
   selFileName : string;
   fileContent:string;
   alerts: Array<Object>;
+  isUploadInProgress: boolean = false;
 
   constructor(private sharedService: SharedService,
               private attachementSerice : AttachementsService,
@@ -61,6 +62,7 @@ export class Attachements {
       return;
     }
 
+    this.isUploadInProgress = true;
     this.attachementSerice.uploadFile(this.currentUser.id, this.fileName, this.scanData).then((data :any) =>{
       jQuery('.fileinput').fileinput('clear')
       this.fileName ='';
@@ -70,12 +72,15 @@ export class Attachements {
           if(res && res.status == "200"){
             this.addAlert("success", "Le fichier a été bien sauvegardé.");
             this.attachments.push(data);
+            this.isUploadInProgress = false;
           }else{
             this.addAlert("danger", "Le transfert du fichier a échoué. Veuillez recommencer l'opération.");
+            this.isUploadInProgress = false;
           }
         })
       }else{
         this.addAlert("danger", "Le transfert du fichier a échoué. Veuillez recommencer l'opération.");
+        this.isUploadInProgress = false;
       }
     });
   }
