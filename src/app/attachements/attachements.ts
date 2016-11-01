@@ -61,7 +61,7 @@ export class Attachements {
       return;
     }
 
-    this.attachementSerice.uploadFile(this.currentUser, this.fileName, this.scanData).then((data :any) =>{
+    this.attachementSerice.uploadFile(this.currentUser.id, this.fileName, this.scanData).then((data :any) =>{
       jQuery('.fileinput').fileinput('clear')
       this.fileName ='';
       if(data && data.id != 0){
