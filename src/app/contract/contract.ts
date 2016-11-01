@@ -134,7 +134,7 @@ export class Contract {
       if (data && data.length > 0) {
         let datum = data[0];
         this.jobyer.id = datum.id;
-        this.jobyer.numSS = datum.numss = "null" ? '':datum.numss;
+        this.jobyer.numSS = (datum.numss == "null") ? '':datum.numss;
         this.jobyer.nationaliteLibelle = datum.nationalite = "null"? '':datum.nationalite;
         this.jobyer.titreTravail = '';
         this.jobyer.debutTitreTravail = '';
