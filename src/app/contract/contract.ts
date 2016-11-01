@@ -176,7 +176,7 @@ export class Contract {
                 }
               });
             }else{
-              this.jobyer.nationaliteLibelle = 'non';
+              this.jobyer.nationaliteLibelle = '';
             }
             if(data.fk_user_pays !== "null"){
               listService.loadCountry(data.fk_user_pays).then((res: any) => {
@@ -185,7 +185,7 @@ export class Contract {
                 }
               });
             }else{
-              this.jobyer.lieuNaissance = 'non';
+              this.jobyer.lieuNaissance = '';
             }
             if (this.regionId == '42') {
               this.isEuropean = 1;
