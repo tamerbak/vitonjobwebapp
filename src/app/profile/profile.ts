@@ -201,6 +201,9 @@ export class Profile{
       this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
         data = data.data[0];
         this.regionId = data.fk_user_identifiants_nationalite;
+        this.dateStay = data.date_de_delivrance;
+        this.dateFromStay = data.debut_validite;
+        this.dateToStay = data.fin_validite;
         if (this.regionId == '40') {
           this.isFrench = true;
           this.birthdepId = data.fk_user_departement;
@@ -210,9 +213,6 @@ export class Profile{
             this.isEuropean = 1;
             this.isFrench = false;
             this.isResident = (data.est_resident == 'Oui' ? true : false);
-            this.dateStay = data.date_de_delivrance;
-            this.dateFromStay = data.debut_validite;
-            this.dateToStay = data.fin_validite;
             this.whoDeliverStay = data.instance_delivrance;
             this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
             this.nationalityId = data.numero_titre_sejour;
@@ -1101,7 +1101,8 @@ export class Profile{
           regionId = this.regionId;
         }
 
-        this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, isResident, prefecture, this.isFrench, this.isEuropean, regionId)
+        this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthdepId, birthplace, birthCountryId, numStay,
+          dateStay, dateFromStay, dateToStay, isResident, prefecture, this.isFrench, this.isEuropean, regionId)
           .then((res: any) => {
 
             //case of authentication failure : server unavailable or connection problem
