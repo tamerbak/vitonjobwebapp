@@ -134,7 +134,7 @@ export class Contract {
       if (data && data.length > 0) {
         let datum = data[0];
         this.jobyer.id = datum.id;
-        this.jobyer.numSS = datum.numss = "null" ? '':datum.numss;
+        this.jobyer.numSS = (datum.numss == "null") ? '':datum.numss;
         this.jobyer.nationaliteLibelle = datum.nationalite = "null"? '':datum.nationalite;
         this.jobyer.titreTravail = '';
         this.jobyer.debutTitreTravail = '';
@@ -176,7 +176,7 @@ export class Contract {
                 }
               });
             }else{
-              this.jobyer.nationaliteLibelle = 'non';
+              this.jobyer.nationaliteLibelle = '';
             }
             if(data.fk_user_pays !== "null"){
               listService.loadCountry(data.fk_user_pays).then((res: any) => {
@@ -185,7 +185,7 @@ export class Contract {
                 }
               });
             }else{
-              this.jobyer.lieuNaissance = 'non';
+              this.jobyer.lieuNaissance = '';
             }
             if (this.regionId == '42') {
               this.isEuropean = 1;

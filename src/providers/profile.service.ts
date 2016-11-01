@@ -12,7 +12,7 @@ export class ProfileService{
   }
 
   loadAdditionalUserInformations(id) {
-    var sql;
+    let sql;
     sql = "select * from user_jobyer where pk_user_jobyer = '" + id + "';";
     return new Promise(resolve => {
       let headers = new Headers();
@@ -26,7 +26,7 @@ export class ProfileService{
   }
 
   loadProfilePicture(accountId, tel?, role?) {
-    var sql;
+    let sql;
     if (!this.isEmpty(accountId)) {
       sql = "select encode(photo_de_profil::bytea, 'escape') from user_account where pk_user_account = '" + accountId + "';";
     } else {
@@ -44,7 +44,7 @@ export class ProfileService{
   }
 
   uploadProfilePictureInServer(imgUri, accountId) {
-    var sql = "update user_account set photo_de_profil ='" + imgUri + "' where pk_user_account = '" + accountId + "';";
+    let sql = "update user_account set photo_de_profil ='" + imgUri + "' where pk_user_account = '" + accountId + "';";
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
@@ -58,7 +58,7 @@ export class ProfileService{
 
   updateUserPersonalAddress(id: string, name, streetNumber, street, cp, ville, pays, role) {
     //  Now we need to save the address
-    var addressData = {
+    let addressData = {
       'class': 'com.vitonjob.localisation.AdressToken',
       'street': street,
       'cp': cp,
@@ -71,9 +71,9 @@ export class ProfileService{
       'id': id,
       'type': 'personnelle'
     };
-    var addressDataStr = JSON.stringify(addressData);
-    var encodedAddress = btoa(addressDataStr);
-    var data = {
+    let addressDataStr = JSON.stringify(addressData);
+    let encodedAddress = btoa(addressDataStr);
+    let data = {
       'class': 'fr.protogen.masterdata.model.CCallout',
       'id': 239,
       'args': [{
@@ -82,7 +82,7 @@ export class ProfileService{
         value: encodedAddress
       }]
     };
-    var stringData = JSON.stringify(data);
+    let stringData = JSON.stringify(data);
     return new Promise(resolve => {
       let headers = Configs.getHttpJsonHeaders();
       this.http.post(Configs.calloutURL, stringData, {headers: headers})
@@ -98,7 +98,7 @@ export class ProfileService{
    */
   updateUserJobAddress(id: string, name, streetNumber, street, cp, ville, pays, role) {
     //  Now we need to save the address
-    var addressData = {
+    let addressData = {
       'class': 'com.vitonjob.localisation.AdressToken',
       'street': street,
       'cp': cp,
@@ -110,9 +110,9 @@ export class ProfileService{
       'id': id,
       'type': 'travaille'
     };
-    var addressDataStr = JSON.stringify(addressData);
-    var encodedAddress = btoa(addressDataStr);
-    var data = {
+    let addressDataStr = JSON.stringify(addressData);
+    let encodedAddress = btoa(addressDataStr);
+    let data = {
       'class': 'fr.protogen.masterdata.model.CCallout',
       'id': 239,
       'args': [{
@@ -121,7 +121,7 @@ export class ProfileService{
         value: encodedAddress
       }]
     };
-    var stringData = JSON.stringify(data);
+    let stringData = JSON.stringify(data);
 
     return new Promise(resolve => {
       let headers = Configs.getHttpJsonHeaders();
@@ -133,28 +133,28 @@ export class ProfileService{
   }
 
   uploadScan(scanData, userId, field, action, role) {
-    //var role = (this.projectTarget == 'employer' ? 'employeur' : this.projectTarget)
-    var scanDataObj = {
+    //let role = (this.projectTarget == 'employer' ? 'employeur' : this.projectTarget)
+    let scanDataObj = {
       "class": 'com.vitonjob.callouts.files.DataToken',
       "table": 'user_' + role,
       "field": field,
       "id": userId,
       "operation": action,
-      "encodedFile": (scanData) ? scanData.split(';base64,')[1] : ''
+      "encodedFile": scanData
     };
-    var scanDataStr = JSON.stringify(scanDataObj);
-    var encodedData = btoa(scanDataStr);
+    let scanDataStr = JSON.stringify(scanDataObj);
+    let encodedData = btoa(scanDataStr);
 
-    var body = {
+    let body = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 97,
+      'id': 342,
       'args': [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'Upload fichier',
         value: encodedData
       }]
     };
-    var stringData = JSON.stringify(body);
+    let stringData = JSON.stringify(body);
 
     //  send request
     return new Promise(resolve => {
@@ -166,8 +166,45 @@ export class ProfileService{
     });
   }
 
+  getScan(userId, field, role) {
+    let scanDataObj = {
+      "class": 'com.vitonjob.callouts.files.DataToken',
+      "table": 'user_' + role,
+      "field": field,
+      "id": userId,
+      "operation": 'get',
+      "encodedFile": ''
+    };
+    let scanDataStr = JSON.stringify(scanDataObj);
+    let encodedData = btoa(scanDataStr);
+
+    let body = {
+      'class': 'fr.protogen.masterdata.model.CCallout',
+      'id': 342,
+      'args': [{
+        'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+        label: 'Upload fichier',
+        value: encodedData
+      }]
+    };
+    let stringData = JSON.stringify(body);
+
+    //  send request
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.calloutURL, stringData, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data:any) => {
+          let files = '';
+          if(data && data.file)
+            files = data.file;
+          resolve(files);
+        });
+    });
+  }
+
   countEntreprisesByRaisonSocial(companyname: string) {
-    var sql = "select count(*) from user_entreprise where nom_ou_raison_sociale='" + companyname + "';";
+    let sql = "select count(*) from user_entreprise where nom_ou_raison_sociale='" + companyname + "';";
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
@@ -180,7 +217,7 @@ export class ProfileService{
   }
 
   countEntreprisesBySIRET(siret) {
-    var sql = "select count(*) from user_entreprise where siret='" + siret + "';";
+    let sql = "select count(*) from user_entreprise where siret='" + siret + "';";
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
@@ -197,7 +234,7 @@ export class ProfileService{
    * @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
    */
   updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, isStay, prefecture, isFrench, isEuropean, regionId) {
-    var sql = "";
+    let sql = "";
     //building the sql request
     sql = "update user_jobyer set  " +
       "titre='" + title + "', " +
@@ -247,7 +284,7 @@ export class ProfileService{
   }
 
   updateJobyerCivilityFirstTime(title, lastname, firstname, roleId) {
-    var sql = "";
+    let sql = "";
     //building the sql request
     sql = "update user_jobyer set  " +
       "titre='" + title + "', " +
@@ -267,7 +304,7 @@ export class ProfileService{
 
 
   updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId, medecineId, conventionId, forRecruitment) {
-    var sql = "update user_employeur set ";
+    let sql = "update user_employeur set ";
     sql = sql + " titre='" + title + "' ";
     sql = sql + ", nom='" + lastname + "', prenom='" + firstname + "' where pk_user_employeur=" + roleId + ";";
     sql = sql + " update user_entreprise set nom_ou_raison_sociale='" + companyname + "' ";
@@ -292,7 +329,7 @@ export class ProfileService{
   }
 
   updateEmployerCivilityFirstTime(title, lastname, firstname, companyname, ape, roleId, entrepriseId, conventionId) {
-    var sql = "update user_employeur set ";
+    let sql = "update user_employeur set ";
     sql = sql + " titre='" + title + "' ";
     sql = sql + ", nom='" + lastname + "', prenom='" + firstname + "' where pk_user_employeur=" + roleId + ";";
     sql = sql + " update user_entreprise set nom_ou_raison_sociale='" + companyname + "' ";
@@ -324,7 +361,7 @@ export class ProfileService{
   }
 
   updateRecruiterCivility(title, lastname, firstname, accountid) {
-    var sql = "update user_recruteur set ";
+    let sql = "update user_recruteur set ";
     sql = sql + " titre='" + title + "', ";
     sql = sql + " nom='" + lastname + "', prenom='" + firstname + "' where fk_user_account=" + accountid + ";";
 
@@ -340,7 +377,7 @@ export class ProfileService{
 
 
   getAddressByUser(id, role) {
-    var payload = {
+    let payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
       id: 165,
       args: [
@@ -356,7 +393,7 @@ export class ProfileService{
         }
       ]
     }
-    var stringData = JSON.stringify(payload);
+    let stringData = JSON.stringify(payload);
 
     return new Promise(resolve => {
       let headers = Configs.getHttpJsonHeaders();
@@ -368,7 +405,7 @@ export class ProfileService{
   }
 
   getIdentifiantNationalityByNationality(natId) {
-    var sql = "select i.* from user_identifiants_nationalite as i, user_nationalite as n where i.pk_user_identifiants_nationalite = n.fk_user_identifiants_nationalite and n.pk_user_nationalite = '" + natId + "'";
+    let sql = "select i.* from user_identifiants_nationalite as i, user_nationalite as n where i.pk_user_identifiants_nationalite = n.fk_user_identifiants_nationalite and n.pk_user_nationalite = '" + natId + "'";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -382,7 +419,7 @@ export class ProfileService{
   }
 
   getPrefecture(nom) {
-    var sql = "select pk_user_prefecture as id from user_prefecture where nom = '" + this.sqlfyText(nom) + "'";
+    let sql = "select pk_user_prefecture as id from user_prefecture where nom = '" + this.sqlfyText(nom) + "'";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -426,7 +463,7 @@ export class ProfileService{
   }
 
   /*getPaysByIndex(index){
-   var sql = "select pk_user_pays as id from user_prefecture where nom = '" + this.sqlfyText(nom) + "'";
+   let sql = "select pk_user_pays as id from user_prefecture where nom = '" + this.sqlfyText(nom) + "'";
 
    return new Promise(resolve => {
    let headers = Configs.getHttpTextHeaders();

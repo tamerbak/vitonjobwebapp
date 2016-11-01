@@ -14,7 +14,7 @@ export class AttachementsService {
 
   loadAttachements(user){
     let sql = "select pk_user_pieces_justificatives, nom_fichier, date_mise_a_jour from user_pieces_justificatives where fk_user_account="+user.id +" and dirty='N'";
-    console.log(sql);
+    //console.log(sql);
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -36,10 +36,10 @@ export class AttachementsService {
     });
   }
 
-  uploadFile(user, fileName, scanUri) {
+  uploadFile(userId, fileName, scanUri) {
     let d = new Date();
-    let sql = "insert into user_pieces_justificatives (fk_user_account, nom_fichier, date_mise_a_jour) values ("+user.id+",'"+fileName+"','"+this.sqlfyDate(d)+"') returning pk_user_pieces_justificatives";
-    console.log(sql);
+    let sql = "insert into user_pieces_justificatives (fk_user_account, nom_fichier, date_mise_a_jour) values ("+userId+",'"+fileName+"','"+this.sqlfyDate(d)+"') returning pk_user_pieces_justificatives";
+    //console.log(sql);
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
       // then on the response it'll map the JSON data to a parsed JS object.
@@ -56,7 +56,7 @@ export class AttachementsService {
               fileName : fileName,
               uploadDate : this.parseDate(this.sqlfyDate(d))
             };
-            this.updateAttachements(user, this.attachement.id, fileName, scanUri);
+            this.updateAttachements(userId, this.attachement.id, fileName, scanUri);
           }
 
           resolve(this.attachement);
@@ -75,24 +75,20 @@ export class AttachementsService {
     };
 
     var stringData = JSON.stringify(payload);
-    //console.log(stringData);
+    ////console.log(stringData);
     return new Promise(resolve => {
       let headers = Configs.getHttpJsonHeaders();
       this.http.post(Configs.fssURL, stringData, {headers:headers})
         .subscribe(data => {
-          //debugger;
           resolve(data);
         });
     });
   }
 
-  updateAttachements(user, idAttachment, fileName, scanUri){
-    //debugger;
-    if(user.estRecruteur || user.estEmployeur)
-      return;
+  updateAttachements(userId, idAttachment, fileName, scanUri){
     let today = this.sqlfyDate(new Date());
     let storageId = "{	\"class\":\"com.vitonjob.callouts.AttachementDownload\", \"idBean\" : <<DBID>>,	\"idAttachement\" : "+idAttachment+"}";
-    let rowId = user.jobyer.id;
+    let rowId = userId;
     let sql =  "insert into row_document " +
       "(" +
       "file_name, " +
@@ -147,7 +143,7 @@ export class AttachementsService {
       "5," +
       "210," +
       "'"+scanUri+"');";
-    console.log(sql);
+    //console.log(sql);
 
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
@@ -189,7 +185,7 @@ export class AttachementsService {
     };
 
     var stringData = JSON.stringify(payload);
-    console.log(stringData);
+    //console.log(stringData);
     return new Promise(resolve => {
       let headers = Configs.getHttpJsonHeaders();
       this.http.post(Configs.fssURL, stringData, {headers:headers})
