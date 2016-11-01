@@ -10,47 +10,85 @@
 <h1 class="page-title">{{currentUser.estRecruteur ? 'Recruteur' : (currentUser.estEmployeur ? 'Employeur' : 'Jobyer')}}
   - <span class="fw-semi-bold">Profil</span>
 </h1>
-<div class="row profile">
-  <div class="col-lg-6 col-xs-12">
+
+<div class="row voj-profile">
+  <div class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
     <section class="widget">
       <div class="widget-body">
         <div class="widget-top-overflow text-white">
           <div class="height-250 overflow-hidden">
-            <!-- <img class="img-fluid" src="assets/images/pictures/19.jpg"> -->
+            <img class="img-fluid" src="assets/images/pictures/19.jpg">
+          </div>
+          <div class="btn-toolbar">
+            <button
+              [disabled]="showForm" class="btn btn-outline btn-sm pull-right" data-toggle="modal"
+              data-target="#modal-bank-account"
+            >
+              <i class="fa fa-credit-card mr-xs"></i>
+              Modifier les coordonnées bancaires
+            </button>
           </div>
         </div>
         <div class="row">
-          <div class="col-md-12 col-xs-12 text-xs-center">
+          <div class="col-lg-4 col-md-5 col-xs-12 text-xs-center">
             <div class="post-user post-user-profile">
               <span class="thumb-xlg">
-                <img [ngClass]="setImgClasses()" src={{sharedService.getProfilImageUrl()}} alt="..." data-toggle="modal"
-                     data-target="#modal-picture" style="cursor: pointer;">
+                <img
+                  class="img-circle"
+                  [ngClass]="setImgClasses()"
+                  src={{sharedService.getProfilImageUrl()}}
+                  alt="..."
+                  data-toggle="modal"
+                  data-target="#modal-picture"
+                  style="cursor: pointer;"
+                />
+                <div modal-picture></div>
               </span>
-              <div modal-picture></div>
-              <h5 class="fw-normal">{{isNewUser ? "Cliquez sur l'avatar ci-dessus pour charger votre photo de profil" :
-                currentUserFullname }}</h5>
-              <p>{{isEmployer? (isRecruiter ? "Recruteur":"Employeur"):"Jobyer"}}</p>
-
-              <ul class="contacts">
-                <li><i class="fa fa-phone fa-fw mr-xs"></i><a href="#"> {{phoneNumber}}</a></li>
-                <li><i class="fa fa-envelope fa-fw mr-xs"></i><a href="#"> {{email}}</a></li>
-              </ul>
+              <h5 class="fw-normal">
+                {{ currentUser.titre }}
+                {{ currentUser.prenom }}
+                <span class="fw-semi-bold">{{ currentUser.nom }}</span>
+              </h5>
+              <p *ngIf="isEmployer || isRecruiter">
+                {{ isRecruiter ? "Recruteur" : "Employeur" }}
+                {{ currentUser.employer.entreprises[0].nom }}
+              </p>
+              <p *ngIf="!isEmployer && !isRecruiter">Jobyer</p>
               <button [disabled]="showForm" class="btn btn-primary btn-sm mt" (click)="initForm()">
+                <i class="fa fa-pencil-square-o ml-xs"></i>&nbsp;
                 Modifier les informations
               </button>
-              <br>
-              <button [disabled]="showForm" class="btn btn-primary btn-sm mt" data-toggle="modal"
-                      data-target="#modal-bank-account">
-                Modifier les coordonnées bancaires
-              </button>
+
+              <ul class="contacts">
+                <li><i class="fa fa-phone fa-fw mr-xs"></i><a href="#"> {{ phoneNumber }}</a></li>
+                <li><i class="fa fa-envelope fa-fw mr-xs"></i><a href="#"> {{ email }}</a></li>
+              </ul>
             </div>
           </div>
-          <div modal-bank-account></div>
+          <div class="col-lg-8 col-md-7 col-xs-12">
+            <div class="stats-row stats-row-profile mt text-xs-right">
+              <div class="stat-item">
+                <p class="value text-xs-right">xx</p>
+                <h6 class="name">Offres publiques</h6>
+              </div>
+              <div class="stat-item">
+                <p class="value text-xs-right">xx</p>
+                <h6 class="name">Recrutement en cours</h6>
+              </div>
+              <div class="stat-item">
+                <p class="value text-xs-right">xx</p>
+                <h6 class="name">Contrats en cours</h6>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
   </div>
-  <div [hidden]="!showForm" class="col-lg-6 col-xs-12">
+
+  <div modal-bank-account></div>
+
+  <div [hidden]="!showForm" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
     <section class="widget">
       <div class="widget-body">
         <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
