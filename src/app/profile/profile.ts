@@ -564,9 +564,12 @@ export class Profile{
         });
 
       if (accountId) {
-        this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle, this.scanData);
+        this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle, this.scanData).then((data :any) => {
+          if(data && data.id != 0) {
+            this.attachementsService.uploadActualFile(data.id, data.fileName, this.scanData);
+          }
+        });
       }
-
     }
   }
 

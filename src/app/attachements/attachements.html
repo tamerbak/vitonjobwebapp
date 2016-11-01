@@ -35,6 +35,9 @@
             <img class="screen-filler-img" alt="{{selFileName}}" src="{{fileContent}}" >
           </div>
         </div>
+        <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
+          <div [innerHTML]="alert.msg"></div>
+        </alert>
 
         <fieldset>
           <legend><strong>Ajouter un nouveau document</strong></legend>

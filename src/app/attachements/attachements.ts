@@ -1,14 +1,14 @@
 import {Component, ViewEncapsulation} from "@angular/core";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {SharedService} from "../../providers/shared.service";
-import {InProgressPage} from "../in-progress/in-progress";
 import {AttachementsService} from "../../providers/attachements.service";
+import {AlertComponent} from "ng2-bootstrap/components/alert";
 declare var jQuery, require: any;
 
 @Component({
   selector: '[attachements]',
   template: require('./attachements.html'),
-  directives: [ROUTER_DIRECTIVES, InProgressPage],
+  directives: [ROUTER_DIRECTIVES, AlertComponent],
   providers: [AttachementsService],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./attachements.scss')]
@@ -24,6 +24,7 @@ export class Attachements {
   viewMode :boolean;
   selFileName : string;
   fileContent:string;
+  alerts: Array<Object>;
 
   constructor(private sharedService: SharedService,
               private attachementSerice : AttachementsService,
@@ -61,11 +62,21 @@ export class Attachements {
       return;
     }
 
-    this.attachementSerice.uploadFile(this.currentUser, this.fileName, this.scanData).then(data =>{
-      if(data){
-        this.attachments.push(data);
-        jQuery('.fileinput').fileinput('clear')
-        this.fileName ='';
+    this.attachementSerice.uploadFile(this.currentUser, this.fileName, this.scanData).then((data :any) =>{
+      jQuery('.fileinput').fileinput('clear')
+      this.fileName ='';
+      if(data && data.id != 0){
+        this.addAlert("info", "Le fichier est en cours de transfert. Veuillez patienter ...");
+        this.attachementSerice.uploadActualFile(data.id, data.fileName, this.scanData).then((res: any) => {
+          if(res && res.status == "200"){
+            this.addAlert("success", "Le fichier a été bien sauvegardé.");
+            this.attachments.push(data);
+          }else{
+            this.addAlert("danger", "Le transfert du fichier a échoué. Veuillez recommencer l'opération.");
+          }
+        })
+      }else{
+        this.addAlert("danger", "Le transfert du fichier a échoué. Veuillez recommencer l'opération.");
       }
     });
   }
@@ -73,13 +84,15 @@ export class Attachements {
   viewFile(a){
     this.fileContent = "";
     this.selFileName = a.fileName;
-    this.attachementSerice.downloadActualFile(a.id, a.fileName).then(data => {
+    this.addAlert("info", "Le téléchargement du fichier est en cours. Veuillez patienter ...");
+    this.attachementSerice.downloadActualFile(a.id, a.fileName).then((data: any)=> {
       if(data){
-        // debugger;
         this.fileContent = data['stream'];
         this.viewMode=true;
+        this.alerts.length = 0;
+      }else{
+        this.addAlert("danger", "Le téléchargement du fichier a échoué. Veuillez recommencer l'opération.");
       }
-
     });
   }
 
@@ -93,5 +106,9 @@ export class Attachements {
     this.attachementSerice.deleteAttachement(a);
     let i = this.attachments.indexOf(a);
     this.attachments.splice(i,1);
+  }
+
+  addAlert(type, msg): void {
+    this.alerts = [{type: type, msg: msg}];
   }
 }
