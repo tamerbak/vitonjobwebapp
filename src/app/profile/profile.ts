@@ -14,9 +14,11 @@ import {Configs} from "../../configurations/configs";
 import {MapsAPILoader} from "angular2-google-maps/core";
 import {ModalPicture} from "../modal-picture/modal-picture";
 import {BankAccount} from "../bank-account/bank-account";
-import MaskedInput from "angular2-text-mask";
+
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {AccountConstraints} from "../../validators/account-constraints";
+import {CivilityNames} from "../components/civility-names/civility-names";
+import {CivilityEmployer} from "../components/civility-employer/civility-employer";
 
 declare var jQuery, require, Messenger, moment: any;
 declare var google: any;
@@ -24,14 +26,13 @@ declare var google: any;
 @Component({
   selector: '[profile]',
   template: require('./profile.html'),
-  directives: [ROUTER_DIRECTIVES, NKDatetime, AlertComponent, ModalPicture, MaskedInput, BankAccount],
+  directives: [ROUTER_DIRECTIVES, NKDatetime, AlertComponent, ModalPicture, BankAccount,CivilityNames,CivilityEmployer],
   providers: [Utils, ProfileService, CommunesService, LoadListService, MedecineService, AttachementsService, AccountConstraints],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./profile.scss')]
 })
 export class Profile{
-  public maskSiret = [/[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/]
-  public maskApe = [/[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /^[a-zA-Z]*$/]
+
 
   @ViewChild('myForm') form;
 
@@ -59,21 +60,11 @@ export class Profile{
 
   isValidPersonalAddress: boolean = true;
   isValidJobAddress: boolean = true;
-  isValidLastname: boolean = true;
-  isValidFirstname: boolean = true;
-  isValidCompanyname: boolean = true;
-  isValidSiret: boolean = true;
-  isValidConventionId: boolean = true;
-  isValidApe: boolean = true;
   isValidBirthdate: boolean = true;
   isValidCni: boolean = true;
   isValidNumSS: boolean = true;
 
-  lastnameHint: string = "";
-  firstnameHint: string = "";
-  companynameHint: string = "";
-  siretHint: string = "";
-  apeHint: string = "";
+
   birthdateHint: string = "";
   cniHint: string = "";
   numSSHint: string = "";
@@ -149,6 +140,14 @@ export class Profile{
     return {
       'img-circle': true,//TODO:this.currentUser && this.currentUser.estEmployeur,
     };
+  }
+
+  onNamesChange(isValid){
+
+  }
+
+  onEmployerDataChange(isValid){
+    
   }
 
   constructor(private listService: LoadListService,
@@ -247,19 +246,6 @@ export class Profile{
   /**
    * Define initial required fields
    */
-  initValidation() {
-
-    // Required field for all roles
-    this.isValidLastname = Utils.isEmpty(this.lastname) ? false : true;
-    this.isValidFirstname = Utils.isEmpty(this.firstname) ? false : true;
-
-    // Required fields for employer
-    if (this.isEmployer) {
-      this.isValidApe = Utils.isEmpty(this.ape) ? false : true;
-      this.isValidCompanyname = Utils.isEmpty(this.companyname) ? false : true;
-      this.isValidConventionId = Utils.isEmpty(this.conventionId) ? false : true;
-    }
-  }
 
   watchPersonalAddress(e) {
     let _address = e.target.value;
@@ -539,7 +525,7 @@ export class Profile{
         jQuery(".whoDeliver-select").select2('data', {id: data.data[0].id, nom: this.whoDeliverStay});
     });
 
-    this.initValidation();
+    //this.initValidation();
   }
 
   updateScan(accountId, userId, role) {
@@ -813,37 +799,37 @@ export class Profile{
 
   }
 
-  isValidForm() {
-    var _isFormValid = false;
-    if (this.isRecruiter) {
-      if (this.isValidFirstname && this.isValidLastname) {
-        _isFormValid = true;
-      } else {
-        _isFormValid = false;
-      }
-    } else if (this.isEmployer) {
-      if (this.isValidFirstname && this.isValidLastname && this.isValidCompanyname && this.isValidSiret && this.isValidApe && this.isValidPersonalAddress && this.isValidJobAddress && !Utils.isEmpty(this.conventionId)) {
-        _isFormValid = true;
-      } else {
-        _isFormValid = false;
-      }
-    } else {
-      if (this.isValidFirstname && this.isValidLastname && this.isValidNumSS && this.isValidBirthdate && this.isValidPersonalAddress && this.isValidJobAddress) {
-        if (this.isFrench || this.isEuropean == 0) {
-          if (this.isValidCni) {
-            _isFormValid = true;
-          } else {
-            _isFormValid = false;
-          }
-        } else {
-          _isFormValid = true;
-        }
-      } else {
-        _isFormValid = false;
-      }
-    }
-    return _isFormValid;
-  }
+   isValidForm() {
+  //   var _isFormValid = false;
+  //   if (this.isRecruiter) {
+  //     if (this.isValidFirstname && this.isValidLastname) {
+  //       _isFormValid = true;
+  //     } else {
+  //       _isFormValid = false;
+  //     }
+  //   } else if (this.isEmployer) {
+  //     if (this.isValidFirstname && this.isValidLastname && this.isValidCompanyname && this.isValidSiret && this.isValidApe && this.isValidPersonalAddress && this.isValidJobAddress && !Utils.isEmpty(this.conventionId)) {
+  //       _isFormValid = true;
+  //     } else {
+  //       _isFormValid = false;
+  //     }
+  //   } else {
+  //     if (this.isValidFirstname && this.isValidLastname && this.isValidNumSS && this.isValidBirthdate && this.isValidPersonalAddress && this.isValidJobAddress) {
+  //       if (this.isFrench || this.isEuropean == 0) {
+  //         if (this.isValidCni) {
+  //           _isFormValid = true;
+  //         } else {
+  //           _isFormValid = false;
+  //         }
+  //       } else {
+  //         _isFormValid = true;
+  //       }
+  //     } else {
+  //       _isFormValid = false;
+  //     }
+  //   }
+  //   return _isFormValid;
+   }
 
   IsCompanyExist(e, field) {
     //verify if company exists
@@ -1341,40 +1327,7 @@ export class Profile{
 
   //<editor-fold desc="Watching input functions">
 
-  watchLastname(e) {
-    let nameChecked = AccountConstraints.checkName(e, "lastname");
-    this.isValidLastname = nameChecked.isValid;
-    this.lastnameHint = nameChecked.hint;
-    this.isValidForm();
-  }
 
-  watchFirstname(e) {
-    let nameChecked = AccountConstraints.checkName(e, "firstname");
-    this.isValidFirstname = nameChecked.isValid;
-    this.firstnameHint = nameChecked.hint;
-    this.isValidForm();
-  }
-
-  watchCompanyname(e) {
-    let companynameChecked = AccountConstraints.checkCompanyName(e);
-    this.isValidCompanyname = companynameChecked.isValid;
-    this.companynameHint = companynameChecked.hint;
-    this.isValidForm();
-  }
-
-  watchSiret(e) {
-    let siretChecked = AccountConstraints.checkSiret(e);
-    this.isValidSiret = siretChecked.isValid;
-    this.siretHint = siretChecked.hint;
-    this.isValidForm();
-  }
-
-  watchApe(e) {
-    let apeChecked = AccountConstraints.checkApe(e);
-    this.isValidApe = apeChecked.isValid;
-    this.apeHint = apeChecked.hint;
-    this.isValidForm();
-  }
 
   /**
    * Watches National identity card / passport number

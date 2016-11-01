@@ -62,113 +62,12 @@
                 Veuillez renseigner les informations de votre profil pour pouvoir créer une offre
               </div>
             </alert>
-            <div class="form-group row">
-              <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="title">
-                Titre de civilité
-                <span class="asterisk">*</span>
-              </label>
-              <div class="col-md-7 col-xs-12">
-                <select data-style="btn-secondary"
-                        class="titleSelectPicker form-control"
-                        tabindex="-1" id="title" [(ngModel)]="title">
-                  <option value="Mme">Mme</option>
-                  <option value="Mlle">Mlle</option>
-                  <option value="M.">M.</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label for="lastname" class="col-md-4 col-xs-12 form-control-label text-md-right">
-                Nom
-                <span class="asterisk">*</span>
-              </label>
-              <div class="col-md-7 col-xs-12">
-                <input type="text" id="lastname" class="form-control" placeholder="Nom" [(ngModel)]="lastname"
-                       name="lastname" (keyup)="watchLastname($event)">
-              </div>
-              <div class="col-md-offset-4 col-md-7 col-xs-12">
-                <span class="hint label label-danger">{{lastnameHint}}</span>
-              </div>
-            </div>
 
-            <div class="form-group row">
-
-              <label for="firstname" class="col-md-4 col-xs-12 form-control-label text-md-right">
-                Prénom
-                <span class="asterisk">*</span>
-              </label>
-              <div class="col-md-7 col-xs-12">
-                <input type="text" id="firstname" class="form-control" [(ngModel)]="firstname" name="firstname"
-                       placeholder="Prénom" (keyup)="watchFirstname($event)">
-              </div>
-
-              <div class="col-md-offset-4 col-md-7 col-xs-12">
-                <span class="hint label label-danger">{{firstnameHint}}</span>
-              </div>
-            </div>
+            <civility-names [title]="title" [firstname]="firstname" [lastname]="lastname" (onChange)="onNamesChange($event)"></civility-names>
 
             <div *ngIf="!isRecruiter">
+              <civility-employer *ngIf="isEmployer" [companyname]="companyname" [siret]="siret" [ape]="ape"  (onChange)="onEmployerDataChange($event)"></civility-employer>
 
-              <div *ngIf="isEmployer" class="form-group row">
-                <label for="companyname" class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Raison Sociale
-                  <span class="asterisk">*</span>
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <input type="text" id="companyname" class="form-control" [(ngModel)]="companyname" name="companyname"
-                         placeholder="Raison Sociale" (keyup)="watchCompanyname($event)"
-                         (change)="IsCompanyExist($event, 'companyname')">
-                </div>
-                <div class="col-md-offset-4 col-md-7 col-xs-12">
-                  <span class="hint label label-danger">{{companynameHint}}</span>
-                </div>
-              </div>
-
-              <div *ngIf="isEmployer" class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="siret">
-                  SIRET
-                  <!-- <span class="help-block">999 999 999 99999</span> -->
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <input id="siret" type="text" class="form-control" [textMask]="{mask: maskSiret}" [(ngModel)]="siret"
-                         name="siret" placeholder="999 999 999 99999" (keyup)="watchSiret($event)"
-                         (change)="IsCompanyExist($event, 'siret')">
-                </div>
-                <div class="col-md-offset-4 col-md-7 col-xs-12">
-                  <span class="hint label label-danger">{{siretHint}}</span>
-                </div>
-              </div>
-
-              <div *ngIf="isEmployer" class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  NAF
-                  <span class="asterisk">*</span>
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <input id="ape" type="text" class="form-control" [textMask]="{mask: maskApe}"
-                         [(ngModel)]="ape" name="ape" placeholder="9999A" (keyup)="watchApe($event)">
-                </div>
-                <div class="col-md-offset-4 col-md-7 col-xs-12">
-                  <span class="hint label label-danger">{{apeHint}}</span>
-                </div>
-
-              </div>
-
-              <div *ngIf="isEmployer" class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Convention collective
-                  <span class="asterisk">*</span>
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <select
-                          placeholder="Convention collective" data-style="btn-secondary"
-                          class="nationalitySelectPicker form-control" id="convention-select"
-                          [(ngModel)]="conventionId"
-                          name="convention_slct">
-                    <option *ngFor="let c of conventions" value="{{c.id}}">{{c.code}} - {{c.libelle}}</option>
-                  </select>
-                </div>
-              </div>
 
               <div *ngIf="!isEmployer" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="birthDate">
