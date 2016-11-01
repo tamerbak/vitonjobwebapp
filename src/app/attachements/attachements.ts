@@ -68,14 +68,14 @@ export class Attachements {
         this.addAlert("info", "Le fichier est en cours de transfert. Veuillez patienter ...");
         this.attachementSerice.uploadActualFile(data.id, data.fileName, this.scanData).then((res: any) => {
           if(res && res.status == "200"){
-            this.addAlert("success", "Le fichier a été bien sauvegardé.");
+            this.addAlert("success", "Le fichier a Ã©tÃ© bien sauvegardÃ©.");
             this.attachments.push(data);
           }else{
-            this.addAlert("danger", "Le transfert du fichier a échoué. Veuillez recommencer l'opération.");
+            this.addAlert("danger", "Le transfert du fichier a Ã©chouÃ©. Veuillez recommencer l'opÃ©ration.");
           }
         })
       }else{
-        this.addAlert("danger", "Le transfert du fichier a échoué. Veuillez recommencer l'opération.");
+        this.addAlert("danger", "Le transfert du fichier a Ã©chouÃ©. Veuillez recommencer l'opÃ©ration.");
       }
     });
   }
@@ -83,14 +83,14 @@ export class Attachements {
   viewFile(a){
     this.fileContent = "";
     this.selFileName = a.fileName;
-    this.addAlert("info", "Le téléchargement du fichier est en cours. Veuillez patienter ...");
+    this.addAlert("info", "Le tÃ©lÃ©chargement du fichier est en cours. Veuillez patienter ...");
     this.attachementSerice.downloadActualFile(a.id, a.fileName).then((data: any)=> {
       if(data){
         this.fileContent = data['stream'];
         this.viewMode=true;
         this.alerts.length = 0;
       }else{
-        this.addAlert("danger", "Le téléchargement du fichier a échoué. Veuillez recommencer l'opération.");
+        this.addAlert("danger", "Le tÃ©lÃ©chargement du fichier a Ã©chouÃ©. Veuillez recommencer l'opÃ©ration.");
       }
     });
   }
