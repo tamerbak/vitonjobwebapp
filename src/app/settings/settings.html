@@ -9,72 +9,81 @@
 </div>
 <h1 class="page-title">Options -<span class="fw-semi-bold">{{currentUserFullname}}</span></h1>
 <div class="row settings">
-  <div class="col-lg-6 col-xs-12">
+  <div class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
     <section class="widget">
       <div class="widget-body">
         <div class="widget-top-overflow text-white">
           <div class="height-250 overflow-hidden">
-            <!-- <img class="img-fluid" src="assets/images/pictures/19.jpg"> -->
+            <img class="img-fluid" src="assets/images/pictures/19.jpg">
+          </div>
+          <div class="btn-toolbar">
           </div>
         </div>
         <div class="row">
-          <div class="col-md-12 col-xs-12 text-xs-center">
+          <div class="col-lg-4 col-md-5 col-xs-12 text-xs-center">
             <div class="post-user post-user-profile">
               <span class="thumb-xlg">
-                <img class="img-circle" src={{sharedService.getProfilImageUrl()}} alt="...">
+                <img
+                  class="img-circle"
+                  src={{sharedService.getProfilImageUrl()}}
+                  alt="..."
+                  data-toggle="modal"
+                  data-target="#modal-picture"
+                />
+                <div modal-picture></div>
               </span>
-              <h5 class="fw-normal">{{currentUserFullname}}</h5>
-              <p>{{isEmployer? (isRecruiter ? "Recruteur":"Employeur"):"Jobyer"}}</p>
+              <h5 class="fw-normal">
+                {{ currentUser.titre }}
+                {{ currentUser.prenom }}
+                <span class="fw-semi-bold">{{ currentUser.nom }}</span>
+              </h5>
+              <p *ngIf="isEmployer || isRecruiter">
+                {{ isRecruiter ? "Recruteur" : "Employeur" }}
+                {{ currentUser.employer.entreprises[0].nom }}
+              </p>
+              <p *ngIf="!isEmployer && !isRecruiter">Jobyer</p>
 
               <ul class="contacts">
-                <li><i class="fa fa-phone fa-fw mr-xs"></i><a href="#"> {{phoneNumber}}</a></li>
-                <li><i class="fa fa-envelope fa-fw mr-xs"></i><a href="#"> {{email}}</a></li>
+                <li><i class="fa fa-phone fa-fw mr-xs"></i><a href="#"> {{ phoneNumber }}</a></li>
+                <li><i class="fa fa-envelope fa-fw mr-xs"></i><a href="#"> {{ email }}</a></li>
               </ul>
-              <legend><strong>Compte</strong></legend>
-              <button disabled class="btn btn-primary btn-sm mt">
-                Modifier votre téléphone
-              </button>
-              <br>
-              <button disabled class="btn btn-primary btn-sm mt">
-                Modifier votre e-mail
-              </button>
-              <br>
-              <button [disabled]="phase=='CHANGE_PASSWORD'" class="btn btn-primary btn-sm mt"
-                      (click)="initPasswordPhaseForm()">
-                Modifier votre mot de passe
-              </button>
-              <br>
-              <button *ngIf="isEmployer" [disabled]="phase=='CHANGE_MISSION'" class="btn btn-primary btn-sm mt"
-                      (click)="initMissionPhaseForm()">
-                Modifier l'option suivi de mission
-              </button>
-              <br>
-              <button *ngIf="isEmployer && !isSpontaneousContact()" class="btn btn-primary btn-sm mt"
-                      (click)="activateSpontaneousContact()">
-                Accepter les candidatures spontannées
-              </button>
-              <button *ngIf="isEmployer && isSpontaneousContact()" class="btn btn-primary btn-sm mt"
-                      (click)="activateSpontaneousContact()">
-                Refuser les candidatures spontannées
-              </button>
-              <br>
-              <br>
-              <legend><strong>Sécurité</strong></legend>
-              <button disabled class="btn btn-primary btn-sm mt" (click)="lockApp()">
-                Verrouiller votre compte
-              </button>
-              <br><br>
-              <legend><strong>Déconnexion</strong></legend>
-              <button class="btn btn-primary btn-sm mt" (click)="logOut()">
-                Se déconnecter
-              </button>
             </div>
+          </div>
+          <div class="col-lg-8 col-md-7 col-xs-12" style="text-align: right;">
+
+            <legend><strong>Compte</strong></legend>
+            <button [disabled]="phase=='CHANGE_PASSWORD'" class="btn btn-default btn-sm mt"
+                    (click)="initPasswordPhaseForm()">
+              Modifier votre mot de passe
+            </button>
+            <br />
+            <button *ngIf="isEmployer" [disabled]="phase=='CHANGE_MISSION'" class="btn btn-default btn-sm mt"
+                    (click)="initMissionPhaseForm()">
+              Modifier l'option suivi de mission
+            </button>
+            <br />
+            <button *ngIf="isEmployer && !isSpontaneousContact()" class="btn btn-default btn-sm mt"
+                    (click)="activateSpontaneousContact()">
+              Accepter les candidatures spontannées
+            </button>
+            <button *ngIf="isEmployer && isSpontaneousContact()" class="btn btn-default btn-sm mt"
+                    (click)="activateSpontaneousContact()">
+              Refuser les candidatures spontannées
+            </button>
+            <br />
+            <br />
+
+            <legend><strong>Déconnexion</strong></legend>
+            <button class="btn btn-default btn-sm mt" (click)="logOut()">
+              Se déconnecter
+            </button>
           </div>
         </div>
       </div>
     </section>
   </div>
-  <div [hidden]="!showForm" class="col-lg-6 col-xs-12">
+
+  <div [hidden]="!showForm" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
     <section class="widget">
       <div class="widget-body">
         <form class="settings-form form-horizontal" role="form">
