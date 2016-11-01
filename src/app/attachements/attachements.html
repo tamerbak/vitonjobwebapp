@@ -70,7 +70,7 @@
 
         <div class="form-group row">
           <div class="col-md-12 col-xs-12">
-            <button class="btn success btn-lg attachement-add-btn" (click)="saveFile()" [disabled]="isUploadInProgress"><span class="icon"><i class ="glyphicon glyphicon-cloud-upload"></i></span> Ajouter</button>
+            <button class="btn success btn-lg attachement-add-btn" (click)="saveFile()" [disabled]="isUploadInProgress || isEmpty(fileName) || isEmpty(scanData)"><span class="icon"><i class ="glyphicon glyphicon-cloud-upload"></i></span> Ajouter</button>
           </div>
         </div>
 

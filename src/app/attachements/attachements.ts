@@ -3,6 +3,7 @@ import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {SharedService} from "../../providers/shared.service";
 import {AttachementsService} from "../../providers/attachements.service";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
+import {Utils} from "../utils/utils";
 declare var jQuery, require: any;
 
 @Component({
@@ -114,5 +115,8 @@ export class Attachements {
 
   addAlert(type, msg): void {
     this.alerts = [{type: type, msg: msg}];
+  }
+  isEmpty(str){
+    return Utils.isEmpty(str);
   }
 }
