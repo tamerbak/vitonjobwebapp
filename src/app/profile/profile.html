@@ -313,7 +313,7 @@
                 </div>
               </div>
 
-              <div *ngIf="!isEmployer && !isFrench && isEuropean == 1" class="form-group row">
+              <!--div *ngIf="!isEmployer && !isFrench && isEuropean == 1" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   {{!isResident ? 'Titre de séjour délivré le' : 'Carte résident délivrée le'}}
                 </label>
@@ -338,17 +338,7 @@
                 <div class="col-md-7 col-xs-12">
                   <input id="dateToStay" type="date" class="form-control" [(ngModel)]="dateToStay"/>
                 </div>
-              </div>
-
-              <div [hidden]="isEmployer || isEuropean == 0 || isFrench" class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Délivré par
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <input type="hidden" class="select2 whoDeliver-select form-control" name="whoDeliverStay"
-                         [(ngModel)]="whoDeliverStay" name="whoDeliverStay"/>
-                </div>
-              </div>
+              </div-->
 
               <div [hidden]="isEmployer || isEuropean == 1 || isFrench" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">Type de document</label>
@@ -385,6 +375,43 @@
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <input type="text" class="form-control" [(ngModel)]="numStay">
+                </div>
+              </div>
+
+              <div *ngIf="!isEmployer" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Pièce d'identité délivrée le
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input id="dateStay" type="date" class="form-control" [(ngModel)]="dateStay"/>
+                </div>
+              </div>
+
+              <div *ngIf="!isEmployer" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Pièce d'identité valable du
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input id="dateFromStay" type="date" class="form-control" [(ngModel)]="dateFromStay"/>
+                </div>
+              </div>
+
+              <div *ngIf="!isEmployer" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Pièce d'identité valable au
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input id="dateToStay" type="date" class="form-control" [(ngModel)]="dateToStay"/>
+                </div>
+              </div>
+
+              <div [hidden]="isEmployer || isEuropean == 0 || isFrench" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Délivré par
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input type="hidden" class="select2 whoDeliver-select form-control" name="whoDeliverStay"
+                         [(ngModel)]="whoDeliverStay" name="whoDeliverStay"/>
                 </div>
               </div>
 
