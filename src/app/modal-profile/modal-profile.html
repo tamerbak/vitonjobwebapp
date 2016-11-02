@@ -105,6 +105,27 @@
                           </select>
                         </div>
                       </div>
+
+                      <div class="form-group row">
+                        <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                          Accepter les candidatures spontanées
+                          <span class="asterisk">*</span>
+                        </label>
+                        <div class="col-md-7 col-xs-12">
+                          <div class="abc-radio">
+                            <input type="radio" name="radio3" id="radio5" value="Oui" [checked]="isSpontaneaousContact" (click)="watchSpontaneousContact($event)">
+                            <label for="radio5">
+                              Oui
+                            </label>
+                          </div>
+                          <div class="abc-radio">
+                            <input type="radio" name="radio3" id="radio6" value="Non" [checked]="!isSpontaneaousContact" (click)="watchSpontaneousContact($event)">
+                            <label for="radio6">
+                              Non
+                            </label>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     <div *ngIf="!isProfileEmpty">

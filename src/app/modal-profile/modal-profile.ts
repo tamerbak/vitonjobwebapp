@@ -111,6 +111,9 @@ export class ModalProfile{
   conventionId: number;
   conventions: any = [];
 
+  //spontaneous contact
+  isSpontaneaousContact: boolean = false;
+
   constructor(private listService: LoadListService,
               private profileService: ProfileService,
               private sharedService: SharedService,
@@ -161,7 +164,7 @@ export class ModalProfile{
     this.isRecruiter = this.currentUser.estRecruteur;
     this.accountId = this.currentUser.id;
     this.userRoleId = this.currentUser.estEmployeur ? this.currentUser.employer.id : this.currentUser.jobyer.id;
-    this.isProfileEmpty = (this.isEmpty(this.currentUser.title) ? true : false);
+    this.isProfileEmpty = (Utils.isEmpty(this.currentUser.title) ? true : false);
   }
 
   initValidation() {
@@ -430,7 +433,7 @@ export class ModalProfile{
         _isFormValid = false;
       }
     } else if (this.isEmployer) {
-      if (this.isValidFirstname && this.isValidLastname && this.isValidCompanyname && this.isValidSiret && (this.isValidApe && !this.isEmpty(this.ape)) && this.isValidPersonalAddress && this.isValidJobAddress && !this.isEmpty(this.conventionId)) {
+      if (this.isValidFirstname && this.isValidLastname && this.isValidCompanyname && this.isValidSiret && (this.isValidApe && !Utils.isEmpty(this.ape)) && this.isValidPersonalAddress && this.isValidJobAddress && !Utils.isEmpty(this.conventionId)) {
         _isFormValid = true;
       } else {
         _isFormValid = false;
@@ -446,7 +449,7 @@ export class ModalProfile{
   }
 
   isValidFormForRecruitment() {
-    if (this.isValidSiret && !this.isEmpty(this.siret) && this.isValidPersonalAddress && !this.isEmpty(this.personalAddress) && this.isValidJobAddress && !this.isEmpty(this.jobAddress)) {
+    if (this.isValidSiret && !Utils.isEmpty(this.siret) && this.isValidPersonalAddress && !Utils.isEmpty(this.personalAddress) && this.isValidJobAddress && !Utils.isEmpty(this.jobAddress)) {
       return true;
     } else {
       return false;
@@ -616,6 +619,10 @@ export class ModalProfile{
               if (this.isJobAddressModified()) {
                 this.updateJobAddress();
               }
+
+              let value = this.isSpontaneaousContact ? "Oui" : "Non";
+              this.profileService.updateSpontaneousContact(value, accountId);
+
               Messenger().post({
                 message: 'Vos données ont été bien enregistrées',
                 type: 'success',
@@ -896,14 +903,11 @@ export class ModalProfile{
     });
   }
 
-  close(): void {
-    jQuery('#modal-profile').modal('hide');
+  watchSpontaneousContact(e){
+    this.isSpontaneaousContact = e.target.value == "Oui" ? true : false;
   }
 
-  isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
+  close(): void {
+    jQuery('#modal-profile').modal('hide');
   }
 }
