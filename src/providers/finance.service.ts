@@ -63,6 +63,47 @@ export class FinanceService {
 
   }
 
+  loadPrevQuotePdf(id) {
+    let bean = {
+      'class': 'com.vitonjob.api.CalloutConfiguration',
+      idContrat: 0,
+      idOffre: id,
+      mode: 'VALEURS',
+      preContract: true,
+      documentType: 'PREV',
+      env: Configs.env
+    };
+
+    let str = JSON.stringify(bean);
+    let encodedArg = btoa(str);
+    var payload = {
+      'class': 'fr.protogen.masterdata.model.CCallout',
+      'id': 321,
+      'args': [
+        {
+          'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'Document query',
+          value: encodedArg
+        }
+      ]
+    };
+
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpJsonHeaders();
+
+      this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          // we've got back the raw data, now generate the core schedule data
+          // and save the data for later reference
+          this.data = data;
+          resolve(this.data);
+
+        });
+    });
+  }
+
   loadQuote(id, rate) {
     let bean = {
       'class': 'com.vitonjob.api.CalloutConfiguration',
