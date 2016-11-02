@@ -592,9 +592,12 @@ export class Profile{
         });
 
       if (accountId) {
-        this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle, this.scanData);
+        this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle, this.scanData).then((data :any) => {
+          if(data && data.id != 0) {
+            this.attachementsService.uploadActualFile(data.id, data.fileName, this.scanData);
+          }
+        });
       }
-
     }*/
 
     if(this.allImages && this.allImages.length>0){
@@ -622,7 +625,11 @@ export class Profile{
       if (accountId) {
         for(let i = 0 ; i < this.allImages.length ; i++){
           let index = i+1;
-          this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle +' ' + index, scanData);
+          this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle +' ' + index, scanData).then((data :any) => {
+          if(data && data.id != 0) {
+            this.attachementsService.uploadActualFile(data.id, data.fileName, scanData);
+          }
+        });
         }
 
       }

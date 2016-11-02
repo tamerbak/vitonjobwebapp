@@ -56,7 +56,6 @@ export class AttachementsService {
               fileName : fileName,
               uploadDate : this.parseDate(this.sqlfyDate(d))
             };
-            this.uploadActualFile(this.attachement.id, fileName, scanUri);
             this.updateAttachements(userId, this.attachement.id, fileName, scanUri);
           }
 

@@ -35,13 +35,16 @@
             <img class="screen-filler-img" alt="{{selFileName}}" src="{{fileContent}}" >
           </div>
         </div>
+        <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
+          <div [innerHTML]="alert.msg"></div>
+        </alert>
 
         <fieldset>
           <legend><strong>Ajouter un nouveau document</strong></legend>
           <div class="form-group row">
             <label class="col-md-4 col-xs-12 form-control-label text-md-right">Nom du document</label>
             <div class="col-md-4 col-xs-12">
-              <input type="text" class="form-control" [(ngModel)]="fileName" >
+              <input type="text" class="form-control" [(ngModel)]="fileName" [disabled]="isUploadInProgress">
             </div>
 
           </div>
@@ -67,7 +70,7 @@
 
         <div class="form-group row">
           <div class="col-md-12 col-xs-12">
-            <button class="btn success btn-lg attachement-add-btn" (click)="saveFile()" ><span class="icon"><i class ="glyphicon glyphicon-cloud-upload"></i></span> Ajouter</button>
+            <button class="btn success btn-lg attachement-add-btn" (click)="saveFile()" [disabled]="isUploadInProgress || isEmpty(fileName) || isEmpty(scanData)"><span class="icon"><i class ="glyphicon glyphicon-cloud-upload"></i></span> Ajouter</button>
           </div>
         </div>
 
