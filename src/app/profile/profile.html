@@ -299,16 +299,19 @@
                 </div>
               </div>
 
-              <div *ngIf="!isEmployer && !isFrench" class="form-group row">
+              <div *ngIf="!isEmployer" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Nationalité
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <select
-                          placeholder="Nationalité" data-style="btn-secondary"
-                          class="nationalitySelectPicker form-control" id="nationality-select"
+                          placeholder="Nationalité"
+                          data-style="btn-secondary"
+                          class="nationalitySelectPicker form-control"
+                          id="nationality-select"
                           [(ngModel)]="nationalityId"
-                          name="nationality_slct" (change)="selectNationality($event)">
+                          name="nationality_slct"
+                          (change)="selectNationality($event)">
                     <option *ngFor="let n of nationalities" value="{{n.pk_user_nationalite}}">{{n.libelle}}</option>
                   </select>
                 </div>
