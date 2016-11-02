@@ -749,7 +749,7 @@ export class OfferEdit{
     }
   }
 
-  validateJob() {
+  validateJob(stayOnPage = false) {
     // --> Job state
     this.dataValidation = true;
     this.offer.title = this.offer.jobData.job + ' ' + ((this.offer.jobData.level != 'junior') ? 'Expérimenté' : 'Débutant');
@@ -765,6 +765,11 @@ export class OfferEdit{
       type: 'success',
       showCloseButton: true
     });
+
+    if (stayOnPage == true) {
+      return;
+    }
+
     //redirect to offer-list and display public offers
     var typeOffer = this.offer.visible ? 0:1;
     this.router.navigate(['app/offer/list', {typeOfferModel: typeOffer}]);
@@ -943,11 +948,11 @@ export class OfferEdit{
   showQuote() {
 
     // In order to retrieve updated quote, save current state
-    this.validateJob();
+    this.validateJob(true);
 
     let offer = this.sharedService.getCurrentOffer();
     if (offer != null) {
-      this.financeService.loadPrevQuote(offer.idOffer).then((data: any) => {
+      this.financeService.loadPrevQuotePdf(offer.idOffer).then((data: any) => {
 
         jQuery("#modal-offer-temp-quote").modal('show');
 
