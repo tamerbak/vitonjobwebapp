@@ -113,6 +113,7 @@ export class ModalProfile{
 
   //spontaneous contact
   isSpontaneaousContact: boolean = false;
+  isSpontaneousContactFilled: boolean = false;
 
   constructor(private listService: LoadListService,
               private profileService: ProfileService,
@@ -164,7 +165,8 @@ export class ModalProfile{
     this.isRecruiter = this.currentUser.estRecruteur;
     this.accountId = this.currentUser.id;
     this.userRoleId = this.currentUser.estEmployeur ? this.currentUser.employer.id : this.currentUser.jobyer.id;
-    this.isProfileEmpty = (Utils.isEmpty(this.currentUser.title) ? true : false);
+    this.isProfileEmpty = (Utils.isEmpty(this.currentUser.titre) ? true : false);
+    this.isSpontaneousContactFilled = Utils.isEmpty(this.currentUser.accepteCandidature) ? false : true;
   }
 
   initValidation() {
@@ -622,6 +624,7 @@ export class ModalProfile{
 
               let value = this.isSpontaneaousContact ? "Oui" : "Non";
               this.profileService.updateSpontaneousContact(value, accountId);
+              this.currentUser.accepteCandidature = value;
 
               Messenger().post({
                 message: 'Vos données ont été bien enregistrées',
@@ -892,6 +895,30 @@ export class ModalProfile{
           });
       }
     }
+  }
+
+  updateSpontaneousContact(){
+    let value = this.isSpontaneaousContact ? "Oui" : "Non";
+    let accountId = this.currentUser.id;
+    this.profileService.updateSpontaneousContact(value, accountId).then((data: any) => {
+      if(data && data.status == "success"){
+        this.currentUser.accepteCandidature = value;
+        this.sharedService.setCurrentUser(this.currentUser);
+
+        Messenger().post({
+          message: 'Vos données ont été bien enregistrées',
+          type: 'success',
+          showCloseButton: true
+        });
+      }else{
+        Messenger().post({
+          message: 'Une erreur est survenue lors de la sauvegarde des données',
+          type: 'error',
+          showCloseButton: true
+        });
+      }
+    });
+    this.close();
   }
 
   ngAfterViewInit(): void {
