@@ -693,4 +693,18 @@ export class Contract {
     return sd
   }
 
+  missingJobyerData() {
+    return (
+      !this.jobyer.nom
+      || !this.jobyer.prenom
+      || !this.jobyer.numSS
+      || !this.jobyerBirthDate
+      || !this.jobyer.lieuNaissance
+      || !this.jobyer.nationaliteLibelle
+      || !this.contractData.numeroTitreTravail
+      || !this.contractData.debutTitreTravail
+      || !this.contractData.finTitreTravail
+      || !this.contractData.qualification
+    );
+  }
 }

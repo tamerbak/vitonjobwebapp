@@ -135,7 +135,7 @@
 
       </div>
       <div class="col-xs-12"
-           *ngIf="!jobyer.nom || !jobyer.prenom || !jobyer.numSS || !jobyerBirthDate || !jobyer.lieuNaissance || !jobyer.nationaliteLibelle || !contractData.numeroTitreTravail || !contractData.debutTitreTravail || !contractData.finTitreTravail || !contractData.qualification"
+           *ngIf="missingJobyerData()"
       >
         <alert [type]="'info alert-sm'">
           <div [innerHTML]="'Le Jobyer est en train de saisir ses informations'"></div>
@@ -469,8 +469,19 @@
     </div>
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 title-form">
-        <button class="btn btn-primary"  [disabled]="!formCtrl.form.valid || !rapatriement || !embaucheAutorise">Soumettre</button>
+        <button
+          class="btn btn-primary"
+          [disabled]="!formCtrl.form.valid || !rapatriement || !embaucheAutorise || missingJobyerData()"
+        >Soumettre le contrat</button>
       </div>
+    </div>
+    <div class="row" style="text-align: center;">
+      <alert [type]="'danger alert-sm'" *ngIf="!formCtrl.form.valid || !rapatriement || !embaucheAutorise">
+        <div [innerHTML]="'Vous ne pouvez pas encore soumettre ce contrat car certaines de vos informations sont manquantes ou incorrectes'"></div>
+      </alert>
+      <alert [type]="'danger alert-sm'" *ngIf="missingJobyerData()">
+        <div [innerHTML]="'Vous ne pouvez pas encore soumettre ce contrat car des informations liées au jobyer sont manquantes'"></div>
+      </alert>
     </div>
   </form>
 </div>
