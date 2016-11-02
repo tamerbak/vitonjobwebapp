@@ -74,6 +74,7 @@ export class Attachements {
             this.addAlert("success", "Le fichier a été bien sauvegardé.");
             this.attachments.push(data);
             this.isUploadInProgress = false;
+            this.emptySafe = false;
           }else{
             this.addAlert("danger", "Le transfert du fichier a échoué. Veuillez recommencer l'opération.");
             this.isUploadInProgress = false;
