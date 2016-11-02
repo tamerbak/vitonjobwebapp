@@ -127,8 +127,6 @@ export class Contract {
     this.jobyer.id = 0;
     this.jobyer.numSS = '';
     this.jobyer.nationaliteLibelle = '';
-    this.jobyer.lieuNaissance = '';
-
 
     this.contractService.getJobyerComplementData(this.jobyer, this.projectTarget).then((data: any)=> {
       if (data && data.length > 0) {
