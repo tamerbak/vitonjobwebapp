@@ -441,7 +441,7 @@ export class ProfileService{
   }
 
   updateSpontaneousContact(value, accountid) {
-    var sql = "update user_account set ";
+    let sql = "update user_account set ";
     sql = sql + " accepte_candidatures='" + this.sqlfyText(value) + "'";
     sql = sql + " where pk_user_account=" + accountid + ";";
 
@@ -457,7 +457,7 @@ export class ProfileService{
   }
 
   getIsSpontaneousContact(accountid) {
-    var sql = "select accepte_candidatures from user_account where pk_user_account = " + accountid + ";";
+    let sql = "select accepte_candidatures from user_account where pk_user_account = " + accountid + ";";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -466,9 +466,62 @@ export class ProfileService{
         .subscribe((data: any)=> {
           resolve(data.data[0]);
         });
-    })
-
+    });
   }
+
+    getEmployerOfferStats(entrepriseId) {
+      let sql = `
+        SELECT
+          -- Published offers
+          COUNT(uoe.*) as published_offers
+        FROM user_offre_entreprise uoe
+        WHERE
+          uoe.fk_user_entreprise = ` + entrepriseId + `
+          AND UPPER(uoe.dirty) = 'N'
+          AND UPPER(uoe.publiee) = 'OUI'
+      ;`;
+
+      return new Promise(resolve => {
+        let headers = Configs.getHttpTextHeaders();
+        this.http.post(Configs.sqlURL, sql, {headers: headers})
+          .map(res => res.json())
+          .subscribe((data: any)=> {
+            resolve(data.data[0]);
+          });
+      });
+    }
+
+    getEmployerMissionStats(entrepriseId) {
+      let sql = `
+        SELECT
+          -- Pending recruitment
+          COUNT(CASE WHEN (
+            UPPER(uc.signature_jobyer) = 'NON'
+            OR UPPER(uc.signature_employeur) = 'NON'
+          ) THEN 1 ELSE NULL END) AS pending_recruitments
+        
+          -- Mission in progress
+          , COUNT(CASE WHEN (
+            UPPER(uc.signature_employeur) = 'OUI'
+            AND UPPER(uc.signature_jobyer) = 'OUI'
+            AND UPPER(uc.accompli) = 'NON'
+            AND UPPER(uc.dirty) = 'N'
+          ) THEN 1 ELSE NULL END) AS missions_in_progress
+        FROM user_contrat uc
+        WHERE
+          uc.fk_user_entreprise = ` + entrepriseId + `
+          AND UPPER(uc.dirty) = 'N'
+      ;`;
+
+      return new Promise(resolve => {
+        let headers = Configs.getHttpTextHeaders();
+        this.http.post(Configs.sqlURL, sql, {headers: headers})
+          .map(res => res.json())
+          .subscribe((data: any)=> {
+            resolve(data.data[0]);
+          });
+      });
+    }
 
   /*getPaysByIndex(index){
    let sql = "select pk_user_pays as id from user_prefecture where nom = '" + this.sqlfyText(nom) + "'";

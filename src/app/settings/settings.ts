@@ -231,10 +231,6 @@ export class Settings {
     }
   }
 
-  lockApp() {
-
-  }
-
   logOut() {
     this.sharedService.setCurrentUser(null);
     this.router.navigate(['/login']);
