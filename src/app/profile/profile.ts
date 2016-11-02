@@ -16,6 +16,7 @@ import {ModalPicture} from "../modal-picture/modal-picture";
 import {BankAccount} from "../bank-account/bank-account";
 import MaskedInput from "angular2-text-mask";
 import {AccountConstraints} from "../../validators/account-constraints";
+import {scan} from "rxjs/operator/scan";
 
 declare var jQuery, require, Messenger, moment: any;
 declare var google: any;
@@ -144,6 +145,14 @@ export class Profile{
   conventionId: number;
   conventions: any = [];
 
+  /*
+   * Multiple uploads
+   */
+  allImages : any[];
+  currentImg : any;
+  currentHeightIndex : number = 0;
+  currentWidth : number = 0;
+
   offerStats: any = {
     published_offers: '',
   };
@@ -209,6 +218,9 @@ export class Profile{
       this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
         data = data.data[0];
         this.regionId = data.fk_user_identifiants_nationalite;
+        this.dateStay = data.date_de_delivrance;
+        this.dateFromStay = data.debut_validite;
+        this.dateToStay = data.fin_validite;
         if (this.regionId == '40') {
           this.isFrench = true;
           this.birthdepId = data.fk_user_departement;
@@ -218,9 +230,6 @@ export class Profile{
             this.isEuropean = 1;
             this.isFrench = false;
             this.isResident = (data.est_resident == 'Oui' ? true : false);
-            this.dateStay = data.date_de_delivrance;
-            this.dateFromStay = data.debut_validite;
-            this.dateToStay = data.fin_validite;
             this.whoDeliverStay = data.instance_delivrance;
             this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
             this.nationalityId = data.numero_titre_sejour;
@@ -232,7 +241,8 @@ export class Profile{
             this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
           }
         }
-      })
+      });
+    this.allImages = [];
   }
 
 
@@ -377,6 +387,24 @@ export class Profile{
     jQuery('.titleSelectPicker').selectpicker('val', this.title);
     this.lastname = this.currentUser.nom;
     this.firstname = this.currentUser.prenom;
+
+    let role = this.isEmployer?'employeur':'jobyer';
+    let field = 'scan';
+    let userId = this.isEmployer?this.currentUser.employer.id : this.currentUser.jobyer.id;
+
+    this.profileService.getScan(userId, field, role).then((file:string)=>{
+      if(file && file.length>0){
+        let subfiles = file.split('*');
+        this.allImages = [];
+        for(let i = 0 ; i < subfiles.length ; i++){
+          this.allImages.push({
+            data : subfiles[i]
+          });
+        }
+      }
+
+    });
+
 
     if (!this.isRecruiter) {
       if (this.isEmployer && this.currentUser.employer.entreprises.length != 0) {
@@ -561,7 +589,7 @@ export class Profile{
   }
 
   updateScan(accountId, userId, role) {
-    if (this.scanData) {
+    /*if (this.scanData) {
       this.currentUser.scanUploaded = true;
       this.sharedService.setCurrentUser(this.currentUser);
       //TODO : test "'"+userId+"'"
@@ -585,7 +613,40 @@ export class Profile{
         this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle, this.scanData);
       }
 
+    }*/
+
+    if(this.allImages && this.allImages.length>0){
+      let scanData = this.allImages[0].data;
+      for(let i = 1 ; i < this.allImages.length ; i++){
+        scanData = scanData+'*'+this.allImages[i].data;
+      }
+
+      this.profileService.uploadScan(scanData, userId, 'scan', 'upload', role)
+        .then((data: any) => {
+
+          if (!data || data.status == "failure") {
+            Messenger().post({
+              message: 'Serveur non disponible ou problème de connexion',
+              type: 'error',
+              showCloseButton: true
+            });
+            this.currentUser.scanUploaded = false;
+            this.sharedService.setCurrentUser(this.currentUser);
+          }
+
+
+        });
+
+      if (accountId) {
+        for(let i = 0 ; i < this.allImages.length ; i++){
+          let index = i+1;
+          this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle +' ' + index, scanData);
+        }
+
+      }
+
     }
+
   }
 
   ngAfterViewChecked() {
@@ -596,6 +657,19 @@ export class Profile{
     }
 
 
+  }
+
+  deleteImage(index){
+    this.allImages.splice(index,1);
+  }
+
+  appendImg(){
+    this.allImages.push({
+      data : this.scanData
+    });
+
+    this.scanData = '';
+    jQuery('.fileinput').fileinput('clear');
   }
 
   ngAfterViewInit(): void {
@@ -942,6 +1016,7 @@ export class Profile{
     }
     if (this.isFrench || this.isEuropean == 0) {
       this.scanTitle = " de votre CNI ou Passeport";
+      this.isEuropean = 0;
       this.isCIN = true;
     }
     if (this.isEuropean == 1) {
@@ -1119,7 +1194,8 @@ export class Profile{
           regionId = this.regionId;
         }
 
-        this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, isResident, prefecture, this.isFrench, this.isEuropean, regionId)
+        this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthdepId, birthplace, birthCountryId, numStay,
+          dateStay, dateFromStay, dateToStay, isResident, prefecture, this.isFrench, this.isEuropean, regionId)
           .then((res: any) => {
 
             //case of authentication failure : server unavailable or connection problem

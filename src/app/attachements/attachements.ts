@@ -51,7 +51,6 @@ export class Attachements {
     jQuery(document).ready(function () {
       jQuery('.fileinput').on('change.bs.fileinput', function (e, file) {
         self.scanData = file.result;
-        // debugger;
       })
     });
   }
@@ -64,7 +63,7 @@ export class Attachements {
     this.attachementSerice.uploadFile(this.currentUser, this.fileName, this.scanData).then(data =>{
       if(data){
         this.attachments.push(data);
-        jQuery('.fileinput').fileinput('clear')
+        jQuery('.fileinput').fileinput('clear');
         this.fileName ='';
       }
     });

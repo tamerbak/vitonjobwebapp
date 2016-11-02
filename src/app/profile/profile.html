@@ -351,7 +351,7 @@
                 </div>
               </div>
 
-              <div *ngIf="!isEmployer && !isFrench && isEuropean == 1" class="form-group row">
+              <!--div *ngIf="!isEmployer && !isFrench && isEuropean == 1" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   {{!isResident ? 'Titre de séjour délivré le' : 'Carte résident délivrée le'}}
                 </label>
@@ -376,17 +376,7 @@
                 <div class="col-md-7 col-xs-12">
                   <input id="dateToStay" type="date" class="form-control" [(ngModel)]="dateToStay"/>
                 </div>
-              </div>
-
-              <div [hidden]="isEmployer || isEuropean == 0 || isFrench" class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Délivré par
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <input type="hidden" class="select2 whoDeliver-select form-control" name="whoDeliverStay"
-                         [(ngModel)]="whoDeliverStay" name="whoDeliverStay"/>
-                </div>
-              </div>
+              </div-->
 
               <div [hidden]="isEmployer || isEuropean == 1 || isFrench" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">Type de document</label>
@@ -426,6 +416,43 @@
                 </div>
               </div>
 
+              <div *ngIf="!isEmployer" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Pièce d'identité délivrée le
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input id="dateStay" type="date" class="form-control" [(ngModel)]="dateStay"/>
+                </div>
+              </div>
+
+              <div *ngIf="!isEmployer" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Pièce d'identité valable du
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input id="dateFromStay" type="date" class="form-control" [(ngModel)]="dateFromStay"/>
+                </div>
+              </div>
+
+              <div *ngIf="!isEmployer" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Pièce d'identité valable au
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input id="dateToStay" type="date" class="form-control" [(ngModel)]="dateToStay"/>
+                </div>
+              </div>
+
+              <div [hidden]="isEmployer || isEuropean == 0 || isFrench" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Délivré par
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input type="hidden" class="select2 whoDeliver-select form-control" name="whoDeliverStay"
+                         [(ngModel)]="whoDeliverStay" name="whoDeliverStay"/>
+                </div>
+              </div>
+
               <div *ngIf="isEmployer" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Organisme de médecine de travail
@@ -435,6 +462,15 @@
                          placeholder="Organisme de médecine de travail" [(ngModel)]="medecineTravail"
                          name="medecineTravail"/>
                 </div>
+              </div>
+              <div class="form-group row">
+                <div *ngFor="let i of allImages; let idx = index" class="col-md-2 col-xs-12">
+                    <img style="max-height: 100px;margin:1px"  src="{{i.data}}" alt=""/>
+                    <button class="btn danger" style="width: 100%;" (click)="deleteImage(idx)">
+                      <span class="glyphicon glyphicon-minus"></span>
+                    </button>
+                </div>
+
               </div>
 
               <div class="form-group row">
@@ -450,6 +486,7 @@
                       <span class="btn btn-default btn-file"><span class="fileinput-new">Choisir</span><span
                               class="fileinput-exists">Modifier</span><input type="file" name="..." accept="image/*"></span>
                       <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Enlever</a>
+                      <button (click)="appendImg()" class="btn btn-default fileinput-exists" >Ajouter</button>
                     </div>
                   </div>
                 </div>

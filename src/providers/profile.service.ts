@@ -140,14 +140,14 @@ export class ProfileService{
       "field": field,
       "id": userId,
       "operation": action,
-      "encodedFile": (scanData) ? scanData.split(';base64,')[1] : ''
+      "encodedFile": scanData
     };
     let scanDataStr = JSON.stringify(scanDataObj);
     let encodedData = btoa(scanDataStr);
 
     let body = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 97,
+      'id': 342,
       'args': [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'Upload fichier',
@@ -162,6 +162,43 @@ export class ProfileService{
       this.http.post(Configs.calloutURL, stringData, {headers: headers})
         .subscribe(data => {
           resolve(data);
+        });
+    });
+  }
+
+  getScan(userId, field, role) {
+    let scanDataObj = {
+      "class": 'com.vitonjob.callouts.files.DataToken',
+      "table": 'user_' + role,
+      "field": field,
+      "id": userId,
+      "operation": 'get',
+      "encodedFile": ''
+    };
+    let scanDataStr = JSON.stringify(scanDataObj);
+    let encodedData = btoa(scanDataStr);
+
+    let body = {
+      'class': 'fr.protogen.masterdata.model.CCallout',
+      'id': 342,
+      'args': [{
+        'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+        label: 'Upload fichier',
+        value: encodedData
+      }]
+    };
+    let stringData = JSON.stringify(body);
+
+    //  send request
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.calloutURL, stringData, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data:any) => {
+          let files = '';
+          if(data && data.file)
+            files = data.file;
+          resolve(files);
         });
     });
   }
@@ -206,6 +243,11 @@ export class ProfileService{
       (!this.isEmpty(numSS) ? ("numero_securite_sociale ='" + numSS + "', ") : "") +
       (!this.isEmpty(cni) ? ("cni ='" + cni + "', ") : "") +
       (!this.isEmpty(birthdate) ? ("date_de_naissance ='" + birthdate + "', ") : ("date_de_naissance =" + null + ", "));
+
+    sql = sql + (!this.isEmpty(dateStay) ? (" date_de_delivrance='" + dateStay + "' ") : (", date_de_delivrance=" + null)) +
+      (!this.isEmpty(dateFromStay) ? (", debut_validite='" + dateFromStay + "' ") : (", debut_validite=" + null)) +
+      (!this.isEmpty(dateToStay) ? (", fin_validite='" + dateToStay + "' ") : (", fin_validite=" + null)) + " , ";
+
     if (isFrench) {
       nationalityId = "91";
       regionId = "40";
@@ -228,19 +270,22 @@ export class ProfileService{
           ", numero_titre_sejour ='" + numStay + "' " +
           (!this.isEmpty(birthCountryId) ? (", fk_user_pays ='" + birthCountryId + "' ") : "") +
           (!this.isEmpty(isStay) ? (", est_resident='" + isStay + "' ") : "") +
-          (!this.isEmpty(dateStay) ? (", date_de_delivrance='" + dateStay + "' ") : (", date_de_delivrance=" + null)) +
-          (!this.isEmpty(dateFromStay) ? (", debut_validite='" + dateFromStay + "' ") : (", debut_validite=" + null)) +
-          (!this.isEmpty(dateToStay) ? (", fin_validite='" + dateToStay + "' ") : (", fin_validite=" + null)) +
           (!this.isEmpty(prefecture) ? (", instance_delivrance='" + this.sqlfyText(prefecture) + "' ") : "") +
           (!this.isEmpty(regionId) ? (", fk_user_identifiants_nationalite='" + regionId + "' ") : "") +
           "where pk_user_jobyer ='" + roleId + "';";
       }
     }
+    console.clear();
+    console.log(sql);
+    debugger;
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
+          console.clear();
+          console.log(data);
+          debugger;
           resolve(data);
         });
     })
