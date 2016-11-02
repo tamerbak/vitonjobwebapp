@@ -244,9 +244,9 @@ export class ProfileService{
       (!this.isEmpty(cni) ? ("cni ='" + cni + "', ") : "") +
       (!this.isEmpty(birthdate) ? ("date_de_naissance ='" + birthdate + "', ") : ("date_de_naissance =" + null + ", "));
 
-    sql = sql + (!this.isEmpty(dateStay) ? (" date_de_delivrance='" + dateStay + "' ") : (", date_de_delivrance=" + null)) +
-      (!this.isEmpty(dateFromStay) ? (", debut_validite='" + dateFromStay + "' ") : (", debut_validite=" + null)) +
-      (!this.isEmpty(dateToStay) ? (", fin_validite='" + dateToStay + "' ") : (", fin_validite=" + null)) + " , ";
+    sql = sql + (!this.isEmpty(dateStay) ? (" date_de_delivrance='" + dateStay + "', ") : ("date_de_delivrance=" + null+ ", ")) +
+      (!this.isEmpty(dateFromStay) ? (" debut_validite='" + dateFromStay + "', ") : (" debut_validite=" + null+ ", ")) +
+      (!this.isEmpty(dateToStay) ? (" fin_validite='" + dateToStay + "', ") : (" fin_validite=" + null+ ", "));
 
     if (isFrench) {
       nationalityId = "91";
