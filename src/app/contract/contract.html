@@ -18,7 +18,7 @@
           CONTRAT DE MISSION
         </div>
       </div>
-      <div class="col-xs-6 pull-left col-1">
+      <div class="col-md-6 col-xs-12">
         <div class="form-group">
           <label>Société utilisatrice&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
           <input type="text" name="companyName" class="form-control"  [(ngModel)]="companyName" aria-describedby="societe-utilisatrice" required>
@@ -30,7 +30,7 @@
           <small class="form-text text-muted"></small>
         </div>
       </div>
-      <div class="col-xs-6 pull-left col-1">
+      <div class="col-md-6 col-xs-12">
         <div class="form-group">
           <label>Lieu de la mission&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
           <input type="text" name="workAddress" class="form-control"  [(ngModel)]="workAdress" aria-describedby="lieu-de-la-mission" required>
@@ -49,7 +49,7 @@
           SALARIE INTERIMAIRE
         </div>
       </div>
-      <div class="col-xs-6 pull-left col-1">
+      <div class="col-md-6 col-xs-12">
         <div class="form-group">
           <label>Nom</label>
           <span class="asterisk">*</span>
@@ -81,7 +81,7 @@
           <small class="form-text text-muted"></small>
         </div>
       </div>
-      <div class="col-xs-6 pull-right col-2">
+      <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
           <label>Nationalité</label>
           <span class="asterisk">*</span>
@@ -149,7 +149,7 @@
           MISSION
         </div>
       </div>
-      <div class="col-xs-6 pull-left col-1">
+      <div class="col-md-6 col-xs-12">
         <div class="form-group">
           <label >Début de mission&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
           <input type="date" name="missionStartDate" class="form-control" [(ngModel)]="contractData.missionStartDate" aria-describedby="debut" required/>
@@ -171,7 +171,7 @@
           <small class="form-text text-muted"></small>
         </div>
       </div>
-      <div class="col-xs-6 pull-right col-2">
+      <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
           <label >Fin de mission&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
           <input type="date" name="missionEndDate" class="form-control" [(ngModel)]="contractData.missionEndDate" aria-describedby="fin" required/>
@@ -202,7 +202,7 @@
             </select>
         </div>
       </div>
-      <div class="col-xs-6 pull-right col-2">
+      <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
           <label >Début de souplesse</label>
           <input type="date" name="debutSouplesse" class="form-control" [(ngModel)]="contractData.debutSouplesse" aria-describedby="debut" />
@@ -216,7 +216,7 @@
         </div>
 
       </div>
-      <div class="col-xs-6 pull-right col-2">
+      <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
           <label >Fin de souplesse</label>
           <input type="date" name="finSouplesse" class="form-control" [(ngModel)]="contractData.finSouplesse" aria-describedby="fin" />
@@ -236,7 +236,7 @@
           POSTE DE TRAVAIL ET ORGANISATION DU TEMPS DE TRAVAIL
         </div>
       </div>
-      <div class="col-xs-6 pull-left col-1">
+      <div class="col-md-6 col-xs-12">
         <div class="form-group">
           <label>Qualification&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
           <input type="text" name="qualification" class="form-control"
@@ -256,7 +256,7 @@
           <small class="form-text text-muted"></small>
         </div>
 
-        <div class="col-xs-3 pull-left col-1">
+        <div class="col-xs-3">
           <div class="form-group">
             <label>Heure habituelle du début du travail&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
             <datetime
@@ -269,7 +269,7 @@
           </div>
         </div>
 
-        <div class="col-xs-3 pull-left col-2">
+        <div class="col-xs-3 col-2">
           <div class="form-group">
             <label>Heure habituelle de fin du travail&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
             <datetime
@@ -284,7 +284,7 @@
 
 
       </div>
-      <div class="col-xs-6 pull-right col-2">
+      <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
           <label>Risques</label>
           <input type="text" name="postRisks" class="form-control"
@@ -323,14 +323,14 @@
           SALAIRE DE REFERENCE-DUREE DU TRAVAIL
         </div>
       </div>
-      <div class="col-xs-6 pull-left col-1">
+      <div class="col-md-6 col-xs-12">
         <div class="form-group">
           <label>Salaire horaire de base&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
           <input type="text" name="sal" class="form-control" [(ngModel)]="contractData.baseSalary" aria-describedby="sal" required/>
           <small class="form-text text-muted"></small>
         </div>
       </div>
-      <div class="col-xs-6 pull-right col-2">
+      <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
           <label >Durée collective moyenne</label>
           <input type="text" name="duree" class="form-control" [(ngModel)]="contractData.MonthlyAverageDuration" aria-describedby="duree" />
@@ -344,7 +344,7 @@
           REMUNERATION
         </div>
       </div>
-      <div class="col-xs-6 pull-left col-1">
+      <div class="col-md-6 col-xs-12">
         <div class="form-group">
           <label >Heures normales</label>
           <input type="text" name="norm" class="form-control" [(ngModel)]="contractData.baseSalary" aria-describedby="norm" readonly/>
@@ -359,7 +359,7 @@
           </select>
         </div>
       </div>
-      <div class="col-xs-6 pull-right col-2">
+      <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
           <label >Ind. fin de mission</label>
           <input type="text" name="ind" class="form-control" [(ngModel)]="contractData.indemniteFinMission" aria-describedby="ind" disabled />
@@ -378,7 +378,7 @@
           MEDECINE DU TRAVAIL
         </div>
       </div>
-      <div class="col-xs-6 pull-left col-1">
+      <div class="col-md-6 col-xs-12">
         <div class="form-group">
           <label>Centre de médecine ETT</label>
           <input type="text" name="centreMedecine" class="form-control" [(ngModel)]="contractData.centreMedecineETT" aria-describedby="centre" readonly/>
@@ -391,7 +391,7 @@
         </div>
 
       </div>
-      <div class="col-xs-6 pull-right col-2">
+      <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
           <label>Centre de médecine Entreprise</label>
           <input type="text" name="centreMedecineEntreprise" class="form-control" [(ngModel)]="contractData.centreMedecineEntreprise" aria-describedby="centre2" />
@@ -411,7 +411,7 @@
           INFORMATIONS COMPLEMENTAIRES
         </div>
       </div>
-      <div class="col-xs-12 col-md-6 pull-left col-1">
+      <div class="col-xs-12 col-md-6">
         <div class="form-group">
           <label>Primes</label>
           <input type="text" name="prime" class="form-control" [(ngModel)]="contractData.primes" aria-describedby="primes" />
@@ -441,7 +441,7 @@
           <small class="form-text text-muted"></small>
         </div>
       </div>
-      <div class="col-xs-12 col-md-6 pull-right col-2">
+      <div class="col-xs-12 col-md-6 col-2">
         <div class="form-group">
           <label >Filière</label>
           <input type="text" name="filiere" class="form-control" [(ngModel)]="contractData.sector" aria-describedby="filiere" />
