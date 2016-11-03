@@ -21,6 +21,8 @@ export class ModalNotificationContract{
   showOfferNotif = false;
   showAuthNotif = false;
   initByModalOffers = false;
+  hasOffers: boolean;
+
   constructor(private sharedService: SharedService,
               private router: Router) {
 
@@ -36,7 +38,12 @@ export class ModalNotificationContract{
       this.showAuthNotif = true;
       return;
     }
-
+    if (this.currentUser.estEmployeur) {
+      let offers = this.currentUser.employer.entreprises[0].offers;
+      this.hasOffers = (offers && offers.length > 0);
+    } else {
+      this.hasOffers = false;
+    }
     this.initState({});
   }
 
@@ -81,7 +88,12 @@ export class ModalNotificationContract{
   gotoNewOffer() {
     jQuery('#modal-notification-contract').modal('hide');
     //this.sharedService.setCurrentJobyer(this.jobyer);
-    this.router.navigate(['app/offer/edit', {obj:'add'}]);
+    this.router.navigate(['app/offer/edit', {obj:'recruit'}]);
+  }
+
+  gotoLogin(){
+    jQuery('#modal-notification-contract').modal('hide');
+    this.router.navigate(['login', {obj:'recruit'}]);
   }
 
   close(): void {

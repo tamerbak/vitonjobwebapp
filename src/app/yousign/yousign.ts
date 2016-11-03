@@ -75,118 +75,135 @@ export class Yousign{
       this.currentOffer.idOffer,
       this.contractData.baseSalary
     ).then((data: any) => {
-      this.contractService.callYousign(
-        this.currentUser,
-        this.employer,
-        this.jobyer,
-        this.contractData,
-        this.projectTarget,
-        this.currentOffer,
-        data.quoteId
-      ).then((data: any) => {
 
-        let partner = GlobalConfigs.global['electronic-signature'];
-
-        if (data == null || data.length == 0) {
-          console.log("Electronic partner " + partner + " result is null");
-          this.hideLoader = true;
-          return;
+      this.financeService.loadPrevQuote(this.currentOffer.idOffer).then((results : any)=>{
+        let lines = results.lignes;
+        let cfix = 0;
+        let cotis = 0;
+        for(let i = 0 ; i < lines.length ; i++){
+          let l = lines[i];
+          if(l.unite == 'IJ' || l.unite == 'IH' || l.unite == 'I')
+            cfix += l.valeur;
+          else if (l.unite == 'H' && l.nbUnite>0){
+            cotis += l.valeur/l.nbUnite;
+          }
         }
+        this.contractData.elementsCotisation = cotis;
+        this.contractData.elementsNonCotisation = cfix;
+        this.contractService.callYousign(
+          this.currentUser,
+          this.employer,
+          this.jobyer,
+          this.contractData,
+          this.projectTarget,
+          this.currentOffer,
+          data.quoteId
+        ).then((data: any) => {
 
-        //change jobyer 'contacted' status
-        this.jobyer.contacted = true;
-        this.jobyer.date_invit = new Date();
+          let partner = GlobalConfigs.global['electronic-signature'];
 
-        let dataValue = null;
-        let partnerData = null;
-        let partnerEmployerLink = null;
+          if (data == null || data.length == 0) {
+            console.log("Electronic partner " + partner + " result is null");
+            this.hideLoader = true;
+            return;
+          }
 
-        if (partner === 'yousign') {
-          dataValue = data[0]['value'];
-          partnerData = JSON.parse(dataValue);
-          //get the link yousign of the contract for the employer
-          partnerEmployerLink = partnerData.iFrameURLs[1].iFrameURL;
-        } else if (partner === 'docusign') {
-          dataValue = data;
-          partnerData = dataValue;
-          //get the link docusign of the contract for the employer
-          partnerEmployerLink = partnerData.Employeur.url;
-        }
+          //change jobyer 'contacted' status
+          this.jobyer.contacted = true;
+          this.jobyer.date_invit = new Date();
 
-        //Create to Iframe to show the contract in the NavPage
-        let iframe = document.createElement('iframe');
-        iframe.frameBorder = "0";
-        iframe.width = "100%";
-        iframe.height = "100%";
-        iframe.id = "youSign";
-        iframe.style.overflow = "hidden";
-        iframe.style.height = "100%";
-        iframe.style.width = "100%";
-        iframe.setAttribute("src", partnerEmployerLink);
+          let dataValue = null;
+          let partnerData = null;
+          let partnerEmployerLink = null;
 
-        document.getElementById("iframPlaceHolder").appendChild(iframe);
+          if (partner === 'yousign') {
+            dataValue = data[0]['value'];
+            partnerData = JSON.parse(dataValue);
+            //get the link yousign of the contract for the employer
+            partnerEmployerLink = partnerData.iFrameURLs[1].iFrameURL;
+          } else if (partner === 'docusign') {
+            dataValue = data;
+            partnerData = dataValue;
+            //get the link docusign of the contract for the employer
+            partnerEmployerLink = partnerData.Employeur.url;
+          }
 
-        // TEL:23082016 : Using inappbrowser plugin :
-        // InAppBrowser.open(partnerEmployerLink, '_blank');
+          //Create to Iframe to show the contract in the NavPage
+          let iframe = document.createElement('iframe');
+          iframe.frameBorder = "0";
+          iframe.width = "100%";
+          iframe.height = "100%";
+          iframe.id = "youSign";
+          iframe.style.overflow = "hidden";
+          iframe.style.height = "100%";
+          iframe.style.width = "100%";
+          iframe.setAttribute("src", partnerEmployerLink);
 
-        // get the partner link of the contract and the phoneNumber of the jobyer
-        let partnerJobyerLink = null;
-        let jobyerPhoneNumber = null;
+          document.getElementById("iframPlaceHolder").appendChild(iframe);
 
-        if (partner === 'yousign') {
-          partnerJobyerLink = partnerData.iFrameURLs[0].iFrameURL;
-          jobyerPhoneNumber = this.jobyer.tel;
-          this.contractData.demandeJobyer = partnerData.idDemands[0].idDemand;
-          this.contractData.demandeEmployer = partnerData.idDemands[1].idDemand;
+          // TEL:23082016 : Using inappbrowser plugin :
+          // InAppBrowser.open(partnerEmployerLink, '_blank');
 
-        } else if (partner === 'docusign') {
-          partnerJobyerLink = partnerData.Jobyer.url;
-          jobyerPhoneNumber = this.jobyer.tel;
-          this.contractData.demandeJobyer = partnerData.Jobyer.idContrat;
-          this.contractData.demandeEmployer = partnerData.Employeur.idContrat;
-        }
+          // get the partner link of the contract and the phoneNumber of the jobyer
+          let partnerJobyerLink = null;
+          let jobyerPhoneNumber = null;
 
-        // TEL23082016 : Navigate to credit card page directly :
-        //this.router.navigate(['app/wallet/create']);
-        // Send sms to jobyer
-        this.smsService.sendSms(jobyerPhoneNumber, 'Une demande de signature de contrat vous a été adressée. Contrat numéro : ' + this.contractData.numero);
-        //save contract in Database
-        this.contractService.getJobyerId(this.jobyer, this.projectTarget).then(
-          (jobyerData: any) => {
-            this.contractService.saveContract(
-              this.contractData,
-              jobyerData.data[0].pk_user_jobyer,
-              this.employer.entreprises[0].id,
-              this.projectTarget,
-              partnerJobyerLink,
-              partnerEmployerLink,
-              this.currentUser.id
-            ).then(
-              (data: any) => {
-                if (this.currentOffer && this.currentOffer != null) {
-                  let idContract = 0;
-                  if (data && data.data && data.data.length > 0) {
-                    idContract = data.data[0].pk_user_contrat;
+          if (partner === 'yousign') {
+            partnerJobyerLink = partnerData.iFrameURLs[0].iFrameURL;
+            jobyerPhoneNumber = this.jobyer.tel;
+            this.contractData.demandeJobyer = partnerData.idDemands[0].idDemand;
+            this.contractData.demandeEmployer = partnerData.idDemands[1].idDemand;
+
+          } else if (partner === 'docusign') {
+            partnerJobyerLink = partnerData.Jobyer.url;
+            jobyerPhoneNumber = this.jobyer.tel;
+            this.contractData.demandeJobyer = partnerData.Jobyer.idContrat;
+            this.contractData.demandeEmployer = partnerData.Employeur.idContrat;
+          }
+
+          // TEL23082016 : Navigate to credit card page directly :
+          //this.router.navigate(['app/wallet/create']);
+          // Send sms to jobyer
+          this.smsService.sendSms(jobyerPhoneNumber, 'Une demande de signature de contrat vous a été adressée. Contrat numéro : ' + this.contractData.numero);
+          //save contract in Database
+          this.contractService.getJobyerId(this.jobyer, this.projectTarget).then(
+            (jobyerData: any) => {
+              this.contractService.saveContract(
+                this.contractData,
+                jobyerData.data[0].pk_user_jobyer,
+                this.employer.entreprises[0].id,
+                this.projectTarget,
+                partnerJobyerLink,
+                partnerEmployerLink,
+                this.currentUser.id
+              ).then(
+                (data: any) => {
+                  if (this.currentOffer && this.currentOffer != null) {
+                    let idContract = 0;
+                    if (data && data.data && data.data.length > 0) {
+                      idContract = data.data[0].pk_user_contrat;
+                    }
+                    this.contractId = idContract;
+                    let contract = {
+                      pk_user_contrat: idContract
+                    };
+                    this.contractService.setOffer(idContract, this.currentOffer.idOffer);
+                    this.contractService.generateMission(idContract, this.currentOffer);
+                    this.hideLoader = true;
                   }
-                  this.contractId = idContract;
-                  let contract = {
-                    pk_user_contrat: idContract
-                  };
-                  this.contractService.setOffer(idContract, this.currentOffer.idOffer);
-                  this.contractService.generateMission(idContract, this.currentOffer);
-                  this.hideLoader = true;
-                }
-              },
-              (err) => {
-                console.log(err);
-              })
-          },
-          (err) => {
-            console.log(err);
-          })
-      }).catch(function (err) {
-        console.log(err);
+                },
+                (err) => {
+                  console.log(err);
+                })
+            },
+            (err) => {
+              console.log(err);
+            })
+        }).catch(function (err) {
+          console.log(err);
+        });
       });
+
     });
   }
 

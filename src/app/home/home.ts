@@ -1,5 +1,5 @@
 import {Component, ViewEncapsulation} from "@angular/core";
-import {ROUTER_DIRECTIVES, Router} from "@angular/router";
+import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {SearchService} from "../../providers/search-service";
 import {SharedService} from "../../providers/shared.service";
@@ -13,7 +13,7 @@ import {RecruitButton} from "../components/recruit-button/recruit-button";
 
 declare var require: any;
 declare var jQuery: any;
-declare var Messenger:any;
+declare var Messenger: any;
 
 @Component({
 	selector: 'home',
@@ -24,12 +24,12 @@ declare var Messenger:any;
 	encapsulation: ViewEncapsulation.None
 })
 
-export class Home {
-	currentUser: any;
-	projectTarget: string;
-	scQuery: string;
-	alerts: Array<Object>;
-	hideLoader: boolean = true;
+export class Home{
+  currentUser: any;
+  projectTarget: string;
+  scQuery: string;
+  alerts: Array<Object>;
+  hideLoader: boolean = true;
     config: any;
     isTablet: boolean = false;
     /*
@@ -46,12 +46,14 @@ export class Home {
     nextRecentUsers: any = [];
     homeServiceData: any = [];
     maxLines: number = 5;
+  obj: string;
 
     currentJobyer: any;
 
   constructor(private router: Router,
               private searchService: SearchService,
               private homeService: HomeService,
+              private route: ActivatedRoute,
               private sharedService: SharedService) {
   }
 
@@ -59,18 +61,23 @@ export class Home {
     let myContent = jQuery('.content');
     let myNavBar = jQuery('.navbar-dashboard');
 
+    //get params
+    this.route.params.forEach((params: Params) => {
+      this.obj = params['obj'];
+    });
+
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
-			if(this.currentUser.mot_de_passe_reinitialise =="Oui"){
-				jQuery('#modal-update-password').modal({
-					keyboard: false,
-					backdrop: 'static'
-				});
-				jQuery('#modal-update-password').modal('show');
-			}
+      if (this.currentUser.mot_de_passe_reinitialise == "Oui") {
+        jQuery('#modal-update-password').modal({
+          keyboard: false,
+          backdrop: 'static'
+        });
+        jQuery('#modal-update-password').modal('show');
+      }
 
-      if(this.isEmpty(this.currentUser.titre)) {
+      if (this.isEmpty(this.currentUser.titre)) {
         //call to open the modal-guide
         jQuery('#modal-welcome').modal({
           keyboard: false,
@@ -87,28 +94,29 @@ export class Home {
       }
     } else {
       this.projectTarget = this.sharedService.getProjectTarget();
-      this.homeService.loadHomeData((this.projectTarget)).then(data=> {
-        this.homeServiceData = data;
-        this.initHomeList();
-      });
     }
+
+    this.homeService.loadHomeData((this.projectTarget)).then(data=> {
+      this.homeServiceData = data;
+      this.initHomeList();
+    });
 
     this.config = Configs.setConfigs(this.projectTarget);
 
-    myContent.css({"padding":"0","padding-right":"0"});
+    myContent.css({"padding": "0", "padding-right": "0"});
     if (screen.width <= 480) {
       myContent.css(this.config.backgroundImage);
       myContent.css({"background-size": "cover"});
       myNavBar.css({"background-color": "transparent", "border-color": "transparent"});
     } else if (screen.width <= 768) {
       myContent.css(this.config.backgroundImage);
-      myContent.css({"background-size":"cover"});
-      myNavBar.css({"background-color": "#14baa6","border-color": "#14baa6"});
+      myContent.css({"background-size": "cover"});
+      myNavBar.css({"background-color": "#14baa6", "border-color": "#14baa6"});
       this.isTablet = true;
     } else {
-      myContent.css({"background-image":""});
-      myContent.css({"background-size":"cover"});
-      myNavBar.css({"background-color": "#14baa6","border-color": "#14baa6"});
+      myContent.css({"background-image": ""});
+      myContent.css({"background-size": "cover"});
+      myNavBar.css({"background-color": "#14baa6", "border-color": "#14baa6"});
     }
 
     this.sharedService.setCurrentOffer(null);
@@ -163,10 +171,10 @@ export class Home {
 
   doSemanticSearch() {
     /*if (!this.currentUser) {
-      this.sharedService.setFromPage("home");
-      this.router.navigate(['login']);
-      return;
-    }*/
+     this.sharedService.setFromPage("home");
+     this.router.navigate(['login']);
+     return;
+     }*/
 
     if (this.isEmpty(this.scQuery) || !this.scQuery.match(/[a-z]/i)) {
       this.addAlert("warning", "Veuillez saisir un job avant de lancer la recherche");
@@ -181,8 +189,21 @@ export class Home {
         return;
       }
       this.sharedService.setLastResult(data);
+
+      // If jobyer research, count only offers that employer accept contact
+      let count = 0;
+      if (this.projectTarget == 'jobyer') {
+        for (let i = 0; i < data.length; i++) {
+          if (data[i].accepteCandidature == 'true') {
+            count++;
+          }
+        }
+      } else {
+        count = data.length;
+      }
+
       Messenger().post({
-        message: 'La recherche pour "'+this.scQuery+'" a donné '+ (data.length == 1 ?'un seul résultat':(data.length+' résultats')),
+        message: 'La recherche pour "' + this.scQuery + '" a donné ' + (count == 1 ? 'un seul résultat' : (count + ' résultats')),
         type: 'success',
         showCloseButton: true
       });

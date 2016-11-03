@@ -567,7 +567,7 @@ export class MissionService {
     let dataSign = JSON.stringify(bean);
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 306,
+      'id': 339,
       'args': [
         {
           'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -733,6 +733,27 @@ export class MissionService {
       }
     }
     return {disabled: disabled, nextPointing: null};
+  }
+
+  getPrerequisObligatoires(idContrat){
+    let sql = "select libelle from user_prerquis where pk_user_prerquis " +
+      "in (select fk_user_prerquis from user_prerequis_obligatoires where fk_user_offre_entreprise " +
+      "in (" +
+      "select fk_user_offre_entreprise from user_contrat where pk_user_contrat="+idContrat +
+      ")" +
+      ")";
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let d = [];
+          if(data.data)
+            d = data.data;
+          resolve(d);
+        });
+    });
   }
 
   isEmpty(str) {

@@ -73,12 +73,11 @@ export class ContractService {
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
     var dt = new Date();
-    var sql = "select user_jobyer.pk_user_jobyer as id, user_jobyer.numero_securite_sociale as numss, user_pays.nom as nationalite, cni, numero_titre_sejour, debut_validite, fin_validite from user_jobyer, user_pays " +
+    var sql = "select user_jobyer.pk_user_jobyer as id, user_jobyer.numero_securite_sociale as numss, " +
+      "user_pays.nom as nationalite, cni, numero_titre_sejour, debut_validite, fin_validite " +
+      " from user_jobyer, user_pays " +
       " where user_jobyer.fk_user_pays=user_pays.pk_user_pays " +
       " and fk_user_account in (select pk_user_account from user_account where email='" + jobyer.email + "' or telephone='" + jobyer.tel + "') limit 1";
-
-    console.log(sql);
-
 
     return new Promise(resolve => {
       let headers = new Headers();
@@ -115,7 +114,7 @@ export class ContractService {
       this.http.post(this.configuration.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          debugger;
+
           this.data = data;
           resolve(this.data);
         });
@@ -355,11 +354,14 @@ export class ContractService {
   callYousign(user: any, employer: any, jobyer: any, contract: any, projectTarget: string, currentOffer: any, idQuote: any) {
 
     let horaires = '';
-    //// debugger;
     if (currentOffer) {
       horaires = this.prepareHoraire(currentOffer.calendarData);
     }
     //get configuration
+    let d = new Date(contract.workStartHour);
+    let sh = d.getHours()+":"+d.getMinutes();
+    d = new Date(contract.workEndHour);
+    let eh = d.getHours()+":"+d.getMinutes();
     this.configuration = Configs.setConfigs(projectTarget);
     var jsonData = {
       "titre": employer.titre,
@@ -388,8 +390,8 @@ export class ContractService {
         "variables": contract.workTimeVariable,
       },
       "horaireHabituel": {
-        "debut": contract.workStartHour,
-        "fin": contract.workEndHour,
+        "debut": sh,
+        "fin": eh,
         "variables": contract.workHourVariable,
       },
       "posteARisque": contract.postRisks,
@@ -403,15 +405,15 @@ export class ContractService {
         "43h": contract.salarySH43,
       },
       "droitRepos": contract.restRight,
-      "adresseInterim": contract.interimAddress,
+      "adresseInterim": contract.workAdress,
       "client": contract.customer,
       "primeDiverses": contract.primes,
       "SiegeSocial": contract.headOffice,
       "ContenuMission": contract.headOffice,
       "categorie": contract.category,
       "filiere": contract.sector,
-      "HeureDebutMission": contract.workStartHour,
-      "HeureFinMission": contract.workEndHour,
+      "HeureDebutMission": sh,
+      "HeureFinMission": eh,
       "num": contract.num,
 
       "numero": contract.num,
@@ -420,8 +422,8 @@ export class ContractService {
       "indemniteCongesPayes": contract.indemniteCongesPayes,
       "moyenAcces": contract.moyenAcces,
       "numeroTitreTravail": contract.numeroTitreTravail,
-      "debutTitreTravail": this.helpers.parseDate(contract.debutTitreTravail),
-      "finTitreTravail": this.helpers.parseDate(contract.finTitreTravail),
+      "debutTitreTravail": (contract.debutTitreTravail),
+      "finTitreTravail": (contract.finTitreTravail),
       "periodesNonTravaillees": contract.periodesNonTravaillees,
       "debutSouplesse": this.helpers.parseDate(contract.debutSouplesse),
       "finSouplesse": this.helpers.parseDate(contract.finSouplesse),
@@ -437,7 +439,7 @@ export class ContractService {
       "elementsNonCotisation": contract.elementsNonCotisation,
       "horaires": horaires
     };
-    //// debugger;
+    ////
     console.log(JSON.stringify(jsonData));
 
     let partner = GlobalConfigs.global['electronic-signature'];
@@ -468,7 +470,7 @@ export class ContractService {
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
       'id': (partner === 'yousign' ? 224 :
-          (partner === 'docusign' ? 305 :
+          (partner === 'docusign' ? 338 :
               -1
           )
       ),
@@ -491,7 +493,7 @@ export class ContractService {
       this.http.post(Configs.yousignURL, JSON.stringify(payload), {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          // debugger;
+          //
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
           this.data = data;

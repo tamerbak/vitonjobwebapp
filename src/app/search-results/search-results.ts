@@ -1,12 +1,13 @@
 import {Component, ViewEncapsulation, ViewChildren} from "@angular/core";
 import {SharedService} from "../../providers/shared.service";
-import {ROUTER_DIRECTIVES, Router} from "@angular/router";
+import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from "@angular/router";
 import {SearchService} from "../../providers/search-service";
 import {ProfileService} from "../../providers/profile.service";
 import {RecruitButton} from "../components/recruit-button/recruit-button";
 import {GOOGLE_MAPS_DIRECTIVES} from "angular2-google-maps/core";
 import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
 import {ModalProfile} from "../modal-profile/modal-profile";
+import {Utils} from "../utils/utils";
 
 declare var jQuery: any;
 
@@ -34,10 +35,13 @@ export class SearchResults{
 
   currentJobyer: any;
   fromPage: string = "recruitment";
+  obj: string;
 
   constructor(private sharedService: SharedService,
               private router: Router,
-              private profileService: ProfileService) {
+              private profileService: ProfileService,
+              private route: ActivatedRoute) {
+
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
@@ -45,7 +49,13 @@ export class SearchResults{
       this.projectTarget = this.sharedService.getProjectTarget();
       // this.router.navigate(['app/home']);
     }
+
+    //get params
+    this.route.params.forEach((params: Params) => {
+      this.obj = params['obj'];
+    });
   }
+
   ngOnInit() {
     //  Retrieving last search
     this.selected = this.sharedService.getMapView();
@@ -59,6 +69,11 @@ export class SearchResults{
       this.searchResults = jsonResults;
       for (let i = 0; i < this.searchResults.length; i++) {
         let r = this.searchResults[i];
+
+        if (this.projectTarget == 'jobyer' && r.accepteCandidature == false) {
+          continue;
+        }
+
         r.matching = Number(r.matching).toFixed(2);
         r.index = i + 1;
         r.avatar = "../assets/images/avatar.png";
@@ -66,13 +81,13 @@ export class SearchResults{
           var info = "";
           let matching: string = (r.matching.toString().indexOf('.') < 0) ? r.matching : r.matching.toString().split('.')[0];
           if (this.projectTarget == 'employer') {
-            info = "<h4>" + r.prenom + ' ' + r.nom.substring(0, 1) + ".&nbsp&nbsp<span class='label label-pill label-success'>&nbsp"+matching+"'%&nbsp</span></h4>" +
+            info = "<h4>" + r.prenom + ' ' + r.nom.substring(0, 1) + ".&nbsp&nbsp<span class='label label-pill label-success'>&nbsp" + matching + "'%&nbsp</span></h4>" +
               "<p>" + r.titreOffre + "</p>" +
               "<p><span class='dispo'>&#9679;</span> &nbsp; Disponible</p>" +
               "<p class='underline'>Détails</p> ";
 
           } else {
-            info = "<h4>" + r.entreprise + "&nbsp&nbsp<span class='label label-pill label-success'>&nbsp"+matching+"'%&nbsp</span></h4>" +
+            info = "<h4>" + r.entreprise + "&nbsp&nbsp<span class='label label-pill label-success'>&nbsp" + matching + "'%&nbsp</span></h4>" +
               "<p>" + r.titreOffre + "</p>" +
               "<p><span class='dispo''>&#9679;</span> &nbsp; Disponible</p>" +
               "<p style='underline'>Détails</p> ";
@@ -90,12 +105,14 @@ export class SearchResults{
         var role = this.projectTarget == 'employer' ? "jobyer" : "employeur";
         this.profileService.loadProfilePicture(null, this.searchResults[i].tel, role).then((data: any) => {
           //regex to test if the returned data is base64
-          if (data && data.data && data.data[0] && !this.isEmpty(data.data[0].encode) && data.data[0].encode.startsWith("data:image/")) {
+          if (data && data.data && data.data[0] && !Utils.isEmpty(data.data[0].encode) && data.data[0].encode.startsWith("data:image/")) {
             this.searchResults[i].avatar = data.data[0].encode;
           }
         });
       }
     }
+
+    this.showAppropriateModal(this.obj);
   }
 
   onChange(value) {
@@ -144,9 +161,10 @@ export class SearchResults{
 
   onRecruite(params) {
     this.currentJobyer = params.jobyer;
+    this.sharedService.setCurrentJobyer(this.currentJobyer);
     if (params.obj == "profile") {
       jQuery('#modal-profile').modal('show');
-    }else{
+    } else {
       jQuery('#modal-notification-contract').modal({
         keyboard: false,
         backdrop: 'static'
@@ -164,11 +182,39 @@ export class SearchResults{
     }
   }
 
-
-  isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
+  showAppropriateModal(obj) {
+    if (obj == "recruit") {
+      //verify if employer profile is filled
+      let userData = this.currentUser;
+      let currentEmployer = this.currentUser.employer;
+      //verification of employer informations
+      let redirectToCivility = (currentEmployer && currentEmployer.entreprises[0]) ?
+      (Utils.isEmpty(userData.titre)) ||
+      (Utils.isEmpty(userData.prenom)) ||
+      (Utils.isEmpty(userData.nom)) ||
+      (Utils.isEmpty(currentEmployer.entreprises[0].nom)) ||
+      (Utils.isEmpty(currentEmployer.entreprises[0].siret)) ||
+      (Utils.isEmpty(currentEmployer.entreprises[0].naf)) ||
+      (currentEmployer.entreprises[0].conventionCollective.id == 0) ||
+      (currentEmployer.entreprises[0].siegeAdress.id == 0) ||
+      (currentEmployer.entreprises[0].workAdress.id == 0) : true;
+      let isDataValid = !redirectToCivility;
+      if (!isDataValid) {
+        jQuery('#modal-profile').modal({
+          keyboard: false,
+          backdrop: 'static'
+        });
+        jQuery('#modal-profile').modal('show');
+      } else {
+        //TODO: ajouter le cas ou le profil n'est pas complet
+        let o = this.sharedService.getCurrentOffer()
+        this.currentJobyer = this.sharedService.getCurrentJobyer();
+        jQuery('#modal-notification-contract').modal({
+          keyboard: false,
+          backdrop: 'static'
+        });
+        jQuery('#modal-notification-contract').modal('show');
+      }
+    }
   }
 }

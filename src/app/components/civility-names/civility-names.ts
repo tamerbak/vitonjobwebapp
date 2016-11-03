@@ -11,17 +11,20 @@ declare var jQuery: any;
 })
 
 export class CivilityNames{
-  @Input()
   title: string;
-
-  @Input()
   lastname: string;
+  firstname: string;
 
   @Input()
-  firstname: string;
+  currentUser: any;
 
   @Output()
   onChange = new EventEmitter<any>();
+
+  @Output()
+  onSendData = new EventEmitter<any>();
+
+
 
   isValidLastname: boolean;
   isValidFirstname: boolean;
@@ -29,13 +32,43 @@ export class CivilityNames{
   lastnameHint: string = "";
   firstnameHint: string = "";
 
-  currentUser: any;
   projectTarget: string;
 
   constructor(private sharedService: SharedService) {
-    console.log(this.lastname);
+
+  }
+
+  ngOnInit(){
+    jQuery('.titleSelectPicker').selectpicker();
+    this.init();
+  }
+
+  init(){
+    this.title = !this.currentUser.titre ? "M." : this.currentUser.titre;
+    jQuery('.titleSelectPicker').selectpicker('val', this.title);
+
+    this.lastname = this.currentUser.nom;
+    this.firstname = this.currentUser.prenom;
+
+    if(Utils.isEmpty(this.firstname)){
+      this.isValidFirstname = false;
+    }else{
+      this.isValidFirstname = true;
+    }
+
+    if(Utils.isEmpty(this.lastname)){
+      this.isValidLastname = false;
+    }else{
+      this.isValidLastname = true;
+    }
+
     this.isValidForm();
   }
+
+  getData(){
+      console.log("done1i");
+      this.onSendData.emit({title:this.title,firstname:this.firstname,lastname:this.lastname})
+  };
 
   watchLastname(e) {
     let nameChecked = AccountConstraints.checkName(e, "lastname");
@@ -53,7 +86,7 @@ export class CivilityNames{
 
   isValidForm() {
     let isValid = false;
-    if(this.isValidFirstname && this.isValidLastname){
+    if(this.title && this.isValidFirstname && this.isValidLastname){
       isValid = true;
     }
     this.onChange.emit(isValid);

@@ -1,5 +1,5 @@
 import {Component, ViewEncapsulation} from "@angular/core";
-import {ROUTER_DIRECTIVES, Router} from "@angular/router";
+import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from "@angular/router";
 import {LoadListService} from "../../providers/load-list.service";
 import {AuthenticationService} from "../../providers/authentication.service";
 import {ValidationDataService} from "../../providers/validation-data.service";
@@ -7,7 +7,9 @@ import {SharedService} from "../../providers/shared.service";
 import {ProfileService} from "../../providers/profile.service";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {ModalComponent} from "./modal-component/modal-component";
+import {Utils} from "../utils/utils";
 declare function md5(value: string): string;
+declare var Messenger;
 
 @Component({
   directives: [ROUTER_DIRECTIVES, AlertComponent, ModalComponent],
@@ -20,7 +22,7 @@ declare function md5(value: string): string;
   styles: [require('./login.scss')],
   providers: [AuthenticationService, LoadListService, ValidationDataService, ProfileService]
 })
-export class LoginPage {
+export class LoginPage{
   index: number;
   phone: number;
   email: string;
@@ -51,6 +53,8 @@ export class LoginPage {
   isRoleTelConform = true;
 
   isRedirectedFromHome;
+  obj: string;
+  oldPhoneValue: number;
 
 
   constructor(private loadListService: LoadListService,
@@ -58,9 +62,9 @@ export class LoginPage {
               private validationDataService: ValidationDataService,
               private sharedService: SharedService,
               private profileService: ProfileService,
-              private router: Router) {
+              private router: Router,
+              private route: ActivatedRoute) {
   }
-
 
   ngOnInit(): void {
     this.index = 33;
@@ -74,11 +78,16 @@ export class LoginPage {
     this.showHidePasswdConfirmIcon = "fa fa-eye";
 
     let fromPage = this.sharedService.getFromPage();
-    if(fromPage == "home"){
+    if (fromPage == "home") {
       this.isRedirectedFromHome = true;
-    }else{
+    } else {
       this.isRedirectedFromHome = false;
     }
+
+    //get params
+    this.route.params.forEach((params: Params) => {
+      this.obj = params['obj'];
+    });
   }
 
 
@@ -95,8 +104,8 @@ export class LoginPage {
       this.email = '';
     this.role = this.role == "jobyer" ? "jobyer" : "employer";
     var reverseRole = this.role == "jobyer" ? "employer" : "jobyer";
-    this.authService.getUserByPhoneAndRole("+"+indPhone, reverseRole).then((data0: any) => {
-      if(data0 && data0.data.length !=0 && (data0.data[0].mot_de_passe != pwd)){
+    this.authService.getUserByPhoneAndRole("+" + indPhone, reverseRole).then((data0: any) => {
+      if (data0 && data0.data.length != 0 && (data0.data[0].mot_de_passe != pwd)) {
         this.addAlert("danger", "Votre mot de passe est incorrect.");
         this.hideLoader = true;
         return;
@@ -137,30 +146,49 @@ export class LoginPage {
               this.sharedService.setProfilImageUrl(null);
             }
 
+            Messenger().post({
+              message: "Bienvenue "+ data.prenom +" vous venez de vous connecter !",
+              type: 'success',
+              showCloseButton: true
+            });
             //if user is connected for the first time, redirect him to the page 'civility', otherwise redirect him to the home page
             var isNewUser = data.newAccount;
             /*if (isNewUser || this.isNewRecruteur) {
-              this.router.navigate(['app/profile']);
-            } else {
-              if (this.fromPage == "Search") {
-                //this.nav.pop();
-              } else {
-                this.router.navigate(['app/home']);
-              }
-            }*/
-            this.router.navigate(['app/home']);
+             this.router.navigate(['app/profile']);
+             } else {
+             if (this.fromPage == "Search") {
+             //this.nav.pop();
+             } else {
+             this.router.navigate(['app/home']);
+             }
+             }*/
+            if (this.obj == "recruit" && !isNewUser) {
+              this.router.navigate(['app/search/results', {obj: 'recruit'}]);
+              return;
+            }
+            if (this.obj == "recruit" && isNewUser) {
+              this.router.navigate(['app/home', {obj: 'recruit'}]);
+              return;
+            }
+            if(this.obj != "recruit"){
+              this.router.navigate(['app/home']);
+              return;
+            }
           });
         });
       });
     });
   }
 
-
   /**
    * @description validate phone data field and call the function that search for it in the server
    */
   watchPhone(e) {
     if (this.phone) {
+      if (!Utils.isNumber(e.target.value)) {
+        this.phone = this.oldPhoneValue;
+        return;
+      }
       if (e.target.value.substring(0, 1) == '0') {
         e.target.value = e.target.value.substring(1, e.target.value.length);
       }
@@ -173,6 +201,7 @@ export class LoginPage {
         this.isPhoneNumValid = true;
       }
     }
+    this.oldPhoneValue = this.phone;
   }
 
 
@@ -190,7 +219,7 @@ export class LoginPage {
           return;
         }
         this.isRoleTelConform = true;
-        if(!this.isRecruteur) {
+        if (!this.isRecruteur) {
           if ((!data || data.data.length == 0)) {
             this.showEmailField = true;
             this.email = "";
@@ -205,14 +234,14 @@ export class LoginPage {
               this.isRoleTelConform = false;
             }
           }
-        }else{
+        } else {
           if ((!data || data.data.length == 0)) {
             this.isRoleTelConform = false;
             return;
           }
           if (data.data[0]["role"] == "recruteur") {
             this.email = "";
-          }else{
+          } else {
             this.isRoleTelConform = false;
             return;
           }
@@ -319,12 +348,12 @@ export class LoginPage {
 
   watchRole(e) {
     this.role = e.target.value;
-    if(this.role == "recruiter"){
+    if (this.role == "recruiter") {
       this.isRecruteur = true;
-    }else{
+    } else {
       this.isRecruteur = false;
     }
-    if(this.index && this.phone && this.isPhoneNumValid){
+    if (this.index && this.phone && this.isPhoneNumValid) {
       this.isRegistration(this.index, this.phone);
     }
   }

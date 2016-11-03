@@ -181,7 +181,7 @@
         <!-- Taux horaire -->
         <div class="form-group row required">
           <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-            Taux horaire
+            Taux horaire brut en €
           </label>
           <div class="col-md-6 col-xs-6">
             <input
@@ -203,6 +203,15 @@
             <select class="form-control" disabled>
               <option>EUR</option>
             </select>
+          </div>
+        </div>
+        <div class="form-group row required">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+            Adresse de la mission
+          </label>
+          <div class="col-md-7 col-xs-12">
+            <input id="autocompleteOfferAdress" type="text" class="form-control" placeholder="Rechercher une adresse" (keyup)="watchOfferAddress($event)"
+                   [(ngModel)]="offerAddress" (input)="autocompleteOfferAddress()"/>
           </div>
         </div>
       </div>
@@ -248,7 +257,7 @@
       </fieldset>
 
       <fieldset *ngIf="convParametersVisible()">
-        <legend><strong>Avantages en nature</strong></legend>
+        <legend><strong>Avantages salariaux</strong></legend>
         <div class="form-group row required">
           <label class="col-md-2 col-xs-2 form-control-label">Code</label>
           <label class="col-md-10 col-xs-10 form-control-label">Avantage</label>
@@ -277,6 +286,39 @@
             <span>{{item.libelle}}</span>
           </div>
         </div>
+      </fieldset>
+
+      <fieldset [hidden]="projectTarget=='jobyer'">
+        <legend><strong>Prérequis obligatoires</strong></legend>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-xs-10">
+              <input type="hidden" class="select2 prerequis-select form-control" name="prerequis"
+                     placeholder="Prérequis" [(ngModel)]="prerequisOb" />
+            </div>
+            <div class="col-xs-2">
+              <button class="btn btn-primary"
+                      role="button" (click)="addPrerequis()" >
+                <span class="glyphicon glyphicon-plus"></span>
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">&nbsp;</div>
+          </div>
+          <div *ngFor="let p of prerequisObligatoires" class="row" style="margin-bottom: 5px">
+            <div class="col-xs-2">
+              <button class="btn btn-danger"
+                      role="button" (click)="removePrerequis(p)" >
+                <span class="glyphicon glyphicon-minus"></span>
+              </button>
+            </div>
+            <div class="col-xs-10" style="font-size: medium">
+              {{p}}
+            </div>
+          </div>
+        </div>
+
       </fieldset>
 
     </section>
@@ -315,8 +357,7 @@
                 style="display: block; width: 100%;"
                 class="btn btn-danger mb-xs col-md-2 col-xs-12"
                 role="button"
-                (click)="removeSlot(j)"
-              >
+                (click)="removeSlot(j)" [disabled]="isDeleteSlotDisabled()">
                 <i class="glyphicon glyphicon-trash"></i>
               </button>
             </div>
@@ -497,7 +538,7 @@
             <div class="container-fluid">
               <div class="row">
                 <div class="col-xs-12">
-                  <button type="submit" class="btn btn-success fwidth" (click)="editOffer()">
+                  <button type="button" class="btn btn-success fwidth" (click)="editOffer()">
                     Enregistrer
                   </button>
                 </div>
@@ -513,16 +554,19 @@
                     {{offrePrivacyTitle}}
                   </button>
                 </div>
-                <div class="col-lg-6 col-md-6 col-xs-12">
-                  <button type="submit" class="btn btn-primary fwidth" (click)="launchSearch()">
-                    Lancer une recherche
-                  </button>
-                </div>
+
                 <div class="col-lg-6 col-md-6 col-xs-12">
                   <button type="submit" class="btn btn-primary fwidth" (click)="autoSearchMode()">
                     {{autoSearchModeTitle}}
                   </button>
                 </div>
+
+                <div class="col-lg-6 col-md-6 col-xs-12">
+                  <button type="submit" class="btn btn-primary fwidth" (click)="launchSearch()" *ngIf="!offer.obsolete">
+                    Lancer une recherche
+                  </button>
+                </div>
+
                 <div class="col-lg-6 col-md-6 col-xs-12">
                   <button type="submit" class="btn btn-primary fwidth" (click)="showQuote()" *ngIf="currentUser.estEmployeur">
                     Enregistrer et consulter le devis
