@@ -107,7 +107,7 @@
                       </div>
                     </div>
 
-                    <div *ngIf="!isProfileEmpty">
+                    <div *ngIf="!isProfileEmpty && forRecruitment">
                       <div class="form-group row">
                         <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="siret">
                           SIRET
@@ -121,6 +121,27 @@
                         </div>
                         <div class="col-md-offset-4 col-md-7 col-xs-12">
                           <span class="hint label label-danger">{{siretHint}}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group row" *ngIf="isProfileEmpty || !isSpontaneousContactFilled">
+                      <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                        Acceptez-vous de recevoir des candidatures spontanées ?
+                        <span class="asterisk">*</span>
+                      </label>
+                      <div class="col-md-7 col-xs-12">
+                        <div class="abc-radio">
+                          <input type="radio" name="radio3" id="radio5" value="Oui" [checked]="isSpontaneaousContact" (click)="watchSpontaneousContact($event)">
+                          <label for="radio5">
+                            Oui
+                          </label>
+                        </div>
+                        <div class="abc-radio">
+                          <input type="radio" name="radio3" id="radio6" value="Non" [checked]="!isSpontaneaousContact" (click)="watchSpontaneousContact($event)">
+                          <label for="radio6">
+                            Non
+                          </label>
                         </div>
                       </div>
                     </div>
@@ -208,6 +229,10 @@
             </button>
 
             <button class="btn btn-primary" [disabled]="!isValidFormForRecruitment() || validation" (click)="updateCivilityForRecruitment()" *ngIf="forRecruitment">
+              Valider
+            </button>
+
+            <button class="btn btn-primary" (click)="updateSpontaneousContact()" *ngIf="!isProfileEmpty && !isSpontaneousContactFilled">
               Valider
             </button>
           </div>
