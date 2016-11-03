@@ -565,9 +565,16 @@ export class MissionService {
 
   signEndOfMission(bean) {
     let dataSign = JSON.stringify(bean);
+
+    // Compute ID according to env
+    let calloutId = 339;
+    if (Configs.env == 'PROD') {
+      calloutId = 10003;
+    }
+
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 339,
+      'id': calloutId,
       'args': [
         {
           'class': 'fr.protogen.masterdata.model.CCalloutArguments',
