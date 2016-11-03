@@ -127,8 +127,6 @@ export class Contract {
     this.jobyer.id = 0;
     this.jobyer.numSS = '';
     this.jobyer.nationaliteLibelle = '';
-    this.jobyer.lieuNaissance = '';
-
 
     this.contractService.getJobyerComplementData(this.jobyer, this.projectTarget).then((data: any)=> {
       if (data && data.length > 0) {
@@ -693,4 +691,18 @@ export class Contract {
     return sd
   }
 
+  missingJobyerData() {
+    return (
+      !this.jobyer.nom
+      || !this.jobyer.prenom
+      || !this.jobyer.numSS
+      || !this.jobyerBirthDate
+      || !this.jobyer.lieuNaissance
+      || !this.jobyer.nationaliteLibelle
+      || !this.contractData.numeroTitreTravail
+      || !this.contractData.debutTitreTravail
+      || !this.contractData.finTitreTravail
+      || !this.contractData.qualification
+    );
+  }
 }

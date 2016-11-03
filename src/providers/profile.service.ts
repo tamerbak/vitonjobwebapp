@@ -244,9 +244,9 @@ export class ProfileService{
       (!this.isEmpty(cni) ? ("cni ='" + cni + "', ") : "") +
       (!this.isEmpty(birthdate) ? ("date_de_naissance ='" + birthdate + "', ") : ("date_de_naissance =" + null + ", "));
 
-    sql = sql + (!this.isEmpty(dateStay) ? (" date_de_delivrance='" + dateStay + "' ") : (" date_de_delivrance=" + null)) +
-      (!this.isEmpty(dateFromStay) ? (", debut_validite='" + dateFromStay + "' ") : (", debut_validite=" + null)) +
-      (!this.isEmpty(dateToStay) ? (", fin_validite='" + dateToStay + "' ") : (", fin_validite=" + null)) + " , ";
+    sql = sql + (!this.isEmpty(dateStay) ? (" date_de_delivrance='" + dateStay + "', ") : ("date_de_delivrance=" + null+ ", ")) +
+      (!this.isEmpty(dateFromStay) ? (" debut_validite='" + dateFromStay + "', ") : (" debut_validite=" + null+ ", ")) +
+      (!this.isEmpty(dateToStay) ? (" fin_validite='" + dateToStay + "', ") : (" fin_validite=" + null+ ", "));
 
     if (isFrench) {
       nationalityId = "91";
@@ -275,15 +275,17 @@ export class ProfileService{
           "where pk_user_jobyer ='" + roleId + "';";
       }
     }
+    console.clear();
     console.log(sql);
-    //debugger;
+    debugger;
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
+          console.clear();
           console.log(data);
-          //debugger;
+          debugger;
           resolve(data);
         });
     })
@@ -497,7 +499,7 @@ export class ProfileService{
             UPPER(uc.signature_jobyer) = 'NON'
             OR UPPER(uc.signature_employeur) = 'NON'
           ) THEN 1 ELSE NULL END) AS pending_recruitments
-
+        
           -- Mission in progress
           , COUNT(CASE WHEN (
             UPPER(uc.signature_employeur) = 'OUI'

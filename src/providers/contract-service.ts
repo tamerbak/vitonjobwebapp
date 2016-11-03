@@ -467,10 +467,16 @@ export class ContractService {
 
     console.log('dataSign' + JSON.stringify(dataSign));
 
+    // Compute ID according to env
+    let calloutId = 310;
+    if (Configs.env == 'PROD') {
+      calloutId = 10002;
+    }
+
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
       'id': (partner === 'yousign' ? 224 :
-          (partner === 'docusign' ? 338 :
+          (partner === 'docusign' ? calloutId :
               -1
           )
       ),

@@ -17,9 +17,15 @@ export class SlimPayService{
     };
     let encodedArg = btoa(JSON.stringify(bean));
 
+    // Compute ID according to env
+    let calloutId = 310;
+    if (Configs.env == 'PROD') {
+      calloutId = 326;
+    }
+
     var payload = {
       class: 'fr.protogen.masterdata.model.CCallout',
-      'id': 310,
+      'id': calloutId,
       'args': [
         {
           class: 'fr.protogen.masterdata.model.CCalloutArguments',
