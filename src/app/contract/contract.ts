@@ -162,7 +162,8 @@ export class Contract {
           this.regionId = data.fk_user_identifiants_nationalite;
           if (this.regionId == '40') {
             this.isFrench = true;
-            this.isEuropean = 1;
+            this.isCIN = true;
+            this.cni = data.cni;
             this.birthdepId = data.fk_user_departement;
           } else {
             this.index = this.profileService.getCountryById(data.fk_user_pays, this.pays).indicatif_telephonique;

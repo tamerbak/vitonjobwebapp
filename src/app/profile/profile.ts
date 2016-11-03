@@ -223,6 +223,7 @@ export class Profile{
         this.dateToStay = data.fin_validite;
         if (this.regionId == '40') {
           this.isFrench = true;
+          this.isCIN = true;
           this.birthdepId = data.fk_user_departement;
         } else {
           this.index = this.profileService.getCountryById(data.fk_user_pays, this.pays).indicatif_telephonique;
