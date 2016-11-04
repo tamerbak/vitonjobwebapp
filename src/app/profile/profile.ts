@@ -1427,6 +1427,8 @@ export class Profile{
     let birthCountry = e.target.value;
     this.isFrench = birthCountry == "33" ? true : false;
     this.isCIN = this.isEuropean == 0 ? true : false;
+    jQuery('.dep-select').select2("val", "");
+    jQuery('.commune-select').select2("val", "");
   }
 
   //<editor-fold desc="Watching input functions">
