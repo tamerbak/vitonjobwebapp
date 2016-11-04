@@ -12,8 +12,7 @@ export class ProfileService{
   }
 
   loadAdditionalUserInformations(id) {
-    let sql;
-    sql = "select * from user_jobyer where pk_user_jobyer = '" + id + "';";
+    let sql = "select j.*, n.libelle as nationalite_libelle from user_jobyer as j, user_nationalite as n where j.pk_user_jobyer = '" + id + "' and j.fk_user_nationalite = n.pk_user_nationalite;";
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
@@ -249,10 +248,9 @@ export class ProfileService{
       (!this.isEmpty(dateToStay) ? (" fin_validite='" + dateToStay + "', ") : (" fin_validite=" + null+ ", "));
 
     if (isFrench) {
-      nationalityId = "91";
-      regionId = "40";
       sql = sql + " fk_user_nationalite ='" + nationalityId + "', " +
         "lieu_de_naissance ='" + birthplace + "', " +
+        (!this.isEmpty(birthCountryId) ? ("fk_user_pays ='" + birthCountryId + "', ") : "") +
         (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "', ") : "") +
         "fk_user_identifiants_nationalite='" + regionId + "' " +
         //birthcp à ajouter

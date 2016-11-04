@@ -224,27 +224,11 @@
               </div>
 
               <div *ngIf="!isEmployer" class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">Né en France (DOM, TOM, POM)</label>
-                <div class="abc-radio">
-                  <input type="radio" name="radio1" id="radio1" value="1" (click)="watchIsFrench($event)"
-                         [checked]="isFrench">
-                  <label for="radio1" class="labelRadio">
-                    Oui
-                  </label>
-                  <input type="radio" name="radio1" id="radio2" value="0" (click)="watchIsFrench($event)"
-                         [checked]="!isFrench">
-                  <label for="radio2" class="labelRadio">
-                    Non
-                  </label>
-                </div>
-              </div>
-
-              <div *ngIf="!isEmployer && !isFrench" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Pays de naissance
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <select class="select2 form-control" [(ngModel)]="index">
+                  <select class="select2 form-control" [(ngModel)]="index" (change)="selectBirthCountry($event)">
                     <option *ngFor="let p of pays" [value]="p.indicatif_telephonique"> {{p.nom}}
                     </option>
                   </select>
@@ -317,7 +301,7 @@
                 </div>
               </div>
 
-              <div class="form-group row" *ngIf="!isEmployer && !isFrench">
+              <div class="form-group row" *ngIf="!isEmployer">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Identifiant de nationalité
                 </label>
