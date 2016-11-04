@@ -12,7 +12,7 @@ export class ProfileService{
   }
 
   loadAdditionalUserInformations(id) {
-    let sql = "select j.*, n.libelle as nationalite_libelle from user_jobyer as j, user_nationalite as n where j.pk_user_jobyer = '" + id + "' and j.fk_user_nationalite = n.pk_user_nationalite;";
+    let sql = "select j.*, n.libelle as nationalite_libelle from user_jobyer as j LEFT JOIN user_nationalite as n  ON j.fk_user_nationalite = n.pk_user_nationalite where j.pk_user_jobyer = '" + id + "';";
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
@@ -256,9 +256,9 @@ export class ProfileService{
       (!this.isEmpty(regionId) ? (" fk_user_identifiants_nationalite='" + regionId + "', ") : ("fk_user_identifiants_nationalite='', ")) +
 
       (!this.isEmpty(birthplace) ? (" lieu_de_naissance='" + birthplace + "', ") : ("lieu_de_naissance='', ")) +
-        (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "' ") : ("fk_user_departement ='' ")) +
+        (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "' ") : ("fk_user_departement = "+ null + " " )) +
 
-        "where pk_user_jobyer ='" + roleId + "';";
+        " where pk_user_jobyer ='" + roleId + "';";
     console.log(sql);
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();

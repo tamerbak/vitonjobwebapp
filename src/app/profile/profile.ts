@@ -125,16 +125,16 @@ export class Profile{
   };
   communesData: any = [];
   isFrench: boolean;
-  isEuropean: number;
+  isEuropean: number = 0;
   pays = [];
-  index: number;
+  index: number = 33;
 
   numStay;
   dateStay;
   dateFromStay;
   dateToStay;
   whoDeliverStay;
-  regionId;
+  regionId = "41";
   selectedDep;
   isResident: boolean = true;
   isCIN: boolean = true;
@@ -217,7 +217,9 @@ export class Profile{
     if (!this.isEmployer && !this.isNewUser)
       this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
         data = data.data[0];
-        this.index = this.profileService.getCountryById(data.fk_user_pays, this.pays).indicatif_telephonique;
+        if(!Utils.isEmpty(data.fk_user_pays)) {
+          this.index = this.profileService.getCountryById(data.fk_user_pays, this.pays).indicatif_telephonique;
+        }
         this.regionId = data.fk_user_identifiants_nationalite;
         this.dateStay = data.date_de_delivrance;
         this.dateFromStay = data.debut_validite;
@@ -237,6 +239,7 @@ export class Profile{
           this.nationalityId = data.numero_titre_sejour;
           this.isCIN = false;
         } else {
+          this.regionId = '41'
           this.isEuropean = 0;
           this.isCIN = !Utils.isEmpty(data.numero_titre_sejour) ? false : true;
           this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
