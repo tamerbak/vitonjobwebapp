@@ -1070,9 +1070,9 @@ export class Profile{
                   showCloseButton: true
                 });
                 this.showForm = false;
-                //redirecting to offers page if new User
+                //redirecting to home page if new User
                 if (isNewUser) {
-                  this.router.navigate(['app/offer/list']);
+                  this.router.navigate(['app/home']);
                 }
 
               }
@@ -1149,9 +1149,9 @@ export class Profile{
                   showCloseButton: true
                 });
                 this.showForm = false;
-                //redirecting to offers page if new User
+                //redirecting to home page if new User
                 if (this.isNewUser) {
-                  this.router.navigate(['app/offer/list']);
+                  this.router.navigate(['app/home']);
                 }
               }
 
@@ -1245,9 +1245,9 @@ export class Profile{
               });
               this.showForm = false;
 
-              //redirecting to offers page if new User
+              //redirecting to home page if new User
               if (this.isNewUser) {
-                this.router.navigate(['app/offer/list']);
+                this.router.navigate(['app/home']);
               }
             }
 
@@ -1384,7 +1384,6 @@ export class Profile{
               entreprise.workAdress.country = country;
               this.currentUser.employer.entreprises[0] = entreprise;
               this.sharedService.setCurrentUser(this.currentUser);
-              //redirecting to offers page if new User
               this.validation = false;
 
             }
