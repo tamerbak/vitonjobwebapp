@@ -117,7 +117,7 @@
           <small class="form-text text-muted"></small>
         </div>
 
-        <div class="form-group" *ngIf="!isFrench && isEuropean == 1">
+        <div class="form-group" *ngIf="isEuropean == 1">
           <label>{{!isResident ? 'N° du titre de séjour' : 'N° de la carte résident'}}</label>
           <input class="form-control" type="text" [(ngModel)]="numStay" readonly>
           <small class="form-text text-muted"></small>

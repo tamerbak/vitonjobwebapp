@@ -1015,22 +1015,6 @@ export class Profile{
     this.showForm = false;
   }
 
-  watchIsFrench(e) {
-    this.isFrench = e.target.value == "1" ? true : false;
-    if (!this.isFrench) {
-      this.isEuropean = 0;
-      this.regionId = null;
-    }
-    if (this.isFrench || this.isEuropean == 0) {
-      this.scanTitle = " de votre CNI ou Passeport";
-      this.isEuropean = 0;
-      this.isCIN = true;
-    }
-    if (this.isEuropean == 1) {
-      this.scanTitle = " de votre titre de séjour";
-    }
-  }
-
   updateCivility() {
     if (this.isValidForm()) {
       this.validation = true;
@@ -1419,7 +1403,7 @@ export class Profile{
     this.profileService.getIdentifiantNationalityByNationality(e.target.value).then((data: any)=> {
       this.isEuropean = data.data[0].pk_user_identifiants_nationalite == "42" ? 1 : 0;
       this.regionId = data.data[0].pk_user_identifiants_nationalite;
-      if (this.isFrench || this.isEuropean == 0) {
+      if (this.isEuropean == 0) {
         this.scanTitle = " de votre CNI ou Passeport";
       }
       if (this.isEuropean == 1) {
@@ -1439,6 +1423,7 @@ export class Profile{
   selectBirthCountry(e) {
     let birthCountry = e.target.value;
     this.isFrench = birthCountry == "33" ? true : false;
+    this.isCIN = this.isEuropean == 0 ? true : false;
   }
 
   //<editor-fold desc="Watching input functions">

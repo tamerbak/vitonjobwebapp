@@ -317,7 +317,7 @@
               ---- The user is Foreigner (Not European)
               --->
 
-              <div *ngIf="!isEmployer && !isFrench && isEuropean == 1" class="form-group row">
+              <div *ngIf="!isEmployer && isEuropean == 1" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">Type de document</label>
                 <div class="abc-radio">
                   <input type="radio" name="radio2" id="stayRadio" value="0" (click)="watchTypeDocStranger($event)"
@@ -333,7 +333,7 @@
                 </div>
               </div>
 
-              <div *ngIf="!isEmployer && !isFrench && isEuropean == 1" class="form-group row">
+              <div *ngIf="!isEmployer && isEuropean == 1" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   {{!isResident ? 'N° du titre de séjour' : 'N° de la carte résident'}}
                 </label>
@@ -373,7 +373,7 @@
               ---- The user is European
               --->
 
-              <div [hidden]="isEmployer || isEuropean == 1 || isFrench" class="form-group row">
+              <div [hidden]="isEmployer || isEuropean == 1" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">Type de document</label>
                 <div class="abc-radio">
                   <input type="radio" name="radio3" id="cinRadio" value="0" (click)="watchTypeDoc($event)"
@@ -402,7 +402,7 @@
                 </div>
               </div>
 
-              <div [hidden]="isEmployer || isEuropean == 1 || isCIN || isFrench" class="form-group row">
+              <div [hidden]="isEmployer || isEuropean == 1 || isCIN" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   N° de la carte de ressortissant
                 </label>
@@ -438,7 +438,7 @@
                 </div>
               </div>
 
-              <div [hidden]="isEmployer || isEuropean == 0 || isFrench" class="form-group row">
+              <div [hidden]="isEmployer || isEuropean == 0" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Délivré par
                 </label>
