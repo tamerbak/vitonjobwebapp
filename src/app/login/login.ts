@@ -145,12 +145,13 @@ export class LoginPage{
             } else {
               this.sharedService.setProfilImageUrl(null);
             }
-
-            Messenger().post({
-              message: "Bienvenue "+ data.prenom +" vous venez de vous connecter !",
-              type: 'success',
-              showCloseButton: true
-            });
+            if (!this.isEmpty(data.titre)) {
+              Messenger().post({
+                message: "Bienvenue "+ data.prenom +" vous venez de vous connecter !",
+                type: 'success',
+                showCloseButton: true
+              });
+            }
             //if user is connected for the first time, redirect him to the page 'civility', otherwise redirect him to the home page
             var isNewUser = data.newAccount;
             /*if (isNewUser || this.isNewRecruteur) {
