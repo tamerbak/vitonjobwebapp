@@ -275,17 +275,17 @@ export class ProfileService{
           "where pk_user_jobyer ='" + roleId + "';";
       }
     }
-    console.clear();
+    //console.clear();
     console.log(sql);
-    debugger;
+    //debugger;
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          console.clear();
+          //console.clear();
           console.log(data);
-          debugger;
+          //debugger;
           resolve(data);
         });
     })
@@ -499,7 +499,7 @@ export class ProfileService{
             UPPER(uc.signature_jobyer) = 'NON'
             OR UPPER(uc.signature_employeur) = 'NON'
           ) THEN 1 ELSE NULL END) AS pending_recruitments
-        
+
           -- Mission in progress
           , COUNT(CASE WHEN (
             UPPER(uc.signature_employeur) = 'OUI'

@@ -32,7 +32,6 @@ export class CivilityEmployer{
   conventionId: number;
   selectedMedecine: any = {id: 0, libelle: ""};
 
-
   companynameHint: string = "";
   siretHint: string  = "";
   apeHint: string  = "";
@@ -43,7 +42,6 @@ export class CivilityEmployer{
   isValidApe: boolean;
 
   conventions: any = [];
-
 
   projectTarget: string;
 
@@ -174,7 +172,6 @@ export class CivilityEmployer{
     this.onChange.emit(isValid);
   }
 
-  
   companyInfosAlert(field) {
     var message = (field == "siret" ? ("Le SIRET " + this.siret) : ("La raison sociale " + this.companyname)) + " existe déjà. Si vous continuez, ce compte sera bloqué, \n sinon veuillez en saisir " + (field == "siret" ? "un " : "une ") + "autre. \n Voulez vous continuez?";
     return message;

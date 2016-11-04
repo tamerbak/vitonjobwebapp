@@ -14,7 +14,6 @@ import {Configs} from "../../configurations/configs";
 import {MapsAPILoader} from "angular2-google-maps/core";
 import {ModalPicture} from "../modal-picture/modal-picture";
 import {BankAccount} from "../bank-account/bank-account";
-import MaskedInput from "angular2-text-mask";
 import {AccountConstraints} from "../../validators/account-constraints";
 import {scan} from "rxjs/operator/scan";
 import {CivilityNames} from "../components/civility-names/civility-names";
@@ -27,16 +26,12 @@ declare var google: any;
 @Component({
   selector: '[profile]',
   template: require('./profile.html'),
-  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalPicture, MaskedInput, BankAccount,CivilityNames,CivilityEmployer,CivilityJobyer],
+  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalPicture, BankAccount,CivilityNames,CivilityEmployer,CivilityJobyer],
   providers: [Utils, ProfileService, CommunesService, LoadListService, MedecineService, AttachementsService, AccountConstraints],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./profile.scss')]
 })
 export class Profile{
-  public maskSiret = [/[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, ' ', /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/]
-  public maskApe = [/[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /^[a-zA-Z]*$/]
-
-  @ViewChild('myForm') form;
 
   @ViewChild('civNames') civNames:CivilityNames;
   @ViewChild('civEmployer') civEmployer:CivilityEmployer;
@@ -73,11 +68,10 @@ export class Profile{
   isValidPersonalAddress: boolean = true;
   isValidJobAddress: boolean = true;
 
-
-
   selectedCommune: any ;
   dataForNationalitySelectReady = false;
   scanData: string = "";
+
   //PersonalAddress params
   cityPA: string;
   countryPA: string;
@@ -93,7 +87,6 @@ export class Profile{
   streetNumberJA: string;
   nameJA: string;
   zipCodeJA: string;
-
 
   //currentUser object
   currentUser: any;
@@ -168,13 +161,11 @@ export class Profile{
   }
 
   onNamesDataChange(isValid){
-    console.log(isValid);
     this.isValidCivilityNames = isValid;
     this.isValidForm();
   }
 
   onEmployerDataChange(isValid){
-    console.log(isValid);
     this.isValidCivilityEmployer = isValid;
     this.isValidForm();
   }
@@ -219,6 +210,8 @@ export class Profile{
     this.isResident = obj.birthdepId;
     this.isFrench = obj.isFrench;
     this.isEuropean = obj.isEuropean;
+
+    this.birthdate = obj.birthdate;
   }
 
   onJobyerNationalityChange(obj){
@@ -228,6 +221,10 @@ export class Profile{
     if (obj.isEuropean == 1) {
       this.scanTitle = " de votre titre de séjour";
     }
+  }
+
+  onTitleChange(obj){
+    this.title = obj.title;
   }
 
 
@@ -307,7 +304,6 @@ export class Profile{
 
     this.personalAddress = _address;
     this.isValidPersonalAddress = _isValid;
-    console.log();
     this.isValidForm();
   }
 
@@ -325,7 +321,6 @@ export class Profile{
 
     this.jobAddress = _address;
     this.isValidJobAddress = _isValid;
-    console.log();
     this.isValidForm();
   }
 
@@ -616,7 +611,6 @@ export class Profile{
       this.siretAlert = "";
       this.showCurrentSiretBtn = false;
     }
-    console.log()
   }
 
   closeForm() {
@@ -635,8 +629,6 @@ export class Profile{
       var userRoleId = this.userRoleId;
       var isNewUser = this.isNewUser;
 
-      console.log(title,firstname,lastname);
-
       if (this.isEmployer) {
         if (this.isRecruiter) {
           this.profileService.updateRecruiterCivility(title, lastname, firstname, accountId)
@@ -651,7 +643,6 @@ export class Profile{
                 this.validation = false;
                 return;
               } else {
-                // console.log("response update civility : " + res.status);
                 this.currentUser.titre = this.title;
                 this.currentUser.nom = this.lastname;
                 this.currentUser.prenom = this.firstname;
@@ -675,7 +666,6 @@ export class Profile{
 
             })
             .catch((error: any) => {
-              // console.log(error);
               this.validation = false;
             });
 
@@ -687,7 +677,6 @@ export class Profile{
             var medecineId = this.medecineId;
             var entrepriseId = this.currentUser.employer.entreprises[0].id;
             var conventionId = this.conventionId;
-            console.log(companyname,siret,ape,medecineId,entrepriseId,conventionId);
 
           this.profileService.updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, userRoleId, entrepriseId, medecineId, conventionId, false)
             .then((res: any) => {
@@ -702,8 +691,6 @@ export class Profile{
                 this.validation = false;
                 return;
               } else {
-                // data saved
-                // console.log("response update civility : " + res.status);
                 this.currentUser.titre = this.title;
                 this.currentUser.nom = this.lastname;
                 this.currentUser.prenom = this.firstname;
@@ -757,16 +744,13 @@ export class Profile{
             })
             .catch((error: any) => {
               this.validation = false;
-              // console.log(error);
             });
         }
       } else {
-        console.log("tttt");
         this.civJobyer.getData();
-        console.log("tttt2s");
         var numSS = this.numSS;
         var cni = this.cni;
-        var birthdate = "";
+        var birthdate = this.birthdate;
         // if (!Utils.isEmpty(this.birthdateHidden))
         //   birthdate = moment(this.birthdateHidden).format('MM/DD/YYYY');
         var birthplace = this.selectedCommune.nom;
@@ -788,9 +772,6 @@ export class Profile{
         var prefecture = this.prefecture;
         var regionId = this.regionId;
 
-        console.log(lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthdepId, birthplace, birthCountryId, numStay,
-          dateStay, dateFromStay, dateToStay, isResident, prefecture, this.isFrench, this.isEuropean, regionId);
-
         this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthdepId, birthplace, birthCountryId, numStay,
           dateStay, dateFromStay, dateToStay, isResident, prefecture, this.isFrench, this.isEuropean, regionId)
           .then((res: any) => {
@@ -805,15 +786,13 @@ export class Profile{
               this.validation = false;
               return;
             } else {
-              // data saved
-              //console.log("response update civility : " + res.status);
               this.currentUser.titre = this.title;
               this.currentUser.nom = this.lastname;
               this.currentUser.prenom = this.firstname;
               this.currentUser.jobyer.cni = this.cni;
               this.currentUser.jobyer.numSS = this.numSS;
               this.currentUser.jobyer.natId = this.nationalityId;
-              this.currentUser.jobyer.dateNaissance = Date.parse(moment(this.birthdateHidden).format('MM/DD/YYYY'));
+              this.currentUser.jobyer.dateNaissance = Date.parse(moment(this.birthdate).format('YYYY-MM-DD'));
               this.currentUser.jobyer.lieuNaissance = birthplace;
               this.currentUser.newAccount = false;
               this.sharedService.setCurrentUser(this.currentUser);
@@ -844,10 +823,8 @@ export class Profile{
 
           })
           .catch((error: any) => {
-            //console.log(error);
             this.validation = false;
           });
-
       }
     }
   }
@@ -871,8 +848,6 @@ export class Profile{
         this.profileService.updateUserPersonalAddress(entrepriseId, name, streetNumber, street, zipCode, city, country, 'employeur')
           .then((data: any) => {
             if (!data || data.status == "failure") {
-              // console.log(data.error);
-              // console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
               this.validation = false;
               return;
             } else {
@@ -898,9 +873,6 @@ export class Profile{
         this.profileService.updateUserPersonalAddress(roleId, name, streetNumber, street, zipCode, city, country, 'jobyer')
           .then((data: any) => {
             if (!data || data.status == "failure") {
-              // console.log(data.error);
-
-              // console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
               return;
             } else {
               this.validation = false;
@@ -958,8 +930,6 @@ export class Profile{
         this.profileService.updateUserJobAddress(entrepriseId, name, streetNumber, street, zipCode, city, country, 'employeur')
           .then((data: any) => {
             if (!data || data.status == "failure") {
-              // console.log(data.error);
-              // console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
               this.validation = false;
               return;
             } else {

@@ -24,7 +24,8 @@ export class CivilityNames{
   @Output()
   onSendData = new EventEmitter<any>();
 
-
+  @Output()
+  onTitleChange = new EventEmitter<any>();
 
   isValidLastname: boolean;
   isValidFirstname: boolean;
@@ -39,7 +40,12 @@ export class CivilityNames{
   }
 
   ngOnInit(){
+    var self = this;
     jQuery('.titleSelectPicker').selectpicker();
+    jQuery('.titleSelectPicker').on('change', function(){
+      var selectedTitle = jQuery(this).find("option:selected").val();
+      self.onTitleChange.emit({title:selectedTitle})
+    });
     this.init();
   }
 
@@ -66,7 +72,6 @@ export class CivilityNames{
   }
 
   getData(){
-      console.log("done1i");
       this.onSendData.emit({title:this.title,firstname:this.firstname,lastname:this.lastname})
   };
 

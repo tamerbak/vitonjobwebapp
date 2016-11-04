@@ -102,11 +102,11 @@
             </alert>
 
 
-            <civility-names #civNames [currentUser]="currentUser" (onSendData)="onGetDataFromCivilityNames($event)" (onChange)="onNamesDataChange($event)"></civility-names>
+            <civility-names #civNames [currentUser]="currentUser" (onTitleChange)="onTitleChange($event)" (onSendData)="onGetDataFromCivilityNames($event)" (onChange)="onNamesDataChange($event)"></civility-names>
 
             <div *ngIf="!isRecruiter">
               <civility-employer #civEmployer *ngIf="isEmployer" [currentUser]="currentUser" (onSendData)="onGetDataFromCivilityEmployer($event)" (onChange)="onEmployerDataChange($event)"></civility-employer>
-              <civility-jobyer #civJobyer *ngIf="!isEmployer" [currentUser]="currentUser" (onSendData)="onGetDataFromCivilityJobyer($event)" (onChange)="onJobyerDataChange($event)" (onNationalityChange)="onJobyerNationalityChange($event)"></civility-jobyer>
+              <civility-jobyer #civJobyer *ngIf="!isEmployer" [title]="title" [currentUser]="currentUser" (onSendData)="onGetDataFromCivilityJobyer($event)" (onChange)="onJobyerDataChange($event)" (onNationalityChange)="onJobyerNationalityChange($event)"></civility-jobyer>
 
 
 
