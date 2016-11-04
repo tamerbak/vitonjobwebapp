@@ -125,16 +125,16 @@ export class Profile{
   };
   communesData: any = [];
   isFrench: boolean;
-  isEuropean: number;
+  isEuropean: number = 0;
   pays = [];
-  index: number;
+  index: number = 33;
 
   numStay;
   dateStay;
   dateFromStay;
   dateToStay;
   whoDeliverStay;
-  regionId;
+  regionId = "41";
   selectedDep;
   isResident: boolean = true;
   isCIN: boolean = true;
@@ -148,10 +148,10 @@ export class Profile{
   /*
    * Multiple uploads
    */
-  allImages : any[];
-  currentImg : any;
-  currentHeightIndex : number = 0;
-  currentWidth : number = 0;
+  allImages: any[];
+  currentImg: any;
+  currentHeightIndex: number = 0;
+  currentWidth: number = 0;
 
   offerStats: any = {
     published_offers: '',
@@ -217,29 +217,32 @@ export class Profile{
     if (!this.isEmployer && !this.isNewUser)
       this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
         data = data.data[0];
+        if(!Utils.isEmpty(data.fk_user_pays)) {
+          this.index = this.profileService.getCountryById(data.fk_user_pays, this.pays).indicatif_telephonique;
+        }
         this.regionId = data.fk_user_identifiants_nationalite;
         this.dateStay = data.date_de_delivrance;
         this.dateFromStay = data.debut_validite;
         this.dateToStay = data.fin_validite;
-        if (this.regionId == '40') {
+        if (this.index == 33) {
           this.isFrench = true;
+          this.isCIN = true;
           this.birthdepId = data.fk_user_departement;
         } else {
-          this.index = this.profileService.getCountryById(data.fk_user_pays, this.pays).indicatif_telephonique;
-          if (this.regionId == '42') {
-            this.isEuropean = 1;
-            this.isFrench = false;
-            this.isResident = (data.est_resident == 'Oui' ? true : false);
-            this.whoDeliverStay = data.instance_delivrance;
-            this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
-            this.nationalityId = data.numero_titre_sejour;
-            this.isCIN = false;
-          } else {
-            this.isEuropean = 0;
-            this.isFrench = false;
-            this.isCIN = !Utils.isEmpty(data.numero_titre_sejour) ? false : true;
-            this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
-          }
+          this.isFrench = false;
+        }
+        if (this.regionId == '42') {
+          this.isEuropean = 1;
+          this.isResident = (data.est_resident == 'Oui' ? true : false);
+          this.whoDeliverStay = data.instance_delivrance;
+          this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
+          this.nationalityId = data.numero_titre_sejour;
+          this.isCIN = false;
+        } else {
+          this.regionId = '41'
+          this.isEuropean = 0;
+          this.isCIN = !Utils.isEmpty(data.numero_titre_sejour) ? false : true;
+          this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
         }
       });
     this.allImages = [];
@@ -388,17 +391,17 @@ export class Profile{
     this.lastname = this.currentUser.nom;
     this.firstname = this.currentUser.prenom;
 
-    let role = this.isEmployer?'employeur':'jobyer';
+    let role = this.isEmployer ? 'employeur' : 'jobyer';
     let field = 'scan';
-    let userId = this.isEmployer?this.currentUser.employer.id : this.currentUser.jobyer.id;
+    let userId = this.isEmployer ? this.currentUser.employer.id : this.currentUser.jobyer.id;
 
-    this.profileService.getScan(userId, field, role).then((file:string)=>{
-      if(file && file.length>0){
+    this.profileService.getScan(userId, field, role).then((file: string)=> {
+      if (file && file.length > 0) {
         let subfiles = file.split('*');
         this.allImages = [];
-        for(let i = 0 ; i < subfiles.length ; i++){
+        for (let i = 0; i < subfiles.length; i++) {
           this.allImages.push({
-            data : subfiles[i]
+            data: subfiles[i]
           });
         }
       }
@@ -590,38 +593,38 @@ export class Profile{
 
   updateScan(accountId, userId, role) {
     /*if (this.scanData) {
-      this.currentUser.scanUploaded = true;
-      this.sharedService.setCurrentUser(this.currentUser);
-      //TODO : test "'"+userId+"'"
-      this.profileService.uploadScan(this.scanData, userId, 'scan', 'upload', role)
-        .then((data: any) => {
+     this.currentUser.scanUploaded = true;
+     this.sharedService.setCurrentUser(this.currentUser);
+     //TODO : test "'"+userId+"'"
+     this.profileService.uploadScan(this.scanData, userId, 'scan', 'upload', role)
+     .then((data: any) => {
 
-          if (!data || data.status == "failure") {
-            Messenger().post({
-              message: 'Serveur non disponible ou problème de connexion',
-              type: 'error',
-              showCloseButton: true
-            });
-            this.currentUser.scanUploaded = false;
-            this.sharedService.setCurrentUser(this.currentUser);
-          }
+     if (!data || data.status == "failure") {
+     Messenger().post({
+     message: 'Serveur non disponible ou problème de connexion',
+     type: 'error',
+     showCloseButton: true
+     });
+     this.currentUser.scanUploaded = false;
+     this.sharedService.setCurrentUser(this.currentUser);
+     }
 
 
-        });
+     });
 
-      if (accountId) {
-        this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle, this.scanData).then((data :any) => {
-          if(data && data.id != 0) {
-            this.attachementsService.uploadActualFile(data.id, data.fileName, this.scanData);
-          }
-        });
-      }
-    }*/
+     if (accountId) {
+     this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle, this.scanData).then((data :any) => {
+     if(data && data.id != 0) {
+     this.attachementsService.uploadActualFile(data.id, data.fileName, this.scanData);
+     }
+     });
+     }
+     }*/
 
-    if(this.allImages && this.allImages.length>0){
+    if (this.allImages && this.allImages.length > 0) {
       let scanData = this.allImages[0].data;
-      for(let i = 1 ; i < this.allImages.length ; i++){
-        scanData = scanData+'*'+this.allImages[i].data;
+      for (let i = 1; i < this.allImages.length; i++) {
+        scanData = scanData + '*' + this.allImages[i].data;
       }
 
       this.profileService.uploadScan(scanData, userId, 'scan', 'upload', role)
@@ -641,13 +644,13 @@ export class Profile{
         });
 
       if (accountId) {
-        for(let i = 0 ; i < this.allImages.length ; i++){
-          let index = i+1;
-          this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle +' ' + index, scanData).then((data :any) => {
-          if(data && data.id != 0) {
-            this.attachementsService.uploadActualFile(data.id, data.fileName, scanData);
-          }
-        });
+        for (let i = 0; i < this.allImages.length; i++) {
+          let index = i + 1;
+          this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle + ' ' + index, scanData).then((data: any) => {
+            if (data && data.id != 0) {
+              this.attachementsService.uploadActualFile(data.id, data.fileName, scanData);
+            }
+          });
         }
 
       }
@@ -666,13 +669,13 @@ export class Profile{
 
   }
 
-  deleteImage(index){
-    this.allImages.splice(index,1);
+  deleteImage(index) {
+    this.allImages.splice(index, 1);
   }
 
-  appendImg(){
+  appendImg() {
     this.allImages.push({
-      data : this.scanData
+      data: this.scanData
     });
 
     this.scanData = '';
@@ -1015,22 +1018,6 @@ export class Profile{
     this.showForm = false;
   }
 
-  watchIsFrench(e) {
-    this.isFrench = e.target.value == "1" ? true : false;
-    if (!this.isFrench) {
-      this.isEuropean = 0;
-      this.regionId = null;
-    }
-    if (this.isFrench || this.isEuropean == 0) {
-      this.scanTitle = " de votre CNI ou Passeport";
-      this.isEuropean = 0;
-      this.isCIN = true;
-    }
-    if (this.isEuropean == 1) {
-      this.scanTitle = " de votre titre de séjour";
-    }
-  }
-
   updateCivility() {
     if (this.isValidForm()) {
       this.validation = true;
@@ -1191,11 +1178,7 @@ export class Profile{
             //etranger
             regionId = 42;
           } else {
-            if (this.isFrench) {
-              regionId = 40;
-            } else {
-              regionId = 41;
-            }
+            regionId = 41;
           }
         } else {
           regionId = this.regionId;
@@ -1422,7 +1405,7 @@ export class Profile{
     this.profileService.getIdentifiantNationalityByNationality(e.target.value).then((data: any)=> {
       this.isEuropean = data.data[0].pk_user_identifiants_nationalite == "42" ? 1 : 0;
       this.regionId = data.data[0].pk_user_identifiants_nationalite;
-      if (this.isFrench || this.isEuropean == 0) {
+      if (this.isEuropean == 0) {
         this.scanTitle = " de votre CNI ou Passeport";
       }
       if (this.isEuropean == 1) {
@@ -1437,6 +1420,14 @@ export class Profile{
 
   watchTypeDoc(e) {
     this.isCIN = (e.target.value == '0' ? true : false);
+  }
+
+  selectBirthCountry(e) {
+    let birthCountry = e.target.value;
+    this.isFrench = birthCountry == "33" ? true : false;
+    this.isCIN = this.isEuropean == 0 ? true : false;
+    jQuery('.dep-select').select2("val", "");
+    jQuery('.commune-select').select2("val", "");
   }
 
   //<editor-fold desc="Watching input functions">

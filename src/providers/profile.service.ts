@@ -12,8 +12,7 @@ export class ProfileService{
   }
 
   loadAdditionalUserInformations(id) {
-    let sql;
-    sql = "select * from user_jobyer where pk_user_jobyer = '" + id + "';";
+    let sql = "select j.*, n.libelle as nationalite_libelle from user_jobyer as j LEFT JOIN user_nationalite as n  ON j.fk_user_nationalite = n.pk_user_nationalite where j.pk_user_jobyer = '" + id + "';";
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
@@ -194,9 +193,9 @@ export class ProfileService{
       let headers = Configs.getHttpJsonHeaders();
       this.http.post(Configs.calloutURL, stringData, {headers: headers})
         .map(res => res.json())
-        .subscribe((data:any) => {
+        .subscribe((data: any) => {
           let files = '';
-          if(data && data.file)
+          if (data && data.file)
             files = data.file;
           resolve(files);
         });
@@ -240,52 +239,32 @@ export class ProfileService{
       "titre='" + title + "', " +
       "nom='" + lastname + "', " +
       "prenom='" + firstname + "', " +
-      (!this.isEmpty(numSS) ? ("numero_securite_sociale ='" + numSS + "', ") : "") +
-      (!this.isEmpty(cni) ? ("cni ='" + cni + "', ") : "") +
-      (!this.isEmpty(birthdate) ? ("date_de_naissance ='" + birthdate + "', ") : ("date_de_naissance =" + null + ", "));
 
-    sql = sql + (!this.isEmpty(dateStay) ? (" date_de_delivrance='" + dateStay + "', ") : ("date_de_delivrance=" + null+ ", ")) +
-      (!this.isEmpty(dateFromStay) ? (" debut_validite='" + dateFromStay + "', ") : (" debut_validite=" + null+ ", ")) +
-      (!this.isEmpty(dateToStay) ? (" fin_validite='" + dateToStay + "', ") : (" fin_validite=" + null+ ", "));
+      (!this.isEmpty(numSS) ? ("numero_securite_sociale ='" + numSS + "', ") : ("numero_securite_sociale ='', ")) +
+      (!this.isEmpty(cni) ? ("cni ='" + cni + "', ") : ("cni ='', ")) +
+      (!this.isEmpty(birthdate) ? ("date_de_naissance ='" + birthdate + "', ") : ("date_de_naissance =" + null + ", "))+
 
-    if (isFrench) {
-      nationalityId = "91";
-      regionId = "40";
-      sql = sql + " fk_user_nationalite ='" + nationalityId + "', " +
-        "lieu_de_naissance ='" + birthplace + "', " +
-        (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "', ") : "") +
-        "fk_user_identifiants_nationalite='" + regionId + "' " +
-        //birthcp à ajouter
-        "where pk_user_jobyer ='" + roleId + "';";
-    } else {
-      if (isEuropean == 0) {
-        sql = sql + " fk_user_nationalite ='" + nationalityId + "', " +
-          (!this.isEmpty(birthCountryId) ? ("fk_user_pays ='" + birthCountryId + "', ") : "") +
-          "lieu_de_naissance ='" + birthplace + "', " +
-          (!this.isEmpty(regionId) ? ("fk_user_identifiants_nationalite ='" + regionId + "', ") : "") +
-          "numero_titre_sejour ='" + numStay + "' " +
-          "where pk_user_jobyer ='" + roleId + "';";
-      } else {
-        sql = sql + " fk_user_nationalite ='" + nationalityId + "' " +
-          ", numero_titre_sejour ='" + numStay + "' " +
-          (!this.isEmpty(birthCountryId) ? (", fk_user_pays ='" + birthCountryId + "' ") : "") +
-          (!this.isEmpty(isStay) ? (", est_resident='" + isStay + "' ") : "") +
-          (!this.isEmpty(prefecture) ? (", instance_delivrance='" + this.sqlfyText(prefecture) + "' ") : "") +
-          (!this.isEmpty(regionId) ? (", fk_user_identifiants_nationalite='" + regionId + "' ") : "") +
-          "where pk_user_jobyer ='" + roleId + "';";
-      }
-    }
-    console.clear();
+        (!this.isEmpty(numStay) ? (" numero_titre_sejour='" + numStay + "', ") : ("numero_titre_sejour='', ")) +
+      (!this.isEmpty(dateStay) ? (" date_de_delivrance='" + dateStay + "', ") : ("date_de_delivrance=" + null + ", ")) +
+      (!this.isEmpty(dateFromStay) ? (" debut_validite='" + dateFromStay + "', ") : (" debut_validite=" + null + ", ")) +
+        (!this.isEmpty(dateToStay) ? (" fin_validite='" + dateToStay + "', ") : (" fin_validite=" + null + ", "))+
+      (!this.isEmpty(isStay) ? ("est_resident='" + isStay + "', ") : (" est_resident='', ")) +
+      (!this.isEmpty(prefecture) ? ("instance_delivrance='" + this.sqlfyText(prefecture) + "', ") : (" instance_delivrance='', ")) +
+
+      (!this.isEmpty(nationalityId) ? (" fk_user_nationalite='" + nationalityId + "', ") : ("fk_user_nationalite='', ")) +
+      (!this.isEmpty(birthCountryId) ? ("fk_user_pays ='" + birthCountryId + "', ") : ("fk_user_pays='', ")) +
+      (!this.isEmpty(regionId) ? (" fk_user_identifiants_nationalite='" + regionId + "', ") : ("fk_user_identifiants_nationalite='', ")) +
+
+      (!this.isEmpty(birthplace) ? (" lieu_de_naissance='" + birthplace + "', ") : ("lieu_de_naissance='', ")) +
+        (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "' ") : ("fk_user_departement = "+ null + " " )) +
+
+        " where pk_user_jobyer ='" + roleId + "';";
     console.log(sql);
-    debugger;
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          console.clear();
-          console.log(data);
-          debugger;
           resolve(data);
         });
     })
@@ -469,8 +448,8 @@ export class ProfileService{
     });
   }
 
-    getEmployerOfferStats(entrepriseId) {
-      let sql = `
+  getEmployerOfferStats(entrepriseId) {
+    let sql = `
         SELECT
           -- Published offers
           COUNT(uoe.*) as published_offers
@@ -481,18 +460,18 @@ export class ProfileService{
           AND UPPER(uoe.publiee) = 'OUI'
       ;`;
 
-      return new Promise(resolve => {
-        let headers = Configs.getHttpTextHeaders();
-        this.http.post(Configs.sqlURL, sql, {headers: headers})
-          .map(res => res.json())
-          .subscribe((data: any)=> {
-            resolve(data.data[0]);
-          });
-      });
-    }
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any)=> {
+          resolve(data.data[0]);
+        });
+    });
+  }
 
-    getEmployerMissionStats(entrepriseId) {
-      let sql = `
+  getEmployerMissionStats(entrepriseId) {
+    let sql = `
         SELECT
           -- Pending recruitment
           COUNT(CASE WHEN (
@@ -513,15 +492,15 @@ export class ProfileService{
           AND UPPER(uc.dirty) = 'N'
       ;`;
 
-      return new Promise(resolve => {
-        let headers = Configs.getHttpTextHeaders();
-        this.http.post(Configs.sqlURL, sql, {headers: headers})
-          .map(res => res.json())
-          .subscribe((data: any)=> {
-            resolve(data.data[0]);
-          });
-      });
-    }
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any)=> {
+          resolve(data.data[0]);
+        });
+    });
+  }
 
   /*getPaysByIndex(index){
    let sql = "select pk_user_pays as id from user_prefecture where nom = '" + this.sqlfyText(nom) + "'";

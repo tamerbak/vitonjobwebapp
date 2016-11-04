@@ -224,27 +224,11 @@
               </div>
 
               <div *ngIf="!isEmployer" class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">Né en France (DOM, TOM, POM)</label>
-                <div class="abc-radio">
-                  <input type="radio" name="radio1" id="radio1" value="1" (click)="watchIsFrench($event)"
-                         [checked]="isFrench">
-                  <label for="radio1" class="labelRadio">
-                    Oui
-                  </label>
-                  <input type="radio" name="radio1" id="radio2" value="0" (click)="watchIsFrench($event)"
-                         [checked]="!isFrench">
-                  <label for="radio2" class="labelRadio">
-                    Non
-                  </label>
-                </div>
-              </div>
-
-              <div *ngIf="!isEmployer && !isFrench" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Pays de naissance
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <select class="select2 form-control" [(ngModel)]="index">
+                  <select class="select2 form-control" [(ngModel)]="index" (change)="selectBirthCountry($event)">
                     <option *ngFor="let p of pays" [value]="p.indicatif_telephonique"> {{p.nom}}
                     </option>
                   </select>
@@ -317,7 +301,7 @@
                 </div>
               </div>
 
-              <div class="form-group row" *ngIf="!isEmployer && !isFrench">
+              <div class="form-group row" *ngIf="!isEmployer">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Identifiant de nationalité
                 </label>
@@ -329,7 +313,11 @@
                 </div>
               </div>
 
-              <div *ngIf="!isEmployer && !isFrench && isEuropean == 1" class="form-group row">
+              <!--
+              ---- The user is Foreigner (Not European)
+              --->
+
+              <div *ngIf="!isEmployer && isEuropean == 1" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">Type de document</label>
                 <div class="abc-radio">
                   <input type="radio" name="radio2" id="stayRadio" value="0" (click)="watchTypeDocStranger($event)"
@@ -345,7 +333,7 @@
                 </div>
               </div>
 
-              <div *ngIf="!isEmployer && !isFrench && isEuropean == 1" class="form-group row">
+              <div *ngIf="!isEmployer && isEuropean == 1" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   {{!isResident ? 'N° du titre de séjour' : 'N° de la carte résident'}}
                 </label>
@@ -381,7 +369,11 @@
                 </div>
               </div-->
 
-              <div [hidden]="isEmployer || isEuropean == 1 || isFrench" class="form-group row">
+              <!--
+              ---- The user is European
+              --->
+
+              <div [hidden]="isEmployer || isEuropean == 1" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">Type de document</label>
                 <div class="abc-radio">
                   <input type="radio" name="radio3" id="cinRadio" value="0" (click)="watchTypeDoc($event)"
@@ -399,7 +391,7 @@
 
               <div [hidden]="isEmployer || isEuropean == 1 || !isCIN" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  CNI ou Passeport
+                  N° de la CNI ou Passeport
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <input type="text" id="cni" class="form-control" [(ngModel)]="cni" name="cni"
@@ -410,9 +402,9 @@
                 </div>
               </div>
 
-              <div [hidden]="isEmployer || isEuropean == 1 || isCIN || isFrench" class="form-group row">
+              <div [hidden]="isEmployer || isEuropean == 1 || isCIN" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  N° de la carte résident
+                  N° de la carte de ressortissant
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <input type="text" class="form-control" [(ngModel)]="numStay">
@@ -446,7 +438,7 @@
                 </div>
               </div>
 
-              <div [hidden]="isEmployer || isEuropean == 0 || isFrench" class="form-group row">
+              <div [hidden]="isEmployer || isEuropean == 0" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Délivré par
                 </label>

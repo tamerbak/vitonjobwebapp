@@ -133,7 +133,7 @@ export class Contract {
         let datum = data[0];
         this.jobyer.id = datum.id;
         this.jobyer.numSS = (datum.numss == "null") ? '':datum.numss;
-        this.jobyer.nationaliteLibelle = datum.nationalite = "null"? '':datum.nationalite;
+        this.jobyer.nationaliteLibelle = Utils.isEmpty(datum.nationalite) ? '' : datum.nationalite;
         this.jobyer.titreTravail = '';
         this.jobyer.debutTitreTravail = '';
         this.jobyer.finTitreTravail = '';
@@ -155,54 +155,42 @@ export class Contract {
 
         this.contractData.numeroTitreTravail = this.jobyer.titreTravail;
 
-
-
         this.profileService.loadAdditionalUserInformations(this.jobyer.id).then((data: any) => {
-          data = data.data[0];
-          this.regionId = data.fk_user_identifiants_nationalite;
-          if (this.regionId == '40') {
-            this.isFrench = true;
-            this.isEuropean = 1;
-            this.birthdepId = data.fk_user_departement;
-          } else {
-            this.index = this.profileService.getCountryById(data.fk_user_pays, this.pays).indicatif_telephonique;
+          if (data && data.data && data.data.length > 0) {
+            data = data.data[0];
+            let birthCountry = this.profileService.getCountryById(data.fk_user_pays, this.pays);
+            this.jobyer.nationaliteLibelle = data.nationalite_libelle;
             this.cni = data.cni;
-            if(data.fk_user_nationalite !== "null"){
-              listService.loadNationality(data.fk_user_nationalite).then((res: any) => {
-                if(res && res.data && res.data.length > 0 ){
-                  this.jobyer.nationaliteLibelle = res.data[0].libelle;
-                }
-              });
-            }else{
-              this.jobyer.nationaliteLibelle = '';
-            }
-            if(data.fk_user_pays !== "null"){
-              listService.loadCountry(data.fk_user_pays).then((res: any) => {
-                if(res && res.data && res.data.length > 0 ){
-                  this.jobyer.lieuNaissance = res.data[0].nom;
-                }
-              });
-            }else{
-              this.jobyer.lieuNaissance = '';
+            this.index = birthCountry.indicatif_telephonique;
+            this.regionId = data.fk_user_identifiants_nationalite;
+            this.dateStay = data.date_de_delivrance;
+            this.dateFromStay = data.debut_validite;
+            this.dateToStay = data.fin_validite;
+            if (this.index == 33) {
+              this.isFrench = true;
+              this.isCIN = true;
+              this.birthdepId = data.fk_user_departement;
+              this.jobyer.lieuNaissance = data.lieu_de_naissance;
+            } else {
+              this.isFrench = false;
+              this.jobyer.lieuNaissance = birthCountry.nom;
             }
             if (this.regionId == '42') {
               this.isEuropean = 1;
-              this.isFrench = false;
               this.isResident = (data.est_resident == 'Oui' ? true : false);
-              this.dateStay = data.date_de_delivrance;
-              this.dateFromStay = data.debut_validite;
-              this.dateToStay = data.fin_validite;
               this.whoDeliverStay = data.instance_delivrance;
               this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
-              this.isCIN = !Utils.isEmpty(this.cni) ? true : false;
+              this.isCIN = false;
             } else {
               this.isEuropean = 0;
-              this.isFrench = false;
               this.isCIN = !Utils.isEmpty(data.numero_titre_sejour) ? false : true;
               this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
             }
           }
-        })
+        });
+
+
+
 
       }
     });
@@ -662,7 +650,7 @@ export class Contract {
     }
 
     if (toSend == true) {
-      this.smsService.sendSms(this.jobyer.tel, message);
+      //this.smsService.sendSms(this.jobyer.tel, message);
       Messenger().post({
         message: 'Une notification a été envoyée au jobyer',
         type: 'success',
