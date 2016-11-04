@@ -75,17 +75,17 @@
       </div>
     </form>
     <ul class="nav navbar-nav pull-xs-right" (click)="$event.preventDefault()">
-      <li *ngIf="currentUser" class="nav-item dropdown">
+      <li *ngIf="sharedService.getCurrentUser()" class="nav-item dropdown">
         <a class="nav-link dropdown-toggle"
            data-toggle="dropdown">
 					<span class="thumb-sm avatar pull-xs-left">
 						<img [ngClass]="setImgClasses()" src={{sharedService.getProfilImageUrl()}} alt="...">
 					</span>
-          <span *ngIf="!currentUser.nom">Bienvenue</span>
-          <span *ngIf="currentUser.nom">
-&nbsp;           {{ currentUser.titre }} {{ currentUser.prenom }} <strong>{{ currentUser.nom }}</strong>
-            <span *ngIf="currentUser.estEmployeur && currentUser.employer.entreprises.length > 0">
-              - {{ currentUser.employer.entreprises[0].nom }}
+          <span *ngIf="!sharedService.getCurrentUser().nom">Bienvenue</span>
+          <span *ngIf="sharedService.getCurrentUser().nom">
+&nbsp;           {{ sharedService.getCurrentUser().titre }} {{ sharedService.getCurrentUser().prenom }} <strong>{{ sharedService.getCurrentUser().nom }}</strong>
+            <span *ngIf="sharedService.getCurrentUser().estEmployeur && sharedService.getCurrentUser().employer.entreprises.length > 0">
+              - {{ sharedService.getCurrentUser().employer.entreprises[0].nom }}
             </span>
           </span>
           <span class="circle bg-warning fw-bold ">
@@ -114,7 +114,7 @@
           <li><a class="dropdown-item" (click)="logOut()"><i class="fa fa-sign-out"></i> &nbsp; Se déconnecter</a></li>
         </ul>
       </li>
-      <li><a [hidden]="currentUser" class="dropdown-item" [routerLink]=" ['/login'] "><i class="fa fa-sign-in"></i>
+      <li><a [hidden]="sharedService.getCurrentUser()" class="dropdown-item" [routerLink]=" ['/login'] "><i class="fa fa-sign-in"></i>
         &nbsp; Se connecter</a></li>
     </ul>
   </div>
