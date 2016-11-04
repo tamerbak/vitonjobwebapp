@@ -24,21 +24,21 @@ export class ChatSidebar implements OnInit {
   constructor(el: ElementRef) {
     /* tslint:disable */
     this.todayConversations = [{
-      name: 'Chris Gray',
+      name: 'Vit-On-Job',
       status: 'success',
-      lastMessage: "Hey! What's up? So many times since we",
-      image: 'assets/images/people/a2.jpg',
+      lastMessage: "Bienvenue !",
+      image: 'assets/images/people/employer.jpg',
       messages: [{
-        text: "Hey! What's up?"
-      }, {
+        text: "Vous pouvez contacter d'autres utilisateurs depuis la messagerie"
+      }/*, {
         text: "Are you there?"
       }, {
         text: "Let me know when you come back."
       }, {
         text: "I am here!",
         fromMe: true
-      }]
-    }, {
+      }*/]
+    }/*, {
       name: 'Jamey Brownlow',
       status: 'gray-light',
       lastMessage: "Good news coming tonight. Seems they agreed to proceed",
@@ -58,9 +58,9 @@ export class ChatSidebar implements OnInit {
       status: 'success',
       lastMessage: "Just ain't sure about the weekend now. 90% I'll make it.",
       image: 'assets/images/people/a4.jpg'
-    }];
+    }*/];
 
-    this.lastWeekConversations = [{
+    this.lastWeekConversations = [/*{
       name: 'Freda Edison',
       status: 'gray-light',
       lastMessage: "Hey what's up? Me and Monica going for a lunch somewhere. Wanna join?",
@@ -80,7 +80,7 @@ export class ChatSidebar implements OnInit {
       status: 'gray-light',
       lastMessage: "Just ain't sure about the weekend now. 90% I'll make it.",
       image: 'assets/images/avatar.png'
-    }];
+    }*/];
     /* tslint:enable */
 
     this.$el = jQuery(el.nativeElement);

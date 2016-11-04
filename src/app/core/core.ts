@@ -4,7 +4,7 @@ import {FORM_PROVIDERS} from "@angular/common";
 import {Sidebar} from "./sidebar/sidebar";
 import {Navbar} from "./navbar/navbar";
 import {ConfigService} from "./config";
-import {AppSidebar} from './app-sidebar/app-sidebar';
+import {ChatSidebar} from './chat-sidebar/chat-sidebar';
 import {ModalConfirm} from "../modal-confirm/modal-confirm";
 
 declare var Raphael: any;
@@ -23,7 +23,7 @@ export const REDIRECTTO: string = "/app/home";
     id: 'app'
   },
   providers: [FORM_PROVIDERS],
-  directives: [Sidebar, Navbar, AppSidebar, ROUTER_DIRECTIVES,ModalConfirm],
+  directives: [Sidebar, Navbar, ChatSidebar, ROUTER_DIRECTIVES,ModalConfirm],
   template: require('./core.html')
 })
 export class Core {
