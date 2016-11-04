@@ -37,7 +37,7 @@
 <div class="row">
   <div class="col-lg-12 col-xs-12">
     <div *ngFor="let globalList of globalOfferList" style="margin-bottom: 10px;" [hidden]="globalList.list.length <=0">
-      <section class="widget" widget *ngFor="let item of globalList.list" [hidden]="!item.visible || typeOfferModel == '1'">
+      <section class="widget" widget *ngFor="#item of globalList.list" [hidden]="!item.visible || typeOfferModel == '1'">
         <div class="widget-body row">
           <div class="col-md-1 col-xs-2">
             <button class="btn btn-info mb-xs" role="button" style="border-radius: 50%;" (click)="changePrivacy(item)">
@@ -46,7 +46,7 @@
           </div>
           <h5 class="name no-margin mb-xs col-xs-8 title">{{item.title}}</h5>
           <div class="pull-right" style="padding-left: 20px;">
-            <div class="checkbox-inline checkbox-ios collapse navbar-collapse">
+            <!-- <div class="checkbox-inline checkbox-ios collapse navbar-collapse">
               <label class="switch">
                 <input type="checkbox" class="ios" [checked]="item.rechercheAutomatique" (click)="autoSearchMode(item)"><i></i>
               </label>
@@ -56,7 +56,11 @@
               <label class="labelSwitch">Activer l'alerte</label>
               <input type="radio" [checked]="item.rechercheAutomatique" (click)="autoSearchMode(item)">
 
-            </div>
+            </div> -->
+            <input [ngModel]="item.rechercheAutomatique" type="checkbox" (change)="autoSearchMode(item)">
+            <label>
+              <b>Activer l'alerte</b>
+            </label>
           </div>
           <div class="col-xs-5 col-md-12 price pull-right">
             <h4 class="" style="margin-bottom:0px"><strong>{{item.jobData.remuneration}} € </strong></h4>
