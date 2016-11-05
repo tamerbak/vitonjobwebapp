@@ -493,10 +493,10 @@
     </div>
     <div class="row" style="text-align: center;">
       <alert [type]="'danger alert-sm'" *ngIf="!formCtrl.form.valid || !rapatriement || !embaucheAutorise">
-        <div [innerHTML]="'Vous ne pouvez pas encore soumettre ce contrat car certaines de vos informations sont manquantes ou incorrectes'"></div>
+        <div [innerHTML]="'Vous ne pouvez actuellement pas soumettre ce contrat car certaines de vos informations sont manquantes ou incorrectes'"></div>
       </alert>
       <alert [type]="'danger alert-sm'" *ngIf="missingJobyerData()">
-        <div [innerHTML]="'Vous ne pouvez pas encore soumettre ce contrat car des informations liées au jobyer sont manquantes'"></div>
+        <div [innerHTML]="'Vous ne pouvez actuellement pas soumettre ce contrat car des informations liées au jobyer sont manquantes'"></div>
       </alert>
     </div>
   </form>
