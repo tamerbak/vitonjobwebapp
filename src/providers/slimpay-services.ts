@@ -18,7 +18,7 @@ export class SlimPayService{
     let encodedArg = btoa(JSON.stringify(bean));
 
     // Compute ID according to env
-    let calloutId = 310;
+    let calloutId = 10011;
     if (Configs.env == 'PROD') {
       calloutId = 326;
     }
