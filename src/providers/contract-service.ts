@@ -512,7 +512,7 @@ export class ContractService {
   sqlfyText(txt) {
     if (!txt || txt.length == 0)
       return "";
-    return txt.replace("'", "''");
+    return txt.replace(/'/g, "''");
   }
 
   generateMission(idContract, offer) {
