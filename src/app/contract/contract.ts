@@ -650,7 +650,7 @@ export class Contract {
     }
 
     if (toSend == true) {
-      //this.smsService.sendSms(this.jobyer.tel, message);
+      this.smsService.sendSms(this.jobyer.tel, message);
       Messenger().post({
         message: 'Une notification a été envoyée au jobyer',
         type: 'success',

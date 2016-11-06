@@ -1163,11 +1163,6 @@ export class Profile{
         var dateFromStay = (!Utils.isEmpty(this.dateFromStay) ? moment(this.dateFromStay).format('MM/DD/YYYY') : null);
         var dateToStay = (!Utils.isEmpty(this.dateToStay) ? moment(this.dateToStay).format('MM/DD/YYYY') : null);
         var isResident = (this.isResident ? 'Oui' : 'Non');
-        if (this.isCIN) {
-          numStay = "";
-        } else {
-          cni = "";
-        }
         var birthCountryId;
         if (this.index)
           birthCountryId = this.profileService.getCountryByIndex(this.index, this.pays).id;
