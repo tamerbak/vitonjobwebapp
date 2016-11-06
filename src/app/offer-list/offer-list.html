@@ -46,21 +46,21 @@
           </div>
           <h5 class="name no-margin mb-xs col-xs-8 title">{{item.title}}</h5>
           <div class="pull-right" style="padding-left: 20px;">
-            <!-- <div class="checkbox-inline checkbox-ios collapse navbar-collapse">
+            <div class="checkbox-inline checkbox-ios collapse navbar-collapse">
               <label class="switch">
                 <input type="checkbox" class="ios" [checked]="item.rechercheAutomatique" (click)="autoSearchMode(item)"><i></i>
               </label>
-              <label class="labelSwitch">Activer l'alerte</label>
+              <label class="labelS">Activer l'alerte</label>
             </div>
-            <div class="radio hidden-md-up col-xs-6 pull-right">
+            <!-- <div class="radio hidden-md-up col-xs-6 pull-right">
               <label class="labelSwitch">Activer l'alerte</label>
               <input type="radio" [checked]="item.rechercheAutomatique" (click)="autoSearchMode(item)">
 
             </div> -->
-            <input [ngModel]="item.rechercheAutomatique" type="checkbox" (change)="autoSearchMode(item)">
+            <!-- <input [ngModel]="item.rechercheAutomatique" type="checkbox" (change)="autoSearchMode(item)">
             <label>
               <b>Activer l'alerte</b>
-            </label>
+            </label> -->
           </div>
           <div class="col-xs-5 col-md-12 price pull-right">
             <h4 class="" style="margin-bottom:0px"><strong>{{item.jobData.remuneration}} € </strong></h4>
