@@ -565,7 +565,7 @@ export class ModalProfile{
               });
               //redirecting to offers page if new User
               if (isNewUser) {
-                this.router.navigate(['app/offer/list']);
+                this.router.navigate(['app/home']);
               }
               this.close();
             }
@@ -634,7 +634,7 @@ export class ModalProfile{
 
               //redirecting to offers page if new User
               if (this.isNewUser && this.obj != "recruit") {
-                this.router.navigate(['app/offer/list']);
+                this.router.navigate(['app/home']);
               }
               if (this.obj == "recruit") {
                 var self = this;
@@ -684,7 +684,7 @@ export class ModalProfile{
 
             //redirecting to offers page if new User
             if (this.isNewUser) {
-              this.router.navigate(['app/offer/list']);
+              this.router.navigate(['app/home']);
             }
             this.close();
           }
