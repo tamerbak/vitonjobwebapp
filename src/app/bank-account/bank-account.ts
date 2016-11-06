@@ -72,17 +72,20 @@ export class BankAccount {
         table = 'fk_user_entreprise';
       }
 
-      this.bankService.loadBankAccount(id, table, this.projectTarget).then((data:any)=>{
-            if(data && data.length>0) {
-                this.bank = data[0];
-                this.voidAccount = false;
-                this.isValidBank = true;
-                this.isValidAccountHolder = true;
-                this.isValidIban = true;
-                this.isValidBic = true;
-            } else
-                this.voidAccount = true;
-        });
+      this.bankService.loadBankAccount(id, table, this.projectTarget).then((data: any)=> {
+
+          if (data && data.data && data.data.length > 0) {
+            let banks = data.data;
+
+            this.bank = banks[banks.length - 1];
+            this.voidAccount = false;
+            this.isValidBank = true;
+            this.isValidAccountHolder = true;
+            this.isValidIban = true;
+            this.isValidBic = true;
+          } else
+            this.voidAccount = true;
+      });
     }
   }
 
