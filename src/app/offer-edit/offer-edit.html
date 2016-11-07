@@ -289,7 +289,7 @@
       </fieldset>
 
       <fieldset [hidden]="projectTarget=='jobyer'">
-        <legend><strong>Prérequis obligatoires</strong></legend>
+        <legend><strong>{{ currentUser.estEmployeur ? 'Prérequis obligatoires' : 'Liste des documents nécessaires' }}</strong></legend>
         <div class="container-fluid">
           <div class="row">
             <div class="col-xs-10">
