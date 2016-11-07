@@ -155,24 +155,24 @@ export class LoginPage{
             //if user is connected for the first time, redirect him to the page 'civility', otherwise redirect him to the home page
             var isNewUser = data.newAccount;
             /*if (isNewUser || this.isNewRecruteur) {
-             this.router.navigate(['app/profile']);
+             this.router.navigate(['profile']);
              } else {
              if (this.fromPage == "Search") {
              //this.nav.pop();
              } else {
-             this.router.navigate(['app/home']);
+             this.router.navigate(['home']);
              }
              }*/
             if (this.obj == "recruit" && !isNewUser) {
-              this.router.navigate(['app/search/results', {obj: 'recruit'}]);
+              this.router.navigate(['search/results', {obj: 'recruit'}]);
               return;
             }
             if (this.obj == "recruit" && isNewUser) {
-              this.router.navigate(['app/home', {obj: 'recruit'}]);
+              this.router.navigate(['home', {obj: 'recruit'}]);
               return;
             }
             if(this.obj != "recruit"){
-              this.router.navigate(['app/home']);
+              this.router.navigate(['home']);
               return;
             }
           });

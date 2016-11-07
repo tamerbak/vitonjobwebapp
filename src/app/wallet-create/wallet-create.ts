@@ -33,7 +33,7 @@ export class WalletCreate {
               private router: Router) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
-      this.router.navigate(['app/home']);
+      this.router.navigate(['home']);
     }
   }
 
@@ -42,7 +42,7 @@ export class WalletCreate {
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     } else {
-      this.router.navigate(['app/home']);
+      this.router.navigate(['home']);
       return;
 
     }
@@ -75,7 +75,7 @@ export class WalletCreate {
     this.service.empreinteCarte(card, this.currentUser).then((data: any) => {
       this.hideLoader = true;
       if (data.code == '02500') {
-        this.router.navigate(['app/mission/list']);
+        this.router.navigate(['mission/list']);
       } else {
         this.addAlert("danger", "<b>Erreur lors de validation de la carte:</b> Le numéro de carte bancaire doit comporter 16 chiffres et doit être valide");
       }

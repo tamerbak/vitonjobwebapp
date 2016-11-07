@@ -40,11 +40,11 @@ export class RecruiterEdit {
               private route: ActivatedRoute) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
-      this.router.navigate(['app/home']);
+      this.router.navigate(['home']);
     }
     this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
     if (this.projectTarget == "jobyer") {
-      this.router.navigate(['app/home']);
+      this.router.navigate(['home']);
     }
   }
 
@@ -116,7 +116,7 @@ export class RecruiterEdit {
           let recruiterList = this.sharedService.getRecruiterList();
           this.recruiterService.updateRecruiterListInLocal(recruiterList, [contact]).then((data: any) => {
             this.sharedService.setRecruiterList(data);
-            this.router.navigate(['app/recruiter/list']);
+            this.router.navigate(['recruiter/list']);
           });
           this.sendNotification(contact.accountid, tel);
         });
@@ -129,7 +129,7 @@ export class RecruiterEdit {
             let recruiterList = this.sharedService.getRecruiterList();
             this.recruiterService.updateRecruiterListInLocal(recruiterList, data).then((data: any) => {
               this.sharedService.setRecruiterList(data);
-              this.router.navigate(['app/recruiter/list']);
+              this.router.navigate(['recruiter/list']);
             });
             this.sendNotification(data[0].accountid, tel);
           });
@@ -156,7 +156,7 @@ export class RecruiterEdit {
         let recruiterList = this.sharedService.getRecruiterList();
         this.recruiterService.updateRecruiterListInLocal(recruiterList, data).then((result: any) => {
           this.sharedService.setRecruiterList(result);
-          this.router.navigate(['app/recruiter/list']);
+          this.router.navigate(['recruiter/list']);
         });
       });
       return;
@@ -169,7 +169,7 @@ export class RecruiterEdit {
         let recruiterList = this.sharedService.getRecruiterList();
         this.recruiterService.updateRecruiterListInLocal(recruiterList, [recruiter]).then((data: any) => {
           this.sharedService.setRecruiterList(data);
-          this.router.navigate(['app/recruiter/list']);
+          this.router.navigate(['recruiter/list']);
         });
       });
       return;

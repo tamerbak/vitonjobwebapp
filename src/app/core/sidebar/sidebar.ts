@@ -79,6 +79,6 @@ export class Sidebar implements OnInit {
   logOut() {
     this.currentUser = null;
     this.sharedService.logOut();
-    this.router.navigate(['app/home']);
+    this.router.navigate(['home']);
   }
 }

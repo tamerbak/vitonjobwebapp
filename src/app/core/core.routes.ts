@@ -32,12 +32,14 @@ import {PaymentMethod} from "../payment-method/payment-method";
  */
 export const CoreRoutes: RouterConfig = [
   {
-    path: 'app',
+    path: '',
     component: Core,
     children: [
 
       // Application
       {path: 'home', component: Home},
+      {path: 'jobyer', component: Home},
+      {path: 'employeur', component: Home},
 
       // User parameters
       {path: 'profile', component: Profile, canDeactivate: [ConfirmExitPage]},

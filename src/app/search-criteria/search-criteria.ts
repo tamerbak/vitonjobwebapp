@@ -48,7 +48,7 @@ export class SearchCriteria {
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     } else {
       this.projectTarget = this.sharedService.getProjectTarget();
-      //this.router.navigate(['app/home']);
+      //this.router.navigate(['home']);
     }
     this.buildFilters();
     //load all sectors, if not yet loaded in local
@@ -134,7 +134,7 @@ export class SearchCriteria {
         type: 'success',
         showCloseButton: true
       });
-      this.router.navigate(['app/search/results']);
+      this.router.navigate(['search/results']);
     });
   }
 

@@ -565,7 +565,7 @@ export class ModalProfile{
               });
               //redirecting to offers page if new User
               if (isNewUser) {
-                this.router.navigate(['app/home']);
+                this.router.navigate(['home']);
               }
               this.close();
             }
@@ -634,12 +634,12 @@ export class ModalProfile{
 
               //redirecting to offers page if new User
               if (this.isNewUser && this.obj != "recruit") {
-                this.router.navigate(['app/home']);
+                this.router.navigate(['home']);
               }
               if (this.obj == "recruit") {
                 var self = this;
                 jQuery('#modal-profile').on('hidden.bs.modal', function (e) {
-                  self.router.navigate(['app/search/results', {obj: "recruit"}]);
+                  self.router.navigate(['search/results', {obj: "recruit"}]);
                 })
               }
               this.close();
@@ -684,7 +684,7 @@ export class ModalProfile{
 
             //redirecting to offers page if new User
             if (this.isNewUser) {
-              this.router.navigate(['app/home']);
+              this.router.navigate(['home']);
             }
             this.close();
           }

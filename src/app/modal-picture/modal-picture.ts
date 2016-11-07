@@ -34,7 +34,7 @@ export class ModalPicture {
 
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
-      this.router.navigate(['app/home']);
+      this.router.navigate(['home']);
     } else {
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
       this.isEmployer = (this.projectTarget == "employer");

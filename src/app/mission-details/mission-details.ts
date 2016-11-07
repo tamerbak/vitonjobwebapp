@@ -74,7 +74,7 @@ export class MissionDetails{
 
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
-      this.router.navigate(['app/home']);
+      this.router.navigate(['home']);
     } else {
       this.isEmployer = this.currentUser.estEmployeur;
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
@@ -574,7 +574,7 @@ this.nav.present(toast);
    */
   eomReleve() {
     this.sharedService.setCurrentInvoice(this.invoiceId);
-    this.router.navigate(['app/contract/hours-record']);
+    this.router.navigate(['contract/hours-record']);
   }
 
   /**
@@ -582,7 +582,7 @@ this.nav.present(toast);
    */
   eomInvoice() {
     this.sharedService.setCurrentInvoice(this.invoiceId);
-    this.router.navigate(['app/contract/invoice']);
+    this.router.navigate(['contract/invoice']);
   }
 
   getOptionMission() {
@@ -647,6 +647,6 @@ this.nav.present(toast);
    * Return to the list page in order to refresh all data
    */
   navigationPreviousPage() {
-    this.router.navigate(['app/mission/list']);
+    this.router.navigate(['mission/list']);
   }
 }

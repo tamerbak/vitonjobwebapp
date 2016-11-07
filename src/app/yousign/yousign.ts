@@ -62,7 +62,7 @@ export class Yousign{
   }
 
   goToPaymentMethod() {
-    this.router.navigate(['app/payment/method']);
+    this.router.navigate(['payment/method']);
   }
 
   /**
@@ -162,7 +162,7 @@ export class Yousign{
           }
 
           // TEL23082016 : Navigate to credit card page directly :
-          //this.router.navigate(['app/wallet/create']);
+          //this.router.navigate(['wallet/create']);
           // Send sms to jobyer
           this.smsService.sendSms(jobyerPhoneNumber, 'Une demande de signature de contrat vous a été adressée. Contrat numéro : ' + this.contractData.numero);
           //save contract in Database

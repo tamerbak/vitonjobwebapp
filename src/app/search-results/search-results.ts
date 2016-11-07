@@ -47,7 +47,7 @@ export class SearchResults{
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     } else {
       this.projectTarget = this.sharedService.getProjectTarget();
-      // this.router.navigate(['app/home']);
+      // this.router.navigate(['home']);
     }
 
     //get params
@@ -144,7 +144,7 @@ export class SearchResults{
     //navigate to contract page
     if (o != null) {
       this.sharedService.setCurrentJobyer(this.searchResults[index]);
-      this.router.navigate(['app/contract/recruitment-form']);
+      this.router.navigate(['contract/recruitment-form']);
     }
   }
 
@@ -155,8 +155,8 @@ export class SearchResults{
   itemSelected(item) {
     let o = this.sharedService.getCurrentOffer();
     this.sharedService.setSearchResult(item);
-    this.router.navigate(['app/search/details']);
-    //this.router.navigate(['app/search/details', {item, o}]);
+    this.router.navigate(['search/details']);
+    //this.router.navigate(['search/details', {item, o}]);
   }
 
   onRecruite(params) {

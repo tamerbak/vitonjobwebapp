@@ -59,7 +59,7 @@ export class AppSidebar implements OnInit {
     } else if (app.name === 'Hunter') {
       this.sharedService.setProjectTarget('hunter');
     }
-    this.router.navigate(['app/home']);
+    this.router.navigate(['home']);
     //this.chatMessageOpened = true;
   }
 

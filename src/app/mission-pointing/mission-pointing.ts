@@ -32,7 +32,7 @@ export class MissionPointing {
     // Retrieve the project target
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
-      this.router.navigate(['app/home']);
+      this.router.navigate(['home']);
     }
     this.isEmployer = this.currentUser.estEmployeur;
     //get missions
@@ -77,7 +77,7 @@ export class MissionPointing {
             this.missionHours = array[0];
             this.missionPauses = array[1];
             this.disableBtnPointing = true;
-            //this.router.navigate(['app/mission/details']);
+            //this.router.navigate(['mission/details']);
           }
         });
       });

@@ -94,12 +94,12 @@ export class ModalOffers{
   goToDetailOffer(offer) {
     this.sharedService.setCurrentOffer(offer);
     jQuery('#modal-offers').modal('hide');
-    this.router.navigate(['app/offer/edit', {obj:'edit'}]);
+    this.router.navigate(['offer/edit', {obj:'edit'}]);
   }
 
   gotoNewOffer() {
     jQuery('#modal-offers').modal('hide');
-    this.router.navigate(['app/offer/edit', {obj:'recruit'}]);
+    this.router.navigate(['offer/edit', {obj:'recruit'}]);
   }
 
 

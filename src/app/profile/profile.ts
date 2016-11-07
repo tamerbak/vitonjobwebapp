@@ -181,7 +181,7 @@ export class Profile{
     this.currentUser = this.sharedService.getCurrentUser();
 
     if (!this.currentUser) {
-      this.router.navigate(['app/home']);
+      this.router.navigate(['home']);
     } else {
       this.getUserInfos();
       if (this.isNewUser) {
@@ -1059,7 +1059,7 @@ export class Profile{
                 this.showForm = false;
                 //redirecting to home page if new User
                 if (isNewUser) {
-                  this.router.navigate(['app/home']);
+                  this.router.navigate(['home']);
                 }
 
               }
@@ -1138,7 +1138,7 @@ export class Profile{
                 this.showForm = false;
                 //redirecting to home page if new User
                 if (this.isNewUser) {
-                  this.router.navigate(['app/home']);
+                  this.router.navigate(['home']);
                 }
               }
 
@@ -1225,7 +1225,7 @@ export class Profile{
 
               //redirecting to home page if new User
               if (this.isNewUser) {
-                this.router.navigate(['app/home']);
+                this.router.navigate(['home']);
               }
             }
 
