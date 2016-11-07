@@ -32,7 +32,7 @@ export class HomeService {
     let encodedArg = btoa(JSON.stringify(query));
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 10009,
+      'id': 10012,
       'args': [
         {
           'class': 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -75,7 +75,7 @@ export class HomeService {
     let encodedArg = btoa(JSON.stringify(query));
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 10009,
+      'id': 10012,
       'args': [
         {
           'class': 'fr.protogen.masterdata.model.CCalloutArguments',
