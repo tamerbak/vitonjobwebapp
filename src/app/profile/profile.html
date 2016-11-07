@@ -506,6 +506,51 @@
                          [(ngModel)]="jobAddress" (input)="autocompleteJobAddress()"/>
                 </div>
               </div>
+
+                <!-- Qualities -->
+                <div class="form-group row">
+                    <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                        Qualités
+                    </label>
+                    <div class="col-md-8 col-xs-12">
+                        <!-- Selected Qualities -->
+                        <div class="form-group row" *ngFor="let item of savedQualities">
+                            <div class="col-md-9 col-xs-9">
+                                <input class="form-control" value="{{item.libelle}}" disabled/>
+                            </div>
+                            <div class="col-md-3 col-xs-3">
+                                <button
+                                        style="display: block; width: 100%;"
+                                        class="btn btn-danger mb-xs"
+                                        role="button"
+                                        (click)="removeQuality(item)"
+                                >
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- New quality input -->
+                        <div class="row">
+                            <div class="col-md-9 col-xs-12">
+                                <select class="form-control" [(ngModel)]="selectedQuality">
+                                    <option *ngFor="let q of qualities" [value]="q.idQuality">{{q.libelle}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 col-xs-12">
+                                <button
+                                        style="display: block; width: 100%;"
+                                        class="btn btn-success mb-xs offer-add-button"
+                                        role="button"
+                                        (click)="addQuality()"
+                                        [disabled]="!selectedQuality"
+                                >
+                                    Ajouter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
 
