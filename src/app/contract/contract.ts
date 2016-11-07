@@ -73,6 +73,7 @@ export class Contract {
   nationalityId:any;
   isCIN:any;
   cni:any;
+  isMissionDateValid: boolean = true;
 
   dateFormat(d) {
     if(!d || typeof d === 'undefined')
@@ -692,5 +693,15 @@ export class Contract {
       || !this.contractData.finTitreTravail
       || !this.contractData.qualification
     );
+  }
+
+  watchMissionDate(e){
+    let now = new Date().setHours(0, 0, 0, 0);
+    let today = new Date(now).toISOString().split('T')[0];
+    if(this.contractData.missionStartDate > this.contractData.missionEndDate || this.contractData.missionStartDate < today || this.contractData.missionEndDate < today){
+      this.isMissionDateValid = false;
+    }else{
+      this.isMissionDateValid = true;
+    }
   }
 }
