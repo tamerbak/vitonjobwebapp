@@ -572,6 +572,10 @@ export class Contract {
   }
 
   goToYousignPage() {
+    let isValid = this.rapatriement && this.embaucheAutorise && !this.missingJobyerData();
+    if(!isValid){
+      return;
+    }
 
     this.contractService.getNumContract().then((data: any) => {
       this.dataValidation = true;
