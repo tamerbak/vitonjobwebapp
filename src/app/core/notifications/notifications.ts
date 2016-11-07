@@ -4,28 +4,44 @@ import {SharedService} from "../../../providers/shared.service";
 import {SearchService} from "../../../providers/search-service";
 import {Router} from "@angular/router";
 import {NotificationLoad} from "./notification-load";
+import {OffersService} from "../../../providers/offer.service";
 declare var jQuery, require,window: any;
 
 @Component({
   selector: 'notifications',
   directives: [NotificationLoad],
-  providers:[SearchService],
+  providers:[SearchService,OffersService],
   template: require('./notifications.html')
 })
 export class Notifications implements OnInit {
   $el: any;
   config: any;
   projectTarget:any;
-  @Input() alerts: any;
+  isEmployer:boolean;
+  currentUser:any;
+
+  @Input() notifications: any;
   @Input() loadOffers: Function;
 
-  constructor(el: ElementRef, config: ConfigService, private sharedService: SharedService,private searchService:SearchService,private router: Router) {
-    if(this.sharedService.getCurrentUser()){
+  constructor(el: ElementRef, config: ConfigService, private sharedService: SharedService,private searchService:SearchService,private offerService:OffersService,private router: Router) {
+    this.currentUser = this.sharedService.getCurrentUser();
+    if(this.currentUser){
       this.projectTarget = this.sharedService.getProjectTarget();
+      this.isEmployer = this.currentUser.estEmployeur ? true:false;
     }
     this.$el = jQuery(el.nativeElement);
     this.config = config;
   }
+
+  // private isOfferExist(offer){
+  //   console.log(offer.idOffer);
+  //   for(var i = 0; i < this.notificationsService.autoSearchOffers.length; i++){
+  //     if(this.notificationsService.autoSearchOffers[i].idOffer == offer.idOffer){
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // }
 
   goToDetailOffer(offer) {
     this.sharedService.setCurrentOffer(offer);
