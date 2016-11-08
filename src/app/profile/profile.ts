@@ -268,6 +268,21 @@ export class Profile{
       });
     this.allImages = [];
 
+
+    this.datepickerOpts = {
+      language:'fr-FR',
+      startDate: new Date(),
+      autoclose: true,
+      todayHighlight: true,
+      format: 'dd/mm/yyyy'
+    };
+    this.dispoToCreate = {
+
+      startDate : 0,
+      endDate : 0,
+      startHour : 0,
+      endHour : 0
+    };
     if(!this.isEmployer)
       this.initDisponibilites();
   }
@@ -1527,20 +1542,7 @@ export class Profile{
 
 
   initDisponibilites(){
-    this.datepickerOpts = {
-      language:'fr-FR',
-      startDate: new Date(),
-      autoclose: true,
-      todayHighlight: true,
-      format: 'dd/mm/yyyy'
-    };
-    this.dispoToCreate = {
 
-      startDate : 0,
-      endDate : 0,
-      startHour : 0,
-      endHour : 0
-    };
     this.profileService.loadDisponibilites(this.currentUser.jobyer.id).then((data : any)=>{
       this.disponibilites = data;
     });
@@ -1627,6 +1629,7 @@ export class Profile{
 
   removeQuality(item) {
     this.savedQualities.splice(this.savedQualities.indexOf(item), 1);
+    this.saveQualities();
   }
 
   addQuality() {
@@ -1642,6 +1645,8 @@ export class Profile{
     }
     this.savedQualities.push(qualitiesTemp[0]);
     this.selectedQuality = "";
+
+    this.saveQualities();
   }
 
   saveQualities() {
