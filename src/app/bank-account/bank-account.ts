@@ -59,7 +59,7 @@ export class BankAccount {
     this.currentUser = this.sharedService.getCurrentUser();
     this.projectTarget = this.sharedService.getProjectTarget();
     if (!this.currentUser) {
-      this.router.navigate(['app/home']);
+      this.router.navigate(['home']);
     } else {
       this.getUserInfos();
       let id = 0;

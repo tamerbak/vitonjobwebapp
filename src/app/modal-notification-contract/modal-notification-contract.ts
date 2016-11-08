@@ -67,7 +67,7 @@ export class ModalNotificationContract{
     //navigate to contract page
     if (o != null) {
       this.sharedService.setCurrentJobyer(this.jobyer);
-      this.router.navigate(['app/contract/recruitment-form']);
+      this.router.navigate(['contract/recruitment-form']);
     }
   }
 
@@ -88,7 +88,7 @@ export class ModalNotificationContract{
   gotoNewOffer() {
     jQuery('#modal-notification-contract').modal('hide');
     //this.sharedService.setCurrentJobyer(this.jobyer);
-    this.router.navigate(['app/offer/edit', {obj:'recruit'}]);
+    this.router.navigate(['offer/edit', {obj:'recruit'}]);
   }
 
   gotoLogin(){

@@ -115,7 +115,7 @@ export class OfferEdit{
               private _loader: MapsAPILoader) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
-      this.router.navigate(['app/home']);
+      this.router.navigate(['home']);
     }
     this.convention = {
       id: 0,
@@ -715,10 +715,10 @@ export class OfferEdit{
         });
         if (this.obj == "add") {
           //redirect to offer-list and display public offers
-          this.router.navigate(['app/offer/list', {typeOfferModel: '0'}]);
+          this.router.navigate(['offer/list', {typeOfferModel: '0'}]);
         } else {
           this.sharedService.setCurrentOffer(offer);
-          this.router.navigate(['app/search/results', {obj: 'recruit'}]);
+          this.router.navigate(['search/results', {obj: 'recruit'}]);
         }
       });
     } else {
@@ -773,7 +773,7 @@ export class OfferEdit{
 
     //redirect to offer-list and display public offers
     var typeOffer = this.offer.visible ? 0:1;
-    this.router.navigate(['app/offer/list', {typeOfferModel: typeOffer}]);
+    this.router.navigate(['offer/list', {typeOfferModel: typeOffer}]);
 
   }
 
@@ -922,7 +922,7 @@ export class OfferEdit{
       this.sharedService.setLastResult(data);
       this.sharedService.setCurrentOffer(offer);
       this.keepCurrentOffer = true;
-      this.router.navigate(['app/search/results']);
+      this.router.navigate(['search/results']);
     });
   }
 

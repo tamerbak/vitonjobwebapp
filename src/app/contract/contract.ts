@@ -96,7 +96,7 @@ export class Contract {
 
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
-      this.router.navigate(['app/home']);
+      this.router.navigate(['home']);
     }
     // Get target to determine configs
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
@@ -593,7 +593,7 @@ export class Contract {
       this.sharedService.setCurrentJobyer(this.jobyer);
       this.sharedService.setCurrentOffer(this.currentOffer);
       this.sharedService.setContractData(this.contractData);
-      this.router.navigate(['app/contract/recruitment']);
+      this.router.navigate(['contract/recruitment']);
     });
   }
 

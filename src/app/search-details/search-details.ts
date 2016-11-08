@@ -43,7 +43,7 @@ export class SearchDetails{
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     } else {
       this.projectTarget = this.sharedService.getProjectTarget();
-      //this.router.navigate(['app/home']);
+      //this.router.navigate(['home']);
     }
     this.result = this.sharedService.getSearchResult();
     this.offer = this.sharedService.getCurrentOffer();

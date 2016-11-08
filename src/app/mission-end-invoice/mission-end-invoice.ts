@@ -26,7 +26,7 @@ export class MissionEndInvoice {
 
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
-      this.router.navigate(['app/home']);
+      this.router.navigate(['home']);
       return;
     }
     this.idInvoice = this.sharedService.getCurrentInvoice();
@@ -64,6 +64,6 @@ export class MissionEndInvoice {
   }
 
   getBackToMissions() {
-    this.router.navigate(['app/mission/details']);
+    this.router.navigate(['mission/details']);
   }
 }

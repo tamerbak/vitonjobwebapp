@@ -58,6 +58,13 @@ export class Home{
   }
 
   ngOnInit(): void {
+
+    if (this.router.url === '/jobyer') {
+      this.sharedService.setProjectTarget('jobyer');
+    } else if (this.router.url === '/employeur') {
+      this.sharedService.setProjectTarget('employer');
+    }
+
     let myContent = jQuery('.content');
     let myNavBar = jQuery('.navbar-dashboard');
 
@@ -207,7 +214,7 @@ export class Home{
         type: 'success',
         showCloseButton: true
       });
-      this.router.navigate(['app/search/results']);
+      this.router.navigate(['search/results']);
     });
   }
 
@@ -397,7 +404,7 @@ export class Home{
         let r = data[i];
         if (r.idOffre == o.idOffer) {
           this.sharedService.setSearchResult(r);
-          this.router.navigate(['app/search/details']);
+          this.router.navigate(['search/details']);
           break;
         }
       }
@@ -434,7 +441,7 @@ export class Home{
 
 
           // this.sharedService.setSearchResult(r);
-          // this.router.navigate(['app/search/details']);
+          // this.router.navigate(['search/details']);
           break;
         }
       }

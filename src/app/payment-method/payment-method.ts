@@ -27,11 +27,11 @@ export class PaymentMethod{
               private slimpayService: SlimPayService){
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
-      this.router.navigate(['app/home']);
+      this.router.navigate(['home']);
     }
     this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
     if (this.projectTarget == "jobyer") {
-      this.router.navigate(['app/home']);
+      this.router.navigate(['home']);
     }
   }
 
@@ -77,7 +77,7 @@ export class PaymentMethod{
       if(state == "Attente"){
         this.addAlert("warning", "Veuillez terminer la transaction avant de passer à l'étape suivante");
       }else if(state == "Succès"){
-        this.router.navigate(['app/mission/list']);
+        this.router.navigate(['mission/list']);
       }else{
         this.addAlert("danger", "Votre demande a été rejetée. Nous vous proposons de payer par carte bancaire.");
         this.isPayline = true;

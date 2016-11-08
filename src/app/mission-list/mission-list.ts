@@ -54,7 +54,7 @@ export class MissionList{
 
     console.log(this.currentUser)
     if (!this.currentUser) {
-      this.router.navigate(['app/home']);
+      this.router.navigate(['home']);
       return;
     } else {
       this.sharedService.setCurrentMission(null);
@@ -162,12 +162,12 @@ export class MissionList{
 
   goToDetailMission(mission) {
     this.sharedService.setCurrentMission(mission);
-    this.router.navigate(['app/mission/details']);
+    this.router.navigate(['mission/details']);
     }
 
   goToMissionPointingPage(mission) {
     this.sharedService.setCurrentMission(mission);
-    this.router.navigate(['app/mission/pointing']);
+    this.router.navigate(['mission/pointing']);
   }
 
   isEmpty(str) {

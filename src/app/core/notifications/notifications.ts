@@ -29,7 +29,7 @@ export class Notifications implements OnInit {
 
   goToDetailOffer(offer) {
     this.sharedService.setCurrentOffer(offer);
-    this.router.navigate(['app/offer/detail']);
+    this.router.navigate(['offer/detail']);
     window.location.reload();
   }
 
@@ -55,7 +55,7 @@ export class Notifications implements OnInit {
         if(this.router.url === '/app/search/results'){
           window.location.reload()
         }else{
-          this.router.navigate(['app/search/results']);
+          this.router.navigate(['search/results']);
         }
       }
     });

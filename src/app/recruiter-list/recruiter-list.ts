@@ -20,11 +20,11 @@ export class RecruiterList {
               private recruiterService: RecruiterService) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
-      this.router.navigate(['app/home']);
+      this.router.navigate(['home']);
     }
     this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
     if (this.projectTarget == "jobyer") {
-      this.router.navigate(['app/home']);
+      this.router.navigate(['home']);
     }
   }
 
@@ -45,9 +45,9 @@ export class RecruiterList {
   goToEditRecruiter(item){
     this.sharedService.setCurrentRecruiter(item);
     if(!this.isEmpty(item)){
-      this.router.navigate(['app/recruiter/edit', {obj:'detail'}]);
+      this.router.navigate(['recruiter/edit', {obj:'detail'}]);
     }else{
-      this.router.navigate(['app/recruiter/edit', {obj:'add'}]);
+      this.router.navigate(['recruiter/edit', {obj:'add'}]);
     }
   }
 

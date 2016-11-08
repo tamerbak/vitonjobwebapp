@@ -28,7 +28,7 @@ export class ModalOptions{
               private router: Router) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
-      this.router.navigate(['app/home']);
+      this.router.navigate(['home']);
     } else {
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     }
@@ -94,7 +94,7 @@ export class ModalOptions{
       this.sharedService.setCurrentOffer(null);
       this.processing = false;
       jQuery("#modal-options").modal('hide')
-      this.router.navigate(['app/offer/list']);
+      this.router.navigate(['offer/list']);
     });
   }
 
@@ -118,7 +118,7 @@ export class ModalOptions{
       });
       this.processing = false;
       jQuery("#modal-options").modal('hide');
-      this.router.navigate(['app/offer/list']);
+      this.router.navigate(['offer/list']);
     });
   }
 

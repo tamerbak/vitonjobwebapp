@@ -94,7 +94,7 @@ export class Navbar implements OnInit {
   logOut() {
     this.currentUser = null;
     this.sharedService.logOut();
-    this.router.navigate(['app/home']);
+    this.router.navigate(['home']);
   }
 
   toggleSidebar(state): void {
@@ -137,6 +137,6 @@ export class Navbar implements OnInit {
     } else {
       this.sharedService.setProjectTarget("employer");
     }
-    this.router.navigate(['app/home']);
+    this.router.navigate(['home']);
   }
 }

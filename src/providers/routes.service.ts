@@ -44,6 +44,6 @@ export class CanAccessPage implements CanActivate {
     }
 
 
-    this.router.navigate(['app/home']);
+    this.router.navigate(['home']);
   }
 }

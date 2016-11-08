@@ -34,7 +34,7 @@ export class OfferList {
               private route: ActivatedRoute) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
-      this.router.navigate(['app/home']);
+      this.router.navigate(['home']);
     }
   }
 
@@ -140,7 +140,7 @@ export class OfferList {
 
   goToDetailOffer(offer) {
     this.sharedService.setCurrentOffer(offer);
-    this.router.navigate(['app/offer/edit', {obj:'detail'}]);
+    this.router.navigate(['offer/edit', {obj:'detail'}]);
   }
 
   autoSearchMode(offer) {
@@ -178,7 +178,7 @@ export class OfferList {
     this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
       this.sharedService.setLastResult(data);
       this.sharedService.setCurrentOffer(offer);
-      this.router.navigate(['app/search/results']);
+      this.router.navigate(['search/results']);
     });
   }
 
@@ -191,9 +191,9 @@ export class OfferList {
       this.addAlert("warning", "Veuillez remplir les informations de votre profil avant de créer une offre.");
       return;
     } else {
-      this.router.navigate(['app/offer/edit', {obj:'add'}]);
+      this.router.navigate(['offer/edit', {obj:'add'}]);
     }*/
-    this.router.navigate(['app/offer/edit', {obj:'add'}]);
+    this.router.navigate(['offer/edit', {obj:'add'}]);
   }
 
   changePrivacy(offer) {
