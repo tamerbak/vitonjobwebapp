@@ -695,7 +695,7 @@ export class Contract {
     );
   }
 
-  watchMissionDate(e){
+  watchMissionDate(){
     let now = new Date().setHours(0, 0, 0, 0);
     let today = new Date(now).toISOString().split('T')[0];
     if(this.contractData.missionStartDate > this.contractData.missionEndDate || this.contractData.missionStartDate < today || this.contractData.missionEndDate < today){
