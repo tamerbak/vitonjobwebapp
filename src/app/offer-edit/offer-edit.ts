@@ -271,9 +271,9 @@ export class OfferEdit{
       startHour: 0,
       endHour: 0
     };
-
     //dateoption for slotDate
     this.datepickerOpts = {
+      language:'fr-FR',
       startDate: new Date(),
       autoclose: true,
       todayHighlight: true,
