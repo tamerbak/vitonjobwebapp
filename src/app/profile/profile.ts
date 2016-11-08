@@ -48,7 +48,6 @@ export class Profile{
 
   selectedCP: any;
   birthdate: Date;
-  birthdateHidden: Date;
   selectedMedecine: any = {id: 0, libelle: ""};
   cni: string;
   numSS: string;
@@ -471,22 +470,10 @@ export class Profile{
 
       } else {
         if (this.currentUser.jobyer.dateNaissance) {
-          var birthDate = moment(new Date(this.currentUser.jobyer.dateNaissance)).format('DD/MM/YYYY');
-
-          this.birthdateHidden = new Date(this.currentUser.jobyer.dateNaissance);
+          var birthDate = moment(new Date(this.currentUser.jobyer.dateNaissance)).format("YYYY-MM-DD");
           this.isValidBirthdate = true;
-
-          var elements = [];
-          jQuery("div[id^='q-datepicker_']").each(function () {
-            elements.push(this.id);
-          });
-
-          jQuery('#' + elements[0]).datepicker('update', birthDate);
-          //jQuery("#birthdate input").val(birthDate);
-
         } else {
           this.birthdate = null;
-          this.birthdateHidden = null;
           this.isValidBirthdate = true;
         }
         var _birthplace = this.currentUser.jobyer.lieuNaissance;
@@ -1151,9 +1138,7 @@ export class Profile{
       } else {
         var numSS = this.numSS;
         var cni = this.cni;
-        var birthdate = "";
-        if (!Utils.isEmpty(this.birthdateHidden))
-          birthdate = moment(this.birthdateHidden).format('MM/DD/YYYY');
+        var birthdate = this.birthdate;
         var birthplace = this.selectedCommune.nom;
         var nationalityId = this.nationalityId;
         //var birthcp = this.birthcp;
@@ -1201,7 +1186,7 @@ export class Profile{
               this.currentUser.jobyer.cni = this.cni;
               this.currentUser.jobyer.numSS = this.numSS;
               this.currentUser.jobyer.natId = this.nationalityId;
-              this.currentUser.jobyer.dateNaissance = Date.parse(moment(this.birthdateHidden).format('MM/DD/YYYY'));
+              this.currentUser.jobyer.dateNaissance = Date.parse(moment(this.birthdate));
               this.currentUser.jobyer.lieuNaissance = birthplace;
               this.currentUser.newAccount = false;
               this.sharedService.setCurrentUser(this.currentUser);
@@ -1474,15 +1459,15 @@ export class Profile{
   }
 
   watchNumSS(e) {
-    let numssChecked = AccountConstraints.checkNumss(e, this.title, this.birthdateHidden, this.selectedCommune);
+    let numssChecked = AccountConstraints.checkNumss(e, this.title, this.birthdate, this.selectedCommune);
     this.isValidNumSS = numssChecked.isValid;
     this.numSSHint = numssChecked.hint;
     this.isValidForm();
   }
 
   watchBirthdate(e) {
-    let birthdateChecked = AccountConstraints.checkBirthDate(e);
-    this.birthdateHidden = e;
+    let birthdateChecked = AccountConstraints.checkBirthDate(e.target.value);
+    this.birthdate = e;
     this.isValidBirthdate = birthdateChecked.isValid;
     this.birthdateHint = birthdateChecked.hint;
     this.isValidForm();

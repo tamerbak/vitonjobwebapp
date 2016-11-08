@@ -214,9 +214,7 @@
                   <span class="help-block">DD/MM/AAAA</span>
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <datetime id="birthdate" [ngModel]="birthdate" name="birthdate" [timepicker]="false"
-                            [datepicker]="{language:'fr-FR',autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}"
-                            (ngModelChange)="watchBirthdate($event)"></datetime>
+                  <input id="dateFromStay" type="date" class="form-control" [(ngModel)]="birthdate"/>
                 </div>
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
                   <span class="hint label label-danger">{{birthdateHint}}</span>
