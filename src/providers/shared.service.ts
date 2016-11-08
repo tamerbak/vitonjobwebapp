@@ -229,4 +229,12 @@ export class SharedService {
   setPreviousNotifs(value) {
     this.setStorageVariable("lastNotif", value);
   }
+
+  setCFormURL(value){
+    this.setStorageVariable("EUHGHJKJ897675442G27G87EB8YG82", value);
+  }
+
+  getCFormURL(){
+    return this.getStorageVariable("EUHGHJKJ897675442G27G87EB8YG82");
+  }
 }

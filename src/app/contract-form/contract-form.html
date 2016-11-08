@@ -1,0 +1,480 @@
+<div class="row contract-page">
+  <form #formCtrl="ngForm" name="contractForm" (ngSubmit)="submitContractForm()">
+    <div class="row">
+      <div class="col-xs-12 title-form">
+        <div class="title">
+          INFORMATIONS GENERALES
+        </div>
+        <div class="form-group">
+          <label >Agence d'intérim</label>
+          <input type="text" name="interimaire" class="form-control"  [(ngModel)]="interimAgencyTitle"  aria-describedby="interimaire" disabled="true">
+          <small class="form-text text-muted"></small>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-xs-12 title-form">
+        <div class="title">
+          CONTRAT DE MISSION
+        </div>
+      </div>
+      <div class="col-xs-6 pull-left col-1">
+        <div class="form-group">
+          <label>Société utilisatrice&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+          <input type="text" name="company_name" id="company_name" class="form-control"  [(ngModel)]="companyName"
+                 aria-describedby="societe-utilisatrice" [disabled]="!isEmployer" >
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label>Contact</label>
+          <input type="text" name="company_contact" id="company_contact" class="form-control"
+                 [(ngModel)]="companyContact" aria-describedby="contact" [disabled]="!isEmployer">
+          <small class="form-text text-muted"></small>
+        </div>
+      </div>
+      <div class="col-xs-6 pull-left col-1">
+        <div class="form-group">
+          <label>Lieu de la mission&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+          <input type="text" name="work_adress" id="work_adress" class="form-control"
+                 [(ngModel)]="workAdress" aria-describedby="lieu-de-la-mission"
+                 [disabled]="!isEmployer">
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label>Moyen d'accès</label>
+          <input type="text" name="company_access" id="company_access" class="form-control"
+                 [(ngModel)]="companyAccess"
+                 aria-describedby="moyen-acces" [disabled]="!isEmployer">
+          <small class="form-text text-muted"></small>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-xs-12 title-form">
+        <div class="title">
+          SALARIE INTERIMAIRE
+        </div>
+      </div>
+      <div class="col-md-6 col-xs-12">
+        <div class="form-group">
+          <label>Nom</label>
+          <span class="asterisk">*</span>
+          <input type="text" name="jobyer_last_name" class="form-control" [(ngModel)]="jobyerLastName"
+                 [disabled]="isEmployer" aria-describedby="nom" id="jobyer_last_name" >
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label>Prénom</label>
+          <span class="asterisk">*</span>
+          <input type="text" name="jobyer_first_name" class="form-control" id="jobyer_first_name"
+                 [(ngModel)]="jobyerFirstName" aria-describedby="prenom" [disabled]="isEmployer"/>
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label >N° de sécurité sociale</label>
+          <span class="asterisk">*</span>
+          <input type="text" name="numero_ss" class="form-control" [(ngModel)]="numSS" id="numero_ss"
+                 aria-describedby="nss" [disabled]="isEmployer" />
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label>Date de naissance</label>
+          <span class="asterisk">*</span>
+          <input type="date" name="birth_date" id="birth_date" class="form-control" [(ngModel)]="birthDate"
+                 aria-describedby="date-de-naissance" [disabled]="isEmployer"/>
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label>Lieu de naissance</label>
+          <span class="asterisk">*</span>
+          <input type="text" name="birth_localtion" id="birth_localtion" class="form-control"  [(ngModel)]="birthLocaltion" aria-describedby="lieu" [disabled]="isEmployer"/>
+          <small class="form-text text-muted"></small>
+        </div>
+      </div>
+      <div class="col-md-6 col-xs-12 col-2">
+        <div class="form-group">
+          <label>Nationalité</label>
+          <span class="asterisk">*</span>
+          <input type="text" name="jobyer_nationality" id="jobyer_nationality" class="form-control" [(ngModel)]="nationality"
+                 aria-describedby="nat" [disabled]="isEmployer"/>
+          <small class="form-text text-muted"></small>
+        </div>
+
+        <div class="form-group">
+          <label>Pièce d'identité ou titre de travail</label>
+          <input type="text" name="jobyer_identity_number" id="jobyer_identity_number"
+                 class="form-control" [(ngModel)]="jobyerIdentityNumber" [disabled]="isEmployer"/>
+          <small class="form-text text-muted"></small>
+        </div>
+
+        <div class="form-group">
+          <label>Valable du</label>
+          <span class="asterisk">*</span>
+          <input type="text" name="jobyer_idnetity_from" id="jobyer_idnetity_from" class="form-control"
+                 [(ngModel)]="jobyerIdentityFrom" aria-describedby="val"
+                 [disabled]="isEmployer"/>
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label >Valable au</label>
+          <span class="asterisk">*</span>
+          <input type="text" name="jobyer_identity_to" id="jobyer_identity_to" class="form-control"
+                 [(ngModel)]="jobyerIdentityTo"
+                 [disabled]="isEmployer"/>
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label>Qualification</label>
+          <span class="asterisk">*</span>
+          <input type="text" name="jobyer_qualification" id="jobyer_qualification" class="form-control"
+                 [(ngModel)]="qualification" aria-describedby="qual"
+                 [disabled]="isEmployer" />
+          <small class="form-text text-muted"></small>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="row">
+      <div class="col-xs-12 title-form">
+        <div class="title">
+          MISSION
+        </div>
+      </div>
+      <div class="col-md-6 col-xs-12">
+        <div class="form-group">
+          <label >Début de mission&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+          <input type="date" name="mission_start" id="mission_start" class="form-control" [(ngModel)]="missionStart" aria-describedby="debut"
+                 [disabled]="!isEmployer"/>
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label>P. essai (J) </label>
+          <input type="text" name="trial_period" id="trial_period" class="form-control" [(ngModel)]="trialPeriod" aria-describedby="essai" readonly/>
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label>Début terme </label>
+          <input type="date" name="term_start" id="term_start" class="form-control" [(ngModel)]="termStart" aria-describedby="deb"
+                 [disabled]="!isEmployer"/>
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label >Fin terme</label>
+          <input type="date" name="term_end" id="term_end" class="form-control" [(ngModel)]="termEnd" aria-describedby="terme"
+                 [disabled]="!isEmployer"/>
+          <small class="form-text text-muted"></small>
+        </div>
+      </div>
+      <div class="col-md-6 col-xs-12 col-2">
+        <div class="form-group">
+          <label >Fin de mission&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+          <input type="date" name="mission_end" id="mission_end" class="form-control" [(ngModel)]="missionEnd" aria-describedby="fin"
+                 [disabled]="!isEmployer"/>
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label>Période non travaillée</label>
+          <input type="text" name="non_working_period" id="non_working_period" class="form-control" [(ngModel)]="nonWorkingPeriod" aria-describedby="periode"
+                 [disabled]="!isEmployer"/>
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label>Recours &nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+          <select
+            data-style="btn-secondary" #recoursSelect
+            class="recoursSelectPicker form-control contract-form-select" id="recours" [(ngModel)]="recours"
+            name="recours_slct" (change)="recoursSelected($event)" [disabled]="!isEmployer">
+            <option *ngFor="let r of recoursList" value="{{r.libelle}}">{{r.libelle}}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Motif &nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+
+          <select
+            data-style="btn-secondary"
+            class="justificationSelectPicker form-control contract-form-select" id="motif" [(ngModel)]="motif"
+            name="justification_slct" [disabled]="!isEmployer">
+            <option *ngFor="let r of motifsList" value="{{r.libelle}}">{{r.libelle}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-6 col-xs-12 col-2">
+        <div class="form-group">
+          <label >Début de souplesse</label>
+          <input type="date" name="flex_start" id="flex_start" class="form-control" [(ngModel)]="flexibilityStart" aria-describedby="debut"
+                 [disabled]="!isEmployer"/>
+        </div>
+        <div class="checkbox contract-form-checkbox">
+          <label >
+            <input id="recrutement_possible" type="checkbox" [(ngModel)]="recruitementPossible" [disabled]="!isEmployer" />
+            A l'issue de la mission, l'embauche par l'entreprise utilisatrice n'est pas interdite
+            &nbsp;<span  style="color: #ff0000;font-size: small;" >*</span>
+          </label>
+        </div>
+
+      </div>
+      <div class="col-md-6 col-xs-12 col-2">
+        <div class="form-group">
+          <label >Fin de souplesse</label>
+          <input type="date" name="flex_end" id="flex_end" class="form-control" [(ngModel)]="flexibilityEnd" aria-describedby="fin"
+                 [disabled]="!isEmployer"/>
+        </div>
+        <div class="checkbox contract-form-checkbox">
+          <label >
+            <input type="checkbox" id="return_france" [(ngModel)]="returnToFrance" [disabled]="!isEmployer" />
+            Le rapatriement est à la charge de l'entreprise de travail temporaire (si la mission s'effectue hors du territoire métropolitain)
+            &nbsp;<span  style="color: #ff0000;font-size: small;" >*</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-xs-12 title-form">
+        <div class="title">
+          POSTE DE TRAVAIL ET ORGANISATION DU TEMPS DE TRAVAIL
+        </div>
+      </div>
+      <div class="col-md-6 col-xs-12">
+        <div class="form-group">
+          <label>Qualification&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+          <input type="text" name="job_qualification" id="job_qualification" class="form-control"
+                 [(ngModel)]="jobQualification" aria-describedby="qual" [disabled]="!isEmployer" />
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label>Caractéristiques du poste&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+          <input type="text" name="mission_caracteristics" id="mission_caracteristics" class="form-control"
+                 [(ngModel)]="missionCaracteristics" aria-describedby="cara" [disabled]="!isEmployer" />
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label>Temps de travail (H)&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+          <input type="text" name="work_time" id="work_time" class="form-control"
+                 [(ngModel)]="workTime" aria-describedby="temps" [disabled]="!isEmployer" />
+          <small class="form-text text-muted"></small>
+        </div>
+
+        <div class="col-xs-3">
+          <div class="form-group">
+            <label>Heure habituelle du début du travail&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+            <datetime
+              id="usual_start_time"
+              [datepicker]="false"
+              [timepicker]="{ showMeridian: false, minuteStep: 15 }"
+              [(ngModel)]="usualStartTime"
+               ></datetime>
+            <small class="form-text text-muted"></small>
+          </div>
+        </div>
+
+        <div class="col-xs-3 col-2">
+          <div class="form-group">
+            <label>Heure habituelle de fin du travail&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+            <datetime
+              id="usual_end_time"
+              [datepicker]="false"
+              [timepicker]="{ showMeridian: false, minuteStep: 15 }"
+              [(ngModel)]="usualEndTime"
+               ></datetime>
+            <small class="form-text text-muted"></small>
+          </div>
+        </div>
+
+
+      </div>
+      <div class="col-md-6 col-xs-12 col-2">
+        <div class="form-group">
+          <label>Risques</label>
+          <input type="text" name="job_risks" id="job_risks" class="form-control"
+                 [(ngModel)]="jobRisks" aria-describedby="risques" [disabled]="!isEmployer" />
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+
+          <label >
+            <input type="checkbox" id="med_supervision" [(ngModel)]="medicalSupervision" [disabled]="!isEmployer" />
+            Surveillance médicale renforcée
+          </label>
+        </div>
+        <div class="form-group">
+          <label>Equipements de protection individuelle</label>
+          <input type="text" name="epi"  id="epi" class="form-control" [(ngModel)]="equipements"
+                 aria-describedby="epi" [disabled]="!isEmployer" />
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="checkbox contract-form-checkbox">
+          <label >
+            <input type="checkbox" id="epi_by_ia" [(ngModel)]="protectionEquipementsProvidedByAgency" [disabled]="!isEmployer"  />
+            Equipements fournis par l'entreprise de travail temporaire
+          </label>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-xs-12 title-form">
+        <div class="title">
+          SALAIRE DE REFERENCE-DUREE DU TRAVAIL
+        </div>
+      </div>
+      <div class="col-md-6 col-xs-12">
+        <div class="form-group">
+          <label>Salaire horaire de base&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+          <input type="text" name="salary" id="salary" class="form-control" [(ngModel)]="hourSalary"
+                 aria-describedby="sal" [disabled]="!isEmployer"/>
+          <small class="form-text text-muted"></small>
+        </div>
+      </div>
+      <div class="col-md-6 col-xs-12 col-2">
+        <div class="form-group">
+          <label >Durée collective moyenne</label>
+          <input type="text" name="collective_duration" id="collective_duration" class="form-control"
+                 [(ngModel)]="collectiveDuration" aria-describedby="duree" [disabled]="!isEmployer"/>
+          <small class="form-text text-muted"></small>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-xs-12 title-form">
+        <div class="title">
+          REMUNERATION
+        </div>
+      </div>
+      <div class="col-md-6 col-xs-12">
+        <div class="form-group">
+          <label >Heures normales</label>
+          <input type="text" name="norm" class="form-control" [(ngModel)]="hourSalary" aria-describedby="norm"
+                 [disabled]="!isEmployer"/>
+        </div>
+        <div class="form-group">
+          <label>Condition de rémunération &nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+          <select
+            data-style="btn-secondary" #recoursSelect
+            class="recoursSelectPicker form-control contract-form-select" id="payment_condition"
+            [(ngModel)]="paymentCondition"
+            name="payment_condition"  [disabled]="!isEmployer">
+            <option *ngFor="let r of paymentConditions" value="{{r.id}}">{{r.libelle}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-6 col-xs-12 col-2">
+        <div class="form-group">
+          <label >Ind. fin de mission</label>
+          <input type="text" name="ind" class="form-control" [(ngModel)]="endOfMissionBonus" aria-describedby="ind" disabled />
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label>Ind. congés payés</label>
+          <input type="text" name="indemnites" class="form-control" [(ngModel)]="vacationBonus" disabled />
+          <small class="form-text text-muted"></small>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-12 title-form">
+        <div class="title">
+          MEDECINE DU TRAVAIL
+        </div>
+      </div>
+      <div class="col-md-6 col-xs-12">
+        <div class="form-group">
+          <label>Centre de médecine ETT</label>
+          <input type="text" name="centreMedecine" class="form-control" [(ngModel)]="interimMedicalEntity" aria-describedby="centre" readonly/>
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label >Adresse Centre de médecine ETT</label>
+          <input type="text" name="address1" class="form-control" [(ngModel)]="interimMedicalEntityAdress" aria-describedby="adresse" readonly/>
+          <small class="form-text text-muted"></small>
+        </div>
+
+      </div>
+      <div class="col-md-6 col-xs-12 col-2">
+        <div class="form-group">
+          <label>Centre de médecine Entreprise</label>
+          <input type="text" name="company_med" id="company_med" class="form-control" [(ngModel)]="companyMedicalEntity" aria-describedby="centre2" />
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label>Adresse Centre de médecine Entreprise</label>
+          <input type="text" name="company_med_adr" id="company_med_adr" class="form-control" [(ngModel)]="companyMedicalEntityAdress" aria-describedby="adresse2" />
+          <small class="form-text text-muted"></small>
+        </div>
+
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-xs-12 title-form">
+        <div class="title">
+          INFORMATIONS COMPLEMENTAIRES
+        </div>
+      </div>
+      <div class="col-xs-12 col-md-6">
+        <div class="form-group">
+          <label>Primes</label>
+          <input type="text" name="bonus" id="bonus" class="form-control" [(ngModel)]="bonus" aria-describedby="primes" />
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label >Siège social&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+          <input type="text" name="hq_adress" id="hq_adress" class="form-control" [(ngModel)]="headQuarterAdress" aria-describedby="siege" required/>
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label >Contenu de la mission</label>
+          <input type="text" name="mission_content" id="mission_content" class="form-control" [(ngModel)]="missionContent" aria-describedby="contenu"/>
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label >Catégorie</label>
+          <select
+            data-style="btn-secondary" class="recoursSelectPicker form-control contract-form-select" id="office_cat" [(ngModel)]="officeCategory"
+            name="categorie_slct"  required>
+            <option value="Employé" >Employé</option>
+            <option value="Ouvrier" >Ouvrier</option>
+            <option value="Technicien" >Technicien</option>
+            <option value="AM" >AM</option>
+            <option value="Cadre" >Cadre</option>
+          </select>
+          <small class="form-text text-muted"></small>
+        </div>
+      </div>
+      <div class="col-xs-12 col-md-6 col-2">
+        <div class="form-group">
+          <label >Filière</label>
+          <input type="text" name="sector" id="sector" class="form-control" [(ngModel)]="sector" aria-describedby="filiere" />
+          <small class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label >Titre de transport</label>
+          <div class="abc-radio">
+            <label >
+              <input type="checkbox" id="transport_title" [(ngModel)]="transportTitle" [disabled]="!isEmployer" />
+              Titre de transport
+            </label>
+          </div>
+        </div>
+        <div class="form-group" >
+          <label >Zones de transport</label>
+          <input type="text" class="form-control" id="transport_zones" [(ngModel)]="transportZones" aria-describedby="zones" />
+          <small class="form-text text-muted"></small>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

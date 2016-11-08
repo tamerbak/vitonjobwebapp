@@ -65,7 +65,9 @@ export class ModalComponent{
     this.passwordForgotten("email", this.email);
   }
 
+
   passwordForgotten(canal, email) {
+    debugger;
     var tel = "+" + this.index + this.phone;
     this.hideLoader = false;
     this.authService.setNewPassword(tel).then((data: any) => {

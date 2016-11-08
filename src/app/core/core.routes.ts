@@ -22,6 +22,8 @@ import {RecruiterList} from "../recruiter-list/recruiter-list";
 import {RecruiterEdit} from "../recruiter-edit/recruiter-edit";
 import {ConfirmExitPage, CanAccessPage} from "../../providers/routes.service";
 import {PaymentMethod} from "../payment-method/payment-method";
+import {LoginPage} from "../login/login";
+import {ContractForm} from "../contract-form/contract-form";
 
 /**
  * VitOnJob modules
@@ -38,6 +40,7 @@ export const CoreRoutes: RouterConfig = [
 
       // Application
       {path: 'home', component: Home},
+      {path: 'login', component: LoginPage},
 
       // User parameters
       {path: 'profile', component: Profile, canDeactivate: [ConfirmExitPage]},
@@ -59,7 +62,7 @@ export const CoreRoutes: RouterConfig = [
       {path: 'mission/pointing', component: MissionPointing},
 
       // Contract management
-      {path: 'contract/recruitment-form', component: Contract},
+      {path: 'contract/recruitment-form', component: ContractForm},
       {path: 'contract/recruitment', component: Yousign, canActivate: [CanAccessPage]},
       {path: 'contract/hours-record', component: MissionEndReleve},
       {path: 'contract/invoice', component: MissionEndInvoice},
