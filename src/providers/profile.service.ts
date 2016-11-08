@@ -642,12 +642,36 @@ export class ProfileService{
     });
   }
 
+  getUserLanguages(id: any, projectTarget: string) {
+    let table = projectTarget == 'jobyer' ? 'user_langue_jobyer' : 'user_langue_employeur';
+    let foreignKey = projectTarget == 'jobyer' ? 'fk_user_jobyer' : 'fk_user_entreprise';
+    let sql = "select pk_user_langue as id, libelle from user_langue as i, " + table + " as t where i.pk_user_langue = t.fk_user_langue and t." + foreignKey + " = '" + id + "'";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data.data);
+        });
+    });
+  }
+
   saveQualities(qualities, id, projectTarget) {
     let table = projectTarget == 'jobyer' ? 'user_qualite_du_jobyer' : 'user_qualite_employeur';
     let foreignKey = projectTarget == 'jobyer' ? 'fk_user_jobyer' : 'fk_user_entreprise';
     this.deleteQualities(id, table, foreignKey).then(data => {
       if(data && qualities && qualities.length != 0)
         this.attachQualities(qualities, id, table, foreignKey);
+    });
+  }
+
+  saveLanguages(languages, id, projectTarget){
+    let table = projectTarget == 'jobyer' ? 'user_langue_jobyer' : 'user_langue_employeur';
+    let foreignKey = projectTarget == 'jobyer' ? 'fk_user_jobyer' : 'fk_user_entreprise';
+    this.deleteLanguages(id, table, foreignKey).then(data => {
+      if(data && languages && languages.length != 0)
+        this.attachLanguages(languages, id, table, foreignKey);
     })
   }
 
@@ -668,6 +692,34 @@ export class ProfileService{
     for (let i = 0; i < qualities.length; i++) {
       let q = qualities[i];
       sql = sql + " insert into " + table + " (" + foreignKey + ", fk_user_indispensable) values (" + id + ", " + q.idQuality + "); ";
+    }
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  deleteLanguages(id, table, foreignKey) {
+    let sql = "delete from " + table + " where " + foreignKey + "=" + id;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  attachLanguages(languages, id, table, foreignKey) {
+    let sql = "";
+    for (let i = 0; i < languages.length; i++) {
+      let q = languages[i];
+      sql = sql + " insert into " + table + " (" + foreignKey + ", fk_user_langue) values (" + id + ", " + q.id + "); ";
     }
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
