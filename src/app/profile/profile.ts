@@ -36,6 +36,7 @@ export class Profile{
 
   @ViewChild('myForm') form;
 
+  projectTarget: string;
   title: string = "M.";
   lastname: string;
   firstname: string;
@@ -163,6 +164,11 @@ export class Profile{
     missions_in_progress: '',
   };
 
+  //quality management
+  savedQualities: any = [];
+  selectedQuality: any;
+  qualities: any = [];
+
   disponibilites = [];
   dispoToCreate : any;
   datepickerOpts: any;
@@ -188,6 +194,7 @@ export class Profile{
     if (!this.currentUser) {
       this.router.navigate(['home']);
     } else {
+      this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
       this.getUserInfos();
       if (this.isNewUser) {
         this.initForm();
@@ -219,10 +226,19 @@ export class Profile{
     this.listService.loadCountries("jobyer").then((data: any) => {
       this.pays = data.data;
     });
+    //loadQualities
+    this.qualities = this.sharedService.getQualityList();
+    if (!this.qualities || this.qualities.length == 0) {
+      let role = this.projectTarget != "jobyer" ? "employeur" : 'jobyer'
+      this.listService.loadQualities(this.projectTarget, role).then((data: any) => {
+        this.qualities = data.data;
+        this.sharedService.setQualityList(this.qualities);
+      })
+    }
     if (!this.isEmployer && !this.isNewUser)
       this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
         data = data.data[0];
-        if(!Utils.isEmpty(data.fk_user_pays)) {
+        if (!Utils.isEmpty(data.fk_user_pays)) {
           this.index = this.profileService.getCountryById(data.fk_user_pays, this.pays).indicatif_telephonique;
         }
         this.regionId = data.fk_user_identifiants_nationalite;
@@ -281,6 +297,14 @@ export class Profile{
         this.missionStats = data;
       });
     }
+
+    //get user qualities
+    let id = this.currentUser.estEmployeur ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id;
+    this.profileService.getUserQualities(id, this.projectTarget).then((data: any) => {
+      if (data) {
+        this.savedQualities = data;
+      }
+    });
   }
 
   /**
@@ -1138,6 +1162,9 @@ export class Profile{
                 if (this.isJobAddressModified()) {
                   this.updateJobAddress();
                 }
+
+                //save qualities
+                this.saveQualities();
                 Messenger().post({
                   message: 'Vos données ont été bien enregistrées',
                   type: 'success',
@@ -1224,6 +1251,9 @@ export class Profile{
               if (this.isJobAddressModified()) {
                 this.updateJobAddress();
               }
+              //save qualities
+              this.saveQualities();
+
               Messenger().post({
                 message: 'Vos données ont été bien enregistrées',
                 type: 'success',
@@ -1236,8 +1266,6 @@ export class Profile{
                 this.router.navigate(['home']);
               }
             }
-
-
           })
           .catch((error: any) => {
             //console.log(error);
@@ -1596,4 +1624,28 @@ export class Profile{
     return s;
   }
   //</editor-fold>
+
+  removeQuality(item) {
+    this.savedQualities.splice(this.savedQualities.indexOf(item), 1);
+  }
+
+  addQuality() {
+    if (Utils.isEmpty(this.selectedQuality)) {
+      return;
+    }
+
+    var qualitiesTemp = this.qualities.filter((v)=> {
+      return (v.idQuality == this.selectedQuality);
+    });
+    if (this.savedQualities.indexOf(qualitiesTemp[0]) != -1) {
+      return;
+    }
+    this.savedQualities.push(qualitiesTemp[0]);
+    this.selectedQuality = "";
+  }
+
+  saveQualities() {
+    let id = this.currentUser.estEmployeur ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id;
+    this.profileService.saveQualities(this.savedQualities, id, this.projectTarget);
+  }
 }

@@ -242,12 +242,12 @@ export class ProfileService{
 
       (!this.isEmpty(numSS) ? ("numero_securite_sociale ='" + numSS + "', ") : ("numero_securite_sociale ='', ")) +
       (!this.isEmpty(cni) ? ("cni ='" + cni + "', ") : ("cni ='', ")) +
-      (!this.isEmpty(birthdate) ? ("date_de_naissance ='" + birthdate + "', ") : ("date_de_naissance =" + null + ", "))+
+      (!this.isEmpty(birthdate) ? ("date_de_naissance ='" + birthdate + "', ") : ("date_de_naissance =" + null + ", ")) +
 
-        (!this.isEmpty(numStay) ? (" numero_titre_sejour='" + numStay + "', ") : ("numero_titre_sejour='', ")) +
+      (!this.isEmpty(numStay) ? (" numero_titre_sejour='" + numStay + "', ") : ("numero_titre_sejour='', ")) +
       (!this.isEmpty(dateStay) ? (" date_de_delivrance='" + dateStay + "', ") : ("date_de_delivrance=" + null + ", ")) +
       (!this.isEmpty(dateFromStay) ? (" debut_validite='" + dateFromStay + "', ") : (" debut_validite=" + null + ", ")) +
-        (!this.isEmpty(dateToStay) ? (" fin_validite='" + dateToStay + "', ") : (" fin_validite=" + null + ", "))+
+      (!this.isEmpty(dateToStay) ? (" fin_validite='" + dateToStay + "', ") : (" fin_validite=" + null + ", ")) +
       (!this.isEmpty(isStay) ? ("est_resident='" + isStay + "', ") : (" est_resident='', ")) +
       (!this.isEmpty(prefecture) ? ("instance_delivrance='" + this.sqlfyText(prefecture) + "', ") : (" instance_delivrance='', ")) +
 
@@ -256,10 +256,10 @@ export class ProfileService{
       (!this.isEmpty(regionId) ? (" fk_user_identifiants_nationalite='" + regionId + "', ") : ("fk_user_identifiants_nationalite='', ")) +
 
       (!this.isEmpty(birthplace) ? (" lieu_de_naissance='" + birthplace + "', ") : ("lieu_de_naissance='', ")) +
-        (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "' ") : ("fk_user_departement = "+ null + " " )) +
+      (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "' ") : ("fk_user_departement = " + null + " " )) +
 
-        " where pk_user_jobyer ='" + roleId + "';";
-    //console.log(sql);
+      " where pk_user_jobyer ='" + roleId + "';";
+    console.log(sql);
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -622,6 +622,61 @@ export class ProfileService{
         return countries[i];
       }
     }
+  }
+
+  /*
+   Qualities management
+   */
+  getUserQualities(id: any, projectTarget: string) {
+    let table = projectTarget == 'jobyer' ? 'user_qualite_du_jobyer' : 'user_qualite_employeur';
+    let foreignKey = projectTarget == 'jobyer' ? 'fk_user_jobyer' : 'fk_user_entreprise';
+    let sql = "select pk_user_indispensable as id, libelle from user_indispensable as i, " + table + " as t where i.pk_user_indispensable = t.fk_user_indispensable and t." + foreignKey + " = '" + id + "'";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data.data);
+        });
+    });
+  }
+
+  saveQualities(qualities, id, projectTarget) {
+    let table = projectTarget == 'jobyer' ? 'user_qualite_du_jobyer' : 'user_qualite_employeur';
+    let foreignKey = projectTarget == 'jobyer' ? 'fk_user_jobyer' : 'fk_user_entreprise';
+    this.deleteQualities(id, table, foreignKey).then(data => {
+      if(data && qualities && qualities.length != 0)
+        this.attachQualities(qualities, id, table, foreignKey);
+    })
+  }
+
+  deleteQualities(id, table, foreignKey) {
+    let sql = "delete from " + table + " where " + foreignKey + "=" + id;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  attachQualities(qualities, id, table, foreignKey) {
+    let sql = "";
+    for (let i = 0; i < qualities.length; i++) {
+      let q = qualities[i];
+      sql = sql + " insert into " + table + " (" + foreignKey + ", fk_user_indispensable) values (" + id + ", " + q.idQuality + "); ";
+    }
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
   }
 
   sqlfyText(txt) {

@@ -97,4 +97,22 @@ export class LoadListService {
         });
     });
   }
+
+  /**
+   * @description     loading qualities list
+   * @return qualities list in the format {id : X, libelle : X}
+   */
+  loadQualities(projectTarget: string, type: string) {
+    //  Init project parameters
+    this.configuration = Configs.setConfigs(projectTarget);
+    var sql = "select pk_user_indispensable as \"idQuality\", libelle as libelle from user_indispensable where UPPER(dirty) ='N' and type='" + type + "'";
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
 }
