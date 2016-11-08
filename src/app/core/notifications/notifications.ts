@@ -52,7 +52,7 @@ export class Notifications implements OnInit {
     this.searchService.criteriaSearch(searchFields, this.projectTarget).then(data => {
       this.sharedService.setLastResult(data);
       if(!noRedirect){
-        if(this.router.url === '/app/search/results'){
+        if(this.router.url === '/search/results'){
           window.location.reload()
         }else{
           this.router.navigate(['search/results']);

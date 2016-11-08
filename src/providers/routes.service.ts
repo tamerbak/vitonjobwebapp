@@ -33,12 +33,12 @@ export class CanAccessPage implements CanActivate {
   }
 
   canActivate( route: ActivatedRouteSnapshot,state: RouterStateSnapshot):boolean {
-    if(state.url === "/app/contract/recruitment"){
-      if(this.router.url === "/app/contract/recruitment-form"){
+    if(state.url === "/contract/recruitment"){
+      if(this.router.url === "/contract/recruitment-form"){
         return true;
       }
-    }else if(state.url === "/app/payment/method"){
-      if(this.router.url === "/app/contract/recruitment"){
+    }else if(state.url === "/payment/method"){
+      if(this.router.url === "/contract/recruitment"){
         return true;
       }
     }

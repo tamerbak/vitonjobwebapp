@@ -1,6 +1,6 @@
 <div class="js-sidebar-content">
   <header class="logo hidden-sm-down">
-    <a href="index.html"><img src="assets/images/logo/on.png" style="width : 40px" alt="..."></a>
+    <a href="/"><img src="assets/images/logo/on.png" style="width : 40px" alt="..."></a>
   </header>
   <!-- seems like lots of recent admin template have this feature of user info in the sidebar.
   looks good, so adding it and enhancing with notifications -->
@@ -16,9 +16,9 @@
     </a>
     <!-- #notifications-dropdown-menu goes here when screen collapsed to xs or sm -->
     <ul class="dropdown-menu dropdown-menu-right" style="width: 204px;">
-      <li><a class="dropdown-item" [routerLink]=" ['profile'] "><i class="glyphicon glyphicon-user"></i> &nbsp; Mon
+      <li><a class="dropdown-item" [routerLink]=" ['/profile'] "><i class="glyphicon glyphicon-user"></i> &nbsp; Mon
         compte</a></li>
-      <li><a class="dropdown-item" [routerLink]=" ['settings'] "><i class="glyphicon glyphicon-cog"></i> &nbsp;
+      <li><a class="dropdown-item" [routerLink]=" ['/settings'] "><i class="glyphicon glyphicon-cog"></i> &nbsp;
         Options</a></li>
       <li class="dropdown-divider"></li>
       <li><a class="dropdown-item" (click)="logOut()"><i class="fa fa-sign-out"></i> &nbsp; Se déconnecter</a></li>
@@ -28,42 +28,42 @@
   <ul class="sidebar-nav">
 
     <li>
-      <a [routerLink]=" ['home'] ">
+      <a [routerLink]=" ['/home'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-search"></i>
           </span>Recherche
       </a>
     </li>
     <li *ngIf="currentUser">
-      <a [routerLink]=" ['offer/list'] ">
+      <a [routerLink]=" ['/offer/list'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-bullhorn"></i>
           </span>Mes Offres
       </a>
     </li>
     <li *ngIf="currentUser">
-      <a [routerLink]=" ['mission/list'] ">
+      <a [routerLink]=" ['/mission/list'] ">
         <span class="icon">
             <i class="fa fa-file-text"></i>
           </span> Mes Missions
       </a>
     </li>
     <li *ngIf="currentUser">
-      <a [routerLink]=" ['attachements'] ">
+      <a [routerLink]=" ['/attachements'] ">
         <span class="icon">
             <i class="fa fa-cube"></i>
           </span> Coffre Numérique
       </a>
     </li>
     <li *ngIf="currentUser">
-      <a [routerLink]=" ['settings'] ">
+      <a [routerLink]=" ['/settings'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-cog"></i>
           </span> Mes Options
       </a>
     </li>
     <li *ngIf="currentUser && currentUser.estEmployeur">
-      <a [routerLink]=" ['recruiter/list'] ">
+      <a [routerLink]=" ['/recruiter/list'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-user"></i>
           </span>Habilitations
@@ -71,7 +71,7 @@
     </li>
 
     <li *ngIf="currentUser && currentUser.estEmployeur">
-      <a [routerLink]=" ['pendingContracts'] ">
+      <a [routerLink]=" ['/pendingContracts'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-th-list"></i>
           </span> Recrutement groupé
@@ -87,7 +87,7 @@
     </li>
 
     <li>
-      <a [routerLink]=" ['about'] ">
+      <a [routerLink]=" ['/about'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-question-sign"></i>
           </span> A propos
