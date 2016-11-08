@@ -471,6 +471,7 @@ export class Profile{
       } else {
         if (this.currentUser.jobyer.dateNaissance) {
           var birthDate = moment(new Date(this.currentUser.jobyer.dateNaissance)).format("YYYY-MM-DD");
+          this.birthdate = birthDate;
           this.isValidBirthdate = true;
         } else {
           this.birthdate = null;
@@ -1467,7 +1468,9 @@ export class Profile{
 
   watchBirthdate(e) {
     let birthdateChecked = AccountConstraints.checkBirthDate(e.target.value);
-    this.birthdate = e;
+    if(birthdateChecked.isValid){
+       this.birthdate = e.target.value;
+     }
     this.isValidBirthdate = birthdateChecked.isValid;
     this.birthdateHint = birthdateChecked.hint;
     this.isValidForm();
