@@ -259,7 +259,7 @@ export class ProfileService{
         (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "' ") : ("fk_user_departement = "+ null + " " )) +
 
         " where pk_user_jobyer ='" + roleId + "';";
-    console.log(sql);
+    //console.log(sql);
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -502,6 +502,98 @@ export class ProfileService{
     });
   }
 
+  loadDisponibilites(idJobyer){
+    let sql = "select pk_user_disponibilite_du_jobyer as id, jour, date_de_debut, date_de_fin, heure_de_debut, heure_de_fin, lower_unaccent(interval) as interv " +
+      "from user_disponibilite_du_jobyer where fk_user_jobyer="+idJobyer+" and dirty='N' " +
+      "order by jour asc";
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any)=> {
+
+          let dispos = [];
+          if(data || data.data){
+            for(let i = 0 ; i < data.data.length ; i++){
+              let d = data.data[i];
+              if(d.interv == 'oui'){
+                dispos.push(
+                  {
+                    id : d.id,
+                    startDate : this.preformatDate(d.date_de_debut),
+                    endDate : this.preformatDate(d.date_de_fin),
+                    startHour : d.heure_de_debut,
+                    endHour : d.heure_de_fin
+                  }
+                );
+              } else {
+                dispos.push(
+                  {
+                    id : d.id,
+                    startDate : this.preformatDate(d.jour),
+                    endDate : this.preformatDate(d.jour),
+                    startHour : d.heure_de_debut,
+                    endHour : d.heure_de_fin
+                  }
+                );
+              }
+            }
+          }
+          resolve(dispos);
+        });
+    });
+  }
+
+  saveDisponibilite(jobyerId, disponibilite){
+    let interval = (disponibilite.startDate == disponibilite.endDate)?'non':'oui';
+
+    let sql = "insert into user_disponibilite_du_jobyer (" +
+      "fk_user_jobyer, " +
+      "jour, " +
+      "date_de_debut," +
+      "date_de_fin," +
+      "heure_de_debut," +
+      "heure_de_fin," +
+      "\"interval\"" +
+      ") values (" +
+      jobyerId+", " +
+      "'"+this.dateToSqlTimestamp(disponibilite.startDate)+"', " +
+      "'"+this.dateToSqlTimestamp(disponibilite.startDate)+"'," +
+      "'"+this.dateToSqlTimestamp(disponibilite.endDate)+"'," +
+      (disponibilite.startHour.getHours()*60+disponibilite.startHour.getMinutes())+"," +
+      (disponibilite.endHour.getHours()*60+disponibilite.endHour.getMinutes())+"," +
+      "'"+interval+"'" +
+      ") returning pk_user_disponibilite_du_jobyer";
+    //console.log(sql);
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any)=> {
+          resolve(data);
+        });
+    });
+  }
+
+  deleteDisponibility(d){
+    let sql = "update user_disponibilite_du_jobyer " +
+      "set dirty='Y' " +
+      "where pk_user_disponibilite_du_jobyer="+d.id;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any)=> {
+          resolve(data);
+        });
+    });
+  }
+
+  preformatDate(strd){
+    let d = strd.split(' ')[0];
+    return new Date(d);
+  }
+
   /*getPaysByIndex(index){
    let sql = "select pk_user_pays as id from user_prefecture where nom = '" + this.sqlfyText(nom) + "'";
 
@@ -544,5 +636,15 @@ export class ProfileService{
       return true;
     else
       return false;
+  }
+
+  dateToSqlTimestamp(date: Date) {
+    var sqlTimestamp = date.getUTCFullYear() + '-' +
+      ('00' + (date.getUTCMonth() + 1)).slice(-2) + '-' +
+      ('00' + date.getUTCDate()).slice(-2) + ' ' +
+      ('00' + date.getUTCHours()).slice(-2) + ':' +
+      ('00' + date.getUTCMinutes()).slice(-2) + ':' +
+      ('00' + date.getUTCSeconds()).slice(-2);
+    return sqlTimestamp;
   }
 }

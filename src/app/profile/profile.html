@@ -560,5 +560,96 @@
         </form>
       </div>
     </section>
+
+  </div>
+
+  <div [hidden]="!showForm || isEmployer" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
+    <section class="widget">
+      <div class="widget-body">
+        <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
+          <fieldset>
+            <legend><strong>Disponibilités</strong></legend>
+            <div class="container-fluid">
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label text-md-center" >
+                  <strong>Du</strong>
+                </label>
+                <label class="col-md-3 form-control-label text-md-center" >
+                  <strong>Au</strong>
+                </label>
+                <label class="col-md-2 form-control-label text-md-center" >
+                  <strong>Début</strong>
+                </label>
+                <label class="col-md-2 form-control-label text-md-center" >
+                  <strong>Fin</strong>
+                </label>
+                <label class="col-md-2 form-control-label text-md-center" >
+
+                </label>
+
+              </div>
+              <div *ngFor="let d of disponibilites" class="form-group row">
+                <label class="col-md-3 text-md-center" >
+                  {{simpleDateFormat(d.startDate)}}
+                </label>
+                <label class="col-md-3 text-md-center" >
+                  {{simpleDateFormat(d.endDate)}}
+                </label>
+                <label class="col-md-2 text-md-center" >
+                  {{toHourString(d.startHour)}}
+                </label>
+                <label class="col-md-2 text-md-center" >
+                  {{toHourString(d.endHour)}}
+                </label>
+                <button class="col-md-2 btn btn-danger" (click)="deleteDisponibilityEntry(d)">
+                  <span class="glyphicon glyphicon-trash"></span>
+                </button>
+              </div>
+              <div class="form-group row">
+                <div class="col-md-3">
+                  <datetime
+                    id="start_date"
+                    style="display: block; width: 100%;"
+                    [timepicker]="false"
+                    [datepicker]="datepickerOpts"
+                    [(ngModel)]="dispoToCreate.startDate"
+                  ></datetime>
+                </div>
+                <div class="col-md-3">
+                  <datetime
+                    id="end_date"
+                    style="display: block; width: 100%;"
+                    [timepicker]="false"
+                    [datepicker]="datepickerOpts"
+                    [(ngModel)]="dispoToCreate.endDate"
+                  ></datetime>
+                </div>
+                <div class="col-md-2">
+                  <datetime
+                    id="start_hour"
+                    [datepicker]="false"
+                    [timepicker]="{ showMeridian: false, minuteStep: 15 }"
+                    [(ngModel)]="dispoToCreate.startHour"
+                  ></datetime>
+                </div>
+                <div class="col-md-2">
+                  <datetime
+                    id="end_hour"
+                    [datepicker]="false"
+                    [timepicker]="{ showMeridian: false, minuteStep: 15 }"
+                    [(ngModel)]="dispoToCreate.endHour"
+                  ></datetime>
+                </div>
+
+                <button class="col-md-2 btn btn-primary" (click)="addDisponibilityEntry()"
+                        [disabled]="!(dispoToCreate.startDate && dispoToCreate.endDate && dispoToCreate.startHour && dispoToCreate.endHour) || paradox()">
+                  <span class="glyphicon glyphicon-plus"></span>
+                </button>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </section>
   </div>
 </div>

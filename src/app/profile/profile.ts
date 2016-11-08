@@ -17,6 +17,7 @@ import {BankAccount} from "../bank-account/bank-account";
 import MaskedInput from "angular2-text-mask";
 import {AccountConstraints} from "../../validators/account-constraints";
 import {scan} from "rxjs/operator/scan";
+import {Helpers} from "../../providers/helpers.service";
 
 declare var jQuery, require, Messenger, moment: any;
 declare var google: any;
@@ -162,6 +163,10 @@ export class Profile{
     missions_in_progress: '',
   };
 
+  disponibilites = [];
+  dispoToCreate : any;
+  datepickerOpts: any;
+
   setImgClasses() {
     return {
       'img-circle': true,//TODO:this.currentUser && this.currentUser.estEmployeur,
@@ -246,6 +251,9 @@ export class Profile{
         }
       });
     this.allImages = [];
+
+    if(!this.isEmployer)
+      this.initDisponibilites();
   }
 
 
@@ -1488,5 +1496,104 @@ export class Profile{
     this.isValidForm();
   }
 
+
+
+  initDisponibilites(){
+    this.datepickerOpts = {
+      language:'fr-FR',
+      startDate: new Date(),
+      autoclose: true,
+      todayHighlight: true,
+      format: 'dd/mm/yyyy'
+    };
+    this.dispoToCreate = {
+
+      startDate : 0,
+      endDate : 0,
+      startHour : 0,
+      endHour : 0
+    };
+    this.profileService.loadDisponibilites(this.currentUser.jobyer.id).then((data : any)=>{
+      this.disponibilites = data;
+    });
+  }
+
+  addDisponibilityEntry(){
+    this.profileService.saveDisponibilite(this.currentUser.jobyer.id, this.dispoToCreate).then((result:any)=>{
+      if(result.status == 'success'){
+        this.disponibilites.push({
+          id : result.data[0].pk_user_disponibilite_du_jobyer,
+          startDate : new Date(this.dispoToCreate.startDate),
+          endDate : new Date(this.dispoToCreate.endDate),
+          startHour : (this.dispoToCreate.startHour.getHours()*60+this.dispoToCreate.startHour.getMinutes()),
+          endHour : (this.dispoToCreate.endHour.getHours()*60+this.dispoToCreate.endHour.getMinutes())
+        });
+        this.resetDatetime('start_date');
+        this.resetDatetime('end_date');
+        this.resetDatetime('start_hour');
+        this.resetDatetime('end_hour');
+
+      }
+    });
+  }
+
+  resetDatetime(componentId) {
+    let elements: NodeListOf<Element> = document.getElementById(componentId).getElementsByClassName('form-control');
+    (<HTMLInputElement>elements[0]).value = null;
+  }
+
+  deleteDisponibilityEntry(d){
+
+    this.profileService.deleteDisponibility(d);
+    let index = -1;
+    for(let i = 0 ; i < this.disponibilites.length ; i++){
+      if(this.disponibilites[i].id == d.id){
+        index = i;
+        break;
+      }
+    }
+
+    if(index>=0){
+      this.disponibilites.splice(index, 1);
+    }
+  }
+
+  paradox(){
+    return this.dispoToCreate.endDate<this.dispoToCreate.startDate || this.dispoToCreate.endHour<this.dispoToCreate.startHour;
+  }
+
+  /**
+   * @Description Converts a timeStamp to date string
+   * @param time : a timestamp date
+   */
+  toHourString(time: number) {
+    let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
+    let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
+    return hours + ":" + minutes;
+  }
+
+  /**
+   * @Description Converts a timeStamp to date string :
+   * @param date : a timestamp date
+   */
+  toDateString(date: number) {
+    let d = new Date(date);
+    let str = d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+    return str;
+  }
+
+  simpleDateFormat(d:Date){
+    let m = d.getMonth() + 1;
+    let da = d.getDate();
+    let sd = (da < 10 ? '0' : '')+da+'/' + (m < 10 ? '0' : '') + m + "/" +d.getFullYear() ;
+    return sd
+  }
+  simpleHourFormat(h : number){
+    let s = '';
+    s=s+(h/60).toFixed(0);
+    s=s+':';
+    s=s+(h%60);
+    return s;
+  }
   //</editor-fold>
 }
