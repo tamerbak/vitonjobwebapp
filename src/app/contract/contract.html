@@ -168,7 +168,7 @@
       <div class="col-md-6 col-xs-12">
         <div class="form-group">
           <label >Début de mission&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
-          <input type="date" name="missionStartDate" class="form-control" [(ngModel)]="contractData.missionStartDate" aria-describedby="debut" required/>
+          <input type="date" name="missionStartDate" class="form-control" [(ngModel)]="contractData.missionStartDate" aria-describedby="debut" (change)="watchMissionDate($event)" required/>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
@@ -190,7 +190,7 @@
       <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
           <label >Fin de mission&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
-          <input type="date" name="missionEndDate" class="form-control" [(ngModel)]="contractData.missionEndDate" aria-describedby="fin" required/>
+          <input type="date" name="missionEndDate" class="form-control" [(ngModel)]="contractData.missionEndDate" aria-describedby="fin" (change)="watchMissionDate($event)" required/>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
@@ -487,7 +487,7 @@
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 title-form">
         <button
           class="btn btn-primary"
-          [disabled]="!formCtrl.form.valid || !rapatriement || !embaucheAutorise || missingJobyerData()"
+          [disabled]="!formCtrl.form.valid || !rapatriement || !embaucheAutorise || missingJobyerData() || !isMissionDateValid"
         >Soumettre le contrat</button>
       </div>
     </div>
@@ -497,6 +497,9 @@
       </alert>
       <alert [type]="'danger alert-sm'" *ngIf="missingJobyerData()">
         <div [innerHTML]="'Vous ne pouvez actuellement pas soumettre ce contrat car des informations liées au jobyer sont manquantes'"></div>
+      </alert>
+      <alert [type]="'danger alert-sm'" *ngIf="!isMissionDateValid">
+        <div [innerHTML]="'Vous ne pouvez actuellement pas soumettre ce contrat car les dates de début et fin de mission ne sont pas cohérentes'"></div>
       </alert>
     </div>
   </form>
