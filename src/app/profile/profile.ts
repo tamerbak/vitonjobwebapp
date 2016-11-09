@@ -168,6 +168,13 @@ export class Profile{
   selectedQuality: any;
   qualities: any = [];
 
+  //languages management
+  savedLanguages: any = [];
+  selectedLanguage: any;
+  languages: any = [];
+
+
+  // availabilities
   disponibilites = [];
   dispoToCreate : any;
   datepickerOpts: any;
@@ -234,6 +241,17 @@ export class Profile{
         this.sharedService.setQualityList(this.qualities);
       })
     }
+
+    //loadLanguages
+    this.languages = this.sharedService.getLangList();
+    if (!this.languages || this.languages.length == 0) {
+      this.listService.loadLanguages().then((data: any) => {
+        this.languages = data.data;
+        this.sharedService.setLangList(this.languages);
+      })
+    }
+
+
     if (!this.isEmployer && !this.isNewUser)
       this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
         data = data.data[0];
@@ -317,6 +335,12 @@ export class Profile{
     this.profileService.getUserQualities(id, this.projectTarget).then((data: any) => {
       if (data) {
         this.savedQualities = data;
+      }
+    });
+
+    this.profileService.getUserLanguages(id, this.projectTarget).then((data: any) => {
+      if (data) {
+        this.savedLanguages = data;
       }
     });
   }
@@ -1620,6 +1644,11 @@ export class Profile{
     this.saveQualities();
   }
 
+  removeLanguage(item) {
+    this.savedLanguages.splice(this.savedLanguages.indexOf(item), 1);
+    this.saveLanguages();
+  }
+
   addQuality() {
     if (Utils.isEmpty(this.selectedQuality)) {
       return;
@@ -1637,8 +1666,30 @@ export class Profile{
     this.saveQualities();
   }
 
+  addLanguage(){
+    if (Utils.isEmpty(this.selectedLanguage)) {
+      return;
+    }
+
+    var languagesTemp = this.languages.filter((v)=> {
+      return (v.id == this.selectedLanguage);
+    });
+    if (this.savedLanguages.indexOf(languagesTemp[0]) != -1) {
+      return;
+    }
+    this.savedLanguages.push(languagesTemp[0]);
+    this.selectedLanguage = "";
+
+    this.saveLanguages();
+  }
+
   saveQualities() {
     let id = this.currentUser.estEmployeur ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id;
     this.profileService.saveQualities(this.savedQualities, id, this.projectTarget);
+  }
+
+  saveLanguages() {
+    let id = this.currentUser.estEmployeur ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id;
+    this.profileService.saveLanguages(this.savedLanguages, id, this.projectTarget);
   }
 }
