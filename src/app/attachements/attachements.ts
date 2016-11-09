@@ -55,6 +55,9 @@ export class Attachements {
       jQuery('.fileinput').on('change.bs.fileinput', function (e, file) {
         self.scanData = file.result;
       })
+      jQuery('.fileinput').on('clear.bs.fileinput', function (e, file) {
+        self.scanData = null;
+      })
     });
   }
 
