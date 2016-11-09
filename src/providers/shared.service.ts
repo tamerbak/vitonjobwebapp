@@ -143,6 +143,14 @@ export class SharedService {
     this.setStorageVariable("qualityList", value);
   }
 
+  getOwnQualityList() {
+    return this.getStorageVariable("ownQualityList");
+  }
+
+  setOwnQualityList(value) {
+    this.setStorageVariable("ownQualityList", value);
+  }
+
   getLangList() {
     return this.getStorageVariable("langList");
   }

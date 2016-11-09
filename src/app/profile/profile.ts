@@ -222,12 +222,12 @@ export class Profile{
       this.pays = data.data;
     });
     //loadQualities
-    this.qualities = this.sharedService.getQualityList();
+    this.qualities = this.sharedService.getOwnQualityList();
     if (!this.qualities || this.qualities.length == 0) {
       let role = this.projectTarget != "jobyer" ? "employeur" : 'jobyer'
       this.listService.loadQualities(this.projectTarget, role).then((data: any) => {
         this.qualities = data.data;
-        this.sharedService.setQualityList(this.qualities);
+        this.sharedService.setOwnQualityList(this.qualities);
       })
     }
     if (!this.isEmployer && !this.isNewUser)
