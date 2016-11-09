@@ -5,6 +5,7 @@ import {ConfigService} from "../config";
 import {Notifications} from "../notifications/notifications";
 import {SharedService} from "../../../providers/shared.service";
 import {OffersService} from "../../../providers/offer.service";
+import {NotificationsService} from "../../../providers/notifications.service";
 declare var jQuery: any;
 declare var require: any;
 
@@ -28,6 +29,7 @@ export class Navbar implements OnInit {
 
   allSearchOffers: any = [];
   autoSearchOffers: any = [];
+  offersNotifications: any =[];
   public loadOffers: Function;
 
   setImgClasses() {
@@ -36,12 +38,13 @@ export class Navbar implements OnInit {
     };
   }
 
-  constructor(el: ElementRef, config: ConfigService, private sharedService: SharedService, private offerService: OffersService, private router: Router) {
+  constructor(el: ElementRef, config: ConfigService, private sharedService: SharedService, private offerService: OffersService,private notificationsService:NotificationsService, private router: Router) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
       this.isEmployer = this.currentUser.estEmployeur;
-      this.getOffers();
       this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+      notificationsService.offersUpdated.subscribe(obj => this.UpdateOffers(obj));
+      this.getOffers();
     } else {
       let role = this.sharedService.getProjectTarget();
       this.isEmployer = (role == "employer");
@@ -57,6 +60,10 @@ export class Navbar implements OnInit {
     this.config = config.getConfig();
   }
 
+  UpdateOffers(obj) {
+      this.offersNotifications = this.notificationsService.autoSearchOffers;
+  }
+
   refreshOffers(evt) {
     evt.stopPropagation();
     this.getOffers();
@@ -66,7 +73,7 @@ export class Navbar implements OnInit {
   getOffers() {
     this.allSearchOffers = [];
     this.autoSearchOffers = [];
-    var offers = this.isEmployer ? this.currentUser.employer.entreprises[0].offers : this.currentUser.jobyer.offers;
+    var offers = this.isEmployer ? this.sharedService.getCurrentUser().employer.entreprises[0].offers : this.sharedService.getCurrentUser().jobyer.offers;
     for (var i = 0; i < offers.length; i++) {
       var offer = offers[i];
       if (offer.visible && offer.rechercheAutomatique) {
@@ -84,8 +91,8 @@ export class Navbar implements OnInit {
         if (offer.correspondantsCount > 0) {
           offer.text = offer.correspondantsCount != 1 ? " Offres correspondent au poste de " : " Offre correspond au poste de ";
           this.autoSearchOffers.push(offer);
+          this.notificationsService.add(offer);
         }
-
       });
     }
 

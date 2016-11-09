@@ -6,6 +6,7 @@ import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from "@angular/router
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {SearchService} from "../../providers/search-service";
 import {Utils} from "../utils/utils";
+import {NotificationsService} from "../../providers/notifications.service";
 declare var jQuery,Messenger:any;
 
 @Component({
@@ -31,6 +32,7 @@ export class OfferList {
               private router: Router,
               private cdr:ChangeDetectorRef,
               private searchService: SearchService,
+              private notificationsService:NotificationsService,
               private route: ActivatedRoute) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
@@ -148,6 +150,11 @@ export class OfferList {
     this.offersService.saveAutoSearchMode(this.projectTarget, offer.idOffer, mode).then((data: any)=> {
       if (data && data.status == "success") {
         offer.rechercheAutomatique = !offer.rechercheAutomatique;
+        if(offer.rechercheAutomatique && offer.correspondantsCount > 0){
+          this.notificationsService.add(offer);
+        }else{
+          this.notificationsService.remove(offer);
+        }
         this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
         this.sharedService.setCurrentUser(this.currentUser);
       } else {

@@ -74,6 +74,7 @@ import {ConfigService} from "./app/core/config";
 import {Configs} from "./configurations/configs";
 import {ConfirmExitPage,CanAccessPage} from "./providers/routes.service";
 import {RouteObservable} from "./providers/observables.service";
+import {NotificationsService} from "./providers/notifications.service";
 
 //
 //
@@ -88,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function main(): void {
   bootstrap(App, [
     SharedService,
     ConfigService,
+    NotificationsService,
     RouteObservable,
     ConfirmExitPage,
     CanAccessPage,
