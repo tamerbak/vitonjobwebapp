@@ -50,6 +50,7 @@ export class Profile{
 
   selectedCP: any;
   birthdate: Date;
+  birthdateHidden: Date;
   selectedMedecine: any = {id: 0, libelle: ""};
   cni: string;
   numSS: string;
@@ -131,9 +132,9 @@ export class Profile{
   index: number = 33;
 
   numStay;
-  dateStay;
-  dateFromStay;
-  dateToStay;
+  dateStay:Date;
+  dateFromStay:Date;
+  dateToStay:Date;
   whoDeliverStay;
   regionId = "41";
   selectedDep;
@@ -252,37 +253,7 @@ export class Profile{
     }
 
 
-    if (!this.isEmployer && !this.isNewUser)
-      this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
-        data = data.data[0];
-        if (!Utils.isEmpty(data.fk_user_pays)) {
-          this.index = this.profileService.getCountryById(data.fk_user_pays, this.pays).indicatif_telephonique;
-        }
-        this.regionId = data.fk_user_identifiants_nationalite;
-        this.dateStay = data.date_de_delivrance;
-        this.dateFromStay = data.debut_validite;
-        this.dateToStay = data.fin_validite;
-        if (this.index == 33) {
-          this.isFrench = true;
-          this.isCIN = true;
-          this.birthdepId = data.fk_user_departement;
-        } else {
-          this.isFrench = false;
-        }
-        if (this.regionId == '42') {
-          this.isEuropean = 1;
-          this.isResident = (data.est_resident == 'Oui' ? true : false);
-          this.whoDeliverStay = data.instance_delivrance;
-          this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
-          this.nationalityId = data.numero_titre_sejour;
-          this.isCIN = false;
-        } else {
-          this.regionId = '41'
-          this.isEuropean = 0;
-          this.isCIN = !Utils.isEmpty(data.numero_titre_sejour) ? false : true;
-          this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
-        }
-      });
+   
     this.allImages = [];
 
 
@@ -478,6 +449,54 @@ export class Profile{
 
     });
 
+    var elements = [];
+    jQuery("div[id^='q-datepicker_']").each(function () {
+      elements.push(this.id);
+    });
+
+     if (!this.isEmployer && !this.isNewUser)
+      this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
+        data = data.data[0];
+        if (!Utils.isEmpty(data.fk_user_pays)) {
+          this.index = this.profileService.getCountryById(data.fk_user_pays, this.pays).indicatif_telephonique;
+        }
+        this.regionId = data.fk_user_identifiants_nationalite;
+
+        this.dateStay = data.date_de_delivrance;
+        var dateStay = Utils.isEmpty(this.dateStay) ? "":moment(this.dateStay).format("DD/MM/YYYY");
+        jQuery('#' + elements[1]).datepicker('update',dateStay );
+
+        this.dateFromStay = data.debut_validite;
+        var dateFromStay = Utils.isEmpty(this.dateFromStay) ? "":moment(this.dateFromStay).format("DD/MM/YYYY");
+        jQuery('#' + elements[2]).datepicker('update',dateFromStay );
+
+        this.dateToStay = data.fin_validite;
+        var dateToStay = Utils.isEmpty(this.dateToStay) ? "":moment(this.dateToStay).format("DD/MM/YYYY");
+        jQuery('#' + elements[3]).datepicker('update',dateToStay );
+
+
+        if (this.index == 33) {
+          this.isFrench = true;
+          this.isCIN = true;
+          this.birthdepId = data.fk_user_departement;
+        } else {
+          this.isFrench = false;
+        }
+        if (this.regionId == '42') {
+          this.isEuropean = 1;
+          this.isResident = (data.est_resident == 'Oui' ? true : false);
+          this.whoDeliverStay = data.instance_delivrance;
+          this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
+          this.nationalityId = data.numero_titre_sejour;
+          this.isCIN = false;
+        } else {
+          this.regionId = '41'
+          this.isEuropean = 0;
+          this.isCIN = !Utils.isEmpty(data.numero_titre_sejour) ? false : true;
+          this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
+        }
+      });
+
 
     if (!this.isRecruiter) {
       if (this.isEmployer && this.currentUser.employer.entreprises.length != 0) {
@@ -541,11 +560,13 @@ export class Profile{
 
       } else {
         if (this.currentUser.jobyer.dateNaissance) {
-          var birthDate = moment(new Date(this.currentUser.jobyer.dateNaissance)).format("YYYY-MM-DD");
-          this.birthdate = birthDate;
+          var birthDate = moment(new Date(this.currentUser.jobyer.dateNaissance)).format('DD/MM/YYYY');
+          this.birthdateHidden = new Date(this.currentUser.jobyer.dateNaissance);
           this.isValidBirthdate = true;
+          jQuery('#' + elements[0]).datepicker('update', birthDate);
         } else {
           this.birthdate = null;
+          this.birthdateHidden = null;
           this.isValidBirthdate = true;
         }
         var _birthplace = this.currentUser.jobyer.lieuNaissance;
@@ -635,12 +656,6 @@ export class Profile{
       }
 
     }
-    if ((<HTMLInputElement>document.getElementById("dateStay")) != null)
-      (<HTMLInputElement>document.getElementById("dateStay")).value = moment(this.dateStay).format("YYYY-MM-DD");
-    if ((<HTMLInputElement>document.getElementById("dateFromStay")) != null)
-      (<HTMLInputElement>document.getElementById("dateFromStay")).value = moment(this.dateFromStay).format("YYYY-MM-DD");
-    if ((<HTMLInputElement>document.getElementById("dateToStay")) != null)
-      (<HTMLInputElement>document.getElementById("dateToStay")).value = moment(this.dateToStay).format("YYYY-MM-DD");
 
     this.profileService.getPrefecture(this.whoDeliverStay).then((data: any) => {
       if (data && data.status == "success" && data.data && data.data.length != 0)
@@ -1213,7 +1228,9 @@ export class Profile{
       } else {
         var numSS = this.numSS;
         var cni = this.cni;
-        var birthdate = this.birthdate;
+        var birthdate = "";
+        if (!Utils.isEmpty(this.birthdateHidden))
+          birthdate = moment(this.birthdateHidden).format('MM/DD/YYYY');
         var birthplace = this.selectedCommune.nom;
         var nationalityId = this.nationalityId;
         //var birthcp = this.birthcp;
@@ -1261,7 +1278,7 @@ export class Profile{
               this.currentUser.jobyer.cni = this.cni;
               this.currentUser.jobyer.numSS = this.numSS;
               this.currentUser.jobyer.natId = this.nationalityId;
-              this.currentUser.jobyer.dateNaissance = Date.parse(moment(this.birthdate));
+              this.currentUser.jobyer.dateNaissance = Date.parse(moment(this.birthdateHidden).format('MM/DD/YYYY'));
               this.currentUser.jobyer.lieuNaissance = birthplace;
               this.currentUser.newAccount = false;
               this.sharedService.setCurrentUser(this.currentUser);
@@ -1542,13 +1559,11 @@ export class Profile{
   }
 
   watchBirthdate(e) {
-    let birthdateChecked = AccountConstraints.checkBirthDate(e.target.value);
-    if(birthdateChecked.isValid){
-       this.birthdate = e.target.value;
-     }
-    this.isValidBirthdate = birthdateChecked.isValid;
-    this.birthdateHint = birthdateChecked.hint;
-    this.isValidForm();
+      let birthdateChecked = AccountConstraints.checkBirthDate(e);
+      this.birthdateHidden = e;
+      this.isValidBirthdate = birthdateChecked.isValid;
+      this.birthdateHint = birthdateChecked.hint;
+      this.isValidForm();
   }
 
 
