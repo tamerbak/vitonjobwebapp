@@ -20,7 +20,7 @@ export class NumSSConstraints {
     }
     let indicator = num.charAt(1) + num.charAt(2);
 
-    var birthYear = "" + date.getFullYear()
+    var birthYear = "" + date.split('-')[0];
     birthYear = birthYear.substring(2);
 
     if (indicator == birthYear)
@@ -35,7 +35,7 @@ export class NumSSConstraints {
     }
     let indicator = num.charAt(3) + num.charAt(4);
 
-    let birthMonth = 1 + date.getMonth() + ""
+    let birthMonth = date.split('-')[1] + "";
 
     if (birthMonth.length == 1)
       birthMonth = "0" + birthMonth;
