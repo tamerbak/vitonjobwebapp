@@ -288,13 +288,15 @@
         </div>
       </fieldset>
 
-      <fieldset [hidden]="projectTarget=='jobyer'">
-        <legend><strong>Prérequis obligatoires</strong></legend>
+      <fieldset>
+        <legend><strong>{{ currentUser.estEmployeur ? 'Prérequis obligatoires':'liste des documents nécessaires' }}</strong></legend>
         <div class="container-fluid">
           <div class="row">
             <div class="col-xs-10">
-              <input type="hidden" class="select2 prerequis-select form-control" name="prerequis"
-                     placeholder="Prérequis" [(ngModel)]="prerequisOb" />
+              <input *ngIf="currentUser.estEmployeur" type="hidden" class="select2 prerequis-select form-control" name="prerequis"
+                     placeholder="Prérequis obligatoires" [(ngModel)]="prerequisOb" />
+              <input *ngIf="!currentUser.estEmployeur" type="hidden" class="select2 prerequis-jobyer-select form-control" name="documents"
+                     placeholder="Documents nécessaires" [(ngModel)]="prerequisOb" />
             </div>
             <div class="col-xs-2">
               <button class="btn btn-primary"
