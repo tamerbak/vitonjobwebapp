@@ -27,9 +27,9 @@ export class SearchResults{
   projectTarget: string;
   isRecruteur: boolean = false;
 
-  lat: number;
-  lng: number;
-  searchResultPos: {lat: number,lng: number,info: string}[] = []
+  lat: number=48.856494;
+  lng: number=2.345503;
+  searchResultPos: {lat: number,lng: number,info: string}[] = [];
   selected = true;
   mapDisplay = 'block';
 
@@ -71,28 +71,28 @@ export class SearchResults{
       for (let i = 0; i < this.searchResults.length; i++) {
         let r = this.searchResults[i];
 
-        if (this.projectTarget == 'jobyer' && r.accepteCandidature == false) {
-          continue;
-        }
-
         r.matching = Number(r.matching).toFixed(2);
         r.index = i + 1;
         r.avatar = "../assets/images/avatar.png";
+
         if (r.latitude !== '0' && r.longitude !== '0') {
-          var info = "";
+          let info = "";
+          let toffer = '';
+          if(r.titreOffre && r.titreOffre.length>0)
+            toffer = r.titreOffre;
+
           let matching: string = (r.matching.toString().indexOf('.') < 0) ? r.matching : r.matching.toString().split('.')[0];
           if (this.projectTarget == 'employer') {
-            info = "<h4>" + r.prenom + ' ' + r.nom.substring(0, 1) + ".&nbsp&nbsp<span class='label label-pill label-success'>&nbsp" + matching + "'%&nbsp</span></h4>" +
-              "<p>" + r.titreOffre + "</p>" +
-              "<p><span class='dispo'>&#9679;</span> &nbsp; Disponible</p>" +
-              "<p class='underline'>Détails</p> ";
+            info = "<h4>" + r.prenom + ' ' + r.nom.substring(0, 1) + ".&nbsp&nbsp<span class='label label-pill label-success'>&nbsp" + matching + "%&nbsp</span></h4>" +
+              "<p>" + toffer + "</p>" +
+              "<p><span class='dispo'>&#9679;</span> &nbsp; Disponible</p>" ;
 
           } else {
-            info = "<h4>" + r.entreprise + "&nbsp&nbsp<span class='label label-pill label-success'>&nbsp" + matching + "'%&nbsp</span></h4>" +
-              "<p>" + r.titreOffre + "</p>" +
-              "<p><span class='dispo''>&#9679;</span> &nbsp; Disponible</p>" +
-              "<p style='underline'>Détails</p> ";
+            info = "<h4>" + r.entreprise + "&nbsp&nbsp<span class='label label-pill label-success'>&nbsp" + matching + "%&nbsp</span></h4>" +
+              "<p>" + toffer + "</p>" +
+              "<p><span class='dispo''>&#9679;</span> &nbsp; Disponible</p>";
           }
+
           this.searchResultPos.push({lat: Number(r.latitude), lng: Number(r.longitude), info: info})
         }
       }
