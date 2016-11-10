@@ -1,12 +1,12 @@
 <section class="card notifications">
   <header class="card-header">
     <div class="text-xs-center mb-sm">
-      <strong>Vous avez {{alerts.length}} notifications</strong>
+      <strong>Vous avez {{notifications.length}} notifications</strong>
     </div>
   </header>
   <!-- notification list with .thin-scroll which styles scrollbar for webkit -->
   <div id="notifications-list" class="list-group thin-scroll">
-    <div *ngFor="let offer of alerts; let i = index"
+    <div *ngFor="let offer of notifications; let i = index"
          class="list-group-item" (click)="launchSearch(offer,false)" style="cursor: pointer;">
       <p class="no-margin overflow-hidden">
         <b>{{offer.correspondantsCount}}</b> {{offer.text}} <b>{{offer.title}}</b>

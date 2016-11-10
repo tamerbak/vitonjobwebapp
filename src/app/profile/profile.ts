@@ -17,6 +17,7 @@ import {BankAccount} from "../bank-account/bank-account";
 import MaskedInput from "angular2-text-mask";
 import {AccountConstraints} from "../../validators/account-constraints";
 import {scan} from "rxjs/operator/scan";
+import {Helpers} from "../../providers/helpers.service";
 
 declare var jQuery, require, Messenger, moment: any;
 declare var google: any;
@@ -49,7 +50,6 @@ export class Profile{
 
   selectedCP: any;
   birthdate: Date;
-  birthdateHidden: Date;
   selectedMedecine: any = {id: 0, libelle: ""};
   cni: string;
   numSS: string;
@@ -168,6 +168,17 @@ export class Profile{
   selectedQuality: any;
   qualities: any = [];
 
+  //languages management
+  savedLanguages: any = [];
+  selectedLanguage: any;
+  languages: any = [];
+
+
+  // availabilities
+  disponibilites = [];
+  dispoToCreate : any;
+  datepickerOpts: any;
+
   setImgClasses() {
     return {
       'img-circle': true,//TODO:this.currentUser && this.currentUser.estEmployeur,
@@ -222,14 +233,25 @@ export class Profile{
       this.pays = data.data;
     });
     //loadQualities
-    this.qualities = this.sharedService.getQualityList();
+    this.qualities = this.sharedService.getOwnQualityList();
     if (!this.qualities || this.qualities.length == 0) {
       let role = this.projectTarget != "jobyer" ? "employeur" : 'jobyer'
       this.listService.loadQualities(this.projectTarget, role).then((data: any) => {
         this.qualities = data.data;
-        this.sharedService.setQualityList(this.qualities);
+        this.sharedService.setOwnQualityList(this.qualities);
       })
     }
+
+    //loadLanguages
+    this.languages = this.sharedService.getLangList();
+    if (!this.languages || this.languages.length == 0) {
+      this.listService.loadLanguages().then((data: any) => {
+        this.languages = data.data;
+        this.sharedService.setLangList(this.languages);
+      })
+    }
+
+
     if (!this.isEmployer && !this.isNewUser)
       this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
         data = data.data[0];
@@ -262,6 +284,24 @@ export class Profile{
         }
       });
     this.allImages = [];
+
+
+    this.datepickerOpts = {
+      language:'fr-FR',
+      startDate: new Date(),
+      autoclose: true,
+      todayHighlight: true,
+      format: 'dd/mm/yyyy'
+    };
+    this.dispoToCreate = {
+
+      startDate : 0,
+      endDate : 0,
+      startHour : 0,
+      endHour : 0
+    };
+    if(!this.isEmployer)
+      this.initDisponibilites();
   }
 
 
@@ -295,6 +335,12 @@ export class Profile{
     this.profileService.getUserQualities(id, this.projectTarget).then((data: any) => {
       if (data) {
         this.savedQualities = data;
+      }
+    });
+
+    this.profileService.getUserLanguages(id, this.projectTarget).then((data: any) => {
+      if (data) {
+        this.savedLanguages = data;
       }
     });
   }
@@ -495,22 +541,11 @@ export class Profile{
 
       } else {
         if (this.currentUser.jobyer.dateNaissance) {
-          var birthDate = moment(new Date(this.currentUser.jobyer.dateNaissance)).format('DD/MM/YYYY');
-
-          this.birthdateHidden = new Date(this.currentUser.jobyer.dateNaissance);
+          var birthDate = moment(new Date(this.currentUser.jobyer.dateNaissance)).format("YYYY-MM-DD");
+          this.birthdate = birthDate;
           this.isValidBirthdate = true;
-
-          var elements = [];
-          jQuery("div[id^='q-datepicker_']").each(function () {
-            elements.push(this.id);
-          });
-
-          jQuery('#' + elements[0]).datepicker('update', birthDate);
-          //jQuery("#birthdate input").val(birthDate);
-
         } else {
           this.birthdate = null;
-          this.birthdateHidden = null;
           this.isValidBirthdate = true;
         }
         var _birthplace = this.currentUser.jobyer.lieuNaissance;
@@ -1178,9 +1213,7 @@ export class Profile{
       } else {
         var numSS = this.numSS;
         var cni = this.cni;
-        var birthdate = "";
-        if (!Utils.isEmpty(this.birthdateHidden))
-          birthdate = moment(this.birthdateHidden).format('MM/DD/YYYY');
+        var birthdate = this.birthdate;
         var birthplace = this.selectedCommune.nom;
         var nationalityId = this.nationalityId;
         //var birthcp = this.birthcp;
@@ -1228,7 +1261,7 @@ export class Profile{
               this.currentUser.jobyer.cni = this.cni;
               this.currentUser.jobyer.numSS = this.numSS;
               this.currentUser.jobyer.natId = this.nationalityId;
-              this.currentUser.jobyer.dateNaissance = Date.parse(moment(this.birthdateHidden).format('MM/DD/YYYY'));
+              this.currentUser.jobyer.dateNaissance = Date.parse(moment(this.birthdate));
               this.currentUser.jobyer.lieuNaissance = birthplace;
               this.currentUser.newAccount = false;
               this.sharedService.setCurrentUser(this.currentUser);
@@ -1502,24 +1535,118 @@ export class Profile{
   }
 
   watchNumSS(e) {
-    let numssChecked = AccountConstraints.checkNumss(e, this.title, this.birthdateHidden, this.selectedCommune);
+    let numssChecked = AccountConstraints.checkNumss(e, this.title, this.birthdate, this.selectedCommune);
     this.isValidNumSS = numssChecked.isValid;
     this.numSSHint = numssChecked.hint;
     this.isValidForm();
   }
 
   watchBirthdate(e) {
-    let birthdateChecked = AccountConstraints.checkBirthDate(e);
-    this.birthdateHidden = e;
+    let birthdateChecked = AccountConstraints.checkBirthDate(e.target.value);
+    if(birthdateChecked.isValid){
+       this.birthdate = e.target.value;
+     }
     this.isValidBirthdate = birthdateChecked.isValid;
     this.birthdateHint = birthdateChecked.hint;
     this.isValidForm();
   }
 
+
+
+  initDisponibilites(){
+
+    this.profileService.loadDisponibilites(this.currentUser.jobyer.id).then((data : any)=>{
+      this.disponibilites = data;
+    });
+  }
+
+  addDisponibilityEntry(){
+    this.profileService.saveDisponibilite(this.currentUser.jobyer.id, this.dispoToCreate).then((result:any)=>{
+      if(result.status == 'success'){
+        this.disponibilites.push({
+          id : result.data[0].pk_user_disponibilite_du_jobyer,
+          startDate : new Date(this.dispoToCreate.startDate),
+          endDate : new Date(this.dispoToCreate.endDate),
+          startHour : (this.dispoToCreate.startHour.getHours()*60+this.dispoToCreate.startHour.getMinutes()),
+          endHour : (this.dispoToCreate.endHour.getHours()*60+this.dispoToCreate.endHour.getMinutes())
+        });
+        this.resetDatetime('start_date');
+        this.resetDatetime('end_date');
+        this.resetDatetime('start_hour');
+        this.resetDatetime('end_hour');
+
+      }
+    });
+  }
+
+  resetDatetime(componentId) {
+    let elements: NodeListOf<Element> = document.getElementById(componentId).getElementsByClassName('form-control');
+    (<HTMLInputElement>elements[0]).value = null;
+  }
+
+  deleteDisponibilityEntry(d){
+
+    this.profileService.deleteDisponibility(d);
+    let index = -1;
+    for(let i = 0 ; i < this.disponibilites.length ; i++){
+      if(this.disponibilites[i].id == d.id){
+        index = i;
+        break;
+      }
+    }
+
+    if(index>=0){
+      this.disponibilites.splice(index, 1);
+    }
+  }
+
+  paradox(){
+    return this.dispoToCreate.endDate<this.dispoToCreate.startDate || this.dispoToCreate.endHour<this.dispoToCreate.startHour;
+  }
+
+  /**
+   * @Description Converts a timeStamp to date string
+   * @param time : a timestamp date
+   */
+  toHourString(time: number) {
+    let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
+    let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
+    return hours + ":" + minutes;
+  }
+
+  /**
+   * @Description Converts a timeStamp to date string :
+   * @param date : a timestamp date
+   */
+  toDateString(date: number) {
+    let d = new Date(date);
+    let str = d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+    return str;
+  }
+
+  simpleDateFormat(d:Date){
+    let m = d.getMonth() + 1;
+    let da = d.getDate();
+    let sd = (da < 10 ? '0' : '')+da+'/' + (m < 10 ? '0' : '') + m + "/" +d.getFullYear() ;
+    return sd
+  }
+  simpleHourFormat(h : number){
+    let s = '';
+    s=s+(h/60).toFixed(0);
+    s=s+':';
+    s=s+(h%60);
+    return s;
+  }
   //</editor-fold>
 
   removeQuality(item) {
     this.savedQualities.splice(this.savedQualities.indexOf(item), 1);
+    this.saveQualities();
+  }
+
+  removeLanguage(item) {
+    this.savedLanguages.splice(this.savedLanguages.indexOf(item), 1);
+    this.saveLanguages();
   }
 
   addQuality() {
@@ -1535,10 +1662,34 @@ export class Profile{
     }
     this.savedQualities.push(qualitiesTemp[0]);
     this.selectedQuality = "";
+
+    this.saveQualities();
+  }
+
+  addLanguage(){
+    if (Utils.isEmpty(this.selectedLanguage)) {
+      return;
+    }
+
+    var languagesTemp = this.languages.filter((v)=> {
+      return (v.id == this.selectedLanguage);
+    });
+    if (this.savedLanguages.indexOf(languagesTemp[0]) != -1) {
+      return;
+    }
+    this.savedLanguages.push(languagesTemp[0]);
+    this.selectedLanguage = "";
+
+    this.saveLanguages();
   }
 
   saveQualities() {
     let id = this.currentUser.estEmployeur ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id;
     this.profileService.saveQualities(this.savedQualities, id, this.projectTarget);
+  }
+
+  saveLanguages() {
+    let id = this.currentUser.estEmployeur ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id;
+    this.profileService.saveLanguages(this.savedLanguages, id, this.projectTarget);
   }
 }

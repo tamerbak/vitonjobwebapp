@@ -211,12 +211,9 @@
               <div *ngIf="!isEmployer" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="birthDate">
                   Date de naissance
-                  <span class="help-block">DD/MM/AAAA</span>
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <datetime id="birthdate" [ngModel]="birthdate" name="birthdate" [timepicker]="false"
-                            [datepicker]="{language:'fr-FR',autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}"
-                            (ngModelChange)="watchBirthdate($event)"></datetime>
+                  <input id="birthdate" type="date" class="form-control" [(ngModel)]="birthdate" (keyup)="watchBirthdate($event)"/>
                 </div>
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
                   <span class="hint label label-danger">{{birthdateHint}}</span>
@@ -507,50 +504,7 @@
                 </div>
               </div>
 
-                <!-- Qualities -->
-                <div class="form-group row">
-                    <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                        Qualités
-                    </label>
-                    <div class="col-md-8 col-xs-12">
-                        <!-- Selected Qualities -->
-                        <div class="form-group row" *ngFor="let item of savedQualities">
-                            <div class="col-md-9 col-xs-9">
-                                <input class="form-control" value="{{item.libelle}}" disabled/>
-                            </div>
-                            <div class="col-md-3 col-xs-3">
-                                <button
-                                        style="display: block; width: 100%;"
-                                        class="btn btn-danger mb-xs"
-                                        role="button"
-                                        (click)="removeQuality(item)"
-                                >
-                                    <i class="glyphicon glyphicon-trash"></i>
-                                </button>
-                            </div>
-                        </div>
 
-                        <!-- New quality input -->
-                        <div class="row">
-                            <div class="col-md-9 col-xs-12">
-                                <select class="form-control" [(ngModel)]="selectedQuality">
-                                    <option *ngFor="let q of qualities" [value]="q.idQuality">{{q.libelle}}</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3 col-xs-12">
-                                <button
-                                        style="display: block; width: 100%;"
-                                        class="btn btn-success mb-xs offer-add-button"
-                                        role="button"
-                                        (click)="addQuality()"
-                                        [disabled]="!selectedQuality"
-                                >
-                                    Ajouter
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
 
@@ -605,5 +559,213 @@
         </form>
       </div>
     </section>
+
   </div>
+
+  <div [hidden]="!showForm || isEmployer" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
+    <section class="widget">
+      <div class="widget-body">
+        <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
+          <fieldset>
+            <legend><strong>Disponibilités</strong></legend>
+            <div class="container-fluid">
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label text-md-center" >
+                  <strong>Du</strong>
+                </label>
+                <label class="col-md-3 form-control-label text-md-center" >
+                  <strong>Au</strong>
+                </label>
+                <label class="col-md-2 form-control-label text-md-center" >
+                  <strong>Début</strong>
+                </label>
+                <label class="col-md-2 form-control-label text-md-center" >
+                  <strong>Fin</strong>
+                </label>
+                <label class="col-md-2 form-control-label text-md-center" >
+
+                </label>
+
+              </div>
+              <div *ngFor="let d of disponibilites" class="form-group row">
+                <label class="col-md-3 text-md-center" >
+                  {{simpleDateFormat(d.startDate)}}
+                </label>
+                <label class="col-md-3 text-md-center" >
+                  {{simpleDateFormat(d.endDate)}}
+                </label>
+                <label class="col-md-2 text-md-center" >
+                  {{toHourString(d.startHour)}}
+                </label>
+                <label class="col-md-2 text-md-center" >
+                  {{toHourString(d.endHour)}}
+                </label>
+                <button class="col-md-2 btn btn-danger" (click)="deleteDisponibilityEntry(d)">
+                  <span class="glyphicon glyphicon-trash"></span>
+                </button>
+              </div>
+              <div class="form-group row">
+                <div class="col-md-3">
+                  <datetime
+                    id="start_date"
+                    style="display: block; width: 100%;"
+                    [timepicker]="false"
+                    [datepicker]="datepickerOpts"
+                    [(ngModel)]="dispoToCreate.startDate"
+                  ></datetime>
+                </div>
+                <div class="col-md-3">
+                  <datetime
+                    id="end_date"
+                    style="display: block; width: 100%;"
+                    [timepicker]="false"
+                    [datepicker]="datepickerOpts"
+                    [(ngModel)]="dispoToCreate.endDate"
+                  ></datetime>
+                </div>
+                <div class="col-md-2">
+                  <datetime
+                    id="start_hour"
+                    [datepicker]="false"
+                    [timepicker]="{ showMeridian: false, minuteStep: 15 }"
+                    [(ngModel)]="dispoToCreate.startHour"
+                  ></datetime>
+                </div>
+                <div class="col-md-2">
+                  <datetime
+                    id="end_hour"
+                    [datepicker]="false"
+                    [timepicker]="{ showMeridian: false, minuteStep: 15 }"
+                    [(ngModel)]="dispoToCreate.endHour"
+                  ></datetime>
+                </div>
+
+                <button class="col-md-2 btn btn-primary" (click)="addDisponibilityEntry()"
+                        [disabled]="!(dispoToCreate.startDate && dispoToCreate.endDate && dispoToCreate.startHour && dispoToCreate.endHour) || paradox()">
+                  <span class="glyphicon glyphicon-plus"></span>
+                </button>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <!-- Qualities -->
+  <div [hidden]="!showForm" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
+    <section class="widget">
+      <div class="widget-body">
+        <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
+          <fieldset>
+            <legend><strong>Disponibilités</strong></legend>
+            <div class="container-fluid">
+              <div class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Qualités
+                </label>
+                <div class="col-md-8 col-xs-12">
+                  <!-- Selected Qualities -->
+                  <div class="form-group row" *ngFor="let item of savedQualities">
+                    <div class="col-md-9 col-xs-9">
+                      <input class="form-control" value="{{item.libelle}}" disabled/>
+                    </div>
+                    <div class="col-md-3 col-xs-3">
+                      <button
+                        style="display: block; width: 100%;"
+                        class="btn btn-danger mb-xs"
+                        role="button"
+                        (click)="removeQuality(item)"
+                      >
+                        <i class="glyphicon glyphicon-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- New quality input -->
+                  <div class="row">
+                    <div class="col-md-9 col-xs-12">
+                      <select class="form-control" [(ngModel)]="selectedQuality">
+                        <option *ngFor="let q of qualities" [value]="q.idQuality">{{q.libelle}}</option>
+                      </select>
+                    </div>
+                    <div class="col-md-3 col-xs-12">
+                      <button
+                        style="display: block; width: 100%;"
+                        class="btn btn-success mb-xs offer-add-button"
+                        role="button"
+                        (click)="addQuality()"
+                        [disabled]="!selectedQuality"
+                      >
+                        Ajouter
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <!-- Langues -->
+  <div [hidden]="!showForm" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
+    <section class="widget">
+      <div class="widget-body">
+        <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
+          <fieldset>
+            <legend><strong>Langues</strong></legend>
+            <div class="container-fluid">
+              <div class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Langues
+                </label>
+                <div class="col-md-8 col-xs-12">
+                  <!-- Selected Qualities -->
+                  <div class="form-group row" *ngFor="let item of savedLanguages">
+                    <div class="col-md-9 col-xs-9">
+                      <input class="form-control" value="{{item.libelle}}" disabled/>
+                    </div>
+                    <div class="col-md-3 col-xs-3">
+                      <button
+                        style="display: block; width: 100%;"
+                        class="btn btn-danger mb-xs"
+                        role="button"
+                        (click)="removeLanguage(item)"
+                      >
+                        <i class="glyphicon glyphicon-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- New language input -->
+                  <div class="row">
+                    <div class="col-md-9 col-xs-12">
+                      <select class="form-control" [(ngModel)]="selectedLanguage">
+                        <option *ngFor="let q of languages" [value]="q.id">{{q.libelle}}</option>
+                      </select>
+                    </div>
+                    <div class="col-md-3 col-xs-12">
+                      <button
+                        style="display: block; width: 100%;"
+                        class="btn btn-success mb-xs offer-add-button"
+                        role="button"
+                        (click)="addLanguage()"
+                        [disabled]="!selectedLanguage"
+                      >
+                        Ajouter
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </section>
+  </div>
+
 </div>
