@@ -64,6 +64,7 @@ export class SearchResults{
     } else {
       this.mapDisplay = 'none';
     }
+
     let jsonResults = this.sharedService.getLastResult();
     if (jsonResults) {
       this.searchResults = jsonResults;
