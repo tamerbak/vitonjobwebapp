@@ -1190,8 +1190,6 @@ export class Profile{
                   this.updateJobAddress();
                 }
 
-                //save qualities
-                this.saveQualities();
                 Messenger().post({
                   message: 'Vos données ont été bien enregistrées',
                   type: 'success',
@@ -1276,8 +1274,6 @@ export class Profile{
               if (this.isJobAddressModified()) {
                 this.updateJobAddress();
               }
-              //save qualities
-              this.saveQualities();
 
               Messenger().post({
                 message: 'Vos données ont été bien enregistrées',
