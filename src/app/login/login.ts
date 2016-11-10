@@ -1,5 +1,5 @@
 import {Component, ViewEncapsulation} from "@angular/core";
-import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from "@angular/router";
+import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {LoadListService} from "../../providers/load-list.service";
 import {AuthenticationService} from "../../providers/authentication.service";
 import {ValidationDataService} from "../../providers/validation-data.service";
@@ -7,10 +7,8 @@ import {SharedService} from "../../providers/shared.service";
 import {ProfileService} from "../../providers/profile.service";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {ModalComponent} from "./modal-component/modal-component";
-import {Utils} from "../utils/utils";
 declare function md5(value: string): string;
-declare var Messenger;
-
+declare var jQuery: any;
 @Component({
   directives: [ROUTER_DIRECTIVES, AlertComponent, ModalComponent],
   selector: '[login]',
@@ -22,7 +20,7 @@ declare var Messenger;
   styles: [require('./login.scss')],
   providers: [AuthenticationService, LoadListService, ValidationDataService, ProfileService]
 })
-export class LoginPage{
+export class LoginPage {
   index: number;
   phone: number;
   email: string;
@@ -30,42 +28,30 @@ export class LoginPage{
   password2: string;
   role: string;
   pays = [];
-
-
   isIndexValid = true;
   isPhoneNumValid = true;
   showEmailField: boolean;
   emailExist = false;
   isRecruteur: boolean = false;
   isNewRecruteur: boolean;
-
-
   libelleButton: string;
   showHidePasswdIcon: string;
   showHidePasswdConfirmIcon: string;
   isRemembered: boolean;
-
-
   fromPage: string;
   alerts: Array<Object>;
   hideLoader: boolean = true;
-
   isRoleTelConform = true;
-
+  isEmployer: boolean = false;
+  isJobyer: boolean = false;
   isRedirectedFromHome;
-  obj: string;
-  oldPhoneValue: number;
-
-
   constructor(private loadListService: LoadListService,
               private authService: AuthenticationService,
               private validationDataService: ValidationDataService,
               private sharedService: SharedService,
               private profileService: ProfileService,
-              private router: Router,
-              private route: ActivatedRoute) {
+              private router: Router) {
   }
-
   ngOnInit(): void {
     this.index = 33;
     this.libelleButton = "Se connecter";
@@ -83,14 +69,7 @@ export class LoginPage{
     } else {
       this.isRedirectedFromHome = false;
     }
-
-    //get params
-    this.route.params.forEach((params: Params) => {
-      this.obj = params['obj'];
-    });
   }
-
-
   authenticate() {
     //in case email was changed just before validate button is clicked
     if (this.isAuthDisabled()) {
@@ -145,51 +124,19 @@ export class LoginPage{
             } else {
               this.sharedService.setProfilImageUrl(null);
             }
-            if (!this.isEmpty(data.titre)) {
-              Messenger().post({
-                message: "Bienvenue "+ data.prenom +" vous venez de vous connecter !",
-                type: 'success',
-                showCloseButton: true
-              });
-            }
             //if user is connected for the first time, redirect him to the page 'civility', otherwise redirect him to the home page
             var isNewUser = data.newAccount;
-            /*if (isNewUser || this.isNewRecruteur) {
-             this.router.navigate(['profile']);
-             } else {
-             if (this.fromPage == "Search") {
-             //this.nav.pop();
-             } else {
-             this.router.navigate(['home']);
-             }
-             }*/
-            if (this.obj == "recruit" && !isNewUser) {
-              this.router.navigate(['search/results', {obj: 'recruit'}]);
-              return;
-            }
-            if (this.obj == "recruit" && isNewUser) {
-              this.router.navigate(['home', {obj: 'recruit'}]);
-              return;
-            }
-            if(this.obj != "recruit"){
-              this.router.navigate(['home']);
-              return;
-            }
+            this.router.navigate(['app/home']);
           });
         });
       });
     });
   }
-
   /**
    * @description validate phone data field and call the function that search for it in the server
    */
   watchPhone(e) {
     if (this.phone) {
-      if (!Utils.isNumber(e.target.value)) {
-        this.phone = this.oldPhoneValue;
-        return;
-      }
       if (e.target.value.substring(0, 1) == '0') {
         e.target.value = e.target.value.substring(1, e.target.value.length);
       }
@@ -202,10 +149,7 @@ export class LoginPage{
         this.isPhoneNumValid = true;
       }
     }
-    this.oldPhoneValue = this.phone;
   }
-
-
   /**
    * @description function called when the phone input is valid to decide if the form is for inscription or authentication
    */
@@ -256,8 +200,6 @@ export class LoginPage{
       this.isRecruteur = false;
     }
   }
-
-
   /**
    * @description validate the phone format
    */
@@ -274,8 +216,6 @@ export class LoginPage{
     } else
       return false;
   }
-
-
   validatePhone(e) {
     if (e.target.value.length == 9) {
       this.isPhoneNumValid = true;
@@ -283,8 +223,6 @@ export class LoginPage{
       this.isPhoneNumValid = false;
     }
   }
-
-
   isEmailExist(e) {
     //verify if the email exist in the database
     let role = this.role == "jobyer" ? "jobyer" : "employer";
@@ -300,8 +238,6 @@ export class LoginPage{
       }
     });
   }
-
-
   /**
    * @description validate the email format
    */
@@ -313,8 +249,6 @@ export class LoginPage{
     else
       return false;
   }
-
-
   /**
    * @description show error msg if password is not valid
    */
@@ -322,8 +256,6 @@ export class LoginPage{
     if (this.password1)
       return this.password1.length < 6;
   }
-
-
   /**
    * @description check if the password and its confirmation are the same
    */
@@ -331,8 +263,6 @@ export class LoginPage{
     if (this.password2)
       return this.password2 != this.password1;
   }
-
-
   /**
    * @description function called to decide if the auth/inscr button should be disabled
    */
@@ -345,26 +275,46 @@ export class LoginPage{
       return (!this.index || !this.isIndexValid || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.role || !this.isRoleTelConform)
     }
   }
-
-
   watchRole(e) {
     this.role = e.target.value;
     if (this.role == "recruiter") {
       this.isRecruteur = true;
-    } else {
+      this.isJobyer = false;
+      this.isEmployer = false;
+      if (jQuery(window).width() <= 700) {
+        jQuery("html").css('background', 'url(../assets/images/bg_employer_1024.png) no-repeat center fixed');
+      }
+      else {
+        jQuery("html").css('background', 'url(../assets/images/employer-paysage.jpg) no-repeat center fixed');
+      }
+    } else if (this.role == "employer") {
+      this.isEmployer = true;
       this.isRecruteur = false;
+      this.isJobyer = false;
+      if (jQuery(window).width() <= 700) {
+        jQuery("html").css('background', 'url(../assets/images/bg_employer_1024.png) no-repeat center fixed');
+      }
+      else {
+        jQuery("html").css('background', 'url(../assets/images/employer-paysage.jpg) no-repeat center fixed');
+      }
+    } else if (this.role == "jobyer") {
+      this.isEmployer = false;
+      this.isRecruteur = false;
+      this.isJobyer = true;
+      if (jQuery(window).width() <= 722) {
+        jQuery("html").css('background', 'url(../assets/images/bg_jobyer.png) no-repeat center fixed');
+      }
+      else {
+        jQuery("html").css('background', 'url(../assets/images/jobyer-paysage.jpg) no-repeat center fixed');
+      }
     }
     if (this.index && this.phone && this.isPhoneNumValid) {
       this.isRegistration(this.index, this.phone);
     }
   }
-
-
   addAlert(type, msg): void {
-    this.alerts = [{type: type, msg: msg}];
+    this.alerts = [{ type: type, msg: msg }];
   }
-
-
   showHidePasswd() {
     let divHide = document.getElementById('hidePasswd');
     let divShow = document.getElementById('showPasswd');
@@ -380,8 +330,6 @@ export class LoginPage{
       this.showHidePasswdIcon = "fa fa-eye-slash";
     }
   }
-
-
   showHidePasswdConfirm() {
     let divHide = document.getElementById('hidePasswdConfirm');
     let divShow = document.getElementById('showPasswdConfirm');

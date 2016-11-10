@@ -2,93 +2,247 @@
 @import "../../../node_modules/bootstrap/scss/_variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
 
-.login-page {
-  background-color: $gray-semi-lighter;
+body,
+html {
+  margin: 0;
+  padding: 0;
+  @media only screen and (max-width: 700px) {
+    background: url("../assets/images/bg_employer_1024.png") no-repeat center fixed;
+    .vit-c{
+      color: #757575;
+    }
+  }
+  @media only screen and (min-width: 701px) {
+    background: url("../assets/images/employer-paysage.jpg") no-repeat center fixed;
+  }
+  background-size: cover;
+  -webkit-background-size: cover;
+}
+@media only screen and (max-width: 543px) {
+  .marg-bt {
+    margin-bottom: 2em;
+  }
+}
+@media only screen and (max-width: 365px) {
+  .pad-top {
+    padding-top: 15em;
+  }
+}
+.mt-lg{
+  margin-top: -10rem!important;
+  margin-bottom: -10rem!important;
+  padding-top: 1em;
+}
+.vitonjob-green {
+  background-color: #14baa6;
+}
+.vit-c{
+  color: white;
+}
+.vitonjob-green-c {
+  color: #14baa6;
+}
+.mr-n-lg{
+  color: #14baa6;
+}
+.red {
+  color: red;
+}
+.mdp-link {
+  color: #14baa6;
+  margin: 0 auto;
+}
+.mrg{
+  margin-bottom: 6em;
+}
+.bg-section {
+  background: transparent;
 }
 
-.login-page .page-footer {
-  margin-bottom: 25px;
-  font-size: $font-size-mini;
-  color: $text-muted;
+.centred-div {
+  margin: 50vh auto 0;
+  /* poussé de la moitié de hauteur de viewport */
+  transform: translateY(-50%);
+}
+
+.middle-place {
+  margin: 0 auto;
+  display: table;
+}
+
+.input-size {
+  height: 2.5em;
+}
+
+form > div {
+  position: relative;
+}
+
+form > div > label {
+  position: absolute;
+}
+
+.aligne-center {
   text-align: center;
-  @media (min-height: 600px) {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-  }
 }
 
-.widget-login-container {
-  padding-top: 10%;
+.large {
+  font-size: large!important;
 }
 
-.widget-login-logo {
-  margin-top: 15px;
-  margin-bottom: 15px;
+.shadow {
+  box-shadow: 1px 1px 12px #757575;
+}
+
+.w-max {
+  width: 100%!important;
+}
+
+.h-max {
+  height: 100%!important;
+}
+
+.vitonjob-grey {
+  color: #757575;
+}
+
+.page-footer {
+
+  bottom: 0!important;
+  position: absolute;
   text-align: center;
-  font-weight: $font-weight-normal;
-  .fa-circle {
-    font-size: 13px;
-    margin: 0 20px;
-  }
+  left: 0;
+  right: 0;
+  color: #757575;
+}
+.mrg-link{
+  margin-top: -2em;
+}
+.img-size {
+  height: inherit;
 }
 
-.widget-login {
-  padding: 30px;
-
-  > header {
-    h1, h2, h3, h4, h5, h6 {
-      font-weight: $font-weight-normal;
-    }
-  }
+.btn-radio {
+  position: relative;
+  margin: 0 auto 2em;
 }
 
-.widget-login-info {
-  font-size: $font-size-mini;
-  color: #888;
-  margin-top: 1px;
-  margin-bottom: 0;
+.logo-div {
+  width: 100%;
+  margin-bottom: 2em;
+  margin-top: 2em;
 }
 
-.login-form {
-  .form-control {
-    font-size: $font-size-mini;
-    border: none;
-    background-color: $gray-lighter;
-    &:focus {
-      background-color: $gray-semi-lighter;
-    }
-  }
+.logo-logo {
+  width: 70%;
+  margin: 0 auto;
+  display: table;
+}
 
-  .labelRadio {
-    padding-right: 20px;
-    font-size: 13px;
-  }
+.re-mdp {
+  margin: 0 auto;
+  display: table;
+  margin-top: 2em;
+}
 
-  .abc-radio {
-    padding-top: 10px;
-  }
+.radioset {
+  border: 0;
+  border-radius: 0.5em;
+  min-width: 13em;
+  max-width: 13em;
+  margin: 0 auto;
 
-  .parsley-errors-list {
-    font-size: $font-size-smaller;
-    padding-left: 0;
-    margin-bottom: 5px;
-
-    li {
-      list-style: none;
-      color: $brand-danger;
-    }
-  }
-
-  .loaderPosition {
-    position: relative;
-    margin-right: 20px;
-    margin-bottom: 10px;
-  }
-  input[type=number]::-webkit-inner-spin-button,
-  input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
+  ul {
+    list-style: none;
     margin: 0;
+    padding: 0;
+    text-align: center;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 60%;
+      left: 12.5%;
+      right: 12.5%;
+      height: 6px;
+      margin-top: -3px;
+      background: #757575;
+    }
+  }
+
+  li {
+    display: inline-block;
+    position: relative;
+    width: 50%;
+    font-size: large;
+  }
+
+  [type="radio"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 1;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
+  label {
+    line-height: 30px;
+    padding-bottom: 40px;
+    display: block;
+    color: #14baa6;
+    font-variant: small-caps;
+
+    &::after,
+    &::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 60%;
+      border-radius: 50%;
+      transform: translate3d(0,0,0);
+      @include transition( .35s cubic-bezier( 0.175, 0.885, 0.320, 1.275 ) all ); // inspired by Ladda by hakim.se
+    }
+
+    &::before {
+      width: 20px;
+      height: 20px;
+      margin: -10px 0 0 -10px;
+      border: 0 solid #757575;
+      background: #757575;
+      transform: scale( 0.7 );
+    }
+
+    &::after {
+      width: 10px;
+      height: 10px;
+      margin: -5px 0 0 -5px;
+      background: #14baa6;
+      transform: scale( 0 );
+      opacity: 0;
+    }
+  }
+
+  :checked {
+    + label {
+      &::after,
+      &::before {
+        @include transition( .4s cubic-bezier( 1, -1, 0.4, 1.4 ) all );
+      }
+
+      &::before {
+        transform: scale( 1 );
+      }
+
+      &::after {
+        transform: scale( 1 );
+        opacity: 1;
+        box-shadow: inset 0 -5px 5px -5px #ccc, 0 2px 5px -2px #000;
+      }
+    }
   }
 }
