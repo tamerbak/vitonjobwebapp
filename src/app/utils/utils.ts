@@ -71,4 +71,9 @@ export class Utils {
     return re.test(char);
   }
 
+  public static isValidUrl(u){
+    var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+    return regexp.test(u);
+  }
+
 }
