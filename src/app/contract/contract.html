@@ -168,7 +168,9 @@
       <div class="col-md-6 col-xs-12">
         <div class="form-group">
           <label >Début de mission&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
-          <input type="date" name="missionStartDate" class="form-control" [(ngModel)]="contractData.missionStartDate" aria-describedby="debut" (change)="watchMissionDate($event)" required/>
+          <datetime id="birthdate" [(ngModel)]="contractData.missionStartDate" name="missionStartDate" [timepicker]="false"
+                            [datepicker]="{language:'fr-FR',autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}"
+                            (ngModelChange)="watchMissionStartDate($event)"></datetime>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
@@ -178,19 +180,23 @@
         </div>
         <div class="form-group">
           <label>Début terme </label>
-          <input type="date" name="termStartDate" class="form-control" [(ngModel)]="contractData.termStartDate" aria-describedby="deb" />
+          <datetime id="birthdate" [(ngModel)]="contractData.termStartDate" name="termStartDate" [timepicker]="false"
+                            [datepicker]="{language:'fr-FR',autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}"></datetime>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label >Fin terme</label>
-          <input type="date" name="termEndDate" class="form-control" [(ngModel)]="contractData.termEndDate" aria-describedby="terme" />
+          <datetime id="birthdate" [(ngModel)]="contractData.termEndDate" name="termEndDate" [timepicker]="false"
+                            [datepicker]="{language:'fr-FR',autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}"></datetime>
           <small class="form-text text-muted"></small>
         </div>
       </div>
       <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
           <label >Fin de mission&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
-          <input type="date" name="missionEndDate" class="form-control" [(ngModel)]="contractData.missionEndDate" aria-describedby="fin" (change)="watchMissionDate($event)" required/>
+          <datetime id="birthdate" [(ngModel)]="contractData.missionEndDate" name="missionEndDate" [timepicker]="false"
+                            [datepicker]="{language:'fr-FR',autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}"
+                            (ngModelChange)="watchMissionEndDate($event)"></datetime>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
@@ -221,7 +227,9 @@
       <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
           <label >Début de souplesse</label>
-          <input type="date" name="debutSouplesse" class="form-control" [(ngModel)]="contractData.debutSouplesse" aria-describedby="debut" />
+          <!--<input type="date" name="debutSouplesse" class="form-control" [(ngModel)]="contractData.debutSouplesse" aria-describedby="debut" />-->
+          <datetime id="birthdate" [(ngModel)]="contractData.debutSouplesse" name="debutSouplesse" [timepicker]="false"
+                            [datepicker]="{language:'fr-FR',autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}"></datetime>
         </div>
         <div class="checkbox contract-form-checkbox">
           <label >
@@ -235,7 +243,9 @@
       <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
           <label >Fin de souplesse</label>
-          <input type="date" name="finSouplesse" class="form-control" [(ngModel)]="contractData.finSouplesse" aria-describedby="fin" />
+          <!--<input type="date" name="finSouplesse" class="form-control" [(ngModel)]="contractData.finSouplesse" aria-describedby="fin" />-->
+          <datetime id="birthdate" [(ngModel)]="contractData.finSouplesse" name="finSouplesse" [timepicker]="false"
+                            [datepicker]="{language:'fr-FR',autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}"></datetime>
         </div>
         <div class="checkbox contract-form-checkbox">
           <label >
@@ -497,7 +507,7 @@
       <alert [type]="'danger alert-sm'" *ngIf="missingJobyerData()">
         <div [innerHTML]="'Vous ne pouvez actuellement pas soumettre ce contrat car des informations liées au jobyer sont manquantes'"></div>
       </alert>
-      <alert [type]="'danger alert-sm'" *ngIf="!isMissionDateValid">
+      <alert [type]="'danger alert-sm'" [hidden]="isMissionDateValid">
         <div [innerHTML]="'Vous ne pouvez actuellement pas soumettre ce contrat car les dates de début et fin de mission ne sont pas cohérentes'"></div>
       </alert>
     </div>
