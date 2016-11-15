@@ -27,6 +27,7 @@
               <i class="fa fa-credit-card mr-xs"></i>
               Modifier les coordonnées bancaires
             </button>
+            
           </div>
         </div>
         <div class="row">
@@ -88,7 +89,7 @@
 
   <div modal-bank-account></div>
 
-  <div [hidden]="!showForm" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
+  <div id="profileForm" [hidden]="!showForm" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
     <section class="widget">
       <div class="widget-body">
         <form #myForm="ngForm" class="profile-form form-horizontal" role="form">

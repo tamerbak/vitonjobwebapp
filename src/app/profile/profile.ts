@@ -456,6 +456,9 @@ export class Profile{
    */
   initForm() {
     this.showForm = true;
+    var offset = jQuery("#profileForm").offset().top;
+    var point = offset+window.innerHeight-50;
+    
     this.title = !this.currentUser.titre ? "M." : this.currentUser.titre;
     jQuery('.titleSelectPicker').selectpicker('val', this.title);
     this.lastname = this.currentUser.nom;
@@ -648,7 +651,13 @@ export class Profile{
     });
 
     this.initValidation();
+    //$( "#profileForm" ).scrollTop( 300 );
+    window.setTimeout(function(){
+      window.scrollTo(0,point);   
+    }, 1000);
+
   }
+
 
   updateScan(accountId, userId, role) {
     /*if (this.scanData) {
