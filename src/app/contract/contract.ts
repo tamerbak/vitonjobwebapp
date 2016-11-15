@@ -711,20 +711,18 @@ export class Contract {
   }
 
   watchMissionStartDate(e){
-    let now = new Date().setHours(0, 0, 0, 0);
-    let today = new Date(now).toISOString().split('T')[0];
     this.contractData.missionStartDate = e.toISOString().split('T')[0];
-    if(this.contractData.missionStartDate > this.contractData.missionEndDate || this.contractData.missionStartDate < today || this.contractData.missionEndDate < today){
-      this.isMissionDateValid = false;
-    }else{
-      this.isMissionDateValid = true;
-    }
+    this.watchMissionDate();
   }
 
    watchMissionEndDate(e){
+    this.contractData.missionEndDate = e.toISOString().split('T')[0];
+    this.watchMissionDate();
+  }
+
+  watchMissionDate(){
     let now = new Date().setHours(0, 0, 0, 0);
     let today = new Date(now).toISOString().split('T')[0];
-    this.contractData.missionEndDate = e.toISOString().split('T')[0];
     if(this.contractData.missionStartDate > this.contractData.missionEndDate || this.contractData.missionStartDate < today || this.contractData.missionEndDate < today){
       this.isMissionDateValid = false;
     }else{
