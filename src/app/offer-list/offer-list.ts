@@ -64,16 +64,23 @@ export class OfferList {
     this.offerList = this.projectTarget == 'employer'
       ? this.sharedService.getCurrentUser().employer.entreprises[0].offers
       : this.sharedService.getCurrentUser().jobyer.offers;
-
     let obsoleteOffers = [];
     for (let i = 0; i < this.offerList.length; i++) {
       let offer = this.offerList[i];
 
-      this.offersService.loadOfferPrerequisObligatoires(this.offerList[i].idOffer).then((data:any)=>{
-        this.offerList[i].jobData.prerequisObligatoires = [];
-        for(let j = 0 ; j < data.length ; j++)
-          this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
-      });
+      if(this.projectTarget == 'employer'){
+        this.offersService.loadOfferPrerequisObligatoires(this.offerList[i].idOffer).then((data:any)=>{
+          this.offerList[i].jobData.prerequisObligatoires = [];
+          for(let j = 0 ; j < data.length ; j++)
+            this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
+        });
+      }else if(this.projectTarget == 'jobyer'){
+        this.offersService.loadOfferNecessaryDocuments(this.offerList[i].idOffer).then((data:any)=>{
+          this.offerList[i].jobData.prerequisObligatoires = [];
+          for(let j = 0 ; j < data.length ; j++)
+            this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
+        });
+      }
 
       if (!offer || !offer.jobData || !offer.calendarData ||(offer.calendarData && offer.calendarData.length == 0)) {
         continue;
