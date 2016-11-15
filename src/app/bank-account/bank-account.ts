@@ -136,7 +136,7 @@ export class BankAccount {
       _hint = "Ce champ est obligtoire";
       _isValid = false;
     }else if(_name !== this.getUserFullName() ){
-      _hint = "Le nom et lz prénom ne sont pas identiques a vous données";
+      _hint = "Le nom et prénom fournis ne sont pas identiques à vos informations de profil";
       _isValid = false;
     } else {
       _hint = "";
