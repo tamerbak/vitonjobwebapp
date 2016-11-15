@@ -57,9 +57,11 @@ export class Profile{
   nationalities = [];
   personalAddress: string;
   jobAddress: string;
+  corspAddress: string;
 
   isValidPersonalAddress: boolean = true;
   isValidJobAddress: boolean = true;
+  isValidCorspAddress: boolean = true;
   isValidLastname: boolean = true;
   isValidFirstname: boolean = true;
   isValidCompanyname: boolean = true;
@@ -96,6 +98,14 @@ export class Profile{
   streetNumberJA: string;
   nameJA: string;
   zipCodeJA: string;
+
+   //CorspAddress params
+  cityCA: string;
+  countryCA: string;
+  streetCA: string;
+  streetNumberCA: string;
+  nameCA: string;
+  zipCodeCA: string;
 
 
   //currentUser object
@@ -398,6 +408,24 @@ export class Profile{
     this.isValidForm();
   }
 
+  watchCorspAddress(e) {
+    let _address = e.target.value;
+    let _isValid: boolean = true;
+    let _hint: string = "";
+
+    this.nameCA = _address;
+    this.streetNumberCA = "";
+    this.streetCA = "";
+    this.zipCodeCA = "";
+    this.cityCA = "";
+    this.countryCA = "";
+
+    this.corspAddress = _address;
+    this.isValidCorspAddress = _isValid;
+    console.log();
+    this.isValidForm();
+  }
+
   autocompletePersonalAddress() {
     this._loader.load().then(() => {
       //let autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocompletePersonal"), {});
@@ -438,6 +466,29 @@ export class Profile{
           this.countryJA = (addressObj.country.replace("&#39;", "'") == "" ? 'France' : addressObj.country.replace("&#39;", "'"));
 
           this.isValidJobAddress = true;
+          this.isValidForm();
+        });
+      });
+    });
+  }
+
+  autocompleteCorspAddress() {
+    this._loader.load().then(() => {
+      //let autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocompleteJob"), {});
+      google.maps.event.addListener(this.autocompleteJA, 'place_changed', () => {
+        let place = this.autocompleteJA.getPlace();
+        var addressObj = AddressUtils.decorticateGeolocAddress(place);
+
+        this.corspAddress = place['formatted_address'];
+        this.zone.run(()=> {
+          this.nameCA = !addressObj.name ? '' : addressObj.name.replace("&#39;", "'");
+          this.streetNumberCA = addressObj.streetNumber.replace("&#39;", "'");
+          this.streetCA = addressObj.street.replace("&#39;", "'");
+          this.zipCodeCA = addressObj.zipCode;
+          this.cityCA = addressObj.city.replace("&#39;", "'");
+          this.countryCA = (addressObj.country.replace("&#39;", "'") == "" ? 'France' : addressObj.country.replace("&#39;", "'"));
+
+          this.isValidCorspAddress = true;
           this.isValidForm();
         });
       });
@@ -983,7 +1034,7 @@ export class Profile{
         _isFormValid = false;
       }
     } else if (this.isEmployer) {
-      if (this.isValidFirstname && this.isValidLastname && this.isValidCompanyname && this.isValidSiret && this.isValidApe && this.isValidPersonalAddress && this.isValidJobAddress && !Utils.isEmpty(this.conventionId)) {
+      if (this.isValidFirstname && this.isValidLastname && this.isValidCompanyname && this.isValidSiret && this.isValidApe && this.isValidPersonalAddress && this.isValidJobAddress && this.isValidCorspAddress && !Utils.isEmpty(this.conventionId)) {
         _isFormValid = true;
       } else {
         _isFormValid = false;
@@ -1190,6 +1241,10 @@ export class Profile{
                   this.updateJobAddress();
                 }
 
+                if (this.isCorspAddressModified()) {
+                  this.updateCorspAddress();
+                }
+
                 //save qualities
                 this.saveQualities();
                 Messenger().post({
@@ -1388,6 +1443,13 @@ export class Profile{
     }
   }
 
+  //TODO:change with conv data
+  isCorspAddressModified() {
+    if (this.isEmployer) {
+      return (this.corspAddress != this.currentUser.employer.entreprises[0].workAdress.fullAdress);
+    }
+  }
+
   updateJobAddress() {
     if (this.isValidForm()) {
       this.validation = true;
@@ -1451,6 +1513,49 @@ export class Profile{
               this.sharedService.setCurrentUser(this.currentUser);
 
               this.validation = false;
+            }
+          });
+      }
+    }
+  }
+
+  updateCorspAddress() {
+    if (this.isValidForm()) {
+      this.validation = true;
+      var street = this.streetCA;
+      var streetNumber = this.streetNumberCA;
+      var name = this.nameCA;
+      var city = this.cityCA;
+      var country = this.countryCA;
+      var zipCode = this.zipCodeCA;
+      var accountId = this.accountId;
+      var userRoleId = this.userRoleId;
+      //TODO Change with correct Data
+      if (this.isEmployer) {
+        var entreprise = this.currentUser.employer.entreprises[0];
+        var entrepriseId = "" + entreprise.id + "";
+        // update personal address
+        this.profileService.updateUserJobAddress(entrepriseId, name, streetNumber, street, zipCode, city, country, 'employeur')
+          .then((data: any) => {
+            if (!data || data.status == "failure") {
+              // console.log(data.error);
+              // console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
+              this.validation = false;
+              return;
+            } else {
+              //id address not send by server
+              entreprise.workAdress.id = JSON.parse(data._body).id;
+              entreprise.workAdress.fullAdress = (name ? name + ", " : "") + (streetNumber ? streetNumber + ", " : "") + (street ? street + ", " : "") + (zipCode ? zipCode + ", " : "") + city + ", " + country;
+              entreprise.workAdress.name = name;
+              entreprise.workAdress.streetNumber = streetNumber;
+              entreprise.workAdress.street = street;
+              entreprise.workAdress.zipCode = zipCode;
+              entreprise.workAdress.city = city;
+              entreprise.workAdress.country = country;
+              this.currentUser.employer.entreprises[0] = entreprise;
+              this.sharedService.setCurrentUser(this.currentUser);
+              this.validation = false;
+
             }
           });
       }
