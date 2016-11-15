@@ -118,7 +118,7 @@ export class Profile{
   companyAlert: string = "";
   showCurrentCompanyBtn: boolean = false;
   personalAddressLabel: string = "Adresse du siège";
-  jobAddressLabel: string = "Adresse du lieu du travail";
+  jobAddressLabel: string = "Adresse du lieu de travail";
   autocompletePA: any;
   autocompleteJA: any;
   addressOptions = {
