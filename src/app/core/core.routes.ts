@@ -22,7 +22,6 @@ import {RecruiterList} from "../recruiter-list/recruiter-list";
 import {RecruiterEdit} from "../recruiter-edit/recruiter-edit";
 import {ConfirmExitPage, CanAccessPage} from "../../providers/routes.service";
 import {PaymentMethod} from "../payment-method/payment-method";
-import {About} from "../about/about";
 
 /**
  * VitOnJob modules
@@ -78,9 +77,6 @@ export const CoreRoutes: RouterConfig = [
 
       // Attachments chest
       {path: 'attachements', component: Attachements},
-
-      // About
-      {path: 'about', component: About},
     ]
   }
 ];
