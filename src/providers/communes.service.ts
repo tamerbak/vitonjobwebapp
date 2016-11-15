@@ -13,7 +13,7 @@ export class CommunesService{
 
   getCitiesByTerm() {
     return function (term, page) {
-      return "select pk_user_ville as id, nom from user_ville where lower_unaccent(nom) % lower_unaccent('" + term + "') order by nom asc limit 5";
+      return "select pk_user_ville as id, nom from user_ville where lower_unaccent(nom) like lower_unaccent('%" + term + "%') order by nom asc";
     }
   }
 
