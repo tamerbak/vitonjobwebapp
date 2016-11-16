@@ -84,9 +84,9 @@
 					</span>
           <span *ngIf="!sharedService.getCurrentUser().nom">Bienvenue</span>
           <span *ngIf="sharedService.getCurrentUser().nom">
-&nbsp;           {{ sharedService.getCurrentUser().titre }} {{ sharedService.getCurrentUser().prenom }} <strong>{{ sharedService.getCurrentUser().nom }}</strong>
+&nbsp;           {{ sharedService.getCurrentUser().titre }} {{ sharedService.getCurrentUser().prenom }} {{ sharedService.getCurrentUser().nom }}
             <span *ngIf="sharedService.getCurrentUser().estEmployeur && sharedService.getCurrentUser().employer.entreprises.length > 0">
-              - {{ sharedService.getCurrentUser().employer.entreprises[0].nom }}
+              - <strong>{{ sharedService.getCurrentUser().employer.entreprises[0].nom }}</strong>
             </span>
           </span>
           <span class="circle bg-warning fw-bold ">

@@ -5,6 +5,7 @@ import {LoadListService} from "../../providers/load-list.service";
 import {AuthenticationService} from "../../providers/authentication.service";
 import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
+import {Utils} from "../utils/utils";
 declare var Messenger:any;
 
 @Component({
@@ -31,6 +32,8 @@ export class RecruiterEdit {
   isPhoneNumValid = true;
   phoneExist: boolean;
   pays = [];
+  email: string;
+  emailExist: boolean = false;
 
   constructor(private sharedService: SharedService,
               public recruiterService: RecruiterService,
@@ -72,7 +75,7 @@ export class RecruiterEdit {
     this.lastname = contact.lastname;
     this.index = this.splitPhoneNumber(contact.phone)[0];
     this.phone = this.splitPhoneNumber(contact.phone)[1];
-    //this.email = contact.email;
+    this.email = contact.email;
     this.accountid = contact.accountid;
   }
 
@@ -97,7 +100,7 @@ export class RecruiterEdit {
     contact.firstname = this.firstname;
     contact.lastname = this.lastname;
     contact.phone = "+" + this.index + "" + this.phone;
-    //contact.email = this.email;
+    contact.email = this.email;
     contact.accountid = this.accountid;
     if(obj == 'save'){
       if(this.obj == "detail"){
@@ -241,8 +244,33 @@ export class RecruiterEdit {
     }
   }
 
+  isEmailExist(e) {
+    //verify if the email exist in the database
+    this.authService.getUserByMail(this.email, "employer").then((data: any) => {
+      if (!data || data.status == "failure") {
+        this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
+        return;
+      }
+      if (data && data.data.length != 0) {
+        this.emailExist = true;
+      } else {
+        this.emailExist = false;
+      }
+    });
+  }
+
+  /**
+   * @description validate the email format
+   */
+  showEmailError() {
+    if (this.email)
+      return !(Utils.isEmailValid(this.email));
+    else
+      return false;
+  }
+
   isUpdateDisabled(){
-    return (!this.index || !this.phone || !this.isPhoneNumValid || this.phoneExist || (!this.firstname && !this.lastname));
+    return (!this.index || !this.phone || !this.isPhoneNumValid || this.phoneExist || (!this.firstname && !this.lastname) || !this.email || this.showEmailError() || this.emailExist);
   }
 
   addAlert(type, msg): void {
@@ -250,10 +278,7 @@ export class RecruiterEdit {
   }
 
   isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
+    return Utils.isEmpty(str);
   }
 
   ngOnDestroy(): void {
