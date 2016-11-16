@@ -915,6 +915,56 @@ export class OffersService {
     });
   }
 
+  getOfferConventionParameters(idOffer){
+    let sql = "select pk_user_parametrage_convention as id, remuneration_de_reference as rate, " +
+      "fk_user_convention_collective as idcc, fk_user_categorie_convention as idcat, " +
+      "fk_user_echelon_convention as idechelon, fk_user_coefficient_convention as idcoeff, fk_user_niveau_convention_collective as idniv " +
+      "from user_parametrage_convention where " +
+      "pk_user_parametrage_convention in (select fk_user_parametrage_convention " +
+        "from user_offre_entreprise " +
+        "where pk_user_offre_entreprise="+idOffer+")";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data:any) => {
+          let parameter = {
+            idechelon: null,
+            idcat:null,
+            idcoeff:null,
+            idniv:null
+          };
+          if(data.data && data.data.length>0){
+
+            let d = data.data[0];
+            if(d.idechelon && d.idechelon != 'null')
+              parameter.idechelon = d.idechelon;
+            if(d.idcat && d.idcat != 'null')
+              parameter.idcat = d.idcat;
+            if(d.idcoeff && d.idcoeff != 'null')
+              parameter.idcoeff = d.idcoeff;
+            if(d.idniv && d.idniv != 'null')
+              parameter.idniv = d.idniv;
+          }
+
+          resolve(parameter);
+        });
+    });
+  }
+
+  saveOfferConventionParameters(idOffer, idParameter){
+    let sql = 'update user_offre_entreprise set fk_user_parametrage_convention='+idParameter+' where pk_user_offre_entreprise='+idOffer;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
   /*********************************************************************************************************************
    *  COLLECTIVE CONVENTIONS ADVANTAGES
    *********************************************************************************************************************/
