@@ -100,7 +100,6 @@ export class OfferEdit{
   cityOA : string;
   countryOA : string;
 
-  timePickers : any = [];
   addressOptions = {
     componentRestrictions: {country: "fr"}
   };
@@ -131,7 +130,6 @@ export class OfferEdit{
 
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
 
-    console.log(this.timePickers)
     if (this.currentUser.estEmployeur && this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
       //  Load collective convention
       this.offersService.getConvention(this.currentUser.employer.entreprises[0].conventionCollective.id).then(c=> {
@@ -842,14 +840,6 @@ export class OfferEdit{
       this.validateJob();
 
     }
-  }
-
-  watchSlotEHour(e:Date){
-    console.log(e)
-    e.setHours(14);
-    e.setMinutes(13);
-    this.slot.endHour = e;
-    
   }
 
   validateJob(stayOnPage = false) {
