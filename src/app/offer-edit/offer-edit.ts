@@ -376,6 +376,50 @@ export class OfferEdit{
         self.prerequisOb = e.choice.libelle;
       }
     )
+
+    /*
+     * PREREQUIS
+     */
+    jQuery('.prerequis-jobyer-select').select2({
+      maximumSelectionLength: 1,
+      tokenSeparators: [",", " "],
+      ajax: {
+        url: Configs.sqlURL,
+        type: 'POST',
+        dataType: 'json',
+        quietMillis: 250,
+        transport: function (params) {
+          params.beforeSend = Configs.getSelect2TextHeaders();
+          return jQuery.ajax(params);
+        },
+        data: function (term, page) {
+          return self.offersService.selectPrerequis(term);
+        },
+        results: function (data, page) {
+          self.prerequisObList = data.data;
+          return {results: data.data};
+        },
+        cache: false,
+
+      },
+
+      formatResult: function (item) {
+        return item.libelle;
+      },
+      formatSelection: function (item) {
+        return item.libelle;
+      },
+      dropdownCssClass: "bigdrop",
+      escapeMarkup: function (markup) {
+        return markup;
+      },
+      minimumInputLength: 1
+    });
+    jQuery('.prerequis-jobyer-select').on('select2-selecting',
+      (e) => {
+        self.prerequisOb = e.choice.libelle;
+      }
+    )
   }
 
   addPrerequis() {
@@ -692,10 +736,17 @@ export class OfferEdit{
         this.dataValidation = true;
         let offer = JSON.parse(data._body);
 
+        debugger;
+
+        if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0) {
+          offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
+        }
         if (this.projectTarget == 'employer') {
           if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0) {
             offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
           }
+
+        if (this.projectTarget == 'employer') {
 
           if(this.offerAddress){
 
@@ -711,6 +762,8 @@ export class OfferEdit{
           }
           this.currentUser.employer.entreprises[0].offers.push(offer);
         } else {
+
+
           if(this.offerAddress && this.cityOA && this.cityOA.length>0){
             this.offersService.saveOfferAdress(offer,
               this.offerAddress, this.streetNumberOA,
