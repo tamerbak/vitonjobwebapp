@@ -43,7 +43,22 @@
                   </label>
                 </div>
               </div>
-              <div class="form-group row">
+
+              <div class="form-group row" *ngIf="isRecruteur">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">Je me connecte avec mon</label>
+                <div class="abc-radio">
+                  <input type="radio" name="typeConnRadio" id="telRadio" value="tel" (click)="watchTypeConnection($event)" checked>
+                  <label for="telRadio" class="labelRadio">
+                    N° de téléphone
+                  </label>
+                  <input type="radio" name="typeConnRadio" id="emailRadio" value="email" (click)="watchTypeConnection($event)">
+                  <label for="emailRadio" class="labelRadio">
+                    Email
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group row" [hidden]="isRecruteur && isConnByEmail">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">Téléphone</label>
                 <div class="col-md-4 col-xs-6">
                   <!--<div class="input-group">
@@ -76,7 +91,7 @@
                   </ul>
                 </div>
               </div>
-              <div class="form-group row" [hidden]="!showEmailField">
+              <div class="form-group row" *ngIf="showEmailField || (isRecruteur && isConnByEmail)">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">Email</label>
                 <div class="col-md-8 col-xs-12">
                   <input [(ngModel)]="email" class="form-control" type="email" (change)="isEmailExist($event)">
@@ -85,6 +100,9 @@
                   </ul>
                   <ul class="parsley-errors-list filled" [hidden]="!emailExist || isEmpty(email)">
                     <li class="parsley-required">Cet email est déjà utilisé. Veuillez en choisir un autre.</li>
+                  </ul>
+                  <ul class="parsley-errors-list filled" [hidden]="isRoleEmailConform">
+                    <li class="parsley-required">Cet email ne correspond pas au rôle choisi.</li>
                   </ul>
                 </div>
               </div>

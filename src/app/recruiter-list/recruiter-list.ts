@@ -11,6 +11,7 @@ import {RecruiterService} from '../../providers/recruiter-service';
   directives: [ROUTER_DIRECTIVES],
   providers: [RecruiterService]
 })
+
 export class RecruiterList {
   currentUser: any;
   projectTarget: string;
