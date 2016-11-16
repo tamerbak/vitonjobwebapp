@@ -231,13 +231,13 @@
           <datetime id="birthdate" [(ngModel)]="contractData.debutSouplesse" name="debutSouplesse" [timepicker]="false"
                             [datepicker]="{language:'fr-FR',autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}"></datetime>
         </div>
-        <div class="checkbox contract-form-checkbox">
+        <!--<div class="checkbox contract-form-checkbox">
           <label >
             <input type="checkbox" [(ngModel)]="embaucheAutorise" />
             A l'issue de la mission, l'embauche par l'entreprise utilisatrice n'est pas interdite
             &nbsp;<span  style="color: #ff0000;font-size: small;" >*</span>
           </label>
-        </div>
+        </div>-->
 
       </div>
       <div class="col-md-6 col-xs-12 col-2">
@@ -247,13 +247,13 @@
           <datetime id="birthdate" [(ngModel)]="contractData.finSouplesse" name="finSouplesse" [timepicker]="false"
                             [datepicker]="{language:'fr-FR',autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}"></datetime>
         </div>
-        <div class="checkbox contract-form-checkbox">
+        <!--<div class="checkbox contract-form-checkbox">
           <label >
             <input type="checkbox" [(ngModel)]="rapatriement" />
             Le rapatriement est à la charge de l'entreprise de travail temporaire (si la mission s'effectue hors du territoire métropolitain)
             &nbsp;<span  style="color: #ff0000;font-size: small;" >*</span>
           </label>
-        </div>
+        </div>-->
       </div>
     </div>
     <div class="row">
@@ -501,7 +501,7 @@
       </div>
     </div>
     <div class="row" style="text-align: center;">
-      <alert [type]="'danger alert-sm'" *ngIf="!formCtrl.form.valid || !rapatriement || !embaucheAutorise">
+      <alert [type]="'danger alert-sm'" *ngIf="!formCtrl.form.valid">
         <div [innerHTML]="'Vous ne pouvez actuellement pas soumettre ce contrat car certaines de vos informations sont manquantes ou incorrectes'"></div>
       </alert>
       <alert [type]="'danger alert-sm'" *ngIf="missingJobyerData()">

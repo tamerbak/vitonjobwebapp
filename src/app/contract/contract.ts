@@ -584,7 +584,7 @@ export class Contract {
   }
 
   goToYousignPage() {
-    let isValid = this.rapatriement && this.embaucheAutorise && !this.missingJobyerData() && this.isMissionDateValid;
+    let isValid = !this.missingJobyerData() && this.isMissionDateValid;
     if(!isValid){
       return;
     }
