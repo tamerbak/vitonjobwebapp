@@ -59,7 +59,7 @@
             <br />
             <button *ngIf="isEmployer" [disabled]="phase=='CHANGE_MISSION'" class="btn btn-default btn-sm mt"
                     (click)="initMissionPhaseForm()">
-              Modifier l'option suivi de mission
+              Modifier le mode de validation des horaires
             </button>
             <br />
             <button *ngIf="isEmployer && !isSpontaneousContact()" class="btn btn-default btn-sm mt"
@@ -112,7 +112,7 @@
                 <div class="abc-radio">
                   <input type="radio" name="radio1" id="radio3" value="3" (click)="watchOption($event)" disabled>
                   <label for="radio3">
-                    Option 3: Définition, suivi et validation des horaires pointés par les jobyers
+                    Option 3: Définition, suivi et validation des horaires par badgeuse
                   </label>
                 </div>
               </div>

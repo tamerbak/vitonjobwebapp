@@ -14,7 +14,7 @@ import {OffersService} from "../../providers/offer.service";
 import {AlertComponent} from "ng2-bootstrap";
 import {SmsService} from "../../providers/sms-service";
 
-declare var Messenger: any;
+declare var Messenger,jQuery,moment: any;
 
 /**
  * @author daoudi amine
@@ -332,7 +332,6 @@ export class Contract {
           }
         }
       });
-
       this.initContract();
     }
 
@@ -399,7 +398,6 @@ export class Contract {
     m = d.getMonth() + 1;
     da = d.getDate();
     sd = d.getFullYear() + "-" + (m < 10 ? '0' : '') + m + "-" + (da < 10 ? '0' : '') + da;
-
     return sd;
   }
 
@@ -479,8 +477,8 @@ export class Contract {
       debutTitreTravail: this.jobyer.debutTitreTravail ? this.dateFormat(this.jobyer.debutTitreTravail) : "",
       finTitreTravail: this.jobyer.finTitreTravail ? this.dateFormat(this.jobyer.finTitreTravail) : "",
       periodesNonTravaillees: "",
-      debutSouplesse: "",
-      finSouplesse: "",
+      debutSouplesse: null,
+      finSouplesse: null,
       equipements: "",
       interim: "Tempo'AIR",
       missionStartDate: this.getStartDate(),
@@ -534,6 +532,19 @@ export class Contract {
       }
 
     });
+  }
+
+  ngAfterViewInit(){
+    var elements = [];
+        jQuery("div[id^='q-datepicker_']").each(function () {
+          elements.push(this.id);
+        });
+        jQuery('#' + elements[0]).datepicker('update', moment(this.contractData.missionStartDate).format('DD/MM/YYYY'));
+        jQuery('#' + elements[1]).datepicker('update', moment(this.contractData.termStartDate).format('DD/MM/YYYY'));
+        jQuery('#' + elements[2]).datepicker('update', moment(this.contractData.termEndDate).format('DD/MM/YYYY'));
+        jQuery('#' + elements[3]).datepicker('update', moment(this.contractData.missionEndDate).format('DD/MM/YYYY'));
+        jQuery('#' + elements[4]).datepicker('update', "");
+        jQuery('#' + elements[5]).datepicker('update', "");
   }
 
   initWorkStartHour(){
@@ -697,6 +708,16 @@ export class Contract {
       || !this.contractData.finTitreTravail
       || !this.contractData.qualification
     );
+  }
+
+  watchMissionStartDate(e){
+    this.contractData.missionStartDate = e.toISOString().split('T')[0];
+    this.watchMissionDate();
+  }
+
+   watchMissionEndDate(e){
+    this.contractData.missionEndDate = e.toISOString().split('T')[0];
+    this.watchMissionDate();
   }
 
   watchMissionDate(){

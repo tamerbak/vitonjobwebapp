@@ -1,0 +1,70 @@
+.contenu {
+  text-align: center;
+  width: 100%;
+  vertical-align: middle;
+}
+
+.text {
+  font-size: x-large;
+}
+
+.apple-google-logo {
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
+
+.apple {
+  width: 22%;
+  margin-left: 2em;
+}
+
+.google {
+  width: 22%;
+  margin-left: 2em;
+}
+
+.logo-vitonjob {
+  width: 40%;
+  margin-bottom: 3em;
+}
+
+.site-web {
+  margin-bottom: 1em;
+}
+
+.version {
+  margin-bottom: 1em;
+}
+@media screen and (max-width: 800px) {
+  .apple {
+    width: 30% !important;
+    margin-left: 2em !important;
+  }
+
+  .google {
+    width: 30%!important;
+    margin-left: 2em !important;
+  }
+
+  .logo-vitonjob {
+    width: 60% !important;
+    margin-bottom: 3em !important;
+  }
+}
+@media screen and (max-width: 500px) {
+  .apple {
+    width: 50% !important;
+    margin-bottom: 1em !important;
+    margin-left: 2em !important;
+  }
+
+  .google {
+    width: 50%!important;
+    margin-left: 2em !important;
+  }
+
+  .logo-vitonjob {
+    width: 70% !important;
+    margin-bottom: 3em !important;
+  }
+}

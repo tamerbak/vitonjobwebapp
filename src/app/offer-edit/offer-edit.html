@@ -48,7 +48,7 @@
               id="youtubeLink"
               class="form-control"
               name="youtubeLink"
-              placeholder="Lien de vidéo Youtube"
+              placeholder="Je me valorise avec une vidéo"
               type="text"
               [(ngModel)]="youtubeLink"
             />
@@ -158,7 +158,7 @@
         <!-- Niveau -->
         <div class="form-group row required">
           <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-            Niveau
+            Niveau d'expérience
           </label>
           <div class="col-md-8 col-xs-12">
             <div class="abc-radio">
@@ -257,44 +257,46 @@
       </fieldset>
 
       <fieldset *ngIf="convParametersVisible()">
-        <legend><strong>Avantages salariaux</strong></legend>
-        <div class="form-group row required">
+        <legend><strong>Conditions d'emploi</strong></legend>
+        <!--<div class="form-group row required">
           <label class="col-md-2 col-xs-2 form-control-label">Code</label>
           <label class="col-md-10 col-xs-10 form-control-label">Avantage</label>
-        </div>
+        </div>-->
         <div class="form-group row" *ngFor="let item of categoriesHeure">
-          <div class="col-md-2 col-xs-2">
+          <!--<div class="col-md-2 col-xs-2">
             <span>{{item.code}}</span>
-          </div>
-          <div class="col-md-10 col-xs-10">
+          </div>-->
+          <div class="col-md-12 col-xs-12">
             <span>{{item.libelle}}</span>
           </div>
         </div>
         <div class="form-group row" *ngFor="let item of majorationsHeure">
-          <div class="col-md-2 col-xs-2">
+          <!--<div class="col-md-2 col-xs-2">
             <span>{{item.code}}</span>
-          </div>
-          <div class="col-md-10 col-xs-10">
+          </div>-->
+          <div class="col-md-12 col-xs-12">
             <span>{{item.libelle}}</span>
           </div>
         </div>
         <div class="form-group row" *ngFor="let item of indemnites">
-          <div class="col-md-2 col-xs-2">
+          <!--<div class="col-md-2 col-xs-2">
             <span>{{item.code}}</span>
-          </div>
-          <div class="col-md-10 col-xs-10">
+          </div>-->
+          <div class="col-md-12 col-xs-12">
             <span>{{item.libelle}}</span>
           </div>
         </div>
       </fieldset>
 
-      <fieldset [hidden]="projectTarget=='jobyer'">
-        <legend><strong>Prérequis obligatoires</strong></legend>
+      <fieldset>
+        <legend><strong>{{ currentUser.estEmployeur ? 'Formation et habilitations':'liste des documents nécessaires' }}</strong></legend>
         <div class="container-fluid">
           <div class="row">
             <div class="col-xs-10">
-              <input type="hidden" class="select2 prerequis-select form-control" name="prerequis"
-                     placeholder="Prérequis" [(ngModel)]="prerequisOb" />
+              <input *ngIf="currentUser.estEmployeur" type="hidden" class="select2 prerequis-select form-control" name="prerequis"
+                     placeholder="Formation et habilitations" [(ngModel)]="prerequisOb" />
+              <input *ngIf="!currentUser.estEmployeur" type="hidden" class="select2 prerequis-jobyer-select form-control" name="documents"
+                     placeholder="Documents nécessaires" [(ngModel)]="prerequisOb" />
             </div>
             <div class="col-xs-2">
               <button class="btn btn-primary"
@@ -418,7 +420,7 @@
 
     <section widget class="widget widget-offer">
       <header class="bb widget-offer-header">
-        <h6><span class="fw-semi-bold widget-offer-header-title">Profil</span></h6>
+        <h6><span class="fw-semi-bold widget-offer-header-title">Profil recherché</span></h6>
       </header>
       <div class="widget-body">
 

@@ -1,3 +1,13 @@
+@import "../../scss/variables";
+@import "../../../node_modules/bootstrap/scss/_variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+@import "../../../node_modules/ng2-datetime/src/vendor/bootstrap-datepicker/bootstrap-datepicker3.min";
+@import "../../../node_modules/ng2-datetime/src/vendor/bootstrap-timepicker/bootstrap-timepicker.min";
+
+.input-group .date{
+  width:100% !important;
+}
+
 .contract-page{
   width: 70%;
   display: table;
@@ -42,5 +52,4 @@
   color: red;
 }
 
-@import "../../../node_modules/ng2-datetime/src/vendor/bootstrap-datepicker/bootstrap-datepicker3.min";
-@import "../../../node_modules/ng2-datetime/src/vendor/bootstrap-timepicker/bootstrap-timepicker.min";
+

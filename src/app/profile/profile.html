@@ -27,6 +27,7 @@
               <i class="fa fa-credit-card mr-xs"></i>
               Modifier les coordonnées bancaires
             </button>
+            
           </div>
         </div>
         <div class="row">
@@ -73,7 +74,7 @@
               </div>
               <div class="stat-item">
                 <p class="value text-xs-right">{{ missionStats.pending_recruitments }}</p>
-                <h6 class="name">Recrutement en cours</h6>
+                <h6 class="name">Recrutements en cours</h6>
               </div>
               <div class="stat-item">
                 <p class="value text-xs-right">{{ missionStats.missions_in_progress }}</p>
@@ -88,7 +89,7 @@
 
   <div modal-bank-account></div>
 
-  <div [hidden]="!showForm" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
+  <div id="profileForm" [hidden]="!showForm" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
     <section class="widget">
       <div class="widget-body">
         <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
@@ -213,7 +214,9 @@
                   Date de naissance
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input id="birthdate" type="date" class="form-control" [(ngModel)]="birthdate" (keyup)="watchBirthdate($event)"/>
+                  <datetime id="birthdate" [ngModel]="birthdate" name="birthdate" [timepicker]="false"
+                            [datepicker]="{language:'fr-FR',autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}"
+                            (ngModelChange)="watchBirthdate($event)"></datetime>
                 </div>
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
                   <span class="hint label label-danger">{{birthdateHint}}</span>
@@ -413,7 +416,10 @@
                   Pièce d'identité délivrée le
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input id="dateStay" type="date" class="form-control" [(ngModel)]="dateStay"/>
+                  <!-- <input id="dateStay" type="date" class="form-control" [(ngModel)]="dateStay"/> -->
+                  <datetime id="dateStay" [(ngModel)]="dateStay" name="dateStay" [timepicker]="false"
+                            [datepicker]="{language:'fr-FR',autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}"
+                            ></datetime>
                 </div>
               </div>
 
@@ -422,7 +428,10 @@
                   Pièce d'identité valable du
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input id="dateFromStay" type="date" class="form-control" [(ngModel)]="dateFromStay"/>
+                  <!-- <input id="dateFromStay" type="date" class="form-control" [(ngModel)]="dateFromStay"/> -->
+                  <datetime id="dateFromStay" [(ngModel)]="dateFromStay" name="dateFromStay" [timepicker]="false"
+                            [datepicker]="{language:'fr-FR',autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}"
+                            ></datetime>
                 </div>
               </div>
 
@@ -431,7 +440,10 @@
                   Pièce d'identité valable au
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input id="dateToStay" type="date" class="form-control" [(ngModel)]="dateToStay"/>
+                  <!-- <input id="dateToStay" type="date" class="form-control" [(ngModel)]="dateToStay"/> -->
+                  <datetime id="dateToStay" [(ngModel)]="dateToStay" name="dateToStay" [timepicker]="false"
+                            [datepicker]="{language:'fr-FR',autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}"
+                            ></datetime>
                 </div>
               </div>
 
@@ -509,8 +521,8 @@
                   Adresse de correspondance
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input id="autocompleteCorsp" type="text" class="form-control" placeholder="Rechercher une adresse" (keyup)="watchCorspAddress($event)"
-                         [(ngModel)]="corspAddress" (input)="autocompleteCorspAddress()"/>
+                  <input id="autocompleteCorrespondence" type="text" class="form-control" placeholder="Rechercher une adresse" (keyup)="watchCorrespondenceAddress($event)"
+                         [(ngModel)]="correspondenceAddress" (input)="autocompleteCorrespondenceAddress()"/>
                 </div>
               </div>
 
@@ -667,7 +679,7 @@
       <div class="widget-body">
         <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
           <fieldset>
-            <legend><strong>Disponibilités</strong></legend>
+            <legend><strong>Qualités</strong></legend>
             <div class="container-fluid">
               <div class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
