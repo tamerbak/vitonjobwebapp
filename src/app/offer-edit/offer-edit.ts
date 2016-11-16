@@ -99,6 +99,8 @@ export class OfferEdit{
   zipCodeOA : string;
   cityOA : string;
   countryOA : string;
+
+  timePickers : any = [];
   addressOptions = {
     componentRestrictions: {country: "fr"}
   };
@@ -125,8 +127,11 @@ export class OfferEdit{
   }
 
   ngOnInit(): void {
+
+
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
 
+    console.log(this.timePickers)
     if (this.currentUser.estEmployeur && this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
       //  Load collective convention
       this.offersService.getConvention(this.currentUser.employer.entreprises[0].conventionCollective.id).then(c=> {
@@ -303,7 +308,19 @@ export class OfferEdit{
     var self = this;
     this._loader.load().then(() => {
       this.autocompleteOA = new google.maps.places.Autocomplete(document.getElementById("autocompleteOfferAdress"), this.addressOptions);
+    });
 
+    //get timepickers elements
+    var elements =[]
+    jQuery("input[id^='q-timepicker_']").each(function () {
+     elements.push(this.id);
+    });
+
+    //add chnage event to endTime timepicker
+    jQuery('#' + elements[1]).timepicker().on('changeTime.timepicker', function(e) {
+      if(e.time.value == "0:00" || e.time.value == "00:00"){
+        jQuery('#' + elements[1]).timepicker('setTime', '11:59 PM');
+      }
     });
 
 
@@ -471,8 +488,11 @@ export class OfferEdit{
   }
 
   watchLevel(e) {
+
     this.offer.jobData.level = e.target.value;
   }
+
+
 
   //<editor-fold desc="Slots management">
 
@@ -741,10 +761,6 @@ export class OfferEdit{
         if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0) {
           offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
         }
-        if (this.projectTarget == 'employer') {
-          if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0) {
-            offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
-          }
 
         if (this.projectTarget == 'employer') {
 
@@ -826,6 +842,14 @@ export class OfferEdit{
       this.validateJob();
 
     }
+  }
+
+  watchSlotEHour(e:Date){
+    console.log(e)
+    e.setHours(14);
+    e.setMinutes(13);
+    this.slot.endHour = e;
+    
   }
 
   validateJob(stayOnPage = false) {
