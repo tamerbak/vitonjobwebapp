@@ -109,7 +109,6 @@ export class AuthenticationService {
       this.http.post(Configs.calloutURL, body, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          console.log(data);
           resolve(data);
         });
     })

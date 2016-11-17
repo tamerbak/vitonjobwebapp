@@ -58,7 +58,7 @@ export class Profile{
   nationalities = [];
   personalAddress: string;
   jobAddress: string;
-  CorrespondenceAddress: string;
+  correspondenceAddress: string;
 
   isValidPersonalAddress: boolean = true;
   isValidJobAddress: boolean = true;
@@ -392,7 +392,7 @@ export class Profile{
     this.cityCA = "";
     this.countryCA = "";
 
-    this.CorrespondenceAddress = _address;
+    this.correspondenceAddress = _address;
     this.isValidCorrespondenceAddress = _isValid;
     console.log();
     this.isValidForm();
@@ -451,7 +451,7 @@ export class Profile{
         let place = this.autocompleteCA.getPlace();
         var addressObj = AddressUtils.decorticateGeolocAddress(place);
 
-        this.CorrespondenceAddress = place['formatted_address'];
+        this.correspondenceAddress = place['formatted_address'];
         this.zone.run(()=> {
           this.nameCA = !addressObj.name ? '' : addressObj.name.replace("&#39;", "'");
           this.streetNumberCA = addressObj.streetNumber.replace("&#39;", "'");
@@ -614,7 +614,7 @@ export class Profile{
         this.isValidJobAddress = true;
 
         //get Correspondence Address
-        this.jobAddress = entreprise.correspondanceAdress.fullAdress;
+        this.correspondenceAddress = entreprise.correspondanceAdress.fullAdress;
         this.nameCA = entreprise.correspondanceAdress.name;
         this.streetNumberCA = entreprise.correspondanceAdress.streetNumber;
         this.streetCA = entreprise.correspondanceAdress.street;
@@ -1285,12 +1285,10 @@ export class Profile{
                   this.updatePersonalAddress();
                 }
                 if (this.isJobAddressModified()) {
-                  console.log("here.")
                   this.updateJobAddress();
                 }
 
                 if (this.isCorrespondenceAddressModified()) {
-                  console.log("here..")
                   this.updateCorrespondenceAddress();
                 }
 
@@ -1486,7 +1484,6 @@ export class Profile{
 
   isJobAddressModified() {
     if (this.isEmployer) {
-      console.log("?.")
       return (this.jobAddress != this.currentUser.employer.entreprises[0].workAdress.fullAdress);
     } else {
       return (this.jobAddress != this.currentUser.jobyer.workAdress.fullAdress);
@@ -1494,9 +1491,8 @@ export class Profile{
   }
 
   isCorrespondenceAddressModified() {
-    console.log("?..")
     if (this.isEmployer) {
-      return (this.CorrespondenceAddress != this.currentUser.employer.entreprises[0].correspondanceAdress.fullAdress);
+      return (this.correspondenceAddress != this.currentUser.employer.entreprises[0].correspondanceAdress.fullAdress);
     }
   }
 
