@@ -199,7 +199,7 @@ export class OfferEdit{
         this.offerAddress = data;
       });
       this.convertDetailSlotsForDisplay();
-
+      this.updateConventionParameters(this.offer.idOffer);
     } else {
       var jobData = {
         'class': "com.vitonjob.callouts.auth.model.JobData",
@@ -279,6 +279,24 @@ export class OfferEdit{
       todayHighlight: true,
       format: 'dd/mm/yyyy'
     };
+  }
+
+  updateConventionParameters(idOffer){
+    this.offersService.getOfferConventionParameters(idOffer).then((parameter:any)=>{
+
+      if(parameter.idechelon && parameter.idechelon!=null){
+        this.selectedEchConvID = parseInt(parameter.idechelon+'');
+      }
+      if(parameter.idcat && parameter.idcat!=null){
+        this.selectedCatConvID = parseInt(parameter.idcat+'');
+      }
+      if(parameter.idcoeff && parameter.idcoeff!=null){
+        this.selectedCoefConvID = parseInt(parameter.idcoeff+'');
+      }
+      if(parameter.idniv && parameter.idniv!=null){
+        this.selectedNivConvID = parseInt(parameter.idniv+'');
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -723,6 +741,10 @@ export class OfferEdit{
         if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0) {
           offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
         }
+        if (this.projectTarget == 'employer') {
+          if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0) {
+            offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
+          }
 
         if (this.projectTarget == 'employer') {
 
@@ -754,6 +776,12 @@ export class OfferEdit{
           }
           this.currentUser.jobyer.offers.push(offer);
         }
+
+        // Offer convention parameters
+
+        if (this.projectTarget == 'employer' && this.selectedParamConvID)
+          this.offersService.saveOfferConventionParameters(offer.idOffer, this.selectedParamConvID);
+
         this.sharedService.setCurrentUser(this.currentUser);
         Messenger().post({
           message: "L'offre " + "'" + this.offer.title + "'" + " a été ajoutée avec succès",
@@ -792,6 +820,9 @@ export class OfferEdit{
           });
         }
       }
+
+      if (this.projectTarget == 'employer' && this.selectedParamConvID)
+        this.offersService.saveOfferConventionParameters(this.offer.idOffer, this.selectedParamConvID);
       this.validateJob();
 
     }

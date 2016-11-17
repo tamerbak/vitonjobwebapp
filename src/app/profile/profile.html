@@ -569,9 +569,6 @@
   										</span>
                 </div>
               </div>
-              <button class="btn btn-primary" [disabled]="!isValidForm() || validation" (click)="updateCivility()">
-                Valider
-              </button>
               <button class="btn btn-default" (click)="closeForm()">Annuler</button>
             </div>
           </div>
@@ -784,6 +781,25 @@
               </div>
             </div>
           </fieldset>
+        </form>
+      </div>
+    </section>
+    <section class="widget" widget>
+
+      <div class="widget-body">
+        <form class="form-horizontal" role="form">
+          <div class="form-actions">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-xs-12">
+                  <button type="button" class="btn btn-success fwidth" [disabled]="!isValidForm() || validation" (click)="updateCivility()">
+                    Valider
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </form>
       </div>
     </section>

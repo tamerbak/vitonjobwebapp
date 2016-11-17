@@ -178,6 +178,16 @@
           </div>
         </div>
 
+        <div class="form-group row" *ngIf="convParametersVisible() && convCoefficientsVisible()">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">Coefficient</label>
+          <div class="col-md-8 col-xs-12">
+            <select class="form-control" [(ngModel)]="selectedCoefConvID"
+                    (change)="updateHourRateThreshold('COEF',$event.target.value)">
+              <option *ngFor="let s of coefficientsConventions" [value]="s.id">{{s.libelle}}</option>
+            </select>
+          </div>
+        </div>
+
         <!-- Taux horaire -->
         <div class="form-group row required">
           <label class="col-md-4 col-xs-12 form-control-label text-md-right">
@@ -242,15 +252,6 @@
             <select class="form-control" [(ngModel)]="selectedCatConvID"
                     (change)="updateHourRateThreshold('CAT',$event.target.value)">
               <option *ngFor="let s of categoriesConventions" [value]="s.id">{{s.libelle}}</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="convCoefficientsVisible()">
-          <label class="col-md-4 col-xs-12 form-control-label text-md-right">Coefficient</label>
-          <div class="col-md-8 col-xs-12">
-            <select class="form-control" [(ngModel)]="selectedCoefConvID"
-                    (change)="updateHourRateThreshold('COEF',$event.target.value)">
-              <option *ngFor="let s of coefficientsConventions" [value]="s.id">{{s.libelle}}</option>
             </select>
           </div>
         </div>
@@ -338,9 +339,9 @@
 
         <!-- Créneaux -->
         <div class="form-group row required">
-          <label class="col-md-6 col-xs-6 form-control-label">Créneaux</label>
-          <label class="col-md-2 col-xs-3 form-control-label">De</label>
-          <label class="col-md-2 col-xs-3 form-control-label">A</label>
+          <label class="col-md-6 col-xs-6 form-control-label">Date</label>
+          <label class="col-md-2 col-xs-3 form-control-label">Heure de début</label>
+          <label class="col-md-2 col-xs-3 form-control-label">Heure de fin</label>
         </div>
 
         <div *ngFor="let item of slots, let j = index">

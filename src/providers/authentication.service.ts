@@ -58,7 +58,6 @@ export class AuthenticationService {
     //  Init project parameters
     this.configuration = Configs.setConfigs(role);
 
-    role = (role === 'employer') ? 'employeur' : role;
     var sql = "select pk_user_account, email, telephone, role from user_account where LOWER(email) = lower_unaccent('" + mail + "')";
 
     return new Promise(resolve => {
