@@ -361,8 +361,6 @@ export class ContractService {
    * @return JSON results in form of youSign Object
    */
   callYousign(user: any, employer: any, jobyer: any, contract: any, projectTarget: string, currentOffer: any, idQuote: any) {
-    console.log(currentOffer.calendarData)
-    console.log(contract.prerequis)
     let horaires = '';
     if (currentOffer) {
       horaires = this.prepareHoraire(currentOffer.calendarData,contract.prerequis);

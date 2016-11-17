@@ -438,9 +438,7 @@ export class Contract {
     this.offersService.loadOfferAdress(this.currentOffer.idOffer, "employeur").then((data:any)=>{
       this.workAdress = data;
     });
-
     
-
     //
     //
     for(let i=1 ; i <calendar.length;i++){
