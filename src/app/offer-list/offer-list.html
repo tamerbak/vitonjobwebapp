@@ -66,6 +66,12 @@
             <h4 class="" style="margin-bottom:0px"><strong>{{item.jobData.remuneration}} € </strong></h4>
             <label class="" style="font-size: small; color: #ccc">DE L'HEURE</label>
           </div>
+
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <ul>
+              <li *ngFor="let item of slots, let j = index">{{item.date}} : {{item.startHour}} - {{item.endHour}} </li>
+            </ul>
+          </div>
         </div>
 
         <div class="clearfix">

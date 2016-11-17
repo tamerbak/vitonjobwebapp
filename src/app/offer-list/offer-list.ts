@@ -57,6 +57,29 @@ export class OfferList {
 
   }
 
+  convertSlotsForDisplay(s) {
+    var slotTemp = {
+      date: this.toDateString(s.date),
+      startHour: this.toHourString(s.startHour),
+      endHour: this.toHourString(s.endHour)
+    };
+    return slotTemp;
+  }
+
+  toHourString(time: number) {
+    let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
+    let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
+    return hours + ":" + minutes;
+  }
+
+  toDateString(date: number) {
+    var dateOptions = {
+      weekday: "long", month: "long", year: "numeric",
+      day: "numeric"//, hour: "2-digit", minute: "2-digit"
+    };
+    return new Date(date).toLocaleDateString('fr-FR', dateOptions);
+  }
+
   loadOffers(){
     this.globalOfferList.length = 0;
     this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
@@ -85,6 +108,9 @@ export class OfferList {
       if (!offer || !offer.jobData || !offer.calendarData ||(offer.calendarData && offer.calendarData.length == 0)) {
         continue;
       }
+
+      offer.slots =[];
+
 
       if (offer.visible) {
         offer.color = 'black';
