@@ -331,7 +331,7 @@ export class ContractService {
     return hours + ":" + minutes;
   }
 
-  prepareHoraire(calendar) {
+  prepareHoraire(calendar,prerequis) {
     let html = "<ul>";
 
     if (calendar && calendar.length > 0) {
@@ -342,6 +342,15 @@ export class ContractService {
     }
 
     html = html + "</ul>";
+
+    if(prerequis && prerequis.length > 0){
+      html = html + "<br><p><b>Prérequis obligatoires</b></p><ul>";
+      for (let i = 0; i < prerequis.length; i++) {
+        let p = prerequis[i];
+        html = html + "<li>"+ p + "</li>";
+      }
+      html = html + "</ul>";
+    }
     return html;
   }
 
@@ -352,10 +361,11 @@ export class ContractService {
    * @return JSON results in form of youSign Object
    */
   callYousign(user: any, employer: any, jobyer: any, contract: any, projectTarget: string, currentOffer: any, idQuote: any) {
-
+    console.log(currentOffer.calendarData)
+    console.log(contract.prerequis)
     let horaires = '';
     if (currentOffer) {
-      horaires = this.prepareHoraire(currentOffer.calendarData);
+      horaires = this.prepareHoraire(currentOffer.calendarData,contract.prerequis);
     }
     //get configuration
     let d = new Date(contract.workStartHour);

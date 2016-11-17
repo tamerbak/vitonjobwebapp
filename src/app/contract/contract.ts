@@ -320,7 +320,8 @@ export class Contract {
       elementsCotisation: 0.0,
       elementsNonCotisation: 10.0,
       titre: '',
-      periodicite : ''
+      periodicite : '',
+      prerequis : []
     };
     if (this.currentOffer) {
       this.service.getRates().then((data: any) => {
@@ -437,6 +438,9 @@ export class Contract {
     this.offersService.loadOfferAdress(this.currentOffer.idOffer, "employeur").then((data:any)=>{
       this.workAdress = data;
     });
+
+    
+
     //
     //
     for(let i=1 ; i <calendar.length;i++){
@@ -521,17 +525,26 @@ export class Contract {
       elementsCotisation: this.rate,
       elementsNonCotisation: 10.0,
       titre: this.currentOffer.title,
-      periodicite : ''
+      periodicite : '',
+      prerequis : []
     };
 
+    this.offersService.loadOfferPrerequisObligatoires(this.currentOffer.idOffer).then((data:any)=>{
+      this.currentOffer.jobData.prerequisObligatoires = [];
+      for(let j = 0 ; j < data.length ; j++){
+        this.currentOffer.jobData.prerequisObligatoires.push(data[j].libelle);
+      }
+
+      this.contractData.prerequis = this.currentOffer.jobData.prerequisObligatoires;
+    });
+
     this.medecineService.getMedecine(this.employer.entreprises[0].id).then((data: any)=> {
-      //
       if (data && data != null) {
         this.contractData.centreMedecineEntreprise = data.libelle;
         this.contractData.adresseCentreMedecineEntreprise = data.adresse + ' ' + data.code_postal;
       }
-
     });
+
   }
 
   ngAfterViewInit(){
