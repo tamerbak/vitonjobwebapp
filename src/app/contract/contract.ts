@@ -359,6 +359,12 @@ export class Contract {
     });
   }
 
+  justifSelected(e){
+    if(e.target.value.indexOf("emploi à caractère saisonnier") != -1){
+      this.contractData.indemniteFinMission = "0.00%";
+    }
+  }
+
 
       watchTransportTitle(e){
         this.contractData.titreTransport = e.target.value;
