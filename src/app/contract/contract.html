@@ -446,16 +446,16 @@
           <input type="text" name="siege" class="form-control" [(ngModel)]="contractData.headOffice" aria-describedby="siege" required/>
           <small class="form-text text-muted"></small>
         </div>
+        <div class="form-group">
+          <label >Catégorie</label>
+          <input type="text" class="form-control" [(ngModel)]="contractData.category" disabled/>
+          <small class="form-text text-muted"></small>
+        </div>
       </div>
       <div class="col-xs-12 col-md-6 col-2">
         <div class="form-group">
           <label >Filière</label>
           <input type="text" name="filiere" class="form-control" [(ngModel)]="contractData.sector" aria-describedby="filiere" />
-          <small class="form-text text-muted"></small>
-        </div>
-        <div class="form-group">
-          <label >Catégorie</label>
-          <input type="text" class="form-control" [(ngModel)]="contractData.category" disabled/>
           <small class="form-text text-muted"></small>
         </div>
         <!--<div class="form-group">
