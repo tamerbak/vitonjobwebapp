@@ -74,7 +74,7 @@ export class ProfileService{
     let encodedAddress = btoa(addressDataStr);
     let data = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 239,
+      'id': 10017,
       'args': [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'Adresse',
@@ -113,7 +113,43 @@ export class ProfileService{
     let encodedAddress = btoa(addressDataStr);
     let data = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 239,
+      'id': 10017,
+      'args': [{
+        'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+        label: 'Adresse',
+        value: encodedAddress
+      }]
+    };
+    let stringData = JSON.stringify(data);
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.calloutURL, stringData, {headers: headers})
+        .subscribe((data: any) => {
+          resolve(data);
+        });
+    });
+  }
+
+  updateUserCorrespondenceAddress(id: string, name, streetNumber, street, cp, ville, pays, role) {
+    //  Now we need to save the address
+    let addressData = {
+      'class': 'com.vitonjob.localisation.AdressToken',
+      'street': street,
+      'cp': cp,
+      'ville': ville,
+      'pays': pays,
+      'name': name,
+      'streetNumber': streetNumber,
+      'role': role,
+      'id': id,
+      'type': 'correspondance'
+    };
+    let addressDataStr = JSON.stringify(addressData);
+    let encodedAddress = btoa(addressDataStr);
+    let data = {
+      'class': 'fr.protogen.masterdata.model.CCallout',
+      'id': 10017,
       'args': [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'Adresse',

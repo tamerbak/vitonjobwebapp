@@ -311,7 +311,7 @@ export class Contract {
       primes: 0,
       headOffice: "",
       missionContent: "",
-      category: "Employé",
+      category:"",
       sector: "",
       companyName: '',
       titreTransport: 'NON',
@@ -320,7 +320,8 @@ export class Contract {
       elementsCotisation: 0.0,
       elementsNonCotisation: 10.0,
       titre: '',
-      periodicite : ''
+      periodicite : '',
+      prerequis : []
     };
     if (this.currentOffer) {
       this.service.getRates().then((data: any) => {
@@ -338,6 +339,9 @@ export class Contract {
     // Notify the jobyer that a new contract was created
     this.notifyJobyerNewContract();
 
+    //get convention category
+    this.getCategory();
+
   }
 
   recoursSelected(evt) {
@@ -354,6 +358,12 @@ export class Contract {
     this.contractService.loadJustificationsList(id).then(data=> {
       this.justificatifs = data;
     });
+  }
+
+  justifSelected(e){
+    if(e.target.value.indexOf("emploi à caractère saisonnier") != -1){
+      this.contractData.indemniteFinMission = "0.00%";
+    }
   }
 
 
@@ -437,6 +447,7 @@ export class Contract {
     this.offersService.loadOfferAdress(this.currentOffer.idOffer, "employeur").then((data:any)=>{
       this.workAdress = data;
     });
+    
     //
     //
     for(let i=1 ; i <calendar.length;i++){
@@ -510,7 +521,7 @@ export class Contract {
       primes: 0,
       headOffice: this.hqAdress,
       missionContent: "",
-      category: 'Employé',
+      category: '',
       sector: this.currentOffer.jobData.sector,
       companyName: this.companyName,
       workAdress: this.workAdress,
@@ -521,17 +532,26 @@ export class Contract {
       elementsCotisation: this.rate,
       elementsNonCotisation: 10.0,
       titre: this.currentOffer.title,
-      periodicite : ''
+      periodicite : '',
+      prerequis : []
     };
 
+    this.offersService.loadOfferPrerequisObligatoires(this.currentOffer.idOffer).then((data:any)=>{
+      this.currentOffer.jobData.prerequisObligatoires = [];
+      for(let j = 0 ; j < data.length ; j++){
+        this.currentOffer.jobData.prerequisObligatoires.push(data[j].libelle);
+      }
+
+      this.contractData.prerequis = this.currentOffer.jobData.prerequisObligatoires;
+    });
+
     this.medecineService.getMedecine(this.employer.entreprises[0].id).then((data: any)=> {
-      //
       if (data && data != null) {
         this.contractData.centreMedecineEntreprise = data.libelle;
         this.contractData.adresseCentreMedecineEntreprise = data.adresse + ' ' + data.code_postal;
       }
-
     });
+
   }
 
   ngAfterViewInit(){
@@ -728,5 +748,14 @@ export class Contract {
     }else{
       this.isMissionDateValid = true;
     }
+  }
+
+  getCategory(){
+    let convId = this.currentUser.employer.entreprises[0].conventionCollective.id;
+    let offerId = this.currentOffer.idOffer;
+    this.offersService.getCategoryByOfferAndConvention(offerId, convId).then((data: any) =>{
+      let cat = data.data[0];
+      this.contractData.category = cat.libelle
+    })
   }
 }
