@@ -68,12 +68,20 @@ export class OfferList {
     for (let i = 0; i < this.offerList.length; i++) {
       let offer = this.offerList[i];
 
+      //load offer epi
+      this.offersService.loadOfferEPI(this.offerList[i].idOffer,this.projectTarget).then((data:any)=>{
+        this.offerList[i].jobData.epi = [];
+        for(let j = 0 ; j < data.length ; j++)
+          this.offerList[i].jobData.epi.push(data[j].libelle);
+      });
+
       if(this.projectTarget == 'employer'){
         this.offersService.loadOfferPrerequisObligatoires(this.offerList[i].idOffer).then((data:any)=>{
           this.offerList[i].jobData.prerequisObligatoires = [];
           for(let j = 0 ; j < data.length ; j++)
             this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
         });
+
       }else if(this.projectTarget == 'jobyer'){
         this.offersService.loadOfferNecessaryDocuments(this.offerList[i].idOffer).then((data:any)=>{
           this.offerList[i].jobData.prerequisObligatoires = [];
