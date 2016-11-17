@@ -1107,4 +1107,20 @@ export class OffersService {
       });
     });
   }
+
+  getCategoryByOfferAndConvention(offerId, convId){
+    let sql = "select pk_user_categorie_convention as id, libelle from user_categorie_convention where " +
+      "fk_user_convention_collective in (select pk_user_convention_collective as id from user_convention_collective where pk_user_convention_collective = " + convId + ") and " +
+      "pk_user_categorie_convention in (select fk_user_categorie_convention as idcat from user_parametrage_convention where pk_user_parametrage_convention in (select fk_user_parametrage_convention from user_offre_entreprise where pk_user_offre_entreprise="+offerId+"))";
+
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
 }

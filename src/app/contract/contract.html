@@ -447,15 +447,7 @@
 
         <div class="form-group">
           <label >Catégorie</label>
-          <select
-            data-style="btn-secondary" class="recoursSelectPicker form-control contract-form-select" id="categorie-select" [(ngModel)]="contractData.category"
-            name="categorie_slct"  required>
-            <option value="Employé" >Employé</option>
-            <option value="Ouvrier" >Ouvrier</option>
-            <option value="Technicien" >Technicien</option>
-            <option value="AM" >AM</option>
-            <option value="Cadre" >Cadre</option>
-          </select>
+          <input type="text" class="form-control" [(ngModel)]="contractData.category" disabled/>
           <small class="form-text text-muted"></small>
         </div>
       </div>
