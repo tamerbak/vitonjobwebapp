@@ -290,12 +290,12 @@
       </fieldset>
 
       <fieldset>
-        <legend><strong>{{ currentUser.estEmployeur ? 'Formation et habilitations':'liste des documents nécessaires' }}</strong></legend>
+        <legend><strong>{{ currentUser.estEmployeur ? 'Formations et habilitations':'liste des documents nécessaires' }}</strong></legend>
         <div class="container-fluid">
           <div class="row">
             <div class="col-xs-10">
               <input *ngIf="currentUser.estEmployeur" type="hidden" class="select2 prerequis-select form-control" name="prerequis"
-                     placeholder="Formation et habilitations" [(ngModel)]="prerequisOb" />
+                     placeholder="Formations et habilitations" [(ngModel)]="prerequisOb" />
               <input *ngIf="!currentUser.estEmployeur" type="hidden" class="select2 prerequis-jobyer-select form-control" name="documents"
                      placeholder="Documents nécessaires" [(ngModel)]="prerequisOb" />
             </div>
