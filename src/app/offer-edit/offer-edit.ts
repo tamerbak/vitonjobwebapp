@@ -107,6 +107,7 @@ export class OfferEdit{
   zipCodeOA : string;
   cityOA : string;
   countryOA : string;
+
   addressOptions = {
     componentRestrictions: {country: "fr"}
   };
@@ -133,6 +134,8 @@ export class OfferEdit{
   }
 
   ngOnInit(): void {
+
+
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
 
     if (this.currentUser.estEmployeur && this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
@@ -205,8 +208,8 @@ export class OfferEdit{
         this.prerequisObligatoires = [];
 
       //epi
-      if (this.offer.jobData.epiList && this.offer.jobData.epiList.length > 0)
-        this.epiList = this.offer.jobData.epiList;
+      if (this.offer.jobData.epi && this.offer.jobData.epi.length > 0)
+        this.epiList = this.offer.jobData.epi;
       else
         this.epiList = [];
 
@@ -319,7 +322,19 @@ export class OfferEdit{
     var self = this;
     this._loader.load().then(() => {
       this.autocompleteOA = new google.maps.places.Autocomplete(document.getElementById("autocompleteOfferAdress"), this.addressOptions);
+    });
 
+    //get timepickers elements
+    var elements =[]
+    jQuery("input[id^='q-timepicker_']").each(function () {
+     elements.push(this.id);
+    });
+
+    //add change event to endTime timepicker
+    jQuery('#' + elements[1]).timepicker().on('changeTime.timepicker', function(e) {
+      if(e.time.value == "0:00" || e.time.value == "12:00"){
+        jQuery('#' + elements[1]).timepicker('setTime', '11:59 PM');
+      }
     });
 
 
@@ -599,8 +614,11 @@ export class OfferEdit{
   }
 
   watchLevel(e) {
+
     this.offer.jobData.level = e.target.value;
   }
+
+
 
   //<editor-fold desc="Slots management">
 

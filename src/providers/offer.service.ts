@@ -206,7 +206,7 @@ export class OffersService {
 
   updateEPI(idOffer,plist,projectTarget){
     var table = projectTarget == 'employer' ? "user_epi_employeur":"user_epi_jobyer";
-    var fk = projectTarget == 'employer' ? "fk_user_entreprise":"fk_user_jobyer";
+    var fk = projectTarget == 'employer' ? "fk_user_offre_entreprise":"fk_user_offre_jobyer";
     let sql = "delete from "+table+"where "+ fk+"="+idOffer;
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
@@ -404,7 +404,7 @@ export class OffersService {
 
   doUpdateEPI(idOffer, idp, projectTarget){
     var table = projectTarget == 'employer' ? "user_epi_employeur":"user_epi_jobyer";
-    var fk = projectTarget == 'employer' ? "fk_user_entreprise":"fk_user_jobyer";
+    var fk = projectTarget == 'employer' ? "fk_user_offre_entreprise":"fk_user_offre_jobyer";
     let sql = "insert into "+table+" ("+fk+",fk_user_epi) values ("+idOffer+","+idp+")";
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
@@ -1124,7 +1124,7 @@ export class OffersService {
 
   loadOfferEPI(oid, projectTarget){
     var table = projectTarget == 'employer' ? "user_epi_employeur":"user_epi_jobyer";
-    var fk = projectTarget == 'employer' ? "fk_user_entreprise":"fk_user_jobyer";
+    var fk = projectTarget == 'employer' ? "fk_user_offre_entreprise":"fk_user_offre_jobyer";
     let sql = "select libelle from user_epi where pk_user_epi in (select fk_user_epi from "+table+" where "+fk+"="+oid+")";
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
@@ -1227,6 +1227,22 @@ export class OffersService {
       .subscribe(data => {
         resolve(data);
       });
+    });
+  }
+
+  getCategoryByOfferAndConvention(offerId, convId){
+    let sql = "select pk_user_categorie_convention as id, libelle from user_categorie_convention where " +
+      "fk_user_convention_collective in (select pk_user_convention_collective as id from user_convention_collective where pk_user_convention_collective = " + convId + ") and " +
+      "pk_user_categorie_convention in (select fk_user_categorie_convention as idcat from user_parametrage_convention where pk_user_parametrage_convention in (select fk_user_parametrage_convention from user_offre_entreprise where pk_user_offre_entreprise="+offerId+"))";
+
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
     });
   }
 }
