@@ -1281,6 +1281,29 @@ export class Profile{
                 //upload scan
                 this.updateScan(accountId, userRoleId, 'employeur');
                 this.validation = false;
+                
+                if(!Utils.isEmpty(this.personalAddress)){
+                  if(Utils.isEmpty(this.jobAddress)){
+                    this.jobAddress = this.personalAddress;
+                    this.nameJA = this.namePA;
+                    this.streetNumberJA = this.streetNumberPA;
+                    this.streetJA = this.streetPA;
+                    this.zipCodeJA = this.zipCodePA;
+                    this.cityJA = this.cityPA;
+                    this.countryJA = this.countryPA;
+                  }
+
+                  if(Utils.isEmpty(this.correspondenceAddress)){
+                    this.correspondenceAddress = this.personalAddress;
+                    this.nameCA = this.namePA;
+                    this.streetNumberCA = this.streetNumberPA;
+                    this.streetCA = this.streetPA;
+                    this.zipCodeCA = this.zipCodePA;
+                    this.cityCA = this.cityPA;
+                    this.countryCA = this.countryPA;
+                  }
+                }
+
                 if (this.isPersonalAddressModified()) {
                   this.updatePersonalAddress();
                 }
