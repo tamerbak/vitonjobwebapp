@@ -760,7 +760,7 @@ export class OfferEdit{
           offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
         }
 
-        //if (this.projectTarget == 'employer') {
+        if (this.projectTarget == 'employer') {
 
           if(this.offerAddress){
 
