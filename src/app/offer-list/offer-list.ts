@@ -110,7 +110,14 @@ export class OfferList {
       }
 
       offer.slots =[];
-
+      for (let i = 0; i < offer.calendarData.length; i++) {
+        var slotTemp = {
+          date: this.toDateString(offer.calendarData[i].date),
+          startHour: this.toHourString(offer.calendarData[i].startHour),
+          endHour: this.toHourString(offer.calendarData[i].endHour)
+        };
+        offer.slots.push(slotTemp);
+      }
 
       if (offer.visible) {
         offer.color = 'black';

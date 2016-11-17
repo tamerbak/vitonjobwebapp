@@ -68,8 +68,9 @@
           </div>
 
           <div class="col-md-12 col-sm-12 col-xs-12">
+            <b>Disponibilités</b>
             <ul>
-              <li *ngFor="let item of slots, let j = index">{{item.date}} : {{item.startHour}} - {{item.endHour}} </li>
+              <li *ngFor="let dispo of item.slots, let j = index"><b>{{dispo.date}} :</b> {{dispo.startHour}} - {{dispo.endHour}} </li>
             </ul>
           </div>
         </div>
@@ -101,6 +102,13 @@
           <div class="col-xs-12 price pull-left" style="padding-right: 25px;">
             <h4 class="" style="margin-bottom:0px"><strong>{{item.jobData.remuneration}} € </strong></h4>
             <label class="" style="font-size: small; color: #ccc">DE L'HEURE</label>
+          </div>
+
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <b>Disponibilités</b>
+            <ul>
+              <li *ngFor="let dispo of item.slots, let j = index"><b>{{dispo.date}} :</b> {{dispo.startHour}} - {{dispo.endHour}} </li>
+            </ul>
           </div>
         </div>
 
