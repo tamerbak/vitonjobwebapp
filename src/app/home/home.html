@@ -33,12 +33,7 @@
         </div>
         <a class="adv-search" [routerLink]=" ['/search/criteria'] ">Recherche avancée</a>
       </div>
-      <div modal-welcome></div>
-      <div modal-profile [obj]="obj"></div>
-
-
     </div>
-
   </div>
 
   <div class="container-fluid list-home-container" [hidden]="upcomingOffers.length==0">
@@ -218,3 +213,7 @@
 </div>
 <div modal-update-password></div>
 <div modal-notification-contract [jobyer]="currentJobyer" *ngIf="projectTarget == 'employer' && !isRecruteur"></div>
+<div modal-general-condition (onRefuse)="onGCRefused($event)"></div>
+<div modal-welcome></div>
+<div modal-profile [obj]="obj"></div>
+
