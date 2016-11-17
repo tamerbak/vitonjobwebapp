@@ -311,7 +311,7 @@ export class Contract {
       primes: 0,
       headOffice: "",
       missionContent: "",
-      category: "Employé",
+      category:"",
       sector: "",
       companyName: '',
       titreTransport: 'NON',
@@ -337,6 +337,9 @@ export class Contract {
 
     // Notify the jobyer that a new contract was created
     this.notifyJobyerNewContract();
+
+    //get convention category
+    this.getCategory();
 
   }
 
@@ -510,7 +513,7 @@ export class Contract {
       primes: 0,
       headOffice: this.hqAdress,
       missionContent: "",
-      category: 'Employé',
+      category: '',
       sector: this.currentOffer.jobData.sector,
       companyName: this.companyName,
       workAdress: this.workAdress,
@@ -728,5 +731,14 @@ export class Contract {
     }else{
       this.isMissionDateValid = true;
     }
+  }
+
+  getCategory(){
+    let convId = this.currentUser.employer.entreprises[0].conventionCollective.id;
+    let offerId = this.currentOffer.idOffer;
+    this.offersService.getCategoryByOfferAndConvention(offerId, convId).then((data: any) =>{
+      let cat = data.data[0];
+      this.contractData.category = cat.libelle
+    })
   }
 }
