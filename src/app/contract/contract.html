@@ -215,7 +215,7 @@
             <select
               data-style="btn-secondary"
               class="justificationSelectPicker form-control contract-form-select" id="justifications-select" [(ngModel)]="contractData.justification"
-              name="justification_slct" required>
+              name="justification_slct" (change)="justifSelected($event)" required>
               <option *ngFor="let r of justificatifs" value="{{r.libelle}}">{{r.libelle}}</option>
             </select>
         </div>
