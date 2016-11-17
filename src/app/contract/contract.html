@@ -446,7 +446,6 @@
           <input type="text" name="siege" class="form-control" [(ngModel)]="contractData.headOffice" aria-describedby="siege" required/>
           <small class="form-text text-muted"></small>
         </div>
-
         <div class="form-group">
           <label >Catégorie</label>
           <input type="text" class="form-control" [(ngModel)]="contractData.category" disabled/>
@@ -459,7 +458,7 @@
           <input type="text" name="filiere" class="form-control" [(ngModel)]="contractData.sector" aria-describedby="filiere" />
           <small class="form-text text-muted"></small>
         </div>
-        <div class="form-group">
+        <!--<div class="form-group">
           <label >Titre de transport</label>
           <div class="abc-radio">
               <input type="radio" name="radio1" id="radio1" value="OUI" (click)="watchTransportTitle($event)" [checked]="contractData.titreTransport == 'OUI'">
@@ -471,12 +470,12 @@
                 Non
               </label>
           </div>
-        </div>
-        <div class="form-group" [hidden]="contractData.titreTransport == 'NON'">
+        </div>-->
+        <!--<div class="form-group" [hidden]="contractData.titreTransport == 'NON'">
           <label >Zones de transport</label>
           <input type="text" class="form-control" [(ngModel)]="contractData.zonesTitre" aria-describedby="zones" />
           <small class="form-text text-muted"></small>
-        </div>
+        </div>-->
       </div>
     </div>
     <div class="row">
