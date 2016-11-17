@@ -729,9 +729,9 @@ export class Profile{
       if (accountId) {
         for (let i = 0; i < this.allImages.length; i++) {
           let index = i + 1;
-          this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle + ' ' + index, scanData).then((data: any) => {
+          this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle + ' ' + index, this.allImages[i].data).then((data: any) => {
             if (data && data.id != 0) {
-              this.attachementsService.uploadActualFile(data.id, data.fileName, scanData);
+              this.attachementsService.uploadActualFile(data.id, data.fileName, this.allImages[i].data);
             }
           });
         }
@@ -757,6 +757,7 @@ export class Profile{
   }
 
   appendImg() {
+    //console.log(this.scanData)
     this.allImages.push({
       data: this.scanData
     });
