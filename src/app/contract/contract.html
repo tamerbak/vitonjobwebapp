@@ -293,7 +293,7 @@
 
         <div class="col-xs-3 col-2">
           <div class="form-group">
-            <label>Heure habituelle de fin du travail&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+            <label>Heure habituelle de fin de travail&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
             <datetime
               id="usualEHour"
               [datepicker]="false"
@@ -380,7 +380,13 @@
             <option *ngFor="let r of periodicites" value="{{r.id}}">{{r.libelle}}</option>
           </select>
         </div>
+        <div class="form-group">
+          <label>Primes</label>
+          <input type="text" name="prime" class="form-control" [(ngModel)]="contractData.primes" aria-describedby="primes" />
+          <small class="form-text text-muted"></small>
+        </div>
       </div>
+
       <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
           <label >Ind. fin de mission</label>
@@ -434,11 +440,7 @@
         </div>
       </div>
       <div class="col-xs-12 col-md-6">
-        <div class="form-group">
-          <label>Primes</label>
-          <input type="text" name="prime" class="form-control" [(ngModel)]="contractData.primes" aria-describedby="primes" />
-          <small class="form-text text-muted"></small>
-        </div>
+
         <div class="form-group">
           <label >Siège social&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
           <input type="text" name="siege" class="form-control" [(ngModel)]="contractData.headOffice" aria-describedby="siege" required/>
