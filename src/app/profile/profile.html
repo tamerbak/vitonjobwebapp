@@ -493,7 +493,13 @@
                       <button (click)="appendImg()" class="btn btn-default fileinput-exists" >Ajouter</button>
                     </div>
                   </div>
+                  <alert [type]="'warning'+ ' alert-sm'" dismissible="true">
+                    <div>
+                      Vous devez télécharger toutes les pages de votre document
+                    </div>
+                  </alert>
                 </div>
+                
               </div>
 
               <div class="form-group row">
