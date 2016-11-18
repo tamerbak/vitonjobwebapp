@@ -230,9 +230,6 @@
               [(ngModel)]="offer.jobData.remuneration"
               (change)="validateRate($event.target.value)"
             />
-            <!--alert *ngIf="triedValidate && !offer.jobData.remuneration" [type]="'danger alert-sm'">
-              <div [innerHTML]="'* Veuillez renseigner le taux horaire'"></div>
-            </alert-->
             <alert *ngIf="invalidHourRate " [type]="'danger alert-sm'">
               <div [innerHTML]="'* Le taux horaire devrait être supérieur ou égal à ' + invalidHourRateMessage"></div>
             </alert>
