@@ -27,6 +27,8 @@ declare var google: any;
 })
 
 export class OfferEdit{
+
+
   offer: any;
   sectors: any = [];
   jobs: any = [];
