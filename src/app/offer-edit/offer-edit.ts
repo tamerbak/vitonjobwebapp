@@ -104,6 +104,8 @@ export class OfferEdit{
     componentRestrictions: {country: "fr"}
   };
 
+  //Full time
+  isFulltime: boolean = false;
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -1197,5 +1199,13 @@ export class OfferEdit{
         });
       });
     });
+  }
+
+  watchFullTime(e){
+    this.isFulltime = e.target.checked;
+    if(this.isFulltime){
+      this.slot.startHour = new Date(new Date().setHours(9,0,0,0));
+      this.slot.endHour = new Date(new Date().setHours(17,0,0,0));
+    }
   }
 }
