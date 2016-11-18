@@ -75,6 +75,9 @@ export class Contract {
   cni:any;
   isMissionDateValid: boolean = true;
 
+  //transport
+  transportMeans = [];
+
   dateFormat(d) {
     if(!d || typeof d === 'undefined')
       return '';
@@ -341,6 +344,9 @@ export class Contract {
 
     //get convention category
     this.getCategory();
+
+    //transportMeans
+    this.transportMeans = ["Véhicule", "Transport en commun Zone 1", "Transport en commun Zone 2", "Transport en commun Zone 3", "Transport en commun Zone 4", "Transport en commun Zone 5", "Transport en commun toutes zones"]
 
   }
 
