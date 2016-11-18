@@ -12,6 +12,8 @@ import {FinanceService} from "../../providers/finance.service";
 import {Configs} from "../../configurations/configs";
 import {MapsAPILoader} from "angular2-google-maps/core";
 import {AddressUtils} from "../utils/addressUtils";
+import {Utils} from "../utils/utils";
+import {DateUtils} from "../utils/date-utils";
 
 
 declare var Messenger, jQuery: any;
@@ -37,6 +39,7 @@ export class OfferEdit{
   currentUser: any;
   slot: any;
   slots = [];
+  totalHours = 0;
   selectedQuality: any;
   selectedLang: any;
   selectedLevel = "junior";
@@ -513,6 +516,13 @@ export class OfferEdit{
     }
     if (this.checkHour() == false)
       return;
+
+    //total hours should be lower than 10h
+    this.totalHours = this.offersService.calculateSlotsDuration(this.slots, this.slot);
+    if(this.totalHours > 600){
+      this.addAlert("danger", "Le total des heures de travail ne doit pas dépasser 10 heures. Veuillez réduire la durée des créneaux.", "slot");
+      return;
+    }
 
     if (this.obj != "detail") {
       this.slotsToSave.push(this.slot);
