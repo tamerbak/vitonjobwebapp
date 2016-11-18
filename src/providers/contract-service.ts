@@ -344,7 +344,7 @@ export class ContractService {
     html = html + "</ul>";
 
     if(prerequis && prerequis.length > 0){
-      html = html + "<br><p><b>Prérequis obligatoires</b></p><ul>";
+      html = html + "<br><p><b>Formations et habilitations</b></p><ul>";
       for (let i = 0; i < prerequis.length; i++) {
         let p = prerequis[i];
         html = html + "<li>"+ p + "</li>";
