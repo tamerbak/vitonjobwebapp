@@ -680,25 +680,6 @@ export class OffersService {
     });
   }
 
-  /**
-   * @description     loading languages list
-   * @return languages list in the format {id : X, libelle : X}
-   */
-  loadLanguages(projectTarget: string) {
-    //  Init project parameters
-    this.configuration = Configs.setConfigs(projectTarget);
-    var sql = 'select pk_user_langue as \"idLanguage\", libelle as libelle, \'junior\' as level from user_langue';
-    return new Promise(resolve => {
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          resolve(data);
-        });
-    });
-  }
-
   /*
    *  Update offer statut, job and title
    */

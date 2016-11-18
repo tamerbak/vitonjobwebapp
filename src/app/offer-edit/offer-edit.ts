@@ -12,9 +12,9 @@ import {FinanceService} from "../../providers/finance.service";
 import {Configs} from "../../configurations/configs";
 import {MapsAPILoader} from "angular2-google-maps/core";
 import {AddressUtils} from "../utils/addressUtils";
+import {LoadListService} from "../../providers/load-list.service";
 import {Utils} from "../utils/utils";
 import {DateUtils} from "../utils/date-utils";
-
 
 declare var Messenger, jQuery: any;
 declare var google: any;
@@ -25,7 +25,7 @@ declare var google: any;
   encapsulation: ViewEncapsulation.None,
   styles: [require('./offer-edit.scss')],
   directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime, ModalOptions, ModalOfferTempQuote],
-  providers: [OffersService, SearchService, FinanceService]
+  providers: [OffersService, SearchService, FinanceService, LoadListService]
 })
 
 export class OfferEdit{
@@ -120,7 +120,8 @@ export class OfferEdit{
               private financeService: FinanceService,
               private route: ActivatedRoute,
               private zone: NgZone,
-              private _loader: MapsAPILoader) {
+              private _loader: MapsAPILoader,
+              private listService: LoadListService) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['home']);
@@ -269,7 +270,7 @@ export class OfferEdit{
     //loadLanguages
     this.langs = this.sharedService.getLangList();
     if (!this.langs || this.langs.length == 0) {
-      this.offersService.loadLanguages(this.projectTarget).then((data: any) => {
+      this.listService.loadLanguages().then((data: any) => {
         this.langs = data.data;
         this.sharedService.setLangList(this.langs);
       })
@@ -718,7 +719,7 @@ export class OfferEdit{
     }
     //searching the selected lang in the general list of langs
     var langTemp = this.langs.filter((v)=> {
-      return (v.idLanguage == this.selectedLang);
+      return (v.id == this.selectedLang);
     });
     //delete the lang from the current offer lang list, if already existant
     if (this.offer.languageData.indexOf(langTemp[0]) != -1) {
