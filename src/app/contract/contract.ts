@@ -363,6 +363,8 @@ export class Contract {
   justifSelected(e){
     if(e.target.value.indexOf("emploi à caractère saisonnier") != -1){
       this.contractData.indemniteFinMission = "0.00%";
+    }else{
+      this.contractData.indemniteFinMission = "10.00%";
     }
   }
 
