@@ -1104,4 +1104,26 @@ export class OffersService {
         });
     });
   }
+
+  calculateSlotsDuration(slots, newSlot){
+    let totalHours = 0;
+    for(let i = 0; i < slots.length; i++){
+      let s = slots[i];
+      let hs = s.startHour.split(':')[0] * 60;
+      let ms = s.startHour.split(':')[1] * 1;
+      let minStart: number = hs + ms;
+      let he = s.endHour.split(':')[0] * 60;
+      let me = s.endHour.split(':')[1] * 1;
+      let minEnd = he + me;
+      totalHours = totalHours + (minEnd - minStart);
+    }
+    let hs = newSlot.startHour.getHours() * 60;
+    let ms = newSlot.startHour.getMinutes();
+    let minStart = hs + ms;
+    let he = newSlot.endHour.getHours() * 60;
+    let me = newSlot.endHour.getMinutes();
+    let minEnd = he + me;
+    totalHours = totalHours + (minEnd - minStart);
+    return totalHours;
+  }
 }

@@ -471,11 +471,14 @@
               </label>
           </div>
         </div>-->
-        <!--<div class="form-group" [hidden]="contractData.titreTransport == 'NON'">
-          <label >Zones de transport</label>
-          <input type="text" class="form-control" [(ngModel)]="contractData.zonesTitre" aria-describedby="zones" />
+        <div class="form-group">
+          <label >Moyen de transport</label>
+          <select
+                  class="form-control" [(ngModel)]="contractData.zonesTitre">
+            <option *ngFor="let t of transportMeans" value="{{t}}">{{t}}</option>
+          </select>
           <small class="form-text text-muted"></small>
-        </div>-->
+        </div>
       </div>
     </div>
     <div class="row">
