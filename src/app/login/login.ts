@@ -375,7 +375,7 @@ export class LoginPage{
       return (!this.index || !this.isIndexValid || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error() || !this.email || this.showEmailError() || this.emailExist || !this.role)
     } else {
       //connection
-      return (!this.index || !this.isIndexValid || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.role || !this.isRoleTelConform)
+      return (!this.index || !this.isIndexValid || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.role || !this.isRoleTelConform || !this.isRoleEmailConform)
     }
   }
 
@@ -391,6 +391,11 @@ export class LoginPage{
     this.email ="";
     this.password1 = "";
     this.password2 = "";
+    this.isRoleTelConform = true;
+    this.isRoleEmailConform = true;
+    this.libelleButton = "Se connecter";
+    this.showEmailField = false;
+    this.isPhoneNumValid = true;
   }
 
   watchTypeConnection(e) {
@@ -411,6 +416,9 @@ export class LoginPage{
     this.email = "";
     this.password1 = "";
     this.password2 = "";
+    this.isRoleTelConform = true;
+    this.isRoleEmailConform = true;
+    this.isPhoneNumValid = true;
   }
 
 
