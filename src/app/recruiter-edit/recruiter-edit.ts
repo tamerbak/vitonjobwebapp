@@ -6,6 +6,8 @@ import {AuthenticationService} from "../../providers/authentication.service";
 import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {Utils} from "../utils/utils";
+import {SmsService} from "../../providers/sms-service";
+
 declare var Messenger:any;
 
 @Component({
@@ -14,7 +16,7 @@ declare var Messenger:any;
   encapsulation: ViewEncapsulation.None,
   styles: [require('./recruiter-edit.scss')],
   directives: [ROUTER_DIRECTIVES, AlertComponent],
-  providers: [RecruiterService, LoadListService, AuthenticationService]
+  providers: [RecruiterService, LoadListService, AuthenticationService, SmsService]
 })
 
 export class RecruiterEdit {
@@ -37,6 +39,7 @@ export class RecruiterEdit {
 
   constructor(private sharedService: SharedService,
               public recruiterService: RecruiterService,
+              private smsService: SmsService,
               private loadListService: LoadListService,
               private authService: AuthenticationService,
               private router: Router,
@@ -144,7 +147,8 @@ export class RecruiterEdit {
 
   sendNotification(accountid, tel){
     this.recruiterService.generatePasswd(accountid).then((passwd) => {
-      this.recruiterService.sendNotificationBySMS(tel, this.currentUser, passwd).then((data: any) => {
+      let msg = this.currentUser.titre + " " + this.currentUser.nom + " " + this.currentUser.prenom + " vous invite à télécharger et installer l'application Vit-On-Job Employeur. http://www.vitonjob.com/telecharger . Votre mot de passe est " + passwd;
+      this.smsService.sendSms(tel, msg).then((data: any) => {
         if (!data || data.status != 200){
           this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
           return;

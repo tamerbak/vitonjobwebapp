@@ -536,44 +536,47 @@ export class ModalProfile{
       var userRoleId = this.userRoleId;
       var isNewUser = this.isNewUser;
 
-      if (this.isEmployer) {
-        if (this.isRecruiter) {
-          this.profileService.updateRecruiterCivility(title, lastname, firstname, accountId).then((res: any) => {
-            //case of update failure : server unavailable or connection problem
-            if (!res || res.status == "failure") {
-              Messenger().post({
-                message: 'Serveur non disponible ou problème de connexion',
-                type: 'error',
-                showCloseButton: true
-              });
-              this.validation = false;
-              return;
-            } else {
-              // console.log("response update civility : " + res.status);
-              this.currentUser.titre = this.title;
-              this.currentUser.nom = this.lastname;
-              this.currentUser.prenom = this.firstname;
-              this.currentUser.newAccount = false;
-              this.sharedService.setCurrentUser(this.currentUser);
-              this.getUserFullname();
-
-              this.validation = false;
-              Messenger().post({
-                message: 'Vos données ont été bien enregistrées',
-                type: 'success',
-                showCloseButton: true
-              });
-              //redirecting to offers page if new User
-              if (isNewUser) {
-                this.router.navigate(['home']);
-              }
-              this.close();
-            }
-          })
-            .catch((error: any) => {
-              this.validation = false;
+      if (this.isRecruiter) {
+        this.profileService.updateRecruiterCivility(title, lastname, firstname, accountId).then((res: any) => {
+          //case of update failure : server unavailable or connection problem
+          if (!res || res.status == "failure") {
+            Messenger().post({
+              message: 'Serveur non disponible ou problème de connexion',
+              type: 'error',
+              showCloseButton: true
             });
-        } else {
+            this.validation = false;
+            return;
+          } else {
+            // console.log("response update civility : " + res.status);
+            this.currentUser.titre = this.title;
+            this.currentUser.nom = this.lastname;
+            this.currentUser.prenom = this.firstname;
+            this.currentUser.newAccount = false;
+            this.sharedService.setCurrentUser(this.currentUser);
+            this.getUserFullname();
+
+            this.validation = false;
+            Messenger().post({
+              message: 'Vos données ont été bien enregistrées',
+              type: 'success',
+              showCloseButton: true
+            });
+            //redirecting to offers page if new User
+            if (isNewUser) {
+              this.router.navigate(['home']);
+            }
+            this.close();
+            return;
+          }
+        })
+          .catch((error: any) => {
+            this.validation = false;
+            return;
+          });
+      }
+
+      if (this.isEmployer) {
           var companyname = (!this.companyname ? this.currentUser.employer.entreprises[0].nom : this.companyname);
           var ape = this.ape ? this.ape.substring(0, 5).toUpperCase() : "";
           var entrepriseId = this.currentUser.employer.entreprises[0].id;
@@ -648,8 +651,7 @@ export class ModalProfile{
             .catch((error: any) => {
               this.validation = false;
             });
-        }
-      } else {
+        } else {
         this.profileService.updateJobyerCivilityFirstTime(title, lastname, firstname, userRoleId).then((res: any) => {
           //case of authentication failure : server unavailable or connection problem
           if (!res || res.status == "failure") {
