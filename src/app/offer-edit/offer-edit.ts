@@ -88,6 +88,14 @@ export class OfferEdit{
   prerequisObList: any = [];
   prerequisObligatoires: any = [];
 
+
+  /*
+   * EPI
+   */
+  epi: string = '';
+  epiItems: any = [];
+  epiList: any = [];
+
   /*
    * Offer adress
    */
@@ -198,6 +206,13 @@ export class OfferEdit{
         this.prerequisObligatoires = this.offer.jobData.prerequisObligatoires;
       else
         this.prerequisObligatoires = [];
+
+      //epi
+      if (this.offer.jobData.epi && this.offer.jobData.epi.length > 0)
+        this.epiList = this.offer.jobData.epi;
+      else
+        this.epiList = [];
+
       this.offersService.loadOfferAdress(this.offer.idOffer, this.projectTarget).then((data:any)=>{
         this.offerAddress = data;
       });
@@ -214,7 +229,8 @@ export class OfferEdit{
         remuneration: null,
         currency: 'euro',
         validated: false,
-        prerequisObligatoires: []
+        prerequisObligatoires: [],
+        epi: []
       };
       this.offer = {
         jobData: jobData, calendarData: [], qualityData: [], languageData: [],
@@ -314,9 +330,9 @@ export class OfferEdit{
      elements.push(this.id);
     });
 
-    //add chnage event to endTime timepicker
+    //add change event to endTime timepicker
     jQuery('#' + elements[1]).timepicker().on('changeTime.timepicker', function(e) {
-      if(e.time.value == "0:00" || e.time.value == "00:00"){
+      if(e.time.value == "0:00" || e.time.value == "12:00"){
         jQuery('#' + elements[1]).timepicker('setTime', '11:59 PM');
       }
     });
@@ -435,6 +451,97 @@ export class OfferEdit{
         self.prerequisOb = e.choice.libelle;
       }
     )
+
+    //epi select2
+
+    jQuery('.epi-select').select2({
+      maximumSelectionLength: 1,
+      tokenSeparators: [",", " "],
+      createSearchChoice: function (term, data) {
+        if (self.epiItems.length == 0) {
+          return {
+            id: '0', libelle: term
+          };
+        }
+      },
+      ajax: {
+        url: Configs.sqlURL,
+        type: 'POST',
+        dataType: 'json',
+        quietMillis: 250,
+        transport: function (params) {
+          params.beforeSend = Configs.getSelect2TextHeaders();
+          return jQuery.ajax(params);
+        },
+        data: function (term, page) {
+          return self.offersService.selectEPI(term);
+        },
+        results: function (data, page) {
+          self.epiItems = data.data;
+          return {results: data.data};
+        },
+        cache: false,
+
+      },
+
+      formatResult: function (item) {
+        return item.libelle;
+      },
+      formatSelection: function (item) {
+        return item.libelle;
+      },
+      dropdownCssClass: "bigdrop",
+      escapeMarkup: function (markup) {
+        return markup;
+      },
+      minimumInputLength: 1
+    });
+    jQuery('.epi-select').on('select2-selecting',
+      (e) => {
+        self.epi = e.choice.libelle;
+      }
+    )
+
+    jQuery('.epi-jobyer-select').select2({
+      maximumSelectionLength: 1,
+      tokenSeparators: [",", " "],
+      ajax: {
+        url: Configs.sqlURL,
+        type: 'POST',
+        dataType: 'json',
+        quietMillis: 250,
+        transport: function (params) {
+          params.beforeSend = Configs.getSelect2TextHeaders();
+          return jQuery.ajax(params);
+        },
+        data: function (term, page) {
+          return self.offersService.selectEPI(term);
+        },
+        results: function (data, page) {
+          self.prerequisObList = data.data;
+          return {results: data.data};
+        },
+        cache: false,
+
+      },
+
+      formatResult: function (item) {
+        return item.libelle;
+      },
+      formatSelection: function (item) {
+        return item.libelle;
+      },
+      dropdownCssClass: "bigdrop",
+      escapeMarkup: function (markup) {
+        return markup;
+      },
+      minimumInputLength: 1
+    });
+    jQuery('.epi-jobyer-select').on('select2-selecting',
+      (e) => {
+        self.epi = e.choice.libelle;
+      }
+    )
   }
 
   addPrerequis() {
@@ -442,6 +549,13 @@ export class OfferEdit{
       return;
     this.prerequisObligatoires.push(this.prerequisOb);
     this.prerequisOb = '';
+  }
+
+  addEPI() {
+    if (!this.epi || this.epi == '')
+      return;
+    this.epiList.push(this.epi);
+    this.epi = '';
   }
 
   removePrerequis(p) {
@@ -456,6 +570,20 @@ export class OfferEdit{
       return;
 
     this.prerequisObligatoires.splice(index, 1);
+  }
+
+  removeEPI(p) {
+    let index = -1;
+    for (let i = 0; i < this.epiList.length; i++)
+      if (this.epi[i] == p) {
+        index = i;
+        break;
+      }
+
+    if (index < 0)
+      return;
+
+    this.epiList.splice(index, 1);
   }
 
   sectorSelected(sector) {
@@ -719,10 +847,14 @@ export class OfferEdit{
     this.selectedLang = "";
   }
 
-   setOfferInLocal() {
+  setOfferInLocal() {
     //set offer in local
     if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0)
       this.offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
+
+    if (this.epiList && this.epiList.length > 0)
+      this.offer.jobData.epi = this.epiList;
+
     this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, this.offer, this.projectTarget);
     this.sharedService.setCurrentUser(this.currentUser);
     this.sharedService.setCurrentOffer(this.offer);
@@ -749,6 +881,12 @@ export class OfferEdit{
         this.offer.jobData.prerequisObligatoires = [];
       }
 
+      // epi list
+      if (this.epiList && this.epiList.length > 0) {
+        this.offer.jobData.epi = this.epiList;
+      } else {
+        this.offer.jobData.epi = [];
+      }
 
       this.offersService.setOfferInRemote(this.offer, this.projectTarget).then((data: any)=> {
         this.dataValidation = true;
@@ -758,6 +896,10 @@ export class OfferEdit{
 
         if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0) {
           offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
+        }
+
+        if (this.epiList && this.epiList.length > 0) {
+          offer.jobData.epi = this.epiList;
         }
 
         if (this.projectTarget == 'employer') {
