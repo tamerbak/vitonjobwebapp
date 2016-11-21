@@ -12,7 +12,9 @@ import {FinanceService} from "../../providers/finance.service";
 import {Configs} from "../../configurations/configs";
 import {MapsAPILoader} from "angular2-google-maps/core";
 import {AddressUtils} from "../utils/addressUtils";
-
+import {LoadListService} from "../../providers/load-list.service";
+import {Utils} from "../utils/utils";
+import {DateUtils} from "../utils/date-utils";
 
 declare var Messenger, jQuery: any;
 declare var google: any;
@@ -23,10 +25,12 @@ declare var google: any;
   encapsulation: ViewEncapsulation.None,
   styles: [require('./offer-edit.scss')],
   directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime, ModalOptions, ModalOfferTempQuote],
-  providers: [OffersService, SearchService, FinanceService]
+  providers: [OffersService, SearchService, FinanceService, LoadListService]
 })
 
 export class OfferEdit{
+
+
   offer: any;
   sectors: any = [];
   jobs: any = [];
@@ -37,6 +41,7 @@ export class OfferEdit{
   currentUser: any;
   slot: any;
   slots = [];
+  totalHours = 0;
   selectedQuality: any;
   selectedLang: any;
   selectedLevel = "junior";
@@ -112,6 +117,8 @@ export class OfferEdit{
     componentRestrictions: {country: "fr"}
   };
 
+  //Full time
+  isFulltime: boolean = false;
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -121,7 +128,8 @@ export class OfferEdit{
               private financeService: FinanceService,
               private route: ActivatedRoute,
               private zone: NgZone,
-              private _loader: MapsAPILoader) {
+              private _loader: MapsAPILoader,
+              private listService: LoadListService) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['home']);
@@ -278,7 +286,7 @@ export class OfferEdit{
     //loadLanguages
     this.langs = this.sharedService.getLangList();
     if (!this.langs || this.langs.length == 0) {
-      this.offersService.loadLanguages(this.projectTarget).then((data: any) => {
+      this.listService.loadLanguages().then((data: any) => {
         this.langs = data.data;
         this.sharedService.setLangList(this.langs);
       })
@@ -642,6 +650,13 @@ export class OfferEdit{
     if (this.checkHour() == false)
       return;
 
+    //total hours should be lower than 10h
+    this.totalHours = this.offersService.calculateSlotsDuration(this.slots, this.slot);
+    if(this.totalHours > 600){
+      this.addAlert("danger", "Le total des heures de travail ne doit pas dépasser 10 heures. Veuillez réduire la durée des créneaux.", "slot");
+      return;
+    }
+
     if (this.obj != "detail") {
       this.slotsToSave.push(this.slot);
     }
@@ -832,7 +847,7 @@ export class OfferEdit{
     }
     //searching the selected lang in the general list of langs
     var langTemp = this.langs.filter((v)=> {
-      return (v.idLanguage == this.selectedLang);
+      return (v.id == this.selectedLang);
     });
     //delete the lang from the current offer lang list, if already existant
     if (this.offer.languageData.indexOf(langTemp[0]) != -1) {
@@ -1339,5 +1354,13 @@ export class OfferEdit{
         });
       });
     });
+  }
+
+  watchFullTime(e){
+    this.isFulltime = e.target.checked;
+    if(this.isFulltime){
+      this.slot.startHour = new Date(new Date().setHours(9,0,0,0));
+      this.slot.endHour = new Date(new Date().setHours(17,0,0,0));
+    }
   }
 }

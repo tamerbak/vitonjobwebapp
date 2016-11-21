@@ -777,25 +777,6 @@ export class OffersService {
     });
   }
 
-  /**
-   * @description     loading languages list
-   * @return languages list in the format {id : X, libelle : X}
-   */
-  loadLanguages(projectTarget: string) {
-    //  Init project parameters
-    this.configuration = Configs.setConfigs(projectTarget);
-    var sql = 'select pk_user_langue as \"idLanguage\", libelle as libelle, \'junior\' as level from user_langue';
-    return new Promise(resolve => {
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          resolve(data);
-        });
-    });
-  }
-
   /*
    *  Update offer statut, job and title
    */
@@ -1244,5 +1225,27 @@ export class OffersService {
           resolve(data);
         });
     });
+  }
+
+  calculateSlotsDuration(slots, newSlot){
+    let totalHours = 0;
+    for(let i = 0; i < slots.length; i++){
+      let s = slots[i];
+      let hs = s.startHour.split(':')[0] * 60;
+      let ms = s.startHour.split(':')[1] * 1;
+      let minStart: number = hs + ms;
+      let he = s.endHour.split(':')[0] * 60;
+      let me = s.endHour.split(':')[1] * 1;
+      let minEnd = he + me;
+      totalHours = totalHours + (minEnd - minStart);
+    }
+    let hs = newSlot.startHour.getHours() * 60;
+    let ms = newSlot.startHour.getMinutes();
+    let minStart = hs + ms;
+    let he = newSlot.endHour.getHours() * 60;
+    let me = newSlot.endHour.getMinutes();
+    let minEnd = he + me;
+    totalHours = totalHours + (minEnd - minStart);
+    return totalHours;
   }
 }

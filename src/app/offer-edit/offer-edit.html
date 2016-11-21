@@ -229,7 +229,7 @@
               [(ngModel)]="offer.jobData.remuneration"
               (change)="validateRate($event.target.value)"
             />
-            <alert *ngIf="invalidHourRate" [type]="'danger alert-sm'">
+            <alert *ngIf="invalidHourRate " [type]="'danger alert-sm'">
               <div [innerHTML]="'* Le taux horaire devrait être supérieur ou égal à ' + invalidHourRateMessage"></div>
             </alert>
           </div>
@@ -388,7 +388,13 @@
         </alert>
 
         <div class="form-group row required">
-          <div class="col-md-6 col-sm-6 col-xs-12">
+          <div class="col-md-2 col-sm-2 col-xs-2">
+            <label>
+              <input type="checkbox" [checked]="isFulltime" class="form-control" (change)="watchFullTime($event)"/>
+              Jour entier
+            </label>
+          </div>
+          <div class="col-md-4 col-sm-4 col-xs-10">
             <datetime
               id="slotDate"
               style="display: block; width: 100%;"
@@ -398,20 +404,27 @@
             ></datetime>
           </div>
           <div class="col-md-2 col-sm-3 col-xs-6 offer-hour-new">
-            <datetime
+            <datetime [hidden]="isFulltime"
               id="slotSHour"
               [datepicker]="false"
               [timepicker]="{ showMeridian: false, minuteStep: 15 }"
               [(ngModel)]="slot.startHour"
+              readonly = "true"
             ></datetime>
+            <input *ngIf="isFulltime" class="form-control"
+                    value="09:00"
+                    readonly/>
           </div>
           <div class="col-md-2 col-sm-3 col-xs-6 offer-hour-new">
-            <datetime
+            <datetime [hidden]="isFulltime"
               id="slotEHour"
               [datepicker]="false"
               [timepicker]="{ showMeridian: false, minuteStep: 15 }"
               [(ngModel)]="slot.endHour"
             ></datetime>
+            <input *ngIf="isFulltime" class="form-control"
+                   value="17:00"
+                   readonly/>
           </div>
           <div class="col-md-2 col-xs-12">
             <button
@@ -517,7 +530,7 @@
             <div class="row">
               <div class="col-md-6 col-xs-6">
                 <select class="form-control" [(ngModel)]="selectedLang">
-                  <option *ngFor="let l of langs" [value]="l.idLanguage">{{l.libelle}}</option>
+                  <option *ngFor="let l of langs" [value]="l.id">{{l.libelle}}</option>
                 </select>
               </div>
               <div class="col-md-3 col-xs-6">

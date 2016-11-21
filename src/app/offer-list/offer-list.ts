@@ -132,7 +132,6 @@ export class OfferList {
         offer.correspondantsCount = -1;
 
         //verify if offer is obsolete
-
         for (let j = 0; j < offer.calendarData.length; j++) {
           var slotDate = offer.calendarData[j].date;
           var startH = this.offersService.convertToFormattedHour(offer.calendarData[j].startHour);
@@ -147,8 +146,9 @@ export class OfferList {
           }
         }
 
-        if(!offer.obsolete)
+        if(!offer.obsolete){
           this.globalOfferList[0].list.push(offer);
+        }
 
 
         if(!offer.obsolete) {
