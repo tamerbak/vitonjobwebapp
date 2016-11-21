@@ -37,7 +37,7 @@
 <div class="row">
   <div class="col-lg-12 col-xs-12">
     <div *ngFor="let globalList of globalOfferList" style="margin-bottom: 10px;" [hidden]="globalList.list.length <=0">
-      <section class="widget" widget *ngFor="#item of globalList.list" [hidden]="!item.visible || typeOfferModel == '1'">
+      <section class="widget" widget *ngFor="let item of globalList.list" [hidden]="!item.visible || typeOfferModel == '1'">
         <div class="widget-body row">
           <div class="col-xs-8">
             <div class="abc-radio abc-style abc-radio-{{item.obsolete ? 'danger':'success'}}">
@@ -52,15 +52,7 @@
               </label>
               <label class="labelS">Activer l'alerte</label>
             </div>
-            <!-- <div class="radio hidden-md-up col-xs-6 pull-right">
-              <label class="labelSwitch">Activer l'alerte</label>
-              <input type="radio" [checked]="item.rechercheAutomatique" (click)="autoSearchMode(item)">
 
-            </div> -->
-            <!-- <input [ngModel]="item.rechercheAutomatique" type="checkbox" (change)="autoSearchMode(item)">
-            <label>
-              <b>Activer l'alerte</b>
-            </label> -->
           </div>
           <div class="col-xs-5 col-md-12 price pull-right">
             <h4 class="" style="margin-bottom:0px"><strong>{{item.jobData.remuneration}} € </strong></h4>

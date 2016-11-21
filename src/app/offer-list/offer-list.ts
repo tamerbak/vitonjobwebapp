@@ -132,6 +132,7 @@ export class OfferList {
         offer.correspondantsCount = -1;
 
         //verify if offer is obsolete
+
         for (let j = 0; j < offer.calendarData.length; j++) {
           var slotDate = offer.calendarData[j].date;
           var startH = this.offersService.convertToFormattedHour(offer.calendarData[j].startHour);
@@ -143,18 +144,13 @@ export class OfferList {
             break;
           } else {
             offer.obsolete = false;
-            this.globalOfferList[0].list.push(offer);
           }
         }
 
+        if(!offer.obsolete)
+          this.globalOfferList[0].list.push(offer);
 
-        /*this.offersService.getCorrespondingOffers(offer, this.projectTarget).then((data: any)=> {
-          offer.correspondantsCount = data.length;
-          // Sort offers corresponding to their search results :
-          this.globalOfferList[0].list.sort((a, b) => {
-            return b.correspondantsCount - a.correspondantsCount;
-          })
-        });*/
+
         if(!offer.obsolete) {
           let searchFields = {
             class: 'com.vitonjob.callouts.recherche.SearchQuery',

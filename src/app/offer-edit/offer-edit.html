@@ -178,7 +178,7 @@
           </div>
         </div>
 
-        <div class="form-group row" *ngIf="convParametersVisible() && convCoefficientsVisible()">
+        <div class="form-group row" *ngIf="convCoefficientsVisible()">
           <label class="col-md-4 col-xs-12 form-control-label text-md-right">Coefficient</label>
           <div class="col-md-8 col-xs-12">
             <select class="form-control" [(ngModel)]="selectedCoefConvID"
@@ -187,47 +187,6 @@
             </select>
           </div>
         </div>
-
-        <!-- Taux horaire -->
-        <div class="form-group row required">
-          <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-            Taux horaire brut en €
-          </label>
-          <div class="col-md-6 col-xs-6">
-            <input
-              type="number"
-              step="0.01"
-              class="form-control"
-              min="0"
-              [(ngModel)]="offer.jobData.remuneration"
-              (change)="validateRate($event.target.value)"
-            />
-            <alert *ngIf="triedValidate && !offer.jobData.remuneration" [type]="'danger alert-sm'">
-              <div [innerHTML]="'* Veuillez renseigner le taux horaire'"></div>
-            </alert>
-            <alert *ngIf="invalidHourRate && offer.jobData.remuneration" [type]="'danger alert-sm'">
-              <div [innerHTML]="'* Le taux horaire devrait être supérieur ou égal à ' + invalidHourRateMessage"></div>
-            </alert>
-          </div>
-          <div class="col-md-2 col-xs-6">
-            <select class="form-control" disabled>
-              <option>EUR</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row required">
-          <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-            {{ currentUser.estEmployeur ? 'Adresse de la mission' : 'Adresse de départ vers le lieu de travail' }}
-          </label>
-          <div class="col-md-7 col-xs-12">
-            <input id="autocompleteOfferAdress" type="text" class="form-control" placeholder="Rechercher une adresse" (keyup)="watchOfferAddress($event)"
-                   [(ngModel)]="offerAddress" (input)="autocompleteOfferAddress()"/>
-          </div>
-        </div>
-      </div>
-
-      <fieldset *ngIf="convParametersVisible()">
-        <legend><strong>Paramètres de la convention collective</strong></legend>
         <div class="form-group row" *ngIf="convNiveauxVisible()">
           <label class="col-md-4 col-xs-12 form-control-label text-md-right">Niveau</label>
           <div class="col-md-8 col-xs-12">
@@ -255,49 +214,69 @@
             </select>
           </div>
         </div>
-      </fieldset>
+
+        <!-- Taux horaire -->
+        <div class="form-group row required">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+            Taux horaire brut en €
+          </label>
+          <div class="col-md-6 col-xs-6">
+            <input
+              type="number"
+              step="0.01"
+              class="form-control"
+              min="0"
+              [(ngModel)]="offer.jobData.remuneration"
+              (change)="validateRate($event.target.value)"
+            />
+            <alert *ngIf="invalidHourRate" [type]="'danger alert-sm'">
+              <div [innerHTML]="'* Le taux horaire devrait être supérieur ou égal à ' + invalidHourRateMessage"></div>
+            </alert>
+          </div>
+          <div class="col-md-2 col-xs-6">
+            <select class="form-control" disabled>
+              <option>EUR</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row required">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+            {{ currentUser.estEmployeur ? 'Adresse de la mission' : 'Adresse de départ vers le lieu de travail' }}
+          </label>
+          <div class="col-md-7 col-xs-12">
+            <input id="autocompleteOfferAdress" type="text" class="form-control" placeholder="Rechercher une adresse" (keyup)="watchOfferAddress($event)"
+                   [(ngModel)]="offerAddress" (input)="autocompleteOfferAddress()"/>
+          </div>
+        </div>
+      </div>
+
 
       <fieldset *ngIf="convParametersVisible()">
         <legend><strong>Conditions d'emploi</strong></legend>
-        <!--<div class="form-group row required">
-          <label class="col-md-2 col-xs-2 form-control-label">Code</label>
-          <label class="col-md-10 col-xs-10 form-control-label">Avantage</label>
-        </div>-->
         <div class="form-group row" *ngFor="let item of categoriesHeure">
-          <!--<div class="col-md-2 col-xs-2">
-            <span>{{item.code}}</span>
-          </div>-->
           <div class="col-md-12 col-xs-12">
             <span>{{item.libelle}}</span>
           </div>
         </div>
         <div class="form-group row" *ngFor="let item of majorationsHeure">
-          <!--<div class="col-md-2 col-xs-2">
-            <span>{{item.code}}</span>
-          </div>-->
           <div class="col-md-12 col-xs-12">
             <span>{{item.libelle}}</span>
           </div>
         </div>
         <div class="form-group row" *ngFor="let item of indemnites">
-          <!--<div class="col-md-2 col-xs-2">
-            <span>{{item.code}}</span>
-          </div>-->
           <div class="col-md-12 col-xs-12">
             <span>{{item.libelle}}</span>
           </div>
         </div>
       </fieldset>
 
-      <fieldset>
-        <legend><strong>{{ currentUser.estEmployeur ? 'Formations et habilitations':'liste des documents nécessaires' }}</strong></legend>
+      <fieldset *ngIf="currentUser.estEmployeur">
+        <legend><strong>Formations et habilitations</strong></legend>
         <div class="container-fluid">
           <div class="row">
             <div class="col-xs-10">
               <input *ngIf="currentUser.estEmployeur" type="hidden" class="select2 prerequis-select form-control" name="prerequis"
                      placeholder="Formations et habilitations" [(ngModel)]="prerequisOb" />
-              <input *ngIf="!currentUser.estEmployeur" type="hidden" class="select2 prerequis-jobyer-select form-control" name="documents"
-                     placeholder="Documents nécessaires" [(ngModel)]="prerequisOb" />
             </div>
             <div class="col-xs-2">
               <button class="btn btn-primary"
@@ -324,15 +303,14 @@
 
       </fieldset>
 
-      <fieldset>
+      <fieldset *ngIf="currentUser.estEmployeur">
         <legend><strong>Equipements de protection individuel</strong></legend>
         <div class="container-fluid">
           <div class="row">
             <div class="col-xs-10">
               <input *ngIf="currentUser.estEmployeur" type="hidden" class="select2 epi-select form-control" name="EPI"
                      placeholder="Equipements de protection individuel" [(ngModel)]="epi" />
-              <input *ngIf="!currentUser.estEmployeur" type="hidden" class="select2 epi-jobyer-select form-control" name="EPI"
-                     placeholder="Equipements de protection individuel" [(ngModel)]="epi" />
+
             </div>
             <div class="col-xs-2">
               <button class="btn btn-primary"
