@@ -1105,10 +1105,21 @@ export class OffersService {
     });
   }
 
-  calculateSlotsDuration(slots, newSlot){
-    let totalHours = 0;
+  calculateSlotsDurationByDay(slots, newSlot){
+    let currentSDate = new Date(newSlot.date).setHours(0, 0, 0, 0);
+    let hs = newSlot.startHour.getHours() * 60;
+    let ms = newSlot.startHour.getMinutes();
+    let minStart = hs + ms;
+    let he = newSlot.endHour.getHours() * 60;
+    let me = newSlot.endHour.getMinutes();
+    let minEnd = he + me;
+    let totalHours = minEnd - minStart;
     for(let i = 0; i < slots.length; i++){
       let s = slots[i];
+      let sDate = new Date(s.date).setHours(0, 0, 0, 0);
+      if(sDate != currentSDate){
+        continue;
+      }
       let hs = s.startHour.split(':')[0] * 60;
       let ms = s.startHour.split(':')[1] * 1;
       let minStart: number = hs + ms;
@@ -1117,13 +1128,6 @@ export class OffersService {
       let minEnd = he + me;
       totalHours = totalHours + (minEnd - minStart);
     }
-    let hs = newSlot.startHour.getHours() * 60;
-    let ms = newSlot.startHour.getMinutes();
-    let minStart = hs + ms;
-    let he = newSlot.endHour.getHours() * 60;
-    let me = newSlot.endHour.getMinutes();
-    let minEnd = he + me;
-    totalHours = totalHours + (minEnd - minStart);
     return totalHours;
   }
 }
