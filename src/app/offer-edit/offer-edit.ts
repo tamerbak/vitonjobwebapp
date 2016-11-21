@@ -650,10 +650,10 @@ export class OfferEdit{
     if (this.checkHour() == false)
       return;
 
-    //total hours should be lower than 10h
-    this.totalHours = this.offersService.calculateSlotsDuration(this.slots, this.slot);
+    //total hours of one day should be lower than 10h
+    this.totalHours = this.offersService.calculateSlotsDurationByDay(this.slots, this.slot);
     if(this.totalHours > 600){
-      this.addAlert("danger", "Le total des heures de travail ne doit pas dépasser 10 heures. Veuillez réduire la durée des créneaux.", "slot");
+      this.addAlert("danger", "Le total des heures de travail de la journée du "+ this.toDateString(this.slot.date) + "  ne doit pas dépasser les 10 heures. Veuillez réduire la durée des créneaux de cette journée.", "slot");
       return;
     }
 
