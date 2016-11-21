@@ -23,6 +23,7 @@ export class AttachementsService {
           this.data = [];
           if(data.data){
             for(let i = 0 ; i < data.data.length ; i++){
+              //debugger;
               this.data.push({
                 id : data.data[i].pk_user_pieces_justificatives,
                 fileName : data.data[i].nom_fichier,
@@ -36,10 +37,28 @@ export class AttachementsService {
     });
   }
 
+  removeLastFileVersion(userId, fileName){
+    let sql = "update user_pieces_justificatives set dirty='Y' where fk_user_account="+userId+" and nom_fichier='"+fileName+"' ; "; // remove previous version
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          //debugger;
+          resolve(data);
+        });
+    });
+  }
+
   uploadFile(userId, fileName, scanUri) {
     let d = new Date();
+    this.removeLastFileVersion(userId, fileName);
+
     let sql = "insert into user_pieces_justificatives (fk_user_account, nom_fichier, date_mise_a_jour) values ("+userId+",'"+fileName+"','"+this.sqlfyDate(d)+"') returning pk_user_pieces_justificatives";
-    //console.log(sql);
+    ////console.log(sql);
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
       // then on the response it'll map the JSON data to a parsed JS object.
@@ -75,11 +94,12 @@ export class AttachementsService {
     };
 
     var stringData = JSON.stringify(payload);
-    ////console.log(stringData);
+    //////console.log(stringData);
     return new Promise(resolve => {
       let headers = Configs.getHttpJsonHeaders();
       this.http.post(Configs.fssURL, stringData, {headers:headers})
         .subscribe(data => {
+          //debugger;
           resolve(data);
         });
     });
@@ -143,7 +163,7 @@ export class AttachementsService {
       "5," +
       "210," +
       "'"+scanUri+"');";
-    //console.log(sql);
+    ////console.log(sql);
 
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
@@ -154,7 +174,6 @@ export class AttachementsService {
         .map(res => res.json())
         .subscribe(data => {
           //debugger;
-
           resolve(this.data);
         });
     });
@@ -191,7 +210,7 @@ export class AttachementsService {
       this.http.post(Configs.fssURL, stringData, {headers:headers})
         .map(res => res.json())
         .subscribe(data => {
-          // debugger;
+          //debugger;
           this.data = data;
           resolve(this.data);
         });
