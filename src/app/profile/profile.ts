@@ -128,7 +128,7 @@ export class Profile{
   showCurrentSiretBtn: boolean = false;
   companyAlert: string = "";
   showCurrentCompanyBtn: boolean = false;
-  personalAddressLabel: string = "Adresse du siège";
+  personalAddressLabel: string = "du siège";
   jobAddressLabel: string = "Adresse du lieu de travail";
   autocompletePA: any;
   autocompleteJA: any;
@@ -218,7 +218,7 @@ export class Profile{
         this.initForm();
       }
       if (!this.isRecruiter && !this.isEmployer) {
-        this.personalAddressLabel = "Adresse personnelle";
+        this.personalAddressLabel = "personnelle";
         this.jobAddressLabel = "Adresse de départ au travail";
         listService.loadNationalities().then((response: any) => {
           this.nationalities = response.data;
@@ -1355,7 +1355,6 @@ export class Profile{
               return;
             } else {
               // data saved
-              ////console.log("response update civility : " + res.status);
               this.currentUser.titre = this.title;
               this.currentUser.nom = this.lastname;
               this.currentUser.prenom = this.firstname;
@@ -1373,6 +1372,17 @@ export class Profile{
               this.validation = false;
               if (this.isPersonalAddressModified()) {
                 this.updatePersonalAddress();
+              }
+              if(!Utils.isEmpty(this.personalAddress)){
+                if(Utils.isEmpty(this.jobAddress)){
+                  this.jobAddress = this.personalAddress;
+                  this.nameJA = this.namePA;
+                  this.streetNumberJA = this.streetNumberPA;
+                  this.streetJA = this.streetPA;
+                  this.zipCodeJA = this.zipCodePA;
+                  this.cityJA = this.cityPA;
+                  this.countryJA = this.countryPA;
+                }
               }
               if (this.isJobAddressModified()) {
                 this.updateJobAddress();
