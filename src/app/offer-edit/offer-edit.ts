@@ -12,7 +12,9 @@ import {FinanceService} from "../../providers/finance.service";
 import {Configs} from "../../configurations/configs";
 import {MapsAPILoader} from "angular2-google-maps/core";
 import {AddressUtils} from "../utils/addressUtils";
-
+import {LoadListService} from "../../providers/load-list.service";
+import {Utils} from "../utils/utils";
+import {DateUtils} from "../utils/date-utils";
 
 declare var Messenger, jQuery: any;
 declare var google: any;
@@ -23,10 +25,12 @@ declare var google: any;
   encapsulation: ViewEncapsulation.None,
   styles: [require('./offer-edit.scss')],
   directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime, ModalOptions, ModalOfferTempQuote],
-  providers: [OffersService, SearchService, FinanceService]
+  providers: [OffersService, SearchService, FinanceService, LoadListService]
 })
 
 export class OfferEdit{
+
+
   offer: any;
   sectors: any = [];
   jobs: any = [];
@@ -37,6 +41,7 @@ export class OfferEdit{
   currentUser: any;
   slot: any;
   slots = [];
+  totalHours = 0;
   selectedQuality: any;
   selectedLang: any;
   selectedLevel = "junior";
@@ -99,10 +104,13 @@ export class OfferEdit{
   zipCodeOA : string;
   cityOA : string;
   countryOA : string;
+
   addressOptions = {
     componentRestrictions: {country: "fr"}
   };
 
+  //Full time
+  isFulltime: boolean = false;
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -112,7 +120,8 @@ export class OfferEdit{
               private financeService: FinanceService,
               private route: ActivatedRoute,
               private zone: NgZone,
-              private _loader: MapsAPILoader) {
+              private _loader: MapsAPILoader,
+              private listService: LoadListService) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['home']);
@@ -125,6 +134,8 @@ export class OfferEdit{
   }
 
   ngOnInit(): void {
+
+
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
 
     if (this.currentUser.estEmployeur && this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
@@ -199,7 +210,7 @@ export class OfferEdit{
         this.offerAddress = data;
       });
       this.convertDetailSlotsForDisplay();
-
+      this.updateConventionParameters(this.offer.idOffer);
     } else {
       var jobData = {
         'class': "com.vitonjob.callouts.auth.model.JobData",
@@ -259,7 +270,7 @@ export class OfferEdit{
     //loadLanguages
     this.langs = this.sharedService.getLangList();
     if (!this.langs || this.langs.length == 0) {
-      this.offersService.loadLanguages(this.projectTarget).then((data: any) => {
+      this.listService.loadLanguages().then((data: any) => {
         this.langs = data.data;
         this.sharedService.setLangList(this.langs);
       })
@@ -281,11 +292,41 @@ export class OfferEdit{
     };
   }
 
+  updateConventionParameters(idOffer){
+    this.offersService.getOfferConventionParameters(idOffer).then((parameter:any)=>{
+
+      if(parameter.idechelon && parameter.idechelon!=null){
+        this.selectedEchConvID = parseInt(parameter.idechelon+'');
+      }
+      if(parameter.idcat && parameter.idcat!=null){
+        this.selectedCatConvID = parseInt(parameter.idcat+'');
+      }
+      if(parameter.idcoeff && parameter.idcoeff!=null){
+        this.selectedCoefConvID = parseInt(parameter.idcoeff+'');
+      }
+      if(parameter.idniv && parameter.idniv!=null){
+        this.selectedNivConvID = parseInt(parameter.idniv+'');
+      }
+    });
+  }
+
   ngAfterViewInit() {
     var self = this;
     this._loader.load().then(() => {
       this.autocompleteOA = new google.maps.places.Autocomplete(document.getElementById("autocompleteOfferAdress"), this.addressOptions);
+    });
 
+    //get timepickers elements
+    var elements =[]
+    jQuery("input[id^='q-timepicker_']").each(function () {
+     elements.push(this.id);
+    });
+
+    //add chnage event to endTime timepicker
+    jQuery('#' + elements[1]).timepicker().on('changeTime.timepicker', function(e) {
+      if(e.time.value == "0:00" || e.time.value == "00:00"){
+        jQuery('#' + elements[1]).timepicker('setTime', '11:59 PM');
+      }
     });
 
 
@@ -358,6 +399,50 @@ export class OfferEdit{
         self.prerequisOb = e.choice.libelle;
       }
     )
+
+    /*
+     * PREREQUIS
+     */
+    jQuery('.prerequis-jobyer-select').select2({
+      maximumSelectionLength: 1,
+      tokenSeparators: [",", " "],
+      ajax: {
+        url: Configs.sqlURL,
+        type: 'POST',
+        dataType: 'json',
+        quietMillis: 250,
+        transport: function (params) {
+          params.beforeSend = Configs.getSelect2TextHeaders();
+          return jQuery.ajax(params);
+        },
+        data: function (term, page) {
+          return self.offersService.selectPrerequis(term);
+        },
+        results: function (data, page) {
+          self.prerequisObList = data.data;
+          return {results: data.data};
+        },
+        cache: false,
+
+      },
+
+      formatResult: function (item) {
+        return item.libelle;
+      },
+      formatSelection: function (item) {
+        return item.libelle;
+      },
+      dropdownCssClass: "bigdrop",
+      escapeMarkup: function (markup) {
+        return markup;
+      },
+      minimumInputLength: 1
+    });
+    jQuery('.prerequis-jobyer-select').on('select2-selecting',
+      (e) => {
+        self.prerequisOb = e.choice.libelle;
+      }
+    )
   }
 
   addPrerequis() {
@@ -409,8 +494,11 @@ export class OfferEdit{
   }
 
   watchLevel(e) {
+
     this.offer.jobData.level = e.target.value;
   }
+
+
 
   //<editor-fold desc="Slots management">
 
@@ -433,6 +521,13 @@ export class OfferEdit{
     }
     if (this.checkHour() == false)
       return;
+
+    //total hours should be lower than 10h
+    this.totalHours = this.offersService.calculateSlotsDuration(this.slots, this.slot);
+    if(this.totalHours > 600){
+      this.addAlert("danger", "Le total des heures de travail ne doit pas dépasser 10 heures. Veuillez réduire la durée des créneaux.", "slot");
+      return;
+    }
 
     if (this.obj != "detail") {
       this.slotsToSave.push(this.slot);
@@ -624,7 +719,7 @@ export class OfferEdit{
     }
     //searching the selected lang in the general list of langs
     var langTemp = this.langs.filter((v)=> {
-      return (v.idLanguage == this.selectedLang);
+      return (v.id == this.selectedLang);
     });
     //delete the lang from the current offer lang list, if already existant
     if (this.offer.languageData.indexOf(langTemp[0]) != -1) {
@@ -676,10 +771,11 @@ export class OfferEdit{
 
         debugger;
 
+        if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0) {
+          offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
+        }
+
         if (this.projectTarget == 'employer') {
-          if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0) {
-            offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
-          }
 
           if(this.offerAddress){
 
@@ -695,6 +791,8 @@ export class OfferEdit{
           }
           this.currentUser.employer.entreprises[0].offers.push(offer);
         } else {
+
+
           if(this.offerAddress && this.cityOA && this.cityOA.length>0){
             this.offersService.saveOfferAdress(offer,
               this.offerAddress, this.streetNumberOA,
@@ -707,6 +805,12 @@ export class OfferEdit{
           }
           this.currentUser.jobyer.offers.push(offer);
         }
+
+        // Offer convention parameters
+
+        if (this.projectTarget == 'employer' && this.selectedParamConvID)
+          this.offersService.saveOfferConventionParameters(offer.idOffer, this.selectedParamConvID);
+
         this.sharedService.setCurrentUser(this.currentUser);
         Messenger().post({
           message: "L'offre " + "'" + this.offer.title + "'" + " a été ajoutée avec succès",
@@ -745,6 +849,9 @@ export class OfferEdit{
           });
         }
       }
+
+      if (this.projectTarget == 'employer' && this.selectedParamConvID)
+        this.offersService.saveOfferConventionParameters(this.offer.idOffer, this.selectedParamConvID);
       this.validateJob();
 
     }
@@ -1105,5 +1212,13 @@ export class OfferEdit{
         });
       });
     });
+  }
+
+  watchFullTime(e){
+    this.isFulltime = e.target.checked;
+    if(this.isFulltime){
+      this.slot.startHour = new Date(new Date().setHours(9,0,0,0));
+      this.slot.endHour = new Date(new Date().setHours(17,0,0,0));
+    }
   }
 }

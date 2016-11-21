@@ -119,8 +119,6 @@ export class OffersService {
                         offers.push(offerData);
                         // Save new offer list in SqlStorage :
                         this.sharedService.setCurrentUser(data);
-                        console.log(data);
-                        console.log(this.sharedService.getCurrentUser())
                     }
                 } else { // jobyer
                     let rawData = data.jobyer;
@@ -188,13 +186,48 @@ export class OffersService {
         .subscribe((data:any) => {
           let idOffer = JSON.parse(data._body).idOffer;
           if(offerData.jobData.prerequisObligatoires && offerData.jobData.prerequisObligatoires.length>0){
+            switch (projectTarget) {
+              case 'employer' :
+                this.updatePrerequisObligatoires(idOffer,offerData.jobData.prerequisObligatoires);
+                break;
+              case 'jobyer':
+                this.updateNecessaryDocuments(idOffer,offerData.jobData.prerequisObligatoires);
+                break;
+            }
 
-            this.updatePrerequisObligatoires(idOffer,offerData.jobData.prerequisObligatoires);
           }
           resolve(data);
         });
     });
   }
+
+  updateNecessaryDocuments(idOffer,plist){
+    let sql = "delete from user_prerequis_jobyer where fk_user_offre_jobyer="+idOffer;
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+
+          for(let i = 0 ; i < plist.length ; i++){
+            this.getPrerequis(plist[i]).then(id=>{
+              if(id>0){
+                this.doUpdateNecessaryDocuments(idOffer, id);
+              }else{
+                this.insertPrerequis(plist[i]).then(id=>{
+                  this.doUpdateNecessaryDocuments(idOffer, id);
+                });
+              }
+            });
+          }
+          resolve(data);
+        });
+    });
+   }
 
   updatePrerequisObligatoires(idOffer,plist){
     let sql = "delete from user_prerequis_obligatoires where fk_user_offre_entreprise="+idOffer;
@@ -275,7 +308,22 @@ export class OffersService {
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
 
+  doUpdateNecessaryDocuments(idOffer, idp){
+    let sql = "insert into user_prerequis_jobyer (fk_user_offre_jobyer, fk_user_prerquis) values ("+idOffer+","+idp+")";
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
           resolve(data);
         });
     });
@@ -405,7 +453,10 @@ export class OffersService {
         .subscribe(data => {
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
+          if(offer.jobData.prerequisObligatoires){
 
+            this.updateNecessaryDocuments(offer.idOffer,offer.jobData.prerequisObligatoires);
+          }
           resolve(data);
         });
     });
@@ -425,6 +476,7 @@ export class OffersService {
         .subscribe(data => {
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
+
           resolve(data);
         });
     });
@@ -617,25 +669,6 @@ export class OffersService {
 
   attacheLanguage(idOffer, table, idLanguage, level) {
     let sql = "insert into user_pratique_langue (fk_" + table + ", fk_user_langue, fk_user_niveau) values (" + idOffer + ", " + idLanguage + ", " + ((level == 'junior') ? 1 : 2) + ")";
-    return new Promise(resolve => {
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          resolve(data);
-        });
-    });
-  }
-
-  /**
-   * @description     loading languages list
-   * @return languages list in the format {id : X, libelle : X}
-   */
-  loadLanguages(projectTarget: string) {
-    //  Init project parameters
-    this.configuration = Configs.setConfigs(projectTarget);
-    var sql = 'select pk_user_langue as \"idLanguage\", libelle as libelle, \'junior\' as level from user_langue';
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
@@ -863,6 +896,56 @@ export class OffersService {
     });
   }
 
+  getOfferConventionParameters(idOffer){
+    let sql = "select pk_user_parametrage_convention as id, remuneration_de_reference as rate, " +
+      "fk_user_convention_collective as idcc, fk_user_categorie_convention as idcat, " +
+      "fk_user_echelon_convention as idechelon, fk_user_coefficient_convention as idcoeff, fk_user_niveau_convention_collective as idniv " +
+      "from user_parametrage_convention where " +
+      "pk_user_parametrage_convention in (select fk_user_parametrage_convention " +
+        "from user_offre_entreprise " +
+        "where pk_user_offre_entreprise="+idOffer+")";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data:any) => {
+          let parameter = {
+            idechelon: null,
+            idcat:null,
+            idcoeff:null,
+            idniv:null
+          };
+          if(data.data && data.data.length>0){
+
+            let d = data.data[0];
+            if(d.idechelon && d.idechelon != 'null')
+              parameter.idechelon = d.idechelon;
+            if(d.idcat && d.idcat != 'null')
+              parameter.idcat = d.idcat;
+            if(d.idcoeff && d.idcoeff != 'null')
+              parameter.idcoeff = d.idcoeff;
+            if(d.idniv && d.idniv != 'null')
+              parameter.idniv = d.idniv;
+          }
+
+          resolve(parameter);
+        });
+    });
+  }
+
+  saveOfferConventionParameters(idOffer, idParameter){
+    let sql = 'update user_offre_entreprise set fk_user_parametrage_convention='+idParameter+' where pk_user_offre_entreprise='+idOffer;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
   /*********************************************************************************************************************
    *  COLLECTIVE CONVENTIONS ADVANTAGES
    *********************************************************************************************************************/
@@ -929,7 +1012,23 @@ export class OffersService {
         .subscribe(data => {
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
-          console.log(data);
+          resolve(data.data);
+        });
+    });
+  }
+
+  loadOfferNecessaryDocuments(oid){
+    let sql = "select libelle from user_prerquis where pk_user_prerquis in (select fk_user_prerquis from user_prerequis_jobyer where fk_user_offre_jobyer="+oid+")";
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          // we've got back the raw data, now generate the core schedule data
+          // and save the data for later reference
           resolve(data.data);
         });
     });
@@ -988,5 +1087,43 @@ export class OffersService {
         resolve(data);
       });
     });
+  }
+
+  getCategoryByOfferAndConvention(offerId, convId){
+    let sql = "select pk_user_categorie_convention as id, libelle from user_categorie_convention where " +
+      "fk_user_convention_collective in (select pk_user_convention_collective as id from user_convention_collective where pk_user_convention_collective = " + convId + ") and " +
+      "pk_user_categorie_convention in (select fk_user_categorie_convention as idcat from user_parametrage_convention where pk_user_parametrage_convention in (select fk_user_parametrage_convention from user_offre_entreprise where pk_user_offre_entreprise="+offerId+"))";
+
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  calculateSlotsDuration(slots, newSlot){
+    let totalHours = 0;
+    for(let i = 0; i < slots.length; i++){
+      let s = slots[i];
+      let hs = s.startHour.split(':')[0] * 60;
+      let ms = s.startHour.split(':')[1] * 1;
+      let minStart: number = hs + ms;
+      let he = s.endHour.split(':')[0] * 60;
+      let me = s.endHour.split(':')[1] * 1;
+      let minEnd = he + me;
+      totalHours = totalHours + (minEnd - minStart);
+    }
+    let hs = newSlot.startHour.getHours() * 60;
+    let ms = newSlot.startHour.getMinutes();
+    let minStart = hs + ms;
+    let he = newSlot.endHour.getHours() * 60;
+    let me = newSlot.endHour.getMinutes();
+    let minEnd = he + me;
+    totalHours = totalHours + (minEnd - minStart);
+    return totalHours;
   }
 }

@@ -58,7 +58,6 @@ export class AuthenticationService {
     //  Init project parameters
     this.configuration = Configs.setConfigs(role);
 
-    role = (role === 'employer') ? 'employeur' : role;
     var sql = "select pk_user_account, email, telephone, role from user_account where LOWER(email) = lower_unaccent('" + mail + "')";
 
     return new Promise(resolve => {
@@ -95,7 +94,7 @@ export class AuthenticationService {
     var encodedLogin = btoa(login);
     var dataLog = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 283,
+      'id': 10018,
       'args': [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'requete authentification',

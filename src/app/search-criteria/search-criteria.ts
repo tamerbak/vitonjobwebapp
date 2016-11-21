@@ -126,7 +126,6 @@ export class SearchCriteria {
       table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
       idOffre: '0'
     };
-    console.log(JSON.stringify(searchFields));
     this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
       this.sharedService.setLastResult(data);
       Messenger().post({

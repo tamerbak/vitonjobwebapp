@@ -14,7 +14,7 @@ import {OffersService} from "../../providers/offer.service";
 import {AlertComponent} from "ng2-bootstrap";
 import {SmsService} from "../../providers/sms-service";
 
-declare var Messenger: any;
+declare var Messenger,jQuery,moment: any;
 
 /**
  * @author daoudi amine
@@ -74,6 +74,9 @@ export class Contract {
   isCIN:any;
   cni:any;
   isMissionDateValid: boolean = true;
+
+  //transport
+  transportMeans = [];
 
   dateFormat(d) {
     if(!d || typeof d === 'undefined')
@@ -311,7 +314,7 @@ export class Contract {
       primes: 0,
       headOffice: "",
       missionContent: "",
-      category: "Employé",
+      category:"",
       sector: "",
       companyName: '',
       titreTransport: 'NON',
@@ -320,7 +323,8 @@ export class Contract {
       elementsCotisation: 0.0,
       elementsNonCotisation: 10.0,
       titre: '',
-      periodicite : ''
+      periodicite : '',
+      prerequis : []
     };
     if (this.currentOffer) {
       this.service.getRates().then((data: any) => {
@@ -332,12 +336,17 @@ export class Contract {
           }
         }
       });
-
       this.initContract();
     }
 
     // Notify the jobyer that a new contract was created
     this.notifyJobyerNewContract();
+
+    //get convention category
+    this.getCategory();
+
+    //transportMeans
+    this.transportMeans = ["Véhicule", "Transport en commun Zone 1", "Transport en commun Zone 2", "Transport en commun Zone 3", "Transport en commun Zone 4", "Transport en commun Zone 5", "Transport en commun toutes zones"]
 
   }
 
@@ -355,6 +364,14 @@ export class Contract {
     this.contractService.loadJustificationsList(id).then(data=> {
       this.justificatifs = data;
     });
+  }
+
+  justifSelected(e){
+    if(e.target.value.indexOf("emploi à caractère saisonnier") != -1){
+      this.contractData.indemniteFinMission = "0.00%";
+    }else{
+      this.contractData.indemniteFinMission = "10.00%";
+    }
   }
 
 
@@ -399,7 +416,6 @@ export class Contract {
     m = d.getMonth() + 1;
     da = d.getDate();
     sd = d.getFullYear() + "-" + (m < 10 ? '0' : '') + m + "-" + (da < 10 ? '0' : '') + da;
-
     return sd;
   }
 
@@ -439,6 +455,7 @@ export class Contract {
     this.offersService.loadOfferAdress(this.currentOffer.idOffer, "employeur").then((data:any)=>{
       this.workAdress = data;
     });
+    
     //
     //
     for(let i=1 ; i <calendar.length;i++){
@@ -479,8 +496,8 @@ export class Contract {
       debutTitreTravail: this.jobyer.debutTitreTravail ? this.dateFormat(this.jobyer.debutTitreTravail) : "",
       finTitreTravail: this.jobyer.finTitreTravail ? this.dateFormat(this.jobyer.finTitreTravail) : "",
       periodesNonTravaillees: "",
-      debutSouplesse: "",
-      finSouplesse: "",
+      debutSouplesse: null,
+      finSouplesse: null,
       equipements: "",
       interim: "Tempo'AIR",
       missionStartDate: this.getStartDate(),
@@ -512,7 +529,7 @@ export class Contract {
       primes: 0,
       headOffice: this.hqAdress,
       missionContent: "",
-      category: 'Employé',
+      category: '',
       sector: this.currentOffer.jobData.sector,
       companyName: this.companyName,
       workAdress: this.workAdress,
@@ -523,17 +540,39 @@ export class Contract {
       elementsCotisation: this.rate,
       elementsNonCotisation: 10.0,
       titre: this.currentOffer.title,
-      periodicite : ''
+      periodicite : '',
+      prerequis : []
     };
 
+    this.offersService.loadOfferPrerequisObligatoires(this.currentOffer.idOffer).then((data:any)=>{
+      this.currentOffer.jobData.prerequisObligatoires = [];
+      for(let j = 0 ; j < data.length ; j++){
+        this.currentOffer.jobData.prerequisObligatoires.push(data[j].libelle);
+      }
+
+      this.contractData.prerequis = this.currentOffer.jobData.prerequisObligatoires;
+    });
+
     this.medecineService.getMedecine(this.employer.entreprises[0].id).then((data: any)=> {
-      //
       if (data && data != null) {
         this.contractData.centreMedecineEntreprise = data.libelle;
         this.contractData.adresseCentreMedecineEntreprise = data.adresse + ' ' + data.code_postal;
       }
-
     });
+
+  }
+
+  ngAfterViewInit(){
+    var elements = [];
+        jQuery("div[id^='q-datepicker_']").each(function () {
+          elements.push(this.id);
+        });
+        jQuery('#' + elements[0]).datepicker('update', moment(this.contractData.missionStartDate).format('DD/MM/YYYY'));
+        jQuery('#' + elements[1]).datepicker('update', moment(this.contractData.termStartDate).format('DD/MM/YYYY'));
+        jQuery('#' + elements[2]).datepicker('update', moment(this.contractData.termEndDate).format('DD/MM/YYYY'));
+        jQuery('#' + elements[3]).datepicker('update', moment(this.contractData.missionEndDate).format('DD/MM/YYYY'));
+        jQuery('#' + elements[4]).datepicker('update', "");
+        jQuery('#' + elements[5]).datepicker('update', "");
   }
 
   initWorkStartHour(){
@@ -573,7 +612,7 @@ export class Contract {
   }
 
   goToYousignPage() {
-    let isValid = this.rapatriement && this.embaucheAutorise && !this.missingJobyerData() && this.isMissionDateValid;
+    let isValid = !this.missingJobyerData() && this.isMissionDateValid;
     if(!isValid){
       return;
     }
@@ -699,6 +738,16 @@ export class Contract {
     );
   }
 
+  watchMissionStartDate(e){
+    this.contractData.missionStartDate = e.toISOString().split('T')[0];
+    this.watchMissionDate();
+  }
+
+   watchMissionEndDate(e){
+    this.contractData.missionEndDate = e.toISOString().split('T')[0];
+    this.watchMissionDate();
+  }
+
   watchMissionDate(){
     let now = new Date().setHours(0, 0, 0, 0);
     let today = new Date(now).toISOString().split('T')[0];
@@ -707,5 +756,14 @@ export class Contract {
     }else{
       this.isMissionDateValid = true;
     }
+  }
+
+  getCategory(){
+    let convId = this.currentUser.employer.entreprises[0].conventionCollective.id;
+    let offerId = this.currentOffer.idOffer;
+    this.offersService.getCategoryByOfferAndConvention(offerId, convId).then((data: any) =>{
+      let cat = data.data[0];
+      this.contractData.category = cat.libelle
+    })
   }
 }

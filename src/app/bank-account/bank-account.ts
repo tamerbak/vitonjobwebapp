@@ -123,6 +123,14 @@ export class BankAccount {
     this.isValidForm();
   }
 
+  getUserFullName(){
+    return this.sharedService.getCurrentUser().nom+" "+this.sharedService.getCurrentUser().prenom;
+  }
+
+  getUserReverseFullName(){
+    return this.sharedService.getCurrentUser().prenom+" "+this.sharedService.getCurrentUser().nom;
+  }
+
   watchAccountHolder(e) {
     let _name = e.target.value;
     let _isValid: boolean = true;
@@ -130,6 +138,9 @@ export class BankAccount {
 
     if (!_name) {
       _hint = "Ce champ est obligtoire";
+      _isValid = false;
+    }else if(_name.trim() !== this.getUserFullName() && _name.trim() !== this.getUserReverseFullName() ){
+      _hint = "Le nom et prénom fournis ne sont pas identiques à vos informations de profil";
       _isValid = false;
     } else {
       _hint = "";

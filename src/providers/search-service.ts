@@ -31,7 +31,7 @@ export class SearchService {
 
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      id: 340,
+      id: 11,
       args: [
         {
           class: 'fr.protogen.masterdata.model.CCalloutArguments',
@@ -67,7 +67,7 @@ export class SearchService {
 
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      id: 341,
+      id: 10,
       args: [
         {
           class: 'fr.protogen.masterdata.model.CCalloutArguments',
