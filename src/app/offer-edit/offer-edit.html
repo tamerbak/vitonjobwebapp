@@ -137,7 +137,9 @@
                     </span>
               </div>
             </div>
-            <select
+            <input type="hidden" class="select2 job-select form-control" name="job"
+                   placeholder="Rechrchez votre job" [(ngModel)]="selectedJob" />
+            <!--select
               data-minimum-results-for-search="10"
               data-placeholder="Recherchez votre job"
               class="job-select select2 form-control"
@@ -148,7 +150,7 @@
             >
               <option value=""></option>
               <option *ngFor="let j of jobs" [value]="j.id">{{j.libelle}}</option>
-            </select>
+            </select-->
             <alert *ngIf="triedValidate && !offer.jobData.idJob" [type]="'danger alert-sm'">
               <div [innerHTML]="'* Veuillez renseigner le job'"></div>
             </alert>

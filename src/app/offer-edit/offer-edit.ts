@@ -31,6 +31,8 @@ declare var google: any;
 
 export class OfferEdit{
 
+  selectedJob : any;
+
   offer: any;
   sectors: any = [];
   jobs: any = [];
@@ -225,6 +227,7 @@ export class OfferEdit{
       });
       this.convertDetailSlotsForDisplay();
       this.updateConventionParameters(this.offer.idOffer);
+
     } else {
       var jobData = {
         'class': "com.vitonjob.callouts.auth.model.JobData",
@@ -347,7 +350,52 @@ export class OfferEdit{
 
     // Initialize constraint between sector and job
     let sector = jQuery('.sector-select').select2();
-    let job = jQuery('.job-select').select2();
+    let job = jQuery('.job-select').select2({
+      maximumSelectionLength: 1,
+      tokenSeparators: [",", " "],
+      createSearchChoice: function (term, data) {
+        if (self.jobs.length == 0) {
+          return {
+            id: '0', libelle: term
+          };
+        }
+      },
+      ajax: {
+        url: Configs.sqlURL,
+        type: 'POST',
+        dataType: 'json',
+        quietMillis: 250,
+        transport: function (params) {
+          params.beforeSend = Configs.getSelect2TextHeaders();
+          return jQuery.ajax(params);
+        },
+        data: function (term, page) {
+          let idSector = 0;
+          if(self.offer && self.offer.jobData && self.offer.jobData.idSector){
+            idSector = self.offer.jobData.idSector;
+          }
+          return self.offersService.selectJobs(term, idSector);
+        },
+        results: function (data, page) {
+          self.jobs = data.data;
+          return {results: data.data};
+        },
+        cache: false,
+
+      },
+
+      formatResult: function (item) {
+        return item.libelle;
+      },
+      formatSelection: function (item) {
+        return item.libelle;
+      },
+      dropdownCssClass: "bigdrop",
+      escapeMarkup: function (markup) {
+        return markup;
+      },
+      minimumInputLength: 1
+    });
 
     sector
       .val(this.offer.jobData.idSector).trigger("change")
@@ -362,6 +410,15 @@ export class OfferEdit{
           self.jobSelected(e.val);
         }
       );
+
+    if(this.offer.jobData.idJob){
+      this.offersService.selectJobById(this.offer.jobData.idJob).then((job:string)=>{
+        this.selectedJob = job;
+        jQuery(".job-select").select2('data', {id:this.offer.jobData.idJob, libelle:this.selectedJob});
+      });
+    }
+
+
 
 
     /*
@@ -594,6 +651,7 @@ export class OfferEdit{
   }
 
   sectorSelected(sector) {
+
     //set sector info in jobdata
     this.offer.jobData.idSector = sector;
     //
@@ -618,6 +676,17 @@ export class OfferEdit{
       return (v.id == idJob);
     });
     this.offer.jobData.job = jobsTemp[0].libelle;
+
+    if(!this.offer.jobData.sector || this.offer.jobData.sector.length == 0){
+      this.offersService.loadSectorByJobId(idJob).then((sector:any)=>{
+        this.offer.jobData.idSector = sector.id;
+        this.offer.jobData.sector = sector.libelle;
+        let id = parseInt(this.offer.jobData.idSector);
+        this.sectorSelected(id);
+        jQuery(".sector-select").select2('val', id);
+
+      });
+    }
   }
 
   watchLevel(e) {
@@ -911,6 +980,7 @@ export class OfferEdit{
       this.offersService.setOfferInRemote(this.offer, this.projectTarget).then((data: any)=> {
         this.dataValidation = true;
         let offer = JSON.parse(data._body);
+
 
         if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0) {
           offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
