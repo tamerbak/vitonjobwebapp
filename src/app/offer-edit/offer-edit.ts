@@ -15,6 +15,7 @@ import {AddressUtils} from "../utils/addressUtils";
 import {LoadListService} from "../../providers/load-list.service";
 import {Utils} from "../utils/utils";
 import {DateUtils} from "../utils/date-utils";
+import {ConventionService} from "../../providers/convention.service";
 
 declare var Messenger, jQuery: any;
 declare var google: any;
@@ -25,7 +26,7 @@ declare var google: any;
   encapsulation: ViewEncapsulation.None,
   styles: [require('./offer-edit.scss')],
   directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime, ModalOptions, ModalOfferTempQuote],
-  providers: [OffersService, SearchService, FinanceService, LoadListService]
+  providers: [OffersService, SearchService, FinanceService, LoadListService, ConventionService]
 })
 
 export class OfferEdit{
@@ -49,6 +50,7 @@ export class OfferEdit{
   slotsToSave = [];
   alerts: Array<Object>;
   alertsSlot: Array<Object>;
+  alertsConditionEmp: Array<Object>;
   hideJobLoader: boolean = true;
   datepickerOpts: any;
   obj: string;
@@ -86,6 +88,8 @@ export class OfferEdit{
   modalParams: any = {type: '', message: ''};
   keepCurrentOffer: boolean = false;
   triedValidate: boolean = false;
+  isConditionEmpValid = true;
+  isConditionEmpExist: boolean = true;
 
   /*
    * PREREQUIS
@@ -130,7 +134,8 @@ export class OfferEdit{
               private route: ActivatedRoute,
               private zone: NgZone,
               private _loader: MapsAPILoader,
-              private listService: LoadListService) {
+              private listService: LoadListService,
+              private conventionService: ConventionService) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['home']);
@@ -144,6 +149,10 @@ export class OfferEdit{
 
   ngOnInit(): void {
 
+    //obj = "add", "detail", or "recruit"
+    this.route.params.forEach((params: Params) => {
+      this.obj = params['obj'];
+    });
 
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
 
@@ -169,25 +178,16 @@ export class OfferEdit{
             this.parametersConvention = data;
             this.checkHourRate();
           });
-          this.offersService.getHoursCategories(this.convention.id).then(data=> {
-            this.categoriesHeure = data;
-          });
-          this.offersService.getHoursMajoration(this.convention.id).then(data=> {
-            this.majorationsHeure = data;
-          });
-          this.offersService.getIndemnites(this.convention.id).then(data=> {
-            this.indemnites = data;
-          });
 
+          //get values for "condition de travail"
+          if(this.obj != "detail") {
+            this.getConditionEmpValuesForCreation();
+          }else{
+            this.getConditionEmpValuesForUpdate();
+          }
         }
       });
     }
-
-
-    //obj = "add", "detail", or "recruit"
-    this.route.params.forEach((params: Params) => {
-      this.obj = params['obj'];
-    });
 
     if (this.obj == "detail") {
       this.offer = this.sharedService.getCurrentOffer();
@@ -945,14 +945,20 @@ export class OfferEdit{
 
   editOffer() {
     this.triedValidate = true;
+    //values of condition de travail should not be null
+    if(!this.isConditionEmpValid){
+      return;
+    }
 
     if (this.obj != "detail") {
       this.offer.calendarData = this.slotsToSave;
       let roundMin = (Math.round(this.minHourRate * 100) / 100);
+
       if (!this.offer.jobData.job || !this.offer.jobData.sector || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || roundMin > this.offer.jobData.remuneration) {
         this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
         return;
       }
+
       let level = (this.offer.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant';
       this.offer.title = this.offer.jobData.job + " " + level;
       this.offer.identity = (this.projectTarget == 'employer' ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id);
@@ -985,6 +991,9 @@ export class OfferEdit{
         }
 
         if (this.projectTarget == 'employer') {
+
+          //save values of condition de travail
+          this.saveConditionEmp(offer);
 
           if(this.offerAddress){
 
@@ -1036,6 +1045,9 @@ export class OfferEdit{
       });
     } else {
       if (this.projectTarget == 'employer') {
+        //save values of condition de travail
+        this.saveConditionEmp(this.offer);
+
         if(this.offerAddress && this.cityOA && this.cityOA.length>0){
           this.offersService.saveOfferAdress(this.offer,
             this.offerAddress, this.streetNumberOA,
@@ -1121,6 +1133,9 @@ export class OfferEdit{
     }
     if (section == "slot") {
       this.alertsSlot = [{type: type, msg: msg}];
+    }
+    if (section == "conditionEmp") {
+      this.alertsConditionEmp = [{type: type, msg: msg}];
     }
   }
 
@@ -1429,5 +1444,83 @@ export class OfferEdit{
       this.slot.startHour = new Date(new Date().setHours(9,0,0,0));
       this.slot.endHour = new Date(new Date().setHours(17,0,0,0));
     }
+  }
+
+  watchConditionEmp(e, item){
+    this.alertsConditionEmp = [];
+    this.isConditionEmpValid = true;
+    if(+e.target.value < item.coefficient || Utils.isEmpty(e.target.value)){
+      this.addAlert("danger", "Les valeurs définies par l'employeur doivent être supérieures ou égales à celles définies par la convention collective.", "conditionEmp");
+      this.isConditionEmpValid = false;
+    }
+  }
+
+  saveConditionEmp(offer){
+    if(this.obj != 'detail' || !this.isConditionEmpExist) {
+      this.conventionService.createConditionEmploi(offer.idOffer, this.conventionService.convertPercentToRaw(this.categoriesHeure), this.conventionService.convertPercentToRaw(this.majorationsHeure), this.conventionService.convertPercentToRaw(this.indemnites)).then((data: any) => {
+        if (!data || data.status == "failure") {
+          this.addAlert("danger", "Erreur lors de la sauvegarde des données.", "general");
+        }
+      })
+    }else{
+      this.conventionService.updateConditionEmploi(this.offer.idOffer, this.conventionService.convertPercentToRaw(this.categoriesHeure), this.conventionService.convertPercentToRaw(this.majorationsHeure), this.conventionService.convertPercentToRaw(this.indemnites)).then((data: any) => {
+        if (!data || data.status == "failure") {
+          this.addAlert("danger", "Erreur lors de la sauvegarde des données.", "general");
+        }
+      })
+    }
+  }
+
+  getConditionEmpValuesForCreation(){
+    this.offersService.getHoursCategories(this.convention.id).then(data => {
+      this.categoriesHeure = this.conventionService.convertValuesToPercent(data);
+    });
+    this.offersService.getHoursMajoration(this.convention.id).then(data => {
+      this.majorationsHeure = this.conventionService.convertValuesToPercent(data);
+    });
+    this.offersService.getIndemnites(this.convention.id).then(data => {
+      this.indemnites = this.conventionService.convertValuesToPercent(data);
+    });
+  }
+
+  getConditionEmpValuesForUpdate(){
+    this.conventionService.getHoursCategoriesEmp(this.convention.id, this.offer.idOffer).then((data: any) => {
+      if(!data || data.length == 0){
+        this.isConditionEmpExist = false;
+        this.offersService.getHoursCategories(this.convention.id).then(data => {
+          this.categoriesHeure = this.conventionService.convertValuesToPercent(data);
+        });
+      }else{
+        this.isConditionEmpExist = true;
+        this.categoriesHeure = this.conventionService.convertValuesToPercent(data);
+      }
+    });
+
+    this.conventionService.getHoursMajorationEmp(this.convention.id, this.offer.idOffer).then((data: any) => {
+      if(!data || data.length == 0){
+        this.isConditionEmpExist = false;
+        this.offersService.getHoursMajoration(this.convention.id).then(data => {
+          this.majorationsHeure = this.conventionService.convertValuesToPercent(data);
+        });
+      }else {
+        this.isConditionEmpExist = true;
+        this.majorationsHeure = this.conventionService.convertValuesToPercent(data);
+      }
+    });
+    this.conventionService.getIndemnitesEmp(this.convention.id, this.offer.idOffer).then((data: any) => {
+      if(!data || data.length == 0){
+        this.isConditionEmpExist = false;
+        this.offersService.getIndemnites(this.convention.id).then(data => {
+          this.indemnites = this.conventionService.convertValuesToPercent(data);
+        });
+      }else {
+        this.isConditionEmpExist = true;
+        this.indemnites = this.conventionService.convertValuesToPercent(data);
+      }
+    });
+  }
+
+  preventNull(str){
+    return Utils.preventNull(str);
   }
 }
