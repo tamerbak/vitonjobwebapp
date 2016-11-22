@@ -153,7 +153,9 @@ export class LoginPage{
 
 
         this.authService.getPasswordStatus(tel).then((dataPwd: any) => {
-          data.mot_de_passe_reinitialise = dataPwd.data[0].mot_de_passe_reinitialise;
+          if(dataPwd && dataPwd.data && dataPwd.data.length > 0) {
+            data.mot_de_passe_reinitialise = dataPwd.data[0].mot_de_passe_reinitialise;
+          }
           this.sharedService.setCurrentUser(data);
           this.profileService.loadProfilePicture(data.id).then((pic: any) => {
             var userImageURL;

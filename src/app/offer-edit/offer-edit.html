@@ -342,12 +342,12 @@
       </fieldset>
 
       <fieldset *ngIf="currentUser.estEmployeur">
-        <legend><strong>Equipements de protection individuel</strong></legend>
+        <legend><strong>Equipement de protection individuel</strong></legend>
         <div class="container-fluid">
           <div class="row">
             <div class="col-xs-10">
               <input *ngIf="currentUser.estEmployeur" type="hidden" class="select2 epi-select form-control" name="EPI"
-                     placeholder="Equipements de protection individuel" [(ngModel)]="epi" />
+                     placeholder="Equipement de protection individuel" [(ngModel)]="epi" />
 
             </div>
             <div class="col-xs-2">
