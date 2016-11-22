@@ -1092,12 +1092,66 @@ export class OffersService {
   }
 
   selectPrerequis(kw){
-    let sql = "select pk_user_prerquis as id, libelle from user_prerquis where lower_unaccent(libelle) like lower_unaccent('%"+kw+"%') or lower_unaccent(libelle) % lower_unaccent('"+kw+"')";
+    let sql = "select pk_user_prerquis as id, libelle from user_prerquis where lower_unaccent(libelle) like lower_unaccent('%"+this.sqlfyText(kw)+"%') or lower_unaccent(libelle) % lower_unaccent('"+this.sqlfyText(kw)+"')";
 
     return sql;
   }
 
-   selectEPI(kw){
+  selectJobs(kw, idSector){
+    let constr = "";
+    if(idSector && idSector>0){
+      constr = "fk_user_metier="+idSector+" AND ";
+    }
+    let sql = "select pk_user_job as id, libelle from user_job where "+constr+" ( lower_unaccent(libelle) like lower_unaccent('%"+this.sqlfyText(kw)+"%') or lower_unaccent(libelle) % lower_unaccent('"+this.sqlfyText(kw)+"')) limit 10";
+    return sql;
+  }
+
+  selectJobById(id){
+    let sql = "select libelle from user_job where pk_user_job="+id;
+
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          // we've got back the raw data, now generate the core schedule data
+          // and save the data for later reference
+          let job = "";
+          if(data.data && data.data.length>0)
+            job = data.data[0].libelle;
+          resolve(job);
+        });
+    });
+  }
+
+  loadSectorByJobId(id){
+    let sql = "select pk_user_metier as id, libelle from user_metier where pk_user_metier in " +
+      "(select fk_user_metier from user_job where pk_user_job="+id+")";
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          // we've got back the raw data, now generate the core schedule data
+          // and save the data for later reference
+          let s = {
+            id : 0,
+            libelle : ""
+          };
+          if(data.data && data.data.length>0)
+            s = data.data[0];
+          resolve(s);
+        });
+    });
+  }
+
+  selectEPI(kw){
     let sql = "select pk_user_epi as id, libelle from user_epi where lower_unaccent(libelle) like lower_unaccent('%"+kw+"%') or lower_unaccent(libelle) % lower_unaccent('"+kw+"')";
 
     return sql;
