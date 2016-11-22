@@ -254,6 +254,20 @@
 
       <fieldset *ngIf="convParametersVisible()">
         <legend><strong>Conditions d'emploi</strong></legend>
+        <alert *ngFor="let alert of alertsConditionEmp; let i = index" [type]="alert.type + ' alert-sm'" dismissible="false">
+          <div [innerHTML]="alert.msg"></div>
+        </alert>
+        <div class="form-group row">
+          <div class="col-md-6 col-xs-12">
+            <strong>Valeurs définies par la convention collective</strong>
+          </div>
+          <div class="col-md-3 col-xs-12">
+            <strong>Valeurs définies par l'employeur</strong>
+          </div>
+          <div class="col-md-3 col-xs-12">
+            <strong></strong>
+          </div>
+        </div>
         <!--<div class="form-group row required">
           <label class="col-md-2 col-xs-2 form-control-label">Code</label>
           <label class="col-md-10 col-xs-10 form-control-label">Avantage</label>
@@ -262,24 +276,42 @@
           <!--<div class="col-md-2 col-xs-2">
             <span>{{item.code}}</span>
           </div>-->
-          <div class="col-md-12 col-xs-12">
+          <div class="col-md-6 col-xs-12">
             <span>{{item.libelle}}</span>
+          </div>
+          <div class="col-md-3 col-xs-12">
+            <input type="number" class="form-control" [min]="item.coefficient" [(ngModel)]="item.empValue" (change)="watchConditionEmp($event, item)"/>
+          </div>
+          <div class="col-md-3 col-xs-12">
+            <span> {{preventNull(item.typeValue)}} </span>
           </div>
         </div>
         <div class="form-group row" *ngFor="let item of majorationsHeure">
           <!--<div class="col-md-2 col-xs-2">
             <span>{{item.code}}</span>
           </div>-->
-          <div class="col-md-12 col-xs-12">
+          <div class="col-md-6 col-xs-12">
             <span>{{item.libelle}}</span>
+          </div>
+          <div class="col-md-3 col-xs-12">
+            <input type="number" class="form-control" [min]="item.coefficient" [(ngModel)]="item.empValue" (change)="watchConditionEmp($event, item)"/>
+          </div>
+          <div class="col-md-3 col-xs-12">
+            <span> {{preventNull(item.typeValue)}} </span>
           </div>
         </div>
         <div class="form-group row" *ngFor="let item of indemnites">
           <!--<div class="col-md-2 col-xs-2">
             <span>{{item.code}}</span>
           </div>-->
-          <div class="col-md-12 col-xs-12">
+          <div class="col-md-6 col-xs-12">
             <span>{{item.libelle}}</span>
+          </div>
+          <div class="col-md-3 col-xs-12">
+            <input type="number" class="form-control" [min]="item.coefficient" [(ngModel)]="item.empValue" (change)="watchConditionEmp($event, item)"/>
+          </div>
+          <div class="col-md-3 col-xs-12">
+            <span> {{preventNull(item.typeValue)}} </span>
           </div>
         </div>
       </fieldset>

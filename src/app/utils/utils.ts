@@ -1,4 +1,5 @@
 import {Injectable} from "@angular/core";
+import {isEmpty} from "rxjs/operator/isEmpty";
 
 
 @Injectable()
@@ -80,5 +81,13 @@ export class Utils {
     var EMAIL_REGEXP = /^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,4})$/;
     var isMatchRegex = EMAIL_REGEXP.test(email);
     return isMatchRegex;
+  }
+
+  public static preventNull(str){
+    if(Utils.isEmpty(str)){
+      return "";
+    }else{
+      return str;
+    }
   }
 }
