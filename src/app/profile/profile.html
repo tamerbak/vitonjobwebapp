@@ -27,7 +27,7 @@
               <i class="fa fa-credit-card mr-xs"></i>
               Modifier les coordonnées bancaires
             </button>
-            
+
           </div>
         </div>
         <div class="row">
@@ -499,12 +499,12 @@
                     </div>
                   </alert>
                 </div>
-                
+
               </div>
 
               <div class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  {{personalAddressLabel}}
+                  Adresse {{personalAddressLabel}}
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <input id="autocompletePersonal" type="text" class="form-control" placeholder="Rechercher une adresse" (keyup)="watchPersonalAddress($event)"
@@ -514,7 +514,7 @@
 
               <div class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  {{jobAddressLabel}}
+                  {{jobAddressLabel}} (si différente de l'adresse {{personalAddressLabel}})
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <input id="autocompleteJob" type="text" class="form-control" placeholder="Rechercher une adresse" (keyup)="watchJobAddress($event)"
@@ -524,7 +524,7 @@
 
               <div *ngIf="isEmployer" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Adresse de correspondance
+                  Adresse de correspondance (si différente de l'adresse {{personalAddressLabel}})
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <input id="autocompleteCorrespondence" type="text" class="form-control" placeholder="Rechercher une adresse" (keyup)="watchCorrespondenceAddress($event)"
