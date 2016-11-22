@@ -187,7 +187,6 @@
             </select>
           </div>
         </div>
-
         <div class="form-group row" *ngIf="convNiveauxVisible()">
           <label class="col-md-4 col-xs-12 form-control-label text-md-right">Niveau</label>
           <div class="col-md-8 col-xs-12">
@@ -252,7 +251,7 @@
       </div>
 
 
-      <fieldset *ngIf="convParametersVisible()">
+      <fieldset>
         <legend><strong>Conditions d'emploi</strong></legend>
         <alert *ngFor="let alert of alertsConditionEmp; let i = index" [type]="alert.type + ' alert-sm'" dismissible="false">
           <div [innerHTML]="alert.msg"></div>
@@ -273,9 +272,6 @@
           <label class="col-md-10 col-xs-10 form-control-label">Avantage</label>
         </div>-->
         <div class="form-group row" *ngFor="let item of categoriesHeure">
-          <!--<div class="col-md-2 col-xs-2">
-            <span>{{item.code}}</span>
-          </div>-->
           <div class="col-md-6 col-xs-12">
             <span>{{item.libelle}}</span>
           </div>
@@ -287,9 +283,6 @@
           </div>
         </div>
         <div class="form-group row" *ngFor="let item of majorationsHeure">
-          <!--<div class="col-md-2 col-xs-2">
-            <span>{{item.code}}</span>
-          </div>-->
           <div class="col-md-6 col-xs-12">
             <span>{{item.libelle}}</span>
           </div>
@@ -301,9 +294,6 @@
           </div>
         </div>
         <div class="form-group row" *ngFor="let item of indemnites">
-          <!--<div class="col-md-2 col-xs-2">
-            <span>{{item.code}}</span>
-          </div>-->
           <div class="col-md-6 col-xs-12">
             <span>{{item.libelle}}</span>
           </div>
@@ -316,15 +306,13 @@
         </div>
       </fieldset>
 
-      <fieldset>
-        <legend><strong>{{ currentUser.estEmployeur ? 'Formations et habilitations':'liste des documents nécessaires' }}</strong></legend>
+      <fieldset *ngIf="currentUser.estEmployeur">
+        <legend><strong>Formations et habilitations</strong></legend>
         <div class="container-fluid">
           <div class="row">
             <div class="col-xs-10">
               <input *ngIf="currentUser.estEmployeur" type="hidden" class="select2 prerequis-select form-control" name="prerequis"
                      placeholder="Formations et habilitations" [(ngModel)]="prerequisOb" />
-              <input *ngIf="!currentUser.estEmployeur" type="hidden" class="select2 prerequis-jobyer-select form-control" name="documents"
-                     placeholder="Documents nécessaires" [(ngModel)]="prerequisOb" />
             </div>
             <div class="col-xs-2">
               <button class="btn btn-primary"
@@ -337,14 +325,48 @@
             <div class="col-xs-12">&nbsp;</div>
           </div>
           <div *ngFor="let p of prerequisObligatoires" class="row" style="margin-bottom: 5px">
-            <div class="col-xs-2">
+            <div class="col-xs-1">
               <button class="btn btn-danger"
                       role="button" (click)="removePrerequis(p)" >
                 <span class="glyphicon glyphicon-minus"></span>
               </button>
             </div>
-            <div class="col-xs-10" style="font-size: medium">
+            <div class="col-xs-11" style="font-size: medium">
               {{p}}
+            </div>
+          </div>
+        </div>
+
+      </fieldset>
+
+      <fieldset *ngIf="currentUser.estEmployeur">
+        <legend><strong>Equipements de protection individuel</strong></legend>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-xs-10">
+              <input *ngIf="currentUser.estEmployeur" type="hidden" class="select2 epi-select form-control" name="EPI"
+                     placeholder="Equipements de protection individuel" [(ngModel)]="epi" />
+
+            </div>
+            <div class="col-xs-2">
+              <button class="btn btn-primary"
+                      role="button" (click)="addEPI()" >
+                <span class="glyphicon glyphicon-plus"></span>
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">&nbsp;</div>
+          </div>
+          <div *ngFor="let e of epiList" class="row" style="margin-bottom: 5px">
+            <div class="col-xs-1">
+              <button class="btn btn-danger"
+                      role="button" (click)="removeEPI(p)" >
+                <span class="glyphicon glyphicon-minus"></span>
+              </button>
+            </div>
+            <div class="col-xs-11" style="font-size: medium">
+              {{e}}
             </div>
           </div>
         </div>

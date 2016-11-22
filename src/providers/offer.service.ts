@@ -185,6 +185,9 @@ export class OffersService {
       this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
         .subscribe((data:any) => {
           let idOffer = JSON.parse(data._body).idOffer;
+
+          this.updateEPI(idOffer,offerData.jobData.epi,projectTarget);
+
           if(offerData.jobData.prerequisObligatoires && offerData.jobData.prerequisObligatoires.length>0){
             switch (projectTarget) {
               case 'employer' :
@@ -200,6 +203,36 @@ export class OffersService {
         });
     });
   }
+
+  updateEPI(idOffer,plist,projectTarget){
+    var table = projectTarget == 'employer' ? "user_epi_employeur":"user_epi_jobyer";
+    var fk = projectTarget == 'employer' ? "fk_user_offre_entreprise":"fk_user_offre_jobyer";
+    let sql = "delete from "+table+"where "+ fk+"="+idOffer;
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+
+          for(let i = 0 ; i < plist.length ; i++){
+            this.getEPI(plist[i]).then(id=>{
+              if(id>0){
+                this.doUpdateEPI(idOffer, id, projectTarget);
+              }else{
+                this.insertEPI(plist[i]).then(id=>{
+                  this.doUpdateEPI(idOffer, id, projectTarget);
+                });
+              }
+            });
+          }
+          resolve(data);
+        });
+    });
+   }
 
   updateNecessaryDocuments(idOffer,plist){
     let sql = "delete from user_prerequis_jobyer where fk_user_offre_jobyer="+idOffer;
@@ -277,6 +310,46 @@ export class OffersService {
     });
   }
 
+  getEPI(p){
+    let sql = "select pk_user_epi as id from user_epi where lower_unaccent(libelle) = lower_unaccent('"+p+"')";
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+
+          let id = -1;
+          if(data.data && data.data.length>0)
+            id = data.data[0].id;
+          resolve(id);
+        });
+    });
+  }
+
+  insertEPI(p){
+    let sql = "insert into user_epi (libelle) values ('"+p+"') returning pk_user_epi";
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+
+          let id = -1;
+          if(data.data && data.data.length>0)
+            id = data.data[0].pk_user_epi;
+          resolve(id);
+        });
+    });
+  }
+
   insertPrerequis(p){
     let sql = "insert into user_prerquis (libelle) values ('"+p+"') returning pk_user_prerquis";
     return new Promise(resolve => {
@@ -315,6 +388,24 @@ export class OffersService {
 
   doUpdateNecessaryDocuments(idOffer, idp){
     let sql = "insert into user_prerequis_jobyer (fk_user_offre_jobyer, fk_user_prerquis) values ("+idOffer+","+idp+")";
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  doUpdateEPI(idOffer, idp, projectTarget){
+    var table = projectTarget == 'employer' ? "user_epi_employeur":"user_epi_jobyer";
+    var fk = projectTarget == 'employer' ? "fk_user_offre_entreprise":"fk_user_offre_jobyer";
+    let sql = "insert into "+table+" ("+fk+",fk_user_epi) values ("+idOffer+","+idp+")";
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
       // then on the response it'll map the JSON data to a parsed JS object.
@@ -454,8 +545,11 @@ export class OffersService {
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
           if(offer.jobData.prerequisObligatoires){
-
             this.updateNecessaryDocuments(offer.idOffer,offer.jobData.prerequisObligatoires);
+          }
+
+          if(offer.jobData.epi){
+            this.updateEPI(offer.idOffer,offer.jobData.epi,"jobyer");
           }
           resolve(data);
         });
@@ -496,8 +590,11 @@ export class OffersService {
         .subscribe(data => {
 
           if(offer.jobData.prerequisObligatoires){
-
             this.updatePrerequisObligatoires(offer.idOffer,offer.jobData.prerequisObligatoires);
+          }
+
+          if(offer.jobData.epi){
+            this.updateEPI(offer.idOffer,offer.jobData.epi,"employer");
           }
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
@@ -1011,6 +1108,31 @@ export class OffersService {
     let sql = "select pk_user_prerquis as id, libelle from user_prerquis where lower_unaccent(libelle) like lower_unaccent('%"+kw+"%') or lower_unaccent(libelle) % lower_unaccent('"+kw+"')";
 
     return sql;
+  }
+
+   selectEPI(kw){
+    let sql = "select pk_user_epi as id, libelle from user_epi where lower_unaccent(libelle) like lower_unaccent('%"+kw+"%') or lower_unaccent(libelle) % lower_unaccent('"+kw+"')";
+
+    return sql;
+  }
+
+  loadOfferEPI(oid, projectTarget){
+    var table = projectTarget == 'employer' ? "user_epi_employeur":"user_epi_jobyer";
+    var fk = projectTarget == 'employer' ? "fk_user_offre_entreprise":"fk_user_offre_jobyer";
+    let sql = "select libelle from user_epi where pk_user_epi in (select fk_user_epi from "+table+" where "+fk+"="+oid+")";
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          // we've got back the raw data, now generate the core schedule data
+          // and save the data for later reference
+          resolve(data.data);
+        });
+    });
   }
 
   loadOfferPrerequisObligatoires(oid){
