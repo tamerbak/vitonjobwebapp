@@ -327,15 +327,18 @@
           </div>
         </div>
         <div class="form-group">
-          <label>Equipements de protection individuelle</label>
+          <label>Equipement de protection individuel</label>
           <input type="text" name="epi" class="form-control" [(ngModel)]="contractData.equipements" aria-describedby="epi" />
           <small class="form-text text-muted"></small>
         </div>
-        <div class="checkbox contract-form-checkbox">
-          <label >
-            <input type="checkbox" [(ngModel)]="contractData.epi" />
-            Equipements fournis par l'entreprise de travail temporaire
-          </label>
+        <div class="form-group">
+          <label>Equipement fourni par</label>
+          <select class="form-control"
+                  [(ngModel)]="contractData.epiProvidedBy">
+            <option value="Le client">Le client</option>
+            <option value="L'entreprise de travail temporaire">L'entreprise de travail temporaire</option>
+            <option value="Le salarié">Le salarié</option>
+          </select>
         </div>
       </div>
     </div>

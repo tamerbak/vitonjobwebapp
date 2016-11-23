@@ -109,11 +109,6 @@ export class Contract {
 
     this.jobyer = this.sharedService.getCurrentJobyer();
 
-    //load countries list
-    this.listService.loadCountries("jobyer").then((data: any) => {
-      this.pays = data.data;
-    });
-
     listService.loadNationalities().then((response: any) => {
       this.nationalities = response.data;
     });
@@ -162,6 +157,9 @@ export class Contract {
         this.profileService.loadAdditionalUserInformations(this.jobyer.id).then((data: any) => {
           if (data && data.data && data.data.length > 0) {
             data = data.data[0];
+            //load countries list
+            this.listService.loadCountries("jobyer").then((paysRes: any) => {
+              this.pays = paysRes.data;
             let birthCountry = this.profileService.getCountryById(data.fk_user_pays, this.pays);
             this.jobyer.nationaliteLibelle = data.nationalite_libelle;
             this.cni = data.cni;
@@ -190,16 +188,11 @@ export class Contract {
               this.isCIN = !Utils.isEmpty(data.numero_titre_sejour) ? false : true;
               this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
             }
+            });
           }
         });
-
-
-
-
       }
     });
-
-
 
     //  Load recours list
     this.contractService.loadRecoursList().then(data=> {
@@ -303,6 +296,7 @@ export class Contract {
       postRisks: "",
       medicalSurv: "",
       epi: false,
+      epiProvidedBy:'',
       baseSalary: 0,
       MonthlyAverageDuration: "0",
       salaryNHours: "00,00€ B/H",
@@ -518,6 +512,7 @@ export class Contract {
       postRisks: "",
       medicalSurv: "",
       epi: false,
+      epiProvidedBy:'',
       baseSalary: this.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2),
       MonthlyAverageDuration: "0",
       salaryNHours: this.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2) + " € B/H",
@@ -762,8 +757,14 @@ export class Contract {
     let convId = this.currentUser.employer.entreprises[0].conventionCollective.id;
     let offerId = this.currentOffer.idOffer;
     this.offersService.getCategoryByOfferAndConvention(offerId, convId).then((data: any) =>{
-      let cat = data.data[0];
-      this.contractData.category = cat.libelle
+      if(data && data.data && data.data.length > 0) {
+        let cat = data.data[0];
+        if(cat) {
+          this.contractData.category = cat.libelle
+        }else{
+          this.contractData.category = "";
+        }
+      }
     })
   }
 }
