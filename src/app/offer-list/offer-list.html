@@ -62,7 +62,7 @@
           <div class="col-md-12 col-sm-12 col-xs-12">
             <b>Disponibilités</b>
             <ul>
-              <li *ngFor="let dispo of item.slots, let j = index"><b>{{dispo.date}} :</b> {{dispo.startHour}} - {{dispo.endHour}} </li>
+              <li *ngFor="let dispo of item.slots, let j = index" [hidden]="dispo.pause"><b>{{dispo.date}} :</b> {{dispo.startHour}} - {{dispo.endHour}} </li>
             </ul>
           </div>
         </div>
