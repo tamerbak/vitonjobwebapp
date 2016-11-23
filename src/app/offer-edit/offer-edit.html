@@ -390,14 +390,18 @@
 
         <!-- Créneaux -->
         <div class="form-group row required">
-          <label class="col-md-6 col-xs-6 form-control-label">Date</label>
+          <label class="col-md-2 col-xs-6 form-control-label">Nature</label>
+          <label class="col-md-4 col-xs-6 form-control-label">Date</label>
           <label class="col-md-2 col-xs-3 form-control-label">Heure de début</label>
           <label class="col-md-2 col-xs-3 form-control-label">Heure de fin</label>
         </div>
 
         <div *ngFor="let item of slots, let j = index">
           <div class="form-group row">
-            <div class="col-md-6 col-sm-5 col-xs-12">
+            <div class="col-md-2 col-sm-5 col-xs-12">
+              <span>{{item.pause ? 'Pause' : ''}}</span>
+            </div>
+            <div class="col-md-4 col-sm-5 col-xs-12">
               <input class="form-control" [(ngModel)]="item.date" disabled/>
             </div>
             <div class="col-md-2 col-sm-2 col-xs-4 offer-hour-new">
@@ -426,10 +430,16 @@
         </alert>
 
         <div class="form-group row required">
-          <div class="col-md-2 col-sm-2 col-xs-2">
+          <div class="col-md-1 col-sm-2 col-xs-2">
             <label>
               <input type="checkbox" [checked]="isFulltime" class="form-control" (change)="watchFullTime($event)"/>
               Jour entier
+            </label>
+          </div>
+          <div class="col-md-1 col-sm-2 col-xs-2">
+            <label>
+              <input type="checkbox" [checked]="isPause" class="form-control" (change)="watchPause($event)"/>
+              Pause
             </label>
           </div>
           <div class="col-md-4 col-sm-4 col-xs-10">

@@ -61,7 +61,8 @@ export class OfferList {
     var slotTemp = {
       date: this.toDateString(s.date),
       startHour: this.toHourString(s.startHour),
-      endHour: this.toHourString(s.endHour)
+      endHour: this.toHourString(s.endHour),
+      pause: s.pause
     };
     return slotTemp;
   }
@@ -122,7 +123,8 @@ export class OfferList {
         var slotTemp = {
           date: this.toDateString(offer.calendarData[i].date),
           startHour: this.toHourString(offer.calendarData[i].startHour),
-          endHour: this.toHourString(offer.calendarData[i].endHour)
+          endHour: this.toHourString(offer.calendarData[i].endHour),
+          pause: offer.calendarData[i].pause
         };
         offer.slots.push(slotTemp);
       }
