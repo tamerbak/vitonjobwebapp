@@ -3,6 +3,7 @@ import {Configs} from "../configurations/configs";
 import {Http, Headers} from "@angular/http";
 import {Helpers} from "./helpers.service";
 import {GlobalConfigs} from "../configurations/globalConfigs";
+import {Utils} from "../app/utils/utils";
 
 // HACK: To fix: error TS2307: Cannot find module 'node'.
 declare function unescape(s: string): string;
@@ -170,6 +171,7 @@ export class ContractService {
       " equipements_fournis_par_l_ai," +
       " fk_user_periodicite_des_paiements," +
       " embauche_autorise," +
+      " epi," +
       " rapatriement_a_la_charge_de_l_ai" +
       ")" +
       " VALUES ("
@@ -180,35 +182,36 @@ export class ContractService {
       + "'" + this.helpers.dateToSqlTimestamp(new Date()) + "',"
       + "'" + this.helpers.timeStrToMinutes(contract.workStartHour) + "',"
       + "'" + this.helpers.timeStrToMinutes(contract.workEndHour) + "',"
-      + "'" + this.sqlfyText(contract.motif) + "',"
-      + "'" + this.sqlfyText(contract.num) + "',"
+      + "'" + Utils.sqlfyText(contract.motif) + "',"
+      + "'" + Utils.sqlfyText(contract.num) + "',"
       + "'" + contract.trialPeriod + "',"
       + "'" + contract.baseSalary + "',"
       + "'" + contract.workTimeHours + "',"
       + "'" + employerEntrepriseId + "',"
       + "'" + jobyerId + "',"
-      + "'" + this.sqlfyText(yousignJobyerLink) + "',"
+      + "'" + Utils.sqlfyText(yousignJobyerLink) + "',"
       + "'NON',"
       + "'NON',"
       + "10,"
       + "10,"
-      + "'" + this.sqlfyText(contract.titreTransport) + "',"
-      + "'" + this.sqlfyText(contract.zonesTitre) + "',"
-      + "'" + this.sqlfyText(contract.medicalSurv) + "',"
+      + "'" + Utils.sqlfyText(contract.titreTransport) + "',"
+      + "'" + Utils.sqlfyText(contract.zonesTitre) + "',"
+      + "'" + Utils.sqlfyText(contract.medicalSurv) + "',"
       + "" + this.checkNull(contract.debutSouplesse) + ","
       + "" + this.checkNull(contract.finSouplesse) + ","
-      + "'" + this.sqlfyText(contract.usualWorkTimeHours) + "',"
+      + "'" + Utils.sqlfyText(contract.usualWorkTimeHours) + "',"
       + "'" + contract.elementsCotisation + "',"
       + "'" + contract.elementsNonCotisation + "',"
-      + "'" + this.sqlfyText(contract.justification) + "',"
-      + "'" + this.sqlfyText(contract.titre) + "',"
-      + "'" + this.sqlfyText(contract.demandeEmployer) + "',"
-      + "'" + this.sqlfyText(contract.demandeJobyer) + "',"
+      + "'" + Utils.sqlfyText(contract.justification) + "',"
+      + "'" + Utils.sqlfyText(contract.titre) + "',"
+      + "'" + Utils.sqlfyText(contract.demandeEmployer) + "',"
+      + "'" + Utils.sqlfyText(contract.demandeJobyer) + "',"
       + "(select option_mission :: numeric from user_account where pk_user_account = '" + accountId + "'),"
-      + "'" + this.sqlfyText(yousignEmployerLink) + "',"
+      + "'" + Utils.sqlfyText(yousignEmployerLink) + "',"
       + "'"+epi+"',"
       + "'"+contract.periodicite+"',"
       + "'OUI',"
+      + "'" + Utils.sqlfyText(contract.epiProvidedBy) + "',"
       + "'OUI'"
       + ")"
       + " RETURNING pk_user_contrat";
@@ -517,11 +520,7 @@ export class ContractService {
     });
   }
 
-  sqlfyText(txt) {
-    if (!txt || txt.length == 0)
-      return "";
-    return txt.replace(/'/g, "''");
-  }
+
 
   generateMission(idContract, offer) {
     let calendar = offer.calendarData;
