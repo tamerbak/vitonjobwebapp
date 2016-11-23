@@ -132,6 +132,10 @@ export class BankAccount {
   }
 
   watchAccountHolder(e) {
+    if(this.isEmployer){
+      return;
+    }
+
     let _name = e.target.value;
     let _isValid: boolean = true;
     let _hint: string = "";
