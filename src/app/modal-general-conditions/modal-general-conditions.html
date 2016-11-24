@@ -1,0 +1,34 @@
+<div class="modal fade" id="modal-general-conditions">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 400px;overflow: auto;">
+        <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel1">{{gConditions.title}}</h4>
+        <h5 class="modal-title text-xs-left fw-bold mt">{{gConditions.legalInformation.title}}</h5>
+        <p class="text-xs-left text-muted mt-sm">{{gConditions.legalInformation.content}}</p>
+        <h5 class="modal-title text-xs-left fw-bold mt">{{gConditions.preamble.title}}</h5>
+        <p class="text-xs-left text-muted mt-sm">{{gConditions.preamble.content}}</p>
+        <h5 class="modal-title text-xs-left fw-bold mt">{{gConditions.object.title}}</h5>
+        <p class="text-xs-left text-muted mt-sm">{{gConditions.object.content}}</p>
+
+        <div *ngFor="let article of gConditions.articles">
+          <h5 class="modal-title text-xs-left fw-bold mt">
+            Article {{article.code}}: {{article.title}}</h5>
+          <div *ngFor="let subArticle of article.content">
+            <h6 class="modal-title text-xs-left fw-bold mt" *ngIf="subArticle.subTitle">
+              Article {{article.code}}.{{subArticle.subCode}}: {{subArticle.subTitle}}</h6>
+            <p class="text-xs-left text-muted mt-sm">
+              {{subArticle.subContent}}
+            </p>
+          </div>
+        </div>
+
+        <h6 class="modal-title text-xs-center fw-bold mt">{{gConditions.footer}}</h6>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-link" (click)="goToModalWelcome()">J'accepte</button>
+        <button type="button" class="btn btn-success" (click)="logOut()">Je refuse</button>
+      </div>
+    </div>
+  </div>
+</div>

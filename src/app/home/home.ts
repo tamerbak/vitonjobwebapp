@@ -6,7 +6,9 @@ import {SharedService} from "../../providers/shared.service";
 import {Configs} from "../../configurations/configs";
 import {ModalWelcome} from "../modal-welcome/modal-welcome";
 import {ModalProfile} from "../modal-profile/modal-profile";
+import {ModalGeneralConditions} from "../modal-general-conditions/modal-general-conditions"
 import {ModalUpdatePassword} from "../modal-update-password/modal-update-password";
+import {ModalOptions} from "../modal-options/modal-options";
 
 declare var require: any;
 declare var jQuery: any;
@@ -15,7 +17,7 @@ declare var Messenger:any;
 @Component({
 	selector: 'home',
 	template: require('./home.html'),
-	directives: [ROUTER_DIRECTIVES, AlertComponent, ModalWelcome, ModalProfile,ModalUpdatePassword],
+	directives: [ROUTER_DIRECTIVES, AlertComponent, ModalWelcome, ModalProfile, ModalUpdatePassword, ModalGeneralConditions, ModalOptions],
 	providers: [SearchService],
 	styles: [require('./home.scss')],
 	encapsulation: ViewEncapsulation.None
@@ -29,7 +31,10 @@ export class Home {
 	hideLoader: boolean = true;
   config: any;
   isTablet: boolean = false;
-
+  static  _modalParams: any = {type: '', message: ''};
+  get modalParams() {
+    return Home._modalParams;
+  }
 
   constructor(private router: Router,
               private searchService: SearchService,
@@ -53,17 +58,25 @@ export class Home {
 
       if(this.isEmpty(this.currentUser.titre)) {
         //call to open the modal-guide
-        jQuery('#modal-welcome').modal({
+        jQuery('#modal-general-conditions').modal({
           keyboard: false,
           backdrop: 'static'
         });
-        jQuery('#modal-welcome').modal('show');
-        $('#modal-welcome').on('hidden.bs.modal', function (e) {
-          jQuery('#modal-profile').modal({
+        jQuery('#modal-general-conditions').modal('show');
+        $('#modal-general-conditions').on('hidden.bs.modal', function (e) {
+          console.log(e.relatedTarget);
+          jQuery('#modal-welcome').modal({
             keyboard: false,
             backdrop: 'static'
           });
-          jQuery('#modal-profile').modal('show');
+          jQuery('#modal-welcome').modal('show');
+          $('#modal-welcome').on('hidden.bs.modal', function (e) {
+            jQuery('#modal-profile').modal({
+              keyboard: false,
+              backdrop: 'static'
+            });
+            jQuery('#modal-profile').modal('show');
+          })
         })
       }
     } else {
@@ -142,5 +155,24 @@ export class Home {
       return true;
     else
       return false;
+  }
+
+  static logOut(_currentUser) {
+
+    let message = "";
+    if (_currentUser.estEmployeur) {
+      message = "Merci d'être venu sur notre plateforme pour recruter en quelques clics!";
+    } else {
+      message = "Merci d'être venu sur notre plateforme pour trouver un job à proximité!";
+    }
+    Home._modalParams.type = "log.out";
+    Home._modalParams.message = message +
+      " En refusant les Conditions Générales, nous somme ravis d'échanger avec vous pour essayer de " +
+      "comprendre votre refus.";
+    Home._modalParams.btnTitle = "Je quitte";
+    Home._modalParams.btnClasses = "btn btn-primary";
+    Home._modalParams.modalTitle = "Vit-On-Job";
+    //this._modalParams = _modalParams;
+    jQuery("#modal-options").modal('show')
   }
 }

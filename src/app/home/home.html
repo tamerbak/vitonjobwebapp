@@ -32,12 +32,13 @@
         </div>
         <a class="adv-search" [routerLink]=" ['../search/criteria'] ">Recherche avancée</a>
       </div>
+      <div modal-general-conditions></div>
       <div modal-welcome></div>
       <div modal-profile></div>
 
 
     </div>
-
+    <modal-options [params]="modalParams"></modal-options>
     <!--div class="div-play">
       <a class="play" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="glyphicon glyphicon-play"></i></a>
     </div-->
