@@ -43,7 +43,6 @@ export class OfferEdit{
   currentUser: any;
   slot: any;
   slots = [];
-  totalHours = 0;
   selectedQuality: any;
   selectedLang: any;
   selectedLevel = "junior";
@@ -718,13 +717,6 @@ export class OfferEdit{
     if (this.checkHour() == false)
       return;
 
-    //total hours of one day should be lower than 10h
-    this.totalHours = this.offersService.calculateSlotsDurationByDay(this.slots, this.slot);
-    if (this.totalHours > 600) {
-      this.addAlert("danger", "Le total des heures de travail de la journée du " + this.toDateString(this.slot.date) + "  ne doit pas dépasser les 10 heures. Veuillez réduire la durée des créneaux de cette journée.", "slot");
-      return;
-    }
-
     if (this.obj != "detail") {
       this.slotsToSave.push(this.slot);
     }
@@ -821,9 +813,22 @@ export class OfferEdit{
 
     // Check that the slot is not overwriting an other one
     if (!this.slot.pause) {
+      if(!this.offersService.isSlotRespectsBreaktime(this.slots, this.slot)){
+        this.addAlert("danger", "Veuillez mettre un délai de 11h entre deux créneaux.", "slot");
+        return false;
+      }
+      //total hours of one day should be lower than 10h
+      let totalHours = this.offersService.calculateSlotsDurationByDay(this.slots, this.slot);
+      //600 is 10h converted to minutes
+      if (totalHours > 600) {
+        this.addAlert("danger", "Le total des heures de travail de la journée du " + this.toDateString(this.slot.date) + "  ne doit pas dépasser les 10 heures. Veuillez réduire la durée des créneaux de cette journée.", "slot");
+        return false;
+      }
+
       for (let i = 0; i < this.slots.length; i++) {
+        let sDate = DateUtils.rfcFormat(this.slots[i].date);
         if (this.slot.date &&
-          new Date(this.slot.date).setHours(0, 0, 0, 0) == new Date(this.slots[i].date).setHours(0, 0, 0, 0)
+          new Date(this.slot.date).setHours(0, 0, 0, 0) == new Date(sDate).setHours(0, 0, 0, 0)
         ) {
           // Compute Minutes format start and end hour of existing slot
           let slotStartTotMinutes = this.offersService.convertHoursToMinutes(this.slots[i].startHour);
@@ -854,8 +859,9 @@ export class OfferEdit{
     } else {
       let isPauseValid = false;
       for (let i = 0; i < this.slots.length; i++) {
+        let sDate = DateUtils.rfcFormat(this.slots[i].date);
         if (this.slot.date &&
-          new Date(this.slot.date).setHours(0, 0, 0, 0) == new Date(this.slots[i].date).setHours(0, 0, 0, 0)
+          new Date(this.slot.date).setHours(0, 0, 0, 0) == new Date(sDate).setHours(0, 0, 0, 0)
         ) {
           let slotStartTotMinutes = this.offersService.convertHoursToMinutes(this.slots[i].startHour);
           let slotEndTotMinutes = this.offersService.convertHoursToMinutes(this.slots[i].endHour);

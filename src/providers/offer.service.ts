@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {Http, Headers} from "@angular/http";
 import {Configs} from "../configurations/configs";
 import { SharedService } from './shared.service';
+import {DateUtils} from "../app/utils/date-utils";
 
 @Injectable()
 export class OffersService {
@@ -1305,7 +1306,10 @@ export class OffersService {
     let totalHours = minEnd - minStart;
     for(let i = 0; i < slots.length; i++){
       let s = slots[i];
-      let sDate = new Date(s.date).setHours(0, 0, 0, 0);
+      if(s.pause){
+        continue;
+      }
+      let sDate = new Date(DateUtils.rfcFormat(s.date)).setHours(0, 0, 0, 0);
       if(sDate != currentSDate){
         continue;
       }
@@ -1318,5 +1322,51 @@ export class OffersService {
       totalHours = totalHours + (minEnd - minStart);
     }
     return totalHours;
+  }
+
+  isSlotRespectsBreaktime(slots, newSlot){
+    //breaktime is 11h converted to milliseconds
+    let breaktime = 39600000;
+    //one minute in miliseccond
+    let oneMinute = 60000;
+    //23:59 in minutes
+    let almostMidnight = 1439;
+
+    let hs = newSlot.startHour.getHours() * 1;
+    let ms = newSlot.startHour.getMinutes() * 1;
+    let currentMinStart = (hs * 60) + ms;
+    let currentStartDate = (new Date(newSlot.date).setHours(hs, ms, 0, 0)) / 1000;
+    let he = newSlot.endHour.getHours() * 1;
+    let me = newSlot.endHour.getMinutes() * 1;
+    let currentMinEnd = (he *60) + me;
+    let currentEndDate = (new Date(newSlot.date).setHours(he, me, 0, 0)) / 1000;
+    for(let i = 0; i < slots.length; i++){
+      let s = slots[i];
+      let sDate = DateUtils.rfcFormat(s.date);
+      if(s.pause){
+        continue;
+      }
+      let hs = s.startHour.split(':')[0] * 1;
+      let ms = s.startHour.split(':')[1] * 1;
+      let slotMinStart = (hs * 60) + ms;
+      let slotStartDate = new Date(sDate).setHours(hs, ms, 0, 0) / 1000;
+      let he = s.endHour.split(':')[0] * 1;
+      let me = s.endHour.split(':')[1] * 1;
+      let slotMinEnd = (he *60) + me;
+      let slotEndDate = new Date(sDate).setHours(he, me, 0, 0) / 1000;
+      if(currentStartDate - slotEndDate <= oneMinute && slotMinEnd == almostMidnight && currentMinStart == 0){
+        return true;
+      }
+      if(slotStartDate - currentEndDate <= oneMinute && slotMinStart == 0 && currentMinEnd == almostMidnight){
+        return true;
+      }
+      if((currentStartDate - slotEndDate) * 1000 < breaktime && new Date(sDate) <= newSlot.date){
+        return false;
+      }
+      if((slotStartDate - currentEndDate) * 1000 < breaktime && newSlot.date <= new Date(sDate) ){
+        return false;
+      }
+    }
+    return true;
   }
 }
