@@ -48,7 +48,7 @@
               id="youtubeLink"
               class="form-control"
               name="youtubeLink"
-              placeholder="Lien de vidéo Youtube"
+              placeholder="Je me valorise avec une vidéo"
               type="text"
               [(ngModel)]="youtubeLink"
             />
@@ -137,7 +137,9 @@
                     </span>
               </div>
             </div>
-            <select
+            <input type="hidden" class="select2 job-select form-control" name="job"
+                   placeholder="Rechrchez votre job" [(ngModel)]="selectedJob" />
+            <!--select
               data-minimum-results-for-search="10"
               data-placeholder="Recherchez votre job"
               class="job-select select2 form-control"
@@ -148,7 +150,7 @@
             >
               <option value=""></option>
               <option *ngFor="let j of jobs" [value]="j.id">{{j.libelle}}</option>
-            </select>
+            </select-->
             <alert *ngIf="triedValidate && !offer.jobData.idJob" [type]="'danger alert-sm'">
               <div [innerHTML]="'* Veuillez renseigner le job'"></div>
             </alert>
@@ -158,7 +160,7 @@
         <!-- Niveau -->
         <div class="form-group row required">
           <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-            Niveau
+            Niveau d'expérience
           </label>
           <div class="col-md-8 col-xs-12">
             <div class="abc-radio">
@@ -178,46 +180,15 @@
           </div>
         </div>
 
-        <!-- Taux horaire -->
-        <div class="form-group row required">
-          <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-            Taux horaire brut en €
-          </label>
-          <div class="col-md-6 col-xs-6">
-            <input
-              type="number"
-              step="0.01"
-              class="form-control"
-              min="0"
-              [(ngModel)]="offer.jobData.remuneration"
-              (change)="validateRate($event.target.value)"
-            />
-            <alert *ngIf="triedValidate && !offer.jobData.remuneration" [type]="'danger alert-sm'">
-              <div [innerHTML]="'* Veuillez renseigner le taux horaire'"></div>
-            </alert>
-            <alert *ngIf="invalidHourRate && offer.jobData.remuneration" [type]="'danger alert-sm'">
-              <div [innerHTML]="'* Le taux horaire devrait être supérieur ou égal à ' + invalidHourRateMessage"></div>
-            </alert>
-          </div>
-          <div class="col-md-2 col-xs-6">
-            <select class="form-control" disabled>
-              <option>EUR</option>
+        <div class="form-group row" *ngIf="convCoefficientsVisible()">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">Coefficient</label>
+          <div class="col-md-8 col-xs-12">
+            <select class="form-control" [(ngModel)]="selectedCoefConvID"
+                    (change)="updateHourRateThreshold('COEF',$event.target.value)">
+              <option *ngFor="let s of coefficientsConventions" [value]="s.id">{{s.libelle}}</option>
             </select>
           </div>
         </div>
-        <div class="form-group row required">
-          <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-            {{ currentUser.estEmployeur ? 'Adresse de la mission' : 'Adresse de départ vers le lieu de travail' }}
-          </label>
-          <div class="col-md-7 col-xs-12">
-            <input id="autocompleteOfferAdress" type="text" class="form-control" placeholder="Rechercher une adresse" (keyup)="watchOfferAddress($event)"
-                   [(ngModel)]="offerAddress" (input)="autocompleteOfferAddress()"/>
-          </div>
-        </div>
-      </div>
-
-      <fieldset *ngIf="convParametersVisible()">
-        <legend><strong>Paramètres de la convention collective</strong></legend>
         <div class="form-group row" *ngIf="convNiveauxVisible()">
           <label class="col-md-4 col-xs-12 form-control-label text-md-right">Niveau</label>
           <div class="col-md-8 col-xs-12">
@@ -245,56 +216,105 @@
             </select>
           </div>
         </div>
-        <div class="form-group row" *ngIf="convCoefficientsVisible()">
-          <label class="col-md-4 col-xs-12 form-control-label text-md-right">Coefficient</label>
-          <div class="col-md-8 col-xs-12">
-            <select class="form-control" [(ngModel)]="selectedCoefConvID"
-                    (change)="updateHourRateThreshold('COEF',$event.target.value)">
-              <option *ngFor="let s of coefficientsConventions" [value]="s.id">{{s.libelle}}</option>
+
+        <!-- Taux horaire -->
+        <div class="form-group row required">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+            Taux horaire brut en €
+          </label>
+          <div class="col-md-6 col-xs-6">
+            <input
+              type="number"
+              step="0.01"
+              class="form-control"
+              min="0"
+              [(ngModel)]="offer.jobData.remuneration"
+              (change)="validateRate($event.target.value)"
+            />
+            <alert *ngIf="invalidHourRate " [type]="'danger alert-sm'">
+              <div [innerHTML]="'* Le taux horaire devrait être supérieur ou égal à ' + invalidHourRateMessage"></div>
+            </alert>
+          </div>
+          <div class="col-md-2 col-xs-6">
+            <select class="form-control" disabled>
+              <option>EUR</option>
             </select>
           </div>
         </div>
-      </fieldset>
-
-      <fieldset *ngIf="convParametersVisible()">
-        <legend><strong>Avantages salariaux</strong></legend>
         <div class="form-group row required">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+            {{ currentUser.estEmployeur ? 'Adresse de la mission' : 'Adresse de départ vers le lieu de travail' }}
+          </label>
+          <div class="col-md-7 col-xs-12">
+            <input id="autocompleteOfferAdress" type="text" class="form-control" placeholder="Rechercher une adresse" (keyup)="watchOfferAddress($event)"
+                   [(ngModel)]="offerAddress" (input)="autocompleteOfferAddress()"/>
+          </div>
+        </div>
+      </div>
+
+
+      <fieldset>
+        <legend><strong>Conditions d'emploi</strong></legend>
+        <alert *ngFor="let alert of alertsConditionEmp; let i = index" [type]="alert.type + ' alert-sm'" dismissible="false">
+          <div [innerHTML]="alert.msg"></div>
+        </alert>
+        <div class="form-group row">
+          <div class="col-md-6 col-xs-12">
+            <strong>Valeurs définies par la convention collective</strong>
+          </div>
+          <div class="col-md-3 col-xs-12">
+            <strong>Valeurs définies par l'employeur</strong>
+          </div>
+          <div class="col-md-3 col-xs-12">
+            <strong></strong>
+          </div>
+        </div>
+        <!--<div class="form-group row required">
           <label class="col-md-2 col-xs-2 form-control-label">Code</label>
           <label class="col-md-10 col-xs-10 form-control-label">Avantage</label>
-        </div>
+        </div>-->
         <div class="form-group row" *ngFor="let item of categoriesHeure">
-          <div class="col-md-2 col-xs-2">
-            <span>{{item.code}}</span>
-          </div>
-          <div class="col-md-10 col-xs-10">
+          <div class="col-md-6 col-xs-12">
             <span>{{item.libelle}}</span>
+          </div>
+          <div class="col-md-3 col-xs-12">
+            <input type="number" class="form-control" [min]="item.coefficient" [(ngModel)]="item.empValue" (change)="watchConditionEmp($event, item)"/>
+          </div>
+          <div class="col-md-3 col-xs-12">
+            <span> {{preventNull(item.typeValue)}} </span>
           </div>
         </div>
         <div class="form-group row" *ngFor="let item of majorationsHeure">
-          <div class="col-md-2 col-xs-2">
-            <span>{{item.code}}</span>
-          </div>
-          <div class="col-md-10 col-xs-10">
+          <div class="col-md-6 col-xs-12">
             <span>{{item.libelle}}</span>
+          </div>
+          <div class="col-md-3 col-xs-12">
+            <input type="number" class="form-control" [min]="item.coefficient" [(ngModel)]="item.empValue" (change)="watchConditionEmp($event, item)"/>
+          </div>
+          <div class="col-md-3 col-xs-12">
+            <span> {{preventNull(item.typeValue)}} </span>
           </div>
         </div>
         <div class="form-group row" *ngFor="let item of indemnites">
-          <div class="col-md-2 col-xs-2">
-            <span>{{item.code}}</span>
-          </div>
-          <div class="col-md-10 col-xs-10">
+          <div class="col-md-6 col-xs-12">
             <span>{{item.libelle}}</span>
+          </div>
+          <div class="col-md-3 col-xs-12">
+            <input type="number" class="form-control" [min]="item.coefficient" [(ngModel)]="item.empValue" (change)="watchConditionEmp($event, item)"/>
+          </div>
+          <div class="col-md-3 col-xs-12">
+            <span> {{preventNull(item.typeValue)}} </span>
           </div>
         </div>
       </fieldset>
 
-      <fieldset [hidden]="projectTarget=='jobyer'">
-        <legend><strong>Prérequis obligatoires</strong></legend>
+      <fieldset *ngIf="currentUser.estEmployeur">
+        <legend><strong>Formations et habilitations</strong></legend>
         <div class="container-fluid">
           <div class="row">
             <div class="col-xs-10">
-              <input type="hidden" class="select2 prerequis-select form-control" name="prerequis"
-                     placeholder="Prérequis" [(ngModel)]="prerequisOb" />
+              <input *ngIf="currentUser.estEmployeur" type="hidden" class="select2 prerequis-select form-control" name="prerequis"
+                     placeholder="Formations et habilitations" [(ngModel)]="prerequisOb" />
             </div>
             <div class="col-xs-2">
               <button class="btn btn-primary"
@@ -307,14 +327,48 @@
             <div class="col-xs-12">&nbsp;</div>
           </div>
           <div *ngFor="let p of prerequisObligatoires" class="row" style="margin-bottom: 5px">
-            <div class="col-xs-2">
+            <div class="col-xs-1">
               <button class="btn btn-danger"
                       role="button" (click)="removePrerequis(p)" >
                 <span class="glyphicon glyphicon-minus"></span>
               </button>
             </div>
-            <div class="col-xs-10" style="font-size: medium">
+            <div class="col-xs-11" style="font-size: medium">
               {{p}}
+            </div>
+          </div>
+        </div>
+
+      </fieldset>
+
+      <fieldset *ngIf="currentUser.estEmployeur">
+        <legend><strong>Equipement de protection individuel</strong></legend>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-xs-10">
+              <input *ngIf="currentUser.estEmployeur" type="hidden" class="select2 epi-select form-control" name="EPI"
+                     placeholder="Equipement de protection individuel" [(ngModel)]="epi" />
+
+            </div>
+            <div class="col-xs-2">
+              <button class="btn btn-primary"
+                      role="button" (click)="addEPI()" >
+                <span class="glyphicon glyphicon-plus"></span>
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">&nbsp;</div>
+          </div>
+          <div *ngFor="let e of epiList" class="row" style="margin-bottom: 5px">
+            <div class="col-xs-1">
+              <button class="btn btn-danger"
+                      role="button" (click)="removeEPI(p)" >
+                <span class="glyphicon glyphicon-minus"></span>
+              </button>
+            </div>
+            <div class="col-xs-11" style="font-size: medium">
+              {{e}}
             </div>
           </div>
         </div>
@@ -336,14 +390,18 @@
 
         <!-- Créneaux -->
         <div class="form-group row required">
-          <label class="col-md-6 col-xs-6 form-control-label">Créneaux</label>
-          <label class="col-md-2 col-xs-3 form-control-label">De</label>
-          <label class="col-md-2 col-xs-3 form-control-label">A</label>
+          <label class="col-md-2 col-xs-6 form-control-label">Nature</label>
+          <label class="col-md-4 col-xs-6 form-control-label">Date</label>
+          <label class="col-md-2 col-xs-3 form-control-label">Heure de début</label>
+          <label class="col-md-2 col-xs-3 form-control-label">Heure de fin</label>
         </div>
 
         <div *ngFor="let item of slots, let j = index">
           <div class="form-group row">
-            <div class="col-md-6 col-sm-5 col-xs-12">
+            <div class="col-md-2 col-sm-5 col-xs-12">
+              <span>{{item.pause ? 'Pause' : ''}}</span>
+            </div>
+            <div class="col-md-4 col-sm-5 col-xs-12">
               <input class="form-control" [(ngModel)]="item.date" disabled/>
             </div>
             <div class="col-md-2 col-sm-2 col-xs-4 offer-hour-new">
@@ -372,7 +430,19 @@
         </alert>
 
         <div class="form-group row required">
-          <div class="col-md-6 col-sm-6 col-xs-12">
+          <div class="col-md-1 col-sm-2 col-xs-2">
+            <label>
+              <input type="checkbox" [checked]="isFulltime" class="form-control" (change)="watchFullTime($event)"/>
+              Jour entier
+            </label>
+          </div>
+          <div class="col-md-1 col-sm-2 col-xs-2">
+            <label>
+              <input type="checkbox" [checked]="isPause" class="form-control" (change)="watchPause($event)"/>
+              Pause
+            </label>
+          </div>
+          <div class="col-md-4 col-sm-4 col-xs-10">
             <datetime
               id="slotDate"
               style="display: block; width: 100%;"
@@ -382,20 +452,27 @@
             ></datetime>
           </div>
           <div class="col-md-2 col-sm-3 col-xs-6 offer-hour-new">
-            <datetime
+            <datetime [hidden]="isFulltime"
               id="slotSHour"
               [datepicker]="false"
               [timepicker]="{ showMeridian: false, minuteStep: 15 }"
               [(ngModel)]="slot.startHour"
+              readonly = "true"
             ></datetime>
+            <input *ngIf="isFulltime" class="form-control"
+                    value="09:00"
+                    readonly/>
           </div>
           <div class="col-md-2 col-sm-3 col-xs-6 offer-hour-new">
-            <datetime
+            <datetime [hidden]="isFulltime"
               id="slotEHour"
               [datepicker]="false"
               [timepicker]="{ showMeridian: false, minuteStep: 15 }"
               [(ngModel)]="slot.endHour"
             ></datetime>
+            <input *ngIf="isFulltime" class="form-control"
+                   value="17:00"
+                   readonly/>
           </div>
           <div class="col-md-2 col-xs-12">
             <button
@@ -418,7 +495,7 @@
 
     <section widget class="widget widget-offer">
       <header class="bb widget-offer-header">
-        <h6><span class="fw-semi-bold widget-offer-header-title">Profil</span></h6>
+        <h6><span class="fw-semi-bold widget-offer-header-title">Profil recherché</span></h6>
       </header>
       <div class="widget-body">
 
@@ -501,7 +578,7 @@
             <div class="row">
               <div class="col-md-6 col-xs-6">
                 <select class="form-control" [(ngModel)]="selectedLang">
-                  <option *ngFor="let l of langs" [value]="l.idLanguage">{{l.libelle}}</option>
+                  <option *ngFor="let l of langs" [value]="l.id">{{l.libelle}}</option>
                 </select>
               </div>
               <div class="col-md-3 col-xs-6">

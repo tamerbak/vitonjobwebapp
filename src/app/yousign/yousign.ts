@@ -8,6 +8,7 @@ import {Helpers} from "../../providers/helpers.service";
 import {Router} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {MissionService} from "../../providers/mission-service";
+import {Utils} from "../utils/utils";
 
 /**
  * @author daoudi amine
@@ -75,8 +76,18 @@ export class Yousign{
       this.currentOffer.idOffer,
       this.contractData.baseSalary
     ).then((data: any) => {
+      if(!data || Utils.isEmpty(data.quoteId) || data.quoteId == 0){
+        this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
+        this.hideLoader = true;
+        return;
+      }
 
       this.financeService.loadPrevQuote(this.currentOffer.idOffer).then((results : any)=>{
+        if(!results || !results.lignes || results.lignes.length == 0){
+          this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
+          this.hideLoader = true;
+          return;
+        }
         let lines = results.lignes;
         let cfix = 0;
         let cotis = 0;
@@ -99,14 +110,12 @@ export class Yousign{
           this.currentOffer,
           data.quoteId
         ).then((data: any) => {
-
-          let partner = GlobalConfigs.global['electronic-signature'];
-
-          if (data == null || data.length == 0) {
-            console.log("Electronic partner " + partner + " result is null");
+          if(!data || data == null || Utils.isEmpty(data.Employeur) || Utils.isEmpty(data.Jobyer) || Utils.isEmpty(data.Employeur.idContrat) || Utils.isEmpty(data.Jobyer.idContrat) || !Utils.isValidUrl(data.Employeur.url) || !Utils.isValidUrl(data.Jobyer.url)){
+            this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
             this.hideLoader = true;
             return;
           }
+          let partner = GlobalConfigs.global['electronic-signature'];
 
           //change jobyer 'contacted' status
           this.jobyer.contacted = true;
@@ -141,33 +150,28 @@ export class Yousign{
 
           document.getElementById("iframPlaceHolder").appendChild(iframe);
 
-          // TEL:23082016 : Using inappbrowser plugin :
-          // InAppBrowser.open(partnerEmployerLink, '_blank');
-
           // get the partner link of the contract and the phoneNumber of the jobyer
           let partnerJobyerLink = null;
-          let jobyerPhoneNumber = null;
 
           if (partner === 'yousign') {
             partnerJobyerLink = partnerData.iFrameURLs[0].iFrameURL;
-            jobyerPhoneNumber = this.jobyer.tel;
             this.contractData.demandeJobyer = partnerData.idDemands[0].idDemand;
             this.contractData.demandeEmployer = partnerData.idDemands[1].idDemand;
 
           } else if (partner === 'docusign') {
             partnerJobyerLink = partnerData.Jobyer.url;
-            jobyerPhoneNumber = this.jobyer.tel;
             this.contractData.demandeJobyer = partnerData.Jobyer.idContrat;
             this.contractData.demandeEmployer = partnerData.Employeur.idContrat;
           }
 
-          // TEL23082016 : Navigate to credit card page directly :
-          //this.router.navigate(['wallet/create']);
-          // Send sms to jobyer
-          this.smsService.sendSms(jobyerPhoneNumber, 'Une demande de signature de contrat vous a été adressée. Contrat numéro : ' + this.contractData.numero);
           //save contract in Database
           this.contractService.getJobyerId(this.jobyer, this.projectTarget).then(
             (jobyerData: any) => {
+              if(!jobyerData || jobyerData.status != "success"){
+                this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
+                this.hideLoader = true;
+                return;
+              }
               this.contractService.saveContract(
                 this.contractData,
                 jobyerData.data[0].pk_user_jobyer,
@@ -178,44 +182,49 @@ export class Yousign{
                 this.currentUser.id
               ).then(
                 (data: any) => {
-                  if (this.currentOffer && this.currentOffer != null) {
-                    let idContract = 0;
-                    if (data && data.data && data.data.length > 0) {
-                      idContract = data.data[0].pk_user_contrat;
+                  if (data && data.status == "success" && data.data && data.data.length > 0) {
+                    if (this.currentOffer && this.currentOffer != null) {
+                      let idContract = data.data[0].pk_user_contrat;
+                      this.contractId = idContract;
+                      this.contractService.setOffer(idContract, this.currentOffer.idOffer);
+                      this.contractService.generateMission(idContract, this.currentOffer);
+                      this.hideLoader = true;
                     }
-                    this.contractId = idContract;
-                    let contract = {
-                      pk_user_contrat: idContract
-                    };
-                    this.contractService.setOffer(idContract, this.currentOffer.idOffer);
-                    this.contractService.generateMission(idContract, this.currentOffer);
+                  }else {
+                    this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
                     this.hideLoader = true;
+                    return;
                   }
                 },
                 (err) => {
-                  console.log(err);
+                  this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
+                  this.hideLoader = true;
+                  return;
                 })
             },
             (err) => {
-              console.log(err);
+              this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
+              this.hideLoader = true;
+              return;
             })
         }).catch(function (err) {
-          console.log(err);
+          this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
+          this.hideLoader = true;
+          return;
         });
       });
-
     });
   }
 
   checkDocusignSignatureState() {
-    if (this.contractId == 0) {
+    if (!this.contractId ||this.contractId == 0) {
       this.addAlert("warning", "Veuillez signer le contrat avant de passer à l'étape suivante");
     } else {
       this.contractService.checkDocusignSignatureState(this.contractId).then((data: any) => {
         let state = data.data[0].etat;
         if (state.toLowerCase() == "oui") {
-          //TODO : Ceci force la signature du contrat jobyer. C'est temporaire en attendant la résolution du problème de l'affichage du contrat jobyer
-          //this.missionService.signContract(this.contractId);
+          // Send sms to jobyer
+          this.smsService.sendSms(this.jobyer.tel, 'Une demande de signature de contrat vous a été adressée. Contrat numéro : ' + this.contractData.numero);
           this.goToPaymentMethod();
         } else {
           this.addAlert("warning", "Veuillez signer le contrat avant de passer à l'étape suivante");

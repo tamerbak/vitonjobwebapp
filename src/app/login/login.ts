@@ -51,11 +51,16 @@ export class LoginPage{
   hideLoader: boolean = true;
 
   isRoleTelConform = true;
+  isRoleEmailConform = true;
 
   isRedirectedFromHome;
   obj: string;
   oldPhoneValue: number;
 
+  //type conncetion : tel or email
+  typeConnection: string;
+  isConnByTel: boolean = true;
+  isConnByEmail: boolean = false;
 
   constructor(private loadListService: LoadListService,
               private authService: AuthenticationService,
@@ -97,7 +102,13 @@ export class LoginPage{
       return;
     }
     this.hideLoader = false;
-    var indPhone = this.index + "" + this.phone;
+    var indPhone;
+    if(this.isRecruteur && this.isConnByEmail){
+      indPhone = this.phone;
+    }else{
+      indPhone = this.index + "" + this.phone;
+    }
+
     //call the service of autentication
     let pwd = md5(this.password1);
     if (this.email == null || this.email == 'null')
@@ -133,9 +144,18 @@ export class LoginPage{
           this.sharedService.setStorageType("session");
         }
         //get current user profile picture and password status
-        var tel = "+" + indPhone;
+        let tel;
+        if(this.isRecruteur){
+          tel = indPhone;
+        }else{
+          tel = "+" + indPhone;
+        }
+
+
         this.authService.getPasswordStatus(tel).then((dataPwd: any) => {
-          data.mot_de_passe_reinitialise = dataPwd.data[0].mot_de_passe_reinitialise;
+          if(dataPwd && dataPwd.data && dataPwd.data.length > 0) {
+            data.mot_de_passe_reinitialise = dataPwd.data[0].mot_de_passe_reinitialise;
+          }
           this.sharedService.setCurrentUser(data);
           this.profileService.loadProfilePicture(data.id).then((pic: any) => {
             var userImageURL;
@@ -241,7 +261,7 @@ export class LoginPage{
             return;
           }
           if (data.data[0]["role"] == "recruteur") {
-            this.email = "";
+            this.email = data.data[0]["email"];
           } else {
             this.isRoleTelConform = false;
             return;
@@ -293,10 +313,25 @@ export class LoginPage{
         this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
         return;
       }
-      if (data && data.data.length != 0) {
-        this.emailExist = true;
-      } else {
-        this.emailExist = false;
+
+      if(!this.isRecruteur) {
+        if (data && data.data.length != 0) {
+          this.emailExist = true;
+        } else {
+          this.emailExist = false;
+        }
+      }else{
+        this.isRoleEmailConform = true;
+        if ((!data || data.data.length == 0)) {
+          this.isRoleEmailConform = false;
+          return;
+        }
+        if (data.data[0]["role"] == "recruteur") {
+          this.phone = data.data[0]["telephone"];
+        } else {
+          this.isRoleEmailConform = false;
+          return;
+        }
       }
     });
   }
@@ -342,7 +377,7 @@ export class LoginPage{
       return (!this.index || !this.isIndexValid || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error() || !this.email || this.showEmailError() || this.emailExist || !this.role)
     } else {
       //connection
-      return (!this.index || !this.isIndexValid || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.role || !this.isRoleTelConform)
+      return (!this.index || !this.isIndexValid || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.role || !this.isRoleTelConform || !this.isRoleEmailConform)
     }
   }
 
@@ -354,9 +389,38 @@ export class LoginPage{
     } else {
       this.isRecruteur = false;
     }
-    if (this.index && this.phone && this.isPhoneNumValid) {
-      this.isRegistration(this.index, this.phone);
+    this.phone = null;
+    this.email ="";
+    this.password1 = "";
+    this.password2 = "";
+    this.isRoleTelConform = true;
+    this.isRoleEmailConform = true;
+    this.libelleButton = "Se connecter";
+    this.showEmailField = false;
+    this.isPhoneNumValid = true;
+  }
+
+  watchTypeConnection(e) {
+    this.typeConnection = e.target.value;
+    if((this.isConnByEmail && this.typeConnection == "email") || (this.isConnByTel && this.typeConnection == "tel")){
+      return;
     }
+    if (this.typeConnection == "tel") {
+      this.isConnByTel = true;
+      this.isConnByEmail = false;
+    } else {
+      this.isConnByTel = false;
+      this.isConnByEmail = true;
+    }
+    this.libelleButton = "Se connecter";
+    this.showEmailField = false;
+    this.phone = null;
+    this.email = "";
+    this.password1 = "";
+    this.password2 = "";
+    this.isRoleTelConform = true;
+    this.isRoleEmailConform = true;
+    this.isPhoneNumValid = true;
   }
 
 

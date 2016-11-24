@@ -57,6 +57,30 @@ export class OfferList {
 
   }
 
+  convertSlotsForDisplay(s) {
+    var slotTemp = {
+      date: this.toDateString(s.date),
+      startHour: this.toHourString(s.startHour),
+      endHour: this.toHourString(s.endHour),
+      pause: s.pause
+    };
+    return slotTemp;
+  }
+
+  toHourString(time: number) {
+    let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
+    let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
+    return hours + ":" + minutes;
+  }
+
+  toDateString(date: number) {
+    var dateOptions = {
+      weekday: "long", month: "long", year: "numeric",
+      day: "numeric"//, hour: "2-digit", minute: "2-digit"
+    };
+    return new Date(date).toLocaleDateString('fr-FR', dateOptions);
+  }
+
   loadOffers(){
     this.globalOfferList.length = 0;
     this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
@@ -64,19 +88,45 @@ export class OfferList {
     this.offerList = this.projectTarget == 'employer'
       ? this.sharedService.getCurrentUser().employer.entreprises[0].offers
       : this.sharedService.getCurrentUser().jobyer.offers;
-
     let obsoleteOffers = [];
     for (let i = 0; i < this.offerList.length; i++) {
       let offer = this.offerList[i];
 
-      this.offersService.loadOfferPrerequisObligatoires(this.offerList[i].idOffer).then((data:any)=>{
-        this.offerList[i].jobData.prerequisObligatoires = [];
+      //load offer epi
+      this.offersService.loadOfferEPI(this.offerList[i].idOffer,this.projectTarget).then((data:any)=>{
+        this.offerList[i].jobData.epi = [];
         for(let j = 0 ; j < data.length ; j++)
-          this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
+          this.offerList[i].jobData.epi.push(data[j].libelle);
       });
+
+      if(this.projectTarget == 'employer'){
+        this.offersService.loadOfferPrerequisObligatoires(this.offerList[i].idOffer).then((data:any)=>{
+          this.offerList[i].jobData.prerequisObligatoires = [];
+          for(let j = 0 ; j < data.length ; j++)
+            this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
+        });
+
+      }else if(this.projectTarget == 'jobyer'){
+        this.offersService.loadOfferNecessaryDocuments(this.offerList[i].idOffer).then((data:any)=>{
+          this.offerList[i].jobData.prerequisObligatoires = [];
+          for(let j = 0 ; j < data.length ; j++)
+            this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
+        });
+      }
 
       if (!offer || !offer.jobData || !offer.calendarData ||(offer.calendarData && offer.calendarData.length == 0)) {
         continue;
+      }
+
+      offer.slots =[];
+      for (let i = 0; i < offer.calendarData.length; i++) {
+        var slotTemp = {
+          date: this.toDateString(offer.calendarData[i].date),
+          startHour: this.toHourString(offer.calendarData[i].startHour),
+          endHour: this.toHourString(offer.calendarData[i].endHour),
+          pause: offer.calendarData[i].pause
+        };
+        offer.slots.push(slotTemp);
       }
 
       if (offer.visible) {
@@ -95,18 +145,14 @@ export class OfferList {
             break;
           } else {
             offer.obsolete = false;
-            this.globalOfferList[0].list.push(offer);
           }
         }
 
+        if(!offer.obsolete){
+          this.globalOfferList[0].list.push(offer);
+        }
 
-        /*this.offersService.getCorrespondingOffers(offer, this.projectTarget).then((data: any)=> {
-          offer.correspondantsCount = data.length;
-          // Sort offers corresponding to their search results :
-          this.globalOfferList[0].list.sort((a, b) => {
-            return b.correspondantsCount - a.correspondantsCount;
-          })
-        });*/
+
         if(!offer.obsolete) {
           let searchFields = {
             class: 'com.vitonjob.callouts.recherche.SearchQuery',

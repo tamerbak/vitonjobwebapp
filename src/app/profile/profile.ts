@@ -50,6 +50,7 @@ export class Profile{
 
   selectedCP: any;
   birthdate: Date;
+  birthdateHidden: Date;
   selectedMedecine: any = {id: 0, libelle: ""};
   cni: string;
   numSS: string;
@@ -57,9 +58,11 @@ export class Profile{
   nationalities = [];
   personalAddress: string;
   jobAddress: string;
+  correspondenceAddress: string;
 
   isValidPersonalAddress: boolean = true;
   isValidJobAddress: boolean = true;
+  isValidCorrespondenceAddress: boolean = true;
   isValidLastname: boolean = true;
   isValidFirstname: boolean = true;
   isValidCompanyname: boolean = true;
@@ -97,6 +100,14 @@ export class Profile{
   nameJA: string;
   zipCodeJA: string;
 
+   //CorrespondenceAddress params
+  cityCA: string;
+  countryCA: string;
+  streetCA: string;
+  streetNumberCA: string;
+  nameCA: string;
+  zipCodeCA: string;
+
 
   //currentUser object
   currentUser: any;
@@ -117,10 +128,11 @@ export class Profile{
   showCurrentSiretBtn: boolean = false;
   companyAlert: string = "";
   showCurrentCompanyBtn: boolean = false;
-  personalAddressLabel: string = "Adresse du siège";
-  jobAddressLabel: string = "Adresse du lieu du travail";
+  personalAddressLabel: string = "du siège";
+  jobAddressLabel: string = "Adresse du lieu de travail";
   autocompletePA: any;
   autocompleteJA: any;
+  autocompleteCA: any;
   addressOptions = {
     componentRestrictions: {country: "fr"}
   };
@@ -131,9 +143,9 @@ export class Profile{
   index: number = 33;
 
   numStay;
-  dateStay;
-  dateFromStay;
-  dateToStay;
+  dateStay:Date;
+  dateFromStay:Date;
+  dateToStay:Date;
   whoDeliverStay;
   regionId = "41";
   selectedDep;
@@ -206,7 +218,7 @@ export class Profile{
         this.initForm();
       }
       if (!this.isRecruiter && !this.isEmployer) {
-        this.personalAddressLabel = "Adresse personnelle";
+        this.personalAddressLabel = "personnelle";
         this.jobAddressLabel = "Adresse de départ au travail";
         listService.loadNationalities().then((response: any) => {
           this.nationalities = response.data;
@@ -233,12 +245,12 @@ export class Profile{
       this.pays = data.data;
     });
     //loadQualities
-    this.qualities = this.sharedService.getQualityList();
+    this.qualities = this.sharedService.getOwnQualityList();
     if (!this.qualities || this.qualities.length == 0) {
       let role = this.projectTarget != "jobyer" ? "employeur" : 'jobyer'
       this.listService.loadQualities(this.projectTarget, role).then((data: any) => {
         this.qualities = data.data;
-        this.sharedService.setQualityList(this.qualities);
+        this.sharedService.setOwnQualityList(this.qualities);
       })
     }
 
@@ -252,37 +264,7 @@ export class Profile{
     }
 
 
-    if (!this.isEmployer && !this.isNewUser)
-      this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
-        data = data.data[0];
-        if (!Utils.isEmpty(data.fk_user_pays)) {
-          this.index = this.profileService.getCountryById(data.fk_user_pays, this.pays).indicatif_telephonique;
-        }
-        this.regionId = data.fk_user_identifiants_nationalite;
-        this.dateStay = data.date_de_delivrance;
-        this.dateFromStay = data.debut_validite;
-        this.dateToStay = data.fin_validite;
-        if (this.index == 33) {
-          this.isFrench = true;
-          this.isCIN = true;
-          this.birthdepId = data.fk_user_departement;
-        } else {
-          this.isFrench = false;
-        }
-        if (this.regionId == '42') {
-          this.isEuropean = 1;
-          this.isResident = (data.est_resident == 'Oui' ? true : false);
-          this.whoDeliverStay = data.instance_delivrance;
-          this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
-          this.nationalityId = data.numero_titre_sejour;
-          this.isCIN = false;
-        } else {
-          this.regionId = '41'
-          this.isEuropean = 0;
-          this.isCIN = !Utils.isEmpty(data.numero_titre_sejour) ? false : true;
-          this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
-        }
-      });
+
     this.allImages = [];
 
 
@@ -376,7 +358,7 @@ export class Profile{
 
     this.personalAddress = _address;
     this.isValidPersonalAddress = _isValid;
-    console.log();
+    //console.log();
     this.isValidForm();
   }
 
@@ -394,7 +376,25 @@ export class Profile{
 
     this.jobAddress = _address;
     this.isValidJobAddress = _isValid;
-    console.log();
+    //console.log();
+    this.isValidForm();
+  }
+
+  watchCorrespondenceAddress(e) {
+    let _address = e.target.value;
+    let _isValid: boolean = true;
+    let _hint: string = "";
+
+    this.nameCA = _address;
+    this.streetNumberCA = "";
+    this.streetCA = "";
+    this.zipCodeCA = "";
+    this.cityCA = "";
+    this.countryCA = "";
+
+    this.correspondenceAddress = _address;
+    this.isValidCorrespondenceAddress = _isValid;
+    //console.log();
     this.isValidForm();
   }
 
@@ -444,6 +444,29 @@ export class Profile{
     });
   }
 
+  autocompleteCorrespondenceAddress() {
+    this._loader.load().then(() => {
+      //let autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocompleteJob"), {});
+      google.maps.event.addListener(this.autocompleteCA, 'place_changed', () => {
+        let place = this.autocompleteCA.getPlace();
+        var addressObj = AddressUtils.decorticateGeolocAddress(place);
+
+        this.correspondenceAddress = place['formatted_address'];
+        this.zone.run(()=> {
+          this.nameCA = !addressObj.name ? '' : addressObj.name.replace("&#39;", "'");
+          this.streetNumberCA = addressObj.streetNumber.replace("&#39;", "'");
+          this.streetCA = addressObj.street.replace("&#39;", "'");
+          this.zipCodeCA = addressObj.zipCode;
+          this.cityCA = addressObj.city.replace("&#39;", "'");
+          this.countryCA = (addressObj.country.replace("&#39;", "'") == "" ? 'France' : addressObj.country.replace("&#39;", "'"));
+
+          this.isValidCorrespondenceAddress = true;
+          this.isValidForm();
+        });
+      });
+    });
+  }
+
   formHasChanges() {
     if (this.showForm) {
       return true;
@@ -456,6 +479,9 @@ export class Profile{
    */
   initForm() {
     this.showForm = true;
+    var offset = jQuery("#profileForm").offset().top;
+    var point = offset+window.innerHeight-50;
+
     this.title = !this.currentUser.titre ? "M." : this.currentUser.titre;
     jQuery('.titleSelectPicker').selectpicker('val', this.title);
     this.lastname = this.currentUser.nom;
@@ -477,6 +503,54 @@ export class Profile{
       }
 
     });
+
+    var elements = [];
+    jQuery("div[id^='q-datepicker_']").each(function () {
+      elements.push(this.id);
+    });
+
+     if (!this.isEmployer && !this.isNewUser)
+      this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
+        data = data.data[0];
+        if (!Utils.isEmpty(data.fk_user_pays)) {
+          this.index = this.profileService.getCountryById(data.fk_user_pays, this.pays).indicatif_telephonique;
+        }
+        this.regionId = data.fk_user_identifiants_nationalite;
+
+        this.dateStay = data.date_de_delivrance;
+        var dateStay = Utils.isEmpty(this.dateStay) ? "":moment(this.dateStay).format("DD/MM/YYYY");
+        jQuery('#' + elements[1]).datepicker('update',dateStay );
+
+        this.dateFromStay = data.debut_validite;
+        var dateFromStay = Utils.isEmpty(this.dateFromStay) ? "":moment(this.dateFromStay).format("DD/MM/YYYY");
+        jQuery('#' + elements[2]).datepicker('update',dateFromStay );
+
+        this.dateToStay = data.fin_validite;
+        var dateToStay = Utils.isEmpty(this.dateToStay) ? "":moment(this.dateToStay).format("DD/MM/YYYY");
+        jQuery('#' + elements[3]).datepicker('update',dateToStay );
+
+
+        if (this.index == 33) {
+          this.isFrench = true;
+          this.isCIN = true;
+          this.birthdepId = data.fk_user_departement;
+        } else {
+          this.isFrench = false;
+        }
+        if (this.regionId == '42') {
+          this.isEuropean = 1;
+          this.isResident = (data.est_resident == 'Oui' ? true : false);
+          this.whoDeliverStay = data.instance_delivrance;
+          this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
+          this.nationalityId = data.numero_titre_sejour;
+          this.isCIN = false;
+        } else {
+          this.regionId = '41'
+          this.isEuropean = 0;
+          this.isCIN = !Utils.isEmpty(data.numero_titre_sejour) ? false : true;
+          this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
+        }
+      });
 
 
     if (!this.isRecruiter) {
@@ -539,13 +613,36 @@ export class Profile{
         }
         this.isValidJobAddress = true;
 
+        //get Correspondence Address
+        this.correspondenceAddress = entreprise.correspondanceAdress.fullAdress;
+        this.nameCA = entreprise.correspondanceAdress.name;
+        this.streetNumberCA = entreprise.correspondanceAdress.streetNumber;
+        this.streetCA = entreprise.correspondanceAdress.street;
+        this.zipCodeCA = entreprise.correspondanceAdress.zipCode;
+        this.cityCA = entreprise.correspondanceAdress.city;
+        this.countryCA = entreprise.correspondanceAdress.country;
+
+        if (!this.countryPA && this.jobAddress) {
+          this.profileService.getAddressByUser(entreprise.id, 'employer').then((data) => {
+            this.nameCA = data[2].name;
+            this.streetNumberCA = data[2].streetNumber;
+            this.streetCA = data[2].street;
+            this.zipCodeCA = data[2].zipCode;
+            this.cityCA = data[2].city;
+            this.countryCA = data[2].country;
+          });
+        }
+        this.isValidCorrespondenceAddress = true;
+
       } else {
         if (this.currentUser.jobyer.dateNaissance) {
-          var birthDate = moment(new Date(this.currentUser.jobyer.dateNaissance)).format("YYYY-MM-DD");
-          this.birthdate = birthDate;
+          var birthDate = moment(new Date(this.currentUser.jobyer.dateNaissance)).format('DD/MM/YYYY');
+          this.birthdateHidden = new Date(this.currentUser.jobyer.dateNaissance);
           this.isValidBirthdate = true;
+          jQuery('#' + elements[0]).datepicker('update', birthDate);
         } else {
           this.birthdate = null;
+          this.birthdateHidden = null;
           this.isValidBirthdate = true;
         }
         var _birthplace = this.currentUser.jobyer.lieuNaissance;
@@ -635,12 +732,6 @@ export class Profile{
       }
 
     }
-    if ((<HTMLInputElement>document.getElementById("dateStay")) != null)
-      (<HTMLInputElement>document.getElementById("dateStay")).value = moment(this.dateStay).format("YYYY-MM-DD");
-    if ((<HTMLInputElement>document.getElementById("dateFromStay")) != null)
-      (<HTMLInputElement>document.getElementById("dateFromStay")).value = moment(this.dateFromStay).format("YYYY-MM-DD");
-    if ((<HTMLInputElement>document.getElementById("dateToStay")) != null)
-      (<HTMLInputElement>document.getElementById("dateToStay")).value = moment(this.dateToStay).format("YYYY-MM-DD");
 
     this.profileService.getPrefecture(this.whoDeliverStay).then((data: any) => {
       if (data && data.status == "success" && data.data && data.data.length != 0)
@@ -648,37 +739,15 @@ export class Profile{
     });
 
     this.initValidation();
+    //$( "#profileForm" ).scrollTop( 300 );
+    window.setTimeout(function(){
+      window.scrollTo(0,point);
+    }, 1000);
+
   }
 
+
   updateScan(accountId, userId, role) {
-    /*if (this.scanData) {
-     this.currentUser.scanUploaded = true;
-     this.sharedService.setCurrentUser(this.currentUser);
-     //TODO : test "'"+userId+"'"
-     this.profileService.uploadScan(this.scanData, userId, 'scan', 'upload', role)
-     .then((data: any) => {
-
-     if (!data || data.status == "failure") {
-     Messenger().post({
-     message: 'Serveur non disponible ou problème de connexion',
-     type: 'error',
-     showCloseButton: true
-     });
-     this.currentUser.scanUploaded = false;
-     this.sharedService.setCurrentUser(this.currentUser);
-     }
-
-
-     });
-
-     if (accountId) {
-     this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle, this.scanData).then((data :any) => {
-     if(data && data.id != 0) {
-     this.attachementsService.uploadActualFile(data.id, data.fileName, this.scanData);
-     }
-     });
-     }
-     }*/
 
     if (this.allImages && this.allImages.length > 0) {
       let scanData = this.allImages[0].data;
@@ -705,9 +774,10 @@ export class Profile{
       if (accountId) {
         for (let i = 0; i < this.allImages.length; i++) {
           let index = i + 1;
-          this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle + ' ' + index, scanData).then((data: any) => {
+          this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle + ' ' + index, this.allImages[i].data).then((data: any) => {
+
             if (data && data.id != 0) {
-              this.attachementsService.uploadActualFile(data.id, data.fileName, scanData);
+              this.attachementsService.uploadActualFile(data.id, data.fileName, this.allImages[i].data);
             }
           });
         }
@@ -733,6 +803,7 @@ export class Profile{
   }
 
   appendImg() {
+    ////console.log(this.scanData)
     this.allImages.push({
       data: this.scanData
     });
@@ -746,6 +817,7 @@ export class Profile{
     this._loader.load().then(() => {
       this.autocompletePA = new google.maps.places.Autocomplete(document.getElementById("autocompletePersonal"), this.addressOptions);
       this.autocompleteJA = new google.maps.places.Autocomplete(document.getElementById("autocompleteJob"), this.addressOptions);
+      this.autocompleteCA = new google.maps.places.Autocomplete(document.getElementById("autocompleteCorrespondence"), this.addressOptions);
     });
 
     jQuery('.titleSelectPicker').selectpicker();
@@ -983,7 +1055,7 @@ export class Profile{
         _isFormValid = false;
       }
     } else if (this.isEmployer) {
-      if (this.isValidFirstname && this.isValidLastname && this.isValidCompanyname && this.isValidSiret && this.isValidApe && this.isValidPersonalAddress && this.isValidJobAddress && !Utils.isEmpty(this.conventionId)) {
+      if (this.isValidFirstname && this.isValidLastname && this.isValidCompanyname && this.isValidSiret && this.isValidApe && this.isValidPersonalAddress && this.isValidJobAddress && this.isValidCorrespondenceAddress && !Utils.isEmpty(this.conventionId)) {
         _isFormValid = true;
       } else {
         _isFormValid = false;
@@ -1022,7 +1094,7 @@ export class Profile{
         } else {
           this.companyAlert = "";
           this.showCurrentCompanyBtn = false;
-          console.log()
+          //console.log()
           return;
         }
       })
@@ -1040,7 +1112,7 @@ export class Profile{
         } else {
           this.siretAlert = "";
           this.showCurrentSiretBtn = false;
-          console.log()
+          //console.log()
           return;
         }
       })
@@ -1070,7 +1142,7 @@ export class Profile{
       this.siretAlert = "";
       this.showCurrentSiretBtn = false;
     }
-    console.log()
+    //console.log()
   }
 
   closeForm() {
@@ -1101,7 +1173,7 @@ export class Profile{
                 this.validation = false;
                 return;
               } else {
-                // console.log("response update civility : " + res.status);
+                // //console.log("response update civility : " + res.status);
                 this.currentUser.titre = this.title;
                 this.currentUser.nom = this.lastname;
                 this.currentUser.prenom = this.firstname;
@@ -1125,7 +1197,7 @@ export class Profile{
 
             })
             .catch((error: any) => {
-              // console.log(error);
+              // //console.log(error);
               this.validation = false;
             });
 
@@ -1150,7 +1222,7 @@ export class Profile{
                 return;
               } else {
                 // data saved
-                // console.log("response update civility : " + res.status);
+                // //console.log("response update civility : " + res.status);
                 this.currentUser.titre = this.title;
                 this.currentUser.nom = this.lastname;
                 this.currentUser.prenom = this.firstname;
@@ -1183,11 +1255,38 @@ export class Profile{
                 //upload scan
                 this.updateScan(accountId, userRoleId, 'employeur');
                 this.validation = false;
+
+                if(!Utils.isEmpty(this.personalAddress)){
+                  if(Utils.isEmpty(this.jobAddress)){
+                    this.jobAddress = this.personalAddress;
+                    this.nameJA = this.namePA;
+                    this.streetNumberJA = this.streetNumberPA;
+                    this.streetJA = this.streetPA;
+                    this.zipCodeJA = this.zipCodePA;
+                    this.cityJA = this.cityPA;
+                    this.countryJA = this.countryPA;
+                  }
+
+                  if(Utils.isEmpty(this.correspondenceAddress)){
+                    this.correspondenceAddress = this.personalAddress;
+                    this.nameCA = this.namePA;
+                    this.streetNumberCA = this.streetNumberPA;
+                    this.streetCA = this.streetPA;
+                    this.zipCodeCA = this.zipCodePA;
+                    this.cityCA = this.cityPA;
+                    this.countryCA = this.countryPA;
+                  }
+                }
+
                 if (this.isPersonalAddressModified()) {
                   this.updatePersonalAddress();
                 }
                 if (this.isJobAddressModified()) {
                   this.updateJobAddress();
+                }
+
+                if (this.isCorrespondenceAddressModified()) {
+                  this.updateCorrespondenceAddress();
                 }
 
                 //save qualities
@@ -1207,13 +1306,15 @@ export class Profile{
             })
             .catch((error: any) => {
               this.validation = false;
-              // console.log(error);
+              // //console.log(error);
             });
         }
       } else {
         var numSS = this.numSS;
         var cni = this.cni;
-        var birthdate = this.birthdate;
+        var birthdate = "";
+        if (!Utils.isEmpty(this.birthdateHidden))
+          birthdate = moment(this.birthdateHidden).format('MM/DD/YYYY');
         var birthplace = this.selectedCommune.nom;
         var nationalityId = this.nationalityId;
         //var birthcp = this.birthcp;
@@ -1254,14 +1355,13 @@ export class Profile{
               return;
             } else {
               // data saved
-              //console.log("response update civility : " + res.status);
               this.currentUser.titre = this.title;
               this.currentUser.nom = this.lastname;
               this.currentUser.prenom = this.firstname;
               this.currentUser.jobyer.cni = this.cni;
               this.currentUser.jobyer.numSS = this.numSS;
               this.currentUser.jobyer.natId = this.nationalityId;
-              this.currentUser.jobyer.dateNaissance = Date.parse(moment(this.birthdate));
+              this.currentUser.jobyer.dateNaissance = Date.parse(moment(this.birthdateHidden).format('MM/DD/YYYY'));
               this.currentUser.jobyer.lieuNaissance = birthplace;
               this.currentUser.newAccount = false;
               this.sharedService.setCurrentUser(this.currentUser);
@@ -1273,11 +1373,20 @@ export class Profile{
               if (this.isPersonalAddressModified()) {
                 this.updatePersonalAddress();
               }
+              if(!Utils.isEmpty(this.personalAddress)){
+                if(Utils.isEmpty(this.jobAddress)){
+                  this.jobAddress = this.personalAddress;
+                  this.nameJA = this.namePA;
+                  this.streetNumberJA = this.streetNumberPA;
+                  this.streetJA = this.streetPA;
+                  this.zipCodeJA = this.zipCodePA;
+                  this.cityJA = this.cityPA;
+                  this.countryJA = this.countryPA;
+                }
+              }
               if (this.isJobAddressModified()) {
                 this.updateJobAddress();
               }
-              //save qualities
-              this.saveQualities();
 
               Messenger().post({
                 message: 'Vos données ont été bien enregistrées',
@@ -1293,7 +1402,7 @@ export class Profile{
             }
           })
           .catch((error: any) => {
-            //console.log(error);
+            ////console.log(error);
             this.validation = false;
           });
 
@@ -1320,8 +1429,8 @@ export class Profile{
         this.profileService.updateUserPersonalAddress(entrepriseId, name, streetNumber, street, zipCode, city, country, 'employeur')
           .then((data: any) => {
             if (!data || data.status == "failure") {
-              // console.log(data.error);
-              // console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
+              // //console.log(data.error);
+              // //console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
               this.validation = false;
               return;
             } else {
@@ -1347,9 +1456,9 @@ export class Profile{
         this.profileService.updateUserPersonalAddress(roleId, name, streetNumber, street, zipCode, city, country, 'jobyer')
           .then((data: any) => {
             if (!data || data.status == "failure") {
-              // console.log(data.error);
+              // //console.log(data.error);
 
-              // console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
+              // //console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
               return;
             } else {
               this.validation = false;
@@ -1388,6 +1497,12 @@ export class Profile{
     }
   }
 
+  isCorrespondenceAddressModified() {
+    if (this.isEmployer) {
+      return (this.correspondenceAddress != this.currentUser.employer.entreprises[0].correspondanceAdress.fullAdress);
+    }
+  }
+
   updateJobAddress() {
     if (this.isValidForm()) {
       this.validation = true;
@@ -1407,8 +1522,8 @@ export class Profile{
         this.profileService.updateUserJobAddress(entrepriseId, name, streetNumber, street, zipCode, city, country, 'employeur')
           .then((data: any) => {
             if (!data || data.status == "failure") {
-              // console.log(data.error);
-              // console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
+              // //console.log(data.error);
+              // //console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
               this.validation = false;
               return;
             } else {
@@ -1433,9 +1548,9 @@ export class Profile{
         this.profileService.updateUserJobAddress(roleId, name, streetNumber, street, zipCode, city, country, 'jobyer')
           .then((data: any) => {
             if (!data || data.status == "failure") {
-              // console.log(data.error);
+              // //console.log(data.error);
 
-              // console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
+              // //console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
               return;
             } else {
               //id address not send by server
@@ -1451,6 +1566,49 @@ export class Profile{
               this.sharedService.setCurrentUser(this.currentUser);
 
               this.validation = false;
+            }
+          });
+      }
+    }
+  }
+
+  updateCorrespondenceAddress() {
+    if (this.isValidForm()) {
+      this.validation = true;
+      var street = this.streetCA;
+      var streetNumber = this.streetNumberCA;
+      var name = this.nameCA;
+      var city = this.cityCA;
+      var country = this.countryCA;
+      var zipCode = this.zipCodeCA;
+      var accountId = this.accountId;
+      var userRoleId = this.userRoleId;
+
+      if (this.isEmployer) {
+        var entreprise = this.currentUser.employer.entreprises[0];
+        var entrepriseId = "" + entreprise.id + "";
+        // update personal address
+        this.profileService.updateUserCorrespondenceAddress(entrepriseId, name, streetNumber, street, zipCode, city, country, 'employeur')
+          .then((data: any) => {
+            if (!data || data.status == "failure") {
+              // //console.log(data.error);
+              // //console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
+              this.validation = false;
+              return;
+            } else {
+              //id address not send by server
+              entreprise.correspondanceAdress.id = JSON.parse(data._body).id;
+              entreprise.correspondanceAdress.fullAdress = (name ? name + ", " : "") + (streetNumber ? streetNumber + ", " : "") + (street ? street + ", " : "") + (zipCode ? zipCode + ", " : "") + city + ", " + country;
+              entreprise.correspondanceAdress.name = name;
+              entreprise.correspondanceAdress.streetNumber = streetNumber;
+              entreprise.correspondanceAdress.street = street;
+              entreprise.correspondanceAdress.zipCode = zipCode;
+              entreprise.correspondanceAdress.city = city;
+              entreprise.correspondanceAdress.country = country;
+              this.currentUser.employer.entreprises[0] = entreprise;
+              this.sharedService.setCurrentUser(this.currentUser);
+              this.validation = false;
+
             }
           });
       }
@@ -1542,13 +1700,11 @@ export class Profile{
   }
 
   watchBirthdate(e) {
-    let birthdateChecked = AccountConstraints.checkBirthDate(e.target.value);
-    if(birthdateChecked.isValid){
-       this.birthdate = e.target.value;
-     }
-    this.isValidBirthdate = birthdateChecked.isValid;
-    this.birthdateHint = birthdateChecked.hint;
-    this.isValidForm();
+      let birthdateChecked = AccountConstraints.checkBirthDate(e);
+      this.birthdateHidden = e;
+      this.isValidBirthdate = birthdateChecked.isValid;
+      this.birthdateHint = birthdateChecked.hint;
+      this.isValidForm();
   }
 
 

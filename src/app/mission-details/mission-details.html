@@ -24,7 +24,7 @@
             </header>
             <div class="widget-body">
 
-                <h5>Relevé d'heures de travail du contract avec {{ contract.prenom }} {{ contract.nom }}.</h5>
+                <h5>Relevé d'heures de travail du contrat avec {{ contract.prenom }} {{ contract.nom }}.</h5>
                 <fieldset *ngIf="!isEmployer && upperCase(contract.signature_jobyer) == 'NON'">
                   <legend><strong>Signature du contrat</strong></legend>
                   <div class="container-fluid" [hidden]="prerequisObligatoires.length == 0">

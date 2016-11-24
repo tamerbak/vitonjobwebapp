@@ -9,6 +9,7 @@ import {ModalWelcome} from "../modal-welcome/modal-welcome";
 import {ModalProfile} from "../modal-profile/modal-profile";
 import {ModalUpdatePassword} from "../modal-update-password/modal-update-password";
 import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
+import {ModalGeneralCondition} from "../modal-general-condition/modal-general-condition";
 import {RecruitButton} from "../components/recruit-button/recruit-button";
 
 declare var require: any;
@@ -16,12 +17,12 @@ declare var jQuery: any;
 declare var Messenger: any;
 
 @Component({
-	selector: 'home',
-	template: require('./home.html'),
-	directives: [ROUTER_DIRECTIVES, AlertComponent, ModalWelcome, ModalProfile,ModalUpdatePassword, ModalNotificationContract, RecruitButton],
-	providers: [SearchService, HomeService],
-	styles: [require('./home.scss')],
-	encapsulation: ViewEncapsulation.None
+  selector: 'home',
+  template: require('./home.html'),
+  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalWelcome, ModalProfile, ModalUpdatePassword, ModalNotificationContract, ModalGeneralCondition, RecruitButton],
+  providers: [SearchService, HomeService],
+  styles: [require('./home.scss')],
+  encapsulation: ViewEncapsulation.None
 })
 
 export class Home{
@@ -30,25 +31,25 @@ export class Home{
   scQuery: string;
   alerts: Array<Object>;
   hideLoader: boolean = true;
-    config: any;
-    isTablet: boolean = false;
-    /*
-     *  HOME SCREEN LISTS
-     */
-    recentOffers: any = [];
-    upcomingOffers: any = [];
-    recentUsers: any = [];
-    previousRecentOffers: any = [];
-    previousUpcomingOffers: any = [];
-    previousRecentUsers: any = [];
-    nextRecentOffers: any = [];
-    nextUpcomingOffers: any = [];
-    nextRecentUsers: any = [];
-    homeServiceData: any = [];
-    maxLines: number = 5;
+  config: any;
+  isTablet: boolean = false;
+  /*
+   *  HOME SCREEN LISTS
+   */
+  recentOffers: any = [];
+  upcomingOffers: any = [];
+  recentUsers: any = [];
+  previousRecentOffers: any = [];
+  previousUpcomingOffers: any = [];
+  previousRecentUsers: any = [];
+  nextRecentOffers: any = [];
+  nextUpcomingOffers: any = [];
+  nextRecentUsers: any = [];
+  homeServiceData: any = [];
+  maxLines: number = 5;
   obj: string;
 
-    currentJobyer: any;
+  currentJobyer: any;
 
   constructor(private router: Router,
               private searchService: SearchService,
@@ -85,25 +86,17 @@ export class Home{
       }
 
       if (this.isEmpty(this.currentUser.titre)) {
-        //call to open the modal-guide
-        jQuery('#modal-welcome').modal({
+        jQuery('#modal-general-condition').modal({
           keyboard: false,
           backdrop: 'static'
         });
-        jQuery('#modal-welcome').modal('show');
-        $('#modal-welcome').on('hidden.bs.modal', function (e) {
-          jQuery('#modal-profile').modal({
-            keyboard: false,
-            backdrop: 'static'
-          });
-          jQuery('#modal-profile').modal('show');
-        })
+        jQuery('#modal-general-condition').modal('show');
       }
     } else {
       this.projectTarget = this.sharedService.getProjectTarget();
     }
 
-    this.homeService.loadHomeData((this.projectTarget)).then(data=> {
+    this.homeService.loadHomeData((this.projectTarget)).then(data => {
       this.homeServiceData = data;
       this.initHomeList();
     });
@@ -172,8 +165,8 @@ export class Home{
     }
   }
 
-  ngOnDestroy(){
-    jQuery('.content').css({"padding":"40px","padding-top":"60px"});
+  ngOnDestroy() {
+    jQuery('.content').css({"padding": "40px", "padding-top": "60px"});
   }
 
   doSemanticSearch() {
@@ -237,7 +230,7 @@ export class Home{
   }
 
   previousUsers() {
-    if(this.previousRecentUsers.length == 0)
+    if (this.previousRecentUsers.length == 0)
       return;
     this.nextRecentUsers = [];
     for (let i = 0; i < this.recentUsers.length; i++)
@@ -258,7 +251,7 @@ export class Home{
     }
 
     this.homeServiceData.query.startIndex = offset;
-    this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then((data: any)=> {
+    this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then((data: any) => {
       let newData = data.users;
       let max = newData.length > this.maxLines ? this.maxLines : newData.length;
       for (let i = 0; i < max; i++) {
@@ -269,7 +262,7 @@ export class Home{
   }
 
   nextUsers() {
-    if(this.nextRecentUsers.length == 0)
+    if (this.nextRecentUsers.length == 0)
       return;
     this.previousRecentUsers = [];
     for (let i = 0; i < this.recentUsers.length; i++)
@@ -283,7 +276,7 @@ export class Home{
     this.nextRecentUsers = [];
     let offset = this.homeServiceData.query.startIndex + this.homeServiceData.query.resultCapacity;
     this.homeServiceData.query.startIndex = offset;
-    this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then((data: any)=> {
+    this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then((data: any) => {
       let newData = data.users;
       let max = newData.length > this.maxLines ? this.maxLines : newData.length;
       for (let i = 0; i < max; i++) {
@@ -294,7 +287,7 @@ export class Home{
   }
 
   nextOffers() {
-    if(this.nextRecentOffers.length == 0)
+    if (this.nextRecentOffers.length == 0)
       return;
 
     this.previousRecentOffers = [];
@@ -317,7 +310,7 @@ export class Home{
     this.nextUpcomingOffers = [];
     let offset = this.homeServiceData.query.startIndexOffers + this.homeServiceData.query.resultCapacityOffers;
     this.homeServiceData.query.startIndexOffers = offset;
-    this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then((data: any)=> {
+    this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then((data: any) => {
       //debugger;
       let newData = data.recentOffers;
       let max = newData.length > this.maxLines ? this.maxLines : newData.length;
@@ -333,7 +326,7 @@ export class Home{
   }
 
   previousOffers() {
-    if(this.previousRecentOffers.length == 0)
+    if (this.previousRecentOffers.length == 0)
       return;
     this.nextRecentOffers = [];
     for (let i = 0; i < this.recentOffers.length; i++)
@@ -361,7 +354,7 @@ export class Home{
     }
 
     this.homeServiceData.query.startIndexOffers = offset;
-    this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then((data: any)=> {
+    this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then((data: any) => {
       let newData = data.recentOffers;
       let max = newData.length > this.maxLines ? this.maxLines : newData.length;
       for (let i = 0; i < max; i++) {
@@ -435,7 +428,7 @@ export class Home{
           this.currentJobyer = r.jobyer;
           if (r.obj == "profile") {
             jQuery('#modal-profile').modal('show');
-          }else{
+          } else {
             jQuery('#modal-notification-contract').modal('show');
           }
 
@@ -449,4 +442,26 @@ export class Home{
 
   }
 
+  onGCRefused(gcRefused: boolean){
+    var self = this;
+    $('#modal-general-condition').on('hidden.bs.modal', function (e) {
+      if(!gcRefused) {
+        jQuery('#modal-welcome').modal({
+          keyboard: false,
+          backdrop: 'static'
+        });
+        jQuery('#modal-welcome').modal('show');
+        $('#modal-welcome').on('hidden.bs.modal', function (e) {
+          jQuery('#modal-profile').modal({
+            keyboard: false,
+            backdrop: 'static'
+          });
+          jQuery('#modal-profile').modal('show');
+        });
+      }else{
+        self.sharedService.logOut();
+        location.reload();
+      }
+    });
+  }
 }

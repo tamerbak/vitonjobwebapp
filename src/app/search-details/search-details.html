@@ -27,7 +27,8 @@
           </p>
         </div>
         <div class="row col-md-12 col-xs-12"
-             style="padding-top: 7px;margin-bottom: 10px;">
+             style="padding-top: 7px;margin-bottom: 10px;"
+             *ngIf="projectTarget == 'employer' || result.accepteCandidature == 'true'" >
           <div class="col-lg-4 col-md-6 col-xs-12">
             <span><i class="fa fa-envelope" aria-hidden="true"></i><b> {{result.email}}</b></span>
           </div>
