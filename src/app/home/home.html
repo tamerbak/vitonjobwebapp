@@ -38,7 +38,12 @@
 
   <div class="container-fluid list-home-container" [hidden]="upcomingOffers.length==0">
     <div class="row list-home-title">
-      <div class="col-xl-12"><h2>Offres imminentes</h2></div>
+      <div class="col-xl-12">
+        <h3>
+          <span *ngIf="(projectTarget === 'jobyer')">Offres imminentes</span>
+          <span *ngIf="(projectTarget === 'employer')">Jobyers disponibles immédiatement</span>
+        </h3>
+      </div>
     </div>
     <div class="row">
       <div class="col-sm-1 col-xs-2">
@@ -70,7 +75,8 @@
                       <p class="body" style="color: #999999; text-align: right">
                         <small>
                           Offre créée le {{simplifyDate(o.creationDate)}}<br/>
-                          {{projectTarget == 'jobyer'?'Disponible à partir du':'Début de mission'}}
+                          <span *ngIf="(projectTarget === 'employer')">Disponible à partir du </span>
+                          <span *ngIf="(projectTarget === 'jobyer')">Début de la mission </span>
                           {{simplifyDate(o.startAvailability)}}
                         </small>
                       </p>
