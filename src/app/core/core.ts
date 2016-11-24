@@ -6,6 +6,7 @@ import {Navbar} from "./navbar/navbar";
 import {ConfigService} from "./config";
 import {AppSidebar} from './app-sidebar/app-sidebar';
 import {ModalConfirm} from "../modal-confirm/modal-confirm";
+import {RuntimeCompiler} from "@angular/compiler";
 
 declare var Raphael: any;
 declare var jQuery: any;
@@ -36,7 +37,8 @@ export class Core {
 
   constructor(config: ConfigService,
               el: ElementRef,
-              router: Router) {
+              router: Router,
+              private _runtimeCompiler: RuntimeCompiler) {
     Raphael.prototype.safari = function (): any {
       return;
     };
@@ -300,5 +302,10 @@ export class Core {
 
       jQuery(this).closest('li').removeClass('open');
     });
+  }
+
+  refreshCache() {
+    this._runtimeCompiler.clearCache();
+    location.reload();
   }
 }

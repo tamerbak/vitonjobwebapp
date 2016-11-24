@@ -31,7 +31,8 @@
             </div>
           </div>
         </div>
-        <a class="adv-search" [routerLink]=" ['/search/criteria'] ">Recherche avancée</a>
+        <!--<a class="adv-search" [routerLink]=" ['/search/criteria'] ">Recherche avancée</a>-->
+        <a class="adv-search" (click)="refreshCache()">REFRESH CACHE</a>
       </div>
       <div modal-welcome></div>
       <div modal-profile [obj]="obj"></div>
