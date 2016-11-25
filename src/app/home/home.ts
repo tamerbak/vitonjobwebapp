@@ -46,7 +46,7 @@ export class Home{
   nextUpcomingOffers: any = [];
   nextRecentUsers: any = [];
   homeServiceData: any = [];
-  maxLines: number = 5;
+  maxLines: number = 4;
   obj: string;
 
   currentJobyer: any;
@@ -104,12 +104,7 @@ export class Home{
     this.config = Configs.setConfigs(this.projectTarget);
 
     myContent.css({"padding": "0", "padding-right": "0"});
-    if (screen.width <= 480) {
-      myContent.css(this.config.backgroundImage);
-      myContent.css({"background-size": "cover"});
-      myNavBar.css({"background-color": "transparent", "border-color": "transparent"});
-    } else if (screen.width <= 768) {
-      myContent.css(this.config.backgroundImage);
+    if  (screen.width <= 768) {
       myContent.css({"background-size": "cover"});
       myNavBar.css({"background-color": "#14baa6", "border-color": "#14baa6"});
       this.isTablet = true;

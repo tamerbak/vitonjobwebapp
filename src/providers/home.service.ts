@@ -22,8 +22,8 @@ export class HomeService {
     let query = {
       "class": "com.vitonjob.model.Query",
       dateReference: null,
-      resultCapacity: 10,
-      resultCapacityOffers: 10,
+      resultCapacity: 8,
+      resultCapacityOffers: 8,
       startIndex: 0,
       startIndexOffers: 0,
       type: projectType
