@@ -6,6 +6,11 @@
         <h4 class="modal-title text-xs-center fw-bold mt">Devis estimatif</h4>
       </div>
       <div class="modal-body bg-gray-lighter">
+        <alert [type]="'info'+ ' alert-sm'" dismissible="false">
+          <div>
+            * Le devis est suceptible d'être modifié en fonction des heures réellement effectuées.
+          </div>
+        </alert>
         <form class="form-horizontal" role="form">
           <div class="row">
             <div class="col-lg-12 col-xs-12">

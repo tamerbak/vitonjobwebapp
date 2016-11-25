@@ -123,13 +123,28 @@ export class BankAccount {
     this.isValidForm();
   }
 
+  getUserFullName(){
+    return this.sharedService.getCurrentUser().nom+" "+this.sharedService.getCurrentUser().prenom;
+  }
+
+  getUserReverseFullName(){
+    return this.sharedService.getCurrentUser().prenom+" "+this.sharedService.getCurrentUser().nom;
+  }
+
   watchAccountHolder(e) {
+    if(this.isEmployer || this.isRecruiter){
+      return;
+    }
+
     let _name = e.target.value;
     let _isValid: boolean = true;
     let _hint: string = "";
 
     if (!_name) {
       _hint = "Ce champ est obligtoire";
+      _isValid = false;
+    }else if(_name.trim() !== this.getUserFullName() && _name.trim() !== this.getUserReverseFullName() ){
+      _hint = "Le nom et prénom fournis ne sont pas identiques à vos informations de profil";
       _isValid = false;
     } else {
       _hint = "";
@@ -147,7 +162,7 @@ export class BankAccount {
     let _hint: string = "";
 
     if (!_iban) {
-      _hint = "Ce champ est obligtoire";
+      _hint = "Ce champ est obligatoire";
       _isValid = false;
     } else if(!Utils.isValidIBAN(_iban)){
       _hint = "Le format de l'IBAN est incorrect";
@@ -168,7 +183,7 @@ export class BankAccount {
     let _hint: string = "";
 
     if (!_bic) {
-      _hint = "Ce champ est obligtoire";
+      _hint = "Ce champ est obligatoire";
       _isValid = false;
     } else if(!Utils.isValidBIC(_bic)){
       _hint = "Le format du BIC est incorrect";

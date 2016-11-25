@@ -38,7 +38,7 @@
     <div *ngFor="let item of searchResults, let i=index">
       <section
         class="widget" widget
-        *ngIf="item.accepteCandidature == 'true' || projectTarget == 'employer'"
+
       >
         <div class="widget-body row">
           <div class="col-md-1 col-xs-4">
@@ -54,16 +54,7 @@
             <div class="row">
               <h5 class="name no-margin mb-xs col-md-8 col-xs-12">{{item.titreoffre}}</h5>
             </div>
-            <!--<div class="row" style="margin-top: 10px;" [hidden]="!languages[i] || languages[i].length==0">
-                          <h6 class="name no-margin mb-xs col-md-8 col-xs-12">Langues {{currentUser.estEmployeur?"maîtrisées":"requises"}} : <label *ngFor="let l of languages[i]" style="margin-bottom: -10px;">
-                              <p>{{l.libelle}} </p>
-                          </label></h6>
-                      </div>
-                      <div class="row" [hidden]="!qualities[i] || qualities[i].length==0">
-                          <h6 class="name no-margin mb-xs col-md-9 col-xs-12">Qualités {{currentUser.estEmployeur?"acquises":"requises"}} : <label *ngFor="let q of qualities[i]">
-                              <p>{{q.libelle}} </p>
-                          </label></h6>
-                      </div>-->
+
           </div>
           <div class="col-md-3 col-xs-4">
             <div class="row">
@@ -97,7 +88,8 @@
             </div>
           </div>
         </div>
-        <div class="row col-md-12 col-xs-12 mg-tp">
+        <div class="row col-md-12 col-xs-12 mg-tp"
+             *ngIf="projectTarget == 'employer' || item.accepteCandidature == 'true'" >
           <div class="col-lg-4 col-md-6 col-xs-12 mg-bt-2">
             <span><i class="fa fa-envelope" aria-hidden="true"></i><b> {{item.email}}</b></span>
           </div>

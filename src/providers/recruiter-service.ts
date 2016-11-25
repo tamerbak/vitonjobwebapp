@@ -29,12 +29,12 @@ export class RecruiterService {
   }
 
   insertRecruiters(contacts, employerId, fromPage){
-    var sql = "insert into user_account (role, telephone, est_employeur) values ";
+    var sql = "insert into user_account (role, telephone, email, est_employeur) values ";
     var recruiterList = [];
     for(var i = 0; i < contacts.length; i++){
       var recruiter: any = this.constituteRecruiterObject(contacts[i], fromPage);
       recruiterList.push(recruiter);
-      var valuesStr = " ('recruteur', '" + recruiter.phone + "', 'non')";
+      var valuesStr = " ('recruteur', '" + recruiter.phone + "', '" + recruiter.email + "', 'non')";
       if(i == 0){
         sql = sql + valuesStr;
         continue;
@@ -142,7 +142,7 @@ export class RecruiterService {
 
   updateRecruiter(recruiter, employerId){
     var sql1 = "update user_recruteur set nom = '" + recruiter.lastname + "', prenom ='" + recruiter.firstname + "' where fk_user_account = '" + recruiter.accountid + "' and fk_user_employeur = '" + employerId+ "';";
-    var sql2 = " update user_account set telephone = '" + recruiter.phone + "' where pk_user_account = '" + recruiter.accountid + "' and role = 'recruteur';";
+    var sql2 = " update user_account set telephone = '" + recruiter.phone + "' and email = '" + recruiter.email + "' where pk_user_account = '" + recruiter.accountid + "' and role = 'recruteur';";
     var sql = sql1 + sql2;
     console.log(sql);
     return new Promise(resolve => {

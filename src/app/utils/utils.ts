@@ -1,4 +1,5 @@
 import {Injectable} from "@angular/core";
+import {isEmpty} from "rxjs/operator/isEmpty";
 
 
 @Injectable()
@@ -71,4 +72,28 @@ export class Utils {
     return re.test(char);
   }
 
+  public static isValidUrl(u){
+    var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+    return regexp.test(u);
+  }
+
+  public static isEmailValid(email) {
+    var EMAIL_REGEXP = /^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,4})$/;
+    var isMatchRegex = EMAIL_REGEXP.test(email);
+    return isMatchRegex;
+  }
+
+  public static preventNull(str){
+    if(Utils.isEmpty(str)){
+      return "";
+    }else{
+      return str;
+    }
+  }
+
+  public static sqlfyText(txt) {
+    if (!txt || txt.length == 0)
+      return "";
+    return txt.replace(/'/g, "''");
+  }
 }
