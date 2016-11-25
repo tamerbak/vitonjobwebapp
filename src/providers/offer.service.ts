@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {Http, Headers} from "@angular/http";
 import {Configs} from "../configurations/configs";
 import { SharedService } from './shared.service';
+import {DateUtils} from "../app/utils/date-utils";
 
 @Injectable()
 export class OffersService {
@@ -166,7 +167,7 @@ export class OffersService {
 
     let payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      id: 332,
+      id: 10025,
       args: [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'creation offre',
@@ -185,6 +186,9 @@ export class OffersService {
       this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
         .subscribe((data:any) => {
           let idOffer = JSON.parse(data._body).idOffer;
+
+          this.updateEPI(idOffer,offerData.jobData.epi,projectTarget);
+
           if(offerData.jobData.prerequisObligatoires && offerData.jobData.prerequisObligatoires.length>0){
             switch (projectTarget) {
               case 'employer' :
@@ -200,6 +204,36 @@ export class OffersService {
         });
     });
   }
+
+  updateEPI(idOffer,plist,projectTarget){
+    var table = projectTarget == 'employer' ? "user_epi_employeur":"user_epi_jobyer";
+    var fk = projectTarget == 'employer' ? "fk_user_offre_entreprise":"fk_user_offre_jobyer";
+    let sql = "delete from "+table+"where "+ fk+"="+idOffer;
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+
+          for(let i = 0 ; i < plist.length ; i++){
+            this.getEPI(plist[i]).then(id=>{
+              if(id>0){
+                this.doUpdateEPI(idOffer, id, projectTarget);
+              }else{
+                this.insertEPI(plist[i]).then(id=>{
+                  this.doUpdateEPI(idOffer, id, projectTarget);
+                });
+              }
+            });
+          }
+          resolve(data);
+        });
+    });
+   }
 
   updateNecessaryDocuments(idOffer,plist){
     let sql = "delete from user_prerequis_jobyer where fk_user_offre_jobyer="+idOffer;
@@ -277,6 +311,46 @@ export class OffersService {
     });
   }
 
+  getEPI(p){
+    let sql = "select pk_user_epi as id from user_epi where lower_unaccent(libelle) = lower_unaccent('"+p+"')";
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+
+          let id = -1;
+          if(data.data && data.data.length>0)
+            id = data.data[0].id;
+          resolve(id);
+        });
+    });
+  }
+
+  insertEPI(p){
+    let sql = "insert into user_epi (libelle) values ('"+p+"') returning pk_user_epi";
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+
+          let id = -1;
+          if(data.data && data.data.length>0)
+            id = data.data[0].pk_user_epi;
+          resolve(id);
+        });
+    });
+  }
+
   insertPrerequis(p){
     let sql = "insert into user_prerquis (libelle) values ('"+p+"') returning pk_user_prerquis";
     return new Promise(resolve => {
@@ -315,6 +389,24 @@ export class OffersService {
 
   doUpdateNecessaryDocuments(idOffer, idp){
     let sql = "insert into user_prerequis_jobyer (fk_user_offre_jobyer, fk_user_prerquis) values ("+idOffer+","+idp+")";
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  doUpdateEPI(idOffer, idp, projectTarget){
+    var table = projectTarget == 'employer' ? "user_epi_employeur":"user_epi_jobyer";
+    var fk = projectTarget == 'employer' ? "fk_user_offre_entreprise":"fk_user_offre_jobyer";
+    let sql = "insert into "+table+" ("+fk+",fk_user_epi) values ("+idOffer+","+idp+")";
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
       // then on the response it'll map the JSON data to a parsed JS object.
@@ -454,8 +546,11 @@ export class OffersService {
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
           if(offer.jobData.prerequisObligatoires){
-
             this.updateNecessaryDocuments(offer.idOffer,offer.jobData.prerequisObligatoires);
+          }
+
+          if(offer.jobData.epi){
+            this.updateEPI(offer.idOffer,offer.jobData.epi,"jobyer");
           }
           resolve(data);
         });
@@ -496,8 +591,11 @@ export class OffersService {
         .subscribe(data => {
 
           if(offer.jobData.prerequisObligatoires){
-
             this.updatePrerequisObligatoires(offer.idOffer,offer.jobData.prerequisObligatoires);
+          }
+
+          if(offer.jobData.epi){
+            this.updateEPI(offer.idOffer,offer.jobData.epi,"employer");
           }
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
@@ -560,9 +658,9 @@ export class OffersService {
 
   attacheDay(idOffer, table, day) {
     let d = new Date(day.date);
-
     let sdate = this.sqlfy(d);
-    let sql = "insert into user_disponibilites_des_offres (fk_" + table + ", jour, heure_debut, heure_fin) values (" + idOffer + ", '" + sdate + "', " + day.startHour + ", " + day.endHour + ")";
+    let isPause = day.pause ? "OUI" : "NON";
+    let sql = "insert into user_disponibilites_des_offres (fk_" + table + ", jour, heure_debut, heure_fin, pause) values (" + idOffer + ", '" + sdate + "', " + day.startHour + ", " + day.endHour + ", '" + isPause + "')";
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
@@ -950,7 +1048,12 @@ export class OffersService {
    *  COLLECTIVE CONVENTIONS ADVANTAGES
    *********************************************************************************************************************/
   getHoursCategories(idConv){
-    let sql = "select chc.pk_user_coefficient_heure_conventionnee as id, chc.libelle as libelle, cat.code as code from user_coefficient_heure_conventionnee chc, user_categorie_heures_conventionnees cat where chc.fk_user_categorie_heures_conventionnees=cat.pk_user_categorie_heures_conventionnees and fk_user_convention_collective="+idConv;
+    let sql = "select cat.pk_user_categorie_heures_conventionnees as \"catId\",  cat.code, " +
+    " chc.pk_user_coefficient_heure_conventionnee as id, chc.libelle, chc.coefficient, chc.coefficient as \"empValue\", chc.type_de_valeur as \"typeValue\" " +
+    "from user_categorie_heures_conventionnees cat " +
+    "LEFT JOIN user_coefficient_heure_conventionnee chc " +
+    "ON chc.fk_user_categorie_heures_conventionnees = cat.pk_user_categorie_heures_conventionnees " +
+    " where chc.fk_user_convention_collective = " + idConv;
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -965,7 +1068,11 @@ export class OffersService {
   }
 
   getHoursMajoration(idConv){
-    let sql = "select m.pk_user_majoration_heure_conventionnee as id, m.libelle as libelle, c.code as code from user_majoration_heure_conventionnee m, user_categorie_majoration_heure c where m.fk_user_categorie_majoration_heure=c.pk_user_categorie_majoration_heure and fk_user_convention_collective="+idConv;
+    let sql = "select m.pk_user_majoration_heure_conventionnee as id, m.libelle as libelle, m.coefficient , m.coefficient as \"empValue\", m.type_de_valeur as \"typeValue\", " +
+      " c.code as code, c.pk_user_categorie_majoration_heure as \"majId\" " +
+      " from user_majoration_heure_conventionnee m, user_categorie_majoration_heure c " +
+      " where m.fk_user_categorie_majoration_heure = c.pk_user_categorie_majoration_heure " +
+      " and fk_user_convention_collective = " + idConv;
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -980,7 +1087,11 @@ export class OffersService {
   }
 
   getIndemnites(idConv){
-    let sql = "select pk_user_indemnite_conventionnee as id, i.libelle as libelle, t.code as code from user_indemnite_conventionnee i, user_type_indemnite t where i.fk_user_type_indemnite = t.pk_user_type_indemnite and fk_user_convention_collective="+idConv;
+    let sql = "select i.pk_user_indemnite_conventionnee as id, i.libelle as libelle, i.valeur as coefficient , i.valeur as \"empValue\", i.type_de_valeur as \"typeValue\", " +
+      " t.code as code, t.pk_user_type_indemnite as \"indId\" " +
+      " from user_indemnite_conventionnee i, user_type_indemnite t " +
+      " where i.fk_user_type_indemnite = t.pk_user_type_indemnite " +
+      " and fk_user_convention_collective="+idConv;
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -995,9 +1106,88 @@ export class OffersService {
   }
 
   selectPrerequis(kw){
-    let sql = "select pk_user_prerquis as id, libelle from user_prerquis where lower_unaccent(libelle) like lower_unaccent('%"+kw+"%') or lower_unaccent(libelle) % lower_unaccent('"+kw+"')";
+    let sql = "select pk_user_prerquis as id, libelle from user_prerquis where lower_unaccent(libelle) like lower_unaccent('%"+this.sqlfyText(kw)+"%') or lower_unaccent(libelle) % lower_unaccent('"+this.sqlfyText(kw)+"')";
 
     return sql;
+  }
+
+  selectJobs(kw, idSector){
+    let constr = "";
+    if(idSector && idSector>0){
+      constr = "fk_user_metier="+idSector+" AND ";
+    }
+    let sql = "select pk_user_job as id, libelle from user_job where "+constr+" ( lower_unaccent(libelle) like lower_unaccent('%"+this.sqlfyText(kw)+"%') or lower_unaccent(libelle) % lower_unaccent('"+this.sqlfyText(kw)+"')) limit 10";
+    return sql;
+  }
+
+  selectJobById(id){
+    let sql = "select libelle from user_job where pk_user_job="+id;
+
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          // we've got back the raw data, now generate the core schedule data
+          // and save the data for later reference
+          let job = "";
+          if(data.data && data.data.length>0)
+            job = data.data[0].libelle;
+          resolve(job);
+        });
+    });
+  }
+
+  loadSectorByJobId(id){
+    let sql = "select pk_user_metier as id, libelle from user_metier where pk_user_metier in " +
+      "(select fk_user_metier from user_job where pk_user_job="+id+")";
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          // we've got back the raw data, now generate the core schedule data
+          // and save the data for later reference
+          let s = {
+            id : 0,
+            libelle : ""
+          };
+          if(data.data && data.data.length>0)
+            s = data.data[0];
+          resolve(s);
+        });
+    });
+  }
+
+  selectEPI(kw){
+    let sql = "select pk_user_epi as id, libelle from user_epi where lower_unaccent(libelle) like lower_unaccent('%"+kw+"%') or lower_unaccent(libelle) % lower_unaccent('"+kw+"')";
+
+    return sql;
+  }
+
+  loadOfferEPI(oid, projectTarget){
+    var table = projectTarget == 'employer' ? "user_epi_employeur":"user_epi_jobyer";
+    var fk = projectTarget == 'employer' ? "fk_user_offre_entreprise":"fk_user_offre_jobyer";
+    let sql = "select libelle from user_epi where pk_user_epi in (select fk_user_epi from "+table+" where "+fk+"="+oid+")";
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          // we've got back the raw data, now generate the core schedule data
+          // and save the data for later reference
+          resolve(data.data);
+        });
+    });
   }
 
   loadOfferPrerequisObligatoires(oid){
@@ -1116,7 +1306,10 @@ export class OffersService {
     let totalHours = minEnd - minStart;
     for(let i = 0; i < slots.length; i++){
       let s = slots[i];
-      let sDate = new Date(s.date).setHours(0, 0, 0, 0);
+      if(s.pause){
+        continue;
+      }
+      let sDate = new Date(DateUtils.rfcFormat(s.date)).setHours(0, 0, 0, 0);
       if(sDate != currentSDate){
         continue;
       }
@@ -1129,5 +1322,51 @@ export class OffersService {
       totalHours = totalHours + (minEnd - minStart);
     }
     return totalHours;
+  }
+
+  isSlotRespectsBreaktime(slots, newSlot){
+    //breaktime is 11h converted to milliseconds
+    let breaktime = 39600000;
+    //one minute in miliseccond
+    let oneMinute = 60000;
+    //23:59 in minutes
+    let almostMidnight = 1439;
+
+    let hs = newSlot.startHour.getHours() * 1;
+    let ms = newSlot.startHour.getMinutes() * 1;
+    let currentMinStart = (hs * 60) + ms;
+    let currentStartDate = (new Date(newSlot.date).setHours(hs, ms, 0, 0)) / 1000;
+    let he = newSlot.endHour.getHours() * 1;
+    let me = newSlot.endHour.getMinutes() * 1;
+    let currentMinEnd = (he *60) + me;
+    let currentEndDate = (new Date(newSlot.date).setHours(he, me, 0, 0)) / 1000;
+    for(let i = 0; i < slots.length; i++){
+      let s = slots[i];
+      let sDate = DateUtils.rfcFormat(s.date);
+      if(s.pause){
+        continue;
+      }
+      let hs = s.startHour.split(':')[0] * 1;
+      let ms = s.startHour.split(':')[1] * 1;
+      let slotMinStart = (hs * 60) + ms;
+      let slotStartDate = new Date(sDate).setHours(hs, ms, 0, 0) / 1000;
+      let he = s.endHour.split(':')[0] * 1;
+      let me = s.endHour.split(':')[1] * 1;
+      let slotMinEnd = (he *60) + me;
+      let slotEndDate = new Date(sDate).setHours(he, me, 0, 0) / 1000;
+      if(currentStartDate - slotEndDate <= oneMinute && slotMinEnd == almostMidnight && currentMinStart == 0){
+        return true;
+      }
+      if(slotStartDate - currentEndDate <= oneMinute && slotMinStart == 0 && currentMinEnd == almostMidnight){
+        return true;
+      }
+      if((currentStartDate - slotEndDate) * 1000 < breaktime && new Date(sDate) <= newSlot.date){
+        return false;
+      }
+      if((slotStartDate - currentEndDate) * 1000 < breaktime && newSlot.date <= new Date(sDate) ){
+        return false;
+      }
+    }
+    return true;
   }
 }

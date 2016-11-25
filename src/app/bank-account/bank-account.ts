@@ -132,6 +132,10 @@ export class BankAccount {
   }
 
   watchAccountHolder(e) {
+    if(this.isEmployer || this.isRecruiter){
+      return;
+    }
+
     let _name = e.target.value;
     let _isValid: boolean = true;
     let _hint: string = "";
@@ -158,7 +162,7 @@ export class BankAccount {
     let _hint: string = "";
 
     if (!_iban) {
-      _hint = "Ce champ est obligtoire";
+      _hint = "Ce champ est obligatoire";
       _isValid = false;
     } else if(!Utils.isValidIBAN(_iban)){
       _hint = "Le format de l'IBAN est incorrect";
@@ -179,7 +183,7 @@ export class BankAccount {
     let _hint: string = "";
 
     if (!_bic) {
-      _hint = "Ce champ est obligtoire";
+      _hint = "Ce champ est obligatoire";
       _isValid = false;
     } else if(!Utils.isValidBIC(_bic)){
       _hint = "Le format du BIC est incorrect";

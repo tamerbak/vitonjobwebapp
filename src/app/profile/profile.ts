@@ -128,7 +128,7 @@ export class Profile{
   showCurrentSiretBtn: boolean = false;
   companyAlert: string = "";
   showCurrentCompanyBtn: boolean = false;
-  personalAddressLabel: string = "Adresse du siège";
+  personalAddressLabel: string = "du siège";
   jobAddressLabel: string = "Adresse du lieu de travail";
   autocompletePA: any;
   autocompleteJA: any;
@@ -218,7 +218,7 @@ export class Profile{
         this.initForm();
       }
       if (!this.isRecruiter && !this.isEmployer) {
-        this.personalAddressLabel = "Adresse personnelle";
+        this.personalAddressLabel = "personnelle";
         this.jobAddressLabel = "Adresse de départ au travail";
         listService.loadNationalities().then((response: any) => {
           this.nationalities = response.data;
@@ -264,7 +264,7 @@ export class Profile{
     }
 
 
-   
+
     this.allImages = [];
 
 
@@ -358,7 +358,7 @@ export class Profile{
 
     this.personalAddress = _address;
     this.isValidPersonalAddress = _isValid;
-    console.log();
+    //console.log();
     this.isValidForm();
   }
 
@@ -376,7 +376,7 @@ export class Profile{
 
     this.jobAddress = _address;
     this.isValidJobAddress = _isValid;
-    console.log();
+    //console.log();
     this.isValidForm();
   }
 
@@ -394,7 +394,7 @@ export class Profile{
 
     this.correspondenceAddress = _address;
     this.isValidCorrespondenceAddress = _isValid;
-    console.log();
+    //console.log();
     this.isValidForm();
   }
 
@@ -481,7 +481,7 @@ export class Profile{
     this.showForm = true;
     var offset = jQuery("#profileForm").offset().top;
     var point = offset+window.innerHeight-50;
-    
+
     this.title = !this.currentUser.titre ? "M." : this.currentUser.titre;
     jQuery('.titleSelectPicker').selectpicker('val', this.title);
     this.lastname = this.currentUser.nom;
@@ -741,41 +741,13 @@ export class Profile{
     this.initValidation();
     //$( "#profileForm" ).scrollTop( 300 );
     window.setTimeout(function(){
-      window.scrollTo(0,point);   
+      window.scrollTo(0,point);
     }, 1000);
 
   }
 
 
   updateScan(accountId, userId, role) {
-    /*if (this.scanData) {
-     this.currentUser.scanUploaded = true;
-     this.sharedService.setCurrentUser(this.currentUser);
-     //TODO : test "'"+userId+"'"
-     this.profileService.uploadScan(this.scanData, userId, 'scan', 'upload', role)
-     .then((data: any) => {
-
-     if (!data || data.status == "failure") {
-     Messenger().post({
-     message: 'Serveur non disponible ou problème de connexion',
-     type: 'error',
-     showCloseButton: true
-     });
-     this.currentUser.scanUploaded = false;
-     this.sharedService.setCurrentUser(this.currentUser);
-     }
-
-
-     });
-
-     if (accountId) {
-     this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle, this.scanData).then((data :any) => {
-     if(data && data.id != 0) {
-     this.attachementsService.uploadActualFile(data.id, data.fileName, this.scanData);
-     }
-     });
-     }
-     }*/
 
     if (this.allImages && this.allImages.length > 0) {
       let scanData = this.allImages[0].data;
@@ -803,6 +775,7 @@ export class Profile{
         for (let i = 0; i < this.allImages.length; i++) {
           let index = i + 1;
           this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle + ' ' + index, this.allImages[i].data).then((data: any) => {
+
             if (data && data.id != 0) {
               this.attachementsService.uploadActualFile(data.id, data.fileName, this.allImages[i].data);
             }
@@ -830,7 +803,7 @@ export class Profile{
   }
 
   appendImg() {
-    //console.log(this.scanData)
+    ////console.log(this.scanData)
     this.allImages.push({
       data: this.scanData
     });
@@ -1121,7 +1094,7 @@ export class Profile{
         } else {
           this.companyAlert = "";
           this.showCurrentCompanyBtn = false;
-          console.log()
+          //console.log()
           return;
         }
       })
@@ -1139,7 +1112,7 @@ export class Profile{
         } else {
           this.siretAlert = "";
           this.showCurrentSiretBtn = false;
-          console.log()
+          //console.log()
           return;
         }
       })
@@ -1169,7 +1142,7 @@ export class Profile{
       this.siretAlert = "";
       this.showCurrentSiretBtn = false;
     }
-    console.log()
+    //console.log()
   }
 
   closeForm() {
@@ -1200,7 +1173,7 @@ export class Profile{
                 this.validation = false;
                 return;
               } else {
-                // console.log("response update civility : " + res.status);
+                // //console.log("response update civility : " + res.status);
                 this.currentUser.titre = this.title;
                 this.currentUser.nom = this.lastname;
                 this.currentUser.prenom = this.firstname;
@@ -1224,7 +1197,7 @@ export class Profile{
 
             })
             .catch((error: any) => {
-              // console.log(error);
+              // //console.log(error);
               this.validation = false;
             });
 
@@ -1249,7 +1222,7 @@ export class Profile{
                 return;
               } else {
                 // data saved
-                // console.log("response update civility : " + res.status);
+                // //console.log("response update civility : " + res.status);
                 this.currentUser.titre = this.title;
                 this.currentUser.nom = this.lastname;
                 this.currentUser.prenom = this.firstname;
@@ -1282,7 +1255,7 @@ export class Profile{
                 //upload scan
                 this.updateScan(accountId, userRoleId, 'employeur');
                 this.validation = false;
-                
+
                 if(!Utils.isEmpty(this.personalAddress)){
                   if(Utils.isEmpty(this.jobAddress)){
                     this.jobAddress = this.personalAddress;
@@ -1333,7 +1306,7 @@ export class Profile{
             })
             .catch((error: any) => {
               this.validation = false;
-              // console.log(error);
+              // //console.log(error);
             });
         }
       } else {
@@ -1382,7 +1355,6 @@ export class Profile{
               return;
             } else {
               // data saved
-              //console.log("response update civility : " + res.status);
               this.currentUser.titre = this.title;
               this.currentUser.nom = this.lastname;
               this.currentUser.prenom = this.firstname;
@@ -1400,6 +1372,17 @@ export class Profile{
               this.validation = false;
               if (this.isPersonalAddressModified()) {
                 this.updatePersonalAddress();
+              }
+              if(!Utils.isEmpty(this.personalAddress)){
+                if(Utils.isEmpty(this.jobAddress)){
+                  this.jobAddress = this.personalAddress;
+                  this.nameJA = this.namePA;
+                  this.streetNumberJA = this.streetNumberPA;
+                  this.streetJA = this.streetPA;
+                  this.zipCodeJA = this.zipCodePA;
+                  this.cityJA = this.cityPA;
+                  this.countryJA = this.countryPA;
+                }
               }
               if (this.isJobAddressModified()) {
                 this.updateJobAddress();
@@ -1419,7 +1402,7 @@ export class Profile{
             }
           })
           .catch((error: any) => {
-            //console.log(error);
+            ////console.log(error);
             this.validation = false;
           });
 
@@ -1446,8 +1429,8 @@ export class Profile{
         this.profileService.updateUserPersonalAddress(entrepriseId, name, streetNumber, street, zipCode, city, country, 'employeur')
           .then((data: any) => {
             if (!data || data.status == "failure") {
-              // console.log(data.error);
-              // console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
+              // //console.log(data.error);
+              // //console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
               this.validation = false;
               return;
             } else {
@@ -1473,9 +1456,9 @@ export class Profile{
         this.profileService.updateUserPersonalAddress(roleId, name, streetNumber, street, zipCode, city, country, 'jobyer')
           .then((data: any) => {
             if (!data || data.status == "failure") {
-              // console.log(data.error);
+              // //console.log(data.error);
 
-              // console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
+              // //console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
               return;
             } else {
               this.validation = false;
@@ -1539,8 +1522,8 @@ export class Profile{
         this.profileService.updateUserJobAddress(entrepriseId, name, streetNumber, street, zipCode, city, country, 'employeur')
           .then((data: any) => {
             if (!data || data.status == "failure") {
-              // console.log(data.error);
-              // console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
+              // //console.log(data.error);
+              // //console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
               this.validation = false;
               return;
             } else {
@@ -1565,9 +1548,9 @@ export class Profile{
         this.profileService.updateUserJobAddress(roleId, name, streetNumber, street, zipCode, city, country, 'jobyer')
           .then((data: any) => {
             if (!data || data.status == "failure") {
-              // console.log(data.error);
+              // //console.log(data.error);
 
-              // console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
+              // //console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
               return;
             } else {
               //id address not send by server
@@ -1608,8 +1591,8 @@ export class Profile{
         this.profileService.updateUserCorrespondenceAddress(entrepriseId, name, streetNumber, street, zipCode, city, country, 'employeur')
           .then((data: any) => {
             if (!data || data.status == "failure") {
-              // console.log(data.error);
-              // console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
+              // //console.log(data.error);
+              // //console.log("VitOnJob", "Erreur lors de l'enregistrement des données");
               this.validation = false;
               return;
             } else {

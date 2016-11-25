@@ -61,7 +61,8 @@ export class OfferList {
     var slotTemp = {
       date: this.toDateString(s.date),
       startHour: this.toHourString(s.startHour),
-      endHour: this.toHourString(s.endHour)
+      endHour: this.toHourString(s.endHour),
+      pause: s.pause
     };
     return slotTemp;
   }
@@ -91,12 +92,20 @@ export class OfferList {
     for (let i = 0; i < this.offerList.length; i++) {
       let offer = this.offerList[i];
 
+      //load offer epi
+      this.offersService.loadOfferEPI(this.offerList[i].idOffer,this.projectTarget).then((data:any)=>{
+        this.offerList[i].jobData.epi = [];
+        for(let j = 0 ; j < data.length ; j++)
+          this.offerList[i].jobData.epi.push(data[j].libelle);
+      });
+
       if(this.projectTarget == 'employer'){
         this.offersService.loadOfferPrerequisObligatoires(this.offerList[i].idOffer).then((data:any)=>{
           this.offerList[i].jobData.prerequisObligatoires = [];
           for(let j = 0 ; j < data.length ; j++)
             this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
         });
+
       }else if(this.projectTarget == 'jobyer'){
         this.offersService.loadOfferNecessaryDocuments(this.offerList[i].idOffer).then((data:any)=>{
           this.offerList[i].jobData.prerequisObligatoires = [];
@@ -114,7 +123,8 @@ export class OfferList {
         var slotTemp = {
           date: this.toDateString(offer.calendarData[i].date),
           startHour: this.toHourString(offer.calendarData[i].startHour),
-          endHour: this.toHourString(offer.calendarData[i].endHour)
+          endHour: this.toHourString(offer.calendarData[i].endHour),
+          pause: offer.calendarData[i].pause
         };
         offer.slots.push(slotTemp);
       }

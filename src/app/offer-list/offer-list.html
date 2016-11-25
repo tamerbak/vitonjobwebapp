@@ -12,7 +12,7 @@
 <div class="row">
   <div class="col-lg-6 col-xs-12">
     <button type="button" class="add-offer btn btn-danger btn-sm" (click)="goToNewOffer()">Créer une offre
-      {{currentUser.estEmployeur ? " d'emploi" : " de service"}}
+      {{projectTarget == 'employer' ? " d'emploi" : " de service"}}
     </button>
       <button class="btn btn-info btn-sm" role="button" (click)="sortOffers()">
           Trier les offres
@@ -52,15 +52,7 @@
               </label>
               <label class="labelS">Activer l'alerte</label>
             </div>
-            <!-- <div class="radio hidden-md-up col-xs-6 pull-right">
-              <label class="labelSwitch">Activer l'alerte</label>
-              <input type="radio" [checked]="item.rechercheAutomatique" (click)="autoSearchMode(item)">
 
-            </div> -->
-            <!-- <input [ngModel]="item.rechercheAutomatique" type="checkbox" (change)="autoSearchMode(item)">
-            <label>
-              <b>Activer l'alerte</b>
-            </label> -->
           </div>
           <div class="col-xs-5 col-md-12 price pull-right">
             <h4 class="" style="margin-bottom:0px"><strong>{{item.jobData.remuneration}} € </strong></h4>
@@ -70,7 +62,7 @@
           <div class="col-md-12 col-sm-12 col-xs-12">
             <b>Disponibilités</b>
             <ul>
-              <li *ngFor="let dispo of item.slots, let j = index"><b>{{dispo.date}} :</b> {{dispo.startHour}} - {{dispo.endHour}} </li>
+              <li *ngFor="let dispo of item.slots, let j = index" [hidden]="dispo.pause"><b>{{dispo.date}} :</b> {{dispo.startHour}} - {{dispo.endHour}} </li>
             </ul>
           </div>
         </div>
