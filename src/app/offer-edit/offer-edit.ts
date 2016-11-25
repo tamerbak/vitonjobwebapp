@@ -156,7 +156,7 @@ export class OfferEdit{
 
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
 
-    if (this.currentUser.estEmployeur && this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
+    if (this.projectTarget == "employer" && this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
       //  Load collective convention
       this.offersService.getConvention(this.currentUser.employer.entreprises[0].conventionCollective.id).then(c => {
         if (c)
