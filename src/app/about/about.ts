@@ -1,15 +1,15 @@
 import {Component, ViewEncapsulation} from "@angular/core";
-import {ROUTER_DIRECTIVES, Router} from "@angular/router";
-import {InProgressPage} from "../in-progress/in-progress";
+import {ROUTER_DIRECTIVES} from "@angular/router";
+
 declare var jQuery, require: any;
 @Component({
   selector: '[about]',
   template: require('./about.html'),
-  directives: [ROUTER_DIRECTIVES, InProgressPage],
+  directives: [ROUTER_DIRECTIVES],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./about.scss')]
 })
 export class About {
-  constructor(private router: Router) {
+  constructor() {
   }
 }
