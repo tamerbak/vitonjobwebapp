@@ -272,28 +272,24 @@
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
-          <label>Temps de travail (H)&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
-          <input type="text" name="workTimeHours" class="form-control"
-                 [(ngModel)]="contractData.workTimeHours" aria-describedby="temps" required/>
+          <label>Equipement de protection individuel</label>
+          <input type="text" name="epi" class="form-control" [(ngModel)]="contractData.equipements" aria-describedby="epi" />
           <small class="form-text text-muted"></small>
         </div>
 
-        <div class="col-xs-3">
-          <div class="form-group">
-            <label>Heure habituelle du début de travail&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
-            <datetime
-              id="usualSHour"
-              [datepicker]="false"
-              [timepicker]="{ showMeridian: false, minuteStep: 15 }"
-              [(ngModel)]="contractData.workStartHour"
-              required></datetime>
-            <small class="form-text text-muted"></small>
-          </div>
+        <div class="form-group">
+          <label>Horaire de mission &nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+          <select class="form-control"
+                  [(ngModel)]="contractData.isScheduleFixed">
+            <option value="true">Horaires fixes</option>
+            <option value="false">Horaires variables</option>
+          </select>
+          <small class="form-text text-muted"></small>
         </div>
 
-        <div class="col-xs-3 col-2">
+        <div class="col-xs-3 col-2" *ngIf="contractData.isScheduleFixed == 'true'">
           <div class="form-group">
-            <label>Heure habituelle de fin de travail&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+            <label>Heure de fin de travail&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
             <datetime
               id="usualEHour"
               [datepicker]="false"
@@ -326,11 +322,7 @@
             </label>
           </div>
         </div>
-        <div class="form-group">
-          <label>Equipement de protection individuel</label>
-          <input type="text" name="epi" class="form-control" [(ngModel)]="contractData.equipements" aria-describedby="epi" />
-          <small class="form-text text-muted"></small>
-        </div>
+
         <div class="form-group">
           <label>Equipement fourni par</label>
           <select class="form-control"
@@ -340,6 +332,20 @@
             <option value="Le salarié">Le salarié</option>
           </select>
         </div>
+
+        <div class="col-xs-3" *ngIf="contractData.isScheduleFixed == 'true'">
+          <div class="form-group">
+            <label>Heure de début de travail&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+            <datetime
+                    id="usualSHour"
+                    [datepicker]="false"
+                    [timepicker]="{ showMeridian: false, minuteStep: 15 }"
+                    [(ngModel)]="contractData.workStartHour"
+                    required></datetime>
+            <small class="form-text text-muted"></small>
+          </div>
+        </div>
+
       </div>
     </div>
     <div class="row">
