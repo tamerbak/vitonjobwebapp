@@ -102,7 +102,11 @@ export class RecruiterEdit {
     var contact: any = {};
     contact.firstname = this.firstname;
     contact.lastname = this.lastname;
-    contact.phone = "+" + this.index + "" + this.phone;
+    if(Utils.isEmpty(this.phone)){
+      contact.phone = "";
+    }else{
+      contact.phone = "+" + this.index + "" + this.phone;
+    }
     contact.email = this.email;
     contact.accountid = this.accountid;
     if(obj == 'save'){
@@ -204,6 +208,8 @@ export class RecruiterEdit {
         this.isPhoneNumValid = true;
       }
       this.phone = e.target.value;
+    }else{
+      this.isPhoneNumValid = true;
     }
   }
 
@@ -241,7 +247,7 @@ export class RecruiterEdit {
   }
 
   validatePhone(e) {
-    if (e.target.value.length == 9) {
+    if (e.target.value.length == 9 || e.target.value.length == 0) {
       this.isPhoneNumValid = true;
     } else {
       this.isPhoneNumValid = false;
@@ -267,14 +273,17 @@ export class RecruiterEdit {
    * @description validate the email format
    */
   showEmailError() {
-    if (this.email)
+    if (!Utils.isEmpty(this.email)) {
       return !(Utils.isEmailValid(this.email));
-    else
+    } else {
+      this.emailExist = false;
       return false;
+    }
   }
 
   isUpdateDisabled(){
-    return (!this.index || !this.phone || !this.isPhoneNumValid || this.phoneExist || (!this.firstname && !this.lastname) || !this.email || this.showEmailError() || this.emailExist);
+    return !(!Utils.isEmpty(this.firstname) && !Utils.isEmpty(this.lastname) && !this.phoneExist  && !this.emailExist && this.isPhoneNumValid && !this.showEmailError() &&
+    ( (!Utils.isEmpty(this.index) && !Utils.isEmpty(this.phone) )|| (!Utils.isEmpty(this.email) ) ));
   }
 
   addAlert(type, msg): void {

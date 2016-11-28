@@ -2,6 +2,7 @@ import {Component, ViewEncapsulation} from "@angular/core";
 import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {RecruiterService} from '../../providers/recruiter-service';
+import {Utils} from "../utils/utils";
 
 @Component({
   selector: '[recruiter-list]',
@@ -67,9 +68,11 @@ export class RecruiterList {
   }
 
   isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
+    return Utils.isEmpty(str);
   }
+
+  preventNull(str){
+    return Utils.preventNull(str);
+  }
+
 }
