@@ -340,7 +340,17 @@ export class Contract {
     this.getCategory();
 
     //transportMeans
-    this.transportMeans = ["Véhicule", "Transport en commun Zone 1", "Transport en commun Zone 2", "Transport en commun Zone 3", "Transport en commun Zone 4", "Transport en commun Zone 5", "Transport en commun toutes zones"]
+    this.transportMeans = [
+      "Véhicule",
+      "Transport en commun Zone 1 à 2",
+      "Transport en commun Zone 1 à 3",
+      "Transport en commun Zone 1 à 4",
+      "Transport en commun Zone 1 à 5",
+      "Transport en commun Zone 2 à 3",
+      "Transport en commun Zone 3 à 4",
+      "Transport en commun Zone 4 à 5",
+      "Transport en commun toutes zones"
+    ];
 
   }
 
@@ -449,7 +459,7 @@ export class Contract {
     this.offersService.loadOfferAdress(this.currentOffer.idOffer, "employeur").then((data:any)=>{
       this.workAdress = data;
     });
-    
+
     //
     //
     for(let i=1 ; i <calendar.length;i++){
@@ -493,7 +503,7 @@ export class Contract {
       debutSouplesse: null,
       finSouplesse: null,
       equipements: "",
-      interim: "Tempo'AIR",
+      interim: "HubJob",
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
       trialPeriod: trial,
