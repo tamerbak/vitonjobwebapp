@@ -31,6 +31,9 @@
           N° de téléphone
         </th>
         <th>
+          Email
+        </th>
+        <th>
         </th>
         <th>
         </th>
@@ -39,8 +42,9 @@
       <tbody>
       <tr *ngFor="let item of recruiterList, let i=index">
         <td class="text-align-right" width="100">{{i}}</td>
-        <td class="text-align-right" width="100">{{item.firstname}} {{item.lastname}}</td>
-        <td class="text-align-right" width="100">{{item.phone}}</td>
+        <td class="text-align-right" width="100">{{preventNull(item.firstname)}} {{preventNull(item.lastname)}}</td>
+        <td class="text-align-right" width="100">{{preventNull(item.phone)}}</td>
+        <td class="text-align-right" width="100">{{preventNull(item.email)}}</td>
         <td class="text-align-right" width="100"><button class="btn btn-secondary mb-xs" (click)="goToEditRecruiter(item)"><i class="glyphicon glyphicon-pencil text-success"></i></button></td>
         <td class="text-align-right" width="100"><button class="btn btn-secondary mb-xs" (click)="deleteRecruiter(item)"><i class="glyphicon glyphicon-trash text-danger"></i></button></td>
       </tr>

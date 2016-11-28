@@ -400,7 +400,7 @@ export class LoginPage{
       return (!this.index || !this.isIndexValid || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.password2 || this.showPassword2Error() || !this.email || this.showEmailError() || this.emailExist || !this.role)
     } else {
       //connection
-      return (!this.index || !this.isIndexValid || !this.phone || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.role || !this.isRoleTelConform || !this.isRoleEmailConform)
+      return (!this.index || !this.isIndexValid || (!this.phone && this.isConnByTel) || !this.isPhoneNumValid || !this.password1 || this.showPassword1Error() || !this.role || !this.isRoleTelConform || !this.isRoleEmailConform)
     }
   }
 
