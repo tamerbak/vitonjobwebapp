@@ -6,6 +6,8 @@ import {GOOGLE_MAPS_DIRECTIVES} from "angular2-google-maps/core";
 import {RecruitButton} from "../components/recruit-button/recruit-button";
 import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
 import {ModalProfile} from "../modal-profile/modal-profile";
+import {AlertComponent} from "ng2-bootstrap/components/alert";
+import {CandidatureService} from "../../providers/candidature-service";
 
 declare var jQuery: any;
 
@@ -13,8 +15,8 @@ declare var jQuery: any;
   selector: '[search-details]',
   template: require('./search-details.html'),
   styles: [require('./search-details.scss')],
-  directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, RecruitButton, ModalNotificationContract, ModalProfile],
-  providers: [OffersService]
+  directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, RecruitButton, ModalNotificationContract, ModalProfile, AlertComponent],
+  providers: [OffersService, CandidatureService]
 })
 
 export class SearchDetails{
@@ -34,10 +36,14 @@ export class SearchDetails{
   isRecruteur: boolean = false;
 
   fromPage: string = "recruitment";
+  jobyerInterestLabel: string;
+  alerts: Array<Object>;
+  jobyerInterested: boolean;
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
-              private router: Router) {
+              private router: Router,
+              private candidatureService: CandidatureService) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
@@ -78,6 +84,10 @@ export class SearchDetails{
       if (data)
         this.qualities = data;
     });
+
+    if(this.projectTarget == 'jobyer') {
+      this.setCandidatureButtonLabel();
+    }
   }
 
   onRecruite(params) {
@@ -95,6 +105,44 @@ export class SearchDetails{
         jQuery('#modal-notification-contract').modal('show');
       })
     }
+  }
+
+  setCandidatureButtonLabel(){
+    this.candidatureService.getCandidatureOffre(this.result.idOffre, this.currentUser.jobyer.id).then((data: any) => {
+      if(data && data.data && data.data.length  == 1){
+        this.jobyerInterested = true;
+        this.jobyerInterestLabel = "Cette offre ne m'intéresse plus";
+      }else{
+        this.jobyerInterested = false;
+        this.jobyerInterestLabel = "Cette offre m'intéresse";
+      }
+    });
+  }
+
+  switchJobyerInterest(){
+    if(this.jobyerInterested){
+      this.candidatureService.deleteCandidatureOffre(this.result.idOffre, this.currentUser.jobyer.id).then((data: any) => {
+        if(!data || data.status != 'success'){
+          this.addAlert("danger", "Erreur lors de la sauvegarde des données.");
+        }else{
+          this.jobyerInterestLabel = "Cette offre ne m'intéresse plus";
+          this.jobyerInterested = false;
+        }
+      });
+    }else{
+      this.candidatureService.setCandidatureOffre(this.result.idOffre, this.currentUser.jobyer.id).then((data: any) => {
+        if(!data || data.status != 'success'){
+          this.addAlert("danger", "Erreur lors de la sauvegarde des données.");
+        }else{
+          this.jobyerInterestLabel = "Cette offre m'intéresse";
+          this.jobyerInterested = true;
+        }
+      });
+    }
+  }
+
+  addAlert(type, msg): void {
+    this.alerts = [{type: type, msg: msg}];
   }
 
   isEmpty(str) {

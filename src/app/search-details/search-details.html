@@ -14,8 +14,15 @@
 
 <div class="row">
   <div class="col-lg-8 col-xl-offset-2 col-xs-12">
+    <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
+      <div [innerHTML]="alert.msg"></div>
+    </alert>
     <section widget class="widget">
       <recruit-button [jobyer]="result" (onRecruite)="onRecruite($event)" *ngIf="projectTarget == 'employer' && !isRecruteur" class="top-element"></recruit-button>
+
+      <button type="submit" class="btn btn-secondary btn-sm top-element" (click)="switchJobyerInterest()" *ngIf="result.accepteCandidature && projectTarget == 'jobyer' && currentUser" style="background-color: #40aea9; color: white; float: right;">
+        {{jobyerInterestLabel}}
+      </button>
       <div class="widget-body">
         <div class="post-user mt-n-xs">
 					<span class="thumb pull-left mr">
