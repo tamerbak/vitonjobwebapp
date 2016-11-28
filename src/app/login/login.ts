@@ -240,13 +240,21 @@ export class LoginPage{
           return;
         }
         this.isRoleTelConform = true;
-        if (!this.isRecruteur) {
+        if ((!data || data.data.length == 0)) {
+          this.showEmailField = true;
+          this.email = "";
+          this.libelleButton = "S'inscrire";
+          this.isNewRecruteur = false;
+          return;
+        }else{
+          this.isRecruteur = (data.data[0]["role"] == "recruteur" ? true : false);
+        }
+        if (!this.isRecruteur || this.role == "jobyer") {
           if ((!data || data.data.length == 0)) {
             this.showEmailField = true;
             this.email = "";
             this.libelleButton = "S'inscrire";
             this.isNewRecruteur = false;
-
           } else {
             this.email = data.data[0]["email"];
             this.libelleButton = "Se connecter";
@@ -262,6 +270,9 @@ export class LoginPage{
           }
           if (data.data[0]["role"] == "recruteur") {
             this.email = data.data[0]["email"];
+            this.libelleButton = "Se connecter";
+            this.showEmailField = false;
+            this.isRoleEmailConform = true;
           } else {
             this.isRoleTelConform = false;
             return;
@@ -313,10 +324,24 @@ export class LoginPage{
         this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
         return;
       }
-
+      if ((!data || data.data.length == 0)) {
+        if(this.isConnByEmail){
+          this.isRoleEmailConform = false;
+          return;
+        }else{
+          this.isRoleEmailConform = true;
+          this.emailExist = false;
+        }
+      }else{
+        this.isRecruteur = (data.data[0]["role"] == "recruteur" ? true : false);
+      }
       if(!this.isRecruteur) {
         if (data && data.data.length != 0) {
-          this.emailExist = true;
+          if(this.isConnByEmail){
+            this.isRoleEmailConform = false;
+          }else{
+            this.emailExist = true;
+          }
         } else {
           this.emailExist = false;
         }
@@ -341,8 +366,6 @@ export class LoginPage{
    * @description validate the email format
    */
   showEmailError() {
-    if (this.isRecruteur)
-      return false;
     if (this.email)
       return !(this.validationDataService.checkEmail(this.email));
     else
@@ -384,11 +407,7 @@ export class LoginPage{
 
   watchRole(e) {
     this.role = e.target.value;
-    if (this.role == "recruiter") {
-      this.isRecruteur = true;
-    } else {
-      this.isRecruteur = false;
-    }
+
     this.phone = null;
     this.email ="";
     this.password1 = "";
