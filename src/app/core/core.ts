@@ -94,7 +94,6 @@ export class Core {
       return o;
     };
     systemService.checkVersion(this.version).then((todate:boolean)=>{
-      debugger;
       if(todate){
         console.log('SYSTEM UP TO DATE');
       } else {
