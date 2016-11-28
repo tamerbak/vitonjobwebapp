@@ -736,7 +736,7 @@
 
   <!-- Langues -->
   <div [hidden]="!showForm" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
-    <section class="widget" [hidden]="isRecruiter">
+    <section class="widget" [hidden]="isRecruiter || isEmployer">
       <div class="widget-body">
         <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
           <fieldset>

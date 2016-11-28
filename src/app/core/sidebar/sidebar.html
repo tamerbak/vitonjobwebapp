@@ -71,6 +71,14 @@
     </li>
 
     <li *ngIf="currentUser && currentUser.estEmployeur">
+      <a [routerLink]=" ['/advert/list'] ">
+        <span class="icon">
+            <i class="glyphicon glyphicon-globe"></i>
+          </span>Annonces
+      </a>
+    </li>
+
+    <li *ngIf="currentUser && currentUser.estEmployeur">
       <a [routerLink]=" ['/pendingContracts'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-th-list"></i>
