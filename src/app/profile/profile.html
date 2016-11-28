@@ -21,7 +21,7 @@
           </div>
           <div class="btn-toolbar">
             <button
-              [disabled]="showForm" class="btn btn-outline btn-sm pull-right" data-toggle="modal"
+              [disabled]="showForm" [hidden]="isRecruiter" class="btn btn-outline btn-sm pull-right" data-toggle="modal"
               data-target="#modal-bank-account"
             >
               <i class="fa fa-credit-card mr-xs"></i>
@@ -586,7 +586,7 @@
 
   </div>
 
-  <div [hidden]="!showForm || isEmployer" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
+  <div [hidden]="!showForm || isEmployer || isRecruiter" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
     <section class="widget">
       <div class="widget-body">
         <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
@@ -677,7 +677,7 @@
   </div>
 
   <!-- Qualities -->
-  <div [hidden]="!showForm" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
+  <div [hidden]="!showForm || isRecruiter" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
     <section class="widget">
       <div class="widget-body">
         <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
@@ -736,7 +736,7 @@
 
   <!-- Langues -->
   <div [hidden]="!showForm" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
-    <section class="widget">
+    <section class="widget" [hidden]="isRecruiter">
       <div class="widget-body">
         <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
           <fieldset>

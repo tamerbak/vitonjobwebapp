@@ -134,6 +134,7 @@ export class ContractService {
     this.configuration = Configs.setConfigs(projectTarget);
     var dt = new Date();
     let epi = (contract.epi?'OUI':'NON');
+    let isScheduleFixed = (contract.isScheduleFixed == 'true' ? 'OUI' : 'NON');
     var sql = "INSERT INTO user_contrat (" +
       " date_de_debut," +
       " date_de_fin," +
@@ -146,7 +147,7 @@ export class ContractService {
       " numero," +
       " periode_essai," +
       " tarif_heure," +
-      " nombre_heures," +
+      " horaires_fixes," +
       " fk_user_entreprise," +
       " fk_user_jobyer," +
       " lien_jobyer," +
@@ -186,7 +187,7 @@ export class ContractService {
       + "'" + Utils.sqlfyText(contract.num) + "',"
       + "'" + contract.trialPeriod + "',"
       + "'" + contract.baseSalary + "',"
-      + "'" + contract.workTimeHours + "',"
+      + "'" + isScheduleFixed + "',"
       + "'" + employerEntrepriseId + "',"
       + "'" + jobyerId + "',"
       + "'" + Utils.sqlfyText(yousignJobyerLink) + "',"

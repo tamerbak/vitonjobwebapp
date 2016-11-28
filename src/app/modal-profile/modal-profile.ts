@@ -574,9 +574,9 @@ export class ModalProfile{
             this.validation = false;
             return;
           });
-      }
+      }else {
 
-      if (this.isEmployer) {
+        if (this.isEmployer) {
           var companyname = (!this.companyname ? this.currentUser.employer.entreprises[0].nom : this.companyname);
           var ape = this.ape ? this.ape.substring(0, 5).toUpperCase() : "";
           var entrepriseId = this.currentUser.employer.entreprises[0].id;
@@ -652,48 +652,49 @@ export class ModalProfile{
               this.validation = false;
             });
         } else {
-        this.profileService.updateJobyerCivilityFirstTime(title, lastname, firstname, userRoleId).then((res: any) => {
-          //case of authentication failure : server unavailable or connection problem
-          if (!res || res.status == "failure") {
-            Messenger().post({
-              message: 'Serveur non disponible ou problème de connexion',
-              type: 'error',
-              showCloseButton: true
-            });
-            this.validation = false;
-            return;
-          } else {
-            // data saved
-            this.currentUser.titre = this.title;
-            this.currentUser.nom = this.lastname;
-            this.currentUser.prenom = this.firstname;
-            this.currentUser.newAccount = false;
-            this.sharedService.setCurrentUser(this.currentUser);
-            this.getUserFullname();
+          this.profileService.updateJobyerCivilityFirstTime(title, lastname, firstname, userRoleId).then((res: any) => {
+            //case of authentication failure : server unavailable or connection problem
+            if (!res || res.status == "failure") {
+              Messenger().post({
+                message: 'Serveur non disponible ou problème de connexion',
+                type: 'error',
+                showCloseButton: true
+              });
+              this.validation = false;
+              return;
+            } else {
+              // data saved
+              this.currentUser.titre = this.title;
+              this.currentUser.nom = this.lastname;
+              this.currentUser.prenom = this.firstname;
+              this.currentUser.newAccount = false;
+              this.sharedService.setCurrentUser(this.currentUser);
+              this.getUserFullname();
 
-            this.validation = false;
-            if (this.isPersonalAddressModified()) {
-              this.updatePersonalAddress();
-            }
-            if (this.isJobAddressModified()) {
-              this.updateJobAddress();
-            }
-            Messenger().post({
-              message: 'Vos données ont été bien enregistrées',
-              type: 'success',
-              showCloseButton: true
-            });
+              this.validation = false;
+              if (this.isPersonalAddressModified()) {
+                this.updatePersonalAddress();
+              }
+              if (this.isJobAddressModified()) {
+                this.updateJobAddress();
+              }
+              Messenger().post({
+                message: 'Vos données ont été bien enregistrées',
+                type: 'success',
+                showCloseButton: true
+              });
 
-            //redirecting to offers page if new User
-            if (this.isNewUser) {
-              this.router.navigate(['home']);
+              //redirecting to offers page if new User
+              if (this.isNewUser) {
+                this.router.navigate(['home']);
+              }
+              this.close();
             }
-            this.close();
-          }
-        })
-          .catch((error: any) => {
-            this.validation = false;
-          });
+          })
+            .catch((error: any) => {
+              this.validation = false;
+            });
+        }
       }
     }
   }
