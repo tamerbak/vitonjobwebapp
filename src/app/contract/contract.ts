@@ -340,7 +340,17 @@ export class Contract {
     this.getCategory();
 
     //transportMeans
-    this.transportMeans = ["Véhicule", "Transport en commun Zone 1", "Transport en commun Zone 2", "Transport en commun Zone 3", "Transport en commun Zone 4", "Transport en commun Zone 5", "Transport en commun toutes zones"]
+    this.transportMeans = [
+      "Véhicule",
+      "Transport en commun Zone 1 à 2",
+      "Transport en commun Zone 1 à 3",
+      "Transport en commun Zone 1 à 4",
+      "Transport en commun Zone 1 à 5",
+      "Transport en commun Zone 2 à 3",
+      "Transport en commun Zone 3 à 4",
+      "Transport en commun Zone 4 à 5",
+      "Transport en commun toutes zones"
+    ];
 
   }
 
