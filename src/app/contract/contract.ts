@@ -308,7 +308,7 @@ export class Contract {
       primes: 0,
       headOffice: "",
       missionContent: "",
-      category:"",
+      category: 'Employé',
       sector: "",
       companyName: '',
       titreTransport: 'NON',
@@ -449,7 +449,7 @@ export class Contract {
     this.offersService.loadOfferAdress(this.currentOffer.idOffer, "employeur").then((data:any)=>{
       this.workAdress = data;
     });
-    
+
     //
     //
     for(let i=1 ; i <calendar.length;i++){
@@ -525,7 +525,7 @@ export class Contract {
       primes: 0,
       headOffice: this.hqAdress,
       missionContent: "",
-      category: '',
+      category: 'Employé',
       sector: this.currentOffer.jobData.sector,
       companyName: this.companyName,
       workAdress: this.workAdress,
