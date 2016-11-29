@@ -287,11 +287,11 @@ export class Contract {
       justification: "",
       qualification: "",
       characteristics: "",
-      workTimeHours: 0,
+      isScheduleFixed: "true",
       workTimeVariable: 0,
       usualWorkTimeHours: "8H00/17H00 variables",
-      workStartHour: this.initWorkStartHour(),
-      workEndHour: this.initWorkEndHour(),
+      workStartHour: null,
+      workEndHour: null,
       workHourVariable: "",
       postRisks: "",
       medicalSurv: "",
@@ -340,7 +340,17 @@ export class Contract {
     this.getCategory();
 
     //transportMeans
-    this.transportMeans = ["Véhicule", "Transport en commun Zone 1", "Transport en commun Zone 2", "Transport en commun Zone 3", "Transport en commun Zone 4", "Transport en commun Zone 5", "Transport en commun toutes zones"]
+    this.transportMeans = [
+      "Véhicule",
+      "Transport en commun Zone 1 à 2",
+      "Transport en commun Zone 1 à 3",
+      "Transport en commun Zone 1 à 4",
+      "Transport en commun Zone 1 à 5",
+      "Transport en commun Zone 2 à 3",
+      "Transport en commun Zone 3 à 4",
+      "Transport en commun Zone 4 à 5",
+      "Transport en commun toutes zones"
+    ];
 
   }
 
@@ -493,7 +503,7 @@ export class Contract {
       debutSouplesse: null,
       finSouplesse: null,
       equipements: "",
-      interim: "Tempo'AIR",
+      interim: "HubJob",
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
       trialPeriod: trial,
@@ -503,11 +513,12 @@ export class Contract {
       justification: "",
       qualification: this.currentOffer.title,
       characteristics: "",
-      workTimeHours: this.calculateOfferHours(),
+      //workTimeHours: this.calculateOfferHours(),
+      isScheduleFixed: "true",
       workTimeVariable: 0,
       usualWorkTimeHours: "8H00/17H00 variables",
-      workStartHour: this.initWorkStartHour(),
-      workEndHour: this.initWorkEndHour(),
+      workStartHour: null,
+      workEndHour: null,
       workHourVariable: "",
       postRisks: "",
       medicalSurv: "",

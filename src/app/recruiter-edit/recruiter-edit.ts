@@ -7,8 +7,10 @@ import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from "@angular/router
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {Utils} from "../utils/utils";
 import {SmsService} from "../../providers/sms-service";
+import {EmailService} from "../../providers/email-service";
+import {isEmpty} from "rxjs/operator/isEmpty";
 
-declare var Messenger:any;
+declare var Messenger: any;
 
 @Component({
   selector: '[recruiter-edit]',
@@ -16,10 +18,10 @@ declare var Messenger:any;
   encapsulation: ViewEncapsulation.None,
   styles: [require('./recruiter-edit.scss')],
   directives: [ROUTER_DIRECTIVES, AlertComponent],
-  providers: [RecruiterService, LoadListService, AuthenticationService, SmsService]
+  providers: [RecruiterService, LoadListService, AuthenticationService, SmsService, EmailService]
 })
 
-export class RecruiterEdit {
+export class RecruiterEdit{
   projectTarget: string;
   currentUser: any;
   alerts: Array<Object>;
@@ -40,6 +42,7 @@ export class RecruiterEdit {
   constructor(private sharedService: SharedService,
               public recruiterService: RecruiterService,
               private smsService: SmsService,
+              private emailService: EmailService,
               private loadListService: LoadListService,
               private authService: AuthenticationService,
               private router: Router,
@@ -60,10 +63,10 @@ export class RecruiterEdit {
       this.obj = params['obj'];
     });
 
-    if(this.obj == "detail") {
+    if (this.obj == "detail") {
       this.recruiter = this.sharedService.getCurrentRecruiter();
       this.initializeForm(this.recruiter);
-    }else{
+    } else {
       this.index = "33";
     }
 
@@ -73,7 +76,7 @@ export class RecruiterEdit {
     });
   }
 
-  initializeForm(contact){
+  initializeForm(contact) {
     this.firstname = contact.firstname;
     this.lastname = contact.lastname;
     this.index = this.splitPhoneNumber(contact.phone)[0];
@@ -82,62 +85,67 @@ export class RecruiterEdit {
     this.accountid = contact.accountid;
   }
 
-  splitPhoneNumber(num){
+  splitPhoneNumber(num) {
     var len = num.length;
     var index = num.substring(0, len - 9);
-    if(index.startsWith("00")){
+    if (index.startsWith("00")) {
       index = index.substring(2, len - 9);
     }
-    if(index.startsWith("+")){
+    if (index.startsWith("+")) {
       index = index.replace("+", "");
     }
-    if(index == 0){
+    if (index == 0) {
       index = "";
     }
     var phone = num.replace(/\s/g, "").substring(len - 9, len);
     return [index, phone];
   }
 
-  saveContact(obj){
+  saveContact(obj) {
     var contact: any = {};
     contact.firstname = this.firstname;
     contact.lastname = this.lastname;
-    contact.phone = "+" + this.index + "" + this.phone;
+    if (Utils.isEmpty(this.phone)) {
+      contact.phone = "";
+    } else {
+      contact.phone = "+" + this.index + "" + this.phone;
+    }
     contact.email = this.email;
     contact.accountid = this.accountid;
-    if(obj == 'save'){
-      if(this.obj == "detail"){
+    if (obj == 'save') {
+      if (this.obj == "detail") {
         //if validate button was clicked and an existant recruiter was modified
         this.saveExistantContact(contact, this.recruiter);
-      }else{
+      } else {
         //if validate button was clicked, and a new recruiter was entered
         this.saveNewContact(contact, this.recruiter);
       }
-    }else{
+    } else {
       //if the send notification button was clicked
       var tel = contact.phone;
+      var email = contact.email
       //save existant contact
-      if(this.recruiter){
+      if (this.recruiter) {
         this.recruiterService.updateRecruiter(contact, this.currentUser.employer.id).then((data: any) => {
           let recruiterList = this.sharedService.getRecruiterList();
           this.recruiterService.updateRecruiterListInLocal(recruiterList, [contact]).then((data: any) => {
             this.sharedService.setRecruiterList(data);
             this.router.navigate(['recruiter/list']);
           });
-          this.sendNotification(contact.accountid, tel);
+          this.sendNotification(contact.accountid, tel, email);
         });
         return;
       }
       //save new contact
-      if(!this.recruiter){
-        if(contact && !this.recruiter){
+      if (!this.recruiter) {
+        if (contact && !this.recruiter) {
           this.recruiterService.insertRecruiters([contact], this.currentUser.employer.id, 'manual').then((data: any) => {
             let recruiterList = this.sharedService.getRecruiterList();
             this.recruiterService.updateRecruiterListInLocal(recruiterList, data).then((data: any) => {
               this.sharedService.setRecruiterList(data);
               this.router.navigate(['recruiter/list']);
             });
-            this.sendNotification(data[0].accountid, tel);
+            this.sendNotification(data[0].accountid, tel, email);
           });
           return;
         }
@@ -145,20 +153,34 @@ export class RecruiterEdit {
     }
   }
 
-  sendNotification(accountid, tel){
+  sendNotification(accountid, tel, email) {
     this.recruiterService.generatePasswd(accountid).then((passwd) => {
       let msg = this.currentUser.titre + " " + this.currentUser.nom + " " + this.currentUser.prenom + " vous invite à télécharger et installer l'application Vit-On-Job Employeur. http://www.vitonjob.com/telecharger . Votre mot de passe est " + passwd;
-      this.smsService.sendSms(tel, msg).then((data: any) => {
-        if (!data || data.status != 200){
-          this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
-          return;
-        }
-      });
+
+      if (!this.isEmpty(tel)) {
+        this.smsService.sendSms(tel, msg).then((data: any) => {
+          if (!data || data.status != 200) {
+            this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
+            return;
+          }
+        });
+      }
+
+      msg = this.currentUser.titre + " " + this.currentUser.nom + " " + this.currentUser.prenom + " vous invite à télécharger et installer l'application Vit-On-Job Employeur. http://www.vitonjob.com/telecharger , ou de vous rendre sur webapp.vitonjob.com . Votre mot de passe est " + passwd;
+      if (!this.isEmpty(email)) {
+        let title = 'Votre compte recruteur sur Vit-On-Job a été créé';
+        this.emailService.sendEmail(email, title, msg).then((data: any) => {
+          if (!data || data.status != 200) {
+            this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
+            return;
+          }
+        });
+      }
     });
   }
 
-  saveNewContact(recruiter, contact){
-    if(recruiter && !contact){
+  saveNewContact(recruiter, contact) {
+    if (recruiter && !contact) {
       this.recruiterService.insertRecruiters([recruiter], this.currentUser.employer.id, 'manual').then((data) => {
         let recruiterList = this.sharedService.getRecruiterList();
         this.recruiterService.updateRecruiterListInLocal(recruiterList, data).then((result: any) => {
@@ -170,8 +192,8 @@ export class RecruiterEdit {
     }
   }
 
-  saveExistantContact(recruiter, contact){
-    if(recruiter && contact){
+  saveExistantContact(recruiter, contact) {
+    if (recruiter && contact) {
       this.recruiterService.updateRecruiter(recruiter, this.currentUser.employer.id).then((data) => {
         let recruiterList = this.sharedService.getRecruiterList();
         this.recruiterService.updateRecruiterListInLocal(recruiterList, [recruiter]).then((data: any) => {
@@ -204,10 +226,12 @@ export class RecruiterEdit {
         this.isPhoneNumValid = true;
       }
       this.phone = e.target.value;
+    } else {
+      this.isPhoneNumValid = true;
     }
   }
 
-  doesPhoneExist(phone){
+  doesPhoneExist(phone) {
     if (this.isPhoneValid(phone)) {
       var tel = "+" + this.index + phone;
       this.authService.getUserByPhone(tel, this.projectTarget).then((data: any) => {
@@ -241,7 +265,7 @@ export class RecruiterEdit {
   }
 
   validatePhone(e) {
-    if (e.target.value.length == 9) {
+    if (e.target.value.length == 9 || e.target.value.length == 0) {
       this.isPhoneNumValid = true;
     } else {
       this.isPhoneNumValid = false;
@@ -267,14 +291,17 @@ export class RecruiterEdit {
    * @description validate the email format
    */
   showEmailError() {
-    if (this.email)
+    if (!Utils.isEmpty(this.email)) {
       return !(Utils.isEmailValid(this.email));
-    else
+    } else {
+      this.emailExist = false;
       return false;
+    }
   }
 
-  isUpdateDisabled(){
-    return (!this.index || !this.phone || !this.isPhoneNumValid || this.phoneExist || (!this.firstname && !this.lastname) || !this.email || this.showEmailError() || this.emailExist);
+  isUpdateDisabled() {
+    return !(!Utils.isEmpty(this.firstname) && !Utils.isEmpty(this.lastname) && !this.phoneExist && !this.emailExist && this.isPhoneNumValid && !this.showEmailError() &&
+    ( (!Utils.isEmpty(this.index) && !Utils.isEmpty(this.phone) ) || (!Utils.isEmpty(this.email) ) ));
   }
 
   addAlert(type, msg): void {
@@ -286,7 +313,7 @@ export class RecruiterEdit {
   }
 
   ngOnDestroy(): void {
-    if(this.obj == "detail")
+    if (this.obj == "detail")
       this.sharedService.setCurrentRecruiter(null);
   }
 }

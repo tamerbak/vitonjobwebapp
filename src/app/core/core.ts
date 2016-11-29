@@ -6,6 +6,8 @@ import {Navbar} from "./navbar/navbar";
 import {ConfigService} from "./config";
 import {AppSidebar} from './app-sidebar/app-sidebar';
 import {ModalConfirm} from "../modal-confirm/modal-confirm";
+import {RuntimeCompiler} from "@angular/compiler";
+import {SystemService} from "../../providers/system.service";
 
 declare var Raphael: any;
 declare var jQuery: any;
@@ -22,7 +24,7 @@ export const REDIRECTTO: string = "/home";
     '[class.app]': 'true',
     id: 'app'
   },
-  providers: [FORM_PROVIDERS],
+  providers: [FORM_PROVIDERS, SystemService],
   directives: [Sidebar, Navbar, AppSidebar, ROUTER_DIRECTIVES,ModalConfirm],
   template: require('./core.html')
 })
@@ -33,10 +35,13 @@ export class Core {
   el: ElementRef;
   router: Router;
   chatOpened: boolean;
+  version: string="0.4.6";
 
   constructor(config: ConfigService,
               el: ElementRef,
-              router: Router) {
+              router: Router,
+              systemService : SystemService,
+              private _runtimeCompiler: RuntimeCompiler) {
     Raphael.prototype.safari = function (): any {
       return;
     };
@@ -88,6 +93,15 @@ export class Core {
 
       return o;
     };
+    systemService.checkVersion(this.version).then((todate:boolean)=>{
+      if(todate){
+        console.log('SYSTEM UP TO DATE');
+      } else {
+        console.log('SYSTEM OUT OF DATE');
+        console.log('UPDATING .........');
+        this.refreshCache();
+      }
+    });
   }
 
   toggleSidebarListener(state): void {
@@ -300,5 +314,10 @@ export class Core {
 
       jQuery(this).closest('li').removeClass('open');
     });
+  }
+
+  refreshCache() {
+    this._runtimeCompiler.clearCache();
+    location.reload();
   }
 }

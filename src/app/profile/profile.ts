@@ -282,7 +282,7 @@ export class Profile{
       startHour : 0,
       endHour : 0
     };
-    if(!this.isEmployer)
+    if(!this.isEmployer && !this.isRecruiter)
       this.initDisponibilites();
   }
 
@@ -300,9 +300,9 @@ export class Profile{
     this.isEmployer = this.currentUser.estEmployeur;
     this.isRecruiter = this.currentUser.estRecruteur;
     this.accountId = this.currentUser.id;
-    this.userRoleId = this.currentUser.estEmployeur ? this.currentUser.employer.id : this.currentUser.jobyer.id;
+    this.userRoleId = this.projectTarget == "employer" ? this.currentUser.employer.id : this.currentUser.jobyer.id;
 
-    if (this.currentUser.estEmployeur) {
+    if (this.projectTarget == 'employer') {
       let id = this.currentUser.employer.entreprises[0].id;
       this.profileService.getEmployerOfferStats(id).then((data: any) => {
         this.offerStats = data;
@@ -312,19 +312,21 @@ export class Profile{
       });
     }
 
-    //get user qualities
-    let id = this.currentUser.estEmployeur ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id;
-    this.profileService.getUserQualities(id, this.projectTarget).then((data: any) => {
-      if (data) {
-        this.savedQualities = data;
-      }
-    });
+    if(!this.isRecruiter) {
+      //get user qualities
+      let id = this.currentUser.estEmployeur ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id;
+      this.profileService.getUserQualities(id, this.projectTarget).then((data: any) => {
+        if (data) {
+          this.savedQualities = data;
+        }
+      });
 
-    this.profileService.getUserLanguages(id, this.projectTarget).then((data: any) => {
-      if (data) {
-        this.savedLanguages = data;
-      }
-    });
+      this.profileService.getUserLanguages(id, this.projectTarget).then((data: any) => {
+        if (data) {
+          this.savedLanguages = data;
+        }
+      });
+    }
   }
 
   /**

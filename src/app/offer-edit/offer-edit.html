@@ -243,7 +243,7 @@
         </div>
         <div class="form-group row required">
           <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-            {{ currentUser.estEmployeur ? 'Adresse de la mission' : 'Adresse de départ vers le lieu de travail' }}
+            {{ projectTarget == 'employer' ? 'Adresse de la mission' : 'Adresse de départ vers le lieu de travail' }}
           </label>
           <div class="col-md-7 col-xs-12">
             <input id="autocompleteOfferAdress" type="text" class="form-control" placeholder="Saisissez l'adresse de la mission" (keyup)="watchOfferAddress($event)"
@@ -315,12 +315,12 @@
       </header>
       <div class="widget-body">
       </div>
-      <fieldset *ngIf="currentUser.estEmployeur">
+      <fieldset *ngIf="projectTarget == 'employer'">
         <legend><strong>Formations et habilitations</strong></legend>
         <div class="container-fluid">
           <div class="row">
             <div class="col-xs-10">
-              <input *ngIf="currentUser.estEmployeur" type="hidden" class="select2 prerequis-select form-control" name="prerequis"
+              <input *ngIf="projectTarget == 'employer'" type="hidden" class="select2 prerequis-select form-control" name="prerequis"
                      placeholder="Formations et habilitations" [(ngModel)]="prerequisOb" />
             </div>
             <div class="col-xs-2">
@@ -348,12 +348,12 @@
 
       </fieldset>
 
-      <fieldset *ngIf="currentUser.estEmployeur">
+      <fieldset *ngIf="projectTarget == 'employer'">
         <legend><strong>Equipement de protection individuel</strong></legend>
         <div class="container-fluid">
           <div class="row">
             <div class="col-xs-10">
-              <input *ngIf="currentUser.estEmployeur" type="hidden" class="select2 epi-select form-control" name="EPI"
+              <input *ngIf="projectTarget == 'employer'" type="hidden" class="select2 epi-select form-control" name="EPI"
                      placeholder="Equipement de protection individuel" [(ngModel)]="epi" />
 
             </div>
@@ -508,7 +508,7 @@
         <!-- Qualities -->
         <div class="form-group row">
           <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-            Mon {{ currentUser.estEmployeur ? 'jobyer' : 'employeur' }} idéal
+            Mon {{ projectTarget == 'employer' ? 'jobyer' : 'employeur' }} idéal
           </label>
 
           <div class="col-md-8 col-xs-12">
@@ -651,7 +651,7 @@
                 </div>
 
                 <div class="col-lg-6 col-md-6 col-xs-12">
-                  <button type="submit" class="btn btn-primary fwidth" (click)="showQuote()" *ngIf="currentUser.estEmployeur">
+                  <button type="submit" class="btn btn-primary fwidth" (click)="showQuote()" *ngIf="projectTarget == 'employer'">
                     Enregistrer et consulter le devis
                   </button>
                 </div>

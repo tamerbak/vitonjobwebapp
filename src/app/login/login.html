@@ -37,14 +37,10 @@
                   <label for="radio2" class="labelRadio">
                     Jobyer
                   </label>
-                  <input type="radio" name="radio1" id="radio3" value="recruiter" (click)="watchRole($event)">
-                  <label for="radio3" class="labelRadio">
-                    Recruteur
-                  </label>
                 </div>
               </div>
 
-              <div class="form-group row" *ngIf="isRecruteur">
+              <div class="form-group row" *ngIf="role != 'jobyer'">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">Je me connecte avec mon</label>
                 <div class="abc-radio">
                   <input type="radio" name="typeConnRadio" id="telRadio" value="tel" (click)="watchTypeConnection($event)" checked>
@@ -58,7 +54,7 @@
                 </div>
               </div>
 
-              <div class="form-group row" [hidden]="isRecruteur && isConnByEmail">
+              <div class="form-group row" [hidden]="role != 'jobyer' && isConnByEmail">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">Téléphone</label>
                 <div class="col-md-4 col-xs-6">
                   <!--<div class="input-group">
@@ -91,7 +87,7 @@
                   </ul>
                 </div>
               </div>
-              <div class="form-group row" *ngIf="showEmailField || (isRecruteur && isConnByEmail)">
+              <div class="form-group row" *ngIf="showEmailField || (role != 'jobyer' && isConnByEmail)">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">Email</label>
                 <div class="col-md-8 col-xs-12">
                   <input [(ngModel)]="email" class="form-control" type="email" (change)="isEmailExist($event)">
