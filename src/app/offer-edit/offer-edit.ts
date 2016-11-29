@@ -127,6 +127,7 @@ export class OfferEdit{
   isFulltime: boolean = false;
   isPause: boolean = false;
   isOfferInContract: boolean;
+  isOfferArchived: boolean;
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -196,6 +197,8 @@ export class OfferEdit{
 
     if (this.obj == "detail") {
       this.offer = this.sharedService.getCurrentOffer();
+
+      this.isOfferArchived = (this.offer.etat == 'en archive' ? true : false);
 
       this.isOfferInContract = (this.offer.etat == 'en contrat' ? true : false);
       if(this.isOfferInContract){

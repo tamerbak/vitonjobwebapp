@@ -27,6 +27,9 @@
       <label class="btn btn-gray btn-2" btnRadio="1" [(ngModel)]="typeOfferModel" (click)="watchTypeOfferModel()">
         Brouillon
       </label>
+      <label class="btn btn-gray btn-3" btnRadio="2" [(ngModel)]="typeOfferModel" (click)="watchTypeOfferModel()">
+        Archive
+      </label>
     </div>
   </div>
 </div>
@@ -37,7 +40,7 @@
 <div class="row">
   <div class="col-lg-12 col-xs-12">
     <div *ngFor="let globalList of globalOfferList" style="margin-bottom: 10px;" [hidden]="globalList.list.length <=0">
-      <section class="widget" widget *ngFor="let item of globalList.list" [hidden]="!item.visible || typeOfferModel == '1'">
+      <section class="widget" widget *ngFor="let item of globalList.list" [hidden]="!item.visible || typeOfferModel != '0'">
         <div class="widget-body row">
           <div class="col-xs-8">
             <div class="abc-radio abc-style abc-radio-{{item.obsolete ? 'danger':'success'}}">
@@ -83,7 +86,35 @@
         <div class="alert alert-warning alert-sm alertDispo" *ngIf="item.obsolete">Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilité
         </div>
       </section>
-      <section class="widget" widget *ngFor="let item of globalList.list" [hidden]="item.visible || typeOfferModel == '0'">
+      <section class="widget" widget *ngFor="let item of globalList.list" [hidden]="item.visible || typeOfferModel != '1'">
+        <div class="widget-body row">
+          <div class="col-xs-8">
+            <div class="abc-radio abc-style">
+              <input type="radio">
+              <label class="title">{{item.title}}</label>
+            </div>
+          </div>
+          <div class="col-xs-12 price pull-left" style="padding-right: 25px;">
+            <h4 class="" style="margin-bottom:0px"><strong>{{item.jobData.remuneration}} € </strong></h4>
+            <label class="" style="font-size: small; color: #ccc">DE L'HEURE</label>
+          </div>
+
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <b>Disponibilités</b>
+            <ul>
+              <li *ngFor="let dispo of item.slots, let j = index"><b>{{dispo.date}} :</b> {{dispo.startHour}} - {{dispo.endHour}} </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="clearfix">
+          <div class="col-md-1 col-xs-2 pull-sm-right pull-md-right pull-lg-right pull-xl-right">
+            <button type="button" class="btn btn-secondary btn-sm btn-detail-offre-2" (click)="goToDetailOffer(item)">Détails de l'offre
+            </button>
+          </div>
+        </div>
+      </section>
+      <section class="widget" widget *ngFor="let item of globalList.list" [hidden]="item.etat != 'en archive' || typeOfferModel != '2'">
         <div class="widget-body row">
           <div class="col-xs-8">
             <div class="abc-radio abc-style">

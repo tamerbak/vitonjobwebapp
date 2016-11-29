@@ -247,6 +247,8 @@ export class Yousign{
     this.contractService.getContractsByOffer(offer.idOffer).then((data: any) => {
       if(data && data.data && data.data.length != 0 && data.data.length == offer.nbPoste){
         this.offerService.updateOfferState(offer.idOffer, "en archive");
+        offer.etat = "en archive";
+        this.offerService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
       }
     })
   }

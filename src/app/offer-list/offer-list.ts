@@ -85,6 +85,7 @@ export class OfferList {
     this.globalOfferList.length = 0;
     this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
     this.globalOfferList.push({header: 'Mes brouillons', list: []});
+    this.globalOfferList.push({header: 'Mes offres en archive', list: []});
     this.offerList = this.projectTarget == 'employer'
       ? this.sharedService.getCurrentUser().employer.entreprises[0].offers
       : this.sharedService.getCurrentUser().jobyer.offers;
@@ -148,10 +149,13 @@ export class OfferList {
           }
         }
 
-        if(!offer.obsolete){
-          this.globalOfferList[0].list.push(offer);
+        if(offer.etat == 'en archive'){
+          this.globalOfferList[2].list.push(offer);
+        }else{
+          if(!offer.obsolete){
+            this.globalOfferList[0].list.push(offer);
+          }
         }
-
 
         if(!offer.obsolete) {
           let searchFields = {

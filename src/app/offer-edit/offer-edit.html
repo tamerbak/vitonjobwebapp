@@ -58,7 +58,7 @@
               class="btn btn-primary offer-video-btn"
               style="display: block; width: 100%;"
               (click)="updateVideo(false)"
-              [disabled]="!youtubeLink || isOfferInContract"
+              [disabled]="!youtubeLink || isOfferInContract || isOfferArchived"
             >
               <i class="glyphicon glyphicon-facetime-video"></i>
               Ajouter
@@ -72,7 +72,7 @@
               class="btn btn-success offer-video-btn"
               style="display: block; width: 100%;"
               (click)="updateVideo(true)"
-              [disabled]="isOfferInContract"
+              [disabled]="isOfferInContract || isOfferArchived"
             >
               <i class="glyphicon glyphicon-trash"></i>
               Supprimer
@@ -340,7 +340,7 @@
             </div>
             <div class="col-xs-2">
               <button class="btn btn-primary"
-                      role="button" (click)="addPrerequis()" [disabled]="isOfferInContract" >
+                      role="button" (click)="addPrerequis()" [disabled]="isOfferInContract || isOfferArchived" >
                 <span class="glyphicon glyphicon-plus"></span>
               </button>
             </div>
@@ -351,7 +351,7 @@
           <div *ngFor="let p of prerequisObligatoires" class="row" style="margin-bottom: 5px">
             <div class="col-xs-1">
               <button class="btn btn-danger"
-                      role="button" (click)="removePrerequis(p)" [disabled]="isOfferInContract" >
+                      role="button" (click)="removePrerequis(p)" [disabled]="isOfferInContract || isOfferArchived" >
                 <span class="glyphicon glyphicon-minus"></span>
               </button>
             </div>
@@ -374,7 +374,7 @@
             </div>
             <div class="col-xs-2">
               <button class="btn btn-primary"
-                      role="button" (click)="addEPI()" [disabled]="isOfferInContract" >
+                      role="button" (click)="addEPI()" [disabled]="isOfferInContract || isOfferArchived" >
                 <span class="glyphicon glyphicon-plus"></span>
               </button>
             </div>
@@ -385,7 +385,7 @@
           <div *ngFor="let e of epiList" class="row" style="margin-bottom: 5px">
             <div class="col-xs-1">
               <button class="btn btn-danger"
-                      role="button" (click)="removeEPI(p)" [disabled]="isOfferInContract" >
+                      role="button" (click)="removeEPI(p)" [disabled]="isOfferInContract || isOfferArchived" >
                 <span class="glyphicon glyphicon-minus"></span>
               </button>
             </div>
@@ -436,7 +436,7 @@
                 style="display: block; width: 100%;"
                 class="btn btn-danger mb-xs col-md-2 col-xs-12"
                 role="button"
-                (click)="removeSlot(j)" [disabled]="isDeleteSlotDisabled() || isOfferInContract">
+                (click)="removeSlot(j)" [disabled]="isDeleteSlotDisabled() || isOfferInContract || isOfferArchived">
                 <i class="glyphicon glyphicon-trash"></i>
               </button>
             </div>
@@ -501,7 +501,7 @@
               class="btn btn-success mb-xs"
               role="button"
               (click)="addSlot()"
-              [disabled]="!(slot.date && slot.startHour && slot.endHour) || isOfferInContract"
+              [disabled]="!(slot.date && slot.startHour && slot.endHour) || isOfferInContract || isOfferArchived"
             >
               Ajouter
             </button>
@@ -538,7 +538,7 @@
                   style="display: block; width: 100%;"
                   class="btn btn-danger mb-xs"
                   role="button"
-                  [disabled]="isOfferInContract"
+                  [disabled]="isOfferInContract || isOfferArchived"
                   (click)="removeQuality(item)"
                 >
                   <i class="glyphicon glyphicon-trash"></i>
@@ -559,7 +559,7 @@
                   class="btn btn-success mb-xs offer-add-button"
                   role="button"
                   (click)="addQuality()"
-                  [disabled]="!selectedQuality || isOfferInContract"
+                  [disabled]="!selectedQuality || isOfferInContract || isOfferArchived"
                 >
                   Ajouter
                 </button>
@@ -589,7 +589,7 @@
                   style="display: block; width: 100%;"
                   class="btn btn-danger mb-xs btn-remove-language"
                   role="button"
-                  [disabled]="isOfferInContract"
+                  [disabled]="isOfferInContract || isOfferArchived"
                   (click)="removeLanguage(item)"
                 >
                   <i class="glyphicon glyphicon-trash"></i>
@@ -616,7 +616,7 @@
                   class="btn btn-success mb-xs"
                   role="button"
                   (click)="addLanguage()"
-                  [disabled]="!(selectedLang && selectedLevel) || isOfferInContract"
+                  [disabled]="!(selectedLang && selectedLevel) || isOfferInContract || isOfferArchived"
                 >
                   Ajouter
                 </button>
@@ -638,7 +638,7 @@
             <div class="container-fluid">
               <div class="row">
                 <div class="col-xs-12">
-                  <button type="button" class="btn btn-success fwidth" [disabled]="isOfferInContract" (click)="editOffer()">
+                  <button type="button" class="btn btn-success fwidth" [disabled]="!isOfferInContract || isOfferArchived" (click)="editOffer()">
                     Ajouter l'offre
                   </button>
                 </div>
@@ -650,19 +650,19 @@
                   </button>
                 </div>
                 <div class="col-lg-6 col-md-6 col-xs-12">
-                  <button type="submit" class="btn btn-primary fwidth" (click)="changePrivacy()" [disabled]="isOfferInContract">
+                  <button type="submit" class="btn btn-primary fwidth" (click)="changePrivacy()" [disabled]="isOfferInContract || isOfferArchived">
                     {{offrePrivacyTitle}}
                   </button>
                 </div>
 
                 <div class="col-lg-6 col-md-6 col-xs-12">
-                  <button type="submit" class="btn btn-primary fwidth" (click)="autoSearchMode()">
+                  <button type="submit" class="btn btn-primary fwidth" (click)="autoSearchMode()" [disabled]="isOfferArchived">
                     {{autoSearchModeTitle}}
                   </button>
                 </div>
 
                 <div class="col-lg-6 col-md-6 col-xs-12">
-                  <button type="submit" class="btn btn-primary fwidth" (click)="launchSearch()" *ngIf="!offer.obsolete">
+                  <button type="submit" class="btn btn-primary fwidth" (click)="launchSearch()" *ngIf="!offer.obsolete" [disabled]="isOfferArchived">
                     Lancer une recherche
                   </button>
                 </div>
@@ -673,7 +673,7 @@
                   </button>
                 </div>
                 <div class="col-lg-6 col-md-6 col-xs-12">
-                  <button type="submit" class="btn btn-success fwidth" (click)="deleteOffer()" [disabled]="offer.visible || isOfferInContract">
+                  <button type="submit" class="btn btn-success fwidth" (click)="deleteOffer()" [disabled]="offer.visible && isOfferInContract">
                     Supprimer l'offre
                   </button>
                 </div>
