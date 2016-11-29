@@ -638,6 +638,7 @@ export class Contract {
       this.sharedService.setCurrentJobyer(this.jobyer);
       this.sharedService.setCurrentOffer(this.currentOffer);
       this.sharedService.setContractData(this.contractData);
+      this.offersService.updateOfferState(this.currentOffer.idOffer, "en contrat");
       this.router.navigate(['contract/recruitment']);
     });
   }

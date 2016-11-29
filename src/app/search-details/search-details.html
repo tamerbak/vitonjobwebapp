@@ -20,7 +20,7 @@
     <section widget class="widget">
       <recruit-button [jobyer]="result" (onRecruite)="onRecruite($event)" *ngIf="projectTarget == 'employer' && !isRecruteur" class="top-element"></recruit-button>
 
-      <button type="submit" class="btn btn-secondary btn-sm top-element" (click)="switchJobyerInterest()" *ngIf="result.accepteCandidature && projectTarget == 'jobyer' && currentUser" style="background-color: #40aea9; color: white; float: right;">
+      <button type="submit" class="btn btn-secondary btn-sm top-element" (click)="switchJobyerInterest()" *ngIf="candidatureAllowed && projectTarget == 'jobyer' && currentUser" style="background-color: #40aea9; color: white; float: right;">
         {{jobyerInterestLabel}}
       </button>
       <div class="widget-body">

@@ -39,6 +39,7 @@ export class SearchDetails{
   jobyerInterestLabel: string;
   alerts: Array<Object>;
   jobyerInterested: boolean;
+  candidatureAllowed: boolean;
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -53,6 +54,7 @@ export class SearchDetails{
     }
     this.result = this.sharedService.getSearchResult();
     this.offer = this.sharedService.getCurrentOffer();
+    this.candidatureAllowed = (this.result.accepteCandidature || this.result.accepteCandidature == 'true' ? true : false);
   }
 
   ngOnInit(): void {
@@ -85,7 +87,7 @@ export class SearchDetails{
         this.qualities = data;
     });
 
-    if(this.projectTarget == 'jobyer') {
+    if(this.projectTarget == 'jobyer' && this.candidatureAllowed) {
       this.setCandidatureButtonLabel();
     }
   }
@@ -125,7 +127,7 @@ export class SearchDetails{
         if(!data || data.status != 'success'){
           this.addAlert("danger", "Erreur lors de la sauvegarde des données.");
         }else{
-          this.jobyerInterestLabel = "Cette offre ne m'intéresse plus";
+          this.jobyerInterestLabel = "Cette offre m'intéresse";
           this.jobyerInterested = false;
         }
       });
@@ -134,7 +136,7 @@ export class SearchDetails{
         if(!data || data.status != 'success'){
           this.addAlert("danger", "Erreur lors de la sauvegarde des données.");
         }else{
-          this.jobyerInterestLabel = "Cette offre m'intéresse";
+          this.jobyerInterestLabel = "Cette offre ne m'intéresse plus";
           this.jobyerInterested = true;
         }
       });

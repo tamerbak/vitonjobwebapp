@@ -58,7 +58,7 @@
               class="btn btn-primary offer-video-btn"
               style="display: block; width: 100%;"
               (click)="updateVideo(false)"
-              [disabled]="!youtubeLink"
+              [disabled]="!youtubeLink || isOfferInContract"
             >
               <i class="glyphicon glyphicon-facetime-video"></i>
               Ajouter
@@ -72,6 +72,7 @@
               class="btn btn-success offer-video-btn"
               style="display: block; width: 100%;"
               (click)="updateVideo(true)"
+              [disabled]="isOfferInContract"
             >
               <i class="glyphicon glyphicon-trash"></i>
               Supprimer
@@ -250,10 +251,24 @@
                    [(ngModel)]="offerAddress" (input)="autocompleteOfferAddress()"/>
           </div>
         </div>
+        <div class="form-group row required" *ngIf="projectTarget == 'employer'">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+            Nombre de postes
+          </label>
+          <div class="col-md-7 col-xs-12">
+            <input
+                    type="number"
+                    step="1"
+                    class="form-control"
+                    min="1"
+                    [(ngModel)]="offer.nbPoste"
+            />
+          </div>
+        </div>
       </div>
 
 
-      <fieldset>
+      <fieldset *ngIf="projectTarget == 'employer'">
         <legend><strong>Conditions d'emploi</strong></legend>
         <alert *ngFor="let alert of alertsConditionEmp; let i = index" [type]="alert.type + ' alert-sm'" dismissible="false">
           <div [innerHTML]="alert.msg"></div>
@@ -318,7 +333,7 @@
             </div>
             <div class="col-xs-2">
               <button class="btn btn-primary"
-                      role="button" (click)="addPrerequis()" >
+                      role="button" (click)="addPrerequis()" [disabled]="isOfferInContract" >
                 <span class="glyphicon glyphicon-plus"></span>
               </button>
             </div>
@@ -329,7 +344,7 @@
           <div *ngFor="let p of prerequisObligatoires" class="row" style="margin-bottom: 5px">
             <div class="col-xs-1">
               <button class="btn btn-danger"
-                      role="button" (click)="removePrerequis(p)" >
+                      role="button" (click)="removePrerequis(p)" [disabled]="isOfferInContract" >
                 <span class="glyphicon glyphicon-minus"></span>
               </button>
             </div>
@@ -352,7 +367,7 @@
             </div>
             <div class="col-xs-2">
               <button class="btn btn-primary"
-                      role="button" (click)="addEPI()" >
+                      role="button" (click)="addEPI()" [disabled]="isOfferInContract" >
                 <span class="glyphicon glyphicon-plus"></span>
               </button>
             </div>
@@ -363,7 +378,7 @@
           <div *ngFor="let e of epiList" class="row" style="margin-bottom: 5px">
             <div class="col-xs-1">
               <button class="btn btn-danger"
-                      role="button" (click)="removeEPI(p)" >
+                      role="button" (click)="removeEPI(p)" [disabled]="isOfferInContract" >
                 <span class="glyphicon glyphicon-minus"></span>
               </button>
             </div>
@@ -415,7 +430,7 @@
                 style="display: block; width: 100%;"
                 class="btn btn-danger mb-xs col-md-2 col-xs-12"
                 role="button"
-                (click)="removeSlot(j)" [disabled]="isDeleteSlotDisabled()">
+                (click)="removeSlot(j)" [disabled]="isDeleteSlotDisabled() || isOfferInContract">
                 <i class="glyphicon glyphicon-trash"></i>
               </button>
             </div>
@@ -480,7 +495,7 @@
               class="btn btn-success mb-xs"
               role="button"
               (click)="addSlot()"
-              [disabled]="!(slot.date && slot.startHour && slot.endHour)"
+              [disabled]="!(slot.date && slot.startHour && slot.endHour) || isOfferInContract"
             >
               Ajouter
             </button>
@@ -517,6 +532,7 @@
                   style="display: block; width: 100%;"
                   class="btn btn-danger mb-xs"
                   role="button"
+                  [disabled]="isOfferInContract"
                   (click)="removeQuality(item)"
                 >
                   <i class="glyphicon glyphicon-trash"></i>
@@ -537,7 +553,7 @@
                   class="btn btn-success mb-xs offer-add-button"
                   role="button"
                   (click)="addQuality()"
-                  [disabled]="!selectedQuality"
+                  [disabled]="!selectedQuality || isOfferInContract"
                 >
                   Ajouter
                 </button>
@@ -567,6 +583,7 @@
                   style="display: block; width: 100%;"
                   class="btn btn-danger mb-xs btn-remove-language"
                   role="button"
+                  [disabled]="isOfferInContract"
                   (click)="removeLanguage(item)"
                 >
                   <i class="glyphicon glyphicon-trash"></i>
@@ -593,7 +610,7 @@
                   class="btn btn-success mb-xs"
                   role="button"
                   (click)="addLanguage()"
-                  [disabled]="!(selectedLang && selectedLevel)"
+                  [disabled]="!(selectedLang && selectedLevel) || isOfferInContract"
                 >
                   Ajouter
                 </button>
@@ -615,7 +632,7 @@
             <div class="container-fluid">
               <div class="row">
                 <div class="col-xs-12">
-                  <button type="button" class="btn btn-success fwidth" (click)="editOffer()">
+                  <button type="button" class="btn btn-success fwidth" [disabled]="isOfferInContract" (click)="editOffer()">
                     Enregistrer
                   </button>
                 </div>
@@ -627,7 +644,7 @@
                   </button>
                 </div>
                 <div class="col-lg-6 col-md-6 col-xs-12">
-                  <button type="submit" class="btn btn-primary fwidth" (click)="changePrivacy()">
+                  <button type="submit" class="btn btn-primary fwidth" (click)="changePrivacy()" [disabled]="isOfferInContract">
                     {{offrePrivacyTitle}}
                   </button>
                 </div>
@@ -650,7 +667,7 @@
                   </button>
                 </div>
                 <div class="col-lg-6 col-md-6 col-xs-12">
-                  <button type="submit" class="btn btn-success fwidth" (click)="deleteOffer()">
+                  <button type="submit" class="btn btn-success fwidth" (click)="deleteOffer()" [disabled]="offer.visible || isOfferInContract">
                     Supprimer l'offre
                   </button>
                 </div>

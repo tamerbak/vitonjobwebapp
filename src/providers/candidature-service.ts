@@ -49,7 +49,7 @@ export class CandidatureService {
   }
 
   getJobyersByOfferCandidature(offerId){
-    let sql = "select a. * from user_account as a , user_jobyer as j, user_candidatures_aux_offres as co where co.fk_user_offre_entreprise = " + offerId + " and co.fk_user_jobyer = j.pk_user_jobyer and j.fk_user_account = a.pk_user_account";
+    let sql = "select a.telephone from user_account as a , user_jobyer as j, user_candidatures_aux_offres as co where co.fk_user_offre_entreprise = " + offerId + " and co.fk_user_jobyer = j.pk_user_jobyer and j.fk_user_account = a.pk_user_account";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();

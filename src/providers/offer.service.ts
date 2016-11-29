@@ -167,7 +167,7 @@ export class OffersService {
 
     let payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      id: 10025,
+      id: 20006,
       args: [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'creation offre',
@@ -862,6 +862,29 @@ export class OffersService {
     });
   }
 
+  updateNbPoste(nbPoste, offerId){
+    let sql = "update user_offre_entreprise set nombre_de_postes = " + nbPoste + " where pk_user_offre_entreprise = " + offerId;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data.data);
+        });
+    });
+  }
+
+  updateOfferState(offerId, state){
+    let sql = "update user_offre_entreprise set etat = '" + state + "' where pk_user_offre_entreprise = " + offerId;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data.data);
+        });
+    });
+  }
   /*********************************************************************************************************************
    *  COLLECTIVE CONVENTIONS MANAGEMENT
    *********************************************************************************************************************/
