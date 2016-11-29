@@ -1532,8 +1532,30 @@ export class OfferEdit{
     if (+e.target.value < item.coefficient || Utils.isEmpty(e.target.value)) {
       this.addAlert("danger", "Les valeurs définies par l'employeur doivent être supérieures ou égales à celles définies par la convention collective.", "conditionEmp");
       this.isConditionEmpValid = false;
+      e.target.value = this.decimalAdjust('round', item.coefficient, -2).toFixed(2);
     }
+    e.target.value = this.decimalAdjust('round', e.target.value, -2).toFixed(2);//e.target.value.toFixed(2);
   }
+
+  decimalAdjust(type, value, exp) {
+  // Si la valeur de exp n'est pas définie ou vaut zéro...
+  if (typeof exp === 'undefined' || +exp === 0) {
+    return Math[type](value);
+  }
+  value = +value;
+  exp = +exp;
+  // Si la valeur n'est pas un nombre
+  // ou si exp n'est pas un entier...
+  if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+    return NaN;
+  }
+  // Décalage
+  value = value.toString().split('e');
+  value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+  // Décalage inversé
+  value = value.toString().split('e');
+  return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+}
 
   saveConditionEmp(offer) {
     if (this.obj != 'detail' || !this.isConditionEmpExist) {

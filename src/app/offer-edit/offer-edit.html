@@ -139,7 +139,7 @@
               </div>
             </div>
             <input type="hidden" class="select2 job-select form-control" name="job"
-                   placeholder="Rechrchez votre job" [(ngModel)]="selectedJob" />
+                   placeholder="Recherchez votre job" [(ngModel)]="selectedJob" />
             <!--select
               data-minimum-results-for-search="10"
               data-placeholder="Recherchez votre job"
@@ -247,7 +247,7 @@
             {{ projectTarget == 'employer' ? 'Adresse de la mission' : 'Adresse de départ vers le lieu de travail' }}
           </label>
           <div class="col-md-7 col-xs-12">
-            <input id="autocompleteOfferAdress" type="text" class="form-control" placeholder="Rechercher une adresse" (keyup)="watchOfferAddress($event)"
+            <input id="autocompleteOfferAdress" type="text" class="form-control" placeholder="Saisissez l'adresse de la mission" (keyup)="watchOfferAddress($event)"
                    [(ngModel)]="offerAddress" (input)="autocompleteOfferAddress()"/>
           </div>
         </div>
@@ -322,7 +322,14 @@
           </div>
         </div>
       </fieldset>
+    </section>
 
+    <section widget class="widget widget-offer">
+      <header class="bb widget-offer-header">
+        <h6><span class="fw-semi-bold widget-offer-header-title">Prérequis obligatoires</span></h6>
+      </header>
+      <div class="widget-body">
+      </div>
       <fieldset *ngIf="projectTarget == 'employer'">
         <legend><strong>Formations et habilitations</strong></legend>
         <div class="container-fluid">
@@ -389,7 +396,6 @@
         </div>
 
       </fieldset>
-
     </section>
 
     <!-- !JOB -->
@@ -446,7 +452,7 @@
 
         <div class="form-group row required">
           <div class="col-md-1 col-sm-2 col-xs-2">
-            <label>
+            <label *ngIf="projectTarget == 'jobyer'">
               <input type="checkbox" [checked]="isFulltime" class="form-control" (change)="watchFullTime($event)"/>
               Jour entier
             </label>
@@ -633,7 +639,7 @@
               <div class="row">
                 <div class="col-xs-12">
                   <button type="button" class="btn btn-success fwidth" [disabled]="isOfferInContract" (click)="editOffer()">
-                    Enregistrer
+                    Ajouter l'offre
                   </button>
                 </div>
               </div>

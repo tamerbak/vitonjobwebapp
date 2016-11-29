@@ -308,7 +308,7 @@ export class Contract {
       primes: 0,
       headOffice: "",
       missionContent: "",
-      category:"",
+      category: 'Employé',
       sector: "",
       companyName: '',
       titreTransport: 'NON',
@@ -535,7 +535,7 @@ export class Contract {
       primes: 0,
       headOffice: this.hqAdress,
       missionContent: "",
-      category: '',
+      category: 'Employé',
       sector: this.currentOffer.jobData.sector,
       companyName: this.companyName,
       workAdress: this.workAdress,
@@ -662,7 +662,20 @@ export class Contract {
     if (
       !jobyer.nom || !jobyer.prenom || !jobyer.numSS || !jobyerBirthDate || !jobyer.lieuNaissance || !jobyer.nationaliteLibelle || !contractData.numeroTitreTravail || !contractData.debutTitreTravail || !contractData.finTitreTravail || !contractData.qualification
     ) {
-      message = message + " Certaines informations de votre compte sont manquantes, veuillez les renseigner.";
+      message = message + " Certaines informations de votre compte sont manquantes, veuillez les renseigner : -";
+      message = message + (!jobyer.nom)? " Nom -" : "";
+      message = message + (!jobyer.prenom)? " Prénom -" : "";
+      message = message + (!jobyer.prenom)? " Prénom -" : "";
+      message = message + (!jobyer.numSS)? " Numéro SS -" : "";
+      message = message + (!jobyerBirthDate)? " Date de naissance -" : "";
+      message = message + (!jobyer.lieuNaissance)? " Lieu de naissance -" : "";
+      message = message + (!jobyer.nationaliteLibelle)? " Nationalité -" : "";
+      message = message + (!jobyer.numeroTitreTravail)? " CNI ou passeport -" : "";
+      message = message + (!contractData.debutTitreTravail)? " Valable du -" : "";
+      message = message + (!contractData.finTitreTravail)? " Valable au -" : "";
+      message = message + (!contractData.qualification)? " Qualification -" : "";
+
+      message = message.slice(0, -1);
     }
     this.notifyJobyer(message);
 
