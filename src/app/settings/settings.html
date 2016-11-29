@@ -62,14 +62,16 @@
               Modifier le mode de validation des horaires
             </button>
             <br />
-            <button *ngIf="isEmployer && !isSpontaneousContact()" class="btn btn-default btn-sm mt"
-                    (click)="activateSpontaneousContact()">
-              Accepter les candidatures spontannées
-            </button>
-            <button *ngIf="isEmployer && isSpontaneousContact()" class="btn btn-default btn-sm mt"
-                    (click)="activateSpontaneousContact()">
-              Refuser les candidatures spontannées
-            </button>
+            <br />
+
+            <div *ngIf="isEmployer">
+              Accepter les candidatures spontannées&nbsp;
+              <div class="checkbox-inline checkbox-ios">
+                <label for="checkbox-ios1" class="switch">
+                  <input type="checkbox" class="ios spont-recrut"  id="checkbox-ios1" (click)="activateSpontaneousContact()"><i></i>
+                </label>
+              </div>
+            </div>
             <br />
             <br />
 
