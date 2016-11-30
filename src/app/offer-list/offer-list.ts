@@ -85,25 +85,32 @@ export class OfferList {
     this.globalOfferList.length = 0;
     this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
     this.globalOfferList.push({header: 'Mes brouillons', list: []});
+    this.globalOfferList.push({header: 'Mes offres en archive', list: []});
     this.offerList = this.projectTarget == 'employer'
       ? this.sharedService.getCurrentUser().employer.entreprises[0].offers
       : this.sharedService.getCurrentUser().jobyer.offers;
     let obsoleteOffers = [];
+
     for (let i = 0; i < this.offerList.length; i++) {
       let offer = this.offerList[i];
 
+      //<editor-fold desc="EPI management">
       //load offer epi
       this.offersService.loadOfferEPI(this.offerList[i].idOffer,this.projectTarget).then((data:any)=>{
         this.offerList[i].jobData.epi = [];
-        for(let j = 0 ; j < data.length ; j++)
-          this.offerList[i].jobData.epi.push(data[j].libelle);
+        if(data && data.length != 0) {
+          for (let j = 0; j < data.length; j++)
+            this.offerList[i].jobData.epi.push(data[j].libelle);
+        }
       });
 
       if(this.projectTarget == 'employer'){
         this.offersService.loadOfferPrerequisObligatoires(this.offerList[i].idOffer).then((data:any)=>{
           this.offerList[i].jobData.prerequisObligatoires = [];
-          for(let j = 0 ; j < data.length ; j++)
-            this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
+          if(data && data.length != 0) {
+            for(let j = 0 ; j < data.length ; j++)
+              this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
+          }
         });
 
       }else if(this.projectTarget == 'jobyer'){
@@ -113,11 +120,13 @@ export class OfferList {
             this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
         });
       }
+      //</editor-fold>
 
       if (!offer || !offer.jobData || !offer.calendarData ||(offer.calendarData && offer.calendarData.length == 0)) {
         continue;
       }
 
+      //push slots into offer
       offer.slots =[];
       for (let i = 0; i < offer.calendarData.length; i++) {
         var slotTemp = {
@@ -129,31 +138,26 @@ export class OfferList {
         offer.slots.push(slotTemp);
       }
 
+      //archived offers
+      if(offer.etat == 'en archive'){
+        this.globalOfferList[2].list.push(offer);
+        offer.correspondantsCount = -1;
+        continue;
+      }
+
+      //public offers
       if (offer.visible) {
         offer.color = 'black';
         offer.correspondantsCount = -1;
 
         //verify if offer is obsolete
-        for (let j = 0; j < offer.calendarData.length; j++) {
-          var slotDate = offer.calendarData[j].date;
-          var startH = this.offersService.convertToFormattedHour(offer.calendarData[j].startHour);
-          slotDate = new Date(slotDate).setHours(+(startH.split(':')[0]), +(startH.split(':')[1]));
-          var dateNow = new Date().getTime();
-          if (slotDate <= dateNow) {
-            offer.obsolete = true;
-            obsoleteOffers.push(offer);
-            break;
-          } else {
-            offer.obsolete = false;
-          }
-        }
-
-        if(!offer.obsolete){
+        let isOfferObsolete = this.isOfferObsolete(offer);
+        if (isOfferObsolete) {
+          offer.obsolete = true;
+          obsoleteOffers.push(offer);
+        } else {
+          offer.obsolete = false;
           this.globalOfferList[0].list.push(offer);
-        }
-
-
-        if(!offer.obsolete) {
           let searchFields = {
             class: 'com.vitonjob.callouts.recherche.SearchQuery',
             job: offer.jobData.job,
@@ -170,11 +174,11 @@ export class OfferList {
           });
         }
       } else {
+        //private offers
         offer.color = 'grey';
         offer.correspondantsCount = -1;
         this.globalOfferList[1].list.push(offer);
       }
-
     }
     //placing obsolete offers in the botton of the list
     this.globalOfferList[0].list = this.globalOfferList[0].list.concat(obsoleteOffers);
@@ -261,6 +265,19 @@ export class OfferList {
         this.addAlert("info", "Votre offre a bien été déplacée dans «Mes offres en brouillon».");
       }
     });
+  }
+
+  isOfferObsolete(offer){
+    for (let j = 0; j < offer.calendarData.length; j++) {
+      var slotDate = offer.calendarData[j].date;
+      var startH = this.offersService.convertToFormattedHour(offer.calendarData[j].startHour);
+      slotDate = new Date(slotDate).setHours(+(startH.split(':')[0]), +(startH.split(':')[1]));
+      var dateNow = new Date().getTime();
+      if (slotDate <= dateNow) {
+        return true;
+      }
+    }
+    return false;
   }
 
   watchTypeOfferModel() {

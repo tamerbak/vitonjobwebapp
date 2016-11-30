@@ -9,6 +9,7 @@ import {Router} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {MissionService} from "../../providers/mission-service";
 import {Utils} from "../utils/utils";
+import {OffersService} from "../../providers/offer.service";
 
 /**
  * @author daoudi amine
@@ -19,7 +20,7 @@ import {Utils} from "../utils/utils";
   template: require('./yousign.html'),
   styles: [require('./yousign.scss')],
   directives: [AlertComponent],
-  providers: [FinanceService, GlobalConfigs, ContractService, Helpers, SmsService, MissionService]
+  providers: [FinanceService, GlobalConfigs, ContractService, Helpers, SmsService, MissionService, OffersService]
 })
 export class Yousign{
 
@@ -40,6 +41,7 @@ export class Yousign{
 
   constructor(public gc: GlobalConfigs,
               private contractService: ContractService,
+              private offerService: OffersService,
               private smsService: SmsService,
               private financeService: FinanceService,
               private sharedService: SharedService,
@@ -186,7 +188,15 @@ export class Yousign{
                     if (this.currentOffer && this.currentOffer != null) {
                       let idContract = data.data[0].pk_user_contrat;
                       this.contractId = idContract;
-                      this.contractService.setOffer(idContract, this.currentOffer.idOffer);
+                      this.contractService.setOffer(idContract, this.currentOffer.idOffer).then((res: any) => {
+                        if(!res || res.status != "success"){
+                          this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
+                          this.hideLoader = true;
+                          return;
+                        }else{
+                          this.checkOfferState(this.currentOffer);
+                        }
+                      })
                       this.contractService.generateMission(idContract, this.currentOffer);
                       this.hideLoader = true;
                     }
@@ -231,6 +241,16 @@ export class Yousign{
         }
       });
     }
+  }
+
+  checkOfferState(offer){
+    this.contractService.getContractsByOffer(offer.idOffer).then((data: any) => {
+      if(data && data.data && data.data.length != 0 && data.data.length == offer.nbPoste){
+        this.offerService.updateOfferState(offer.idOffer, "en archive");
+        offer.etat = "en archive";
+        this.offerService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
+      }
+    })
   }
 
   addAlert(type, msg): void {

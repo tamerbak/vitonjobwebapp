@@ -16,6 +16,8 @@ import {LoadListService} from "../../providers/load-list.service";
 import {Utils} from "../utils/utils";
 import {DateUtils} from "../utils/date-utils";
 import {ConventionService} from "../../providers/convention.service";
+import {CandidatureService} from "../../providers/candidature-service";
+import {SmsService} from "../../providers/sms-service";
 
 declare var Messenger, jQuery: any;
 declare var google: any;
@@ -26,7 +28,7 @@ declare var google: any;
   encapsulation: ViewEncapsulation.None,
   styles: [require('./offer-edit.scss')],
   directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime, ModalOptions, ModalOfferTempQuote],
-  providers: [OffersService, SearchService, FinanceService, LoadListService, ConventionService]
+  providers: [OffersService, SearchService, FinanceService, LoadListService, ConventionService, CandidatureService, SmsService]
 })
 
 export class OfferEdit{
@@ -124,6 +126,8 @@ export class OfferEdit{
   //Full time
   isFulltime: boolean = false;
   isPause: boolean = false;
+  isOfferInContract: boolean;
+  isOfferArchived: boolean;
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -135,7 +139,9 @@ export class OfferEdit{
               private zone: NgZone,
               private _loader: MapsAPILoader,
               private listService: LoadListService,
-              private conventionService: ConventionService) {
+              private conventionService: ConventionService,
+              private candidatureService: CandidatureService,
+              private smsService: SmsService) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['home']);
@@ -191,6 +197,15 @@ export class OfferEdit{
 
     if (this.obj == "detail") {
       this.offer = this.sharedService.getCurrentOffer();
+
+      this.isOfferArchived = (this.offer.etat == 'en archive' ? true : false);
+
+      this.isOfferInContract = (this.offer.etat == 'en contrat' ? true : false);
+      if(this.isOfferInContract){
+        //display alert if offer is in contract
+        this.addAlert("info", "Cette offre est en contrat. Vous ne pouvez donc pas la modifier.", "general");
+      }
+
       if (!this.offer.videolink) {
         this.videoAvailable = false;
       } else {
@@ -1116,7 +1131,9 @@ export class OfferEdit{
       if (this.projectTarget == 'employer' && this.selectedParamConvID)
         this.offersService.saveOfferConventionParameters(this.offer.idOffer, this.selectedParamConvID);
       this.validateJob();
-
+      if(this.projectTarget == 'employer'){
+        this.offersService.updateNbPoste(this.offer.nbPoste, this.offer.idOffer);
+      }
     }
   }
 
@@ -1268,6 +1285,16 @@ export class OfferEdit{
         });
       } else {
         this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée" : "Mettre l'offre en ligne";
+        if(this.projectTarget == 'employer'){
+          this.candidatureService.getJobyersByOfferCandidature(this.offer.idOffer).then((data: any) => {
+            if(data && data.data && data.data.length >= 1){
+              for(let i = 0; i < data.data.length; i++){
+                let jobyer = data.data[i];
+                this.smsService.sendSms(jobyer.telephone, "L'offre " + this.offer.title + " auquelle vous avez postulé, publiée par " + this.currentUser.employer.entreprises[0].nom + " est passée à l'état privée.");
+              }
+            }
+          })
+        }
         Messenger().post({
           message: "Votre offre a bien été déplacée dans «Mes offres en brouillon».",
           type: 'success',

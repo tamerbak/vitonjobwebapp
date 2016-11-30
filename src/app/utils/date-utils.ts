@@ -20,6 +20,10 @@ export class DateUtils {
       }
     }
   }
+
+  public static sqlfy(d) {
+    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " 00:00:00+00";
+  }
 }
 
   interface Dictionary {

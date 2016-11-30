@@ -576,4 +576,16 @@ export class ContractService {
         });
     });
   }
+
+  getContractsByOffer(offerId) {
+    let sql = 'select * from user_contrat where fk_user_offre_entreprise=' + offerId;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
 }
