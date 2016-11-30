@@ -108,6 +108,7 @@ export class ModalOptions{
     }
 
     offer.title = offer.title + " (Copie)";
+    offer.etat = '';
     offer.idOffer = "";
     this.offersService.setOfferInLocal(offer, this.projectTarget);
     this.offersService.setOfferInRemote(offer, this.projectTarget).then((data: any)=> {
@@ -118,7 +119,7 @@ export class ModalOptions{
       });
       this.processing = false;
       jQuery("#modal-options").modal('hide');
-      this.router.navigate(['offer/list']);
+      this.router.navigate(['offer/list', {typeOfferModel: '0'}]);
     });
   }
 

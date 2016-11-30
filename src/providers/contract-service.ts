@@ -295,8 +295,8 @@ export class ContractService {
    * Loading justification list
    * @param idRecours identifier of recours
    */
-  loadJustificationsList(idRecours) {
-    let sql = "select pk_user_justificatifs_de_recours as id, libelle from user_justificatifs_de_recours where fk_user_recours=" + idRecours;
+  loadJustificationsList() {
+    let sql = "select pk_user_justificatifs_de_recours as id, libelle from user_justificatifs_de_recours where dirty = 'N'";
     console.log(sql);
 
 
@@ -569,6 +569,18 @@ export class ContractService {
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  getContractsByOffer(offerId) {
+    let sql = 'select * from user_contrat where fk_user_offre_entreprise=' + offerId;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {

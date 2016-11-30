@@ -78,6 +78,7 @@ export class Settings {
           ? 'OUI'
           : 'NON'
         ;
+        jQuery('.spont-recrut').prop('checked', this.spontaneousContact.toUpperCase() == 'OUI');
       });
     }
   }
@@ -138,10 +139,11 @@ export class Settings {
     if (this.currentUser.estEmployeur) {
       if (this.spontaneousContact.toUpperCase() == 'OUI') {
         this.profileService.updateSpontaneousContact('NON', this.currentUser.id);
-        this.spontaneousContact = 'NON';
+        jQuery('.spont-recrut').prop('checked', false);
       } else {
         this.profileService.updateSpontaneousContact('OUI', this.currentUser.id);
         this.spontaneousContact = 'OUI';
+        jQuery('.spont-recrut').prop('checked', true);
       }
     }
   }

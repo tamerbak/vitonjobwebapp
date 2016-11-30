@@ -192,6 +192,7 @@
           </select>
         </div>
       </div>
+
       <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
           <label >Fin de mission&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
@@ -211,13 +212,7 @@
         </div>
         <div class="form-group">
           <label>Motif &nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
-
-            <select
-              data-style="btn-secondary"
-              class="justificationSelectPicker form-control contract-form-select" id="justifications-select" [(ngModel)]="contractData.justification"
-              name="justification_slct" (change)="justifSelected($event)" required>
-              <option *ngFor="let r of justificatifs" value="{{r.libelle}}">{{r.libelle}}</option>
-            </select>
+          <input id="justification_slct" [(ngModel)]="contractData.justification" name="justification_slct" class="form-control"/>
         </div>
       </div>
       <div class="col-md-6 col-xs-12 col-2">
@@ -389,11 +384,11 @@
             <option *ngFor="let r of periodicites" value="{{r.id}}">{{r.libelle}}</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>Primes</label>
-          <input type="text" name="prime" class="form-control" [(ngModel)]="contractData.primes" aria-describedby="primes" />
-          <small class="form-text text-muted"></small>
-        </div>
+        <!--<div class="form-group">-->
+          <!--<label>Primes</label>-->
+          <!--<input type="text" name="prime" class="form-control" [(ngModel)]="contractData.primes" aria-describedby="primes" />-->
+          <!--<small class="form-text text-muted"></small>-->
+        <!--</div>-->
       </div>
 
       <div class="col-md-6 col-xs-12 col-2">
@@ -457,7 +452,18 @@
         </div>
         <div class="form-group">
           <label >Statut</label>
-          <input type="text" class="form-control" [(ngModel)]="contractData.category" disabled/>
+          <!--<input type="text" class="form-control" [(ngModel)]="contractData.category"/>-->
+          <select
+            class="form-control status-jobyer" [(ngModel)]="contractData.category">
+            <option value="Employé" selected>Employé</option>
+            <option value="Ouvrier">Ouvrier</option>
+            <option value="Technicien">Technicien</option>
+            <option value="AM">AM</option>
+            <option value="Non">Non</option>
+            <option value="Cadre">Cadre</option>
+            <option value="Non Cadre">Non Cadre</option>
+          </select>
+
           <small class="form-text text-muted"></small>
         </div>
       </div>
