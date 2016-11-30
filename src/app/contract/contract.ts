@@ -9,7 +9,6 @@ import {ProfileService} from "../../providers/profile.service";
 import {LoadListService} from "../../providers/load-list.service";
 import {Utils} from "../utils/utils";
 import {NKDatetime} from "ng2-datetime/ng2-datetime";
-import {isUndefined} from "es7-reflect-metadata/dist/dist/helper/is-undefined";
 import {OffersService} from "../../providers/offer.service";
 import {AlertComponent} from "ng2-bootstrap";
 import {SmsService} from "../../providers/sms-service";
@@ -47,6 +46,7 @@ export class Contract {
   hqAdress: string;
   rate: number = 0.0;
   recours: any;
+  motifsGrouped : any;
   justificatifs: any;
   nationalities: any;
 
@@ -197,6 +197,24 @@ export class Contract {
     //  Load recours list
     this.contractService.loadRecoursList().then(data=> {
       this.recours = data;
+    });
+
+    //  Load recours list
+    this.contractService.loadGorupedMotifList().then((data: any) => {
+      let motifs = [];
+      console.log(data);
+
+      for (let i = 0; i < data.length; i++) {
+        let recour = data[i].recour;
+
+        if (!motifs[recour] || motifs[recour] == null) {
+          motifs[recour] = {'libelle': recour, 'motifs': []};
+        }
+        motifs[recour].motifs.push(data[i].motif);
+      }
+
+      this.motifsGrouped = motifs;
+      debugger;
     });
 
     this.contractService.loadPeriodicites().then(data=>{
@@ -351,6 +369,10 @@ export class Contract {
       "Transport en commun Zone 4 à 5",
       "Transport en commun toutes zones"
     ];
+
+  }
+
+  recours2Selected(evt) {
 
   }
 
