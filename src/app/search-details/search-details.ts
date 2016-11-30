@@ -47,6 +47,7 @@ export class SearchDetails{
               private candidatureService: CandidatureService) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
+      this.isRecruteur = this.currentUser.estRecruteur;
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     } else {
       this.projectTarget = this.sharedService.getProjectTarget();
