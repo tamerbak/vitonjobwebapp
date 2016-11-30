@@ -993,13 +993,13 @@ export class OfferEdit{
     }
 
     if (this.obj != "detail") {
-      this.offer.calendarData = this.slotsToSave;
+      /*this.offer.calendarData = this.slotsToSave;
       let roundMin = (Math.round(this.minHourRate * 100) / 100);
 
       if (!this.offer.jobData.job || !this.offer.jobData.sector || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || roundMin > this.offer.jobData.remuneration) {
         this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
         return;
-      }
+      }*/
 
       let level = (this.offer.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant';
       this.offer.title = this.offer.jobData.job + " " + level;
@@ -1019,7 +1019,9 @@ export class OfferEdit{
         this.offer.jobData.epi = [];
       }
 
-      this.offersService.setOfferInRemote(this.offer, this.projectTarget).then((data: any) => {
+      this.router.navigate(['offer/calendar', {offer: this.offer, isOfferToAdd: true}]);
+
+      /*this.offersService.setOfferInRemote(this.offer, this.projectTarget).then((data: any) => {
         this.dataValidation = true;
         let offer = JSON.parse(data._body);
 
@@ -1084,7 +1086,7 @@ export class OfferEdit{
           this.sharedService.setCurrentOffer(offer);
           this.router.navigate(['search/results', {obj: 'recruit'}]);
         }
-      });
+      });*/
     } else {
       if (this.projectTarget == 'employer') {
         //save values of condition de travail
