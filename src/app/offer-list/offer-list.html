@@ -40,7 +40,7 @@
 <div class="row">
   <div class="col-lg-12 col-xs-12">
     <div *ngFor="let globalList of globalOfferList" style="margin-bottom: 10px;" [hidden]="globalList.list.length <=0">
-      <section class="widget" widget *ngFor="let item of globalList.list" [hidden]="!item.visible || typeOfferModel != '0'">
+      <section class="widget" widget *ngFor="let item of globalList.list" [hidden]="!item.visible || typeOfferModel != '0' || item.etat == 'en archive'">
         <div class="widget-body row">
           <div class="col-xs-8">
             <div class="abc-radio abc-style abc-radio-{{item.obsolete ? 'danger':'success'}}">
