@@ -19,6 +19,8 @@ import {ConventionService} from "../../providers/convention.service";
 
 declare var Messenger, jQuery: any;
 declare var google: any;
+declare var moment: any;
+declare var require;
 
 @Component({
   selector: '[offer-edit]',
@@ -125,6 +127,14 @@ export class OfferEdit{
   isFulltime: boolean = false;
   isPause: boolean = false;
 
+  //Calendar
+  calendar: any;
+  $calendar: any;
+  dragOptions: Object = { zIndex: 999, revert: true, revertDuration: 0 };
+  event: any = {};
+  createEvent: any;
+  isEventCreated = false;
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private searchService: SearchService,
@@ -140,6 +150,7 @@ export class OfferEdit{
     if (!this.currentUser) {
       this.router.navigate(['home']);
     }
+    this.initCalendar();
     this.convention = {
       id: 0,
       code: '',
@@ -147,7 +158,112 @@ export class OfferEdit{
     }
   }
 
+  initCalendar() {
+    let date = new Date();
+    let d = date.getDate();
+    let m = date.getMonth();
+    let y = date.getFullYear();
+
+    //get params
+    /*this.route.params.forEach((params: Params) => {
+      this.offer = params['offer'];
+      this.isOfferToAdd = params['isOfferToAdd'];
+    });*/
+
+    this.calendar = {
+      header: {
+        left: '',
+        center: '',
+        right: ''
+      },
+      axisFormat: 'H:mm',
+      slotDuration: '00:15:00',
+      allDayText:"Au-delà d'un seul jour",
+      events: [],
+      selectable: true,
+      selectHelper: true,
+      select: (start, end, allDay): void => {
+        this.createEvent = () => {
+          let title = (this.event.title) ? this.event.title: "Ma nouvelle offre";
+          // this.slots && this.slots.length > 0
+          if (title) {
+            this.$calendar.fullCalendar('renderEvent',
+              {
+                title: title,
+                start: start,
+                end: end,
+                allDay: allDay,
+                description: 'ici je peux mettre une description de l\'offre',
+                backgroundColor: '#64bd63',
+                textColor: '#fff'
+              },
+              true // make the event "stick"
+            );
+            // Show add offer form:
+            this.isEventCreated = true;
+          }
+          this.$calendar.fullCalendar('unselect');
+          jQuery('#create-event-modal').modal('hide');
+        };
+
+        jQuery('#create-event-modal').modal('show');
+      },
+      eventClick: (event): void => {
+        this.event = event;
+        jQuery('#show-event-modal').modal('show');
+      },
+      editable: true,
+      droppable: true,
+
+      drop: (date, event): void => { // this function is called when something is dropped
+        // retrieve the dropped element's stored Event Object
+        let originalEventObject = {
+          title: jQuery.trim(jQuery(event.target).text()) // use the element's text as the event title
+        };
+
+        // we need to copy it, so that multiple events don't have a reference to the same object
+        let copiedEventObject = jQuery.extend({}, originalEventObject);
+
+        // assign it the date that was reported
+        copiedEventObject.start = date;
+        copiedEventObject.allDay = !date.hasTime();
+
+        let $categoryClass = jQuery(event.target).data('event-class');
+        if ($categoryClass) { copiedEventObject.className = [$categoryClass]; }
+
+        // render the event on the calendar
+        // the last `true` argument determines if the event 'sticks' (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+        this.$calendar.fullCalendar('renderEvent', copiedEventObject, true);
+
+        jQuery(event.target).remove();
+
+      },
+      lang : 'fr'
+    };
+
+    /*
+    Pour ajouter les disponibilités de l'offre si c'est une modification :
+
+      if (this.offer) {
+        this.calendar.events.push({
+          id: this.offer.id,
+          title: this.offer.titre,
+          start: this.offer...,
+          end: this.offer...,
+          backgroundColor: '#64bd63',
+          textColor: '#fff',
+          description: 'Une description de l\'offre'
+        });
+      }
+    */
+  }
+
   ngOnInit(): void {
+
+    // Init Calendar
+    this.$calendar = jQuery('#calendar');
+    this.$calendar.fullCalendar(this.calendar);
+    jQuery('.draggable').draggable(this.dragOptions);
 
     //obj = "add", "detail", or "recruit"
     this.route.params.forEach((params: Params) => {
@@ -1019,9 +1135,9 @@ export class OfferEdit{
         this.offer.jobData.epi = [];
       }
 
-      this.router.navigate(['offer/calendar', {offer: this.offer, isOfferToAdd: true}]);
+      //this.router.navigate(['offer/calendar', {offer: this.offer, isOfferToAdd: true}]);
 
-      /*this.offersService.setOfferInRemote(this.offer, this.projectTarget).then((data: any) => {
+      this.offersService.setOfferInRemote(this.offer, this.projectTarget).then((data: any) => {
         this.dataValidation = true;
         let offer = JSON.parse(data._body);
 
@@ -1086,7 +1202,7 @@ export class OfferEdit{
           this.sharedService.setCurrentOffer(offer);
           this.router.navigate(['search/results', {obj: 'recruit'}]);
         }
-      });*/
+      });
     } else {
       if (this.projectTarget == 'employer') {
         //save values of condition de travail
@@ -1603,4 +1719,31 @@ export class OfferEdit{
   preventNull(str) {
     return Utils.preventNull(str);
   }
+
+
+  // calendar functions
+  addEvent(event): void {
+    this.calendar.events.push(event);
+  };
+
+  changeView(view): void {
+    this.$calendar.fullCalendar('changeView', view);
+  };
+
+  currentMonth(): string {
+    return moment(this.$calendar.fullCalendar('getDate')).format('MMM YYYY');
+  };
+
+  currentDay(): string {
+    return moment(this.$calendar.fullCalendar('getDate')).format('dddd');
+
+  };
+
+  prev(): void {
+    this.$calendar.fullCalendar('prev');
+  };
+
+  next(): void {
+    this.$calendar.fullCalendar('next');
+  };
 }

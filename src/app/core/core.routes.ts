@@ -88,7 +88,7 @@ export const CoreRoutes: RouterConfig = [
       {path: 'advert/list', component: AdvertList},
 
       // Extras
-      {path: 'offer/calendar', component: ExtraCalendar}
+      //{path: 'offer/calendar', component: ExtraCalendar}
     ]
   }
 ];
