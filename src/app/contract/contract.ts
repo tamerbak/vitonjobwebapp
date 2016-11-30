@@ -9,7 +9,6 @@ import {ProfileService} from "../../providers/profile.service";
 import {LoadListService} from "../../providers/load-list.service";
 import {Utils} from "../utils/utils";
 import {NKDatetime} from "ng2-datetime/ng2-datetime";
-import {isUndefined} from "es7-reflect-metadata/dist/dist/helper/is-undefined";
 import {OffersService} from "../../providers/offer.service";
 import {AlertComponent} from "ng2-bootstrap";
 import {SmsService} from "../../providers/sms-service";
@@ -47,6 +46,7 @@ export class Contract {
   hqAdress: string;
   rate: number = 0.0;
   recours: any;
+  motifsGrouped : any;
   justificatifs: any;
   nationalities: any;
 
@@ -195,7 +195,7 @@ export class Contract {
     });
 
     //  Load recours list
-    this.contractService.loadRecoursList().then(data=> {
+    this.contractService.loadJustificationsList().then(data=> {
       this.recours = data;
     });
 
@@ -354,23 +354,7 @@ export class Contract {
 
   }
 
-  recoursSelected(evt) {
-    let selectedRecoursLib = evt.target.value;
-    let id = 40;
-    for (let i = 0; i < this.recours.length; i++){
-      if (this.recours[i].libelle == selectedRecoursLib) {
-        id = this.recours[i].id;
-        break;
-      }
-    }
-
-    this.justificatifs = [];
-    this.contractService.loadJustificationsList(id).then(data=> {
-      this.justificatifs = data;
-    });
-  }
-
-  justifSelected(e){
+  recoursSelected(e) {
     if(e.target.value.indexOf("emploi à caractère saisonnier") != -1){
       this.contractData.indemniteFinMission = "0.00%";
     }else{
@@ -618,7 +602,7 @@ export class Contract {
   }
 
   goToYousignPage() {
-    let isValid = !this.missingJobyerData() && this.isMissionDateValid;
+    let isValid = true;//!this.missingJobyerData() && this.isMissionDateValid;
     if(!isValid){
       return;
     }

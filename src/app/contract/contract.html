@@ -192,6 +192,7 @@
           </select>
         </div>
       </div>
+
       <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
           <label >Fin de mission&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
@@ -211,13 +212,7 @@
         </div>
         <div class="form-group">
           <label>Motif &nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
-
-            <select
-              data-style="btn-secondary"
-              class="justificationSelectPicker form-control contract-form-select" id="justifications-select" [(ngModel)]="contractData.justification"
-              name="justification_slct" (change)="justifSelected($event)" required>
-              <option *ngFor="let r of justificatifs" value="{{r.libelle}}">{{r.libelle}}</option>
-            </select>
+          <input id="justification_slct" [(ngModel)]="contractData.justification" name="justification_slct" class="form-control"/>
         </div>
       </div>
       <div class="col-md-6 col-xs-12 col-2">
