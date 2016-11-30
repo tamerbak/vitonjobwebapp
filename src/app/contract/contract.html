@@ -210,11 +210,11 @@
       </div>
 
       <div>
-        <div *ngFor="let r of motifsGrouped.keys() ">{{motifsGrouped[r].libelle}}:
-          <div *ngFor="let m of motifsGrouped[r].motifs">
-            {{m}}
-          </div>
+        ******
+        <div *ngFor="let r of motifsGrouped | keys">{{r.key}}:
+
         </div>
+        ******
       </div>
 
 

@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component,Pipe, PipeTransform} from "@angular/core";
 import {Router} from "@angular/router";
 import {Helpers} from "../../providers/helpers.service";
 import {SharedService} from "../../providers/shared.service";
@@ -24,7 +24,8 @@ declare var Messenger,jQuery,moment: any;
   template: require('./contract.html'),
   styles: [require('./contract.scss')],
   directives: [AlertComponent, NKDatetime],
-  providers: [ContractService, MedecineService, ParametersService, Helpers,SmsService, OffersService,ProfileService,LoadListService]
+  providers: [ContractService, MedecineService, ParametersService, Helpers,SmsService, OffersService,ProfileService,LoadListService],
+  pipes: [KeysPipe]
 })
 export class Contract {
 
@@ -812,5 +813,16 @@ export class Contract {
         }
       }
     })
+  }
+}
+
+@Pipe({name: 'keys'})
+export class KeysPipe implements PipeTransform {
+  transform(value, args:string[]) : any {
+    let keys = [];
+    for (let key in value) {
+      keys.push({key: key, value: value[key]});
+    }
+    return keys;
   }
 }
