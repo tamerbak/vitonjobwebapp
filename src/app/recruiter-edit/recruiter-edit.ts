@@ -155,7 +155,7 @@ export class RecruiterEdit{
 
   sendNotification(accountid, tel, email) {
     this.recruiterService.generatePasswd(accountid).then((passwd) => {
-      let msg = this.currentUser.titre + " " + this.currentUser.nom + " " + this.currentUser.prenom + " vous invite à télécharger et installer l'application Vit-On-Job Employeur. http://www.vitonjob.com/telecharger . Votre mot de passe est " + passwd;
+      let msg = this.currentUser.titre + " " + this.currentUser.nom + " " + this.currentUser.prenom + " vous invite à télécharger et installer l'application Vit-On-Job Employeur: http://www.vitonjob.com/telecharger . Votre mot de passe est " + passwd;
 
       if (!this.isEmpty(tel)) {
         this.smsService.sendSms(tel, msg).then((data: any) => {
@@ -166,7 +166,7 @@ export class RecruiterEdit{
         });
       }
 
-      msg = this.currentUser.titre + " " + this.currentUser.nom + " " + this.currentUser.prenom + " vous invite à télécharger et installer l'application Vit-On-Job Employeur. http://www.vitonjob.com/telecharger , ou de vous rendre sur webapp.vitonjob.com . Votre mot de passe est " + passwd;
+      msg = this.currentUser.titre + " " + this.currentUser.nom + " " + this.currentUser.prenom + " vous invite à télécharger et installer l'application Vit-On-Job Employeur: http://www.vitonjob.com/telecharger, ou à vous rendre sur webapp.vitonjob.com. Votre mot de passe est " + passwd;
       if (!this.isEmpty(email)) {
         let title = 'Votre compte recruteur sur Vit-On-Job a été créé';
         this.emailService.sendEmail(email, title, msg).then((data: any) => {
