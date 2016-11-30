@@ -289,13 +289,13 @@
           <label class="col-md-10 col-xs-10 form-control-label">Avantage</label>
         </div>-->
         <div class="form-group row" *ngFor="let item of categoriesHeure">
-          <div class="col-md-6 col-xs-12">
+          <div class="col-md-6 col-xs-12" *ngIf="item.libelle != 'Heures travaillées'">
             <span>{{item.libelle}}</span>
           </div>
-          <div class="col-md-3 col-xs-12">
+          <div class="col-md-3 col-xs-12" *ngIf="item.libelle != 'Heures travaillées'">
             <input type="number" class="form-control" [min]="item.coefficient" [(ngModel)]="item.empValue" (change)="watchConditionEmp($event, item)"/>
           </div>
-          <div class="col-md-3 col-xs-12">
+          <div class="col-md-3 col-xs-12" *ngIf="item.libelle != 'Heures travaillées'">
             <span> {{preventNull(item.typeValue)}} </span>
           </div>
         </div>
