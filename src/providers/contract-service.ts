@@ -275,30 +275,6 @@ export class ContractService {
     });
   }
 
-  /**
-   * Load predefined recours list
-   */
-  loadGorupedMotifList() {
-    let sql =
-      "SELECT " +
-      "r.libelle AS recour " +
-      ", j.libelle AS motif " +
-      "FROM user_recours r " +
-      "LEFT JOIN user_justificatifs_de_recours j ON j.fk_user_recours = r.pk_user_recours;"
-    ;
-    console.log(sql);
-
-    return new Promise(resolve => {
-      let headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          this.data = data.data;
-          resolve(this.data);
-        });
-    });
-  }
-
   loadPeriodicites(){
     let sql = "select pk_user_periodicite_des_paiements as id, libelle from user_periodicite_des_paiements";
     console.log(sql);
@@ -319,8 +295,8 @@ export class ContractService {
    * Loading justification list
    * @param idRecours identifier of recours
    */
-  loadJustificationsList(idRecours) {
-    let sql = "select pk_user_justificatifs_de_recours as id, libelle from user_justificatifs_de_recours where fk_user_recours=" + idRecours;
+  loadJustificationsList() {
+    let sql = "select pk_user_justificatifs_de_recours as id, libelle from user_justificatifs_de_recours where dirty = 'N'";
     console.log(sql);
 
 

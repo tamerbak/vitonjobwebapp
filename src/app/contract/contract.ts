@@ -195,26 +195,8 @@ export class Contract {
     });
 
     //  Load recours list
-    this.contractService.loadRecoursList().then(data=> {
+    this.contractService.loadJustificationsList().then(data=> {
       this.recours = data;
-    });
-
-    //  Load recours list
-    this.contractService.loadGorupedMotifList().then((data: any) => {
-      let motifs = [];
-      console.log(data);
-
-      for (let i = 0; i < data.length; i++) {
-        let recour = data[i].recour;
-
-        if (!motifs[recour] || motifs[recour] == null) {
-          motifs[recour] = {'libelle': recour, 'motifs': []};
-        }
-        motifs[recour].motifs.push(data[i].motif);
-      }
-
-      this.motifsGrouped = motifs;
-      debugger;
     });
 
     this.contractService.loadPeriodicites().then(data=>{
@@ -372,27 +354,7 @@ export class Contract {
 
   }
 
-  recours2Selected(evt) {
-
-  }
-
-  recoursSelected(evt) {
-    let selectedRecoursLib = evt.target.value;
-    let id = 40;
-    for (let i = 0; i < this.recours.length; i++){
-      if (this.recours[i].libelle == selectedRecoursLib) {
-        id = this.recours[i].id;
-        break;
-      }
-    }
-
-    this.justificatifs = [];
-    this.contractService.loadJustificationsList(id).then(data=> {
-      this.justificatifs = data;
-    });
-  }
-
-  justifSelected(e){
+  recoursSelected(e) {
     if(e.target.value.indexOf("emploi à caractère saisonnier") != -1){
       this.contractData.indemniteFinMission = "0.00%";
     }else{
@@ -640,7 +602,7 @@ export class Contract {
   }
 
   goToYousignPage() {
-    let isValid = !this.missingJobyerData() && this.isMissionDateValid;
+    let isValid = true;//!this.missingJobyerData() && this.isMissionDateValid;
     if(!isValid){
       return;
     }

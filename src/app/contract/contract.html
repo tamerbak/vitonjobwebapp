@@ -183,7 +183,7 @@
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
- ---         <label>Recours &nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+          <label>Recours &nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
           <select
                   data-style="btn-secondary" #recoursSelect
                   class="recoursSelectPicker form-control contract-form-select" id="recours-select" [(ngModel)]="contractData.motif"
@@ -192,31 +192,6 @@
           </select>
         </div>
       </div>
-      <div class="col-xs-12">
-        <label>Recours &nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
-        <select
-          data-style="btn-secondary"
-          class="form-control"
-          id="recours-motif-select"
-          [(ngModel)]="contractData.motif"
-          name="recours_slct_2"
-          (change)="justifSelected($event)"
-          required
-        >
-          <optgroup *ngFor="let r of motifsGrouped" label="{{r.libelle}}">
-            <option *ngFor="let m of r.motifs" value="{{m}}">{{m}}</option>
-          </optgroup>
-        </select>
-      </div>
-
-      <div>
-        <div *ngFor="let r of motifsGrouped.keys() ">{{motifsGrouped[r].libelle}}:
-          <div *ngFor="let m of motifsGrouped[r].motifs">
-            {{m}}
-          </div>
-        </div>
-      </div>
-
 
       <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
@@ -236,14 +211,8 @@
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
----          <label>Motif &nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
-
-            <select
-              data-style="btn-secondary"
-              class="justificationSelectPicker form-control contract-form-select" id="justifications-select" [(ngModel)]="contractData.justification"
-              name="justification_slct" (change)="justifSelected($event)" required>
-              <option *ngFor="let r of justificatifs" value="{{r.libelle}}">{{r.libelle}}</option>
-            </select>
+          <label>Motif &nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+          <input id="justification_slct" [(ngModel)]="contractData.justification" name="justification_slct" class="form-control"/>
         </div>
       </div>
       <div class="col-md-6 col-xs-12 col-2">
