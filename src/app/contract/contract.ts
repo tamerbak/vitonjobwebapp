@@ -315,7 +315,7 @@ export class Contract {
       zonesTitre: '',
       risques: '',
       elementsCotisation: 0.0,
-      elementsNonCotisation: 10.0,
+      elementsNonCotisation: 1.0,
       titre: '',
       periodicite : '',
       prerequis : []
@@ -324,7 +324,7 @@ export class Contract {
       this.service.getRates().then((data: any) => {
         for (let i = 0; i < data.length; i++) {
           if (this.currentOffer.jobData.remuneration < data[i].taux_horaire) {
-            this.rate = parseFloat(data[i].coefficient) * this.currentOffer.jobData.remuneration;
+            this.rate = parseFloat(data[i].coefficient);
             this.contractData.elementsCotisation = this.rate;
             break;
           }
@@ -528,7 +528,7 @@ export class Contract {
       zonesTitre: '',
       risques: '',
       elementsCotisation: this.rate,
-      elementsNonCotisation: 10.0,
+      elementsNonCotisation: 1.0,
       titre: this.currentOffer.title,
       periodicite : '',
       prerequis : []
