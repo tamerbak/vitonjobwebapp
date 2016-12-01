@@ -406,7 +406,7 @@ export class ContractService {
         "fin": eh,
         "variables": contract.workHourVariable,
       },
-      "posteARisque": contract.postRisks,
+      "posteARisque": "Non",
       "surveillanceMedicale": contract.medicalSurv,
       "epi": contract.epi,
       "salaireBase": contract.baseSalary,
@@ -447,8 +447,8 @@ export class ContractService {
       "risques": contract.postRisks,
       "titreTransport": contract.titreTransport,
       "zonesTitre": contract.zonesTitre,
-      "elementsCotisation": contract.elementsCotisation,
-      "elementsNonCotisation": contract.elementsNonCotisation,
+      "elementsCotisation": "'"+contract.elementsCotisation+"'",
+      "elementsNonCotisation": "'"+contract.elementsNonCotisation+"'",
       "horaires": horaires
     };
     ////
