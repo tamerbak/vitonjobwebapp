@@ -118,7 +118,7 @@ export class AdvertEdit {
   }
 
   saveAdvert(){
-    this.advert.description = btoa(this.ckExport());
+    this.advert.description = atob(this.ckExport());
     if(this.attachementData && this.attachementData.length>0){
       let prefix = this.attachementData.split(',')[0];
       prefix = prefix.split(';')[0];
