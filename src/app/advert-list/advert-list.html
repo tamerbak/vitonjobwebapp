@@ -30,7 +30,7 @@
       </div>
 
       <div class="pull-left" style="padding-left: 20px;" *ngIf="adv.isThumbnail">
-          <img src="{{adv.thumbnail}}" style="max-height: 100px" alt="Vit-on-job" >
+          <img src="{{adv.thumbnail}}" style="max-height: 100px; max-width: 100px;" alt="Vit-on-job" >
       </div>
 
       <div class="col-xs-5 col-md-12 price pull-right">
@@ -43,10 +43,10 @@
 
       <div class="clearfix">
         <div class="pull-sm-right pull-md-right pull-lg-right pull-xl-right" style="position: absolute;bottom: 20px;right: 34px;" >
-            <button type="button" class="btn btn-primary btn-sm " style="background-color: #40aea9; color: white; border-radius: 0.2rem;" (click)="updateAdv(adv)" >
+            <button type="button" class="btn btn-primary btn-sm " style="background-color: #40aea9; color: white; border-radius: 0.2rem;" (click)="updateAdv(adv)" disabled>
               Détails
             </button>
-            <button type="button" class="btn btn-danger btn-sm " style="color: white; border-radius: 0.2rem;" (click)="deleteAdv(item)">Supprimer
+            <button type="button" class="btn btn-danger btn-sm " style="color: white; border-radius: 0.2rem;" (click)="deleteAdv(item)" disabled>Supprimer
             </button>
         </div>
 

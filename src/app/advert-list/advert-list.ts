@@ -8,7 +8,7 @@ import {ACCORDION_DIRECTIVES, AlertComponent} from "ng2-bootstrap";
   selector: '[advert-list]',
   template: require('./advert-list.html'),
   encapsulation: ViewEncapsulation.None,
-  styles:[require('./advert.scss')],
+  styles:[require('./advert-list.scss')],
   directives: [ACCORDION_DIRECTIVES, ROUTER_DIRECTIVES, AlertComponent],
   providers:[AdvertService, SharedService]
 })
@@ -34,7 +34,7 @@ export class AdvertList {
   }
 
   goToNewAdvert(){
-
+    this.router.navigate(['advert/edit', {obj:'add'}]);
   }
 
   updateAdv(adv){

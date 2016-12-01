@@ -129,6 +129,11 @@ export class OfferEdit{
   isOfferInContract: boolean;
   isOfferArchived: boolean;
 
+  /*
+   *  ADVERTISEMENTS MANAGEMENT
+   */
+  advertMode : any;
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private searchService: SearchService,
@@ -324,6 +329,16 @@ export class OfferEdit{
       todayHighlight: true,
       format: 'dd/mm/yyyy'
     };
+
+    this.advertMode = this.sharedService.getAdvertMode();
+    if(!this.advertMode){
+      this.advertMode= {
+        advMode : false,
+        id : 0
+      };
+    }
+
+    this.sharedService.setAdvertMode({advMode : false, id : 0});
   }
 
   updateConventionParameters(idOffer) {

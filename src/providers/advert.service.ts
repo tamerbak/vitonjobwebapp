@@ -39,6 +39,29 @@ export class AdvertService {
     });
   }
 
+  saveNewAdvert(advert : any){
+    let sql = "insert into user_annonce_entreprise " +
+      "(titre, contenu, piece_jointe, thumbnail, image_principale, fk_user_entreprise) " +
+      "values " +
+      "('"+this.sqlfyText(advert.titre)+"', '"+this.sqlfyText(advert.description)+"', " +
+        "'"+this.sqlfyText(advert.attachement.fileContent)+"', '"+this.sqlfyText(advert.thumbnail.fileContent)+"', " +
+        "'"+this.sqlfyText(advert.imgbg.fileContent)+"', "+advert.idEntreprise+") returning pk_user_annonce_entreprise";
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let res = {
+            id : 0
+          };
+          if(data && data.data && data.data.length>0){
+            res.id = data.data[0].pk_user_annonce_entreprise;
+          }
+          resolve(res);
+        });
+    });
+  }
+
   prepareContent(content : string){
     if(!content || content.length == 0)
       return "";
@@ -74,5 +97,14 @@ export class AdvertService {
 
     enc = "data:image/"+file.split('.')[1]+";base64,"+enc;
     return enc;
+  }
+  sqlfy(d) {
+    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " 00:00:00+00";
+  }
+
+  sqlfyText(text) {
+    if (!text || text.length == 0)
+      return "";
+    return text.replace(/'/g, "''")
   }
 }
