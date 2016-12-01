@@ -55,7 +55,7 @@ export class ContractService {
     var dt = new Date();
     var sql = "select pk_user_jobyer from user_jobyer where fk_user_account in (select pk_user_account from user_account where email='" + jobyer.email + "' or telephone='" + jobyer.tel + "') limit 1";
 
-    console.log(sql);
+    //console.log(sql);
 
 
     return new Promise(resolve => {
@@ -66,6 +66,40 @@ export class ContractService {
         .subscribe(data => {
           this.data = data;
           resolve(this.data);
+        });
+    });
+  }
+
+  getJobyerAdress(jobyer){
+    let sql = "SELECT    user_adresse_jobyer.fk_user_jobyer,    user_adresse_jobyer.personnelle,    " +
+      "user_adresse.nom AS lieu_dit,    user_adresse.numero AS numero,    user_code_postal.code AS cp,    " +
+      "user_rue.nom AS rue,    user_ville.nom AS ville " +
+      "FROM    public.user_adresse_jobyer,    public.user_adresse,    " +
+      "public.user_code_postal,    public.user_rue,    public.user_ville " +
+      "WHERE    user_adresse.pk_user_adresse = user_adresse_jobyer.fk_user_adresse AND   " +
+      "user_code_postal.pk_user_code_postal = user_adresse.fk_user_code_postal AND   " +
+      "user_rue.pk_user_rue = user_adresse.fk_user_rue AND   " +
+      "user_ville.pk_user_ville = user_adresse.fk_user_ville AND   " +
+      "lower_unaccent(user_adresse_jobyer.personnelle)='oui' AND   " +
+      "user_adresse_jobyer.fk_user_jobyer= "+jobyer.id;
+
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data:any) => {
+          let adr = '';
+          if(data.data && data.data.length>0){
+            let row = data.data[0];
+            adr = row.lieu_dit+" ";
+            adr = adr + row.numero+" ";
+            adr = adr + row.rue+" ";
+            adr = adr + row.cp+" ";
+            adr = adr + row.ville+" ";
+            adr = adr.trim();
+          }
+          resolve(adr);
         });
     });
   }
@@ -86,7 +120,7 @@ export class ContractService {
       this.http.post(this.configuration.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          console.log('retrieved data : ' + JSON.stringify(data));
+          //console.log('retrieved data : ' + JSON.stringify(data));
           this.data = data.data;
           resolve(this.data);
         });
@@ -107,7 +141,7 @@ export class ContractService {
       var sql = "SELECT c.pk_user_contrat,c.*, e.nom_ou_raison_sociale as nom FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "' order by c.pk_user_contrat";
     }
 
-    console.log(sql);
+    //console.log(sql);
 
     return new Promise(resolve => {
       let headers = new Headers();
@@ -217,7 +251,7 @@ export class ContractService {
       + ")"
       + " RETURNING pk_user_contrat";
 
-    console.log(sql);
+    //console.log(sql);
 
 
     return new Promise(resolve => {
@@ -241,7 +275,7 @@ export class ContractService {
 
   setOffer(idContract, idOffer) {
     let sql = "update user_contrat set fk_user_offre_entreprise = " + idOffer + " where pk_user_contrat=" + idContract;
-    console.log(sql);
+    //console.log(sql);
 
 
     return new Promise(resolve => {
@@ -261,7 +295,7 @@ export class ContractService {
    */
   loadRecoursList() {
     let sql = "select pk_user_recours as id, libelle from user_recours";
-    console.log(sql);
+    //console.log(sql);
 
 
     return new Promise(resolve => {
@@ -277,7 +311,7 @@ export class ContractService {
 
   loadPeriodicites(){
     let sql = "select pk_user_periodicite_des_paiements as id, libelle from user_periodicite_des_paiements";
-    console.log(sql);
+    //console.log(sql);
 
 
     return new Promise(resolve => {
@@ -297,7 +331,7 @@ export class ContractService {
    */
   loadJustificationsList() {
     let sql = "select pk_user_justificatifs_de_recours as id, libelle from user_justificatifs_de_recours where dirty = 'N'";
-    console.log(sql);
+    //console.log(sql);
 
 
     return new Promise(resolve => {
@@ -318,9 +352,9 @@ export class ContractService {
    */
   toDateString(date: number, options: any) {
     options = (options) ? options : '';
-    //console.log(JSON.stringify(this.slots));
-    //console.log('Calendar slot in ms: ' + date);
-    //console.log('Calendar slot in date format: ' + new Date(date));
+    ////console.log(JSON.stringify(this.slots));
+    ////console.log('Calendar slot in ms: ' + date);
+    ////console.log('Calendar slot in date format: ' + new Date(date));
     return new Date(date).toLocaleDateString('fr-FR', options);
   }
 
@@ -335,14 +369,29 @@ export class ContractService {
     return hours + ":" + minutes;
   }
 
-  prepareHoraire(calendar,prerequis) {
-    let html = "<ul>";
+  prepareHoraire(calendar,prerequis, epis, adress, moyen) {
+
+    let html = "<br><p><b>Calendrier de travail</b></p><ul>";
 
     if (calendar && calendar.length > 0) {
+      let slots = [];
       for (let i = 0; i < calendar.length; i++) {
         let c = calendar[i];
+        slots.push(c);
+      }
+      for(let i = 0 ; i < slots.length-1 ; i++)
+        for(let j = i ; j < slots.length ; j++){
+          if(slots[i].date>slots[j].date){
+            let tmp = slots[i];
+            slots[i] = slots[j];
+            slots[j] = tmp;
+          }
+        }
+      for (let i = 0; i < slots.length; i++) {
+        let c = slots[i];
         html = html + "<li><span style='font-weight:bold'>" + this.toDateString(c.date, '') + "</span>&nbsp;&nbsp; de " + this.toHourString(c.startHour) + " à " + this.toHourString(c.endHour) + "</li>";
       }
+
     }
 
     html = html + "</ul>";
@@ -355,6 +404,19 @@ export class ContractService {
       }
       html = html + "</ul>";
     }
+
+    if(epis && epis.length>0){
+      html = html + "<br><p><b>Equipements de protection individuels</b></p><ul>";
+      for (let i = 0; i < epis.length; i++) {
+        let p = epis[i].libelle;
+        html = html + "<li>"+ p + "</li>";
+      }
+      html = html + "</ul>";
+    }
+
+    html = html + "<br><p><b>Adresse de la mission : </b>"+adress+"</p>";
+    html = html + "<br><p><b>Moyen d'accès : </b>"+moyen+"</p>";
+
     return html;
   }
 
@@ -367,13 +429,18 @@ export class ContractService {
   callYousign(user: any, employer: any, jobyer: any, contract: any, projectTarget: string, currentOffer: any, idQuote: any) {
     let horaires = '';
     if (currentOffer) {
-      horaires = this.prepareHoraire(currentOffer.calendarData,contract.prerequis);
+      horaires = this.prepareHoraire(currentOffer.calendarData,contract.prerequis, contract.epiList, contract.adresseInterim, contract.moyenAcces);
     }
     //get configuration
-    let d = new Date(contract.workStartHour);
-    let sh = d.getHours()+":"+d.getMinutes();
-    d = new Date(contract.workEndHour);
-    let eh = d.getHours()+":"+d.getMinutes();
+    let sh = 'Horaires variables';
+    let eh = '';
+    if(contract.isScheduleFixed == 'true'){
+      let d = new Date(contract.workStartHour);
+      sh = d.getHours()+":"+d.getMinutes();
+      d = new Date(contract.workEndHour);
+      eh = " à "+d.getHours()+":"+d.getMinutes();
+    }
+
     this.configuration = Configs.setConfigs(projectTarget);
     var jsonData = {
       "titre": employer.titre,
@@ -388,11 +455,11 @@ export class ContractService {
       "lieuNaissance": jobyer.lieuNaissance,
       "nationalite": jobyer.nationaliteLibelle,
       "adresseDomicile": jobyer.address,
-      "dateDebutMission": this.helpers.parseDate(contract.missionStartDate),
-      "dateFinMission": this.helpers.parseDate(contract.missionEndDate),
+      "dateDebutMission": contract.missionStartDate,
+      "dateFinMission": contract.missionEndDate,
       "periodeEssai": contract.trialPeriod == null ? "" : ( contract.trialPeriod == 1 ? "1 jour" : (contract.trialPeriod + " jours")),
-      "dateDebutTerme": this.helpers.parseDate(contract.termStartDate),
-      "dateFinTerme": this.helpers.parseDate(contract.termEndDate),
+      "dateDebutTerme": contract.termStartDate,
+      "dateFinTerme": contract.termEndDate,
       "motifRecours": contract.motif,
       "justificationRecours": contract.justification,
       "qualification": contract.qualification,
@@ -447,12 +514,11 @@ export class ContractService {
       "risques": contract.postRisks,
       "titreTransport": contract.titreTransport,
       "zonesTitre": contract.zonesTitre,
-      "elementsCotisation": "'"+contract.elementsCotisation+"'",
-      "elementsNonCotisation": "'"+contract.elementsNonCotisation+"'",
+      "elementsCotisation": ""+contract.elementsCotisation,
+      "elementsNonCotisation": ""+contract.elementsNonCotisation,
       "horaires": horaires
     };
-    ////
-    console.log(JSON.stringify(jsonData));
+
 
     let partner = GlobalConfigs.global['electronic-signature'];
 
@@ -477,7 +543,6 @@ export class ContractService {
         'environnement':'DEV'
       });
 
-    console.log('dataSign' + JSON.stringify(dataSign));
 
     // Compute ID according to env
     let calloutId = 338;
@@ -515,7 +580,6 @@ export class ContractService {
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
           this.data = data;
-          console.log(this.data);
           resolve(this.data);
         });
     });
@@ -551,14 +615,14 @@ export class ContractService {
       "" + c.endHour + "," +
       "'NON', " +
       "'NON')";
-    console.log(sql);
+    //console.log(sql);
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
       this.http.post(this.configuration.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          console.log(JSON.stringify(data));
+          //console.log(JSON.stringify(data));
           resolve(data);
         });
     });
