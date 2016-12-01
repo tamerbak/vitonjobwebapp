@@ -245,4 +245,12 @@ export class SharedService {
   setAdvertMode(value){
     this.setStorageVariable("ADVERT",value);
   }
+
+  setCurrentAdv(value) {
+    this.setStorageVariable("currentAdv", value);
+  }
+
+  getCurrentAdv() {
+    return this.getStorageVariable("currentAdv");
+  }
 }

@@ -1,7 +1,7 @@
 import {Component, ViewEncapsulation} from "@angular/core";
 import {AdvertService} from "../../providers/advert.service";
 import {SharedService} from "../../providers/shared.service";
-import {Router, ROUTER_DIRECTIVES} from "@angular/router";
+import {Router, ROUTER_DIRECTIVES, ActivatedRoute, Params} from "@angular/router";
 import {ACCORDION_DIRECTIVES, AlertComponent} from "ng2-bootstrap";
 import {Utils} from "../utils/utils";
 
@@ -28,6 +28,7 @@ export class AdvertEdit {
 
   constructor(private advertService: AdvertService,
               private router: Router,
+              private route: ActivatedRoute,
               private sharedService: SharedService) {
     this.currentUser = this.sharedService.getCurrentUser();
 
@@ -63,6 +64,17 @@ export class AdvertEdit {
 
   ngOnInit() {
     window['CKEDITOR']['replace']( 'content_cke' );
+
+    //obj = "add", "detail"
+    this.route.params.forEach((params: Params) => {
+      this.obj = params['obj'];
+    });
+
+    if (this.obj == "detail") {
+      this.advert = this.sharedService.getCurrentAdv();
+    }
+
+    debugger;
   }
 
   ngAfterViewInit(): void {
