@@ -9,7 +9,13 @@ export class AdvertService {
   }
 
   loadAdverts(idEntreprise){
-    let sql = "select pk_user_annonce_entreprise as id, titre as title, contenu as content, thumbnail, created " +
+    let sql = "select " +
+      "pk_user_annonce_entreprise as id" +
+      ", titre as titre" +
+      ", contenu as content" +
+      ", image_principale as imgbg" +
+      ", thumbnail" +
+      ", created " +
       "from user_annonce_entreprise " +
       "where dirty='N' and fk_user_entreprise="+idEntreprise+" order by pk_user_annonce_entreprise desc";
 
@@ -22,15 +28,36 @@ export class AdvertService {
           if(data && data.data){
             for(let i = 0 ; i < data.data.length ; i++){
               let r = data.data[i];
-              let adv= {
+              let adv = {
                 id : r.id,
-                title : r.title,
-                content : this.prepareContent(r.content),
+                'class' : 'com.vitonjob.annonces.Annonce',
+                idEntreprise : idEntreprise,
+                titre : r.titre,
+                description : this.prepareContent(r.content),
                 briefContent : this.prepareBriefContent(r.content),
+                attachement : {
+                  'class':'com.vitonjob.annonces.Attachement',
+                  code : 0,
+                  status : '',
+                  fileContent : ''
+                },
+                thumbnail : {
+                  'class':'com.vitonjob.annonces.Attachement',
+                  code : 0,
+                  status : '',
+                  fileContent : this.prepareImage(r.thumbnail)
+                },
+                isThumbnail : r.thumbnail && r.thumbnail.length > 0,
+                imgbg : {
+                  'class':'com.vitonjob.annonces.Attachement',
+                  code : 0,
+                  status : '',
+                  fileContent : this.prepareImage(r.imgbg)
+                },
+                rubriques : [],
                 created : this.parseDate(r.created),
-                thumbnail : this.prepareImage(r.thumbnail),
-                isThumbnail : r.thumbnail && r.thumbnail.length>0
               };
+
               adverts.push(adv);
             }
           }

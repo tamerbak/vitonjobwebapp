@@ -26,11 +26,11 @@
   <div class="col-lg-12 col-xs-12">
     <section class="widget" widget *ngFor="let adv of adverts" style="min-height: 200px" >
       <div class="widget-body row">
-        <h4><strong>{{adv.title}}</strong></h4>
+        <h4><strong>{{adv.titre}}</strong></h4>
       </div>
 
       <div class="pull-left" style="padding-left: 20px;" *ngIf="adv.isThumbnail">
-          <img src="{{adv.thumbnail}}" style="max-height: 100px; max-width: 100px;" alt="Vit-on-job" >
+          <img src="{{adv.thumbnail.fileContent}}" style="max-height: 100px; max-width: 100px;" alt="Vit-on-job" >
       </div>
 
       <div class="col-xs-5 col-md-12 price pull-right">

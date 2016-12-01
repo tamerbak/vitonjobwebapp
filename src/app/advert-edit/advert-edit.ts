@@ -72,9 +72,15 @@ export class AdvertEdit {
 
     if (this.obj == "detail") {
       this.advert = this.sharedService.getCurrentAdv();
+
+      jQuery('.fileinput-thumbnail').append(
+        jQuery('<img>').attr('src', this.advert.thumbnail.fileContent)
+      );
+      jQuery('.fileinput-imgbg').append(
+        jQuery('<img>').attr('src', this.advert.imgbg.fileContent)
+      );
     }
 
-    debugger;
   }
 
   ngAfterViewInit(): void {
@@ -130,7 +136,7 @@ export class AdvertEdit {
   }
 
   saveAdvert(){
-    this.advert.description = atob(this.ckExport());
+    this.advert.description = btoa(this.ckExport());
     if(this.attachementData && this.attachementData.length>0){
       let prefix = this.attachementData.split(',')[0];
       prefix = prefix.split(';')[0];
@@ -162,31 +168,6 @@ export class AdvertEdit {
       this.thumbnailData = '';
       this.attachementData = '';
       this.coverData = '';
-      this.advert = {
-        'class' : 'com.vitonjob.annonces.Annonce',
-        idEntreprise : this.currentUser.employer.entreprises[0].id,
-        titre : '',
-        description : '',
-        attachement : {
-          'class':'com.vitonjob.annonces.Attachement',
-          code : 0,
-          status : '',
-          fileContent : ''
-        },
-        thumbnail : {
-          'class':'com.vitonjob.annonces.Attachement',
-          code : 0,
-          status : '',
-          fileContent : ''
-        },
-        imgbg : {
-          'class':'com.vitonjob.annonces.Attachement',
-          code : 0,
-          status : '',
-          fileContent : ''
-        },
-        rubriques : []
-      };
     });
   }
 

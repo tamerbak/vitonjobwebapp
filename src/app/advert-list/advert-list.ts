@@ -39,7 +39,7 @@ export class AdvertList {
 
   updateAdv(adv){
     this.sharedService.setCurrentAdv(adv);
-    this.router.navigate(['advert/edit', {obj:'edit'}]);
+    this.router.navigate(['advert/edit', {obj:'detail'}]);
   }
 
   deleteAdv(adv){
