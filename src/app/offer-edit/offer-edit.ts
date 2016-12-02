@@ -774,7 +774,7 @@ export class OfferEdit{
 
   }
 
-  addSlot() {
+  addSlot(ev) {
     if (this.slot.startHour == 0 || this.slot.endHour == 0) {
       return;
     }
@@ -800,7 +800,9 @@ export class OfferEdit{
       var s = this.convertSlotsForDisplay(this.slot);
       this.slots.push(s);
     } else {
-      this.offer.calendarData.push(this.slot);
+      if(ev != 'drop'){
+        this.offer.calendarData.push(this.slot);
+      }
       this.offersService.updateOfferCalendar(this.offer, this.projectTarget).then(() => {
         this.setOfferInLocal();
         this.slots = [];
@@ -868,11 +870,30 @@ export class OfferEdit{
   convertEventsToSlots(events){
     let eventsConverted = []
     for(let i = 0; i < events.length; i++){
-      var slotTemp = {
+      let slotTemp = {
         date: this.toDateString(new Date(events[i].start._d).getTime()),
         dateEnd: this.toDateString(new Date(events[i].end._d).getTime()),
         startHour: new Date(events[i].start._d).getHours() + ":" + new Date(events[i].start._d).getMinutes(),
         endHour: new Date(events[i].end._d).getHours() + ":" + new Date(events[i].end._d).getMinutes(),
+        pause: events[i].pause
+      };
+      eventsConverted.push(slotTemp);
+    }
+    return eventsConverted;
+  }
+
+  convertEventsToSlotsToSave(events){
+    let eventsConverted = []
+    for(let i = 0; i < events.length; i++){
+      let hs = new Date(events[i].start._d).getHours()*60;
+      let ms = new Date(events[i].start._d).getMinutes();
+      let he = new Date(events[i].end._d).getHours()*60;
+      let me = new Date(events[i].end._d).getMinutes();
+      var slotTemp = {
+        date: new Date(events[i].start._d).getTime(),
+        dateEnd: new Date(events[i].end._d).getTime(),
+        startHour: hs + ms,
+        endHour: he + me,
         pause: events[i].pause
       };
       eventsConverted.push(slotTemp);
@@ -1814,7 +1835,7 @@ export class OfferEdit{
               //true // make the event "stick"
             );
             this.addEvent(evt);
-            this.addSlot();
+            this.addSlot('');
           }
           this.$calendar.fullCalendar('unselect');
           jQuery('#create-event-modal').modal('hide');
@@ -1826,23 +1847,44 @@ export class OfferEdit{
         this.event = event;
         jQuery('#show-event-modal').modal('show');
       },
-      editable: false,
+      editable: true,
       //droppable: true,
 
       eventDrop: (event, delta, revertFunc): void => {
-        let evs = this.$calendar.fullCalendar('clientEvents');
         this.slot.date = event.start._d;
         this.slot.dateEnd = event.end._d;
         this.slot.startHour = event.start._d;
         this.slot.endHour = event.end._d;
         this.slot.pause = event.pause;
         if (!this.checkHour()) {
+          this.slot = {
+            date: 0,
+            dateEnd: 0,
+            startHour: 0,
+            endHour: 0,
+            pause: false
+          };
           revertFunc();
           return;
         }
         this.slots = [];
+        let evs = this.$calendar.fullCalendar('clientEvents');
         this.slots = this.convertEventsToSlots(evs);
-
+        if (this.obj != "detail") {
+          this.slotsToSave = [];
+          this.slotsToSave = this.convertEventsToSlotsToSave(evs);
+          this.slot = {
+            date: 0,
+            dateEnd: 0,
+            startHour: 0,
+            endHour: 0,
+            pause: false
+          };
+        }else{
+          this.offer.calendarData = [];
+          this.offer.calendarData = this.convertEventsToSlotsToSave(evs);
+          this.addSlot("drop");
+        }
       },
       lang : 'fr'
     };
