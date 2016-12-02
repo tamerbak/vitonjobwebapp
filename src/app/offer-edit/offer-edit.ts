@@ -751,6 +751,11 @@ export class OfferEdit{
       this.slots.splice(index, 1);
       this.slotsToSave.splice(index, 1);
     } else {
+      if(this.offer.calendarData.length == 1){
+        this.addAlert("danger", "Une offre doit avoir au moins un créneau de disponibilité. Veuillez ajouter un autre créneau avant de pouvoir supprimer celui-ci.", "slot");
+        this.alertsSlot = [];
+        return;
+      }
       //remove event from calendar
       let ev = this.calendar.events.filter((e)=> {
         return (e.start == event.start && e.end == event.end);
@@ -772,10 +777,9 @@ export class OfferEdit{
       });
     }
     jQuery('#show-event-modal').modal('hide');
-
   }
 
-  addSlot() {
+  addSlot(ev) {
     if (this.slot.startHour == 0 || this.slot.endHour == 0) {
       return;
     }
@@ -801,7 +805,9 @@ export class OfferEdit{
       var s = this.convertSlotsForDisplay(this.slot);
       this.slots.push(s);
     } else {
-      this.offer.calendarData.push(this.slot);
+      if(ev != 'drop'){
+        this.offer.calendarData.push(this.slot);
+      }
       this.offersService.updateOfferCalendar(this.offer, this.projectTarget).then(() => {
         this.setOfferInLocal();
         this.slots = [];
@@ -869,11 +875,30 @@ export class OfferEdit{
   convertEventsToSlots(events){
     let eventsConverted = []
     for(let i = 0; i < events.length; i++){
-      var slotTemp = {
+      let slotTemp = {
         date: this.toDateString(new Date(events[i].start._d).getTime()),
         dateEnd: this.toDateString(new Date(events[i].end._d).getTime()),
         startHour: new Date(events[i].start._d).getHours() + ":" + new Date(events[i].start._d).getMinutes(),
         endHour: new Date(events[i].end._d).getHours() + ":" + new Date(events[i].end._d).getMinutes(),
+        pause: events[i].pause
+      };
+      eventsConverted.push(slotTemp);
+    }
+    return eventsConverted;
+  }
+
+  convertEventsToSlotsToSave(events){
+    let eventsConverted = []
+    for(let i = 0; i < events.length; i++){
+      let hs = new Date(events[i].start._d).getHours()*60;
+      let ms = new Date(events[i].start._d).getMinutes();
+      let he = new Date(events[i].end._d).getHours()*60;
+      let me = new Date(events[i].end._d).getMinutes();
+      var slotTemp = {
+        date: new Date(events[i].start._d).getTime(),
+        dateEnd: new Date(events[i].end._d).getTime(),
+        startHour: hs + ms,
+        endHour: he + me,
         pause: events[i].pause
       };
       eventsConverted.push(slotTemp);
@@ -895,6 +920,12 @@ export class OfferEdit{
     // If end hour is 0:00, force 23:59 such as midnight minute
     if (endHourTotMinutes == 0) {
       endHourTotMinutes = (60 * 24) - 1;
+    }
+
+    // Check that today is over than the selected day
+    if (Date.now() > this.slot.date.getTime()) {
+      this.addAlert("danger", "La date sélectionnée doit être supérieure ou égale à la date de d'aujourd'hui", "slot");
+      return false;
     }
 
     // Check that end hour is over than begin hour
@@ -1099,7 +1130,7 @@ export class OfferEdit{
       this.offer.calendarData = this.slotsToSave;
       let roundMin = (Math.round(this.minHourRate * 100) / 100);
 
-      if (!this.offer.jobData.job || !this.offer.jobData.sector || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || roundMin > this.offer.jobData.remuneration) {
+      if (!this.offer.jobData.job || this.offer.jobData.job == 0 || !this.offer.jobData.sector || this.offer.jobData.sector == 0 || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || roundMin > this.offer.jobData.remuneration || !this.offer.nbPoste ||  this.offer.nbPoste <= 0) {
         this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
         return;
       }
@@ -1815,35 +1846,64 @@ export class OfferEdit{
               //true // make the event "stick"
             );
             this.addEvent(evt);
-            this.addSlot();
+            this.addSlot('');
           }
           this.$calendar.fullCalendar('unselect');
           jQuery('#create-event-modal').modal('hide');
         };
-
+        this.slot = {
+          date: 0,
+          dateEnd: 0,
+          startHour: 0,
+          endHour: 0,
+          pause: false
+        };
+        this.alertsSlot = [];
+        this.isFulltime = false;
         jQuery('#create-event-modal').modal('show');
       },
       eventClick: (event): void => {
         this.event = event;
         jQuery('#show-event-modal').modal('show');
       },
-      editable: false,
+      editable: true,
       //droppable: true,
 
       eventDrop: (event, delta, revertFunc): void => {
-        let evs = this.$calendar.fullCalendar('clientEvents');
         this.slot.date = event.start._d;
         this.slot.dateEnd = event.end._d;
         this.slot.startHour = event.start._d;
         this.slot.endHour = event.end._d;
         this.slot.pause = event.pause;
         if (!this.checkHour()) {
+          this.slot = {
+            date: 0,
+            dateEnd: 0,
+            startHour: 0,
+            endHour: 0,
+            pause: false
+          };
           revertFunc();
           return;
         }
         this.slots = [];
+        let evs = this.$calendar.fullCalendar('clientEvents');
         this.slots = this.convertEventsToSlots(evs);
-
+        if (this.obj != "detail") {
+          this.slotsToSave = [];
+          this.slotsToSave = this.convertEventsToSlotsToSave(evs);
+          this.slot = {
+            date: 0,
+            dateEnd: 0,
+            startHour: 0,
+            endHour: 0,
+            pause: false
+          };
+        }else{
+          this.offer.calendarData = [];
+          this.offer.calendarData = this.convertEventsToSlotsToSave(evs);
+          this.addSlot("drop");
+        }
       },
       lang : 'fr'
     };
