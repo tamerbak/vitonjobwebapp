@@ -1866,8 +1866,10 @@ export class OfferEdit{
         this.event = event;
         jQuery('#show-event-modal').modal('show');
       },
-      editable: true,
+      //editable: true,
       //droppable: true,
+      eventDurationEditable: false,
+      eventStartEditable: true,
 
       eventDrop: (event, delta, revertFunc): void => {
         this.slot.date = event.start._d;
