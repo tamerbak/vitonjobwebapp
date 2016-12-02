@@ -359,7 +359,7 @@ export class OfferEdit{
 
     //add change event to endTime timepicker
     jQuery('#' + elements[1]).timepicker().on('changeTime.timepicker', function (e) {
-      if (e.time.value == "0:00" || e.time.value == "12:00") {
+      if (e.time.value == "0:00") {
         jQuery('#' + elements[1]).timepicker('setTime', '11:59 PM');
       }
     });
