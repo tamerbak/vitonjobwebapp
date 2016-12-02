@@ -18,16 +18,19 @@ import {DateUtils} from "../utils/date-utils";
 import {ConventionService} from "../../providers/convention.service";
 import {CandidatureService} from "../../providers/candidature-service";
 import {SmsService} from "../../providers/sms-service";
+import {ModalSlots} from "./modal-slots/modal-slots";
 
 declare var Messenger, jQuery: any;
 declare var google: any;
+declare var moment: any;
+declare var require;
 
 @Component({
   selector: '[offer-edit]',
   template: require('./offer-edit.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./offer-edit.scss')],
-  directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime, ModalOptions, ModalOfferTempQuote],
+  directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime, ModalOptions, ModalOfferTempQuote, ModalSlots],
   providers: [OffersService, SearchService, FinanceService, LoadListService, ConventionService, CandidatureService, SmsService]
 })
 
@@ -129,6 +132,14 @@ export class OfferEdit{
   isOfferInContract: boolean;
   isOfferArchived: boolean;
 
+  //Calendar
+  calendar: any;
+  $calendar: any;
+  dragOptions: Object = { zIndex: 999, revert: true, revertDuration: 0 };
+  event: any = {};
+  createEvent: any;
+  isEventCreated = false;
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private searchService: SearchService,
@@ -151,9 +162,18 @@ export class OfferEdit{
       code: '',
       libelle: ''
     }
+
+    this.offer = this.sharedService.getCurrentOffer();
+    this.initCalendar();
+
   }
 
   ngOnInit(): void {
+
+    // Init Calendar
+    this.$calendar = jQuery('#calendar');
+    this.$calendar.fullCalendar(this.calendar);
+    jQuery('.draggable').draggable(this.dragOptions);
 
     //obj = "add", "detail", or "recruit"
     this.route.params.forEach((params: Params) => {
@@ -197,6 +217,8 @@ export class OfferEdit{
 
     if (this.obj == "detail") {
       this.offer = this.sharedService.getCurrentOffer();
+
+      //this.initCalendar();
 
       this.isOfferArchived = (this.offer.etat == 'en archive' ? true : false);
 
@@ -313,6 +335,7 @@ export class OfferEdit{
     //init slot
     this.slot = {
       date: 0,
+      dateEnd: 0,
       startHour: 0,
       endHour: 0,
       pause: false
@@ -712,31 +735,56 @@ export class OfferEdit{
 
   //<editor-fold desc="Slots management">
 
-  removeSlot(i) {
+  removeSlot(event) {
     if (this.obj != "detail") {
-      this.slots.splice(i, 1);
+      //remove event from calendar
+      let ev = this.calendar.events.filter((e)=> {
+        return (new Date(e.start._d).getTime() == new Date(event.start._d).getTime() && new Date(e.end._d).getTime() == new Date(event.end._d).getTime());
+      });
+      let index = this.calendar.events.indexOf(ev[0]);
+      if (index != -1) {
+        this.calendar.events.splice(index, 1);
+      }
+      this.$calendar.fullCalendar('removeEvents', function (event) {
+        return new Date(event.start._d).getTime() == new Date(ev[0].start._d).getTime() && new Date(event.end._d).getTime() == new Date(ev[0].end._d).getTime();
+      });
+      this.slots.splice(index, 1);
+      this.slotsToSave.splice(index, 1);
     } else {
-      this.offer.calendarData.splice(i, 1);
+      //remove event from calendar
+      let ev = this.calendar.events.filter((e)=> {
+        return (e.start == event.start && e.end == event.end);
+      });
+      let index = this.calendar.events.indexOf(ev[0]);
+      if (index != -1) {
+        this.calendar.events.splice(index, 1);
+      }
+      this.$calendar.fullCalendar('removeEvents', function (event) {
+        return new Date(event.start._d).getTime() == ev[0].start && new Date(event.end._d).getTime() == ev[0].end;
+      });
+      //remove slot from local
+      this.offer.calendarData.splice(index, 1);
+      //remove slot from remote
       this.offersService.updateOfferCalendar(this.offer, this.projectTarget).then(() => {
         this.setOfferInLocal();
         this.slots = [];
         this.convertDetailSlotsForDisplay();
       });
     }
+    jQuery('#show-event-modal').modal('hide');
+
   }
 
   addSlot() {
-    if (this.slot.date == 0 || this.slot.startHour == 0 || this.slot.endHour == 0) {
+    if (this.slot.startHour == 0 || this.slot.endHour == 0) {
       return;
     }
-    //slots should be coherent
-    if (this.checkHour() == false)
-      return;
 
     if (this.obj != "detail") {
       this.slotsToSave.push(this.slot);
     }
     this.slot.date = this.slot.date.getTime();
+    this.slot.dateEnd = this.slot.dateEnd.getTime();
     var h = this.slot.startHour.getHours() * 60;
     var m = this.slot.startHour.getMinutes();
     this.slot.startHour = h + m;
@@ -761,11 +809,11 @@ export class OfferEdit{
       });
     }
     //reset datetime component
-    this.resetDatetime("slotDate");
     this.resetDatetime('slotEHour');
     this.resetDatetime('slotSHour');
     this.slot = {
       date: 0,
+      dateEnd: 0,
       startHour: 0,
       endHour: 0,
       pause: false
@@ -775,6 +823,7 @@ export class OfferEdit{
   convertSlotsForDisplay(s) {
     var slotTemp = {
       date: this.toDateString(s.date),
+      dateEnd: this.toDateString(s.dateEnd),
       startHour: this.toHourString(s.startHour),
       endHour: this.toHourString(s.endHour),
       pause: s.pause
@@ -786,12 +835,50 @@ export class OfferEdit{
     for (let i = 0; i < this.offer.calendarData.length; i++) {
       var slotTemp = {
         date: this.toDateString(this.offer.calendarData[i].date),
+        dateEnd: this.toDateString(this.offer.calendarData[i].dateEnd),
         startHour: this.toHourString(this.offer.calendarData[i].startHour),
         endHour: this.toHourString(this.offer.calendarData[i].endHour),
         pause: this.offer.calendarData[i].pause
       };
       this.slots.push(slotTemp);
     }
+  }
+
+  convertDetailSlotsForCalendar() {
+    let events = [];
+    if(this.offer){
+      for (let i = 0; i < this.offer.calendarData.length; i++) {
+        let isPause = this.offer.calendarData[i].pause;
+        let startHour = this.toHourString(this.offer.calendarData[i].startHour);
+        let endHour = this.toHourString(this.offer.calendarData[i].endHour);
+        let startDate = new Date(this.offer.calendarData[i].date);
+        let endDate = new Date(this.offer.calendarData[i].dateEnd);
+        let title = (isPause ? "Pause de ": "Créneau de ");
+        var slotTemp = {
+          title: title + startHour + " à " + endHour,
+          start: startDate.setHours(+startHour.split(":")[0], +startHour.split(":")[1]),
+          end: endDate.setHours(+endHour.split(":")[0], +endHour.split(":")[1]),
+          pause: isPause
+        };
+        events.push(slotTemp);
+      }
+    }
+    return events;
+  }
+
+  convertEventsToSlots(events){
+    let eventsConverted = []
+    for(let i = 0; i < events.length; i++){
+      var slotTemp = {
+        date: this.toDateString(new Date(events[i].start._d).getTime()),
+        dateEnd: this.toDateString(new Date(events[i].end._d).getTime()),
+        startHour: new Date(events[i].start._d).getHours() + ":" + new Date(events[i].start._d).getMinutes(),
+        endHour: new Date(events[i].end._d).getHours() + ":" + new Date(events[i].end._d).getMinutes(),
+        pause: events[i].pause
+      };
+      eventsConverted.push(slotTemp);
+    }
+    return eventsConverted;
   }
 
   checkHour() {
@@ -1035,6 +1122,8 @@ export class OfferEdit{
         this.offer.jobData.epi = [];
       }
 
+      //this.router.navigate(['offer/calendar', {offer: this.offer, isOfferToAdd: true}]);
+
       this.offersService.setOfferInRemote(this.offer, this.projectTarget).then((data: any) => {
         this.dataValidation = true;
         let offer = JSON.parse(data._body);
@@ -1185,6 +1274,14 @@ export class OfferEdit{
       day: "numeric"//, hour: "2-digit", minute: "2-digit"
     };
     return new Date(date).toLocaleDateString('fr-FR', dateOptions);
+  }
+
+  getHourFromDate(time: number) {
+    let d = new Date(time);
+    let h = d.getHours();
+    let m = +d.getMinutes();
+    //m = (m.toString().length == 1 ? "0"+m : +m);
+    return h + ":" + m;
   }
 
   addAlert(type, msg, section): void {
@@ -1628,5 +1725,127 @@ export class OfferEdit{
 
   preventNull(str) {
     return Utils.preventNull(str);
+  }
+
+
+  // calendar functions
+  addEvent(event): void {
+    this.calendar.events.push(event);
+  };
+
+  changeView(view): void {
+    this.$calendar.fullCalendar('changeView', view);
+  };
+
+  currentMonth(): string {
+    return moment(this.$calendar.fullCalendar('getDate')).format('MMM YYYY');
+  };
+
+  currentDay(): string {
+    return moment(this.$calendar.fullCalendar('getDate')).format('dddd');
+
+  };
+
+  prev(): void {
+    this.$calendar.fullCalendar('prev');
+  };
+
+  next(): void {
+    this.$calendar.fullCalendar('next');
+  };
+
+  initCalendar() {
+    let date = new Date();
+    let d = date.getDate();
+    let m = date.getMonth();
+    let y = date.getFullYear();
+
+    //get params
+    /*this.route.params.forEach((params: Params) => {
+     this.offer = params['offer'];
+     this.isOfferToAdd = params['isOfferToAdd'];
+     });*/
+
+    this.calendar = {
+      header: {
+        left: '',
+        center: '',
+        right: ''
+      },
+      axisFormat: 'H:mm',
+      slotDuration: '00:15:00',
+      allDayText:"Au-delà d'un seul jour",
+      events: this.convertDetailSlotsForCalendar(),
+      selectable: true,
+      selectHelper: true,
+
+      select: (start, end): void => {
+        this.createEvent = () => {
+          let hs = this.slot.startHour.getHours();
+          let ms = this.slot.startHour.getMinutes();
+          let he = this.slot.endHour.getHours();
+          let me = this.slot.endHour.getMinutes();
+          start._d.setHours(hs, ms);
+          end._d.setDate(end._d.getDate() - 1);
+          end._d.setHours(he, me);
+          //slots should be coherent
+          this.slot.date = start._d;
+          this.slot.dateEnd = end._d;
+          if (this.checkHour() == false) {
+            end._d.setDate(end._d.getDate() + 1);
+            return;
+          }
+          // Show add offer form:
+          //this.isEventCreated = true;
+          //render slot in the calendar
+          let title = (this.event.title) ? this.event.title: "Créneau de ";
+          let evt = {
+            title: title + hs + ":" + ms + " à " + he + ":" + me,
+            start: start,
+            end: end,
+            //allDay: allDay,
+            //description: 'ici je peux mettre une description de l\'offre',
+            backgroundColor: '#64bd63',
+            textColor: '#fff',
+            pause: this.slot.pause
+          }
+          if (title) {
+            this.$calendar.fullCalendar('renderEvent',
+              evt
+              //true // make the event "stick"
+            );
+            this.addEvent(evt);
+            this.addSlot();
+          }
+          this.$calendar.fullCalendar('unselect');
+          jQuery('#create-event-modal').modal('hide');
+        };
+
+        jQuery('#create-event-modal').modal('show');
+      },
+      eventClick: (event): void => {
+        this.event = event;
+        jQuery('#show-event-modal').modal('show');
+      },
+      editable: false,
+      //droppable: true,
+
+      eventDrop: (event, delta, revertFunc): void => {
+        let evs = this.$calendar.fullCalendar('clientEvents');
+        this.slot.date = event.start._d;
+        this.slot.dateEnd = event.end._d;
+        this.slot.startHour = event.start._d;
+        this.slot.endHour = event.end._d;
+        this.slot.pause = event.pause;
+        if (!this.checkHour()) {
+          revertFunc();
+          return;
+        }
+        this.slots = [];
+        this.slots = this.convertEventsToSlots(evs);
+
+      },
+      lang : 'fr'
+    };
   }
 }

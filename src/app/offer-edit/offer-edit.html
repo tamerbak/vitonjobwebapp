@@ -6,16 +6,28 @@
 </ol>
 <div class="row">
   <div class="col-xs-12 pull-right" style="margin-bottom: 1em;">
-    <a href="javascript:history.go(-1)"><button type="button" class="btn btn-secondary btn-sm" name="button"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Retour</button></a>
+    <a href="javascript:history.go(-1)">
+      <button type="button" class="btn btn-secondary btn-sm" name="button"><span class="glyphicon glyphicon-arrow-left"
+                                                                                 aria-hidden="true"></span> Retour
+      </button>
+    </a>
   </div>
 </div>
-<h1 class="page-title">{{currentUser.estRecruteur ? 'Recruteur' : (currentUser.estEmployeur ? 'Employeur' : 'Jobyer')}}
-  - <span
-    class="fw-semi-bold">{{obj == "add" ? 'Nouvelle offre' : 'Détails de l\'offre'}}</span></h1>
+<!--div class="row">
+  <h1 class="page-title">{{currentUser.estRecruteur ? 'Recruteur' : (currentUser.estEmployeur ? 'Employeur' : 'Jobyer')}}
+    - <span
+      class="fw-semi-bold">{{obj == "add" ? 'Nouvelle offre' : 'Détails de l\'offre'}}</span></h1>
+</div-->
 
 <div class="row">
+  <div class="col-lg-3 col-xl-4 col-xs-12">
+    <h4>Mes <span class="fw-semi-bold">disponibilités</span></h4>
+    <p>Choisissez vos disponibilités sur le calendrier.</p>
+  </div>
+</div>
 
-  <div class="col-lg-8 col-xl-offset-2 col-xs-12">
+<div class="row">
+  <div class="col-lg-3 col-xl-4 col-xs-12">
     <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
       <div [innerHTML]="alert.msg"></div>
     </alert>
@@ -86,7 +98,7 @@
     <!-- !VIDEO -->
     <!-- JOB -->
 
-    <section widget class="widget widget-offer">
+    <section widget class="widget widget-offer" >
       <header class="bb widget-offer-header">
         <h6><span class="fw-semi-bold widget-offer-header-title">Job</span></h6>
       </header>
@@ -139,7 +151,7 @@
               </div>
             </div>
             <input type="hidden" class="select2 job-select form-control" name="job"
-                   placeholder="Recherchez votre job" [(ngModel)]="selectedJob" />
+                   placeholder="Recherchez votre job" [(ngModel)]="selectedJob"/>
             <!--select
               data-minimum-results-for-search="10"
               data-placeholder="Recherchez votre job"
@@ -247,7 +259,8 @@
             {{ projectTarget == 'employer' ? 'Adresse de la mission' : 'Adresse de départ vers le lieu de travail' }}
           </label>
           <div class="col-md-7 col-xs-12">
-            <input id="autocompleteOfferAdress" type="text" class="form-control" placeholder="Saisissez l'adresse de la mission" (keyup)="watchOfferAddress($event)"
+            <input id="autocompleteOfferAdress" type="text" class="form-control"
+                   placeholder="Saisissez l'adresse de la mission" (keyup)="watchOfferAddress($event)"
                    [(ngModel)]="offerAddress" (input)="autocompleteOfferAddress()"/>
           </div>
         </div>
@@ -270,7 +283,8 @@
 
       <fieldset *ngIf="projectTarget == 'employer'">
         <legend><strong>Conditions d'emploi</strong></legend>
-        <alert *ngFor="let alert of alertsConditionEmp; let i = index" [type]="alert.type + ' alert-sm'" dismissible="false">
+        <alert *ngFor="let alert of alertsConditionEmp; let i = index" [type]="alert.type + ' alert-sm'"
+               dismissible="false">
           <div [innerHTML]="alert.msg"></div>
         </alert>
         <div class="form-group row">
@@ -304,7 +318,8 @@
             <span>{{item.libelle}}</span>
           </div>
           <div class="col-md-3 col-xs-12">
-            <input type="number" class="form-control" [min]="item.coefficient" [(ngModel)]="item.empValue" (change)="watchConditionEmp($event, item)"/>
+            <input type="number" class="form-control" [min]="item.coefficient" [(ngModel)]="item.empValue"
+                   (change)="watchConditionEmp($event, item)"/>
           </div>
           <div class="col-md-3 col-xs-12">
             <span> {{preventNull(item.typeValue)}} </span>
@@ -315,7 +330,8 @@
             <span>{{item.libelle}}</span>
           </div>
           <div class="col-md-3 col-xs-12">
-            <input type="number" class="form-control" [min]="item.coefficient" [(ngModel)]="item.empValue" (change)="watchConditionEmp($event, item)"/>
+            <input type="number" class="form-control" [min]="item.coefficient" [(ngModel)]="item.empValue"
+                   (change)="watchConditionEmp($event, item)"/>
           </div>
           <div class="col-md-3 col-xs-12">
             <span> {{preventNull(item.typeValue)}} </span>
@@ -335,8 +351,9 @@
         <div class="container-fluid">
           <div class="row">
             <div class="col-xs-10">
-              <input *ngIf="projectTarget == 'employer'" type="hidden" class="select2 prerequis-select form-control" name="prerequis"
-                     placeholder="Formations et habilitations" [(ngModel)]="prerequisOb" />
+              <input *ngIf="projectTarget == 'employer'" type="hidden" class="select2 prerequis-select form-control"
+                     name="prerequis"
+                     placeholder="Formations et habilitations" [(ngModel)]="prerequisOb"/>
             </div>
             <div class="col-xs-2">
               <button class="btn btn-primary"
@@ -368,8 +385,9 @@
         <div class="container-fluid">
           <div class="row">
             <div class="col-xs-10">
-              <input *ngIf="projectTarget == 'employer'" type="hidden" class="select2 epi-select form-control" name="EPI"
-                     placeholder="Equipement de protection individuel" [(ngModel)]="epi" />
+              <input *ngIf="projectTarget == 'employer'" type="hidden" class="select2 epi-select form-control"
+                     name="EPI"
+                     placeholder="Equipement de protection individuel" [(ngModel)]="epi"/>
 
             </div>
             <div class="col-xs-2">
@@ -401,7 +419,7 @@
     <!-- !JOB -->
     <!-- DISPO -->
 
-    <section widget class="widget widget-offer">
+    <!--section widget class="widget widget-offer">
       <header class="bb widget-offer-header">
         <h6><span class="fw-semi-bold widget-offer-header-title">Disponibilités</span></h6>
       </header>
@@ -409,7 +427,7 @@
 
         <legend><strong>Créneaux</strong></legend>
 
-        <!-- Créneaux -->
+        <!-- Créneaux >
         <div class="form-group row required">
           <label class="col-md-2 col-xs-6 form-control-label">Nature</label>
           <label class="col-md-4 col-xs-6 form-control-label">Date</label>
@@ -436,7 +454,7 @@
                 style="display: block; width: 100%;"
                 class="btn btn-danger mb-xs col-md-2 col-xs-12"
                 role="button"
-                (click)="removeSlot(j)" [disabled]="isDeleteSlotDisabled() || isOfferInContract || isOfferArchived">
+                (click)="removeSlot(j)" [disabled]="isDeleteSlotDisabled()  || isOfferInContract || isOfferArchived">
                 <i class="glyphicon glyphicon-trash"></i>
               </button>
             </div>
@@ -509,7 +527,7 @@
         </div>
 
       </div>
-    </section>
+    </section-->
 
     <!-- !DISPO -->
     <!-- PROFILE -->
@@ -630,7 +648,7 @@
     <!-- !PROFILE -->
     <!-- ACTIONS -->
 
-    <section class="widget" widget>
+    <section class="widget" widget >
 
       <div class="widget-body">
         <form class="form-horizontal" role="form">
@@ -639,7 +657,7 @@
               <div class="row">
                 <div class="col-xs-12">
                   <button type="button" class="btn btn-success fwidth" [disabled]="isOfferInContract || isOfferArchived" (click)="editOffer()">
-                    Ajouter l'offre
+                    Enregistrer
                   </button>
                 </div>
               </div>
@@ -687,6 +705,122 @@
 
     <!-- !ACTIONS -->
 
+  </div>
+  <div class="col-lg-9 col-xl-8 col-xs-12">
+    <section class="widget widget-calendar">
+      <div class="widget-body">
+        <div class="calendar-controls">
+          <div class="btn-group ">
+            <button class="btn btn-default" (click)="prev()"><i class="fa fa-angle-left"></i></button>
+            <button class="btn btn-default" (click)="next()"><i class="fa fa-angle-right"></i></button>
+          </div>
+          <div class="btn-group pull-right" data-toggle="buttons">
+            <label class="btn btn-default active" (click)="changeView('month')">
+              <input type="radio" name="view" value="month"> Mois
+            </label>
+            <label class="btn btn-default" (click)="changeView('agendaWeek')">
+              <input type="radio" name="view" value="agendaWeek"> Semaine
+            </label>
+            <label class="btn btn-default" (click)="changeView('agendaDay')">
+              <input type="radio" name="view" value="agendaDay"> Jour
+            </label>
+          </div>
+        </div>
+        <div id="calendar"></div>
+      </div>
+    </section>
+    <div class="modal fade modal-margin-top" id="show-event-modal">
+      <div class="modal-dialog " role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h5 *ngIf="event.title" class="modal-title">{{ event.title }}</h5>
+          </div>
+          <div class="modal-body">
+            <p><i class="fa fa-calendar text-muted fs-sm"></i> &nbsp; Du: {{ toDateString(event.start)}} à {{getHourFromDate(event.start)}}</p>
+            <p><i class="fa fa-calendar text-muted fs-sm"></i> &nbsp; Au: {{ toDateString(event.end)}} à {{getHourFromDate(event.end)}}</p>
+          </div>
+          <div class="modal-footer no-border">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+            <button (click)="removeSlot(event)" class="btn btn-danger">Supprimer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade modal-margin-top" id="create-event-modal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <section widget class="widget widget-offer">
+            <header class="bb widget-offer-header">
+              <h6><span class="fw-semi-bold widget-offer-header-title">Disponibilités</span></h6>
+            </header>
+            <div class="widget-body">
+
+              <legend><strong>Créneaux</strong></legend>
+
+              <!-- Créneaux -->
+              <div class="form-group row">
+                <label class="col-md-4 col-xs-4 form-control-label"></label>
+                <!--label class="col-md-4 col-xs-6 form-control-label">Date</label-->
+                <label class="col-md-4 col-xs-4 form-control-label">Heure de début</label>
+                <label class="col-md-4 col-xs-4 form-control-label">Heure de fin</label>
+              </div>
+
+              <alert *ngFor="let alert of alertsSlot; let i = index" [type]="alert.type + ' alert-sm'" dismissible="false">
+                <div [innerHTML]="alert.msg"></div>
+              </alert>
+              <alert *ngIf="triedValidate && slots.length == 0" [type]="'danger alert-sm'">
+                <div [innerHTML]="'* Veuillez renseigner au moins un créneau'"></div>
+              </alert>
+
+              <div class="form-group row required">
+                <div class="col-md-2 col-sm-2 col-xs-2">
+                  <label>
+                    <input type="checkbox" [checked]="isFulltime" class="form-control" (change)="watchFullTime($event)"/>
+                    Jour entier
+                  </label>
+                </div>
+                <div class="col-md-2 col-sm-2 col-xs-2">
+                  <label>
+                    <input type="checkbox" [checked]="isPause" class="form-control" (change)="watchPause($event)"/>
+                    Pause
+                  </label>
+                </div>
+                <div class="col-md-4 col-sm-3 col-xs-6 offer-hour-new">
+                  <datetime [hidden]="isFulltime"
+                    id="slotSHour"
+                    [datepicker]="false"
+                    [timepicker]="{ showMeridian: false, minuteStep: 15 }"
+                    [(ngModel)]="slot.startHour"
+                    readonly = "true"
+                  ></datetime>
+                  <input *ngIf="isFulltime" class="form-control"
+                          value="09:00"
+                          readonly/>
+                </div>
+                <div class="col-md-4 col-sm-3 col-xs-6 offer-hour-new">
+                  <datetime [hidden]="isFulltime"
+                    id="slotEHour"
+                    [datepicker]="false"
+                    [timepicker]="{ showMeridian: false, minuteStep: 15 }"
+                    [(ngModel)]="slot.endHour"
+                  ></datetime>
+                  <input *ngIf="isFulltime" class="form-control"
+                         value="17:00"
+                         readonly/>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <div class="modal-footer no-border">
+            <button data-dismiss="modal" class="btn btn-default">Annuler</button>
+            <button (click)="createEvent()" [disabled]="!(slot.startHour && slot.endHour)" class="btn btn-success">Ajouter</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
