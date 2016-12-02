@@ -301,13 +301,14 @@ export class OfferEdit{
     }
 
     //loadLanguages
-    this.langs = this.sharedService.getLangList();
-    if (!this.langs || this.langs.length == 0) {
+    //  Cette partie est commentée pour forcer les prochaines versions à retélécharger la liste des langues triée
+    //this.langs = this.sharedService.getLangList();
+    //if (!this.langs || this.langs.length == 0) {
       this.listService.loadLanguages().then((data: any) => {
         this.langs = data.data;
         this.sharedService.setLangList(this.langs);
-      })
-    }
+      });
+    //}
 
     //init slot
     this.slot = {
