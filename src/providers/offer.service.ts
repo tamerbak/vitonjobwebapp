@@ -167,7 +167,7 @@ export class OffersService {
 
     let payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      id: 20006,
+      id: 20010,
       args: [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'creation offre',
@@ -659,8 +659,10 @@ export class OffersService {
   attacheDay(idOffer, table, day) {
     let d = new Date(day.date);
     let sdate = this.sqlfy(d);
+    let de = new Date(day.dateEnd);
+    let edate = this.sqlfy(de);
     let isPause = day.pause ? "OUI" : "NON";
-    let sql = "insert into user_disponibilites_des_offres (fk_" + table + ", jour, heure_debut, heure_fin, pause) values (" + idOffer + ", '" + sdate + "', " + day.startHour + ", " + day.endHour + ", '" + isPause + "')";
+    let sql = "insert into user_disponibilites_des_offres (fk_" + table + ", jour, jour_de_fin, heure_debut, heure_fin, pause) values (" + idOffer + ", '" + sdate + "', '" + edate + "', " + day.startHour + ", " + day.endHour + ", '" + isPause + "')";
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();

@@ -1,0 +1,111 @@
+<div class="modal fade modal-margin-top" id="modal-slots">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel1">Disponibilités</h4>
+      </div>
+
+      <!--<section widget class="widget widget-offer">
+        <header class="bb widget-offer-header">
+          <h6><span class="fw-semi-bold widget-offer-header-title">Disponibilités</span></h6>
+        </header>
+        <div class="widget-body">
+
+          <legend><strong>Créneaux</strong></legend>
+
+          <div class="form-group row required">
+            <label class="col-md-2 col-xs-6 form-control-label">Nature</label>
+            <label class="col-md-2 col-xs-3 form-control-label">Heure de début</label>
+            <label class="col-md-2 col-xs-3 form-control-label">Heure de fin</label>
+          </div>
+
+          <div *ngFor="let item of slots, let j = index">
+            <div class="form-group row">
+              <div class="col-md-2 col-sm-5 col-xs-12">
+                <span>{{item.pause ? 'Pause' : ''}}</span>
+              </div>
+              <div class="col-md-2 col-sm-2 col-xs-4 offer-hour-new">
+                <input class="form-control" [(ngModel)]="item.startHour" disabled/>
+              </div>
+              <div class="col-md-2 col-sm-2 col-xs-4 offer-hour-new">
+                <input class="form-control" [(ngModel)]="item.endHour" disabled/>
+              </div>
+              <div class="col-md-2 col-sm-3 col-xs-4 offer-hour-action-button">
+                <button
+                        style="display: block; width: 100%;"
+                        class="btn btn-danger mb-xs col-md-2 col-xs-12"
+                        role="button"
+                        (click)="removeSlot(j)" [disabled]="isDeleteSlotDisabled()">
+                  <i class="glyphicon glyphicon-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <alert *ngFor="let alert of alertsSlot; let i = index" [type]="alert.type + ' alert-sm'" dismissible="false">
+            <div [innerHTML]="alert.msg"></div>
+          </alert>
+          <alert *ngIf="triedValidate && slots.length == 0" [type]="'danger alert-sm'">
+            <div [innerHTML]="'* Veuillez renseigner au moins un créneau'"></div>
+          </alert>
+
+          <div class="form-group row required">
+            <div class="col-md-1 col-sm-2 col-xs-2">
+              <label>
+                <input type="checkbox" [checked]="isFulltime" class="form-control" (change)="watchFullTime($event)"/>
+                Jour entier
+              </label>
+            </div>
+            <div class="col-md-1 col-sm-2 col-xs-2">
+              <label>
+                <input type="checkbox" [checked]="isPause" class="form-control" (change)="watchPause($event)"/>
+                Pause
+              </label>
+            </div>
+            <div class="col-md-2 col-sm-3 col-xs-6 offer-hour-new">
+              <datetime [hidden]="isFulltime"
+                        id="slotSHour"
+                        [datepicker]="false"
+                        [timepicker]="{ showMeridian: false, minuteStep: 15 }"
+                        [(ngModel)]="slot.startHour"
+                        readonly = "true"
+              ></datetime>
+              <input *ngIf="isFulltime" class="form-control"
+                     value="09:00"
+                     readonly/>
+            </div>
+            <div class="col-md-2 col-sm-3 col-xs-6 offer-hour-new">
+              <datetime [hidden]="isFulltime"
+                        id="slotEHour"
+                        [datepicker]="false"
+                        [timepicker]="{ showMeridian: false, minuteStep: 15 }"
+                        [(ngModel)]="slot.endHour"
+              ></datetime>
+              <input *ngIf="isFulltime" class="form-control"
+                     value="17:00"
+                     readonly/>
+            </div>
+            <div class="col-md-2 col-xs-12">
+              <button
+                      style="display: block; width: 100%;"
+                      class="btn btn-success mb-xs"
+                      role="button"
+                      (click)="addSlot()"
+                      [disabled]="!(slot.date && slot.startHour && slot.endHour)"
+              >
+                Ajouter
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>-->
+
+
+      <div class="modal-footer">
+        <button data-dismiss="modal" class="btn btn-default">Annuler</button>
+        <button type="button" class="btn btn-success" (click)="addSlot()">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
