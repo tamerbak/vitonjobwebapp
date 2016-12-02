@@ -1800,8 +1800,13 @@ export class OfferEdit{
     this.calendar = {
       header: {
         left: '',
-        center: '',
-        right: ''
+        center: 'title',
+        right: false
+      },
+      views: {
+        month: { // name of view
+          titleFormat: 'MMMM YYYY'
+        }
       },
       axisFormat: 'H:mm',
       slotDuration: '00:15:00',
@@ -1829,7 +1834,7 @@ export class OfferEdit{
           // Show add offer form:
           //this.isEventCreated = true;
           //render slot in the calendar
-          let title = (this.event.title) ? this.event.title: "Créneau de ";
+          let title = (!this.slot.pause ? "Créneau de " : "Pause de ");
           let evt = {
             title: title + hs + ":" + ms + " à " + he + ":" + me,
             start: start,
@@ -1850,16 +1855,9 @@ export class OfferEdit{
           }
           this.$calendar.fullCalendar('unselect');
           jQuery('#create-event-modal').modal('hide');
+          this.resetSlotModal();
         };
-        this.slot = {
-          date: 0,
-          dateEnd: 0,
-          startHour: 0,
-          endHour: 0,
-          pause: false
-        };
-        this.alertsSlot = [];
-        this.isFulltime = false;
+        this.resetSlotModal();
         jQuery('#create-event-modal').modal('show');
       },
       eventClick: (event): void => {
@@ -1878,13 +1876,7 @@ export class OfferEdit{
         this.slot.endHour = event.end._d;
         this.slot.pause = event.pause;
         if (!this.checkHour()) {
-          this.slot = {
-            date: 0,
-            dateEnd: 0,
-            startHour: 0,
-            endHour: 0,
-            pause: false
-          };
+          this.resetSlotModal();
           revertFunc();
           return;
         }
@@ -1894,13 +1886,7 @@ export class OfferEdit{
         if (this.obj != "detail") {
           this.slotsToSave = [];
           this.slotsToSave = this.convertEventsToSlotsToSave(evs);
-          this.slot = {
-            date: 0,
-            dateEnd: 0,
-            startHour: 0,
-            endHour: 0,
-            pause: false
-          };
+          this.resetSlotModal();
         }else{
           this.offer.calendarData = [];
           this.offer.calendarData = this.convertEventsToSlotsToSave(evs);
@@ -1909,5 +1895,25 @@ export class OfferEdit{
       },
       lang : 'fr'
     };
+  }
+
+  resetSlotModal(){
+    this.resetDatetime('slotEHour');
+    this.resetDatetime('slotSHour');
+    this.slot = {
+      date: 0,
+      dateEnd: 0,
+      startHour: 0,
+      endHour: 0,
+      pause: false
+    };
+    this.alertsSlot = [];
+    this.isFulltime = false;
+    this.isPause = false;
+  }
+
+  closeModal(){
+    this.resetSlotModal();
+    jQuery('#create-event-modal').modal('hide');
   }
 }
