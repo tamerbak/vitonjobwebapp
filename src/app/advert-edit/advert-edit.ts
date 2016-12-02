@@ -72,13 +72,15 @@ export class AdvertEdit {
 
     if (this.obj == "detail") {
       this.advert = this.sharedService.getCurrentAdv();
+      this.idAdvert = this.advert.id;
 
-      jQuery('.fileinput-thumbnail').append(
-        jQuery('<img>').attr('src', this.advert.thumbnail.fileContent)
-      );
-      jQuery('.fileinput-imgbg').append(
-        jQuery('<img>').attr('src', this.advert.imgbg.fileContent)
-      );
+      // jQuery('.fileinput-thumbnail').append(
+      //   jQuery('<img>').attr('src', this.advert.thumbnail.fileContent)
+      //   // this.thumbnailData.
+      // );
+      // jQuery('.fileinput-imgbg').append(
+      //   jQuery('<img>').attr('src', this.advert.imgbg.fileContent)
+      // );
     }
 
   }
@@ -161,14 +163,23 @@ export class AdvertEdit {
       this.advert.imgbg.fileContent = base64;
     }
 
-    this.alert("Prière de patienter, la sauvegarde peut prendre un moment à cause de la taille des fichiers","info");
-    this.advertService.saveNewAdvert(this.advert).then((result : any)=>{
-      this.idAdvert = result.id;
-      this.alert("L'annonce a été sauvegardée avec succès","info");
-      this.thumbnailData = '';
-      this.attachementData = '';
-      this.coverData = '';
-    });
+    this.alert("Prière de patienter, la sauvegarde peut prendre un moment à cause de la taille des fichiers", "info");
+    if (this.idAdvert) {
+      this.advertService.saveAdvert(this.advert).then((result: any)=> {
+        this.alert("L'annonce a été enregistré avec succès", "info");
+        this.thumbnailData = '';
+        this.attachementData = '';
+        this.coverData = '';
+      });
+    } else {
+      this.advertService.saveNewAdvert(this.advert).then((result: any)=> {
+        this.idAdvert = result.id;
+        this.alert("L'annonce a été sauvegardée avec succès", "info");
+        this.thumbnailData = '';
+        this.attachementData = '';
+        this.coverData = '';
+      });
+    }
   }
 
   saveAdvertWithOffer(){

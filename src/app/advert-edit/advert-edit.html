@@ -31,6 +31,33 @@
     </div>
 
     <div class="form-group">
+      <div class="col-md-8 col-xs-12">
+        <table class="table">
+          <thead>
+          <tr>
+            <th colspan="3">Documents</th>
+          </tr>
+          </thead>
+          <tr>
+            <td>Pièce jointe</td>
+            <td>{{ advert.attachement.fileName }}</td>
+            <td><a href="{{ advert.attachement.fileContent }}">{{ advert.attachement.fileName }}</a></td>
+          </tr>
+          <tr>
+            <td>Vignette</td>
+            <td>{{ advert.thumbnail.fileName }}</td>
+            <td><a href="{{ advert.thumbnail.fileContent }}">{{ advert.thumbnail.fileName }}</a></td>
+          </tr>
+          <tr>
+            <td>Image de couverture</td>
+            <td>{{ advert.imgbg.fileName }}</td>
+            <td><a href="{{ advert.imgbg.fileContent }}">{{ advert.imgbg.fileName }}</a></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="form-group">
       <label class="col-md-4 col-xs-12 form-control-label text-md-right">
         Pièce jointe
       </label>

@@ -13,6 +13,7 @@ export class AdvertService {
       "pk_user_annonce_entreprise as id" +
       ", titre as titre" +
       ", contenu as content" +
+      ", piece_jointe as attachement" +
       ", image_principale as imgbg" +
       ", thumbnail" +
       ", created " +
@@ -39,20 +40,23 @@ export class AdvertService {
                   'class':'com.vitonjob.annonces.Attachement',
                   code : 0,
                   status : '',
-                  fileContent : ''
+                  fileContent : '',
+                  fileName : this.getImageName(r.attachement),
                 },
                 thumbnail : {
                   'class':'com.vitonjob.annonces.Attachement',
                   code : 0,
                   status : '',
-                  fileContent : this.prepareImage(r.thumbnail)
+                  fileContent : this.prepareImage(r.thumbnail),
+                  fileName: this.getImageName(r.thumbnail)
                 },
                 isThumbnail : r.thumbnail && r.thumbnail.length > 0,
                 imgbg : {
                   'class':'com.vitonjob.annonces.Attachement',
                   code : 0,
                   status : '',
-                  fileContent : this.prepareImage(r.imgbg)
+                  fileContent : this.prepareImage(r.imgbg),
+                  fileName: this.getImageName(r.imgbg)
                 },
                 rubriques : [],
                 created : this.parseDate(r.created),
@@ -82,6 +86,33 @@ export class AdvertService {
             id : 0
           };
           if(data && data.data && data.data.length>0){
+            res.id = data.data[0].pk_user_annonce_entreprise;
+          }
+          resolve(res);
+        });
+    });
+  }
+
+  saveAdvert(advert: any) {
+    let sql = "UPDATE TABLE user_annonce_entreprise " +
+      "SET " +
+      "titre = '" + this.sqlfyText(advert.titre) + "', " +
+      "contenu = '" + this.sqlfyText(advert.description) + "', " +
+      "piece_jointe = '" + this.sqlfyText(advert.attachement.fileContent) + "', " +
+      "thumbnail = '" + this.sqlfyText(advert.thumbnail.fileContent) + "', " +
+      "image_principale = '" + this.sqlfyText(advert.imgbg.fileContent) + ")' " +
+      "WHERE " +
+      "id = " + advert.id + ";"
+    ;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let res = {
+            id: 0
+          };
+          if (data && data.data && data.data.length > 0) {
             res.id = data.data[0].pk_user_annonce_entreprise;
           }
           resolve(res);
@@ -124,6 +155,13 @@ export class AdvertService {
 
     enc = "data:image/"+file.split('.')[1]+";base64,"+enc;
     return enc;
+  }
+  getImageName(strImg) {
+    if(!strImg || strImg.length == 0)
+      return "";
+
+    let file = strImg.split(';')[0];
+    return file;
   }
   sqlfy(d) {
     return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " 00:00:00+00";
