@@ -755,8 +755,10 @@
             <header class="bb widget-offer-header">
               <h6><span class="fw-semi-bold widget-offer-header-title">Disponibilités</span></h6>
             </header>
-            <div class="widget-body">
-
+            <div class="widget-body" [hidden]="">
+              <alert *ngFor="let alert of alertsSlot; let i = index" [type]="alert.type + ' alert-sm'" dismissible="false">
+                <div [innerHTML]="alert.msg"></div>
+              </alert>
               <legend><strong>Créneaux</strong></legend>
 
               <!-- Créneaux -->

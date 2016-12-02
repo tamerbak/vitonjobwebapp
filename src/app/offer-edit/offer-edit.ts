@@ -750,6 +750,11 @@ export class OfferEdit{
       this.slots.splice(index, 1);
       this.slotsToSave.splice(index, 1);
     } else {
+      if(this.offer.calendarData.length == 1){
+        this.addAlert("danger", "Une offre doit avoir au moins un créneau de disponibilité. Veuillez ajouter un autre créneau avant de pouvoir supprimer celui-ci.", "slot");
+        this.alertsSlot = [];
+        return;
+      }
       //remove event from calendar
       let ev = this.calendar.events.filter((e)=> {
         return (e.start == event.start && e.end == event.end);
@@ -771,7 +776,6 @@ export class OfferEdit{
       });
     }
     jQuery('#show-event-modal').modal('hide');
-
   }
 
   addSlot(ev) {
@@ -915,6 +919,12 @@ export class OfferEdit{
     // If end hour is 0:00, force 23:59 such as midnight minute
     if (endHourTotMinutes == 0) {
       endHourTotMinutes = (60 * 24) - 1;
+    }
+
+    // Check that today is over than the selected day
+    if (Date.now() > this.slot.date.getTime()) {
+      this.addAlert("danger", "La date sélectionnée doit être supérieure ou égale à la date de d'aujourd'hui", "slot");
+      return false;
     }
 
     // Check that end hour is over than begin hour
@@ -1119,7 +1129,7 @@ export class OfferEdit{
       this.offer.calendarData = this.slotsToSave;
       let roundMin = (Math.round(this.minHourRate * 100) / 100);
 
-      if (!this.offer.jobData.job || !this.offer.jobData.sector || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || roundMin > this.offer.jobData.remuneration) {
+      if (!this.offer.jobData.job || this.offer.jobData.job == 0 || !this.offer.jobData.sector || this.offer.jobData.sector == 0 || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || roundMin > this.offer.jobData.remuneration || !this.offer.nbPoste ||  this.offer.nbPoste <= 0) {
         this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
         return;
       }
@@ -1840,7 +1850,15 @@ export class OfferEdit{
           this.$calendar.fullCalendar('unselect');
           jQuery('#create-event-modal').modal('hide');
         };
-
+        this.slot = {
+          date: 0,
+          dateEnd: 0,
+          startHour: 0,
+          endHour: 0,
+          pause: false
+        };
+        this.alertsSlot = [];
+        this.isFulltime = false;
         jQuery('#create-event-modal').modal('show');
       },
       eventClick: (event): void => {
