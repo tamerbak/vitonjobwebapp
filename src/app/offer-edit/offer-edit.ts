@@ -785,7 +785,9 @@ export class OfferEdit{
     }
 
     if (this.obj != "detail") {
+      this.slots.push(this.slot);
       this.slotsToSave.push(this.slot);
+      return;
     }
     this.slot.date = this.slot.date.getTime();
     this.slot.dateEnd = this.slot.dateEnd.getTime();
@@ -801,10 +803,7 @@ export class OfferEdit{
       this.slot.endHour = (60 * 24) - 1;
     }
 
-    if (this.obj != "detail") {
-      var s = this.convertSlotsForDisplay(this.slot);
-      this.slots.push(s);
-    } else {
+    if (this.obj == "detail") {
       if(ev != 'drop'){
         this.offer.calendarData.push(this.slot);
       }
@@ -814,16 +813,6 @@ export class OfferEdit{
         this.convertDetailSlotsForDisplay();
       });
     }
-    //reset datetime component
-    this.resetDatetime('slotEHour');
-    this.resetDatetime('slotSHour');
-    this.slot = {
-      date: 0,
-      dateEnd: 0,
-      startHour: 0,
-      endHour: 0,
-      pause: false
-    };
   }
 
   convertSlotsForDisplay(s) {
@@ -924,98 +913,59 @@ export class OfferEdit{
 
     // Check that today is over than the selected day
     if (Date.now() > this.slot.date.getTime()) {
-      this.addAlert("danger", "La date sélectionnée doit être supérieure ou égale à la date de d'aujourd'hui", "slot");
+      this.addAlert("danger", "La date sélectionnée doit être supérieure ou égale à la date d'aujourd'hui", "slot");
       return false;
     }
 
     // Check that end hour is over than begin hour
-    if (startHourTotMinutes >= endHourTotMinutes) {
+    if (this.slot.date >= this.slot.dateEnd) {
       this.addAlert("danger", "L'heure de début doit être inférieure à l'heure de fin", "slot");
       return false;
     }
 
-    // Check if chosen hour and date are lower than today date and hour
-    if (this.slot.date && new Date(this.slot.date).setHours(0, 0, 0, 0) == new Date().setHours(0, 0, 0, 0)) {
-      var h = new Date().getHours();
-      var m = new Date().getMinutes();
-      var minutesNow = this.offersService.convertHoursToMinutes(h + ':' + m);
-      if (this.slot.startHour && this.slot.startHour <= new Date()) {
-        this.addAlert("danger", "L'heure de début et de fin doivent être supérieures à l'heure actuelle", "slot");
-        return false;
-      }
-    }
-
     // Check that the slot is not overwriting an other one
     if (!this.slot.pause) {
-      if(!this.offersService.isSlotRespectsBreaktime(this.slots, this.slot)){
+      //total hours of one day should be lower than 10h
+      let isDailyDurationRespected = this.offersService.isDailySlotsDurationRespected(this.slots, this.slot);
+      if (!isDailyDurationRespected) {
+        this.addAlert("danger", "Le total des heures de travail de chaque journée ne doit pas dépasser les 10 heures. Veuillez réduire la durée de ce créneau", "slot");
+        return false;
+      }
+
+      /*if(!this.offersService.isSlotRespectsBreaktime(this.slots, this.slot)){
         this.addAlert("danger", "Veuillez mettre un délai de 11h entre deux créneaux.", "slot");
         return false;
-      }
-      //total hours of one day should be lower than 10h
-      let totalHours = this.offersService.calculateSlotsDurationByDay(this.slots, this.slot);
-      //600 is 10h converted to minutes
-      if (totalHours > 600) {
-        this.addAlert("danger", "Le total des heures de travail de la journée du " + this.toDateString(this.slot.date) + "  ne doit pas dépasser les 10 heures. Veuillez réduire la durée des créneaux de cette journée.", "slot");
-        return false;
-      }
-
+      }*/
       for (let i = 0; i < this.slots.length; i++) {
-        let sDate = DateUtils.rfcFormat(this.slots[i].date);
-        if (this.slot.date &&
-          new Date(this.slot.date).setHours(0, 0, 0, 0) == new Date(sDate).setHours(0, 0, 0, 0)
-        ) {
-          // Compute Minutes format start and end hour of existing slot
-          let slotStartTotMinutes = this.offersService.convertHoursToMinutes(this.slots[i].startHour);
-          let slotEndTotMinutes = this.offersService.convertHoursToMinutes(this.slots[i].endHour);
-
           // If end hour is 0:00, force 23:59 such as midnight minute
-          if (slotEndTotMinutes == 0) {
+          /*if (slotEndTotMinutes == 0) {
             slotEndTotMinutes = (60 * 24) - 1;
-          }
-
-          // HACK:
-          // First >= : Because a new slot can't start at the same time as previous start hour one's
-          // Second check < : because a new slot cans start directly after the end of the previous one
-          if (startHourTotMinutes >= slotStartTotMinutes && startHourTotMinutes < slotEndTotMinutes) {
-            this.addAlert("danger", "L'heure de début chevauche avec un autre créneau", "slot");
+          }*/
+          if ((this.slot.date >= this.slots[i].date && this.slot.dateEnd <= this.slots[i].dateEnd) || (this.slot.date >= this.slots[i].date && this.slot.date < this.slots[i].dateEnd) || (this.slot.dateEnd > this.slots[i].date && this.slot.dateEnd <= this.slots[i].dateEnd)) {
+            this.addAlert("danger", "Ce créneau chevauche avec un autre", "slot");
             return false;
           }
-
-          // HACK:
-          // First > : because a new slot cans finish at the time previous one start
-          // Second check <= : because a new slot can't finish at the same time as previous finish
-          if (endHourTotMinutes > slotStartTotMinutes && endHourTotMinutes <= slotEndTotMinutes) {
-            this.addAlert("danger", "L'heure de fin chevauche avec un autre créneau", "slot");
-            return false;
-          }
-        }
       }
     } else {
       let isPauseValid = false;
       for (let i = 0; i < this.slots.length; i++) {
-        let sDate = DateUtils.rfcFormat(this.slots[i].date);
-        if (this.slot.date &&
-          new Date(this.slot.date).setHours(0, 0, 0, 0) == new Date(sDate).setHours(0, 0, 0, 0)
-        ) {
-          let slotStartTotMinutes = this.offersService.convertHoursToMinutes(this.slots[i].startHour);
-          let slotEndTotMinutes = this.offersService.convertHoursToMinutes(this.slots[i].endHour);
+        let newSlotCopy = this.offersService.cloneSlot(this.slot);
+        let slotCopy = this.offersService.cloneSlot(this.slots[i]);
+          let slotStartTotMinutes = this.offersService.getHourFromDate(this.slots[i].date);
+          let slotEndTotMinutes = this.offersService.getHourFromDate(this.slots[i].endHour);
           // If end hour is 0:00, force 23:59 such as midnight minute
-          if (slotEndTotMinutes == 0) {
+          /*if (slotEndTotMinutes == 0) {
             slotEndTotMinutes = (60 * 24) - 1;
-          }
-          if (startHourTotMinutes > slotStartTotMinutes && endHourTotMinutes < slotEndTotMinutes && !this.slots[i].pause) {
-            isPauseValid = true;
-            break;
-          }
+          }*/
 
-          if (startHourTotMinutes >= slotStartTotMinutes && startHourTotMinutes < slotEndTotMinutes && this.slots[i].pause) {
-            this.addAlert("danger", "L'heure de début de pause chevauche avec un autre créneau de pause", "slot");
-            return false;
-          }
-          if (endHourTotMinutes > slotStartTotMinutes && endHourTotMinutes <= slotEndTotMinutes && this.slots[i].pause) {
-            this.addAlert("danger", "L'heure de fin de pause chevauche avec un autre créneau de pause", "slot");
-            return false;
-          }
+        if (((this.slot.date >= this.slots[i].date && this.slot.dateEnd <= this.slots[i].dateEnd) || (this.slot.date >= this.slots[i].date && this.slot.date < this.slots[i].dateEnd) || (this.slot.dateEnd > this.slots[i].date && this.slot.dateEnd <= this.slots[i].dateEnd)) && this.slots[i].pause) {
+          this.addAlert("danger", "Cette pause chevauche avec une autre", "slot");
+          return false;
+        }
+
+        //a break time should be included in a slot
+        if (this.slot.date > this.slots[i].date && this.slot.dateEnd < this.slots[i].dateEnd && !this.slots[i].pause) {
+          isPauseValid = true;
         }
       }
       if (!isPauseValid) {
@@ -1127,7 +1077,7 @@ export class OfferEdit{
     }
 
     if (this.obj != "detail") {
-      this.offer.calendarData = this.slotsToSave;
+      this.offer.calendarData = this.offersService.convertSlotsForSaving(this.slotsToSave);
       let roundMin = (Math.round(this.minHourRate * 100) / 100);
 
       if (!this.offer.jobData.job || this.offer.jobData.job == 0 || !this.offer.jobData.sector || this.offer.jobData.sector == 0 || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || roundMin > this.offer.jobData.remuneration || !this.offer.nbPoste ||  this.offer.nbPoste <= 0) {
@@ -1815,7 +1765,7 @@ export class OfferEdit{
       selectable: true,
       selectHelper: true,
 
-      select: (start, end): void => {
+      select: (start, end, allDay): void => {
         this.createEvent = () => {
           let hs = this.slot.startHour.getHours();
           let ms = this.slot.startHour.getMinutes();
@@ -1839,7 +1789,8 @@ export class OfferEdit{
             title: title + hs + ":" + ms + " à " + he + ":" + me,
             start: start,
             end: end,
-            //allDay: allDay,
+            //allDay is bugged, must be on false
+            allDay: false,
             //description: 'ici je peux mettre une description de l\'offre',
             backgroundColor: '#64bd63',
             textColor: '#fff',
