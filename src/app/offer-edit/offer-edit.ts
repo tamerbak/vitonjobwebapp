@@ -790,7 +790,9 @@ export class OfferEdit{
     }else{
       if(ev != 'drop'){
         this.slots.push(this.slot);
-        this.offer.calendarData.push(this.slot);
+        let slotClone = this.offersService.cloneSlot(this.slot);
+        let slotToSave = this.offersService.convertSlotsForSaving([slotClone]);
+        this.offer.calendarData.push(slotToSave[0]);
       }
       this.offersService.updateOfferCalendar(this.offer, this.projectTarget).then(() => {
         this.setOfferInLocal();
@@ -849,8 +851,8 @@ export class OfferEdit{
         let title = (isPause ? "Pause de ": "Créneau de ");
         var slotTemp = {
           title: title + startHour + " à " + endHour,
-          start: startDate.setHours(+startHour.split(":")[0], +startHour.split(":")[1]),
-          end: endDate.setHours(+endHour.split(":")[0], +endHour.split(":")[1]),
+          start: startDate.setHours(+startHour.split(":")[0], +startHour.split(":")[1], 0, 0),
+          end: endDate.setHours(+endHour.split(":")[0], +endHour.split(":")[1], 0, 0),
           pause: isPause
         };
         events.push(slotTemp);
@@ -911,10 +913,10 @@ export class OfferEdit{
         return false;
       }
 
-      /*if(!this.offersService.isSlotRespectsBreaktime(this.slots, this.slot)){
-        this.addAlert("danger", "Veuillez mettre un délai de 11h entre deux créneaux.", "slot");
+      if(!this.offersService.isSlotRespectsBreaktime(this.slots, this.slot)){
+        this.addAlert("danger", "Veuillez mettre un délai de 11h entre deux créneaux situés sur deux jours calendaires différents.", "slot");
         return false;
-      }*/
+      }
       for (let i = 0; i < slots.length; i++) {
           // If end hour is 0:00, force 23:59 such as midnight minute
           /*if (slotEndTotMinutes == 0) {
@@ -1767,9 +1769,9 @@ export class OfferEdit{
     let ms = this.slot.startHour.getMinutes();
     let he = this.slot.endHour.getHours();
     let me = this.slot.endHour.getMinutes();
-    start._d.setHours(hs, ms);
+    start._d.setHours(hs, ms, 0, 0);
     end._d.setDate(end._d.getDate() - 1);
-    end._d.setHours(he, me);
+    end._d.setHours(he, me, 0, 0);
     //slots should be coherent
     this.slot.date = start._d;
     this.slot.dateEnd = end._d;
@@ -1794,8 +1796,8 @@ export class OfferEdit{
     }
     if (title) {
       this.$calendar.fullCalendar('renderEvent',
-        evt
-        //true // make the event "stick"
+        evt,
+        true // make the event "stick"
       );
       this.addEvent(evt);
       this.addSlot('');

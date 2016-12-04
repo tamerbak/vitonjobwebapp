@@ -1384,44 +1384,25 @@ export class OffersService {
   isSlotRespectsBreaktime(slots, newSlot){
     //breaktime is 11h converted to milliseconds
     let breaktime = 39600000;
-    //one minute in miliseccond
-    let oneMinute = 60000;
-    //23:59 in minutes
-    let almostMidnight = 1439;
-
-    let hs = newSlot.startHour.getHours() * 1;
-    let ms = newSlot.startHour.getMinutes() * 1;
-    let currentMinStart = (hs * 60) + ms;
-    let currentStartDate = (new Date(newSlot.date).setHours(hs, ms, 0, 0)) / 1000;
-    let he = newSlot.endHour.getHours() * 1;
-    let me = newSlot.endHour.getMinutes() * 1;
-    let currentMinEnd = (he *60) + me;
-    let currentEndDate = (new Date(newSlot.date).setHours(he, me, 0, 0)) / 1000;
-    for(let i = 0; i < slots.length; i++){
+    let copyNewSlot = this.cloneSlot(newSlot);
+    for(let i = 0; i < slots.length; i++) {
       let s = slots[i];
-      let sDate = DateUtils.rfcFormat(s.date);
-      if(s.pause){
+      if (s.pause) {
         continue;
       }
-      let hs = s.startHour.split(':')[0] * 1;
-      let ms = s.startHour.split(':')[1] * 1;
-      let slotMinStart = (hs * 60) + ms;
-      let slotStartDate = new Date(sDate).setHours(hs, ms, 0, 0) / 1000;
-      let he = s.endHour.split(':')[0] * 1;
-      let me = s.endHour.split(':')[1] * 1;
-      let slotMinEnd = (he *60) + me;
-      let slotEndDate = new Date(sDate).setHours(he, me, 0, 0) / 1000;
-      if(currentStartDate - slotEndDate <= oneMinute && slotMinEnd == almostMidnight && currentMinStart == 0){
-        return true;
-      }
-      if(slotStartDate - currentEndDate <= oneMinute && slotMinStart == 0 && currentMinEnd == almostMidnight){
-        return true;
-      }
-      if((currentStartDate - slotEndDate) * 1000 < breaktime && new Date(sDate) <= newSlot.date){
-        return false;
-      }
-      if((slotStartDate - currentEndDate) * 1000 < breaktime && newSlot.date <= new Date(sDate) ){
-        return false;
+      let copyS = this.cloneSlot(s);
+      if (copyS.date.setHours(0, 0, 0, 0) == copyNewSlot.date.setHours(0, 0, 0, 0)) {
+        continue;
+      } else {
+        if (copyS.date > copyNewSlot.date) {
+          if (s.date.getTime() - newSlot.dateEnd.getTime() < breaktime) {
+            return false;
+          }
+        } else {
+          if (newSlot.date.getTime() - s.dateEnd.getTime() < breaktime) {
+            return false;
+          }
+        }
       }
     }
     return true;
@@ -1431,11 +1412,11 @@ export class OffersService {
     let slotCopy = this.cloneSlot(slot);
     let sDate = slotCopy.date;
     let eDate = slotCopy.dateEnd;
-    if(sDate.setHours(0, 0) == eDate.setHours(0, 0)){
+    if(sDate.setHours(0, 0, 0, 0) == eDate.setHours(0, 0, 0, 0)){
       return [slot];
     }else{
       let s1 = {date: slot.date, dateEnd: new Date(sDate.setHours(23, 59)), startHour: slot.startHour, endHour: slot.endHour, pause: slot.pause};
-      let s2 = {date: new Date(eDate.setHours(0, 0)), dateEnd: slot.dateEnd, startHour: slot.startHour, endHour: slot.endHour, pause: slot.pause};
+      let s2 = {date: new Date(eDate.setHours(0, 0, 0, 0)), dateEnd: slot.dateEnd, startHour: slot.startHour, endHour: slot.endHour, pause: slot.pause};
       return [s1, s2];
     }
   }
