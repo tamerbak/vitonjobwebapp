@@ -744,7 +744,7 @@
             <p><i class="fa fa-calendar text-muted fs-sm"></i> &nbsp; Au: {{ toDateString(event.end)}} à {{getHourFromDate(event.end)}}</p>
           </div>
           <div class="modal-footer no-border">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+            <button type="button" class="btn btn-default" (click)="closeDetailsModal()">Annuler</button>
             <button (click)="removeSlot(event)" class="btn btn-danger">Supprimer</button>
           </div>
         </div>
