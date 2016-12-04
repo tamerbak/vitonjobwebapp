@@ -31,6 +31,9 @@
     <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
       <div [innerHTML]="alert.msg"></div>
     </alert>
+    <alert *ngFor="let alert of alertsSlot; let i = index" [type]="alert.type + ' alert-sm'" dismissible="false">
+      <div [innerHTML]="alert.msg"></div>
+    </alert>
 
     <!-- VIDEO -->
 
@@ -759,7 +762,7 @@
               <h6><span class="fw-semi-bold widget-offer-header-title">Disponibilités</span></h6>
             </header>
             <div class="widget-body">
-              <legend><strong>Créneaux</strong></legend>
+              <legend><strong>Créneau du {{toDateString(startDate)}} au {{toDateString(endDate)}}</strong></legend>
 
               <!-- Créneaux -->
               <div class="form-group row">

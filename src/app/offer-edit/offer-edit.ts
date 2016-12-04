@@ -137,6 +137,8 @@ export class OfferEdit{
   $calendar: any;
   dragOptions: Object = { zIndex: 999, revert: true, revertDuration: 0 };
   event: any = {};
+  startDate: any;
+  endDate: any;
   createEvent: any;
   isEventCreated = false;
 
@@ -1239,7 +1241,7 @@ export class OfferEdit{
     let h = d.getHours();
     let m = +d.getMinutes();
     //m = (m.toString().length == 1 ? "0"+m : +m);
-    return h + ":" + m;
+    return DateUtils.formatHours(h) + ":" + DateUtils.formatHours(m);
   }
 
   addAlert(type, msg, section): void {
@@ -1745,6 +1747,8 @@ export class OfferEdit{
       eventStartEditable: true,
 
       select: (start, end, allDay): void => {
+        this.startDate = start._d;
+        this.endDate = end._d;
         this.createEvent = () => {
           this.addSlotInCalendar(start, end, allDay);
         };
@@ -1784,7 +1788,7 @@ export class OfferEdit{
     //render slot in the calendar
     let title = (!this.slot.pause ? "Créneau de " : "Pause de ");
     let evt = {
-      title: title + hs + ":" + ms + " à " + he + ":" + me,
+      title: title + DateUtils.formatHours(hs) + ":" + DateUtils.formatHours(ms) + " à " + DateUtils.formatHours(he) + ":" + DateUtils.formatHours(me),
       start: start,
       end: end,
       //allDay is bugged, must be false
@@ -1817,7 +1821,13 @@ export class OfferEdit{
     let slotsForDragEv = this.offersService.getSlotsForDraggingEvent(evs, this.slots);
     if(slotsForDragEv && slotsForDragEv.length > 0) {
       if (!this.checkHour(slotsForDragEv, this.slot)) {
-        this.resetSlotModal();
+        this.slot = {
+          date: 0,
+          dateEnd: 0,
+          startHour: 0,
+          endHour: 0,
+          pause: false
+        };
         revertFunc();
         return;
       }
