@@ -11,7 +11,7 @@ import {ModalUpdatePassword} from "../modal-update-password/modal-update-passwor
 import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
 import {ModalGeneralCondition} from "../modal-general-condition/modal-general-condition";
 import {RecruitButton} from "../components/recruit-button/recruit-button";
-
+import {ModalHomeLogout} from "../modal-home-logout/modal-home-logout";
 declare var require: any;
 declare var jQuery: any;
 declare var Messenger: any;
@@ -19,7 +19,7 @@ declare var Messenger: any;
 @Component({
   selector: 'home',
   template: require('./home.html'),
-  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalWelcome, ModalProfile, ModalUpdatePassword, ModalNotificationContract, ModalGeneralCondition, RecruitButton],
+  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalWelcome, ModalProfile, ModalUpdatePassword, ModalNotificationContract, ModalGeneralCondition, RecruitButton, ModalHomeLogout],
   providers: [SearchService, HomeService],
   styles: [require('./home.scss')],
   encapsulation: ViewEncapsulation.None
@@ -59,10 +59,9 @@ export class Home{
   }
 
   ngOnInit(): void {
-
     if (this.router.url === '/jobyer') {
-      this.sharedService.setProjectTarget('jobyer');
-    } else if (this.router.url === '/employeur') {
+     this.sharedService.setProjectTarget('jobyer');
+   } else if (this.router.url === '/employeur') {
       this.sharedService.setProjectTarget('employer');
     }
 
@@ -75,22 +74,23 @@ export class Home{
     });
 
     this.currentUser = this.sharedService.getCurrentUser();
+    console.log(this.currentUser);
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
       if (this.currentUser.mot_de_passe_reinitialise == "Oui") {
-        jQuery('#modal-update-password').modal({
+        jQuery('#modal-update-password').appendTo("body").modal({
           keyboard: false,
           backdrop: 'static'
         });
-        jQuery('#modal-update-password').modal('show');
+        jQuery('#modal-update-password').appendTo("body").modal('show');
       }
 
       if (this.isEmpty(this.currentUser.titre)) {
-        jQuery('#modal-general-condition').modal({
+        jQuery('#modal-general-condition').appendTo("body").modal({
           keyboard: false,
           backdrop: 'static'
         });
-        jQuery('#modal-general-condition').modal('show');
+        jQuery('#modal-general-condition').appendTo("body").modal('show');
       }
     } else {
       this.projectTarget = this.sharedService.getProjectTarget();
@@ -118,7 +118,6 @@ export class Home{
 
 
   }
-
   initHomeList() {
     if (!this.homeServiceData || this.homeServiceData.length == 0)
       return;
@@ -422,9 +421,9 @@ export class Home{
 
           this.currentJobyer = r.jobyer;
           if (r.obj == "profile") {
-            jQuery('#modal-profile').modal('show');
+            jQuery('#modal-profile').appendTo("body").modal('show');
           } else {
-            jQuery('#modal-notification-contract').modal('show');
+            jQuery('#modal-notification-contract').appendTo("body").modal('show');
           }
 
 
@@ -441,17 +440,17 @@ export class Home{
     var self = this;
     $('#modal-general-condition').on('hidden.bs.modal', function (e) {
       if(!gcRefused) {
-        jQuery('#modal-welcome').modal({
+        jQuery('#modal-welcome').appendTo("body").modal({
           keyboard: false,
           backdrop: 'static'
         });
-        jQuery('#modal-welcome').modal('show');
+        jQuery('#modal-welcome').appendTo("body").modal('show');
         $('#modal-welcome').on('hidden.bs.modal', function (e) {
-          jQuery('#modal-profile').modal({
+          jQuery('#modal-profile').appendTo("body").modal({
             keyboard: false,
             backdrop: 'static'
           });
-          jQuery('#modal-profile').modal('show');
+          jQuery('#modal-profile').appendTo("body").modal('show');
         });
       }else{
         self.sharedService.logOut();

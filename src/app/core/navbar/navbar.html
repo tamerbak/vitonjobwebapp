@@ -61,7 +61,7 @@
   <!-- this part is hidden for xs screens -->
   <div class="collapse navbar-collapse">
     <!-- search form! link it to your search server -->
-    <form class="navbar-form pull-xs-left" [hidden]="currentUser">
+   <!-- <form class="navbar-form pull-xs-left" [hidden]="currentUser">
       <div class="form-group">
         <div class="input-group input-group-no-border">
           <label style="color: white; margin-right: 10px; margin-top: 10px">Jobyer</label>
@@ -74,7 +74,8 @@
           <label style="color: white; margin-top: 10px; margin-left: 10px;">Employeur</label>
         </div>
       </div>
-    </form>
+    </form>-->
+
     <ul class="nav navbar-nav pull-xs-right" (click)="$event.preventDefault()">
       <li *ngIf="sharedService.getCurrentUser()" class="nav-item dropdown">
         <a class="nav-link dropdown-toggle"

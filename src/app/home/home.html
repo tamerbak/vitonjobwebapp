@@ -36,7 +36,7 @@
 
   </div>
 </div>
-  <div class="container-fluid list-home-container" [hidden]="upcomingOffers.length==0">
+  <body class="container-fluid list-home-container" [hidden]="upcomingOffers.length==0">
     <div class="row list-home-title">
       <div class="col-xl-12">
         <h3>
@@ -230,8 +230,11 @@
       2016 &copy; Vit-On-Job est une marque de Manaona.
     </footer>
   </div>
-<div modal-update-password></div>
-<div modal-notification-contract [jobyer]="currentJobyer" *ngIf="projectTarget == 'employer' && !isRecruteur"></div>
-<div modal-general-condition (onRefuse)="onGCRefused($event)"></div>
-<div modal-welcome></div>
-<div modal-profile [obj]="obj"></div>
+
+    </div>
+    <div modal-home-logout></div>
+    <div modal-update-password></div>
+    <div modal-notification-contract [jobyer]="currentJobyer" *ngIf="projectTarget == 'employer' && !isRecruteur"></div>
+    <div modal-general-condition (onRefuse)="onGCRefused($event)"></div>
+    <div modal-welcome></div>
+    <div modal-profile [obj]="obj"></div>

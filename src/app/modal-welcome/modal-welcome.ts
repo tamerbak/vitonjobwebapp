@@ -10,7 +10,6 @@ declare var jQuery: any;
 export class ModalWelcome{
   currentUser: any;
   projectTarget: string;
-
   msgWelcome1: string;
   msgWelcome2: string;
 
@@ -26,11 +25,10 @@ export class ModalWelcome{
       this.msgWelcome2 = "Vous êtes tout près de trouver votre " + (this.projectTarget == "jobyer" ? 'emploi.' : 'Jobyer.');
     }
   }
-
+  
   goToModalProfile(){
     this.close();
   }
-
   close(): void {
     jQuery('#modal-welcome').modal('hide');
   }
