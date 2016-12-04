@@ -746,12 +746,12 @@ export class OfferEdit{
       let index = this.calendar.events.indexOf(ev[0]);
       if (index != -1) {
         this.calendar.events.splice(index, 1);
+        this.$calendar.fullCalendar('removeEvents', function (event) {
+          return new Date(event.start._d).getTime() == new Date(ev[0].start._d).getTime() && new Date(event.end._d).getTime() == new Date(ev[0].end._d).getTime();
+        });
+        this.slots.splice(index, 1);
+        this.slotsToSave.splice(index, 1);
       }
-      this.$calendar.fullCalendar('removeEvents', function (event) {
-        return new Date(event.start._d).getTime() == new Date(ev[0].start._d).getTime() && new Date(event.end._d).getTime() == new Date(ev[0].end._d).getTime();
-      });
-      this.slots.splice(index, 1);
-      this.slotsToSave.splice(index, 1);
     } else {
       if(this.offer.calendarData.length == 1){
         this.addAlert("danger", "Une offre doit avoir au moins un créneau de disponibilité. Veuillez ajouter un autre créneau avant de pouvoir supprimer celui-ci.", "slot");
