@@ -1467,4 +1467,40 @@ export class OffersService {
     }
     return newSlots;
   }
+
+  /*
+  function returning a cloned list of current slots without the dragged slot
+   */
+  getSlotsForDraggingEvent(events, slots){
+    let index = -1;
+    //searching for the dragged slot
+    for(let j = 0; j < slots.length; j++){
+      for(let i = 0; i < events.length; i++){
+        if(events[i].start._d.getTime() == slots[j].date.getTime() && events[i].end._d.getTime() == slots[j].dateEnd.getTime()){
+          break;
+        }
+        if(i == events.length - 1 && events[i].start._d.getTime() != slots[j].date.getTime() && events[i].end._d.getTime() != slots[j].dateEnd.getTime()){
+          //dragged slot found :-)
+          index = j;
+          break;
+        }
+      }
+      //dragged slot found, no more searching
+      if(index != -1){
+        break;
+      }
+    }
+    // create a copy of the slot list, and remove the dragged slot from it
+    if(index != -1) {
+      let clonedSlots = [];
+      for (let i = 0; i < slots.length; i++) {
+        let clonedSlot = this.cloneSlot(slots[i]);
+        clonedSlots.push(clonedSlot);
+      }
+      clonedSlots.splice(index, 1);
+      return clonedSlots;
+    }else{
+      return null;
+    }
+  }
 }
