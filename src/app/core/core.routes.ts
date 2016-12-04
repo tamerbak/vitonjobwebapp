@@ -24,6 +24,7 @@ import {ConfirmExitPage, CanAccessPage} from "../../providers/routes.service";
 import {PaymentMethod} from "../payment-method/payment-method";
 import {About} from "../about/about";
 import {AdvertList} from "../advert-list/advert-list";
+import {ExtraCalendar} from "../extra-calendar/extra-calendar"
 
 /**
  * VitOnJob modules
@@ -84,7 +85,10 @@ export const CoreRoutes: RouterConfig = [
       {path: 'about', component: About},
 
       // Advert
-      {path: 'advert/list', component: AdvertList}
+      {path: 'advert/list', component: AdvertList},
+
+      // Extras
+      //{path: 'offer/calendar', component: ExtraCalendar}
     ]
   }
 ];

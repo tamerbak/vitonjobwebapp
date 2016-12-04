@@ -9,7 +9,6 @@ import {ProfileService} from "../../providers/profile.service";
 import {LoadListService} from "../../providers/load-list.service";
 import {Utils} from "../utils/utils";
 import {NKDatetime} from "ng2-datetime/ng2-datetime";
-import {isUndefined} from "es7-reflect-metadata/dist/dist/helper/is-undefined";
 import {OffersService} from "../../providers/offer.service";
 import {AlertComponent} from "ng2-bootstrap";
 import {SmsService} from "../../providers/sms-service";
@@ -47,6 +46,7 @@ export class Contract {
   hqAdress: string;
   rate: number = 0.0;
   recours: any;
+  motifsGrouped : any;
   justificatifs: any;
   nationalities: any;
 
@@ -127,6 +127,7 @@ export class Contract {
     this.jobyer.numSS = '';
     this.jobyer.nationaliteLibelle = '';
 
+
     this.contractService.getJobyerComplementData(this.jobyer, this.projectTarget).then((data: any)=> {
       if (data && data.length > 0) {
         let datum = data[0];
@@ -152,7 +153,12 @@ export class Contract {
           this.contractData.finTitreTravail = this.simpleDateFormat(this.jobyer.finTitreTravail);
         }
 
-        this.contractData.numeroTitreTravail = this.jobyer.titreTravail;
+        this.contractData.numeroTitreTravail =this.natureTitre() + this.jobyer.titreTravail;
+
+        this.contractService.getJobyerAdress(this.jobyer).then((adress : string)=>{
+          this.jobyer.address = adress;
+        });
+
 
         this.profileService.loadAdditionalUserInformations(this.jobyer.id).then((data: any) => {
           if (data && data.data && data.data.length > 0) {
@@ -195,7 +201,7 @@ export class Contract {
     });
 
     //  Load recours list
-    this.contractService.loadRecoursList().then(data=> {
+    this.contractService.loadJustificationsList().then(data=> {
       this.recours = data;
     });
 
@@ -308,14 +314,14 @@ export class Contract {
       primes: 0,
       headOffice: "",
       missionContent: "",
-      category:"",
+      category: 'Employé',
       sector: "",
       companyName: '',
       titreTransport: 'NON',
       zonesTitre: '',
       risques: '',
       elementsCotisation: 0.0,
-      elementsNonCotisation: 10.0,
+      elementsNonCotisation: 1.0,
       titre: '',
       periodicite : '',
       prerequis : []
@@ -324,7 +330,7 @@ export class Contract {
       this.service.getRates().then((data: any) => {
         for (let i = 0; i < data.length; i++) {
           if (this.currentOffer.jobData.remuneration < data[i].taux_horaire) {
-            this.rate = parseFloat(data[i].coefficient) * this.currentOffer.jobData.remuneration;
+            this.rate = parseFloat(data[i].coefficient);
             this.contractData.elementsCotisation = this.rate;
             break;
           }
@@ -354,23 +360,7 @@ export class Contract {
 
   }
 
-  recoursSelected(evt) {
-    let selectedRecoursLib = evt.target.value;
-    let id = 40;
-    for (let i = 0; i < this.recours.length; i++){
-      if (this.recours[i].libelle == selectedRecoursLib) {
-        id = this.recours[i].id;
-        break;
-      }
-    }
-
-    this.justificatifs = [];
-    this.contractService.loadJustificationsList(id).then(data=> {
-      this.justificatifs = data;
-    });
-  }
-
-  justifSelected(e){
+  recoursSelected(e) {
     if(e.target.value.indexOf("emploi à caractère saisonnier") != -1){
       this.contractData.indemniteFinMission = "0.00%";
     }else{
@@ -401,7 +391,7 @@ export class Contract {
     let d = new Date();
     let m = d.getMonth() + 1;
     let da = d.getDate();
-    let sd = d.getFullYear() + "-" + (m < 10 ? '0' : '') + m + "-" + (da < 10 ? '0' : '') + da;
+    let sd = (da < 10 ? '0' : '') + da + "/" + (m < 10 ? '0' : '') + m + "/" + d.getFullYear();
 
     if (!this.currentOffer) {
       return sd;
@@ -419,7 +409,7 @@ export class Contract {
     d = new Date(minDate);
     m = d.getMonth() + 1;
     da = d.getDate();
-    sd = d.getFullYear() + "-" + (m < 10 ? '0' : '') + m + "-" + (da < 10 ? '0' : '') + da;
+    sd = (da < 10 ? '0' : '') + da + "/" + (m < 10 ? '0' : '') + m + "/" + d.getFullYear();
     return sd;
   }
 
@@ -427,7 +417,7 @@ export class Contract {
     let d = new Date();
     let m = d.getMonth() + 1;
     let da = d.getDate();
-    let sd = d.getFullYear() + "-" + (m < 10 ? '0' : '') + m + "-" + (da < 10 ? '0' : '') + da;
+    let sd = (da < 10 ? '0' : '') + da + "/" + (m < 10 ? '0' : '') + m + "/" + d.getFullYear();
 
     if (!this.currentOffer) {
       return sd;
@@ -446,7 +436,7 @@ export class Contract {
     d = new Date(maxDate);
     m = d.getMonth() + 1;
     da = d.getDate();
-    sd = d.getFullYear() + "-" + (m < 10 ? '0' : '') + m + "-" + (da < 10 ? '0' : '') + da;
+    sd = (da < 10 ? '0' : '') + da + "/" + (m < 10 ? '0' : '') + m + "/" + d.getFullYear();
 
     return sd;
   }
@@ -496,14 +486,14 @@ export class Contract {
       indemniteFinMission: "10.00%",
       indemniteCongesPayes: "10.00%",
       moyenAcces: "",
-      numeroTitreTravail: this.jobyer.titreTravail,
+      numeroTitreTravail: this.natureTitre()+this.jobyer.titreTravail,
       debutTitreTravail: this.jobyer.debutTitreTravail ? this.dateFormat(this.jobyer.debutTitreTravail) : "",
       finTitreTravail: this.jobyer.finTitreTravail ? this.dateFormat(this.jobyer.finTitreTravail) : "",
       periodesNonTravaillees: "",
       debutSouplesse: null,
       finSouplesse: null,
       equipements: "",
-      interim: "HubJob",
+      interim: "HubJob.fr",
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
       trialPeriod: trial,
@@ -535,7 +525,7 @@ export class Contract {
       primes: 0,
       headOffice: this.hqAdress,
       missionContent: "",
-      category: '',
+      category: 'Employé',
       sector: this.currentOffer.jobData.sector,
       companyName: this.companyName,
       workAdress: this.workAdress,
@@ -544,7 +534,7 @@ export class Contract {
       zonesTitre: '',
       risques: '',
       elementsCotisation: this.rate,
-      elementsNonCotisation: 10.0,
+      elementsNonCotisation: 1.0,
       titre: this.currentOffer.title,
       periodicite : '',
       prerequis : []
@@ -559,12 +549,35 @@ export class Contract {
       this.contractData.prerequis = this.currentOffer.jobData.prerequisObligatoires;
     });
 
+    this.offersService.loadOfferEPI(this.currentOffer.idOffer, "employer").then((data: any)=>{
+      if(data)
+        this.contractData.epiList = data;
+      else
+        this.contractData.epiList = [];
+    });
+
     this.medecineService.getMedecine(this.employer.entreprises[0].id).then((data: any)=> {
       if (data && data != null) {
         this.contractData.centreMedecineEntreprise = data.libelle;
         this.contractData.adresseCentreMedecineEntreprise = data.adresse + ' ' + data.code_postal;
       }
     });
+
+  }
+
+  natureTitre(){
+    if(this.isEuropean != 1 && this.isCIN)
+      return "CNI ou Passeport ";
+
+    if(this.isEuropean != 1 && !this.isCIN)
+      return "Carte de ressortissant ";
+
+    if(this.isEuropean && this.isResident)
+      return "Carte de résident ";
+
+    if(this.isEuropean && !this.isResident)
+      return "Titre de séjour ";
+
 
   }
 
@@ -618,7 +631,7 @@ export class Contract {
   }
 
   goToYousignPage() {
-    let isValid = !this.missingJobyerData() && this.isMissionDateValid;
+    let isValid = true;//!this.missingJobyerData() && this.isMissionDateValid;
     if(!isValid){
       return;
     }
@@ -638,6 +651,7 @@ export class Contract {
       this.sharedService.setCurrentJobyer(this.jobyer);
       this.sharedService.setCurrentOffer(this.currentOffer);
       this.sharedService.setContractData(this.contractData);
+      this.offersService.updateOfferState(this.currentOffer.idOffer, "en contrat");
       this.router.navigate(['contract/recruitment']);
     });
   }
@@ -662,17 +676,17 @@ export class Contract {
       !jobyer.nom || !jobyer.prenom || !jobyer.numSS || !jobyerBirthDate || !jobyer.lieuNaissance || !jobyer.nationaliteLibelle || !contractData.numeroTitreTravail || !contractData.debutTitreTravail || !contractData.finTitreTravail || !contractData.qualification
     ) {
       message = message + " Certaines informations de votre compte sont manquantes, veuillez les renseigner : -";
-      message = message + (!jobyer.nom)? " Nom -" : "";
-      message = message + (!jobyer.prenom)? " Prénom -" : "";
-      message = message + (!jobyer.prenom)? " Prénom -" : "";
-      message = message + (!jobyer.numSS)? " Numéro SS -" : "";
-      message = message + (!jobyerBirthDate)? " Date de naissance -" : "";
-      message = message + (!jobyer.lieuNaissance)? " Lieu de naissance -" : "";
-      message = message + (!jobyer.nationaliteLibelle)? " Nationalité -" : "";
-      message = message + (!jobyer.numeroTitreTravail)? " CNI ou passeport -" : "";
-      message = message + (!contractData.debutTitreTravail)? " Valable du -" : "";
-      message = message + (!contractData.finTitreTravail)? " Valable au -" : "";
-      message = message + (!contractData.qualification)? " Qualification -" : "";
+      message = message + ((!jobyer.nom)? " Nom -" : "");
+      message = message + ((!jobyer.prenom)? " Prénom -" : "");
+      message = message + ((!jobyer.prenom)? " Prénom -" : "");
+      message = message + ((!jobyer.numSS)? " Numéro SS -" : "");
+      message = message + ((!jobyerBirthDate)? " Date de naissance -" : "");
+      message = message + ((!jobyer.lieuNaissance)? " Lieu de naissance -" : "");
+      message = message + ((!jobyer.nationaliteLibelle)? " Nationalité -" : "");
+      message = message + ((!jobyer.numeroTitreTravail)? " CNI ou passeport -" : "");
+      message = message + ((!contractData.debutTitreTravail)? " Valable du -" : "");
+      message = message + ((!contractData.finTitreTravail)? " Valable au -" : "");
+      message = message + ((!contractData.qualification)? " Qualification -" : "");
 
       message = message.slice(0, -1);
     }

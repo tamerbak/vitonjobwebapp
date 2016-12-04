@@ -17,7 +17,7 @@ export class ParametersService {
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe((data: any) => {
-          resolve(data);
+          resolve(data.data);
         });
     });
   }

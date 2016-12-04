@@ -167,7 +167,7 @@ export class OffersService {
 
     let payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      id: 10025,
+      id: 20010,
       args: [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'creation offre',
@@ -659,8 +659,10 @@ export class OffersService {
   attacheDay(idOffer, table, day) {
     let d = new Date(day.date);
     let sdate = this.sqlfy(d);
+    let de = new Date(day.dateEnd);
+    let edate = this.sqlfy(de);
     let isPause = day.pause ? "OUI" : "NON";
-    let sql = "insert into user_disponibilites_des_offres (fk_" + table + ", jour, heure_debut, heure_fin, pause) values (" + idOffer + ", '" + sdate + "', " + day.startHour + ", " + day.endHour + ", '" + isPause + "')";
+    let sql = "insert into user_disponibilites_des_offres (fk_" + table + ", jour, jour_de_fin, heure_debut, heure_fin, pause) values (" + idOffer + ", '" + sdate + "', '" + edate + "', " + day.startHour + ", " + day.endHour + ", '" + isPause + "')";
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
@@ -862,6 +864,29 @@ export class OffersService {
     });
   }
 
+  updateNbPoste(nbPoste, offerId){
+    let sql = "update user_offre_entreprise set nombre_de_postes = " + nbPoste + " where pk_user_offre_entreprise = " + offerId;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data.data);
+        });
+    });
+  }
+
+  updateOfferState(offerId, state){
+    let sql = "update user_offre_entreprise set etat = '" + state + "' where pk_user_offre_entreprise = " + offerId;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data.data);
+        });
+    });
+  }
   /*********************************************************************************************************************
    *  COLLECTIVE CONVENTIONS MANAGEMENT
    *********************************************************************************************************************/
@@ -1246,6 +1271,13 @@ export class OffersService {
     }
   }
 
+  getHourFromDate(d){
+    let h = d.getHours() * 60;
+    let m = d.getMinutes() * 1;
+    let minutes = h + m;
+    return minutes;
+  }
+
   isEmpty(str) {
     if (str == '' || str == 'null' || !str)
       return true;
@@ -1295,78 +1327,161 @@ export class OffersService {
     });
   }
 
-  calculateSlotsDurationByDay(slots, newSlot){
-    let currentSDate = new Date(newSlot.date).setHours(0, 0, 0, 0);
-    let hs = newSlot.startHour.getHours() * 60;
-    let ms = newSlot.startHour.getMinutes();
-    let minStart = hs + ms;
-    let he = newSlot.endHour.getHours() * 60;
-    let me = newSlot.endHour.getMinutes();
-    let minEnd = he + me;
-    let totalHours = minEnd - minStart;
-    for(let i = 0; i < slots.length; i++){
-      let s = slots[i];
-      if(s.pause){
-        continue;
-      }
-      let sDate = new Date(DateUtils.rfcFormat(s.date)).setHours(0, 0, 0, 0);
-      if(sDate != currentSDate){
-        continue;
-      }
-      let hs = s.startHour.split(':')[0] * 60;
-      let ms = s.startHour.split(':')[1] * 1;
-      let minStart: number = hs + ms;
-      let he = s.endHour.split(':')[0] * 60;
-      let me = s.endHour.split(':')[1] * 1;
+  isDailySlotsDurationRespected(rawSlots, slot){
+    //66 is 10h converted to minutes
+    let limit = 600;
+    let newSlots = this.separateTwoDaysSlot(slot);
+    for(let j = 0; j < newSlots.length; j++) {
+      let totalHours = 0;
+      let newSlot = newSlots[j];
+      //newSlot will be modified by the call of setHours function
+      //newSlotCopy will contain a raw copy of the original newSlot
+      let newSlotCopy = this.cloneSlot(newSlot);
+      let startDate = newSlot.date;
+      let endDate = newSlot.dateEnd;
+      let hs = startDate.getHours() * 60;
+      let ms = startDate.getMinutes();
+      let minStart = hs + ms;
+      let he = endDate.getHours() * 60;
+      let me = endDate.getMinutes();
       let minEnd = he + me;
       totalHours = totalHours + (minEnd - minStart);
+      if(totalHours > limit){
+        return false;
+      }
+      let currentSDate = newSlotCopy.date.setHours(0, 0, 0, 0);
+      for (let k = 0; k < rawSlots.length; k++) {
+        let rawSlot = rawSlots[k];
+        let slots = this.separateTwoDaysSlot(rawSlot);
+        for (let i = 0; i < slots.length; i++) {
+          let s = slots[i];
+          if (s.pause) {
+            continue;
+          }
+          let ds = s.date;
+          let de = s.dateEnd;
+          let sCopy = this.cloneSlot(s);
+          let sDate = sCopy.date.setHours(0, 0, 0, 0);
+          if (sDate != currentSDate) {
+            continue;
+          }
+          let hs = ds.getHours() * 60;
+          let ms = ds.getMinutes() * 1;
+          let minStart: number = hs + ms;
+          let he = de.getHours() * 60;
+          let me = de.getMinutes() * 1;
+          let minEnd = he + me;
+          totalHours = totalHours + (minEnd - minStart);
+          if(totalHours > limit){
+            return false;
+          }
+        }
+      }
     }
-    return totalHours;
+    return true;
   }
 
   isSlotRespectsBreaktime(slots, newSlot){
     //breaktime is 11h converted to milliseconds
     let breaktime = 39600000;
-    //one minute in miliseccond
-    let oneMinute = 60000;
-    //23:59 in minutes
-    let almostMidnight = 1439;
-
-    let hs = newSlot.startHour.getHours() * 1;
-    let ms = newSlot.startHour.getMinutes() * 1;
-    let currentMinStart = (hs * 60) + ms;
-    let currentStartDate = (new Date(newSlot.date).setHours(hs, ms, 0, 0)) / 1000;
-    let he = newSlot.endHour.getHours() * 1;
-    let me = newSlot.endHour.getMinutes() * 1;
-    let currentMinEnd = (he *60) + me;
-    let currentEndDate = (new Date(newSlot.date).setHours(he, me, 0, 0)) / 1000;
-    for(let i = 0; i < slots.length; i++){
+    let copyNewSlot = this.cloneSlot(newSlot);
+    for(let i = 0; i < slots.length; i++) {
       let s = slots[i];
-      let sDate = DateUtils.rfcFormat(s.date);
-      if(s.pause){
+      if (s.pause) {
         continue;
       }
-      let hs = s.startHour.split(':')[0] * 1;
-      let ms = s.startHour.split(':')[1] * 1;
-      let slotMinStart = (hs * 60) + ms;
-      let slotStartDate = new Date(sDate).setHours(hs, ms, 0, 0) / 1000;
-      let he = s.endHour.split(':')[0] * 1;
-      let me = s.endHour.split(':')[1] * 1;
-      let slotMinEnd = (he *60) + me;
-      let slotEndDate = new Date(sDate).setHours(he, me, 0, 0) / 1000;
-      if(currentStartDate - slotEndDate <= oneMinute && slotMinEnd == almostMidnight && currentMinStart == 0){
-        return true;
-      }
-      if(slotStartDate - currentEndDate <= oneMinute && slotMinStart == 0 && currentMinEnd == almostMidnight){
-        return true;
-      }
-      if((currentStartDate - slotEndDate) * 1000 < breaktime && new Date(sDate) <= newSlot.date){
-        return false;
-      }
-      if((slotStartDate - currentEndDate) * 1000 < breaktime && newSlot.date <= new Date(sDate) ){
-        return false;
+      let copyS = this.cloneSlot(s);
+      if (copyS.date.setHours(0, 0, 0, 0) == copyNewSlot.date.setHours(0, 0, 0, 0)) {
+        continue;
+      } else {
+        if (copyS.date > copyNewSlot.date) {
+          if (s.date.getTime() - newSlot.dateEnd.getTime() < breaktime) {
+            return false;
+          }
+        } else {
+          if (newSlot.date.getTime() - s.dateEnd.getTime() < breaktime) {
+            return false;
+          }
+        }
       }
     }
     return true;
+  }
+
+  separateTwoDaysSlot(slot){
+    let slotCopy = this.cloneSlot(slot);
+    let sDate = slotCopy.date;
+    let eDate = slotCopy.dateEnd;
+    if(sDate.setHours(0, 0, 0, 0) == eDate.setHours(0, 0, 0, 0)){
+      return [slot];
+    }else{
+      let s1 = {date: slot.date, dateEnd: new Date(sDate.setHours(23, 59)), startHour: slot.startHour, endHour: slot.endHour, pause: slot.pause};
+      let s2 = {date: new Date(eDate.setHours(0, 0, 0, 0)), dateEnd: slot.dateEnd, startHour: slot.startHour, endHour: slot.endHour, pause: slot.pause};
+      return [s1, s2];
+    }
+  }
+
+  cloneSlot(slot){
+    //trick to clone an object by value
+    let newSlot = (JSON.parse(JSON.stringify(slot)));
+    newSlot = {
+      date: new Date(newSlot.date),
+      dateEnd: new Date(newSlot.dateEnd),
+      startHour: new Date(newSlot.startHour),
+      endHour: new Date(newSlot.endHour),
+      pause: newSlot.pause
+    }
+    return newSlot;
+  }
+
+  convertSlotsForSaving(slots){
+    let newSlots = [];
+    for(let i = 0; i < slots.length; i++){
+      let newSlot = {
+        date: slots[i].date.getTime(),
+        dateEnd: slots[i].dateEnd.getTime(),
+        startHour: this.getHourFromDate(slots[i].date),
+        endHour: this.getHourFromDate(slots[i].dateEnd),
+        pause: slots[i].pause
+      }
+      newSlots.push(newSlot);
+    }
+    return newSlots;
+  }
+
+  /*
+  function returning a cloned list of current slots without the dragged slot
+   */
+  getSlotsForDraggingEvent(events, slots){
+    let index = -1;
+    //searching for the dragged slot
+    for(let j = 0; j < slots.length; j++){
+      for(let i = 0; i < events.length; i++){
+        if(events[i].start._d.getTime() == slots[j].date.getTime() && events[i].end._d.getTime() == slots[j].dateEnd.getTime()){
+          break;
+        }
+        if(i == events.length - 1 && events[i].start._d.getTime() != slots[j].date.getTime() && events[i].end._d.getTime() != slots[j].dateEnd.getTime()){
+          //dragged slot found :-)
+          index = j;
+          break;
+        }
+      }
+      //dragged slot found, no more searching
+      if(index != -1){
+        break;
+      }
+    }
+    // create a copy of the slot list, and remove the dragged slot from it
+    if(index != -1) {
+      let clonedSlots = [];
+      for (let i = 0; i < slots.length; i++) {
+        let clonedSlot = this.cloneSlot(slots[i]);
+        clonedSlots.push(clonedSlot);
+      }
+      clonedSlots.splice(index, 1);
+      return clonedSlots;
+    }else{
+      return null;
+    }
   }
 }
