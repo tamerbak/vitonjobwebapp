@@ -250,6 +250,7 @@ export class OfferList {
     } else {
       this.router.navigate(['offer/edit', {obj:'add'}]);
     }*/
+    this.sharedService.setCurrentOffer(null);
     this.router.navigate(['offer/edit', {obj:'add'}]);
   }
 
