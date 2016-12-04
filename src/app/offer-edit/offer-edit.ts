@@ -757,25 +757,28 @@ export class OfferEdit{
         this.addAlert("danger", "Une offre doit avoir au moins un créneau de disponibilité. Veuillez ajouter un autre créneau avant de pouvoir supprimer celui-ci.", "slot");
         return;
       }
-      //remove event from calendar
+      //searching event in the calendar events
       let ev = this.calendar.events.filter((e)=> {
-        return (e.start == event.start && e.end == event.end);
+        return (e.start == event.start._d.getTime() && e.end == event.end._d.getTime());
       });
       let index = this.calendar.events.indexOf(ev[0]);
       if (index != -1) {
+        //removing event from calendar
         this.calendar.events.splice(index, 1);
+        //render the calendar with the event removed
+        this.$calendar.fullCalendar('removeEvents', function (event) {
+          return new Date(event.start._d).getTime() == ev[0].start && new Date(event.end._d).getTime() == ev[0].end;
+        });
+        //remove slot from local
+        this.offer.calendarData.splice(index, 1);
+        this.slots.splice(index, 1);
+        //remove slot from remote
+        this.offersService.updateOfferCalendar(this.offer, this.projectTarget).then(() => {
+          this.setOfferInLocal();
+          //this.slots = [];
+          //this.convertDetailSlotsForDisplay();
+        });
       }
-      this.$calendar.fullCalendar('removeEvents', function (event) {
-        return new Date(event.start._d).getTime() == ev[0].start && new Date(event.end._d).getTime() == ev[0].end;
-      });
-      //remove slot from local
-      this.offer.calendarData.splice(index, 1);
-      //remove slot from remote
-      this.offersService.updateOfferCalendar(this.offer, this.projectTarget).then(() => {
-        this.setOfferInLocal();
-        this.slots = [];
-        this.convertDetailSlotsForDisplay();
-      });
     }
     this.closeDetailsModal();
   }
