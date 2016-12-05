@@ -89,7 +89,7 @@ export const CoreRoutes: RouterConfig = [
       {path: 'advert/list', component: AdvertList},
 
       // Iframes
-      {path: 'iframe/quote', component: Iframe},
+      {path: 'iframe/quote', component: Iframe}
 
       // Extras
       //{path: 'offer/calendar', component: ExtraCalendar}

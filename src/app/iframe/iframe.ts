@@ -11,8 +11,6 @@ declare var require;
   selector: '[iframe]',
   template: require('./iframe.html'),
   styles: [require('./iframe.scss')],
-  directives: [ROUTER_DIRECTIVES],
-  providers: []
 })
 
 export class Iframe {
@@ -30,9 +28,6 @@ export class Iframe {
   }
 
   ngOnInit(): void {
-
-
-    // jQuery('.iframe-download-link').attr('href', this.file64);
 
     let iframe = document.createElement('iframe');
     iframe.frameBorder = "0";
