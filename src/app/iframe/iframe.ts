@@ -47,7 +47,7 @@ export class Iframe {
     jQuery('#iframPlaceHolder').append(iframe);
   }
 
-  tumefaispeurabdeslam() {
+  openQuote() {
     window.open(this.file64);
   }
 }
