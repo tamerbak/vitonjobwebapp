@@ -28,6 +28,7 @@ import "jquery-ui-touch-punch/jquery.ui.touch-punch.js";
 import "jquery-ui/ui/sortable.js";
 import "jquery-ui/ui/draggable.js";
 import "fullcalendar/dist/fullcalendar.js";
+import "fullcalendar/dist/lang/fr.js";
 import "parsleyjs/dist/parsley.js";
 import "bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js";
 import "bootstrap-select/dist/js/bootstrap-select.js";

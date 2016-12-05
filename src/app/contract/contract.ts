@@ -127,6 +127,7 @@ export class Contract {
     this.jobyer.numSS = '';
     this.jobyer.nationaliteLibelle = '';
 
+
     this.contractService.getJobyerComplementData(this.jobyer, this.projectTarget).then((data: any)=> {
       if (data && data.length > 0) {
         let datum = data[0];
@@ -152,7 +153,12 @@ export class Contract {
           this.contractData.finTitreTravail = this.simpleDateFormat(this.jobyer.finTitreTravail);
         }
 
-        this.contractData.numeroTitreTravail = this.jobyer.titreTravail;
+        this.contractData.numeroTitreTravail =this.natureTitre() + this.jobyer.titreTravail;
+
+        this.contractService.getJobyerAdress(this.jobyer).then((adress : string)=>{
+          this.jobyer.address = adress;
+        });
+
 
         this.profileService.loadAdditionalUserInformations(this.jobyer.id).then((data: any) => {
           if (data && data.data && data.data.length > 0) {
@@ -315,7 +321,7 @@ export class Contract {
       zonesTitre: '',
       risques: '',
       elementsCotisation: 0.0,
-      elementsNonCotisation: 10.0,
+      elementsNonCotisation: 1.0,
       titre: '',
       periodicite : '',
       prerequis : []
@@ -324,7 +330,7 @@ export class Contract {
       this.service.getRates().then((data: any) => {
         for (let i = 0; i < data.length; i++) {
           if (this.currentOffer.jobData.remuneration < data[i].taux_horaire) {
-            this.rate = parseFloat(data[i].coefficient) * this.currentOffer.jobData.remuneration;
+            this.rate = parseFloat(data[i].coefficient);
             this.contractData.elementsCotisation = this.rate;
             break;
           }
@@ -480,14 +486,14 @@ export class Contract {
       indemniteFinMission: "10.00%",
       indemniteCongesPayes: "10.00%",
       moyenAcces: "",
-      numeroTitreTravail: this.jobyer.titreTravail,
+      numeroTitreTravail: this.natureTitre()+this.jobyer.titreTravail,
       debutTitreTravail: this.jobyer.debutTitreTravail ? this.dateFormat(this.jobyer.debutTitreTravail) : "",
       finTitreTravail: this.jobyer.finTitreTravail ? this.dateFormat(this.jobyer.finTitreTravail) : "",
       periodesNonTravaillees: "",
       debutSouplesse: null,
       finSouplesse: null,
       equipements: "",
-      interim: "HubJob",
+      interim: "HubJob.fr",
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
       trialPeriod: trial,
@@ -528,7 +534,7 @@ export class Contract {
       zonesTitre: '',
       risques: '',
       elementsCotisation: this.rate,
-      elementsNonCotisation: 10.0,
+      elementsNonCotisation: 1.0,
       titre: this.currentOffer.title,
       periodicite : '',
       prerequis : []
@@ -543,12 +549,35 @@ export class Contract {
       this.contractData.prerequis = this.currentOffer.jobData.prerequisObligatoires;
     });
 
+    this.offersService.loadOfferEPI(this.currentOffer.idOffer, "employer").then((data: any)=>{
+      if(data)
+        this.contractData.epiList = data;
+      else
+        this.contractData.epiList = [];
+    });
+
     this.medecineService.getMedecine(this.employer.entreprises[0].id).then((data: any)=> {
       if (data && data != null) {
         this.contractData.centreMedecineEntreprise = data.libelle;
         this.contractData.adresseCentreMedecineEntreprise = data.adresse + ' ' + data.code_postal;
       }
     });
+
+  }
+
+  natureTitre(){
+    if(this.isEuropean != 1 && this.isCIN)
+      return "CNI ou Passeport ";
+
+    if(this.isEuropean != 1 && !this.isCIN)
+      return "Carte de ressortissant ";
+
+    if(this.isEuropean && this.isResident)
+      return "Carte de résident ";
+
+    if(this.isEuropean && !this.isResident)
+      return "Titre de séjour ";
+
 
   }
 
