@@ -536,6 +536,7 @@ export class Profile{
           this.isFrench = true;
           this.isCIN = true;
           this.birthdepId = data.fk_user_departement;
+          // this.birthdep = "71";
         } else {
           this.isFrench = false;
         }
@@ -551,6 +552,18 @@ export class Profile{
           this.isEuropean = 0;
           this.isCIN = !Utils.isEmpty(data.numero_titre_sejour) ? false : true;
           this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
+        }
+
+        if (!Utils.isEmpty(this.birthdepId)) {
+          this.communesService.getDepartmentById(this.birthdepId).then((res: any) => {
+            if (res && res.data.length > 0) {
+              this.selectedDep = res.data[0];
+              jQuery(".dep-select").select2('data', this.selectedDep);
+            } else {
+              this.selectedDep = {id: '0', nom: "", numero: ""};
+              jQuery(".dep-select").select2('data', this.selectedDep);
+            }
+          });
         }
       });
 
@@ -668,18 +681,6 @@ export class Profile{
               jQuery(".commune-select").select2('data', this.selectedCommune);
             }
             this.isValidNumSS = true;
-          });
-        }
-
-        if (!Utils.isEmpty(this.birthdepId)) {
-          this.communesService.getDepartmentById(this.birthdepId).then((res: any) => {
-            if (res && res.data.length > 0) {
-              this.selectedDep = res.data[0];
-              jQuery(".dep-select").select2('data', this.selectedDep);
-            } else {
-              this.selectedDep = {id: '0', nom: "", numero: ""};
-              jQuery(".dep-select").select2('data', this.selectedDep);
-            }
           });
         }
 
