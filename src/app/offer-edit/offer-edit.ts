@@ -1484,12 +1484,12 @@ export class OfferEdit{
 
     let offer = this.sharedService.getCurrentOffer();
     if (offer != null) {
+      let self = this;
       this.financeService.loadPrevQuotePdf(offer.idOffer).then((data: any) => {
 
-        jQuery("#modal-offer-temp-quote").modal('show');
-
-        let iFrame: HTMLIFrameElement = <HTMLIFrameElement>document.getElementById('pdf-stream');
-        iFrame.src = 'data:application/pdf;base64, ' + data.pdf;
+        let file64 ='data:application/pdf;base64, ' + data.pdf;
+        this.sharedService.setCurrentQuote(file64);
+        self.router.navigate(['iframe/quote']);
 
       });
     }

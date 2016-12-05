@@ -237,4 +237,12 @@ export class SharedService {
   setPreviousNotifs(value) {
     this.setStorageVariable("lastNotif", value);
   }
+
+  getCurrentQuote() {
+    return this.getStorageVariable("currentQuote");
+  }
+
+  setCurrentQuote(value) {
+    this.setStorageVariable("currentQuote", value);
+  }
 }
