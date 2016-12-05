@@ -14,7 +14,14 @@ export class ConventionService {
     let sql = ""
     for(let i = 0; i < categories.length; i++){
       let cat = categories[i];
-      sql = sql + "insert into user_offre_categorie_heure_conv (fk_user_offre_entreprise, fk_user_categorie_heures_conventionnees, coefficient, type_de_valeur) values (" + offerId + ", " + cat.catId + ", " + cat.empValue + ", '" + cat.typeValue + "'); ";
+      let ope = {start:-1, end:-1, hourOperators : false};
+      if(cat.debut>0 && cat.fin>0){
+        ope.hourOperators = true;
+        ope.start = cat.debutHeure*60+cat.debutMinute;
+        ope.end = cat.finHeure*60+cat.finMinute;
+      }
+      let sope = btoa(JSON.stringify(ope));
+      sql = sql + "insert into user_offre_categorie_heure_conv (fk_user_offre_entreprise, fk_user_categorie_heures_conventionnees, coefficient, type_de_valeur, operandes) values (" + offerId + ", " + cat.catId + ", " + cat.empValue + ", '" + cat.typeValue + "', '"+sope+"'); ";
     }
     for(let i = 0; i < majors.length; i++){
       let maj = majors[i];
@@ -39,7 +46,15 @@ export class ConventionService {
     let sql = ""
     for(let i = 0; i < categories.length; i++){
       let cat = categories[i];
+      let ope = {start:-1, end:-1, hourOperators : false};
+      if(cat.debut>0 && cat.fin>0){
+        ope.hourOperators = true;
+        ope.start = cat.debutHeure*60+cat.debutMinute;
+        ope.end = cat.finHeure*60+cat.finMinute;
+      }
+      let sope = btoa(JSON.stringify(ope));
         sql = sql + "update user_offre_categorie_heure_conv set coefficient = " + cat.empValue +
+          ", operandes = '" + sope + "'" +
           " where fk_user_offre_entreprise = " + offerId  +
           " and fk_user_categorie_heures_conventionnees = " + cat.catId + "; ";
     }
@@ -70,24 +85,57 @@ export class ConventionService {
 
   getHoursCategoriesEmp(idConv, idOffer){
     let sql = "select o.pk_user_offre_categorie_heure_conv as \"offerCatId\", o.coefficient as \"empValue\", o.type_de_valeur as \"typeValue\", " +
-      " cat.pk_user_categorie_heures_conventionnees as \"catId\",  cat.code, " +
-      " chc.pk_user_coefficient_heure_conventionnee as id, chc.libelle, chc.coefficient " +
+      " cat.pk_user_categorie_heures_conventionnees as \"catId\",  cat.code, o.operandes, " +
+      " chc.pk_user_coefficient_heure_conventionnee as id, chc.libelle, chc.coefficient, chc.formule_jour, chc.debut, chc.fin " +
       "from user_categorie_heures_conventionnees cat " +
       "LEFT JOIN user_coefficient_heure_conventionnee chc " +
       "ON chc.fk_user_categorie_heures_conventionnees = cat.pk_user_categorie_heures_conventionnees " +
       "LEFT JOIN user_offre_categorie_heure_conv o " +
       "ON o.fk_user_categorie_heures_conventionnees = cat.pk_user_categorie_heures_conventionnees " +
       "where chc.fk_user_convention_collective = " + idConv +
-      " and o.fk_user_offre_entreprise = " + idOffer + ";";
-
+      " and o.fk_user_offre_entreprise = " + idOffer + "" +
+      " and chc.dirty='N';";
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
           let list = [];
-          if(data.data && data.data.length>0)
+          if(data.data && data.data.length>0){
             list = data.data;
+            for(let i = 0; i< list.length ; i++){
+              if(list[i].debut<0 || list[i].fin<0){
+                list[i].debutHeure = 0;
+                list[i].debutMinute = 0;
+                list[i].finHeure = 0;
+                list[i].finMinute = 0;
+              } else {
+                if(list[i].operandes && list[i].operandes.length>0){
+                  let json = JSON.parse(atob(list[i].operandes));
+                  if(json.hourOperators){
+                    list[i].debut= json.start;
+                    list[i].fin= json.end;
+                  }
+                }
+                let div = Math.floor(list[i].debut/60);
+                let rem = list[i].debut % 60;
+                list[i].debutHeure = div;
+                list[i].debutMinute = rem;
+
+                div = Math.floor(list[i].fin/60);
+                rem = list[i].fin % 60;
+                if(div>=24){
+                  div = 23;
+                  rem = 59;
+                }
+
+                list[i].finHeure = div;
+                list[i].finMinute = rem;
+
+              }
+            }
+          }
+
           resolve(list);
         });
     });
@@ -103,7 +151,7 @@ export class ConventionService {
       "LEFT JOIN user_offre_categorie_major_heure_conv o " +
       "ON o.fk_user_categorie_majoration_heure = cat.pk_user_categorie_majoration_heure " +
       "where maj.fk_user_convention_collective = " + idConv +
-      " and o.fk_user_offre_entreprise = " + idOffer + ";";
+      " and o.fk_user_offre_entreprise = " + idOffer + " and maj.dirty='N'";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -128,13 +176,14 @@ export class ConventionService {
       "LEFT JOIN user_offre_type_indemnite o " +
       "ON o.fk_user_type_indemnite = cat.pk_user_type_indemnite " +
       "where ind.fk_user_convention_collective = " + idConv +
-      " and o.fk_user_offre_entreprise = " + idOffer + ";";
+      " and o.fk_user_offre_entreprise = " + idOffer + " and ind.dirty='N'";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
+
           let list = [];
           if(data.data && data.data.length>0)
             list = data.data;
@@ -144,6 +193,7 @@ export class ConventionService {
   }
 
   convertValuesToPercent(objs){
+
     for(let i = 0; i < objs.length; i++){
       if(objs[i].typeValue == "%"){
         objs[i].coefficient = (objs[i].coefficient * 100).toFixed(2);
