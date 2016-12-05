@@ -1634,9 +1634,10 @@ export class OfferEdit{
     this.offersService.getHoursCategories(this.convention.id).then(data => {
       this.categoriesHeure = this.conventionService.convertValuesToPercent(data);
     });
-    this.offersService.getHoursMajoration(this.convention.id).then(data => {
+    this.majorationsHeure = [];
+    /*this.offersService.getHoursMajoration(this.convention.id).then(data => {
       this.majorationsHeure = this.conventionService.convertValuesToPercent(data);
-    });
+    });*/
     this.offersService.getIndemnites(this.convention.id).then(data => {
       this.indemnites = this.conventionService.convertValuesToPercent(data);
     });
@@ -1654,8 +1655,8 @@ export class OfferEdit{
         this.categoriesHeure = this.conventionService.convertValuesToPercent(data);
       }
     });
-
-    this.conventionService.getHoursMajorationEmp(this.convention.id, this.offer.idOffer).then((data: any) => {
+    this.majorationsHeure = [];
+    /*this.conventionService.getHoursMajorationEmp(this.convention.id, this.offer.idOffer).then((data: any) => {
       if (!data || data.length == 0) {
         this.isConditionEmpExist = false;
         this.offersService.getHoursMajoration(this.convention.id).then(data => {
@@ -1665,7 +1666,7 @@ export class OfferEdit{
         this.isConditionEmpExist = true;
         this.majorationsHeure = this.conventionService.convertValuesToPercent(data);
       }
-    });
+    });*/
     this.conventionService.getIndemnitesEmp(this.convention.id, this.offer.idOffer).then((data: any) => {
       if (!data || data.length == 0) {
         this.isConditionEmpExist = false;
