@@ -137,6 +137,8 @@ export class OfferEdit{
   $calendar: any;
   dragOptions: Object = { zIndex: 999, revert: true, revertDuration: 0 };
   event: any = {};
+  startDate: any;
+  endDate: any;
   createEvent: any;
   isEventCreated = false;
 
@@ -744,36 +746,39 @@ export class OfferEdit{
       let index = this.calendar.events.indexOf(ev[0]);
       if (index != -1) {
         this.calendar.events.splice(index, 1);
+        this.$calendar.fullCalendar('removeEvents', function (event) {
+          return new Date(event.start._d).getTime() == new Date(ev[0].start._d).getTime() && new Date(event.end._d).getTime() == new Date(ev[0].end._d).getTime();
+        });
+        this.slots.splice(index, 1);
+        this.slotsToSave.splice(index, 1);
       }
-      this.$calendar.fullCalendar('removeEvents', function (event) {
-        return new Date(event.start._d).getTime() == new Date(ev[0].start._d).getTime() && new Date(event.end._d).getTime() == new Date(ev[0].end._d).getTime();
-      });
-      this.slots.splice(index, 1);
-      this.slotsToSave.splice(index, 1);
     } else {
       if(this.offer.calendarData.length == 1){
         this.addAlert("danger", "Une offre doit avoir au moins un créneau de disponibilité. Veuillez ajouter un autre créneau avant de pouvoir supprimer celui-ci.", "slot");
         return;
       }
-      //remove event from calendar
+      //searching event in the calendar events
       let ev = this.calendar.events.filter((e)=> {
-        return (e.start == event.start && e.end == event.end);
+        return (e.start == event.start._d.getTime() && e.end == event.end._d.getTime());
       });
       let index = this.calendar.events.indexOf(ev[0]);
       if (index != -1) {
+        //removing event from calendar
         this.calendar.events.splice(index, 1);
+        //render the calendar with the event removed
+        this.$calendar.fullCalendar('removeEvents', function (event) {
+          return new Date(event.start._d).getTime() == ev[0].start && new Date(event.end._d).getTime() == ev[0].end;
+        });
+        //remove slot from local
+        this.offer.calendarData.splice(index, 1);
+        this.slots.splice(index, 1);
+        //remove slot from remote
+        this.offersService.updateOfferCalendar(this.offer, this.projectTarget).then(() => {
+          this.setOfferInLocal();
+          //this.slots = [];
+          //this.convertDetailSlotsForDisplay();
+        });
       }
-      this.$calendar.fullCalendar('removeEvents', function (event) {
-        return new Date(event.start._d).getTime() == ev[0].start && new Date(event.end._d).getTime() == ev[0].end;
-      });
-      //remove slot from local
-      this.offer.calendarData.splice(index, 1);
-      //remove slot from remote
-      this.offersService.updateOfferCalendar(this.offer, this.projectTarget).then(() => {
-        this.setOfferInLocal();
-        this.slots = [];
-        this.convertDetailSlotsForDisplay();
-      });
     }
     this.closeDetailsModal();
   }
@@ -790,7 +795,9 @@ export class OfferEdit{
     }else{
       if(ev != 'drop'){
         this.slots.push(this.slot);
-        this.offer.calendarData.push(this.slot);
+        let slotClone = this.offersService.cloneSlot(this.slot);
+        let slotToSave = this.offersService.convertSlotsForSaving([slotClone]);
+        this.offer.calendarData.push(slotToSave[0]);
       }
       this.offersService.updateOfferCalendar(this.offer, this.projectTarget).then(() => {
         this.setOfferInLocal();
@@ -849,8 +856,8 @@ export class OfferEdit{
         let title = (isPause ? "Pause de ": "Créneau de ");
         var slotTemp = {
           title: title + startHour + " à " + endHour,
-          start: startDate.setHours(+startHour.split(":")[0], +startHour.split(":")[1]),
-          end: endDate.setHours(+endHour.split(":")[0], +endHour.split(":")[1]),
+          start: startDate.setHours(+startHour.split(":")[0], +startHour.split(":")[1], 0, 0),
+          end: endDate.setHours(+endHour.split(":")[0], +endHour.split(":")[1], 0, 0),
           pause: isPause
         };
         events.push(slotTemp);
@@ -911,10 +918,10 @@ export class OfferEdit{
         return false;
       }
 
-      /*if(!this.offersService.isSlotRespectsBreaktime(this.slots, this.slot)){
-        this.addAlert("danger", "Veuillez mettre un délai de 11h entre deux créneaux.", "slot");
+      if(!this.offersService.isSlotRespectsBreaktime(this.slots, this.slot)){
+        this.addAlert("danger", "Veuillez mettre un délai de 11h entre deux créneaux situés sur deux jours calendaires différents.", "slot");
         return false;
-      }*/
+      }
       for (let i = 0; i < slots.length; i++) {
           // If end hour is 0:00, force 23:59 such as midnight minute
           /*if (slotEndTotMinutes == 0) {
@@ -1237,7 +1244,7 @@ export class OfferEdit{
     let h = d.getHours();
     let m = +d.getMinutes();
     //m = (m.toString().length == 1 ? "0"+m : +m);
-    return h + ":" + m;
+    return DateUtils.formatHours(h) + ":" + DateUtils.formatHours(m);
   }
 
   addAlert(type, msg, section): void {
@@ -1744,6 +1751,8 @@ export class OfferEdit{
       eventStartEditable: true,
 
       select: (start, end, allDay): void => {
+        this.startDate = start._d;
+        this.endDate = end._d;
         this.createEvent = () => {
           this.addSlotInCalendar(start, end, allDay);
         };
@@ -1768,9 +1777,9 @@ export class OfferEdit{
     let ms = this.slot.startHour.getMinutes();
     let he = this.slot.endHour.getHours();
     let me = this.slot.endHour.getMinutes();
-    start._d.setHours(hs, ms);
+    start._d.setHours(hs, ms, 0, 0);
     end._d.setDate(end._d.getDate() - 1);
-    end._d.setHours(he, me);
+    end._d.setHours(he, me, 0, 0);
     //slots should be coherent
     this.slot.date = start._d;
     this.slot.dateEnd = end._d;
@@ -1783,7 +1792,7 @@ export class OfferEdit{
     //render slot in the calendar
     let title = (!this.slot.pause ? "Créneau de " : "Pause de ");
     let evt = {
-      title: title + hs + ":" + ms + " à " + he + ":" + me,
+      title: title + DateUtils.formatHours(hs) + ":" + DateUtils.formatHours(ms) + " à " + DateUtils.formatHours(he) + ":" + DateUtils.formatHours(me),
       start: start,
       end: end,
       //allDay is bugged, must be false
@@ -1795,8 +1804,8 @@ export class OfferEdit{
     }
     if (title) {
       this.$calendar.fullCalendar('renderEvent',
-        evt
-        //true // make the event "stick"
+        evt,
+        true // make the event "stick"
       );
       this.addEvent(evt);
       this.addSlot('');
@@ -1816,7 +1825,13 @@ export class OfferEdit{
     let slotsForDragEv = this.offersService.getSlotsForDraggingEvent(evs, this.slots);
     if(slotsForDragEv && slotsForDragEv.length > 0) {
       if (!this.checkHour(slotsForDragEv, this.slot)) {
-        this.resetSlotModal();
+        this.slot = {
+          date: 0,
+          dateEnd: 0,
+          startHour: 0,
+          endHour: 0,
+          pause: false
+        };
         revertFunc();
         return;
       }
