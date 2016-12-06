@@ -4,52 +4,51 @@
 @import "../../../node_modules/ng2-datetime/src/vendor/bootstrap-datepicker/bootstrap-datepicker3.min";
 @import "../../../node_modules/ng2-datetime/src/vendor/bootstrap-timepicker/bootstrap-timepicker.min";
 
-.input-group .date{
-  width:100% !important;
+.input-group .date {
+  width: 100% !important;
 }
 
-.contract-page{
+.color-font {
+  color: #ff0000;
+  font-size: small;
+}
+
+.contract-page {
   width: 70%;
   display: table;
   margin: 0 auto;
 }
-.title{
+
+.title {
   margin: 2em;
   text-align: center;
   font-size: large;
 }
-.col-1{
-  width: 50%;
-}
-.col-2{
-  width: 50%;
-}
-.title-form{
+
+.title-form {
   width: 100%;
   text-align: center;
 }
 @media screen and (min-width: 250px) and (max-width: 530px) {
-  .computer{
+  .computer {
     display: none;
   }
 }
 @media screen and (min-width: 531px) {
-  .mobile{
+  .mobile {
     display: none;
   }
 }
 
-.contract-form-select{
-  height:3.25rem;
+.contract-form-select {
+  height: 3.25rem;
 }
 
-.contract-form-checkbox{
-  padding-top:30px;
-  font-size:1.10rem;
+.contract-form-checkbox {
+  padding-top: 30px;
+  font-size: 1.10rem;
 }
 
-.asterisk{
+.asterisk {
   color: red;
 }
-
-
