@@ -1220,7 +1220,7 @@ export class OffersService {
   }
 
   selectEPI(kw){
-    let sql = "select pk_user_epi as id, libelle from user_epi where lower_unaccent(libelle) like lower_unaccent('%"+kw+"%') or lower_unaccent(libelle) % lower_unaccent('"+kw+"')";
+    let sql = "select pk_user_epi as id, libelle from user_epi where dirty='N' and lower_unaccent(libelle) like lower_unaccent('%"+kw+"%') or lower_unaccent(libelle) % lower_unaccent('"+kw+"')";
 
     return sql;
   }
