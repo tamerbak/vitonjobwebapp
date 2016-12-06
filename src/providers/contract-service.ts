@@ -250,8 +250,8 @@ export class ContractService {
       + "'OUI'"
       + ")"
       + " RETURNING pk_user_contrat";
-    console.clear();
-    console.log(sql);
+    //console.clear();
+    //console.log(sql);
     debugger;
 
     return new Promise(resolve => {
@@ -619,14 +619,14 @@ export class ContractService {
       "" + c.endHour + "," +
       "'NON', " +
       "'NON')";
-    console.log(sql);
+    //console.log(sql);
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
       this.http.post(this.configuration.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          console.log(JSON.stringify(data));
+          //console.log(JSON.stringify(data));
           resolve(data);
         });
     });
