@@ -25,6 +25,7 @@ import {PaymentMethod} from "../payment-method/payment-method";
 import {About} from "../about/about";
 import {AdvertList} from "../advert-list/advert-list";
 import {ExtraCalendar} from "../extra-calendar/extra-calendar"
+import {Iframe} from '../iframe/iframe';
 
 /**
  * VitOnJob modules
@@ -86,6 +87,9 @@ export const CoreRoutes: RouterConfig = [
 
       // Advert
       {path: 'advert/list', component: AdvertList},
+
+      // Iframes
+      {path: 'iframe/quote', component: Iframe}
 
       // Extras
       //{path: 'offer/calendar', component: ExtraCalendar}
