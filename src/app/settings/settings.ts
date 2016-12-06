@@ -109,6 +109,14 @@ export class Settings {
   initValidation() {
     this.isValidPassword1 = false;
     this.isValidPassword2 = false;
+
+    // $('.setting-form').
+    var offset = jQuery("#setting-form").offset().top;
+    var point = offset + window.innerHeight - 50;
+    window.setTimeout(function() {
+      window.scrollTo(0,point);
+    }, 1000);
+
   }
 
   initPasswordPhaseForm() {
