@@ -90,22 +90,6 @@ export class Yousign{
           this.hideLoader = true;
           return;
         }
-        let lines = results.lignes;
-
-        // HACK: I comment because the computing process has been simplified
-        // let cfix = 0;
-        // let cotis = 0;
-        // for(let i = 0 ; i < lines.length ; i++){
-        //   let l = lines[i];
-        //   if(l.unite == 'IJ' || l.unite == 'IH' || l.unite == 'I')
-        //     cfix += l.valeur;
-        //   else if (l.unite == 'H' && l.nbUnite>0){
-        //     cotis += l.valeur/l.nbUnite;
-        //   }
-        // }
-        // this.contractData.elementsCotisation = cotis;
-        // this.contractData.elementsNonCotisation = cfix;
-
         this.contractService.callYousign(
           this.currentUser,
           this.employer,

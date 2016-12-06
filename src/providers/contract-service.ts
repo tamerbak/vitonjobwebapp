@@ -210,10 +210,10 @@ export class ContractService {
       " rapatriement_a_la_charge_de_l_ai" +
       ")" +
       " VALUES ("
-      + "'" + contract.missionStartDate + "',"
-      + "'" + contract.missionEndDate + "',"
-      + "'" + contract.termStartDate + "',"
-      + "'" + contract.termEndDate + "',"
+      + "" + this.helpers.displayableDateToSQL(contract.missionStartDate) + ","
+      + "" + this.helpers.displayableDateToSQL(contract.missionEndDate) + ","
+      + "" + this.helpers.displayableDateToSQL(contract.termStartDate) + ","
+      + "" + this.helpers.displayableDateToSQL(contract.termEndDate) + ","
       + "'" + this.helpers.dateToSqlTimestamp(new Date()) + "',"
       + "'" + this.helpers.timeStrToMinutes(contract.workStartHour) + "',"
       + "'" + this.helpers.timeStrToMinutes(contract.workEndHour) + "',"
@@ -250,9 +250,9 @@ export class ContractService {
       + "'OUI'"
       + ")"
       + " RETURNING pk_user_contrat";
-
-    //console.log(sql);
-
+    console.clear();
+    console.log(sql);
+    debugger;
 
     return new Promise(resolve => {
       let headers = new Headers();
@@ -389,7 +389,10 @@ export class ContractService {
         }
       for (let i = 0; i < slots.length; i++) {
         let c = slots[i];
-        html = html + "<li><span style='font-weight:bold'>" + this.toDateString(c.date, '') + "</span>&nbsp;&nbsp; de " + this.toHourString(c.startHour) + " à " + this.toHourString(c.endHour) + "</li>";
+        if(c.date == c.dateEnd)
+          html = html + "<li><span style='font-weight:bold'>" + this.toDateString(c.date, '') + "</span>&nbsp;&nbsp; de " + this.toHourString(c.startHour) + " à " + this.toHourString(c.endHour) + "</li>";
+        else
+          html = html + "<li><span style='font-weight:bold'>" + this.toDateString(c.date, '') +" au " + this.toDateString(c.dateEnd, '') + "</span>&nbsp;&nbsp; de " + this.toHourString(c.startHour) + " à " + this.toHourString(c.endHour) + "</li>";
       }
 
     }
@@ -599,6 +602,7 @@ export class ContractService {
 
   generateMissionHour(idContract, c) {
     let d = new Date(c.date);
+    let f = new Date(c.dateEnd);
     let sql = "insert into user_heure_mission " +
       "(fk_user_contrat, " +
       "jour_debut, " +
@@ -610,19 +614,19 @@ export class ContractService {
       "values " +
       "(" + idContract + ", " +
       "'" + this.helpers.dateToSqlTimestamp(d) + "', " +
-      "'" + this.helpers.dateToSqlTimestamp(d) + "', " +
+      "'" + this.helpers.dateToSqlTimestamp(f) + "', " +
       "" + c.startHour + ", " +
       "" + c.endHour + "," +
       "'NON', " +
       "'NON')";
-    //console.log(sql);
+    console.log(sql);
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
       this.http.post(this.configuration.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          //console.log(JSON.stringify(data));
+          console.log(JSON.stringify(data));
           resolve(data);
         });
     });

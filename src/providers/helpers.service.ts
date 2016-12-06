@@ -57,6 +57,18 @@ export class Helpers {
     return sqlTimestamp;
   }
 
+  displayableDateToSQL(sdate : string){
+    if(!sdate || sdate.length == 0){
+      return 'null';
+    }
+
+    let day = sdate.split('/')[0];
+    let month = sdate.split('/')[1];
+    let year = sdate.split('/')[2];
+
+    return "'"+year+"-"+month+"-"+day+" 00:00:00+00'";
+  }
+
 
   /**
    * @description convert time String to minutes
