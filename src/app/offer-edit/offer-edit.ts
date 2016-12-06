@@ -1807,6 +1807,19 @@ export class OfferEdit{
     let ms = this.slot.startHour.getMinutes();
     let he = this.slot.endHour.getHours();
     let me = this.slot.endHour.getMinutes();
+
+    /*
+      WORKAROUND THE PROBLEM OF IMPLICIT CONVERSION BETWEEN 12:00 AND 00:00
+     */
+    if(he == 0 && me ==0){
+      this.slot.endHour.setHours(12, 0, 0, 0);
+      he = 12;
+      me=0;
+    }
+
+    /*
+      NOW WE START THE REAL TREATMENT
+     */
     start._d.setHours(hs, ms, 0, 0);
     end._d.setDate(end._d.getDate() - 1);
     end._d.setHours(he, me, 0, 0);
