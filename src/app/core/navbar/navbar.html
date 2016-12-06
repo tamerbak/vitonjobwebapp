@@ -11,7 +11,7 @@
         <!-- shown on xs & sm screen. collapses and expands navigation -->
         <a (click)="toggleSidebar('collapse')" class="hidden-lg-up nav-link" href="#" data-html="true"
            title="Show/hide<br>sidebar" data-placement="bottom">
-          <span class="rounded rounded-lg hidden-md-up" style="color: #555555;"><i class="fa fa-bars fa-lg"></i></span>
+          <span class="rounded rounded-lg hidden-md-up" class="color-span"><i class="fa fa-bars fa-lg"></i></span>
           <i class="fa fa-bars fa-lg hidden-sm-down"></i>
         </a>
       </li>
@@ -23,7 +23,7 @@
           <span class="rounded rounded-lg text-white"><i class="glyphicon glyphicon-th fa-lg"></i></span>
         </a>
         <a class="nav-link hidden-md-up" href="#" (click)="toggleChat()">
-          <span class="rounded rounded-lg" style="color: #555555"><i class="glyphicon glyphicon-th fa-lg"></i></span>
+          <span class="rounded rounded-lg" class="color-span"><i class="glyphicon glyphicon-th fa-lg"></i></span>
         </a>
       </li>
     </ul>
@@ -38,7 +38,7 @@
     </a-->
     <ul class="nav navbar-nav pull-xs-right hidden-md-up" (click)="$event.preventDefault()">
       <li *ngIf="currentUser" class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" data-toggle="dropdown" style="background-color: transparent;">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" class="bg-transparent">
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -64,14 +64,14 @@
     <form class="navbar-form pull-xs-left" [hidden]="currentUser">
       <div class="form-group">
         <div class="input-group input-group-no-border">
-          <label style="color: white; margin-right: 10px; margin-top: 10px">Jobyer</label>
+          <label class="mr-color">Jobyer</label>
           <div class="checkbox-inline checkbox-ios">
             <label class="switch">
               <input type="checkbox" class="ios" [checked]="(sharedService.getProjectTarget() == 'employer')"
                      (click)="switchProjectTarget()"><i></i>
             </label>
           </div>
-          <label style="color: white; margin-top: 10px; margin-left: 10px;">Employeur</label>
+          <label class="mr-l-color">Employeur</label>
         </div>
       </div>
     </form>

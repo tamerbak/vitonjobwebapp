@@ -1,12 +1,25 @@
-/**
- * Switchery.
- */
-
+.color-span{
+  color: #555555;
+}
 .switch {
   box-sizing: content-box;
   margin-left: -20px;
 }
 
+.bg-transparent{
+  background-color: transparent;
+}
+
+.mr-color{
+  color: white;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+.mr-l-color{
+  color: white;
+  margin-top: 10px;
+  margin-left: 10px;
+}
 .switch input {
   display: none;
 }
@@ -40,8 +53,4 @@
 
 .nav-item .dropdown .open .nav-link .dropdown-toggle{
   background-color: transparent;
-}
-
-.nb-offer {
-  margin-left: 5px;
 }

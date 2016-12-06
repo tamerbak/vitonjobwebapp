@@ -1074,19 +1074,46 @@ export class OffersService {
    *********************************************************************************************************************/
   getHoursCategories(idConv){
     let sql = "select cat.pk_user_categorie_heures_conventionnees as \"catId\",  cat.code, " +
-    " chc.pk_user_coefficient_heure_conventionnee as id, chc.libelle, chc.coefficient, chc.coefficient as \"empValue\", chc.type_de_valeur as \"typeValue\" " +
+    " chc.pk_user_coefficient_heure_conventionnee as id, chc.libelle, chc.coefficient, chc.coefficient as \"empValue\", chc.type_de_valeur as \"typeValue\"," +
+    " chc.formule_jour, chc.debut, chc.fin " +
     "from user_categorie_heures_conventionnees cat " +
     "LEFT JOIN user_coefficient_heure_conventionnee chc " +
     "ON chc.fk_user_categorie_heures_conventionnees = cat.pk_user_categorie_heures_conventionnees " +
-    " where chc.fk_user_convention_collective = " + idConv;
+    " where chc.fk_user_convention_collective = " + idConv+" and chc.dirty='N'";
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
           let list = [];
-          if(data.data && data.data.length>0)
+
+          if(data.data && data.data.length>0){
             list = data.data;
+            for(let i = 0; i< list.length ; i++){
+              if(list[i].debut<0 || list[i].fin<0){
+                list[i].debutHeure = 0;
+                list[i].debutMinute = 0;
+                list[i].finHeure = 0;
+                list[i].finMinute = 0;
+              } else {
+                let div = Math.floor(list[i].debut/60);
+                let rem = list[i].debut % 60;
+                list[i].debutHeure = div;
+                list[i].debutMinute = rem;
+
+                div = Math.floor(list[i].fin/60);
+                rem = list[i].fin % 60;
+                if(div>=24){
+                  div = 23;
+                  rem = 59;
+                }
+
+                list[i].finHeure = div;
+                list[i].finMinute = rem;
+
+              }
+            }
+          }
           resolve(list);
         });
     });
@@ -1097,7 +1124,7 @@ export class OffersService {
       " c.code as code, c.pk_user_categorie_majoration_heure as \"majId\" " +
       " from user_majoration_heure_conventionnee m, user_categorie_majoration_heure c " +
       " where m.fk_user_categorie_majoration_heure = c.pk_user_categorie_majoration_heure " +
-      " and fk_user_convention_collective = " + idConv;
+      " and fk_user_convention_collective = " + idConv+" and m.dirty='N'";
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -1116,12 +1143,14 @@ export class OffersService {
       " t.code as code, t.pk_user_type_indemnite as \"indId\" " +
       " from user_indemnite_conventionnee i, user_type_indemnite t " +
       " where i.fk_user_type_indemnite = t.pk_user_type_indemnite " +
-      " and fk_user_convention_collective="+idConv;
+      " and fk_user_convention_collective="+idConv+" and i.dirty='N'";
+
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
+
           let list = [];
           if(data.data && data.data.length>0)
             list = data.data;

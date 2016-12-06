@@ -1446,12 +1446,12 @@ export class OfferEdit{
 
     let offer = this.sharedService.getCurrentOffer();
     if (offer != null) {
+      let self = this;
       this.financeService.loadPrevQuotePdf(offer.idOffer).then((data: any) => {
 
-        jQuery("#modal-offer-temp-quote").modal('show');
-
-        let iFrame: HTMLIFrameElement = <HTMLIFrameElement>document.getElementById('pdf-stream');
-        iFrame.src = 'data:application/pdf;base64, ' + data.pdf;
+        let file64 ='data:application/pdf;base64, ' + data.pdf;
+        this.sharedService.setCurrentQuote(file64);
+        self.router.navigate(['iframe/quote']);
 
       });
     }
@@ -1671,9 +1671,10 @@ export class OfferEdit{
     this.offersService.getHoursCategories(this.convention.id).then(data => {
       this.categoriesHeure = this.conventionService.convertValuesToPercent(data);
     });
-    this.offersService.getHoursMajoration(this.convention.id).then(data => {
+    this.majorationsHeure = [];
+    /*this.offersService.getHoursMajoration(this.convention.id).then(data => {
       this.majorationsHeure = this.conventionService.convertValuesToPercent(data);
-    });
+    });*/
     this.offersService.getIndemnites(this.convention.id).then(data => {
       this.indemnites = this.conventionService.convertValuesToPercent(data);
     });
@@ -1691,8 +1692,8 @@ export class OfferEdit{
         this.categoriesHeure = this.conventionService.convertValuesToPercent(data);
       }
     });
-
-    this.conventionService.getHoursMajorationEmp(this.convention.id, this.offer.idOffer).then((data: any) => {
+    this.majorationsHeure = [];
+    /*this.conventionService.getHoursMajorationEmp(this.convention.id, this.offer.idOffer).then((data: any) => {
       if (!data || data.length == 0) {
         this.isConditionEmpExist = false;
         this.offersService.getHoursMajoration(this.convention.id).then(data => {
@@ -1702,7 +1703,7 @@ export class OfferEdit{
         this.isConditionEmpExist = true;
         this.majorationsHeure = this.conventionService.convertValuesToPercent(data);
       }
-    });
+    });*/
     this.conventionService.getIndemnitesEmp(this.convention.id, this.offer.idOffer).then((data: any) => {
       if (!data || data.length == 0) {
         this.isConditionEmpExist = false;

@@ -253,4 +253,12 @@ export class SharedService {
   getCurrentAdv() {
     return this.getStorageVariable("currentAdv");
   }
+
+  getCurrentQuote() {
+    return this.getStorageVariable("currentQuote");
+  }
+
+  setCurrentQuote(value) {
+    this.setStorageVariable("currentQuote", value);
+  }
 }

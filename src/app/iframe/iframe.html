@@ -1,0 +1,21 @@
+<div class="row">
+  <div class="col-xs-6 pull-right" style="margin-bottom: 1em;">
+    <a href="javascript:history.go(-1)">
+      <button type="button" class="btn btn-secondary btn-sm" name="button">
+        <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Retour
+      </button>
+    </a>
+  </div>
+  <div class="col-xs-6 pull-left">
+    <button type="button" class="btn btn-success btn-sm" name="button" (click)="openQuote()">
+      <span class="glyphicon glyphicon-download-alt iframe-download-link" aria-hidden="true"></span>
+      Télécharger le devis
+    </button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12 col-xs-12">
+    <div id="iframPlaceHolder"></div>
+  </div>
+</div>

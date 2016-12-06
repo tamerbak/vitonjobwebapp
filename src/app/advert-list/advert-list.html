@@ -5,7 +5,7 @@
 
 
 <div class="row">
-  <div class="col-xs-12 pull-right" style="margin-bottom: 1em;">
+  <div class="col-xs-12 pull-right mr-bot">
     <a href="javascript:history.go(-1)"><button type="button" class="btn btn-secondary btn-sm" name="button"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Retour</button></a>
   </div>
 </div>
@@ -24,29 +24,30 @@
 <div class="row">&nbsp;</div>
 <div class="row">
   <div class="col-lg-12 col-xs-12">
-    <section class="widget" widget *ngFor="let adv of adverts" style="min-height: 200px" >
+    <section class="widget min-h" widget *ngFor="let adv of adverts">
       <div class="widget-body row">
         <h4><strong>{{adv.titre}}</strong></h4>
       </div>
 
-      <div class="pull-left" style="padding-left: 20px;" *ngIf="adv.isThumbnail">
-          <img src="{{adv.thumbnail.fileContent}}" style="max-height: 100px; max-width: 100px;" alt="Vit-on-job" >
+      <div class="pull-left pad-left" *ngIf="adv.isThumbnail">
+          <img src="{{adv.thumbnail.fileContent}}" class="max-h" alt="Vit-on-job" >
       </div>
 
       <div class="col-xs-5 col-md-12 price pull-right">
         <label class="title"><strong>Créée le {{adv.created}} </strong></label>
       </div>
 
-      <div class="col-md-12 col-sm-12 col-xs-12" style="margin-left:150px" [innerHTML]="adv.briefContent">
+      <div class="col-md-12 col-sm-12 col-xs-12 mr-left" [innerHTML]="adv.briefContent">
 
       </div>
 
       <div class="clearfix">
-        <div class="pull-sm-right pull-md-right pull-lg-right pull-xl-right" style="position: absolute;bottom: 20px;right: 34px;" >
+        <div class="pull-sm-right pull-md-right pull-lg-right pull-xl-right clear-child">
             <button type="button" class="btn btn-primary btn-sm " style="background-color: #40aea9; color: white; border-radius: 0.2rem;" (click)="updateAdv(adv)">
               Détails
             </button>
-            <button type="button" class="btn btn-danger btn-sm " style="color: white; border-radius: 0.2rem;" (click)="deleteAdv(item)" disabled>Supprimer
+            <button type="button" class="btn btn-primary btn-sm clear-child-2" (click)="deleteAdv(item)">Supprimer
+            <button type="button" class="btn btn-danger btn-sm clear-child-3" (click)="deleteAdv(item)" disabled>Supprimer
             </button>
         </div>
 
