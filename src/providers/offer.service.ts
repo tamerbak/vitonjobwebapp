@@ -606,7 +606,7 @@ export class OffersService {
 
   updateOfferEntrepriseTitle(offer) {
     //
-    let sql = "update user_offre_entreprise set titre='" + this.sqlfyText(offer.title) + "', tarif_a_l_heure='" + offer.jobData.remuneration + "' where pk_user_offre_entreprise=" + offer.idOffer;
+    let sql = "update user_offre_entreprise set titre='" + this.sqlfyText(offer.title) + "', tarif_a_l_heure='" + offer.jobData.remuneration + "', nombre_de_postes = " + offer.nbPoste + " where pk_user_offre_entreprise=" + offer.idOffer;
 
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
@@ -1512,5 +1512,15 @@ export class OffersService {
     }else{
       return null;
     }
+  }
+
+  getOfferByIdFromLocal(currentUser, offerId){
+    let offers = currentUser.employer.entreprises[0].offers;
+    for(let i = 0; i < offers.length; i++){
+      if(offers[i].idOffer == offerId){
+        return offers[i];
+      }
+    }
+    return null;
   }
 }

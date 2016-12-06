@@ -238,6 +238,22 @@ export class SharedService {
     this.setStorageVariable("lastNotif", value);
   }
 
+  getAdvertMode() {
+    return this.getStorageVariable("lastNotif");
+  }
+
+  setAdvertMode(value){
+    this.setStorageVariable("ADVERT",value);
+  }
+
+  setCurrentAdv(value) {
+    this.setStorageVariable("currentAdv", value);
+  }
+
+  getCurrentAdv() {
+    return this.getStorageVariable("currentAdv");
+  }
+
   getCurrentQuote() {
     return this.getStorageVariable("currentQuote");
   }

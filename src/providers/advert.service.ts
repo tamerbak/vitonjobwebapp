@@ -9,7 +9,15 @@ export class AdvertService {
   }
 
   loadAdverts(idEntreprise){
-    let sql = "select pk_user_annonce_entreprise as id, titre as title, contenu as content, thumbnail, created " +
+    let sql = "select " +
+      "pk_user_annonce_entreprise as id" +
+      ", titre as titre" +
+      ", contenu as content" +
+      ", piece_jointe as attachement" +
+      ", image_principale as imgbg" +
+      ", thumbnail" +
+      ", created " +
+      ", fk_user_offre_entreprise as \"offerId\" " +
       "from user_annonce_entreprise " +
       "where dirty='N' and fk_user_entreprise="+idEntreprise+" order by pk_user_annonce_entreprise desc";
 
@@ -22,19 +30,94 @@ export class AdvertService {
           if(data && data.data){
             for(let i = 0 ; i < data.data.length ; i++){
               let r = data.data[i];
-              let adv= {
+              let adv = {
                 id : r.id,
-                title : r.title,
-                content : this.prepareContent(r.content),
+                'class' : 'com.vitonjob.annonces.Annonce',
+                idEntreprise : idEntreprise,
+                titre : r.titre,
+                description : this.prepareContent(r.content),
                 briefContent : this.prepareBriefContent(r.content),
+                attachement : {
+                  'class':'com.vitonjob.annonces.Attachement',
+                  code : 0,
+                  status : '',
+                  fileContent : '',
+                  fileName : this.getImageName(r.attachement),
+                },
+                thumbnail : {
+                  'class':'com.vitonjob.annonces.Attachement',
+                  code : 0,
+                  status : '',
+                  fileContent : this.prepareImage(r.thumbnail),
+                  fileName: this.getImageName(r.thumbnail)
+                },
+                isThumbnail : r.thumbnail && r.thumbnail.length > 0,
+                imgbg : {
+                  'class':'com.vitonjob.annonces.Attachement',
+                  code : 0,
+                  status : '',
+                  fileContent : this.prepareImage(r.imgbg),
+                  fileName: this.getImageName(r.imgbg)
+                },
+                rubriques : [],
                 created : this.parseDate(r.created),
-                thumbnail : this.prepareImage(r.thumbnail),
-                isThumbnail : r.thumbnail && r.thumbnail.length>0
+                offerId: r.offerId
               };
+
               adverts.push(adv);
             }
           }
           resolve(adverts);
+        });
+    });
+  }
+
+  saveNewAdvert(advert : any){
+    let sql = "insert into user_annonce_entreprise " +
+      "(titre, contenu, piece_jointe, thumbnail, image_principale, fk_user_entreprise) " +
+      "values " +
+      "('"+this.sqlfyText(advert.titre)+"', '"+this.sqlfyText(advert.description)+"', " +
+        "'"+this.sqlfyText(advert.attachement.fileContent)+"', '"+this.sqlfyText(advert.thumbnail.fileContent)+"', " +
+        "'"+this.sqlfyText(advert.imgbg.fileContent)+"', "+advert.idEntreprise+") returning pk_user_annonce_entreprise";
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let res = {
+            id : 0
+          };
+          if(data && data.data && data.data.length>0){
+            res.id = data.data[0].pk_user_annonce_entreprise;
+          }
+          resolve(res);
+        });
+    });
+  }
+
+  saveAdvert(advert: any) {
+    let sql = "UPDATE user_annonce_entreprise " +
+      "SET " +
+      "titre = '" + this.sqlfyText(advert.titre) + "', " +
+      "contenu = '" + this.sqlfyText(advert.description) + "', " +
+      "piece_jointe = '" + this.sqlfyText(advert.attachement.fileContent) + "', " +
+      "thumbnail = '" + this.sqlfyText(advert.thumbnail.fileContent) + "', " +
+      "image_principale = '" + this.sqlfyText(advert.imgbg.fileContent) + "' " +
+      "WHERE " +
+      "pk_user_annonce_entreprise = " + advert.id + ";"
+    ;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let res = {
+            id: 0
+          };
+          if (data && data.data && data.data.length > 0) {
+            res.id = data.data[0].pk_user_annonce_entreprise;
+          }
+          resolve(res);
         });
     });
   }
@@ -74,5 +157,39 @@ export class AdvertService {
 
     enc = "data:image/"+file.split('.')[1]+";base64,"+enc;
     return enc;
+  }
+  getImageName(strImg) {
+    if(!strImg || strImg.length == 0)
+      return "";
+
+    let file = strImg.split(';')[0];
+    return file;
+  }
+
+  updateAdvertWithOffer(advertId, offerId) {
+    let sql = "UPDATE user_annonce_entreprise " +
+        "SET " +
+        "fk_user_offre_entreprise = '" + offerId + "' " +
+        "WHERE " +
+        "pk_user_annonce_entreprise = " + advertId + ";";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  sqlfy(d) {
+    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " 00:00:00+00";
+  }
+
+  sqlfyText(text) {
+    if (!text || text.length == 0)
+      return "";
+    return text.replace(/'/g, "''")
   }
 }
