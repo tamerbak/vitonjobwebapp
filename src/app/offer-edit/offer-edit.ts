@@ -1079,11 +1079,9 @@ export class OfferEdit{
 
     if (this.obj != "detail") {
       this.offer.calendarData = this.offersService.convertSlotsForSaving(this.slotsToSave);
-      let roundMin = (Math.round(this.minHourRate * 100) / 100);
 
-      if (!this.offer.jobData.job || this.offer.jobData.job == 0 || !this.offer.jobData.sector || this.offer.jobData.sector == 0 || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || roundMin > this.offer.jobData.remuneration) {
-        this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
-        return;
+      if(!this.isFormValid()){
+          return;
       }
 
       let level = (this.offer.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant';
@@ -1906,5 +1904,24 @@ export class OfferEdit{
   closeDetailsModal(){
     this.alertsSlot = [];
     jQuery('#show-event-modal').modal('hide');
+  }
+
+  isFormValid(){
+    let roundMin = (Math.round(this.minHourRate * 100) / 100);
+
+    //these conditions should be verified for all roles
+    if (!this.offer.jobData.job || this.offer.jobData.job == 0 || !this.offer.jobData.sector || this.offer.jobData.sector == 0 || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || roundMin > this.offer.jobData.remuneration) {
+      this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
+      return false;
+    }
+
+    //for employer and recruiter roles, the nbPoste field should be filled
+    if(this.projectTarget == "employer"){
+      if(!this.offer.nbPoste ||  this.offer.nbPoste <= 0){
+        this.addAlert("warning", "Veuillez renseigner le nombre de poste requis pour cette offre.", "general");
+        return false;
+      }
+    }
+    return true;
   }
 }
