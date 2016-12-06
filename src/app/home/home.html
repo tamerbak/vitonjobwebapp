@@ -9,13 +9,18 @@
     <div class="home-search" *ngIf="!isTablet">
       <div class="row">
         <div class="logo-home col-xs-12 centred-l"><img class="home-logo centred-l" src="../../assets/images/logo/logo-white.png" alt=""></div>
-        <div class="search centred-l clo-xs-12">
+        <div class="search centred-l col-xs-12">
           <div class="centred-l total-large">
             <input placeholder="Rechercher sur Vit-On-Job...." class="search__input" [(ngModel)]="scQuery" (keyup)="checkForEnterKey($event)"/>
             <button class="fa fa-search search__button" (click)="doSemanticSearch()"></button>
           </div>
         </div>
         <div class="col-xs-12 centred-l search-link"><a class="adv-search centred-l" [routerLink]=" ['/search/criteria'] ">Recherche avancée</a></div>
+        <div class="search-notification centred-l col-xs-12">
+          <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
+            <div [innerHTML]="alert.msg"></div>
+          </alert>
+        </div>
       </div>
     </div>
     <div class="home-search-mb" *ngIf="isTablet">
