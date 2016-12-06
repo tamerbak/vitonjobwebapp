@@ -19,6 +19,7 @@ import {ConventionService} from "../../providers/convention.service";
 import {CandidatureService} from "../../providers/candidature-service";
 import {SmsService} from "../../providers/sms-service";
 import {ModalSlots} from "./modal-slots/modal-slots";
+import {AdvertService} from "../../providers/advert.service";
 
 declare var Messenger, jQuery: any;
 declare var google: any;
@@ -31,7 +32,7 @@ declare var require;
   encapsulation: ViewEncapsulation.None,
   styles: [require('./offer-edit.scss')],
   directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime, ModalOptions, ModalOfferTempQuote, ModalSlots],
-  providers: [OffersService, SearchService, FinanceService, LoadListService, ConventionService, CandidatureService, SmsService]
+  providers: [OffersService, SearchService, FinanceService, LoadListService, ConventionService, CandidatureService, SmsService, AdvertService]
 })
 
 export class OfferEdit{
@@ -146,6 +147,7 @@ export class OfferEdit{
    *  ADVERTISEMENTS MANAGEMENT
    */
   advertMode : any;
+  advertId: string;
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -159,7 +161,8 @@ export class OfferEdit{
               private listService: LoadListService,
               private conventionService: ConventionService,
               private candidatureService: CandidatureService,
-              private smsService: SmsService) {
+              private smsService: SmsService,
+              private advertService : AdvertService) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['home']);
@@ -185,6 +188,7 @@ export class OfferEdit{
     //obj = "add", "detail", or "recruit"
     this.route.params.forEach((params: Params) => {
       this.obj = params['obj'];
+      this.advertId = params['adv'];
     });
 
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
@@ -356,7 +360,7 @@ export class OfferEdit{
       format: 'dd/mm/yyyy'
     };
 
-    this.advertMode = this.sharedService.getAdvertMode();
+    /*this.advertMode = this.sharedService.getAdvertMode();
     if(!this.advertMode){
       this.advertMode= {
         advMode : false,
@@ -364,7 +368,7 @@ export class OfferEdit{
       };
     }
 
-    this.sharedService.setAdvertMode({advMode : false, id : 0});
+    this.sharedService.setAdvertMode({advMode : false, id : 0});*/
   }
 
   updateConventionParameters(idOffer) {
@@ -1160,6 +1164,13 @@ export class OfferEdit{
           type: 'success',
           showCloseButton: true
         });
+        //redirection depending on the case
+        if(!Utils.isEmpty(this.advertId)){
+          this.advertService.updateAdvertWithOffer(this.advertId, offer.idOffer).then((data: any) => {
+            this.router.navigate(['advert/edit', {obj:'add'}]);
+          });
+          return;
+        }
         if (this.obj == "add") {
           //redirect to offer-list and display public offers
           this.router.navigate(['offer/list', {typeOfferModel: '0'}]);
@@ -1196,12 +1207,10 @@ export class OfferEdit{
         }
       }
 
-      if (this.projectTarget == 'employer' && this.selectedParamConvID)
+      if (this.projectTarget == 'employer' && this.selectedParamConvID) {
         this.offersService.saveOfferConventionParameters(this.offer.idOffer, this.selectedParamConvID);
-      this.validateJob();
-      if(this.projectTarget == 'employer'){
-        this.offersService.updateNbPoste(this.offer.nbPoste, this.offer.idOffer);
       }
+      this.validateJob();
     }
   }
 
@@ -1226,10 +1235,16 @@ export class OfferEdit{
       return;
     }
 
-    //redirect to offer-list and display public offers
-    var typeOffer = this.offer.visible ? 0 : 1;
-    this.router.navigate(['offer/list', {typeOfferModel: typeOffer}]);
-
+    //redirection depending on the case
+    if(!Utils.isEmpty(this.advertId)){
+      this.advertService.updateAdvertWithOffer(this.advertId, this.offer.idOffer);
+      this.router.navigate(['advert/list']);
+      return;
+    }else{
+      //redirect to offer-list and display public offers
+      var typeOffer = this.offer.visible ? 0 : 1;
+      this.router.navigate(['offer/list', {typeOfferModel: typeOffer}]);
+    }
   }
 
   /**

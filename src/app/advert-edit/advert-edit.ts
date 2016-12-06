@@ -4,6 +4,7 @@ import {SharedService} from "../../providers/shared.service";
 import {Router, ROUTER_DIRECTIVES, ActivatedRoute, Params} from "@angular/router";
 import {ACCORDION_DIRECTIVES, AlertComponent} from "ng2-bootstrap";
 import {Utils} from "../utils/utils";
+import {OffersService} from "../../providers/offer.service";
 
 declare var jQuery : any;
 
@@ -13,7 +14,7 @@ declare var jQuery : any;
   encapsulation: ViewEncapsulation.None,
   styles:[require('./advert-edit.scss')],
   directives: [ACCORDION_DIRECTIVES, ROUTER_DIRECTIVES, AlertComponent],
-  providers:[AdvertService, SharedService],
+  providers:[AdvertService, OffersService],
 })
 
 export class AdvertEdit {
@@ -29,7 +30,8 @@ export class AdvertEdit {
   constructor(private advertService: AdvertService,
               private router: Router,
               private route: ActivatedRoute,
-              private sharedService: SharedService) {
+              private sharedService: SharedService,
+              private offerService: OffersService) {
     this.currentUser = this.sharedService.getCurrentUser();
 
     if (!this.currentUser || (!this.currentUser.estEmployeur && !this.currentUser.estRecruteur)) {
@@ -127,7 +129,7 @@ export class AdvertEdit {
 
 
   ckExport(){
-    let object = jQuery('#cke_1_contents').children();
+    let object = jQuery('#cke_content_cke').children().children().children();
     let ifr = object.contents().find("body");
     let html = ifr.html();
     return html;
@@ -137,7 +139,7 @@ export class AdvertEdit {
     return Utils.isEmpty(str);
   }
 
-  saveAdvert(){
+  prepareDataForSaving(){
     this.advert.description = btoa(this.ckExport());
     if(this.attachementData && this.attachementData.length>0){
       let prefix = this.attachementData.split(',')[0];
@@ -164,6 +166,10 @@ export class AdvertEdit {
     }
 
     this.alert("Prière de patienter, la sauvegarde peut prendre un moment à cause de la taille des fichiers", "info");
+  }
+
+  saveAdvert(){
+    this.prepareDataForSaving();
     if (this.idAdvert) {
       this.advertService.saveAdvert(this.advert).then((result: any)=> {
         this.alert("L'annonce a été enregistré avec succès", "info");
@@ -183,36 +189,27 @@ export class AdvertEdit {
   }
 
   saveAdvertWithOffer(){
-    this.advert.description = btoa(this.ckExport());
-    if(this.attachementData && this.attachementData.length>0){
-      let prefix = this.attachementData.split(',')[0];
-      prefix = prefix.split(';')[0];
-      let ext = prefix.split('/')[1];
-      let base64 = 'attachment.'+ext+";"+this.attachementData.split(',')[1];
-      this.advert.attachement.fileContent = base64;
+    this.prepareDataForSaving();
+    if (this.idAdvert) {
+      this.advertService.saveAdvert(this.advert).then((result: any)=> {
+        this.alert("L'annonce a été enregistré avec succès", "info");
+        this.thumbnailData = '';
+        this.attachementData = '';
+        this.coverData = '';
+        let offer = this.offerService.getOfferByIdFromLocal(this.currentUser, this.advert.offerId);
+        this.sharedService.setCurrentOffer(offer);
+        this.router.navigate(['offer/edit', {obj:'detail', adv: this.idAdvert}]);
+      });
+    } else {
+      this.advertService.saveNewAdvert(this.advert).then((result: any)=> {
+        this.idAdvert = result.id;
+        this.alert("L'annonce a été sauvegardée avec succès", "info");
+        this.thumbnailData = '';
+        this.attachementData = '';
+        this.coverData = '';
+        this.router.navigate(['offer/edit', {obj:'add', adv: this.idAdvert}]);
+      });
     }
-
-    if(this.thumbnailData && this.thumbnailData.length>0){
-      let prefix = this.thumbnailData.split(',')[0];
-      prefix = prefix.split(';')[0];
-      let ext = prefix.split('/')[1];
-      let base64 = 'thumbnail.'+ext+";"+this.thumbnailData.split(',')[1];
-      this.advert.thumbnail.fileContent = base64;
-    }
-
-    if(this.coverData && this.coverData.length>0){
-      let prefix = this.coverData.split(',')[0];
-      prefix = prefix.split(';')[0];
-      let ext = prefix.split('/')[1];
-      let base64 = 'imgbg.'+ext+";"+this.coverData.split(',')[1];
-      this.advert.imgbg.fileContent = base64;
-    }
-    this.alert("Prière de patienter, la sauvegarde peut prendre un moment à cause de la taille des fichiers","info");
-    this.advertService.saveNewAdvert(this.advert).then((result : any)=>{
-      this.idAdvert = result.id;
-      this.sharedService.setAdvertMode({advMode : true, id : this.idAdvert});
-      this.router.navigate(['offer/edit', {obj:'add'}]);
-    });
   }
 
   alert(msg, type){

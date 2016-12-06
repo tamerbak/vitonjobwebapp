@@ -10,7 +10,7 @@ import {ACCORDION_DIRECTIVES, AlertComponent} from "ng2-bootstrap";
   encapsulation: ViewEncapsulation.None,
   styles:[require('./advert-list.scss')],
   directives: [ACCORDION_DIRECTIVES, ROUTER_DIRECTIVES, AlertComponent],
-  providers:[AdvertService, SharedService]
+  providers:[AdvertService]
 })
 export class AdvertList {
   currentUser : any;
@@ -24,7 +24,6 @@ export class AdvertList {
     if(!this.currentUser || (!this.currentUser.estEmployeur && !this.currentUser.estRecruteur)){
       this.router.navigate(['home']);
     }
-
   }
 
   ngOnInit(){
