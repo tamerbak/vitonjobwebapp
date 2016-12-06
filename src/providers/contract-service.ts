@@ -252,7 +252,7 @@ export class ContractService {
       + " RETURNING pk_user_contrat";
     //console.clear();
     //console.log(sql);
-    debugger;
+    //debugger;
 
     return new Promise(resolve => {
       let headers = new Headers();
