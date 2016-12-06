@@ -1081,7 +1081,7 @@ export class OfferEdit{
       this.offer.calendarData = this.offersService.convertSlotsForSaving(this.slotsToSave);
       let roundMin = (Math.round(this.minHourRate * 100) / 100);
 
-      if (!this.offer.jobData.job || this.offer.jobData.job == 0 || !this.offer.jobData.sector || this.offer.jobData.sector == 0 || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || roundMin > this.offer.jobData.remuneration || !this.offer.nbPoste ||  this.offer.nbPoste <= 0) {
+      if (!this.offer.jobData.job || this.offer.jobData.job == 0 || !this.offer.jobData.sector || this.offer.jobData.sector == 0 || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || roundMin > this.offer.jobData.remuneration) {
         this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
         return;
       }
