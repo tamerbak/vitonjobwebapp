@@ -263,7 +263,7 @@
           </label>
           <div class="col-md-7 col-xs-12">
             <input id="autocompleteOfferAdress" type="text" class="form-control"
-                   placeholder="Saisissez l'adresse de la mission" (keyup)="watchOfferAddress($event)"
+                   placeholder="{{ projectTarget == 'employer' ? 'Saisissez  l\'adresse de la mission' : 'Saisissez  l\'adresse de départ vers le lieu de travail' }}" (keyup)="watchOfferAddress($event)"
                    [(ngModel)]="offerAddress" (input)="autocompleteOfferAddress()"/>
           </div>
         </div>
@@ -773,10 +773,10 @@
 
               <!-- Créneaux -->
               <div class="form-group row">
-                <label class="col-md-4 col-xs-4 form-control-label"></label>
+                <label class="col-md-2 col-xs-4 form-control-label"></label>
                 <!--label class="col-md-4 col-xs-6 form-control-label">Date</label-->
-                <label class="col-md-4 col-xs-4 form-control-label">Heure de début</label>
-                <label class="col-md-4 col-xs-4 form-control-label">Heure de fin</label>
+                <label class="col-md-5 col-xs-4 form-control-label">Heure de début</label>
+                <label class="col-md-5 col-xs-4 form-control-label">Heure de fin</label>
               </div>
 
               <alert *ngFor="let alert of alertsSlot; let i = index" [type]="alert.type + ' alert-sm'" dismissible="false">
@@ -788,18 +788,16 @@
 
               <div class="form-group row required">
                 <div class="col-md-2 col-sm-2 col-xs-2">
-                  <label>
+                  <label *ngIf="projectTarget == 'jobyer'">
                     <input type="checkbox" [checked]="isFulltime" class="form-control" (change)="watchFullTime($event)"/>
                     Jour entier
                   </label>
-                </div>
-                <div class="col-md-2 col-sm-2 col-xs-2">
-                  <label>
+                  <label *ngIf="projectTarget != 'jobyer'">
                     <input type="checkbox" [checked]="isPause" class="form-control" (change)="watchPause($event)"/>
                     Pause
                   </label>
                 </div>
-                <div class="col-md-4 col-sm-3 col-xs-6 offer-hour-new">
+                <div class="col-md-5 col-sm-3 col-xs-6 offer-hour-new">
                   <datetime [hidden]="isFulltime"
                     id="slotSHour"
                     [datepicker]="false"
@@ -811,7 +809,7 @@
                           value="09:00"
                           readonly/>
                 </div>
-                <div class="col-md-4 col-sm-3 col-xs-6 offer-hour-new">
+                <div class="col-md-5 col-sm-3 col-xs-6 offer-hour-new">
                   <datetime [hidden]="isFulltime"
                     id="slotEHour"
                     [datepicker]="false"
