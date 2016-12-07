@@ -204,8 +204,12 @@ export class AdvertEdit{
       this.advertService.saveAdvert(this.advert).then((result: any) => {
         this.alert("L'annonce a été enregistré avec succès", "info");
         let offer = this.offerService.getOfferByIdFromLocal(this.currentUser, this.advert.offerId);
-        this.sharedService.setCurrentOffer(offer);
-        this.router.navigate(['offer/edit', {obj: 'detail', adv: this.idAdvert}]);
+        if(offer == null){
+          this.router.navigate(['offer/edit', {obj: 'add', adv: this.idAdvert}]);
+        }else{
+          this.sharedService.setCurrentOffer(offer);
+          this.router.navigate(['offer/edit', {obj: 'detail', adv: this.idAdvert}]);
+        }
       });
     } else {
       this.advertService.saveNewAdvert(this.advert).then((result: any) => {
@@ -251,6 +255,12 @@ export class AdvertEdit{
   deleteFile(attach) {
     attach.fileName = "";
     attach.fileContent = "";
+  }
+
+  downloadFile(attach) {
+    let content = attach.fileContent.split(';')[1];
+    var url = "data:application/octet-stream;base64," + content;
+    window.open(url);
   }
 
   isFormValid(){
