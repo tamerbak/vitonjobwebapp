@@ -16,6 +16,7 @@ declare var google: any;
 @Component({
   selector: '[modal-profile]',
   template: require('./modal-profile.html'),
+  styles: [ require('./modal-profile-fix.scss') ],
   directives: [ROUTER_DIRECTIVES, AlertComponent, MaskedInput],
   providers: [Utils, ProfileService, LoadListService]
 })
