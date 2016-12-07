@@ -2,70 +2,72 @@ import {Component, ViewEncapsulation} from "@angular/core";
 import {AdvertService} from "../../providers/advert.service";
 import {SharedService} from "../../providers/shared.service";
 import {Router, ROUTER_DIRECTIVES, ActivatedRoute, Params} from "@angular/router";
-import {ACCORDION_DIRECTIVES, AlertComponent} from "ng2-bootstrap";
+import {AlertComponent} from "ng2-bootstrap";
 import {Utils} from "../utils/utils";
 import {OffersService} from "../../providers/offer.service";
 
-declare var jQuery : any;
+declare var jQuery: any;
+declare var Messenger: any;
+
 
 @Component({
   selector: '[advert-edit]',
   template: require('./advert-edit.html'),
   encapsulation: ViewEncapsulation.None,
-  styles:[require('./advert-edit.scss')],
-  directives: [ACCORDION_DIRECTIVES, ROUTER_DIRECTIVES, AlertComponent],
-  providers:[AdvertService, OffersService],
+  styles: [require('./advert-edit.scss')],
+  directives: [ROUTER_DIRECTIVES, AlertComponent],
+  providers: [AdvertService, OffersService],
 })
 
-export class AdvertEdit {
+export class AdvertEdit{
   currentUser: any;
   advert: any;
-  idAdvert : any;
+  idAdvert: any;
   obj: string = 'add';
-  thumbnailData : any;
-  attachementData : any;
-  coverData : any;
-  alerts : any = [];
+  thumbnailData: any;
+  coverData: any;
+  alerts: any = [];
 
   constructor(private advertService: AdvertService,
               private router: Router,
               private route: ActivatedRoute,
               private sharedService: SharedService,
               private offerService: OffersService) {
-    this.currentUser = this.sharedService.getCurrentUser();
 
+    this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser || (!this.currentUser.estEmployeur && !this.currentUser.estRecruteur)) {
       this.router.navigate(['home']);
     }
+
     this.advert = {
-      'class' : 'com.vitonjob.annonces.Annonce',
-      idEntreprise : this.currentUser.employer.entreprises[0].id,
-      titre : '',
-      description : '',
-      attachement : {
-        'class':'com.vitonjob.annonces.Attachement',
-        code : 0,
-        status : '',
-        fileContent : ''
+      'class': 'com.vitonjob.annonces.Annonce',
+      idEntreprise: this.currentUser.employer.entreprises[0].id,
+      titre: '',
+      description: '',
+      attachement: {
+        'class': 'com.vitonjob.annonces.Attachement',
+        code: 0,
+        status: '',
+        fileContent: ''
       },
-      thumbnail : {
-        'class':'com.vitonjob.annonces.Attachement',
-        code : 0,
-        status : '',
-        fileContent : ''
+      thumbnail: {
+        'class': 'com.vitonjob.annonces.Attachement',
+        code: 0,
+        status: '',
+        fileContent: ''
       },
-      imgbg : {
-        'class':'com.vitonjob.annonces.Attachement',
-        code : 0,
-        status : '',
-        fileContent : ''
+      imgbg: {
+        'class': 'com.vitonjob.annonces.Attachement',
+        code: 0,
+        status: '',
+        fileContent: ''
       },
-      rubriques : []
+      rubriques: []
     };
   }
 
   ngOnInit() {
-    window['CKEDITOR']['replace']( 'content_cke' );
+    window['CKEDITOR']['replace']('content_cke');
 
     //obj = "add", "detail"
     this.route.params.forEach((params: Params) => {
@@ -75,16 +77,10 @@ export class AdvertEdit {
     if (this.obj == "detail") {
       this.advert = this.sharedService.getCurrentAdv();
       this.idAdvert = this.advert.id;
-
-      // jQuery('.fileinput-thumbnail').append(
-      //   jQuery('<img>').attr('src', this.advert.thumbnail.fileContent)
-      //   // this.thumbnailData.
-      // );
-      // jQuery('.fileinput-imgbg').append(
-      //   jQuery('<img>').attr('src', this.advert.imgbg.fileContent)
-      // );
+      this.prepareDataForDisplaying(this.advert.attachement.fileContent);
+      this.prepareImageForDisplaying(this.advert.thumbnail, 'thumbnail');
+      this.prepareImageForDisplaying(this.advert.imgbg, 'cover');
     }
-
   }
 
   ngAfterViewInit(): void {
@@ -92,127 +88,184 @@ export class AdvertEdit {
     jQuery(document).ready(function () {
       jQuery('.thumbnailinput').on('change.bs.fileinput', function (e, file) {
         self.thumbnailData = file.result;
+        self.advert.thumbnail.fileContent = file.result;
+        self.prepareImageForDisplaying(self.advert.thumbnail, 'thumbnail');
       });
       jQuery('.thumbnailinput').on('clear.bs.fileinput', function (e, file) {
         self.thumbnailData = null;
+        self.deleteFile(self.advert.thumbnail);
       });
 
       jQuery('.cover').on('change.bs.fileinput', function (e, file) {
         self.coverData = file.result;
+        self.advert.imgbg.fileContent = file.result;
+        self.prepareImageForDisplaying(self.advert.imgbg, 'cover');
       });
       jQuery('.cover').on('clear.bs.fileinput', function (e, file) {
         self.coverData = null;
+        self.deleteFile(self.advert.imgbg);
       });
-
     });
-
   }
 
-
-  submitAttachement(){
+  submitAttachement() {
     let fileField = jQuery('#attachement_field');
-    if(fileField && fileField[0]){
+    if (fileField && fileField[0]) {
       let fs = fileField[0].files;
-      if(fs && fs.length>0){
-        let f : any = fs[0];
+      if (fs && fs.length > 0) {
+        let f: any = fs[0];
         let fr = new FileReader();
-        fr.onload = (file:any) =>{
-          this.attachementData = file.target.result;
+        fr.onload = (file: any) => {
+          let fileContent = file.target.result;
+          let content = fileContent.split(',')[1];
+          let base64 = f.name + ";" + content;
+          this.advert.attachement.fileContent = base64;
+          this.advert.attachement.fileName = f.name;
         }
-
         fr.readAsDataURL(f);
-
       }
     }
-
   }
 
-
-  ckExport(){
+  ckExport() {
     let object = jQuery('#cke_content_cke').children().children().children();
     let ifr = object.contents().find("body");
     let html = ifr.html();
     return html;
   }
 
-  isEmpty(str){
-    return Utils.isEmpty(str);
+  prepareImageForDisplaying(obj, name) {
+    let content = obj.fileContent;
+    if (!this.isEmpty(content)) {
+      let prefix = content.split(',')[0];
+      prefix = prefix.split(';')[0];
+      let ext = prefix.split('/')[1];
+      let base64 = name + '.' + ext + ";" + content.split(',')[1];
+      obj.fileContent = base64;
+      obj.fileName = name + '.' + ext;
+    }
   }
 
-  prepareDataForSaving(){
+  prepareDataForDisplaying(content) {
+    if (!this.isEmpty(content)) {
+      let prefix = content.split(';')[0];
+      this.advert.attachement.fileContent = content;
+      this.advert.attachement.fileName = prefix;
+    }
+  }
+
+  saveAdvert() {
     this.advert.description = btoa(this.ckExport());
-    if(this.attachementData && this.attachementData.length>0){
-      let prefix = this.attachementData.split(',')[0];
-      prefix = prefix.split(';')[0];
-      let ext = prefix.split('/')[1];
-      let base64 = 'attachment.'+ext+";"+this.attachementData.split(',')[1];
-      this.advert.attachement.fileContent = base64;
-    }
 
-    if(this.thumbnailData && this.thumbnailData.length>0){
-      let prefix = this.thumbnailData.split(',')[0];
-      prefix = prefix.split(';')[0];
-      let ext = prefix.split('/')[1];
-      let base64 = 'thumbnail.'+ext+";"+this.thumbnailData.split(',')[1];
-      this.advert.thumbnail.fileContent = base64;
-    }
-
-    if(this.coverData && this.coverData.length>0){
-      let prefix = this.coverData.split(',')[0];
-      prefix = prefix.split(';')[0];
-      let ext = prefix.split('/')[1];
-      let base64 = 'imgbg.'+ext+";"+this.coverData.split(',')[1];
-      this.advert.imgbg.fileContent = base64;
+    if(!this.isFormValid()){
+      this.alert("Veuillez renseigner le titre de l'annonce avant d'enregistrer", "warning");
+      return;
     }
 
     this.alert("Prière de patienter, la sauvegarde peut prendre un moment à cause de la taille des fichiers", "info");
-  }
 
-  saveAdvert(){
-    this.prepareDataForSaving();
     if (this.idAdvert) {
-      this.advertService.saveAdvert(this.advert).then((result: any)=> {
+      this.advertService.saveAdvert(this.advert).then((result: any) => {
         this.alert("L'annonce a été enregistré avec succès", "info");
-        this.thumbnailData = '';
-        this.attachementData = '';
-        this.coverData = '';
+        Messenger().post({
+          message: "L'annonce " + "'" + this.advert.titre + "'" + " a été modifiée avec succès",
+          type: 'success',
+          showCloseButton: true
+        });
+        this.router.navigate(['advert/list']);
       });
     } else {
-      this.advertService.saveNewAdvert(this.advert).then((result: any)=> {
+      this.advertService.saveNewAdvert(this.advert).then((result: any) => {
         this.idAdvert = result.id;
-        this.alert("L'annonce a été sauvegardée avec succès", "info");
-        this.thumbnailData = '';
-        this.attachementData = '';
-        this.coverData = '';
+        setTimeout(() => {
+          Messenger().post({
+            message: "L'annonce " + "'" + this.advert.titre + "'" + " a été sauvegardée avec succès",
+            type: 'success',
+            showCloseButton: true
+          });
+        }, 3000);
+
+        location.reload();
       });
     }
   }
 
-  saveAdvertWithOffer(){
-    this.prepareDataForSaving();
+  saveAdvertWithOffer() {
+    this.advert.description = btoa(this.ckExport());
+
+    if(!this.isFormValid()){
+      this.alert("Veuillez renseigner le titre de l'annonce avant d'enregistrer", "warning");
+      return;
+    }
+
+    this.alert("Prière de patienter, la sauvegarde peut prendre un moment à cause de la taille des fichiers", "info");
+
     if (this.idAdvert) {
-      this.advertService.saveAdvert(this.advert).then((result: any)=> {
+      this.advertService.saveAdvert(this.advert).then((result: any) => {
         this.alert("L'annonce a été enregistré avec succès", "info");
-        this.thumbnailData = '';
-        this.attachementData = '';
-        this.coverData = '';
         let offer = this.offerService.getOfferByIdFromLocal(this.currentUser, this.advert.offerId);
         this.sharedService.setCurrentOffer(offer);
-        this.router.navigate(['offer/edit', {obj:'detail', adv: this.idAdvert}]);
+        this.router.navigate(['offer/edit', {obj: 'detail', adv: this.idAdvert}]);
       });
     } else {
-      this.advertService.saveNewAdvert(this.advert).then((result: any)=> {
+      this.advertService.saveNewAdvert(this.advert).then((result: any) => {
         this.idAdvert = result.id;
         this.alert("L'annonce a été sauvegardée avec succès", "info");
-        this.thumbnailData = '';
-        this.attachementData = '';
-        this.coverData = '';
-        this.router.navigate(['offer/edit', {obj:'add', adv: this.idAdvert}]);
+        this.router.navigate(['offer/edit', {obj: 'add', adv: this.idAdvert}]);
       });
     }
   }
 
-  alert(msg, type){
+  resetForm(){
+    this.advert = {
+      'class': 'com.vitonjob.annonces.Annonce',
+      idEntreprise: this.currentUser.employer.entreprises[0].id,
+      titre: '',
+      description: '',
+      attachement: {
+        'class': 'com.vitonjob.annonces.Attachement',
+        code: 0,
+        status: '',
+        fileContent: ''
+      },
+      thumbnail: {
+        'class': 'com.vitonjob.annonces.Attachement',
+        code: 0,
+        status: '',
+        fileContent: ''
+      },
+      imgbg: {
+        'class': 'com.vitonjob.annonces.Attachement',
+        code: 0,
+        status: '',
+        fileContent: ''
+      },
+      rubriques: []
+    };
+    this.idAdvert = null;
+    this.thumbnailData = null;
+    this.coverData = null;
+    this.alerts = [];
+  }
+
+  deleteFile(attach) {
+    attach.fileName = "";
+    attach.fileContent = "";
+  }
+
+  isFormValid(){
+    if(this.advert && !this.isEmpty(this.advert.titre)){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  alert(msg, type) {
     this.alerts = [{type: type, msg: msg}];
+  }
+
+  isEmpty(str) {
+    return Utils.isEmpty(str);
   }
 }

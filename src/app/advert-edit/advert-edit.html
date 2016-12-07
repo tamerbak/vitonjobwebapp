@@ -38,20 +38,29 @@
             <th colspan="3">Documents</th>
           </tr>
           </thead>
-          <tr>
+          <tr [hidden]="isEmpty(advert.attachement.fileName)">
             <td>Pièce jointe</td>
             <td>{{ advert.attachement.fileName }}</td>
             <td><a href="{{ advert.attachement.fileContent }}">{{ advert.attachement.fileName }}</a></td>
+            <button type="button" class="btn btn-danger" (click)="deleteFile(advert.attachement)">
+              Supprimer
+            </button>
           </tr>
-          <tr>
+          <tr [hidden]="isEmpty(advert.thumbnail.fileName)">
             <td>Vignette</td>
             <td>{{ advert.thumbnail.fileName }}</td>
             <td><a href="{{ advert.thumbnail.fileContent }}">{{ advert.thumbnail.fileName }}</a></td>
+            <button type="button" class="btn btn-danger" (click)="deleteFile(advert.thumbnail)" [hidden]="!isEmpty(thumbnailData)">
+              Supprimer
+            </button>
           </tr>
-          <tr>
+          <tr [hidden]="isEmpty(advert.imgbg.fileName)">
             <td>Image de couverture</td>
             <td>{{ advert.imgbg.fileName }}</td>
             <td><a href="{{ advert.imgbg.fileContent }}">{{ advert.imgbg.fileName }}</a></td>
+            <button type="button" class="btn btn-danger" (click)="deleteFile(advert.imgbg)" [hidden]="!isEmpty(coverData)">
+              Supprimer
+            </button>
           </tr>
         </table>
       </div>
