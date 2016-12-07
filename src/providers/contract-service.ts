@@ -212,8 +212,8 @@ export class ContractService {
       " VALUES ("
       + "" + this.helpers.displayableDateToSQL(contract.missionStartDate) + ","
       + "" + this.helpers.displayableDateToSQL(contract.missionEndDate) + ","
-      + "" + this.helpers.displayableDateToSQL(contract.termStartDate) + ","
-      + "" + this.helpers.displayableDateToSQL(contract.termEndDate) + ","
+      + "" + (contract.termStartDate?"'"+contract.termStartDate+"'":"null") + ","
+      + "" + (contract.termEndDate?"'"+contract.termEndDate+"'":"null") + ","
       + "'" + this.helpers.dateToSqlTimestamp(new Date()) + "',"
       + "'" + this.helpers.timeStrToMinutes(contract.workStartHour) + "',"
       + "'" + this.helpers.timeStrToMinutes(contract.workEndHour) + "',"
@@ -250,9 +250,6 @@ export class ContractService {
       + "'OUI'"
       + ")"
       + " RETURNING pk_user_contrat";
-    //console.clear();
-    //console.log(sql);
-    //debugger;
 
     return new Promise(resolve => {
       let headers = new Headers();

@@ -287,8 +287,8 @@ export class Contract {
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
       trialPeriod: trial,
-      termStartDate: this.getEndDate(),
-      termEndDate: this.getEndDate(),
+      termStartDate: this.getXmlEndDate(),
+      termEndDate: this.getXmlEndDate(),
       motif: "",
       justification: "",
       qualification: "",
@@ -441,6 +441,35 @@ export class Contract {
     return sd;
   }
 
+  getXmlEndDate() {
+    let d = new Date();
+    let m = d.getMonth() + 1;
+    let da = d.getDate();
+    let sd = d.getFullYear()+'-'+ (m < 10 ? '0' : '')+'-'+ (da < 10 ? '0' : '') + da ;
+
+    if (!this.currentOffer) {
+      return sd;
+    }
+    if (!this.currentOffer.calendarData || this.currentOffer.calendarData.length == 0) {
+      return sd;
+    }
+
+    let maxDate = this.currentOffer.calendarData[0].date;
+    for (let i = 1; i < this.currentOffer.calendarData.length; i++) {
+      if (this.currentOffer.calendarData[i].date > maxDate) {
+        maxDate = this.currentOffer.calendarData[i].date;
+      }
+    }
+
+    d = new Date(maxDate);
+    m = d.getMonth() + 1;
+    da = d.getDate();
+    sd = d.getFullYear()+'-'+ (m < 10 ? '0' : '') + m + '-'+ (da < 10 ? '0' : '') + da ;
+
+    return sd;
+  }
+
+
   initContract() {
 
     let calendar = this.currentOffer.calendarData;
@@ -497,8 +526,8 @@ export class Contract {
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
       trialPeriod: trial,
-      termStartDate: this.getEndDate(),
-      termEndDate: this.getEndDate(),
+      termStartDate: this.getXmlEndDate(),
+      termEndDate: this.getXmlEndDate(),
       motif: "",
       justification: "",
       qualification: this.currentOffer.title,
@@ -539,6 +568,9 @@ export class Contract {
       periodicite : '',
       prerequis : []
     };
+
+
+    this.updateDatePickers();
 
     this.offersService.loadOfferPrerequisObligatoires(this.currentOffer.idOffer).then((data:any)=>{
       this.currentOffer.jobData.prerequisObligatoires = [];
@@ -582,16 +614,21 @@ export class Contract {
   }
 
   ngAfterViewInit(){
-    var elements = [];
-        jQuery("div[id^='q-datepicker_']").each(function () {
-          elements.push(this.id);
-        });
-        jQuery('#' + elements[0]).datepicker('update', moment(this.contractData.missionStartDate).format('DD/MM/YYYY'));
-        jQuery('#' + elements[1]).datepicker('update', moment(this.contractData.termStartDate).format('DD/MM/YYYY'));
-        jQuery('#' + elements[2]).datepicker('update', moment(this.contractData.termEndDate).format('DD/MM/YYYY'));
-        jQuery('#' + elements[3]).datepicker('update', moment(this.contractData.missionEndDate).format('DD/MM/YYYY'));
-        jQuery('#' + elements[4]).datepicker('update', "");
-        jQuery('#' + elements[5]).datepicker('update', "");
+    this.updateDatePickers();
+  }
+
+  updateDatePickers(){
+
+    let elements = [];
+    jQuery("div[id^='q-datepicker_']").each(function () {
+      elements.push(this.id);
+    });
+    //jQuery('#startmission').datepicker('update', this.contractData.missionStartDate);
+    //jQuery('#starttermdate').datepicker('update', this.getEndDate());
+    //jQuery('#endtermdate').datepicker('update', this.getEndDate());
+    //jQuery('#endmission').datepicker('update', this.contractData.missionEndDate);
+    jQuery('#' + elements[4]).datepicker('update', "");
+    jQuery('#' + elements[5]).datepicker('update', "");
   }
 
   initWorkStartHour(){
