@@ -435,7 +435,7 @@ export class ContractService {
       horaires = this.prepareHoraire(currentOffer.calendarData,contract.prerequis, contract.epiList, contract.adresseInterim, contract.moyenAcces);
     }
     //get configuration
-    let sh = 'Horaires variables';
+    let sh = 'Horaires variables selon planning';
     let eh = '';
     if(contract.isScheduleFixed == 'true'){
       let d = new Date(contract.workStartHour);
