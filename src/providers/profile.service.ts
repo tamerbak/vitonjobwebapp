@@ -326,10 +326,16 @@ export class ProfileService{
   }
 
 
-  updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId, medecineId, conventionId, forRecruitment) {
+  updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId, medecineId, conventionId, collective_heure_hebdo, forRecruitment) {
+    // Update employer
     let sql = "update user_employeur set ";
     sql = sql + " titre='" + title + "' ";
-    sql = sql + ", nom='" + lastname + "', prenom='" + firstname + "' where pk_user_employeur=" + roleId + ";";
+    sql = sql + ", nom='" + lastname + "', prenom='" + firstname + "'" ;
+    collective_heure_hebdo = (!collective_heure_hebdo ? "0" : collective_heure_hebdo);
+    sql = sql + " , duree_collective_travail_hebdo='" + collective_heure_hebdo + "' ";
+    sql = sql + " where pk_user_employeur=" + roleId + ";";
+
+    // update entreprise
     sql = sql + " update user_entreprise set nom_ou_raison_sociale='" + companyname + "' ";
     siret = (!siret ? "" : siret);
     sql = sql + " , siret='" + siret + "' ";
