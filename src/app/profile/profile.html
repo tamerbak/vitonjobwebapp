@@ -209,6 +209,18 @@
                 </div>
               </div>
 
+              <div *ngIf="isEmployer" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Durée collective de travail hebdomadaire
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input
+                    id="collective_heure_hebdo" type="text" class="form-control"
+                    [(ngModel)]="collective_heure_hebdo" name="collective_heure_hebdo"
+                  >
+                </div>
+              </div>
+
               <div *ngIf="!isEmployer" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="birthDate">
                   Date de naissance
