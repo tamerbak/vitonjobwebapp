@@ -77,6 +77,7 @@ export class Contract {
 
   //transport
   transportMeans = [];
+  natureTitre="";
 
   dateFormat(d) {
     if(!d || typeof d === 'undefined')
@@ -153,9 +154,7 @@ export class Contract {
           this.contractData.finTitreTravail = this.simpleDateFormat(this.jobyer.finTitreTravail);
         }
 
-        this.contractData.numeroTitreTravail =this.natureTitre() + this.jobyer.titreTravail;
-
-        this.contractService.getJobyerAdress(this.jobyer).then((adress : string)=>{
+        this.contractData.numeroTitreTravail =this.natureTitre + this.jobyer.titreTravail;this.contractService.getJobyerAdress(this.jobyer).then((adress : string)=>{
           this.jobyer.address = adress;
         });
 
@@ -194,7 +193,20 @@ export class Contract {
               this.isCIN = !Utils.isEmpty(data.numero_titre_sejour) ? false : true;
               this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
             }
-            });
+
+            if(this.isCIN)
+              this.natureTitre= "CNI ou Passeport ";
+
+            if(this.isEuropean != 1 && !this.isCIN)
+              this.natureTitre= "Carte de ressortissant ";
+
+            if(this.isEuropean == 1 && this.isResident)
+              this.natureTitre= "Carte de résident ";
+
+            if(this.isEuropean == 1 && !this.isResident)
+              this.natureTitre= "Titre de séjour ";
+            this.contractData.numeroTitreTravail =this.natureTitre + this.jobyer.titreTravail;
+          });
           }
         });
       }
@@ -515,7 +527,7 @@ export class Contract {
       indemniteFinMission: "10.00%",
       indemniteCongesPayes: "10.00%",
       moyenAcces: "",
-      numeroTitreTravail: this.natureTitre()+this.jobyer.titreTravail,
+      numeroTitreTravail: this.natureTitre+this.jobyer.titreTravail,
       debutTitreTravail: this.jobyer.debutTitreTravail ? this.dateFormat(this.jobyer.debutTitreTravail) : "",
       finTitreTravail: this.jobyer.finTitreTravail ? this.dateFormat(this.jobyer.finTitreTravail) : "",
       periodesNonTravaillees: "",
@@ -597,21 +609,7 @@ export class Contract {
 
   }
 
-  natureTitre(){
-    if(this.isEuropean != 1 && this.isCIN)
-      return "CNI ou Passeport ";
 
-    if(this.isEuropean != 1 && !this.isCIN)
-      return "Carte de ressortissant ";
-
-    if(this.isEuropean && this.isResident)
-      return "Carte de résident ";
-
-    if(this.isEuropean && !this.isResident)
-      return "Titre de séjour ";
-
-
-  }
 
   ngAfterViewInit(){
     this.updateDatePickers();
