@@ -1357,11 +1357,11 @@ export class OffersService {
   }
 
   isDailySlotsDurationRespected(rawSlots, slot){
-    //66 is 10h converted to minutes
+    //600 is 10h converted to minutes
     let limit = 600;
     let newSlots = this.separateTwoDaysSlot(slot);
+    let totalHours = 0;
     for(let j = 0; j < newSlots.length; j++) {
-      let totalHours = 0;
       let newSlot = newSlots[j];
       //newSlot will be modified by the call of setHours function
       //newSlotCopy will contain a raw copy of the original newSlot
