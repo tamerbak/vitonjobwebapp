@@ -48,6 +48,9 @@ export class Helpers {
    * @param date Date
    */
   dateToSqlTimestamp(date: Date) {
+    if(!date){
+      date = new Date();
+    }
     var sqlTimestamp = date.getUTCFullYear() + '-' +
       ('00' + (date.getUTCMonth() + 1)).slice(-2) + '-' +
       ('00' + date.getUTCDate()).slice(-2) + ' ' +
@@ -68,6 +71,7 @@ export class Helpers {
 
     return "'"+year+"-"+month+"-"+day+" 00:00:00+00'";
   }
+
 
 
   /**

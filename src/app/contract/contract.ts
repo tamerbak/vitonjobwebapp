@@ -78,6 +78,7 @@ export class Contract {
 
   //transport
   transportMeans = [];
+  natureTitre="";
 
   dateFormat(d) {
     if(!d || typeof d === 'undefined')
@@ -155,9 +156,7 @@ export class Contract {
           this.contractData.finTitreTravail = this.simpleDateFormat(this.jobyer.finTitreTravail);
         }
 
-        this.contractData.numeroTitreTravail =this.natureTitre() + this.jobyer.titreTravail;
-
-        this.contractService.getJobyerAdress(this.jobyer).then((adress : string)=>{
+        this.contractData.numeroTitreTravail =this.natureTitre + this.jobyer.titreTravail;this.contractService.getJobyerAdress(this.jobyer).then((adress : string)=>{
           this.jobyer.address = adress;
         });
 
@@ -196,7 +195,20 @@ export class Contract {
               this.isCIN = !Utils.isEmpty(data.numero_titre_sejour) ? false : true;
               this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
             }
-            });
+
+            if(this.isCIN)
+              this.natureTitre= "CNI ou Passeport ";
+
+            if(this.isEuropean != 1 && !this.isCIN)
+              this.natureTitre= "Carte de ressortissant ";
+
+            if(this.isEuropean == 1 && this.isResident)
+              this.natureTitre= "Carte de résident ";
+
+            if(this.isEuropean == 1 && !this.isResident)
+              this.natureTitre= "Titre de séjour ";
+            this.contractData.numeroTitreTravail =this.natureTitre + this.jobyer.titreTravail;
+          });
           }
         });
       }
@@ -289,8 +301,8 @@ export class Contract {
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
       trialPeriod: trial,
-      termStartDate: this.getEndDate(),
-      termEndDate: this.getEndDate(),
+      termStartDate: this.getXmlEndDate(),
+      termEndDate: this.getXmlEndDate(),
       motif: "",
       justification: "",
       qualification: "",
@@ -443,6 +455,35 @@ export class Contract {
     return sd;
   }
 
+  getXmlEndDate() {
+    let d = new Date();
+    let m = d.getMonth() + 1;
+    let da = d.getDate();
+    let sd = d.getFullYear()+'-'+ (m < 10 ? '0' : '')+ m +'-'+ (da < 10 ? '0' : '') + da ;
+
+    if (!this.currentOffer) {
+      return sd;
+    }
+    if (!this.currentOffer.calendarData || this.currentOffer.calendarData.length == 0) {
+      return sd;
+    }
+
+    let maxDate = this.currentOffer.calendarData[0].date;
+    for (let i = 1; i < this.currentOffer.calendarData.length; i++) {
+      if (this.currentOffer.calendarData[i].date > maxDate) {
+        maxDate = this.currentOffer.calendarData[i].date;
+      }
+    }
+
+    d = new Date(maxDate);
+    m = d.getMonth() + 1;
+    da = d.getDate();
+    sd = d.getFullYear()+'-'+ (m < 10 ? '0' : '') + m + '-'+ (da < 10 ? '0' : '') + da ;
+
+    return sd;
+  }
+
+
   initContract() {
 
     let calendar = this.currentOffer.calendarData;
@@ -488,7 +529,7 @@ export class Contract {
       indemniteFinMission: "10.00%",
       indemniteCongesPayes: "10.00%",
       moyenAcces: "",
-      numeroTitreTravail: this.natureTitre()+this.jobyer.titreTravail,
+      numeroTitreTravail: this.natureTitre+this.jobyer.titreTravail,
       debutTitreTravail: this.jobyer.debutTitreTravail ? this.dateFormat(this.jobyer.debutTitreTravail) : "",
       finTitreTravail: this.jobyer.finTitreTravail ? this.dateFormat(this.jobyer.finTitreTravail) : "",
       periodesNonTravaillees: "",
@@ -499,8 +540,8 @@ export class Contract {
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
       trialPeriod: trial,
-      termStartDate: this.getEndDate(),
-      termEndDate: this.getEndDate(),
+      termStartDate: this.getXmlEndDate(),
+      termEndDate: this.getXmlEndDate(),
       motif: "",
       justification: "",
       qualification: this.currentOffer.title,
@@ -542,6 +583,9 @@ export class Contract {
       prerequis : []
     };
 
+
+    this.updateDatePickers();
+
     this.offersService.loadOfferPrerequisObligatoires(this.currentOffer.idOffer).then((data:any)=>{
       this.currentOffer.jobData.prerequisObligatoires = [];
       for(let j = 0 ; j < data.length ; j++){
@@ -575,33 +619,24 @@ export class Contract {
     });
   }
 
-  natureTitre(){
-    if(this.isEuropean != 1 && this.isCIN)
-      return "CNI ou Passeport ";
 
-    if(this.isEuropean != 1 && !this.isCIN)
-      return "Carte de ressortissant ";
-
-    if(this.isEuropean && this.isResident)
-      return "Carte de résident ";
-
-    if(this.isEuropean && !this.isResident)
-      return "Titre de séjour ";
-
-
-  }
 
   ngAfterViewInit(){
-    var elements = [];
-        jQuery("div[id^='q-datepicker_']").each(function () {
-          elements.push(this.id);
-        });
-        jQuery('#' + elements[0]).datepicker('update', moment(this.contractData.missionStartDate).format('DD/MM/YYYY'));
-        jQuery('#' + elements[1]).datepicker('update', moment(this.contractData.termStartDate).format('DD/MM/YYYY'));
-        jQuery('#' + elements[2]).datepicker('update', moment(this.contractData.termEndDate).format('DD/MM/YYYY'));
-        jQuery('#' + elements[3]).datepicker('update', moment(this.contractData.missionEndDate).format('DD/MM/YYYY'));
-        jQuery('#' + elements[4]).datepicker('update', "");
-        jQuery('#' + elements[5]).datepicker('update', "");
+    this.updateDatePickers();
+  }
+
+  updateDatePickers(){
+
+    let elements = [];
+    jQuery("div[id^='q-datepicker_']").each(function () {
+      elements.push(this.id);
+    });
+    //jQuery('#startmission').datepicker('update', this.contractData.missionStartDate);
+    //jQuery('#starttermdate').datepicker('update', this.getEndDate());
+    //jQuery('#endtermdate').datepicker('update', this.getEndDate());
+    //jQuery('#endmission').datepicker('update', this.contractData.missionEndDate);
+    jQuery('#' + elements[4]).datepicker('update', "");
+    jQuery('#' + elements[5]).datepicker('update', "");
   }
 
   initWorkStartHour(){
