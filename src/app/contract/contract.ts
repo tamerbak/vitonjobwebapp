@@ -445,7 +445,7 @@ export class Contract {
     let d = new Date();
     let m = d.getMonth() + 1;
     let da = d.getDate();
-    let sd = d.getFullYear()+'-'+ (m < 10 ? '0' : '')+'-'+ (da < 10 ? '0' : '') + da ;
+    let sd = d.getFullYear()+'-'+ (m < 10 ? '0' : '')+ m +'-'+ (da < 10 ? '0' : '') + da ;
 
     if (!this.currentOffer) {
       return sd;
