@@ -643,7 +643,6 @@ export class Contract {
   }
 
   updateTimePickers(){
-    console.log('upd')
     jQuery("input[id^='q-timepicker_']").each(function () {
       jQuery(this).attr('required', 'true')
     });
