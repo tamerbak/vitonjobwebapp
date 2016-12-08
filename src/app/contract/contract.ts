@@ -521,7 +521,7 @@ export class Contract {
     let contractLength = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
     if(contractLength <= 1)
-      trial = 0;
+      trial = 1;
     else if(contractLength<30)
       trial = 2;
     else if(contractLength <60)
