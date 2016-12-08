@@ -167,7 +167,7 @@ export class OffersService {
 
     let payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      id: 20010,
+      id: 10043,
       args: [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'creation offre',
@@ -606,8 +606,12 @@ export class OffersService {
 
   updateOfferEntrepriseTitle(offer) {
     //
-    let sql = "update user_offre_entreprise set titre='" + this.sqlfyText(offer.title) + "', tarif_a_l_heure='" + offer.jobData.remuneration + "', nombre_de_postes = " + offer.nbPoste + " where pk_user_offre_entreprise=" + offer.idOffer;
-
+    let sql = "update user_offre_entreprise set titre='" + this.sqlfyText(offer.title) +
+      "', tarif_a_l_heure='" + offer.jobData.remuneration +
+      "', nombre_de_postes = " + offer.nbPoste +
+      ", contact_sur_place = '" + offer.contact +
+      "', telephone_contact = '" + offer.telephone +
+      "' where pk_user_offre_entreprise=" + offer.idOffer;
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
       // then on the response it'll map the JSON data to a parsed JS object.

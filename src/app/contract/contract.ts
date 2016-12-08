@@ -344,6 +344,8 @@ export class Contract {
       elementsNonCotisation: 1.0,
       titre: '',
       periodicite : '',
+      offerContact : '',
+      contactPhone : '',
       prerequis : []
     };
 
@@ -528,6 +530,13 @@ export class Contract {
       trial = 5;
 
 
+    let offerContact = '';
+    let contactPhone = '';
+    if(this.currentOffer.contact)
+      offerContact = this.currentOffer.contact;
+    if(this.currentOffer.telephone)
+      contactPhone = this.currentOffer.telephone;
+
     this.contractData = {
       num: this.numContrat,
       centreMedecineEntreprise: "",
@@ -591,6 +600,8 @@ export class Contract {
       elementsNonCotisation: 1.0,
       titre: this.currentOffer.title,
       periodicite : '',
+      offerContact : offerContact,
+      contactPhone : contactPhone,
       prerequis : []
     };
 
@@ -622,7 +633,7 @@ export class Contract {
 
 
     this.conventionService.loadConventionData(this.employer.id).then((data: any)=>{
-      if (data.length > 0) {
+      if (data.length > 0 && data[0].duree_collective_travail_hebdo != 'null') {
         this.contractData.MonthlyAverageDuration = data[0].duree_collective_travail_hebdo;
       } else {
         this.contractData.MonthlyAverageDuration = 35;

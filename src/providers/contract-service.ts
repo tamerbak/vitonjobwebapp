@@ -366,7 +366,7 @@ export class ContractService {
     return hours + ":" + minutes;
   }
 
-  prepareHoraire(calendar,prerequis, epis, adress, moyen) {
+  prepareHoraire(calendar,prerequis, epis, adress, moyen, contact, phone) {
 
     let html = "<br><p><b>Calendrier de travail</b></p><ul>";
 
@@ -416,7 +416,10 @@ export class ContractService {
 
     html = html + "<br><p><b>Adresse de la mission : </b>"+adress+"</p>";
     html = html + "<br><p><b>Moyen d'accès : </b>"+moyen+"</p>";
-
+    if(contact && contact.length>0)
+      html = html + "<br><p><b>Contact sur place : </b>"+contact+"</p>";
+    if(phone && phone.length>0)
+      html = html + "<br><p><b>N° Téléphone : </b>"+phone+"</p>";
     return html;
   }
 
@@ -429,7 +432,14 @@ export class ContractService {
   callYousign(user: any, employer: any, jobyer: any, contract: any, projectTarget: string, currentOffer: any, idQuote: any) {
     let horaires = '';
     if (currentOffer) {
-      horaires = this.prepareHoraire(currentOffer.calendarData,contract.prerequis, contract.epiList, contract.adresseInterim, contract.moyenAcces);
+      horaires = this.prepareHoraire(currentOffer.calendarData,
+        contract.prerequis,
+        contract.epiList,
+        contract.adresseInterim,
+        contract.moyenAcces,
+        contract.offerContact,
+        contract.contactPhone
+      );
     }
     //get configuration
     let sh = 'Horaires variables selon planning';

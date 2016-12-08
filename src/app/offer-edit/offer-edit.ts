@@ -149,6 +149,12 @@ export class OfferEdit{
   advertMode : any;
   advertId: string;
 
+  /*
+   *  Contact
+   */
+  offerContact : string;
+  tel : string;
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private searchService: SearchService,
@@ -174,6 +180,10 @@ export class OfferEdit{
     }
 
     this.offer = this.sharedService.getCurrentOffer();
+    if(this.offer && this.offer.telephone)
+      this.tel = this.offer.telephone;
+    if(this.offer && this.offer.contact)
+      this.offerContact = this.offer.contact;
     this.initCalendar();
 
   }
@@ -1077,6 +1087,9 @@ export class OfferEdit{
       return;
     }
 
+    this.offer.contact = this.offerContact;
+    this.offer.telephone = this.tel;
+
     if (this.obj != "detail") {
       this.offer.calendarData = this.offersService.convertSlotsForSaving(this.slotsToSave);
 
@@ -1103,7 +1116,6 @@ export class OfferEdit{
       }
 
       //this.router.navigate(['offer/calendar', {offer: this.offer, isOfferToAdd: true}]);
-
       this.offersService.setOfferInRemote(this.offer, this.projectTarget).then((data: any) => {
         this.dataValidation = true;
         let offer = JSON.parse(data._body);
