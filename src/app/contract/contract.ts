@@ -12,6 +12,7 @@ import {NKDatetime} from "ng2-datetime/ng2-datetime";
 import {OffersService} from "../../providers/offer.service";
 import {AlertComponent} from "ng2-bootstrap";
 import {SmsService} from "../../providers/sms-service";
+import {ConventionService} from "../../providers/convention.service";
 
 declare var Messenger,jQuery,moment: any;
 
@@ -24,7 +25,7 @@ declare var Messenger,jQuery,moment: any;
   template: require('./contract.html'),
   styles: [require('./contract.scss')],
   directives: [AlertComponent, NKDatetime],
-  providers: [ContractService, MedecineService, ParametersService, Helpers,SmsService, OffersService,ProfileService,LoadListService]
+  providers: [ContractService, MedecineService, ParametersService, Helpers,SmsService, OffersService,ProfileService,LoadListService, ConventionService]
 })
 export class Contract {
 
@@ -97,6 +98,7 @@ export class Contract {
   constructor(private medecineService: MedecineService,
               private service: ParametersService,
               private contractService: ContractService,
+              private conventionService: ConventionService,
               private sharedService: SharedService,
               private profileService: ProfileService,
               private listService: LoadListService,
@@ -618,6 +620,14 @@ export class Contract {
       }
     });
 
+
+    this.conventionService.loadConventionData(this.employer.id).then((data: any)=>{
+      if (data.length > 0) {
+        this.contractData.MonthlyAverageDuration = data[0].duree_collective_travail_hebdo;
+      } else {
+        this.contractData.MonthlyAverageDuration = 35;
+      }
+    });
   }
 
 

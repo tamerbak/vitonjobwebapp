@@ -18,6 +18,7 @@ import MaskedInput from "angular2-text-mask";
 import {AccountConstraints} from "../../validators/account-constraints";
 import {scan} from "rxjs/operator/scan";
 import {Helpers} from "../../providers/helpers.service";
+import {ConventionService} from "../../providers/convention.service";
 
 declare var jQuery, require, Messenger, moment: any;
 declare var google: any;
@@ -26,7 +27,7 @@ declare var google: any;
   selector: '[profile]',
   template: require('./profile.html'),
   directives: [ROUTER_DIRECTIVES, NKDatetime, AlertComponent, ModalPicture, MaskedInput, BankAccount],
-  providers: [Utils, ProfileService, CommunesService, LoadListService, MedecineService, AttachementsService, AccountConstraints],
+  providers: [Utils, ProfileService, CommunesService, LoadListService, MedecineService, AttachementsService, AccountConstraints, ConventionService],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./profile.scss')]
 })
@@ -157,6 +158,7 @@ export class Profile{
    */
   conventionId: number;
   conventions: any = [];
+  collective_heure_hebdo: number;
 
   /*
    * Multiple uploads
@@ -203,6 +205,7 @@ export class Profile{
               private medecineService: MedecineService,
               private communesService: CommunesService,
               private attachementsService: AttachementsService,
+              private conventionService: ConventionService,
               private zone: NgZone,
               private router: Router,
               private _loader: MapsAPILoader) {
@@ -573,6 +576,14 @@ export class Profile{
         this.companyname = this.currentUser.employer.entreprises[0].nom;
         this.siret = this.currentUser.employer.entreprises[0].siret;
         this.ape = this.currentUser.employer.entreprises[0].naf;
+
+        this.conventionService.loadConventionData(this.currentUser.employer.id).then((data: any)=>{
+          if (data.length > 0) {
+            this.collective_heure_hebdo = data[0].duree_collective_travail_hebdo;
+          } else {
+            this.collective_heure_hebdo = 35;
+          }
+        });
 
         if (this.currentUser.employer.entreprises[0].conventionCollective &&
           this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
@@ -1211,7 +1222,7 @@ export class Profile{
           var medecineId = this.selectedMedecine.id === "0" ? 0 : parseInt(this.selectedMedecine.id);
           var entrepriseId = this.currentUser.employer.entreprises[0].id;
 
-          this.profileService.updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, userRoleId, entrepriseId, medecineId, this.conventionId, false)
+          this.profileService.updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, userRoleId, entrepriseId, medecineId, this.conventionId, this.collective_heure_hebdo, false)
             .then((res: any) => {
 
               //case of update failure : server unavailable or connection problem

@@ -212,4 +212,19 @@ export class ConventionService {
     }
     return objs;
   }
+
+  loadConventionData(employeurId) {
+    let sql = "select duree_collective_travail_hebdo " +
+      "from user_employeur " +
+      "where pk_user_employeur=" + employeurId + ";";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any) => {
+          resolve(data.data);
+        });
+    });
+  }
 }
