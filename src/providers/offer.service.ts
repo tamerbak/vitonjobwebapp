@@ -491,7 +491,7 @@ export class OffersService {
   loadOfferAdress(idOffer, type){
     let to = type =='jobyer'?'user_offre_jobyer':'user_offre_entreprise';
     let table = type =='jobyer'?'user_adresse_jobyer':'user_adresse_entreprise';
-    let sql = "select adresse_google_maps from user_adresse where pk_user_adresse in (" +
+    let sql = "select adresse_google_maps, nom  from user_adresse where pk_user_adresse in (" +
                   "select fk_user_adresse from "+table+" where pk_"+table+" in (" +
                     "select fk_"+table+" from "+to+" where pk_"+to+"="+idOffer+"" +
                   ")" +
@@ -511,8 +511,8 @@ export class OffersService {
           // and save the data for later reference
           let adr = '';
           if(data && data.data && data.data.length>0)
-            adr = data.data[0].adresse_google_maps;
-          resolve(adr);
+            adr = data.data[0].nom + " " + data.data[0].adresse_google_maps;
+          resolve(adr.trim());
         });
     });
   }
