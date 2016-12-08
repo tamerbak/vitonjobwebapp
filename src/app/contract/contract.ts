@@ -79,6 +79,12 @@ export class Contract {
   transportMeans = [];
   natureTitre="";
 
+  //  EPI
+  epiList : any =[];
+  selectedEPI : string;
+  offerEpi : any = [];
+
+
   dateFormat(d) {
     if(!d || typeof d === 'undefined')
       return '';
@@ -338,6 +344,11 @@ export class Contract {
       periodicite : '',
       prerequis : []
     };
+
+    this.offersService.loadEPI().then((data:any)=>{
+      this.epiList = data;
+    });
+
     if (this.currentOffer) {
       this.service.getRates().then((data: any) => {
         for (let i = 0; i < data.length; i++) {
@@ -381,9 +392,9 @@ export class Contract {
   }
 
 
-      watchTransportTitle(e){
-        this.contractData.titreTransport = e.target.value;
-      }
+  watchTransportTitle(e){
+    this.contractData.titreTransport = e.target.value;
+  }
 
 
   formatNumContrat(num) {
@@ -613,6 +624,7 @@ export class Contract {
 
   ngAfterViewInit(){
     this.updateDatePickers();
+
   }
 
   updateDatePickers(){
@@ -680,6 +692,12 @@ export class Contract {
         this.contractData.numero = this.numContrat;
         this.contractData.adresseInterim = this.workAdress;
         this.contractData.workAdress = this.workAdress;
+      }
+
+      if(this.contractData.epiList && this.contractData.epiList.length>0){
+        this.contractData.equipements = '(Voir annexe)';
+      } else {
+        this.contractData.equipements = "Aucun";
       }
 
       // Go to yousign
@@ -839,5 +857,33 @@ export class Contract {
         }
       }
     })
+  }
+
+  addEPI(){
+
+    let found = false;
+
+    for(let i = 0 ; i < this.contractData.epiList.length ; i++)
+      if(this.contractData.epiList[i].libelle == this.selectedEPI){
+        found = true;
+        break;
+      }
+
+    if(found)
+      return;
+
+    this.contractData.epiList.push({libelle : this.selectedEPI});
+  }
+
+  removeEPI(e){
+    let index = -1;
+    for(let i = 0 ; i < this.contractData.epiList.length ; i++)
+      if(this.contractData.epiList[i].libelle == e.libelle){
+        index = i;
+        break;
+      }
+    if(index>=0){
+      this.contractData.epiList.splice(index,1);
+    }
   }
 }

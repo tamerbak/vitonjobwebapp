@@ -257,7 +257,26 @@
         </div>
         <div class="form-group">
           <label>Equipement de protection individuel</label>
-          <input type="text" name="epi" class="form-control" [(ngModel)]="contractData.equipements" aria-describedby="epi" />
+          <!--input type="text" name="epi" class="form-control" [(ngModel)]="contractData.equipements" aria-describedby="epi" /-->
+          <div class="widget">
+            <div class="row">
+
+              <select class="form-control col-xs-11" [(ngModel)]="selectedEPI">
+                <option *ngFor="let e of epiList" value="{{e.libelle}}">{{e.libelle}}</option>
+              </select>
+
+              <button class="btn btn-primary btn-sm col-xs-1" (click)="addEPI()">
+                <span class="glyphicon glyphicon-plus"></span>
+              </button>
+            </div>
+            <div class="row">&nbsp;</div>
+            <div class="row contract-control-row" *ngFor="let e of contractData.epiList">
+              <button class="btn btn-primary btn-sm col-xs-1" (click)="removeEPI(e)">
+                <span class="glyphicon glyphicon-minus"></span>
+              </button>
+              <label class="col-xs-11">{{e.libelle}}</label>
+            </div>
+          </div>
           <small class="form-text text-muted"></small>
         </div>
 

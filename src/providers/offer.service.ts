@@ -1219,6 +1219,25 @@ export class OffersService {
     });
   }
 
+  loadEPI(){
+    let sql = "select libelle from user_epi where dirty='N' order by libelle asc ";
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let res = [];
+          if(data.data){
+            res = data.data;
+          }
+          resolve(res);
+        });
+    });
+  }
+
   selectEPI(kw){
     let sql = "select pk_user_epi as id, libelle from user_epi where lower_unaccent(libelle) like lower_unaccent('%"+kw+"%') or lower_unaccent(libelle) % lower_unaccent('"+kw+"')";
 

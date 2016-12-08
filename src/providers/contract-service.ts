@@ -516,7 +516,8 @@ export class ContractService {
       "zonesTitre": contract.zonesTitre,
       "elementsCotisation": ""+contract.elementsCotisation,
       "elementsNonCotisation": ""+contract.elementsNonCotisation,
-      "horaires": horaires
+      "horaires": horaires,
+      "organisationParticuliere":''
     };
 
 
