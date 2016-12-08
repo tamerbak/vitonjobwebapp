@@ -23,7 +23,7 @@ declare var Messenger,jQuery,moment: any;
  */
 @Component({
   template: require('./contract.html'),
-  styles: [require('./contract.scss'), require('./test.scss')],
+  styles: [require('./contract.scss')],
   directives: [AlertComponent, NKDatetime],
   providers: [ContractService, MedecineService, ParametersService, Helpers,SmsService, OffersService,ProfileService,LoadListService, ConventionService]
 })
