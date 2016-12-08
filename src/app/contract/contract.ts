@@ -645,6 +645,9 @@ export class Contract {
   updateTimePickers(){
     jQuery("input[id^='q-timepicker_']").each(function () {
       jQuery(this).attr('required', 'true')
+
+      // + Fix to solve the fullwidth problem 
+      jQuery(this).parent().css('width', '100%')
     });
   }
   initWorkStartHour(){
