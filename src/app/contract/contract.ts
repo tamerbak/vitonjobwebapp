@@ -23,7 +23,7 @@ declare var Messenger,jQuery,moment: any;
  */
 @Component({
   template: require('./contract.html'),
-  styles: [require('./contract.scss')],
+  styles: [require('./contract.scss'), require('./test.scss')],
   directives: [AlertComponent, NKDatetime],
   providers: [ContractService, MedecineService, ParametersService, Helpers,SmsService, OffersService,ProfileService,LoadListService, ConventionService]
 })
@@ -623,6 +623,7 @@ export class Contract {
 
   ngAfterViewInit(){
     this.updateDatePickers();
+    this.updateTimePickers();
   }
 
   updateDatePickers(){
@@ -637,8 +638,16 @@ export class Contract {
     //jQuery('#endmission').datepicker('update', this.contractData.missionEndDate);
     jQuery('#' + elements[4]).datepicker('update', "");
     jQuery('#' + elements[5]).datepicker('update', "");
+
+    
   }
 
+  updateTimePickers(){
+    console.log('upd')
+    jQuery("input[id^='q-timepicker_']").each(function () {
+      jQuery(this).attr('required', 'true')
+    });
+  }
   initWorkStartHour(){
     let today = new Date();
     today.setHours(8);
