@@ -220,7 +220,7 @@
         </div-->
         <div class="form-group">
           <label>Motif &nbsp;<span  class="color-font" >*</span></label>
-          <input id="justification_slct" [(ngModel)]="contractData.motif" name="justification_slct" class="form-control" />
+          <input id="justification_slct" [(ngModel)]="contractData.motif" name="justification_slct" class="form-control" required />
         </div>
       </div>
       <div class="col-md-6 col-xs-12 col-2">
@@ -302,9 +302,8 @@
           </select>
         </div>
 
-
-
       </div>
+
       <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
           <label>Risques</label>
@@ -334,10 +333,13 @@
           <small class="form-text text-muted"></small>
         </div>
 
-        <div class="col-xs-3" *ngIf="contractData.isScheduleFixed == 'true'">
+      </div>
+    </div>
+    <div class="row work-hours" *ngIf="contractData.isScheduleFixed == 'true'">
+        <div class="col-md-6 col-sm-6">
           <div class="form-group">
             <label>Heure de début de travail&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
-            <datetime id="usualSHour" [datepicker]="false" [timepicker]="{ showMeridian: false, minuteStep: 15 }" [(ngModel)]="contractData.workStartHour" required></datetime>
+            <datetime id="usualSHour" [datepicker]="false" [timepicker]="{ showMeridian: false, minuteStep: 15}" [(ngModel)]="contractData.workStartHour"></datetime>
             <small class="form-text text-muted"></small>
           </div>
         </div>

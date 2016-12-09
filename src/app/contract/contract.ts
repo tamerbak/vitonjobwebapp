@@ -645,7 +645,7 @@ export class Contract {
 
   ngAfterViewInit(){
     this.updateDatePickers();
-
+    this.updateTimePickers();
   }
 
   updateDatePickers(){
@@ -660,8 +660,18 @@ export class Contract {
     //jQuery('#endmission').datepicker('update', this.contractData.missionEndDate);
     jQuery('#' + elements[4]).datepicker('update', "");
     jQuery('#' + elements[5]).datepicker('update', "");
+
+
   }
 
+  updateTimePickers(){
+    jQuery("input[id^='q-timepicker_']").each(function () {
+      jQuery(this).attr('required', 'true')
+
+      // + Fix to solve the fullwidth problem
+      jQuery(this).parent().css('width', '100%')
+    });
+  }
   initWorkStartHour(){
     let today = new Date();
     today.setHours(8);

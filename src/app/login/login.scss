@@ -8,11 +8,11 @@
 
 .login-page .page-footer {
   margin-bottom: 25px;
-  font-size: $font-size-mini;
+  font-size: $font-size-mini;	
   color: $text-muted;
   text-align: center;
   @media (min-height: 600px) {
-    position: absolute;
+    /*position: absolute;*/
     bottom: 0;
     left: 0;
     right: 0;
