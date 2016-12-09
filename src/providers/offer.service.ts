@@ -167,7 +167,7 @@ export class OffersService {
 
     let payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      id: 20010,
+      id: 10043,
       args: [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'creation offre',
@@ -491,7 +491,7 @@ export class OffersService {
   loadOfferAdress(idOffer, type){
     let to = type =='jobyer'?'user_offre_jobyer':'user_offre_entreprise';
     let table = type =='jobyer'?'user_adresse_jobyer':'user_adresse_entreprise';
-    let sql = "select adresse_google_maps from user_adresse where pk_user_adresse in (" +
+    let sql = "select adresse_google_maps, nom  from user_adresse where pk_user_adresse in (" +
                   "select fk_user_adresse from "+table+" where pk_"+table+" in (" +
                     "select fk_"+table+" from "+to+" where pk_"+to+"="+idOffer+"" +
                   ")" +
@@ -511,8 +511,8 @@ export class OffersService {
           // and save the data for later reference
           let adr = '';
           if(data && data.data && data.data.length>0)
-            adr = data.data[0].adresse_google_maps;
-          resolve(adr);
+            adr = data.data[0].nom + " " + data.data[0].adresse_google_maps;
+          resolve(adr.trim());
         });
     });
   }
@@ -606,8 +606,12 @@ export class OffersService {
 
   updateOfferEntrepriseTitle(offer) {
     //
-    let sql = "update user_offre_entreprise set titre='" + this.sqlfyText(offer.title) + "', tarif_a_l_heure='" + offer.jobData.remuneration + "', nombre_de_postes = " + offer.nbPoste + " where pk_user_offre_entreprise=" + offer.idOffer;
-
+    let sql = "update user_offre_entreprise set titre='" + this.sqlfyText(offer.title) +
+      "', tarif_a_l_heure='" + offer.jobData.remuneration +
+      "', nombre_de_postes = " + offer.nbPoste +
+      ", contact_sur_place = '" + offer.contact +
+      "', telephone_contact = '" + offer.telephone +
+      "' where pk_user_offre_entreprise=" + offer.idOffer;
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
       // then on the response it'll map the JSON data to a parsed JS object.
@@ -1215,6 +1219,25 @@ export class OffersService {
           if(data.data && data.data.length>0)
             s = data.data[0];
           resolve(s);
+        });
+    });
+  }
+
+  loadEPI(){
+    let sql = "select libelle from user_epi where dirty='N' order by libelle asc ";
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let res = [];
+          if(data.data){
+            res = data.data;
+          }
+          resolve(res);
         });
     });
   }

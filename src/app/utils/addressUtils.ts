@@ -9,6 +9,8 @@ export class AddressUtils {
 
   public static decorticateGeolocAddress(geolocAddress) {
     var adrObj = {name, streetNumber: '', street: '', zipCode: '', city: '', country: ''};
+
+
     for (var i = 0; i < geolocAddress.address_components.length; i++) {
       if (geolocAddress.address_components[i].types[0] == "street_number") {
         adrObj.streetNumber = geolocAddress.address_components[i].long_name;

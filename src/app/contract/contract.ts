@@ -80,6 +80,12 @@ export class Contract {
   transportMeans = [];
   natureTitre="";
 
+  //  EPI
+  epiList : any =[];
+  selectedEPI : string;
+  offerEpi : any = [];
+
+
   dateFormat(d) {
     if(!d || typeof d === 'undefined')
       return '';
@@ -338,8 +344,15 @@ export class Contract {
       elementsNonCotisation: 1.0,
       titre: '',
       periodicite : '',
+      offerContact : '',
+      contactPhone : '',
       prerequis : []
     };
+
+    this.offersService.loadEPI().then((data:any)=>{
+      this.epiList = data;
+    });
+
     if (this.currentOffer) {
       this.service.getRates().then((data: any) => {
         for (let i = 0; i < data.length; i++) {
@@ -383,9 +396,9 @@ export class Contract {
   }
 
 
-      watchTransportTitle(e){
-        this.contractData.titreTransport = e.target.value;
-      }
+  watchTransportTitle(e){
+    this.contractData.titreTransport = e.target.value;
+  }
 
 
   formatNumContrat(num) {
@@ -503,12 +516,12 @@ export class Contract {
         maxDay = date;
     }
 
-    let trial = 2;
+    let trial = 1;
     let timeDiff = Math.abs(maxDay.getTime() - minDay.getTime());
     let contractLength = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
     if(contractLength <= 1)
-      trial = 0;
+      trial = 1;
     else if(contractLength<30)
       trial = 2;
     else if(contractLength <60)
@@ -516,6 +529,13 @@ export class Contract {
     else
       trial = 5;
 
+
+    let offerContact = '';
+    let contactPhone = '';
+    if(this.currentOffer.contact)
+      offerContact = this.currentOffer.contact;
+    if(this.currentOffer.telephone)
+      contactPhone = this.currentOffer.telephone;
 
     this.contractData = {
       num: this.numContrat,
@@ -580,6 +600,8 @@ export class Contract {
       elementsNonCotisation: 1.0,
       titre: this.currentOffer.title,
       periodicite : '',
+      offerContact : offerContact,
+      contactPhone : contactPhone,
       prerequis : []
     };
 
@@ -611,7 +633,7 @@ export class Contract {
 
 
     this.conventionService.loadConventionData(this.employer.id).then((data: any)=>{
-      if (data.length > 0) {
+      if (data.length > 0 && data[0].duree_collective_travail_hebdo != 'null') {
         this.contractData.MonthlyAverageDuration = data[0].duree_collective_travail_hebdo;
       } else {
         this.contractData.MonthlyAverageDuration = 35;
@@ -639,14 +661,14 @@ export class Contract {
     jQuery('#' + elements[4]).datepicker('update', "");
     jQuery('#' + elements[5]).datepicker('update', "");
 
-    
+
   }
 
   updateTimePickers(){
     jQuery("input[id^='q-timepicker_']").each(function () {
       jQuery(this).attr('required', 'true')
 
-      // + Fix to solve the fullwidth problem 
+      // + Fix to solve the fullwidth problem
       jQuery(this).parent().css('width', '100%')
     });
   }
@@ -701,6 +723,12 @@ export class Contract {
         this.contractData.numero = this.numContrat;
         this.contractData.adresseInterim = this.workAdress;
         this.contractData.workAdress = this.workAdress;
+      }
+
+      if(this.contractData.epiList && this.contractData.epiList.length>0){
+        this.contractData.equipements = '(Voir annexe)';
+      } else {
+        this.contractData.equipements = "Aucun";
       }
 
       // Go to yousign
@@ -860,5 +888,33 @@ export class Contract {
         }
       }
     })
+  }
+
+  addEPI(){
+
+    let found = false;
+
+    for(let i = 0 ; i < this.contractData.epiList.length ; i++)
+      if(this.contractData.epiList[i].libelle == this.selectedEPI){
+        found = true;
+        break;
+      }
+
+    if(found)
+      return;
+
+    this.contractData.epiList.push({libelle : this.selectedEPI});
+  }
+
+  removeEPI(e){
+    let index = -1;
+    for(let i = 0 ; i < this.contractData.epiList.length ; i++)
+      if(this.contractData.epiList[i].libelle == e.libelle){
+        index = i;
+        break;
+      }
+    if(index>=0){
+      this.contractData.epiList.splice(index,1);
+    }
   }
 }
