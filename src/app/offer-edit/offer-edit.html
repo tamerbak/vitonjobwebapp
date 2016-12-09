@@ -273,9 +273,15 @@
           </div>
         </div>
       </div>
+    </section>
 
 
-      <fieldset *ngIf="projectTarget == 'employer'">
+    <section widget class="widget widget-offer" *ngIf="projectTarget == 'employer'">
+      <header class="bb widget-offer-header">
+        <h6><span class="fw-semi-bold widget-offer-header-title">Conditions d'emploi</span></h6>
+      </header>
+    <div class="widget-body">
+      <fieldset>
         <legend><strong>Conditions d'emploi</strong></legend>
         <alert *ngFor="let alert of alertsConditionEmp; let i = index" [type]="alert.type + ' alert-sm'"
                dismissible="false">
@@ -339,6 +345,7 @@
           </div>
         </div>
       </fieldset>
+      </div>
     </section>
 
     <!--  COORDONNEES ET CONTACT -->
