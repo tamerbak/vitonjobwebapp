@@ -668,8 +668,9 @@ export class Contract {
     jQuery("input[id^='q-timepicker_']").each(function () {
       jQuery(this).attr('required', 'true')
 
-      // + Fix to solve the fullwidth problem
-      jQuery(this).parent().css('width', '100%')
+      // If you wanna solve the fullwidth problem
+      //jQuery(this).parent().css('width', '100%')
+  	  //jQuery("datetime .form-inline").removeClass('form-inline')
     });
   }
   initWorkStartHour(){
