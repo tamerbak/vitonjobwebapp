@@ -516,7 +516,7 @@ export class Contract {
         maxDay = date;
     }
 
-    let trial = 2;
+    let trial = 1;
     let timeDiff = Math.abs(maxDay.getTime() - minDay.getTime());
     let contractLength = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
