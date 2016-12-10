@@ -12,6 +12,7 @@ import {NKDatetime} from "ng2-datetime/ng2-datetime";
 import {OffersService} from "../../providers/offer.service";
 import {AlertComponent} from "ng2-bootstrap";
 import {SmsService} from "../../providers/sms-service";
+import {ConventionService} from "../../providers/convention.service";
 
 declare var Messenger,jQuery,moment: any;
 
@@ -24,7 +25,7 @@ declare var Messenger,jQuery,moment: any;
   template: require('./contract.html'),
   styles: [require('./contract.scss')],
   directives: [AlertComponent, NKDatetime],
-  providers: [ContractService, MedecineService, ParametersService, Helpers,SmsService, OffersService,ProfileService,LoadListService]
+  providers: [ContractService, MedecineService, ParametersService, Helpers,SmsService, OffersService,ProfileService,LoadListService, ConventionService]
 })
 export class Contract {
 
@@ -77,6 +78,13 @@ export class Contract {
 
   //transport
   transportMeans = [];
+  natureTitre="";
+
+  //  EPI
+  epiList : any =[];
+  selectedEPI : string;
+  offerEpi : any = [];
+
 
   dateFormat(d) {
     if(!d || typeof d === 'undefined')
@@ -90,6 +98,7 @@ export class Contract {
   constructor(private medecineService: MedecineService,
               private service: ParametersService,
               private contractService: ContractService,
+              private conventionService: ConventionService,
               private sharedService: SharedService,
               private profileService: ProfileService,
               private listService: LoadListService,
@@ -153,9 +162,7 @@ export class Contract {
           this.contractData.finTitreTravail = this.simpleDateFormat(this.jobyer.finTitreTravail);
         }
 
-        this.contractData.numeroTitreTravail =this.natureTitre() + this.jobyer.titreTravail;
-
-        this.contractService.getJobyerAdress(this.jobyer).then((adress : string)=>{
+        this.contractData.numeroTitreTravail =this.natureTitre + this.jobyer.titreTravail;this.contractService.getJobyerAdress(this.jobyer).then((adress : string)=>{
           this.jobyer.address = adress;
         });
 
@@ -194,7 +201,20 @@ export class Contract {
               this.isCIN = !Utils.isEmpty(data.numero_titre_sejour) ? false : true;
               this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
             }
-            });
+
+            if(this.isCIN)
+              this.natureTitre= "CNI ou Passeport ";
+
+            if(this.isEuropean != 1 && !this.isCIN)
+              this.natureTitre= "Carte de ressortissant ";
+
+            if(this.isEuropean == 1 && this.isResident)
+              this.natureTitre= "Carte de résident ";
+
+            if(this.isEuropean == 1 && !this.isResident)
+              this.natureTitre= "Titre de séjour ";
+            this.contractData.numeroTitreTravail =this.natureTitre + this.jobyer.titreTravail;
+          });
           }
         });
       }
@@ -287,8 +307,8 @@ export class Contract {
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
       trialPeriod: trial,
-      termStartDate: this.getEndDate(),
-      termEndDate: this.getEndDate(),
+      termStartDate: this.getXmlEndDate(),
+      termEndDate: this.getXmlEndDate(),
       motif: "",
       justification: "",
       qualification: "",
@@ -324,8 +344,15 @@ export class Contract {
       elementsNonCotisation: 1.0,
       titre: '',
       periodicite : '',
+      offerContact : '',
+      contactPhone : '',
       prerequis : []
     };
+
+    this.offersService.loadEPI().then((data:any)=>{
+      this.epiList = data;
+    });
+
     if (this.currentOffer) {
       this.service.getRates().then((data: any) => {
         for (let i = 0; i < data.length; i++) {
@@ -369,9 +396,9 @@ export class Contract {
   }
 
 
-      watchTransportTitle(e){
-        this.contractData.titreTransport = e.target.value;
-      }
+  watchTransportTitle(e){
+    this.contractData.titreTransport = e.target.value;
+  }
 
 
   formatNumContrat(num) {
@@ -441,6 +468,35 @@ export class Contract {
     return sd;
   }
 
+  getXmlEndDate() {
+    let d = new Date();
+    let m = d.getMonth() + 1;
+    let da = d.getDate();
+    let sd = d.getFullYear()+'-'+ (m < 10 ? '0' : '')+ m +'-'+ (da < 10 ? '0' : '') + da ;
+
+    if (!this.currentOffer) {
+      return sd;
+    }
+    if (!this.currentOffer.calendarData || this.currentOffer.calendarData.length == 0) {
+      return sd;
+    }
+
+    let maxDate = this.currentOffer.calendarData[0].date;
+    for (let i = 1; i < this.currentOffer.calendarData.length; i++) {
+      if (this.currentOffer.calendarData[i].date > maxDate) {
+        maxDate = this.currentOffer.calendarData[i].date;
+      }
+    }
+
+    d = new Date(maxDate);
+    m = d.getMonth() + 1;
+    da = d.getDate();
+    sd = d.getFullYear()+'-'+ (m < 10 ? '0' : '') + m + '-'+ (da < 10 ? '0' : '') + da ;
+
+    return sd;
+  }
+
+
   initContract() {
 
     let calendar = this.currentOffer.calendarData;
@@ -460,12 +516,12 @@ export class Contract {
         maxDay = date;
     }
 
-    let trial = 2;
+    let trial = 1;
     let timeDiff = Math.abs(maxDay.getTime() - minDay.getTime());
     let contractLength = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
     if(contractLength <= 1)
-      trial = 0;
+      trial = 1;
     else if(contractLength<30)
       trial = 2;
     else if(contractLength <60)
@@ -473,6 +529,13 @@ export class Contract {
     else
       trial = 5;
 
+
+    let offerContact = '';
+    let contactPhone = '';
+    if(this.currentOffer.contact)
+      offerContact = this.currentOffer.contact;
+    if(this.currentOffer.telephone)
+      contactPhone = this.currentOffer.telephone;
 
     this.contractData = {
       num: this.numContrat,
@@ -486,7 +549,7 @@ export class Contract {
       indemniteFinMission: "10.00%",
       indemniteCongesPayes: "10.00%",
       moyenAcces: "",
-      numeroTitreTravail: this.natureTitre()+this.jobyer.titreTravail,
+      numeroTitreTravail: this.natureTitre+this.jobyer.titreTravail,
       debutTitreTravail: this.jobyer.debutTitreTravail ? this.dateFormat(this.jobyer.debutTitreTravail) : "",
       finTitreTravail: this.jobyer.finTitreTravail ? this.dateFormat(this.jobyer.finTitreTravail) : "",
       periodesNonTravaillees: "",
@@ -497,8 +560,8 @@ export class Contract {
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
       trialPeriod: trial,
-      termStartDate: this.getEndDate(),
-      termEndDate: this.getEndDate(),
+      termStartDate: this.getXmlEndDate(),
+      termEndDate: this.getXmlEndDate(),
       motif: "",
       justification: "",
       qualification: this.currentOffer.title,
@@ -537,8 +600,13 @@ export class Contract {
       elementsNonCotisation: 1.0,
       titre: this.currentOffer.title,
       periodicite : '',
+      offerContact : offerContact,
+      contactPhone : contactPhone,
       prerequis : []
     };
+
+
+    this.updateDatePickers();
 
     this.offersService.loadOfferPrerequisObligatoires(this.currentOffer.idOffer).then((data:any)=>{
       this.currentOffer.jobData.prerequisObligatoires = [];
@@ -563,37 +631,47 @@ export class Contract {
       }
     });
 
+
+    this.conventionService.loadConventionData(this.employer.id).then((data: any)=>{
+      if (data.length > 0 && data[0].duree_collective_travail_hebdo != 'null') {
+        this.contractData.MonthlyAverageDuration = data[0].duree_collective_travail_hebdo;
+      } else {
+        this.contractData.MonthlyAverageDuration = 35;
+      }
+    });
   }
 
-  natureTitre(){
-    if(this.isEuropean != 1 && this.isCIN)
-      return "CNI ou Passeport ";
 
-    if(this.isEuropean != 1 && !this.isCIN)
-      return "Carte de ressortissant ";
-
-    if(this.isEuropean && this.isResident)
-      return "Carte de résident ";
-
-    if(this.isEuropean && !this.isResident)
-      return "Titre de séjour ";
-
-
-  }
 
   ngAfterViewInit(){
-    var elements = [];
-        jQuery("div[id^='q-datepicker_']").each(function () {
-          elements.push(this.id);
-        });
-        jQuery('#' + elements[0]).datepicker('update', moment(this.contractData.missionStartDate).format('DD/MM/YYYY'));
-        jQuery('#' + elements[1]).datepicker('update', moment(this.contractData.termStartDate).format('DD/MM/YYYY'));
-        jQuery('#' + elements[2]).datepicker('update', moment(this.contractData.termEndDate).format('DD/MM/YYYY'));
-        jQuery('#' + elements[3]).datepicker('update', moment(this.contractData.missionEndDate).format('DD/MM/YYYY'));
-        jQuery('#' + elements[4]).datepicker('update', "");
-        jQuery('#' + elements[5]).datepicker('update', "");
+    this.updateDatePickers();
+    this.updateTimePickers();
   }
 
+  updateDatePickers(){
+
+    let elements = [];
+    jQuery("div[id^='q-datepicker_']").each(function () {
+      elements.push(this.id);
+    });
+    //jQuery('#startmission').datepicker('update', this.contractData.missionStartDate);
+    //jQuery('#starttermdate').datepicker('update', this.getEndDate());
+    //jQuery('#endtermdate').datepicker('update', this.getEndDate());
+    //jQuery('#endmission').datepicker('update', this.contractData.missionEndDate);
+    jQuery('#' + elements[4]).datepicker('update', "");
+    jQuery('#' + elements[5]).datepicker('update', "");
+
+
+  }
+
+  updateTimePickers(){
+    jQuery("input[id^='q-timepicker_']").each(function () {
+      jQuery(this).attr('required', 'true')
+
+      // + Fix to solve the fullwidth problem
+      jQuery(this).parent().css('width', '100%')
+    });
+  }
   initWorkStartHour(){
     let today = new Date();
     today.setHours(8);
@@ -645,6 +723,12 @@ export class Contract {
         this.contractData.numero = this.numContrat;
         this.contractData.adresseInterim = this.workAdress;
         this.contractData.workAdress = this.workAdress;
+      }
+
+      if(this.contractData.epiList && this.contractData.epiList.length>0){
+        this.contractData.equipements = '(Voir annexe)';
+      } else {
+        this.contractData.equipements = "Aucun";
       }
 
       // Go to yousign
@@ -804,5 +888,33 @@ export class Contract {
         }
       }
     })
+  }
+
+  addEPI(){
+
+    let found = false;
+
+    for(let i = 0 ; i < this.contractData.epiList.length ; i++)
+      if(this.contractData.epiList[i].libelle == this.selectedEPI){
+        found = true;
+        break;
+      }
+
+    if(found)
+      return;
+
+    this.contractData.epiList.push({libelle : this.selectedEPI});
+  }
+
+  removeEPI(e){
+    let index = -1;
+    for(let i = 0 ; i < this.contractData.epiList.length ; i++)
+      if(this.contractData.epiList[i].libelle == e.libelle){
+        index = i;
+        break;
+      }
+    if(index>=0){
+      this.contractData.epiList.splice(index,1);
+    }
   }
 }

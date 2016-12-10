@@ -13,8 +13,6 @@ export class AdvertService {
       "pk_user_annonce_entreprise as id" +
       ", titre as titre" +
       ", contenu as content" +
-      ", piece_jointe as attachement" +
-      ", image_principale as imgbg" +
       ", thumbnail" +
       ", created " +
       ", fk_user_offre_entreprise as \"offerId\" " +
@@ -37,13 +35,6 @@ export class AdvertService {
                 titre : r.titre,
                 description : this.prepareContent(r.content),
                 briefContent : this.prepareBriefContent(r.content),
-                attachement : {
-                  'class':'com.vitonjob.annonces.Attachement',
-                  code : 0,
-                  status : '',
-                  fileContent : '',
-                  fileName : this.getImageName(r.attachement),
-                },
                 thumbnail : {
                   'class':'com.vitonjob.annonces.Attachement',
                   code : 0,
@@ -52,13 +43,6 @@ export class AdvertService {
                   fileName: this.getImageName(r.thumbnail)
                 },
                 isThumbnail : r.thumbnail && r.thumbnail.length > 0,
-                imgbg : {
-                  'class':'com.vitonjob.annonces.Attachement',
-                  code : 0,
-                  status : '',
-                  fileContent : this.prepareImage(r.imgbg),
-                  fileName: this.getImageName(r.imgbg)
-                },
                 rubriques : [],
                 created : this.parseDate(r.created),
                 offerId: r.offerId
@@ -68,6 +52,40 @@ export class AdvertService {
             }
           }
           resolve(adverts);
+        });
+    });
+  }
+
+  loadAdvert(advert){
+    let sql = "select " +
+      "piece_jointe as attachement" +
+      ", image_principale as imgbg" +
+      " from user_annonce_entreprise " +
+      "where dirty='N' and pk_user_annonce_entreprise=" + advert.id;
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          if(data && data.data && data.data.length != 0){
+              let r = data.data[0];
+              advert.attachement = {
+                  'class':'com.vitonjob.annonces.Attachement',
+                  code : 0,
+                  status : '',
+                  fileContent : r.attachement,
+                  fileName : ''
+                };
+                advert.imgbg = {
+                  'class':'com.vitonjob.annonces.Attachement',
+                  code : 0,
+                  status : '',
+                  fileContent : this.prepareImage(r.imgbg),
+                  fileName: this.getImageName(r.imgbg)
+                };
+              }
+          resolve(advert);
         });
     });
   }

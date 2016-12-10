@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+  <script src="../../../scripts/swiper.min.js"></script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+
+  <!-- Link Swiper's CSS -->
+  <link rel="stylesheet" href="../../../css/swiper.min.css">
+  <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+
+
+
+</head>
+<body class="body">
+<div class="row row-btn">
+  <div class="col-xs-12">
+    <button class="button button--arrow button--bounce" href="#one" (click)="cardSwiper($event)"></button>
+  </div>
+</div>
+<div class="row" id="hide">
+  <div class="col-sm-4">
+    <div class="row">
+      <div class="col-xs-12 pad-bot">
+        <h2>Offres imminentes</h2>
+      </div>
+      <div class="col-xs-12">
+        <!-- Swiper -->
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide" *ngFor="let o of upcomingOffers">
+              <article class="material-card Red">
+                <h2 class="card-h">
+                  <span class="size-font">{{o.title}}</span>
+
+                </h2>
+                <div class="mc-content">
+                  <div class="img-container">
+                    <img class="img-responsive img-size" src="{{ projectTarget == 'jobyer' ? '../../assets/images/people/employer.jpg' : '../../assets/images/people/jobyer.jpg' }}">
+                  </div>
+                  <div class="mc-description">
+                    Offre créée le {{simplifyDate(o.creationDate)}}<br/>
+                    {{projectTarget == 'jobyer'?'Disponible à partir du':'Début de mission'}}
+                    {{simplifyDate(o.startAvailability)}}
+                  </div>
+                </div>
+                <a (click)="onClickCard($event)" class="mc-btn-action">
+                  <i class="fa fa-bars"></i>
+                </a>
+                <div class="mc-footer">
+                  <div class="row centred-h centred-l">
+                    <div class="col-xs-12 no-padding"><a class="btn btn-sm btn-card" (click)="searchOffer(o)">Détails</a></div>
+                    <div class="col-xs-12 no-padding" *ngIf="projectTarget == 'employer' && !isRecruteur">
+                      <recruit-button (onRecruite)="onRecruite(o)"></recruit-button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+          </div>
+
+          <!-- Add Pagination -->
+          <div class="swiper-pagination"></div>
+
+          <!-- Add Arrows -->
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="row">
+      <div class="col-xs-12 pad-bot">
+        <h2>Offres récemment créées</h2>
+      </div>
+      <div class="col-xs-12">
+        <!-- Swiper -->
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide"  *ngFor="let o of recentOffers">
+              <article class="material-card Red">
+                <h2 class="card-h">
+                  <span class="size-font">{{o.title}}</span>
+
+                </h2>
+                <div class="mc-content">
+                  <div class="img-container">
+                    <img class="img-responsive img-size" src="{{ projectTarget == 'jobyer' ? '../../assets/images/people/employer.jpg' : '../../assets/images/people/jobyer.jpg' }}">
+
+                  </div>
+                  <div class="mc-description">
+                    Offre créée le {{simplifyDate(o.creationDate)}}<br/>
+                    {{projectTarget == 'jobyer'?'Disponible à partir du':'Début de mission'}}
+                    {{simplifyDate(o.startAvailability)}}
+                  </div>
+                </div>
+                <a (click)="onClickCard($event)" class="mc-btn-action">
+                  <i class="fa fa-bars"></i>
+                </a>
+                <div class="mc-footer">
+                  <div class="row centred-h centred-l">
+                    <div class="col-xs-12 no-padding"><a class="btn btn-sm btn-card" (click)="searchOffer(o)">Détails</a></div>
+                    <div class="col-xs-12 no-padding" *ngIf="projectTarget == 'employer' && !isRecruteur">
+                      <recruit-button (onRecruite)="onRecruite(o)"></recruit-button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+          </div>
+
+          <!-- Add Pagination -->
+          <div class="swiper-pagination"></div>
+
+          <!-- Add Arrows -->
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="row">
+      <div class="col-xs-12 pad-bot">
+        <h2>{{projectTarget == 'jobyer'?'Nouvelles entreprises':'Nouveaux Jobyers'}}</h2>
+      </div>
+      <div class="col-xs-12">
+        <!-- Swiper -->
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide" *ngFor="let o of recentUsers">
+              <article class="material-card Red">
+                <h2 class="card-h">
+                  <span class="size-font">{{o.name}}</span>
+
+                </h2>
+                <div class="mc-content">
+                  <div class="img-container">
+                    <img class="img-responsive img-size" src="{{ projectTarget == 'jobyer' ? '../../assets/images/people/employer.jpg' : '../../assets/images/people/jobyer.jpg' }}">
+                  </div>
+                  <div class="mc-description">
+                    <span>A rejoint Vit-On-Job le &nbsp;</span>{{simplifyDate(o.creationDate)}}<br/>
+                  </div>
+                </div>
+                <a (click)="onClickCard($event)" class="mc-btn-action">
+                  <i class="fa fa-bars"></i>
+                </a>
+                <div class="mc-footer">
+                  <div class="row centred-h centred-l">
+                    <div class="col-xs-12 no-padding"><a href="#">Contacter</a></div>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+          </div>
+
+          <!-- Add Pagination -->
+          <div class="swiper-pagination"></div>
+
+          <!-- Add Arrows -->
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+        </div>
+      </div>
+      <script type="text/javascript" src="../../../scripts/jquery.smooth-scroll.js"></script>
+    </div>
+  </div>
+</div>
+</body>
+</html>

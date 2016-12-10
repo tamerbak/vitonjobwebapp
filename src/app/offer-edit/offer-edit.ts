@@ -149,6 +149,12 @@ export class OfferEdit{
   advertMode : any;
   advertId: string;
 
+  /*
+   *  Contact
+   */
+  offerContact : string;
+  tel : string;
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private searchService: SearchService,
@@ -174,6 +180,10 @@ export class OfferEdit{
     }
 
     this.offer = this.sharedService.getCurrentOffer();
+    if(this.offer && this.offer.telephone)
+      this.tel = this.offer.telephone;
+    if(this.offer && this.offer.contact)
+      this.offerContact = this.offer.contact;
     this.initCalendar();
 
   }
@@ -1077,6 +1087,9 @@ export class OfferEdit{
       return;
     }
 
+    this.offer.contact = this.offerContact;
+    this.offer.telephone = this.tel;
+
     if (this.obj != "detail") {
       this.offer.calendarData = this.offersService.convertSlotsForSaving(this.slotsToSave);
 
@@ -1103,7 +1116,6 @@ export class OfferEdit{
       }
 
       //this.router.navigate(['offer/calendar', {offer: this.offer, isOfferToAdd: true}]);
-
       this.offersService.setOfferInRemote(this.offer, this.projectTarget).then((data: any) => {
         this.dataValidation = true;
         let offer = JSON.parse(data._body);
@@ -1581,10 +1593,10 @@ export class OfferEdit{
 
       //let autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocompletePersonal"), {});
       google.maps.event.addListener(this.autocompleteOA, 'place_changed', () => {
+
         let place = this.autocompleteOA.getPlace();
         var addressObj = AddressUtils.decorticateGeolocAddress(place);
 
-        this.offerAddress = place['formatted_address'];
         this.zone.run(() => {
           this.nameOA = !addressObj.name ? '' : addressObj.name.replace("&#39;", "'");
           this.streetNumberOA = addressObj.streetNumber.replace("&#39;", "'");
@@ -1592,10 +1604,39 @@ export class OfferEdit{
           this.zipCodeOA = addressObj.zipCode;
           this.cityOA = addressObj.city.replace("&#39;", "'");
           this.countryOA = (addressObj.country.replace("&#39;", "'") == "" ? 'France' : addressObj.country.replace("&#39;", "'"));
-
+          this.offerAddress = this.constructAdress();
         });
       });
     });
+  }
+
+  constructAdress(){
+    let adr = "";
+    if(this.nameOA && this.nameOA.length>0){
+      adr = adr+this.nameOA+", ";
+    }
+
+    if(this.streetNumberOA && this.streetNumberOA.length>0){
+      adr = adr+this.streetNumberOA+", ";
+    }
+
+    if(this.streetOA && this.streetOA.length>0){
+      adr = adr+this.streetOA+", ";
+    }
+
+    if(this.cityOA && this.cityOA.length>0){
+      adr = adr+this.cityOA+", ";
+    }
+
+    if(this.zipCodeOA && this.zipCodeOA.length>0){
+      adr = adr+this.zipCodeOA+", ";
+    }
+
+    if(this.countryOA && this.countryOA.length>0){
+      adr = adr+this.countryOA;
+    }
+
+    return adr.trim();
   }
 
   watchFullTime(e) {
