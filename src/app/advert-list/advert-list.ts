@@ -46,8 +46,4 @@ export class AdvertList {
   deleteAdv(adv){
 
   }
-
-  simplifyDate(date : Date){
-    return "";
-  }
 }

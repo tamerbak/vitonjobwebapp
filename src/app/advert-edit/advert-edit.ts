@@ -27,6 +27,7 @@ export class AdvertEdit{
   thumbnailData: any;
   coverData: any;
   alerts: any = [];
+  contractFormArray = [];
 
   constructor(private advertService: AdvertService,
               private router: Router,
@@ -62,7 +63,7 @@ export class AdvertEdit{
         status: '',
         fileContent: ''
       },
-      rubriques: []
+      contractForm: ''
     };
   }
 
@@ -147,10 +148,15 @@ export class AdvertEdit{
   }
 
   prepareDataForDisplaying(content) {
+    //attachement
     if (!this.isEmpty(content)) {
       let prefix = content.split(';')[0];
       this.advert.attachement.fileContent = content;
       this.advert.attachement.fileName = prefix;
+    }
+    //contract form
+    if(!this.isEmpty(this.advert.contractForm)) {
+      this.contractFormArray = this.advert.contractForm.split(";");
     }
   }
 
@@ -177,15 +183,12 @@ export class AdvertEdit{
     } else {
       this.advertService.saveNewAdvert(this.advert).then((result: any) => {
         this.idAdvert = result.id;
-        setTimeout(() => {
           Messenger().post({
             message: "L'annonce " + "'" + this.advert.titre + "'" + " a été sauvegardée avec succès",
             type: 'success',
             showCloseButton: true
           });
-        }, 3000);
-
-        location.reload();
+        this.resetForm();
       });
     }
   }
@@ -221,6 +224,7 @@ export class AdvertEdit{
   }
 
   resetForm(){
+    this.alerts = [];
     this.advert = {
       'class': 'com.vitonjob.annonces.Annonce',
       idEntreprise: this.currentUser.employer.entreprises[0].id,
@@ -244,12 +248,25 @@ export class AdvertEdit{
         status: '',
         fileContent: ''
       },
-      rubriques: []
+      contractForm: ''
     };
     this.idAdvert = null;
+
+    //clear contract form select
+    this.contractFormArray = [];
+    //empty ckeditor
+    let object = jQuery('#cke_content_cke').children().children().children();
+    let ifr = object.contents().find("body");
+    ifr.empty();
+
+    //clear thumbnail and cover input
     this.thumbnailData = null;
     this.coverData = null;
-    this.alerts = [];
+    jQuery('.thumbnailinput').fileinput('reset');
+    jQuery('.cover').fileinput('reset');
+
+    //clear attchement
+    jQuery('#attachement_field').val('');
   }
 
   deleteFile(attach) {
@@ -266,8 +283,18 @@ export class AdvertEdit{
   isFormValid(){
     if(this.advert && !this.isEmpty(this.advert.titre)){
       return true;
-    }else{
+    } else {
       return false;
+    }
+  }
+
+  setContractFormSelected(selectElement) {
+    this.advert.contractForm = '';
+    for (let i = 0; i < selectElement.options.length; i++) {
+      let optionElement = selectElement.options[i];
+      if (optionElement.selected == true) {
+        this.advert.contractForm = this.advert.contractForm + ";" + optionElement.text;
+      }
     }
   }
 
