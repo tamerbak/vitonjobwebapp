@@ -15,10 +15,26 @@ width: 100%;
   text-align: center;
 }
 .card-mb {
-  background-color: white;
+  background: rgba(#757575, 0.3);
+  color: white;
   border-radius: 5px;
   margin: 0.5em;
   padding: 5px;
+  min-height: 16em;
+}
+.btn-card{
+  border: solid 1px;
+  color: white;
+  background-color: transparent!important;
+  margin-bottom: 0.4em;
+}
+
+.padding-zero {
+  padding: 0;
+  margin: 0;
+}
+.title-card{
+  min-height: 4em;
 }
 .mar-pad{
   margin-left: 0;
@@ -156,9 +172,8 @@ margin-top: 25em;
   margin-right: auto;
   margin-left: auto;
 }
-.centred-h {
 
-}.home-logo {
+.home-logo {
   width: 30%;
  }
 .search__button {
@@ -563,4 +578,10 @@ body {
       content: normal;
     }
   }
+}
+.content-map {
+  position: relative;
+}
+.pad-top {
+  padding-top: 2em;
 }

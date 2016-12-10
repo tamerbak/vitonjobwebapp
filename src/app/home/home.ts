@@ -11,6 +11,8 @@ import {ModalUpdatePassword} from "../modal-update-password/modal-update-passwor
 import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
 import {ModalGeneralCondition} from "../modal-general-condition/modal-general-condition";
 import {RecruitButton} from "../components/recruit-button/recruit-button";
+import {New} from "../components/new-component/new-component";
+
 
 declare var require: any;
 declare var jQuery: any;
@@ -19,7 +21,7 @@ declare var Messenger: any;
 @Component({
   selector: 'home',
   template: require('./home.html'),
-  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalWelcome, ModalProfile, ModalUpdatePassword, ModalNotificationContract, ModalGeneralCondition, RecruitButton],
+  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalWelcome, ModalProfile, ModalUpdatePassword, ModalNotificationContract, ModalGeneralCondition, RecruitButton, New],
   providers: [SearchService, HomeService],
   styles: [require('./home.scss')],
   encapsulation: ViewEncapsulation.None
@@ -46,7 +48,7 @@ export class Home{
   nextUpcomingOffers: any = [];
   nextRecentUsers: any = [];
   homeServiceData: any = [];
-  maxLines: number = 4;
+  maxLines: number = 8;
   obj: string;
 
   currentJobyer: any;
@@ -65,7 +67,6 @@ export class Home{
     } else if (this.router.url === '/employeur') {
       this.sharedService.setProjectTarget('employer');
     }
-
     let myContent = jQuery('.content');
     let myNavBar = jQuery('.navbar-dashboard');
 
@@ -116,7 +117,6 @@ export class Home{
 
     this.sharedService.setCurrentOffer(null);
 
-
   }
 
   initHomeList() {
@@ -159,11 +159,45 @@ export class Home{
       this.nextRecentUsers.push(data[i]);
     }
   }
-
   ngOnDestroy() {
     jQuery('.content').css({"padding": "40px", "padding-top": "60px"});
   }
 
+  onClickCard(e) {
+    console.log(e);
+    var el = e.target;
+    if (jQuery(el).hasClass('fa'))
+      el = jQuery(el).parent('a');
+
+    console.log(el);
+    //jQuery('.material-card > .mc-btn-action').click(function () {
+      var card = jQuery(el).parent('.material-card');
+      var icon = jQuery(el).children('i');
+      icon.addClass('fa-spin-fast');
+
+      if (card.hasClass('mc-active')) {
+        card.removeClass('mc-active');
+
+        window.setTimeout(function() {
+          icon
+            .removeClass('fa-arrow-left')
+            .removeClass('fa-spin-fast')
+            .addClass('fa-bars');
+
+        }, 800);
+      } else {
+        card.addClass('mc-active');
+
+        window.setTimeout(function() {
+          icon
+            .removeClass('fa-bars')
+            .removeClass('fa-spin-fast')
+            .addClass('fa-arrow-left');
+
+        }, 800);
+      }
+    //});
+  }
   doSemanticSearch() {
     /*if (!this.currentUser) {
      this.sharedService.setFromPage("home");
