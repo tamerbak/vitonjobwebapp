@@ -4,14 +4,14 @@ import {SharedService} from "../../providers/shared.service";
 import {Router, ROUTER_DIRECTIVES} from "@angular/router";
 import {ACCORDION_DIRECTIVES, AlertComponent} from "ng2-bootstrap";
 import {ModalOptions} from "../modal-options/modal-options";
-declare var jQuery: any;
+declare var Messenger, jQuery: any;
 
 @Component({
   selector: '[advert-list]',
   template: require('./advert-list.html'),
   encapsulation: ViewEncapsulation.None,
   styles:[require('./advert-list.scss')],
-  directives: [ACCORDION_DIRECTIVES, ROUTER_DIRECTIVES, AlertComponent, ModalOptions],
+  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalOptions],
   providers:[AdvertService]
 })
 export class AdvertList {
@@ -35,7 +35,15 @@ export class AdvertList {
 
   loadAdverts(){
     this.advertService.loadAdverts(this.currentUser.employer.entreprises[0].id).then((data:any)=>{
-      this.adverts = data;
+      if(data){
+        this.adverts = data;
+      }else{
+        Messenger().post({
+          message: "Une erreur est survenue lors du chargement des annonces.",
+          type: 'error',
+          showCloseButton: true
+        });
+      }
     });
   }
 
@@ -45,8 +53,16 @@ export class AdvertList {
 
   updateAdv(adv){
     this.advertService.loadAdvert(adv).then((data: any) => {
-      this.sharedService.setCurrentAdv(data);
-      this.router.navigate(['advert/edit', {obj:'detail'}]);
+      if(data) {
+        this.sharedService.setCurrentAdv(data);
+        this.router.navigate(['advert/edit', {obj: 'detail'}]);
+      }else{
+        Messenger().post({
+          message: "Une erreur est survenue lors du chargement de l'annonce.",
+          type: 'error',
+          showCloseButton: true
+        });
+      }
     })
   }
 

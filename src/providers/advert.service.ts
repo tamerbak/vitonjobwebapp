@@ -114,7 +114,7 @@ export class AdvertService {
           let res = {
             id : 0
           };
-          if(data && data.data && data.data.length>0){
+          if(data && data.data && data.data.length > 0){
             res.id = data.data[0].pk_user_annonce_entreprise;
           }
           resolve(res);
@@ -139,13 +139,7 @@ export class AdvertService {
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          let res = {
-            id: 0
-          };
-          if (data && data.data && data.data.length > 0) {
-            res.id = data.data[0].pk_user_annonce_entreprise;
-          }
-          resolve(res);
+          resolve(data);
         });
     });
   }
