@@ -95,14 +95,15 @@ export class AdvertService {
 
   saveNewAdvert(advert : any){
     let sql = "insert into user_annonce_entreprise " +
-      "(titre, contenu, piece_jointe, forme_contrat, thumbnail, image_principale, fk_user_entreprise) " +
+      "(titre, contenu, piece_jointe, forme_contrat, thumbnail, image_principale, created, fk_user_entreprise) " +
       "values " +
       "('"+Utils.sqlfyText(advert.titre)+"', '" +
       Utils.sqlfyText(advert.description)+"', " + "'" +
       Utils.sqlfyText(advert.attachement.fileContent)+"', '"+
       Utils.sqlfyText(advert.contractForm)+"', " + "'"+
       Utils.sqlfyText(advert.thumbnail.fileContent)+"', " + "'"+
-      Utils.sqlfyText(advert.imgbg.fileContent)+"', "+
+      Utils.sqlfyText(advert.imgbg.fileContent)+"', '"+
+      new Date().toISOString()+"', " +
       advert.idEntreprise+")" +
       " returning pk_user_annonce_entreprise";
     return new Promise(resolve => {
@@ -202,6 +203,19 @@ export class AdvertService {
         "fk_user_offre_entreprise = '" + offerId + "' " +
         "WHERE " +
         "pk_user_annonce_entreprise = " + advertId + ";";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  deleteAdvert(advertId) {
+    let sql = "delete from user_annonce_entreprise where pk_user_annonce_entreprise="+advertId;
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
