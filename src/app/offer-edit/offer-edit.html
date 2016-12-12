@@ -416,10 +416,10 @@
           </tr>
           </thead>
 
-          <tr *ngFor="let item of categoriesHeure">
+          <tr *ngFor="let item of categoriesHeure" [hidden]="item.code == 'HT'">
             <td>{{ item.libelle }}</td>
             <td>
-              <div class="col-xs-10 input-group" *ngIf="item.code != 'HT'">
+              <div class="col-xs-10 input-group">
                 <input
                   type="number"
                   class="form-control"
@@ -431,14 +431,14 @@
               </div>
             </td>
             <td class="text-md-right">
-              <div class="form-inline" *ngIf="item.code != 'HT' && item.debut>=0 && item.fin>=0" >
+              <div class="form-inline" *ngIf="item.debut>=0 && item.fin>=0" >
                 <input type="number" class="form-control" [(ngModel)]="item.debutHeure" min="0" max="23" step="1" />
                 :
                 <input type="number" class="form-control" [(ngModel)]="item.debutMinute" min="0" max="59" step="1" />
               </div>
             </td>
             <td class="text-md-right">
-              <div class="form-inline" *ngIf="item.code != 'HT' && item.debut>=0 && item.fin>=0" >
+              <div class="form-inline" *ngIf="item.debut>=0 && item.fin>=0" >
                 <input type="number" class="form-control" [(ngModel)]="item.finHeure" min="0" max="23" step="1" />
                 :
                 <input type="number" class="form-control" [(ngModel)]="item.finMinute" min="0" max="59" step="1" />
