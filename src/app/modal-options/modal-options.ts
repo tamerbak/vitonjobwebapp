@@ -3,6 +3,7 @@ import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {SharedService} from "../../providers/shared.service";
 import {OffersService} from "../../providers/offer.service";
 import {MissionService} from "../../providers/mission-service";
+import {SmsService} from "../../providers/sms-service";
 
 
 declare var jQuery, require, Messenger: any;
@@ -10,7 +11,7 @@ declare var jQuery, require, Messenger: any;
 @Component({
   selector: 'modal-options',
   directives: [ROUTER_DIRECTIVES],
-  providers: [OffersService],
+  providers: [OffersService, SmsService],
   template: require('./modal-options.html'),
   styles: [require('./modal-options.scss')]
 })
@@ -27,6 +28,7 @@ export class ModalOptions{
               private offersService: OffersService,
               private missionService: MissionService,
               private zone: NgZone,
+              private smsService: SmsService,
               private router: Router) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
@@ -133,10 +135,9 @@ export class ModalOptions{
     if (!mission) {
       this.processing = false;
       jQuery("#modal-options").modal('hide');
-      debugger;
       return;
     }
-    debugger;
+
     let role = this.projectTarget == 'employer' ? 'employer' : 'jobyer';
     this.missionService.cancelMission(mission.pk_user_contrat, role).then((data: any)=> {
       Messenger().post({
@@ -144,6 +145,49 @@ export class ModalOptions{
         type: 'success',
         showCloseButton: true
       });
+
+      let messageJobyer = "";
+      let messageEmployer = "";
+
+      if (role == "employer") {
+        messageJobyer = "La mission a été annulée par l'employeur";
+        messageEmployer = "Vous avez annulé la mission";
+      } else {
+        messageJobyer = "Vous avez annulé la mission";
+        messageEmployer = "La mission a été annulée par le jobyer";
+      }
+
+      this.missionService.getTelByJobyer(mission.fk_user_jobyer).then((data: any) => {
+        let jobyerPhone = data.data[0].telephone;
+        this.smsService.sendSms(
+          jobyerPhone,
+          (role == "employer" ? (
+              (mission.signature_jobyer.toUpper() == "OUI")
+                ? "Bonjour, suite à votre demande, nous vous confirmons l'annulation de la signature du contrat numéro : " + mission.numero
+                : "Bonjour, suite à votre demande, nous vous confirmons l'annulation du contrat numéro : " + mission.numero + " en conséquence de l'absence de signature du jobyer"
+            ) : (
+              (mission.signature_jobyer.toUpper() == "OUI")
+                ? "Bonjour, suite à la demande du jobyer, nous vous confirmons l'annulation du contrat numéro : " + mission.numero + " en conséquence de l'absence de signature de votre signature"
+                : "Bonjour, suite à la demande du jobyer, nous vous confirmons l'annulation de la signature du contrat numéro : " + mission.numero
+            )
+        ));
+      });
+      this.missionService.getTelByEmployer(mission.fk_user_entreprise).then((data: any) => {
+        let employerPhone = data.data[0].telephone;
+        this.smsService.sendSms(
+          employerPhone,
+          (role == "employer" ? (
+            (mission.signature_jobyer.toUpper() == "OUI")
+              ? "Bonjour, suite à la demande de l'employeur, nous vous confirmons l'annulation de la signature du contrat numéro : " + mission.numero
+              : "Bonjour, suite à la demande de l'employeur, nous vous confirmons l'annulation du contrat numéro : " + mission.numero + " en conséquence de l'absence de signature de votre signature"
+          ) : (
+            (mission.signature_jobyer.toUpper() == "OUI")
+              ? "Bonjour, suite à votre demande, nous vous confirmons l'annulation du contrat numéro : " + mission.numero + " en conséquence de l'absence de signature de l'employeur"
+              : "Bonjour, suite à votre demande, nous vous confirmons l'annulation de la signature du contrat numéro : " + mission.numero
+            )
+          ));
+      });
+
       this.sharedService.setCurrentMission(null);
       this.processing = false;
       jQuery("#modal-options").modal('hide')

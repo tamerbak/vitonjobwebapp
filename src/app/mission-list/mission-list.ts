@@ -95,7 +95,6 @@ export class MissionList{
         this.contractList = data.data;
         for (let i = 0; i < this.contractList.length; i++) {
           let item = this.contractList[i];
-          debugger;
 
           if (item.date_de_debut) {
             if (item.signature_jobyer.toUpperCase() == 'OUI' && item.accompli.toUpperCase() == 'NON' && item.annule_par == "null")
