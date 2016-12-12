@@ -648,10 +648,9 @@ export class MissionService {
 
   }
 
-  saveEndMission(id) {
-    //  Init project parameters
-    var sql = "update user_contrat set accompli = 'Oui' where pk_user_contrat = '" + id + "'; ";
-    console.log(sql);
+  saveEndMission(id, nbWorkHours, jobyerId) {
+    let sql = "update user_contrat set accompli = 'Oui' where pk_user_contrat = '" + id + "'; ";
+    sql = sql + " update user_jobyer set nb_heure_travail_vit_on_job = '" + nbWorkHours + "' where pk_user_jobyer = '" + jobyerId + "'; ";
 
     return new Promise(resolve => {
       let headers = new Headers();
@@ -663,6 +662,14 @@ export class MissionService {
           resolve(this.data);
         });
     });
+  }
+
+  calculateNbWorkHours(missionHours){
+    let total = 0;
+    for(let i = 0; i < missionHours.length; i++){
+      total = total + (missionHours[i].heure_fin - missionHours[i].heure_debut);
+    }
+    return total;
   }
 
   getOptionMission(id) {
