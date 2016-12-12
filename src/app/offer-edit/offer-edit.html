@@ -407,22 +407,6 @@
                dismissible="false">
           <div [innerHTML]="alert.msg"></div>
         </alert>
-        <!--<div class="form-group row">-->
-          <!--<div class="col-md-6 col-xs-12">-->
-            <!--<strong>Valeurs définies par la convention collective</strong>-->
-          <!--</div>-->
-          <!--<div class="col-md-3 col-xs-12">-->
-            <!--<strong>Valeurs définies par l'employeur</strong>-->
-          <!--</div>-->
-          <!--<div class="col-md-3 col-xs-12">-->
-            <!--<strong></strong>-->
-          <!--</div>-->
-        <!--</div>-->
-        <!--<div class="form-group row required">
-          <label class="col-md-2 col-xs-2 form-control-label">Code</label>
-          <label class="col-md-10 col-xs-10 form-control-label">Avantage</label>
-        </div>-->
-
 
         <table class="table table-condensed">
           <thead>
@@ -435,7 +419,7 @@
           <tr *ngFor="let item of categoriesHeure">
             <td>{{ item.libelle }}</td>
             <td>
-              <div class="col-xs-10 input-group">
+              <div class="col-xs-10 input-group" *ngIf="item.code != 'HT'">
                 <input
                   type="number"
                   class="form-control"
@@ -447,14 +431,14 @@
               </div>
             </td>
             <td class="text-md-right">
-              <div class="form-inline" *ngIf="item.libelle != 'Heures travaillées' && item.debut>=0 && item.fin>=0" >
+              <div class="form-inline" *ngIf="item.code != 'HT' && item.debut>=0 && item.fin>=0" >
                 <input type="number" class="form-control" [(ngModel)]="item.debutHeure" min="0" max="23" step="1" />
                 :
                 <input type="number" class="form-control" [(ngModel)]="item.debutMinute" min="0" max="59" step="1" />
               </div>
             </td>
             <td class="text-md-right">
-              <div class="form-inline" *ngIf="item.libelle != 'Heures travaillées' && item.debut>=0 && item.fin>=0" >
+              <div class="form-inline" *ngIf="item.code != 'HT' && item.debut>=0 && item.fin>=0" >
                 <input type="number" class="form-control" [(ngModel)]="item.finHeure" min="0" max="23" step="1" />
                 :
                 <input type="number" class="form-control" [(ngModel)]="item.finMinute" min="0" max="59" step="1" />
@@ -498,52 +482,6 @@
 
         </table>
 
-
-
-
-        <!--<div class="form-group row" *ngFor="let item of categoriesHeure">-->
-          <!--<div class="col-md-6 col-xs-12" *ngIf="item.libelle != 'Heures travaillées'">-->
-            <!--<span>{{item.libelle}}</span>-->
-          <!--</div>-->
-          <!--<div class="col-md-3 col-xs-12" *ngIf="item.libelle != 'Heures travaillées'">-->
-            <!--<input type="number" class="form-control" [min]="item.coefficient" [(ngModel)]="item.empValue" (change)="watchConditionEmp($event, item)"/>-->
-            <!--{{preventNull(item.typeValue)}}-->
-          <!--</div>-->
-          <!--<div class="col-md-3 col-xs-12" *ngIf="item.libelle != 'Heures travaillées' && item.debut>=0 && item.fin>=0" >-->
-            <!--<input type="number" class="form-control two-thirds-field" [(ngModel)]="item.debutHeure" min="0" max="23" step="1"  >-->
-            <!--:-->
-            <!--<input type="number" class="form-control two-thirds-field" [(ngModel)]="item.debutMinute" min="0" max="59" step="1" >-->
-            <!--&nbsp;à&nbsp;-->
-            <!--<input type="number" class="form-control two-thirds-field" [(ngModel)]="item.finHeure" min="0" max="23" step="1" >-->
-            <!--:-->
-            <!--<input type="number" class="form-control two-thirds-field" [(ngModel)]="item.finMinute" min="0" max="59" step="1" >-->
-          <!--</div>-->
-        <!--</div>-->
-
-        <!--<div class="form-group row" *ngFor="let item of majorationsHeure">-->
-          <!--<div class="col-md-6 col-xs-12">-->
-            <!--<span>{{item.libelle}}</span>-->
-          <!--</div>-->
-          <!--<div class="col-md-3 col-xs-12">-->
-            <!--<input type="number" class="form-control" [min]="item.coefficient" [(ngModel)]="item.empValue"-->
-                   <!--(change)="watchConditionEmp($event, item)"/>-->
-          <!--</div>-->
-          <!--<div class="col-md-3 col-xs-12">-->
-            <!--<span> {{preventNull(item.typeValue)}} </span>-->
-          <!--</div>-->
-        <!--</div>-->
-        <!--<div class="form-group row" *ngFor="let item of indemnites">-->
-          <!--<div class="col-md-6 col-xs-12">-->
-            <!--<span>{{item.libelle}}</span>-->
-          <!--</div>-->
-          <!--<div class="col-md-3 col-xs-12">-->
-            <!--<input type="number" class="form-control" [min]="item.coefficient" [(ngModel)]="item.empValue"-->
-                   <!--(change)="watchConditionEmp($event, item)"/>-->
-          <!--</div>-->
-          <!--<div class="col-md-3 col-xs-12">-->
-            <!--<span> {{preventNull(item.typeValue)}} </span>-->
-          <!--</div>-->
-        <!--</div>-->
       </fieldset>
       </div>
     </section>
