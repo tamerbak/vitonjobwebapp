@@ -182,11 +182,11 @@ export class ModalOptions{
         this.smsService.sendSms(
           jobyerPhone,
           (role == "employer" ? (
-              (mission.signature_jobyer.toUpper() == "OUI")
+              (mission.signature_jobyer.toUpperCase() == "OUI")
                 ? "Bonjour, suite à votre demande, nous vous confirmons l'annulation de la signature du contrat numéro : " + mission.numero
                 : "Bonjour, suite à votre demande, nous vous confirmons l'annulation du contrat numéro : " + mission.numero + " en conséquence de l'absence de signature du jobyer"
             ) : (
-              (mission.signature_jobyer.toUpper() == "OUI")
+              (mission.signature_jobyer.toUpperCase() == "OUI")
                 ? "Bonjour, suite à la demande du jobyer, nous vous confirmons l'annulation du contrat numéro : " + mission.numero + " en conséquence de l'absence de signature de votre signature"
                 : "Bonjour, suite à la demande du jobyer, nous vous confirmons l'annulation de la signature du contrat numéro : " + mission.numero
             )
@@ -197,11 +197,11 @@ export class ModalOptions{
         this.smsService.sendSms(
           employerPhone,
           (role == "employer" ? (
-              (mission.signature_jobyer.toUpper() == "OUI")
+              (mission.signature_jobyer.toUpperCase() == "OUI")
                 ? "Bonjour, suite à la demande de l'employeur, nous vous confirmons l'annulation de la signature du contrat numéro : " + mission.numero
                 : "Bonjour, suite à la demande de l'employeur, nous vous confirmons l'annulation du contrat numéro : " + mission.numero + " en conséquence de l'absence de signature de votre signature"
             ) : (
-              (mission.signature_jobyer.toUpper() == "OUI")
+              (mission.signature_jobyer.toUpperCase() == "OUI")
                 ? "Bonjour, suite à votre demande, nous vous confirmons l'annulation du contrat numéro : " + mission.numero + " en conséquence de l'absence de signature de l'employeur"
                 : "Bonjour, suite à votre demande, nous vous confirmons l'annulation de la signature du contrat numéro : " + mission.numero
             )
