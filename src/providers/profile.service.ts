@@ -773,6 +773,23 @@ export class ProfileService{
     });
   }
 
+  loadRequirementsByJob(idjob){
+
+    let sql = "select distinct(p.libelle) as libelle from user_prerquis p where pk_user_prerquis in " +
+      "(select fk_user_prerquis from user_prerequis_obligatoires where fk_user_offre_entreprise in " +
+        "(select fk_user_offre_entreprise from user_pratique_job where fk_user_job = "+idjob+")" +
+      ")";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data.data);
+        });
+    });
+  }
+
   sqlfyText(txt) {
     if (!txt || txt.length == 0)
       return "";

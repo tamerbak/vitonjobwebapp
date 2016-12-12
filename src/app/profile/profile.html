@@ -354,33 +354,6 @@
                 </div>
               </div>
 
-              <!--div *ngIf="!isEmployer && !isFrench && isEuropean == 1" class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  {{!isResident ? 'Titre de séjour délivré le' : 'Carte résident délivrée le'}}
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <input id="dateStay" type="date" class="form-control" [(ngModel)]="dateStay"/>
-                </div>
-              </div>
-
-              <div *ngIf="!isEmployer && !isFrench && isEuropean == 1" class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  {{!isResident ? 'Titre de séjour valable du' : 'Carte de résident valable du'}}
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <input id="dateFromStay" type="date" class="form-control" [(ngModel)]="dateFromStay"/>
-                </div>
-              </div>
-
-              <div *ngIf="!isEmployer && !isFrench && isEuropean == 1" class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  {{!isResident ? 'Titre de séjour valable au' : 'Carte de résident valable au'}}
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <input id="dateToStay" type="date" class="form-control" [(ngModel)]="dateToStay"/>
-                </div>
-              </div-->
-
               <!--
               ---- The user is European
               --->
@@ -687,6 +660,31 @@
       </div>
     </section>
   </div>
+
+  <!-- PREREQUIS -->
+  <div [hidden]="!showForm || isEmployer || isRecruiter" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
+    <section class="widget">
+      <div class="widget-body">
+        <fieldset>
+          <legend><strong>Prérequis</strong></legend>
+          <div class="container-fluid">
+            <div *ngFor="let j of jobs" class="row">
+              <label class="col-md-3 text-md-center" >
+                <strong>{{j.libelle}}</strong>
+              </label>
+              <ul class="col-md-9">
+                <li *ngFor="let r of j.requirements">
+                  {{r.libelle}}
+                </li>
+              </ul>
+            </div>
+
+          </div>
+        </fieldset>
+      </div>
+    </section>
+  </div>
+
 
   <!-- Qualities -->
   <div [hidden]="!showForm || isRecruiter" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
