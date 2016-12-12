@@ -1,0 +1,518 @@
+
+/*  /!\  Commented by Yanniv for #Fix-822 (12/12/16)  /!\
+** This stylesheet is heavy and unused by the modal-profile.
+** I renamed it to keep it save, just in case it was usefull.
+*/
+
+@import "../../scss/variables";
+@import "../../../node_modules/messenger/build/css/messenger";
+@import "../../../node_modules/messenger/build/css/messenger-theme-air";
+@import "../../../node_modules/bootstrap/scss/_variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+@import "../../../node_modules/bootstrap-select/dist/css/bootstrap-select";
+@import "../../../node_modules/select2/select2";
+@import "../../../node_modules/select2-bootstrap-css/select2-bootstrap";
+@import "../../../node_modules/ng2-datetime/src/vendor/bootstrap-datepicker/bootstrap-datepicker3.min";
+@import "../../../node_modules/ng2-datetime/src/vendor/bootstrap-timepicker/bootstrap-timepicker.min";
+@import "../../../node_modules/jasny-bootstrap/dist/css/jasny-bootstrap";
+
+/**
+ * spinner
+*/
+
+.profile-form .loaderPosition {
+  position: relative;
+  margin-right: 20px;
+  margin-bottom: 10px;
+}
+
+/**
+ * #birthdate
+*/
+
+#birthdate .form-inline .input-group {
+  display: flex !important;
+  width: 100%;
+}
+
+/**
+ * #hint error
+*/
+
+.hint {
+  margin-top: 3px;
+}
+
+/**
+ * Jasny Bootstrap
+ * Fileinput.less
+ */
+
+.fileinput.fileinput-new {
+  .thumbnail {
+    padding: $thumbnail-padding;
+    line-height: $line-height;
+    background-color: $thumbnail-bg;
+    border: $thumbnail-border-width solid $thumbnail-border-color;
+    border-radius: $thumbnail-border-radius;
+    transition: all .2s ease-in-out;
+    @include box-shadow(0 1px 2px rgba(0, 0, 0, .075));
+  }
+}
+
+.fileinput-preview.fileinput-exists {
+  border: 1px solid $input-border-color;
+  border-radius: $border-radius;
+  padding: 5px;
+}
+
+.fileinput.input-group {
+  display: flex;
+}
+
+.fileinput-new.input-group .btn-file,
+.fileinput-new .input-group .btn-file {
+  border-radius: 0 $border-radius $border-radius 0;
+
+  &.btn-xs,
+  &.btn-sm {
+    border-radius: 0 $border-radius-sm $border-radius-sm 0;
+  }
+  &.btn-lg {
+    border-radius: 0 $border-radius-lg $border-radius-lg 0;
+  }
+}
+
+.form-group.has-warning .fileinput {
+  .fileinput-preview {
+    color: $state-warning-text;
+  }
+  .thumbnail {
+    border-color: $state-warning-border;
+  }
+}
+
+.form-group.has-error .fileinput {
+  .fileinput-preview {
+    color: $state-danger-text;
+  }
+  .thumbnail {
+    border-color: $state-danger-border;
+  }
+}
+
+.form-group.has-success .fileinput {
+  .fileinput-preview {
+    color: $state-success-text;
+  }
+  .thumbnail {
+    border-color: $state-success-border;
+  }
+}
+
+.btn-label {
+  background: transparent;
+  left: 2px;
+  padding: 1px 6px;
+}
+
+/**
+ * select2
+ */
+
+.select2-container .select2-choice abbr {
+  background: url('assets/select2/select2.png') right top no-repeat;
+}
+
+.select2-container .select2-choice .select2-arrow b {
+  background: url('assets/select2/select2.png') no-repeat 0 1px;
+}
+
+.select2-search input {
+  background: #fff url('assets/select2/select2.png') no-repeat 100% -22px;
+  background: url('assets/select2/select2.png') no-repeat 100% -22px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #fff), color-stop(0.99, #eee));
+  background: url('assets/select2/select2.png') no-repeat 100% -22px, -webkit-linear-gradient(center bottom, #fff 85%, #eee 99%);
+  background: url('assets/select2/select2.png') no-repeat 100% -22px, -moz-linear-gradient(center bottom, #fff 85%, #eee 99%);
+  background: url('assets/select2/select2.png') no-repeat 100% -22px, linear-gradient(to bottom, #fff 85%, #eee 99%) 0 0;
+}
+
+html[dir="rtl"] .select2-search input {
+  background: #fff url('assets/select2/select2.png') no-repeat -37px -22px;
+  background: url('assets/select2/select2.png') no-repeat -37px -22px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #fff), color-stop(0.99, #eee));
+  background: url('assets/select2/select2.png') no-repeat -37px -22px, -webkit-linear-gradient(center bottom, #fff 85%, #eee 99%);
+  background: url('assets/select2/select2.png') no-repeat -37px -22px, -moz-linear-gradient(center bottom, #fff 85%, #eee 99%);
+  background: url('assets/select2/select2.png') no-repeat -37px -22px, linear-gradient(to bottom, #fff 85%, #eee 99%) 0 0;
+}
+
+.select2-search-choice-close {
+  background: url('assets/select2/select2.png') right top no-repeat;
+}
+
+.select2-search input.select2-active {
+  background: #fff url('assets/select2/select2-spinner.gif') no-repeat 100%;
+  background: url('assets/select2/select2-spinner.gif') no-repeat 100%, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #fff), color-stop(0.99, #eee));
+  background: url('assets/select2/select2-spinner.gif') no-repeat 100%, -webkit-linear-gradient(center bottom, #fff 85%, #eee 99%);
+  background: url('assets/select2/select2-spinner.gif') no-repeat 100%, -moz-linear-gradient(center bottom, #fff 85%, #eee 99%);
+  background: url('assets/select2/select2-spinner.gif') no-repeat 100%, linear-gradient(to bottom, #fff 85%, #eee 99%) 0 0;
+}
+
+.select2-more-results.select2-active {
+  background: #f4f4f4 url('assets/select2/select2-spinner.gif') no-repeat 100%;
+}
+
+.select2-container-multi .select2-choices .select2-search-field input.select2-active {
+  background: #fff url('assets/select2/select2-spinner.gif') no-repeat 100% !important;
+}
+
+/**
+ * Bootstrap select
+ */
+
+.selectpicker.form-control {
+  height: auto;
+}
+
+.bootstrap-select {
+  .dropdown-toggle {
+    padding-left: 10px;
+
+    &:after {
+      margin-right: 0;
+      margin-left: 0;
+    }
+  }
+  .dropdown-menu > li > a {
+    display: block;
+    width: 100%; // For `<button>`s
+    padding: 3px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: $line-height;
+    color: $dropdown-link-color;
+    text-align: inherit; // For `<button>`s
+    white-space: nowrap; // prevent links from randomly breaking onto new lines
+    background: none; // For `<button>`s
+    border: 0; // For `<button>`s
+
+    @include hover-focus {
+      color: $dropdown-link-hover-color;
+      text-decoration: none;
+      background-color: $dropdown-link-hover-bg;
+    }
+
+    // Active state
+    &.active {
+      @include plain-hover-focus {
+        color: $dropdown-link-active-color;
+        text-decoration: none;
+        background-color: $dropdown-link-active-bg;
+        outline: 0;
+      }
+    }
+
+    // Disabled state
+    //
+    // Gray out text and ensure the hover/focus state remains gray
+    &.disabled {
+      @include plain-hover-focus {
+        color: $dropdown-link-disabled-color;
+      }
+
+      // Nuke hover/focus effects
+      @include hover-focus {
+        text-decoration: none;
+        cursor: $cursor-disabled;
+        background-color: transparent;
+        background-image: none; // Remove CSS gradient
+        @include reset-filter();
+      }
+    }
+  }
+}
+
+/***********************/
+/*    Part:Stats Row   */
+/***********************/
+
+.stats-row {
+  margin-bottom: 15px;
+}
+
+.stat-item {
+  display: inline-block;
+  padding-right: 15px;
+
+  & + .stat-item {
+    padding-left: 15px;
+    border-left: 1px solid $hr-border-color;
+  }
+  .name {
+    margin-bottom: 2px;
+    margin-top: 10px;
+  }
+  .value {
+    font-weight: bold;
+  }
+
+  &.stat-item-mini-chart {
+    position: relative;
+    top: -12px;
+    padding-left: 0;
+    border-left: none;
+  }
+}
+
+/***********************************/
+/**          Post Links           **/
+/***********************************/
+
+.post-links {
+  margin-bottom: 0;
+  font-size: $font-size-sm;
+  padding-left: 0;
+  @include clearfix();
+  > li {
+    float: left;
+    list-style: none;
+
+    + li {
+      &:before {
+        color: #999;
+        content: "\25cf";
+        padding: 0 8px;
+      }
+    }
+    > a {
+      text-decoration: none;
+      color: $text-muted;
+      &:hover {
+        color: $text-muted;
+      }
+    }
+  }
+
+  &.no-separator > li + li {
+    margin-left: 12px;
+    &:before {
+      content: normal;
+    }
+  }
+}
+
+/***********************************/
+/**          Post Comments           **/
+/***********************************/
+
+.post-comments {
+  font-size: $font-size-sm;
+  padding-left: 0;
+  @include clearfix();
+
+  .post-links + & {
+    margin-top: $line-height-computed / 2;
+  }
+
+  > li {
+    padding: 10px;
+    border-top: 1px solid #e7e7e7;
+    list-style: none;
+    @include clearfix();
+
+    &:last-child {
+      padding-bottom: 0;
+    }
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+
+  .avatar {
+    margin-top: 1px;
+  }
+
+  .author {
+    margin-top: 0;
+    margin-bottom: 2px;
+    color: #7ca9dd;
+  }
+
+  .comment-body {
+    overflow: auto;
+  }
+
+  h6.author > small {
+    font-size: 11px;
+  }
+
+  .widget > footer & {
+    margin-left: -$widget-padding-horizontal;
+    margin-right: -$widget-padding-horizontal;
+  }
+}
+
+/***********************************/
+/**           Post User           **/
+/***********************************/
+
+.post-user {
+  position: relative;
+  @include clearfix();
+
+  img {
+    border: 3px solid white;
+  }
+}
+
+/***********************************/
+/**           Profile             **/
+/***********************************/
+
+.user-profile {
+  .label {
+    padding: 5px;
+  }
+}
+
+.post-user-profile {
+  margin-top: -75px;
+
+  .contacts {
+    display: block;
+    margin-top: 25px;
+    margin-left: -10px;
+    margin-right: -10px;
+    padding-left: 0;
+    text-align: center;
+
+    > li {
+      display: inline-block;
+      line-height: 2.2;
+      list-style: none;
+      text-align: left;
+      margin: 0 10px;
+
+      @include media-breakpoint-up(lg) {
+        width: 150px;
+        white-space: nowrap;
+      }
+
+      > a {
+        color: lighten($text-color, 30%);
+        text-decoration: none;
+
+        &:hover,
+        &:focus {
+          color: $text-color;
+        }
+      }
+    }
+
+    .fa {
+      font-size: $font-size-lg;
+      vertical-align: middle;
+    }
+  }
+}
+
+.stats-row-profile {
+  .stat-item {
+    border-left: 0;
+    padding-left: 15px;
+    text-align: center;
+
+    @include media-breakpoint-up(lg) {
+      padding-right: 0;
+    }
+
+    .value {
+      font-size: 28px;
+      font-weight: $font-weight-base;
+    }
+  }
+}
+
+.activities {
+  h3 {
+    margin-left: 20px
+  }
+}
+
+.event {
+  .activities & {
+    margin-top: $line-height-computed;
+    width: 100%;
+  }
+}
+
+.event {
+  background: $white;
+  border-radius: $border-radius;
+  padding: 20px 20px 0;
+  position: relative;
+
+  .post-comments {
+    margin-left: -20px;
+    margin-right: -20px;
+  }
+
+  > footer {
+    margin: 20px -20px 0;
+    padding: 10px 20px;
+    border-bottom-left-radius: $border-radius;
+    border-bottom-right-radius: $border-radius;
+    background-color: #f3f3f3;
+
+    @include clearfix();
+
+    .thumb {
+      margin-left: 10px;
+    }
+  }
+
+}
+
+.event-heading {
+  margin: 0 0 2px;
+  font-weight: $font-weight-semi-bold;
+  > a {
+    text-decoration: none;
+    color: #7ca9dd;
+  }
+  > small {
+    font-weight: $font-weight-semi-bold;
+    > a {
+      text-decoration: none;
+      color: $text-muted;
+    }
+  }
+}
+
+.event-map {
+  display: block;
+  height: 200px;
+  margin: 0 -20px -20px;
+  overflow: visible !important;
+}
+
+.event-image {
+  margin: 0 -20px -20px;
+  max-height: 260px;
+  overflow: hidden;
+  > img {
+    max-width: 100%;
+  }
+}
+
+.asterisk{
+  color: red;
+}
+
+.labelRadio {
+  padding-right: 20px;
+  margin-bottom: 0
+}
+
+.pac-container{
+  z-index: 1051 !important;
+}
