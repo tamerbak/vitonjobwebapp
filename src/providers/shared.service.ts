@@ -261,4 +261,12 @@ export class SharedService {
   setCurrentQuote(value) {
     this.setStorageVariable("currentQuote", value);
   }
+
+  getSelectedJobyer() {
+    return this.getStorageVariable("selectedJobyer");
+  }
+
+  setSelectedJobyer(value) {
+    this.setStorageVariable("selectedJobyer", value);
+  }
 }
