@@ -79,4 +79,9 @@ export class AdvertList {
       self.loadAdverts();
     });
   }
+
+  goToAdvJobyerInterestList(adv){
+    this.sharedService.setCurrentAdv(adv);
+    this.router.navigate(['advert/jobyer/list']);
+  }
 }
