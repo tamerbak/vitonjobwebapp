@@ -141,7 +141,6 @@ export class Yousign{
 
           // get the partner link of the contract and the phoneNumber of the jobyer
           let partnerJobyerLink = null;
-
           if (partner === 'yousign') {
             partnerJobyerLink = partnerData.iFrameURLs[0].iFrameURL;
             this.contractData.demandeJobyer = partnerData.idDemands[0].idDemand;
@@ -151,6 +150,8 @@ export class Yousign{
             partnerJobyerLink = partnerData.Jobyer.url;
             this.contractData.demandeJobyer = partnerData.Jobyer.idContrat;
             this.contractData.demandeEmployer = partnerData.Employeur.idContrat;
+            this.contractData.enveloppeEmployeur = partnerData.Employeur.folderURL;
+            this.contractData.enveloppeJobyer = partnerData.Jobyer.folderURL;
           }
 
           //save contract in Database

@@ -207,7 +207,9 @@ export class ContractService {
       " fk_user_periodicite_des_paiements," +
       " embauche_autorise," +
       " epi," +
-      " rapatriement_a_la_charge_de_l_ai" +
+      " rapatriement_a_la_charge_de_l_ai," +
+      " enveloppe_employeur," +
+      " enveloppe_jobyer" +
       ")" +
       " VALUES ("
       + "" + this.helpers.displayableDateToSQL(contract.missionStartDate) + ","
@@ -247,7 +249,9 @@ export class ContractService {
       + "'"+contract.periodicite+"',"
       + "'OUI',"
       + "'" + Utils.sqlfyText(contract.epiProvidedBy) + "',"
-      + "'OUI'"
+      + "'OUI',"
+      + "'"+contract.enveloppeEmployeur+"',"
+      + "'"+contract.enveloppeJobyer+"'"
       + ")"
       + " RETURNING pk_user_contrat";
 
@@ -468,8 +472,8 @@ export class ContractService {
       "dateDebutMission": contract.missionStartDate,
       "dateFinMission": contract.missionEndDate,
       "periodeEssai": contract.trialPeriod == null ? "" : ( contract.trialPeriod == 1 ? "1 jour" : (contract.trialPeriod + " jours")),
-      "dateDebutTerme": contract.termStartDate,
-      "dateFinTerme": contract.termEndDate,
+      "dateDebutTerme": this.helpers.parseDate(contract.termStartDate),
+      "dateFinTerme": this.helpers.parseDate(contract.termEndDate),
       "motifRecours": contract.motif,
       "justificationRecours": contract.justification,
       "qualification": contract.qualification,
@@ -556,7 +560,7 @@ export class ContractService {
 
 
     // Compute ID according to env
-    let calloutId = 338;
+    let calloutId = 10337;
     if (Configs.env == 'PROD') {
       calloutId = 10002;
     }
