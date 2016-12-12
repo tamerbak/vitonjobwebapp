@@ -665,6 +665,24 @@ export class MissionService {
     });
   }
 
+  cancelMission(id, role) {
+    //  Init project parameters
+    var sql = "update user_contrat set annule_par = '" + role + "' where pk_user_contrat = '" + id + "'; ";
+    console.log(sql);
+
+    debugger;
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers.append("Content-Type", 'text/plain');
+      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any) => {
+          this.data = data;
+          resolve(this.data);
+        });
+    });
+  }
+
   getOptionMission(id) {
     var sql = "select option_mission from user_account where pk_user_account = '" + id + "'; ";
 

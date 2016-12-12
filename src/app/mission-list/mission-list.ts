@@ -95,15 +95,17 @@ export class MissionList{
         this.contractList = data.data;
         for (let i = 0; i < this.contractList.length; i++) {
           let item = this.contractList[i];
+          debugger;
+
           if (item.date_de_debut) {
-            if (item.signature_jobyer.toUpperCase() == 'OUI' && item.accompli.toUpperCase() == 'NON')
+            if (item.signature_jobyer.toUpperCase() == 'OUI' && item.accompli.toUpperCase() == 'NON' && item.annule_par == "null")
             // Mission en cours
               this.missionNow.push(item);
-            if (item.signature_jobyer.toUpperCase() == 'NON')
+            if (item.signature_jobyer.toUpperCase() == 'NON' && item.annule_par == "null")
             // Mission in futur
               this.missionFutur.push(item);
             //else
-            if (item.accompli.toUpperCase() == 'OUI')
+            if (item.accompli.toUpperCase() == 'OUI' || item.annule_par != "null")
             // Mission in past
               this.missionPast.push(item);
           }

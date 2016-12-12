@@ -2,6 +2,7 @@ import {Component, NgZone, Input} from "@angular/core";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {SharedService} from "../../providers/shared.service";
 import {OffersService} from "../../providers/offer.service";
+import {MissionService} from "../../providers/mission-service";
 
 
 declare var jQuery, require, Messenger: any;
@@ -24,6 +25,7 @@ export class ModalOptions{
 
   constructor(private sharedService: SharedService,
               private offersService: OffersService,
+              private missionService: MissionService,
               private zone: NgZone,
               private router: Router) {
     this.currentUser = this.sharedService.getCurrentUser();
@@ -40,6 +42,8 @@ export class ModalOptions{
       this.deleteOffer()
     } else if (this.params.type === 'offer.copy') {
       this.copyOffer()
+    } else if (this.params.type === 'mission.delete') {
+      this.deleteMission();
     }
   }
 
@@ -123,5 +127,27 @@ export class ModalOptions{
     });
   }
 
-
+  deleteMission() {
+    this.processing = true;
+    var mission = this.sharedService.getCurrentMission();
+    if (!mission) {
+      this.processing = false;
+      jQuery("#modal-options").modal('hide');
+      debugger;
+      return;
+    }
+    debugger;
+    let role = this.projectTarget == 'employer' ? 'employer' : 'jobyer';
+    this.missionService.cancelMission(mission.pk_user_contrat, role).then((data: any)=> {
+      Messenger().post({
+        message: "la mission " + "'" + mission.titre + "'" + " a été annulée avec succès",
+        type: 'success',
+        showCloseButton: true
+      });
+      this.sharedService.setCurrentMission(null);
+      this.processing = false;
+      jQuery("#modal-options").modal('hide')
+      this.router.navigate(['mission/list']);
+    });
+  }
 }
