@@ -42,15 +42,6 @@ export class AdvertJobyerList{
     })
   }
 
-  goToEditRecruiter(item) {
-    this.sharedService.setCurrentRecruiter(item);
-    if (!this.isEmpty(item)) {
-      this.router.navigate(['recruiter/edit', {obj: 'detail'}]);
-    } else {
-      this.router.navigate(['recruiter/edit', {obj: 'add'}]);
-    }
-  }
-
   goToJobyerProfile(jobyer) {
     this.sharedService.setSelectedJobyer(jobyer);
     //this.router.navigate(['profile', {obj: 'adv'}]);
