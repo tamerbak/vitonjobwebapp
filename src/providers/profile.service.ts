@@ -288,13 +288,13 @@ export class ProfileService{
       (!this.isEmpty(isStay) ? ("est_resident='" + isStay + "', ") : (" est_resident='', ")) +
       (!this.isEmpty(prefecture) ? ("instance_delivrance='" + this.sqlfyText(prefecture) + "', ") : (" instance_delivrance='', ")) +
 
-      (!this.isEmpty(nationalityId) ? (" fk_user_nationalite='" + nationalityId + "', ") : ("fk_user_nationalite='', ")) +
+      (!this.isEmpty(nationalityId) ? (" fk_user_nationalite='" + nationalityId + "', ") : ("fk_user_nationalite=" + null + ", ")) +
       (!this.isEmpty(birthCountryId) ? ("fk_user_pays ='" + birthCountryId + "', ") : ("fk_user_pays='', ")) +
       (!this.isEmpty(regionId) ? (" fk_user_identifiants_nationalite='" + regionId + "', ") : ("fk_user_identifiants_nationalite='', ")) +
 
       (!this.isEmpty(birthplace) ? (" lieu_de_naissance='" + birthplace + "', ") : ("lieu_de_naissance='', ")) +
       (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "', ") : ("fk_user_departement = " + null + ", " )) +
-      (!this.isEmpty(nbWorkHours) ? ("nb_heures_de_travail ='" + nbWorkHours + "', ") : ("nb_heures_de_travail = " + null + ", " )) +
+      (!this.isEmpty(nbWorkHours) ? ("nb_heures_de_travail ='" + nbWorkHours + "', ") : ("nb_heures_de_travail = " + 0 + ", " )) +
       (!this.isEmpty(studyHoursBigValue) ? ("plus_de_350_heures_d_etude ='" + studyHoursBigValue + "', ") : ("plus_de_350_heures_d_etude = " + null + ", " )) +
       (!this.isEmpty(cv) ? (" cv='" + Utils.sqlfyText(cv) + "' ") : ("cv='' ")) +
 
