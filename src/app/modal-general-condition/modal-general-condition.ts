@@ -56,7 +56,7 @@ export class ModalGeneralCondition{
       this.refusalMsg = "Merci d'être venu sur notre plateforme pour trouver un job à proximité!";
     }
     this.refusalMsg = this.refusalMsg +
-      " En refusant les Conditions Générales, nous somme ravis d'échanger avec vous pour essayer de " +
+      " En refusant les Conditions Générales, nous sommes ravis d'échanger avec vous pour essayer de " +
       "comprendre votre refus.";
   }
 
