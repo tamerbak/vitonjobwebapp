@@ -10,15 +10,19 @@ export class AdvertService {
   }
 
   loadAdverts(idEntreprise){
-    let sql = "select " +
-      "pk_user_annonce_entreprise as id" +
-      ", titre as titre" +
-      ", contenu as content" +
-      ", thumbnail" +
-      ", created " +
-      ", fk_user_offre_entreprise as \"offerId\" " +
-      "from user_annonce_entreprise " +
-      "where dirty='N' and fk_user_entreprise="+idEntreprise+" order by pk_user_annonce_entreprise desc";
+    let sql = "SELECT " +
+      "uae.pk_user_annonce_entreprise as id" +
+      ", uae.titre as titre" +
+      ", uae.contenu as content" +
+      ", uae.thumbnail" +
+      ", uae.created " +
+      ", uae.fk_user_offre_entreprise as \"offerId\" " +
+      ", count(uija.fk_user_jobyer) as \"nbInterest\" " +
+      " FROM user_annonce_entreprise uae LEFT JOIN user_interet_jobyer_annonces uija " +
+      " ON uae.pk_user_annonce_entreprise = uija.fk_user_annonce_entreprise " +
+      " WHERE uae.dirty='N' and uae.fk_user_entreprise="+idEntreprise+"" +
+      " GROUP BY uae.pk_user_annonce_entreprise " +
+      " ORDER BY uae.created DESC";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -46,7 +50,8 @@ export class AdvertService {
                 isThumbnail : r.thumbnail && r.thumbnail.length > 0,
                 rubriques : [],
                 created : this.parseDate(r.created),
-                offerId: r.offerId
+                offerId: r.offerId,
+                nbInterest: r.nbInterest
               };
 
               adverts.push(adv);
@@ -210,6 +215,25 @@ export class AdvertService {
 
   deleteAdvert(advertId) {
     let sql = "delete from user_annonce_entreprise where pk_user_annonce_entreprise="+advertId;
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  getInterestedJobyers(advertId) {
+    let sql = "SELECT " +
+      "j.*, j.pk_user_jobyer as jobyerid, a.pk_user_account as accountid, encode(a.photo_de_profil::bytea, 'escape') as photo" +
+      " FROM user_jobyer j, user_interet_jobyer_annonces uija, user_account as a " +
+      " WHERE j.pk_user_jobyer = uija.fk_user_jobyer " +
+      " and j.dirty='N' " +
+      " and a.pk_user_account=j.fk_user_account " +
+      " and uija.fk_user_annonce_entreprise=" + advertId + ";"
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
