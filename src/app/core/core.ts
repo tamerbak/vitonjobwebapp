@@ -93,15 +93,21 @@ export class Core {
 
       return o;
     };
-    systemService.checkVersion(this.version).then((todate:boolean)=>{
-      if(todate){
-        console.log('SYSTEM UP TO DATE');
-      } else {
-        console.log('SYSTEM OUT OF DATE');
-        console.log('UPDATING .........');
-        this.refreshCache();
-      }
-    });
+
+    // Check if we make an update.
+    // __version__ = developemtn env
+    // x.x.x = receipt and prod
+    if (this.version != '__version__') {
+      systemService.checkVersion(this.version).then((todate:boolean)=>{
+        if(todate){
+          console.log('SYSTEM UP TO DATE');
+        } else {
+          console.log('SYSTEM OUT OF DATE');
+          console.log('UPDATING .........');
+          this.refreshCache();
+        }
+      });
+    }
   }
 
   toggleSidebarListener(state): void {
