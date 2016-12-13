@@ -1965,20 +1965,44 @@ export class OfferEdit{
 
   isFormValid(){
     let roundMin = (Math.round(this.minHourRate * 100) / 100);
+    let errors   = [];
 
     //these conditions should be verified for all roles
     if (!this.offer.jobData.job || this.offer.jobData.job == 0 || !this.offer.jobData.sector || this.offer.jobData.sector == 0 || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || roundMin > this.offer.jobData.remuneration) {
       this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
-      return false;
+      errors.push({'type':'required'})
     }
 
     //for employer and recruiter roles, the nbPoste field should be filled
     if(this.projectTarget == "employer"){
       if(!this.offer.nbPoste ||  this.offer.nbPoste <= 0){
         this.addAlert("warning", "Veuillez renseigner le nombre de poste requis pour cette offre.", "general");
-        return false;
+        errors.push({'type':'required', 'cible':'#input-nbPoste'})
       }
+
+	  if (jQuery('#autocompleteOfferAdress').val() == ''){
+	    this.addAlert("warning", "Veuillez renseigner l'adresse de la mission.", "general");
+	    errors.push({'type':'required', 'cible':'#autocompleteOfferAdress'})
+	  }
+	  
     }
-    return true;
+
+    /* Gestion des erreurs */
+    if (errors.length > 0){
+    	let error = errors[0];
+
+    	if (error.cible){
+    		let pos = jQuery(error.cible).offset();
+    		window.scrollTo(pos.left, pos.top - 100);
+
+    		jQuery(error.cible).addClass('warning-empty')
+    		.off('change').on('change', function(){
+    			if (jQuery(this).val())
+    				jQuery(this).removeClass('warning-empty')
+    		});
+    	}else
+    		window.scrollTo(0, 0);
+    }
+    return errors.length == 0;
   }
 }

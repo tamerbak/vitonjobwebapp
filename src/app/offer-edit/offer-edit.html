@@ -7,8 +7,7 @@
 <div class="row">
   <div class="col-xs-12 pull-right" style="margin-bottom: 1em;">
     <a href="javascript:history.go(-1)">
-      <button type="button" class="btn btn-secondary btn-sm" name="button"><span class="glyphicon glyphicon-arrow-left"
-                                                                                 aria-hidden="true"></span> Retour
+      <button type="button" class="btn btn-secondary btn-sm" name="button"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Retour
       </button>
     </a>
   </div>
@@ -262,7 +261,8 @@
             Nombre de postes
           </label>
           <div class="col-xs-12">
-            <input
+          
+            <input  id="input-nbPoste"
                     type="number"
                     step="1"
                     class="form-control"
@@ -500,7 +500,7 @@
           <div class="col-md-7 col-xs-12">
             <input id="autocompleteOfferAdress" type="text" class="form-control"
                    placeholder="{{ projectTarget == 'employer' ? 'Saisissez  l\'adresse de la mission' : 'Saisissez  l\'adresse de départ vers le lieu de travail' }}" (keyup)="watchOfferAddress($event)"
-                   [(ngModel)]="offerAddress" (input)="autocompleteOfferAddress()"/>
+                   [(ngModel)]="offerAddress" (input)="autocompleteOfferAddress()" />
           </div>
         </div>
 
