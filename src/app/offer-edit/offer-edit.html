@@ -328,7 +328,14 @@
               <h6><span class="fw-semi-bold widget-offer-header-title">Disponibilités</span></h6>
             </header>
             <div class="widget-body">
-              <legend><strong>Créneau du {{toDateString(startDate)}} au {{toDateString(endDate)}}</strong></legend>
+              <legend>
+                <strong>
+                  Créneau du {{toDateString(startDate)}}
+                </strong>
+                <strong>
+                  {{ plageDate == 'multiple' ? 'au ' + toDateString(endDate) : ''}}
+                </strong>
+              </legend>
 
               <!-- Créneaux -->
               <div class="form-group row">

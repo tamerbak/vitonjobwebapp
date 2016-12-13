@@ -141,6 +141,7 @@ export class OfferEdit{
   $calendar: any;
   dragOptions: Object = { zIndex: 999, revert: true, revertDuration: 0 };
   event: any = {};
+  plageDate: string;
   startDate: any;
   endDate: any;
   createEvent: any;
@@ -885,6 +886,7 @@ export class OfferEdit{
         let endHour = this.toHourString(this.offer.calendarData[i].endHour);
         let startDate = new Date(this.offer.calendarData[i].date);
         let endDate = new Date(this.offer.calendarData[i].dateEnd);
+        
         let title = (isPause ? "Pause de ": "Créneau de ");
         var slotTemp = {
           title: title + startHour + " à " + endHour,
@@ -1825,6 +1827,12 @@ export class OfferEdit{
       select: (start, end, allDay): void => {
         this.startDate = start._d;
         this.endDate = end._d;
+        
+        /* Add to calculate the plageDate */
+        let startTime = (start._d.getDate());
+        let endTime = (end._d.getDate() - 1);
+        this.plageDate = (startTime == endTime) ? 'single' : 'multiple';
+
         this.createEvent = () => {
           this.addSlotInCalendar(start, end, allDay);
         };
@@ -1849,7 +1857,6 @@ export class OfferEdit{
     let ms = this.slot.startHour.getMinutes();
     let he = this.slot.endHour.getHours();
     let me = this.slot.endHour.getMinutes();
-
     /*
       WORKAROUND THE PROBLEM OF IMPLICIT CONVERSION BETWEEN 12:00 AND 00:00
      */
