@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Http, Headers} from "@angular/http";
 import {Configs} from "../configurations/configs";
+import {Utils} from "../app/utils/utils";
 
 
 @Injectable()
@@ -268,7 +269,7 @@ export class ProfileService{
    * @description update jobyer information
    * @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
    */
-  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, isStay, prefecture, isFrench, isEuropean, regionId) {
+  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, isStay, prefecture, isFrench, isEuropean, regionId, cv, nbWorkHours, studyHoursBigValue) {
     let sql = "";
     //building the sql request
     sql = "update user_jobyer set  " +
@@ -287,15 +288,17 @@ export class ProfileService{
       (!this.isEmpty(isStay) ? ("est_resident='" + isStay + "', ") : (" est_resident='', ")) +
       (!this.isEmpty(prefecture) ? ("instance_delivrance='" + this.sqlfyText(prefecture) + "', ") : (" instance_delivrance='', ")) +
 
-      (!this.isEmpty(nationalityId) ? (" fk_user_nationalite='" + nationalityId + "', ") : ("fk_user_nationalite='', ")) +
+      (!this.isEmpty(nationalityId) ? (" fk_user_nationalite='" + nationalityId + "', ") : ("fk_user_nationalite=" + null + ", ")) +
       (!this.isEmpty(birthCountryId) ? ("fk_user_pays ='" + birthCountryId + "', ") : ("fk_user_pays='', ")) +
       (!this.isEmpty(regionId) ? (" fk_user_identifiants_nationalite='" + regionId + "', ") : ("fk_user_identifiants_nationalite='', ")) +
 
       (!this.isEmpty(birthplace) ? (" lieu_de_naissance='" + birthplace + "', ") : ("lieu_de_naissance='', ")) +
-      (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "' ") : ("fk_user_departement = " + null + " " )) +
+      (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "', ") : ("fk_user_departement = " + null + ", " )) +
+      (!this.isEmpty(nbWorkHours) ? ("nb_heures_de_travail ='" + nbWorkHours + "', ") : ("nb_heures_de_travail = " + 0 + ", " )) +
+      (!this.isEmpty(studyHoursBigValue) ? ("plus_de_350_heures_d_etude ='" + studyHoursBigValue + "', ") : ("plus_de_350_heures_d_etude = " + null + ", " )) +
+      (!this.isEmpty(cv) ? (" cv='" + Utils.sqlfyText(cv) + "' ") : ("cv='' ")) +
 
       " where pk_user_jobyer ='" + roleId + "';";
-    console.log(sql);
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -769,6 +772,23 @@ export class ProfileService{
         .map(res => res.json())
         .subscribe(data => {
           resolve(data);
+        });
+    });
+  }
+
+  loadRequirementsByJob(idjob){
+
+    let sql = "select distinct(p.libelle) as libelle from user_prerquis p where pk_user_prerquis in " +
+      "(select fk_user_prerquis from user_prerequis_obligatoires where fk_user_offre_entreprise in " +
+        "(select fk_user_offre_entreprise from user_pratique_job where fk_user_job = "+idjob+")" +
+      ")";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data.data);
         });
     });
   }

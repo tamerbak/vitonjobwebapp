@@ -15,6 +15,7 @@ import {TimeConverter} from "../../pipes/time-converter/time-converter";
 import {ModalModifySchedule} from "./modal-modify-schedule/modal-modify-schedule";
 import {ModalInfo} from "../modal-info/modal-info";
 import {Utils} from "../utils/utils";
+import {ModalOptions} from "../modal-options/modal-options";
 
 declare var Messenger: any;
 declare var jQuery: any;
@@ -25,7 +26,7 @@ declare var jQuery: any;
   styles: [require('./mission-details.scss')],
   pipes: [DateConverter, TimeConverter],
   providers: [ContractService, SharedService, MissionService, FinanceService, GlobalConfigs],
-  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalModifySchedule, ModalInfo]
+  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalModifySchedule, ModalInfo, ModalOptions]
 })
 export class MissionDetails{
 // TODO Set dynamically
@@ -66,6 +67,8 @@ export class MissionDetails{
   prerequisObligatoires : any = [];
 
   isSignContractClicked: boolean = false;
+
+  modalParams: any = {type: '', message: ''};
 
   constructor(private sharedService: SharedService,
               private missionService: MissionService,
@@ -360,7 +363,8 @@ export class MissionDetails{
   }
 
   validateWork() {
-    this.missionService.saveEndMission(this.contract.pk_user_contrat).then(val => {
+    let nbWorkHours = this.missionService.calculateNbWorkHours(this.missionHours);
+    this.missionService.saveEndMission(this.contract.pk_user_contrat, nbWorkHours, this.contract.fk_user_jobyer).then(val => {
       Messenger().post({
         message: "Informations enregistrées avec succès.",
         type: 'success',
@@ -648,5 +652,32 @@ this.nav.present(toast);
    */
   navigationPreviousPage() {
     this.router.navigate(['mission/list']);
+  }
+
+  removeMission() {
+    if (this.canRemoveMission() == false) {
+      // Validation modal
+      this.modalParams.type = "mission.delete";
+      this.modalParams.message = "Êtes-vous sûr de vouloir annuler la mission " + '"' + this.contract.titre + '"' + " ?";
+      this.modalParams.btnTitle = "Annuler la mission";
+      this.modalParams.btnClasses = "btn btn-danger";
+      this.modalParams.modalTitle = "Annulation de la mission";
+      jQuery("#modal-options").modal('show');
+
+    }
+  }
+
+  canRemoveMission() {
+    // Check to at least on contract is not signed
+    return (this.contract.signature_employeur.toUpperCase() == "OUI"
+      && this.contract.signature_jobyer.toUpperCase() == "OUI");
+  }
+
+  disableAllUI() {
+    return this.contract.annule_par != 'null';
+  }
+
+  isCanceled() {
+    return Utils.isEmpty(this.contract.annule_par) == false;
   }
 }
