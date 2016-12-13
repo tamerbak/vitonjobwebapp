@@ -11,7 +11,7 @@ import {ModalUpdatePassword} from "../modal-update-password/modal-update-passwor
 import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
 import {ModalGeneralCondition} from "../modal-general-condition/modal-general-condition";
 import {RecruitButton} from "../components/recruit-button/recruit-button";
-import {New} from "../components/new-component/new-component";
+import {HomeList} from "../components/home-list-component/home-list-component";
 
 
 declare var require: any;
@@ -21,7 +21,8 @@ declare var Messenger: any;
 @Component({
   selector: 'home',
   template: require('./home.html'),
-  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalWelcome, ModalProfile, ModalUpdatePassword, ModalNotificationContract, ModalGeneralCondition, RecruitButton, New],
+  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalWelcome, ModalProfile,
+    ModalUpdatePassword, ModalNotificationContract, ModalGeneralCondition, RecruitButton, HomeList],
   providers: [SearchService, HomeService],
   styles: [require('./home.scss')],
   encapsulation: ViewEncapsulation.None
@@ -364,7 +365,7 @@ export class Home{
     this.recentOffers = [];
     for (let i = 0; i < this.previousRecentOffers.length; i++)
       this.recentOffers.push(this.previousRecentOffers[i]);
-    
+
 
     this.nextUpcomingOffers = [];
     for (let i = 0; i < this.upcomingOffers.length; i++)

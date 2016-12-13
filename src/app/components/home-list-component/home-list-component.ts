@@ -13,15 +13,15 @@ declare var jQuery: any;
 declare var Swiper: any;
 
 @Component({
-  selector: 'new-component',
-  template: require('./new-component.html'),
+  selector: 'home-list-component',
+  template: require('./home-list-component.html'),
   directives: [ROUTER_DIRECTIVES, AlertComponent, RecruitButton],
   providers: [SearchService, HomeService],
-  styles: [require('./new-component.scss')],
+  styles: [require('./home-list-component.scss')],
   encapsulation: ViewEncapsulation.None
 })
 
-export class New{
+export class HomeList{
   currentUser: any;
   projectTarget: string;
   alerts: Array<Object>;
