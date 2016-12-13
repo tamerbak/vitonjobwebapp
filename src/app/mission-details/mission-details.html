@@ -99,16 +99,20 @@
                                 width="100">
                                 <div class="btn-group"
                                      *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && day.heure_debut_pointe && upperCase(contract.releve_employeur) == 'NON'">
-                                    <label
+                                    <button
                                             class="btn btn-gray btn-sm"
-                                            (click)="onPointedHourClick(i, j, true, false, 'approve')">
+                                            (click)="onPointedHourClick(i, j, true, false, 'approve')"
+                                            [disabled]="disableAllUI()"
+                                    >
                                         <i class="glyphicon glyphicon-ok"></i> Accepter
-                                    </label>
-                                    <label
+                                    </button>
+                                    <button
                                             class="btn btn-gray btn-sm"
-                                            (click)="onPointedHourClick(i, j, true, false, 'decline')">
+                                            (click)="onPointedHourClick(i, j, true, false, 'decline')"
+                                            [disabled]="disableAllUI()"
+                                    >
                                         <i class="glyphicon glyphicon-remove"></i> Refuser
-                                    </label>
+                                    </button>
                                 </div>
 
                             </td>
@@ -141,16 +145,20 @@
                                         <td class="text-align-right" width="100">
                                             <div class="btn-group"
                                                  *ngIf="isEmployer && upperCase(contract.releve_employeur) == 'NON' && pause.pause_debut_pointe">
-                                                <label
+                                                <button
                                                         class="btn btn-gray btn-sm"
-                                                        (click)="colorHour(i, j, false, true, true)">
+                                                        (click)="colorHour(i, j, false, true, true)"
+                                                        [disabled]="disableAllUI()"
+                                                >
                                                     <i class="glyphicon glyphicon-ok"></i> Accepter
-                                                </label>
-                                                <label
+                                                </button>
+                                                <button
                                                         class="btn btn-gray btn-sm"
-                                                        (click)="colorHour(i, j, false, true, false)">
+                                                        (click)="colorHour(i, j, false, true, false)"
+                                                        [disabled]="disableAllUI()"
+                                                >
                                                     <i class="glyphicon glyphicon-remove"></i> Refuser
-                                                </label>
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -170,16 +178,20 @@
                                         <td class="text-align-right" width="100">
                                             <div class="btn-group"
                                                  *ngIf="isEmployer && upperCase(contract.releve_employeur) == 'NON' && pause.pause_fin_pointe">
-                                                <label
+                                                <button
                                                         class="btn btn-gray btn-sm"
-                                                        (click)="colorHour(i, j, false, false, true)">
+                                                        (click)="colorHour(i, j, false, false, true)"
+                                                        [disabled]="disableAllUI()"
+                                                >
                                                     <i class="glyphicon glyphicon-ok"></i> Accepter
-                                                </label>
-                                                <label
+                                                </button>
+                                                <button
                                                         class="btn btn-gray btn-sm"
-                                                        (click)="colorHour(i, j, false, false, false)">
+                                                        (click)="colorHour(i, j, false, false, false)"
+                                                        [disabled]="disableAllUI()"
+                                                >
                                                     <i class="glyphicon glyphicon-remove"></i> Refuser
-                                                </label>
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -209,16 +221,20 @@
                                     width="100">
                                 <div class="btn-group"
                                      *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && day.heure_fin_pointe && upperCase(contract.releve_employeur) == 'NON'">
-                                    <label
+                                    <button
                                             class="btn btn-gray btn-sm"
-                                            (click)="onPointedHourClick(i, j, false, false, 'approve')">
+                                            (click)="onPointedHourClick(i, j, false, false, 'approve')"
+                                            [disabled]="disableAllUI()"
+                                    >
                                         <i class="glyphicon glyphicon-ok"></i> Accepter
-                                    </label>
-                                    <label
+                                    </button>
+                                    <button
                                             class="btn btn-gray btn-sm"
-                                            (click)="onPointedHourClick(i, j, false, false, 'decline')">
+                                            (click)="onPointedHourClick(i, j, false, false, 'decline')"
+                                            [disabled]="disableAllUI()"
+                                    >
                                         <i class="glyphicon glyphicon-remove"></i> Refuser
-                                    </label>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -230,7 +246,9 @@
                     <button
                             type="button" class="btn btn-primary btn-sm"
                             (click)="openModifyScheduleModal()"
-                            *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && upperCase(contract.vu) == 'OUI' && upperCase(contract.releve_employeur) == 'NON'">
+                            *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && upperCase(contract.vu) == 'OUI' && upperCase(contract.releve_employeur) == 'NON'"
+                            [disabled]="disableAllUI()"
+                    >
                         Modifier les horaires prévus
                     </button>
 
@@ -239,7 +257,8 @@
                             type="button" class="btn btn-primary btn-sm"
                             (click)="validateWork()"
                             [style.color]="themeColor"
-                            *ngIf="isEmployer && !isNewMission && upperCase(contract.approuve) == 'OUI' && !(upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0') && upperCase(contract.accompli) == 'NON'" >
+                            *ngIf="isEmployer && !isNewMission && upperCase(contract.approuve) == 'OUI' && !(upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0') && upperCase(contract.accompli) == 'NON'"
+                    >
                         Fin de mission
                     </button>
                     <button
@@ -247,6 +266,7 @@
                             (click)="eomReleve()"
                             [style.color]="themeColor"
                             *ngIf="isReleveAvailable"
+                            [disabled]="disableAllUI()"
                     >
                         Signer le relevé
                     </button>
@@ -255,6 +275,7 @@
                             (click)="eomInvoice()"
                             [style.color]="themeColor"
                             *ngIf="isInvoiceAvailable"
+                            [disabled]="disableAllUI()"
                     >
                         Signer la facture
                     </button>
@@ -262,7 +283,9 @@
                             type="button" class="btn btn-primary btn-sm"
                             (click)="generateTimesheet()"
                             [style.color]="themeColor"
-                            *ngIf="!(missionHours && missionHours.length == 0) && isEmployer && contract.option_mission != '1.0' && !isNewMission && upperCase(contract.releve_employeur) != 'OUI'" [disabled]="disableTimesheetButton()">
+                            *ngIf="!(missionHours && missionHours.length == 0) && isEmployer && contract.option_mission != '1.0' && !isNewMission && upperCase(contract.releve_employeur) != 'OUI'"
+                            [disabled]="disableTimesheetButton() || disableAllUI()"
+                    >
                         Générer et envoyer le relevé d'heure
                     </button>
                     <button
@@ -270,6 +293,7 @@
                             (click)="validatePauses()"
                             [style.color]="themeColor"
                             *ngIf="isNewMission && !(missionHours && missionHours.length == 0) && isEmployer && upperCase(contract.signature_jobyer) != 'NON'"
+                            [disabled]="disableAllUI()"
                     >
                         Valider et notifier le Jobyer
                     </button>
@@ -278,6 +302,7 @@
                             (click)="signSchedule()"
                             [style.color]="themeColor"
                             *ngIf="!isNewMission && isEmployer && upperCase(contract.approuve) != 'OUI' && !(contract.option_mission == '2.0' && upperCase(contract.releve_employeur) == 'NON')"
+                            [disabled]="disableAllUI()"
                     >
                         Signer les horaires
                     </button>
@@ -286,9 +311,25 @@
                             (click)="resetForm()"
                             [style.color]="themeColor"
                             *ngIf="isNewMission && !(missionHours && missionHours.length == 0) && isEmployer && upperCase(contract.signature_jobyer) != 'NON'"
+                            [disabled]="disableAllUI()"
                     >
                         Réinitialiser
                     </button>
+                  <button
+                            type="button" class="btn btn-danger btn-sm"
+                            *ngIf="isCanceled() == false"
+                            (click)="removeMission()"
+                            [disabled]="canRemoveMission()"
+                  >
+                        Annuler la mission
+                  </button>
+
+                </div>
+
+                <div class="col-xs-12">
+                  <alert [type]="'warning alert-sm'" *ngIf="isCanceled()">
+                    <div [innerHTML]="'Cette mission a été annulée'"></div>
+                  </alert>
                 </div>
 
                 <div class="col-xs-12">
@@ -313,3 +354,4 @@
      *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && upperCase(contract.vu) == 'OUI'"></div>
 
 <div modal-info [msg] = "endMissionMsg" *ngIf="isEmployer && !isNewMission && upperCase(contract.approuve) == 'OUI' && !(upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0')"></div>
+<modal-options [params]="modalParams"></modal-options>
