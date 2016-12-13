@@ -135,3 +135,13 @@ a.fc-event{
 input.warning-empty{
 	border-color:red;
 }
+
+
+/* Fix (add over generic styles) */
+.select2-container .select2-choice > .select2-chosen{
+    white-space: pre-wrap;
+    text-overflow: clip;
+}
+.select2-container .select2-choice {
+    height: auto !important;
+}
