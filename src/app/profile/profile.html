@@ -800,6 +800,92 @@
         </form>
       </div>
     </section>
+
+    <section class="widget" [hidden]="isRecruiter || isEmployer">
+      <div class="widget-body">
+          <fieldset>
+            <legend><strong>Mon CV</strong></legend>
+            <div class="container-fluid">
+              <div class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  CV
+                </label>
+                <div class="col-md-8 col-xs-12">
+                  <form (submit)="submitAttachement()">
+                    <input type="file" id="cv_field" name="cv_field">
+                    <input type="submit" class="btn btn-secondary" value="Charger">
+                  </form>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="col-md-12 col-xs-12">
+                  <table class="table">
+                    <tr [hidden]="isEmpty(cv)">
+                      <td>CV</td>
+                      <td><button type="button" class="btn btn-success" (click)="downloadFile(cv)">
+                        Télécharger
+                      </button></td>
+                      <td><button type="button" class="btn btn-danger" (click)="deleteFile(cv)">
+                        Supprimer
+                      </button></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+      </div>
+    </section>
+
+    <section class="widget" [hidden]="isRecruiter || isEmployer">
+      <div class="widget-body">
+        <fieldset>
+          <legend><strong>Nombre d'heure de travail/étude</strong></legend>
+          <div class="container-fluid">
+            <div class="form-group row">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                Nombre d'heure de travail Vit-On-Job
+              </label>
+              <div class="col-md-8 col-xs-12">
+                <div class="col-md-7 col-xs-12">
+                  <input type="number" min="0" class="form-control" [(ngModel)]="nbWorkVitOnJob" disabled>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                Nombre d'heure de travail ailleurs
+              </label>
+              <div class="col-md-8 col-xs-12">
+                <div class="col-md-7 col-xs-12">
+                  <input type="number" min="0" class="form-control" [(ngModel)]="nbWorkHours">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Nombre d'heures d'étude</label>
+              <div class="abc-radio">
+                <input type="radio" name="radio4" id="nbHourBigRadio" value="0" (click)="watchNbStudyHours($event)"
+                       [checked]="isNbStudyHoursBig">
+                <label for="nbHourBigRadio" class="labelRadio">
+                  Plus de 350 heures d'étude
+                </label>
+                <input type="radio" name="radio4" id="nbHourSmallRadio" value="1" (click)="watchNbStudyHours($event)"
+                       [checked]="!isNbStudyHoursBig">
+                <label for="nbHourSmallRadio" class="labelRadio">
+                  Moins de 350 heures d'étude
+                </label>
+              </div>
+            </div>
+
+          </div>
+        </fieldset>
+      </div>
+    </section>
+
     <section class="widget" widget>
 
       <div class="widget-body">

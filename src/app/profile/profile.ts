@@ -193,6 +193,14 @@ export class Profile{
   dispoToCreate : any;
   datepickerOpts: any;
 
+  //cv
+  cv: string;
+
+  //nb work and study hours
+  isNbStudyHoursBig: boolean = false;
+  nbWorkHours: number;
+  nbWorkVitOnJob: number;
+
   /*
    * REQUIREMENTS
    */
@@ -365,6 +373,13 @@ export class Profile{
           this.savedLanguages = data;
         }
       });
+    }
+    //cv && nb work and study hours
+    if(this.projectTarget == 'jobyer'){
+      this.cv = this.currentUser.jobyer.cv;
+      this.nbWorkHours = this.currentUser.jobyer.nbWorkHours;
+      this.nbWorkVitOnJob = this.currentUser.jobyer.nbVitOnJobHours;
+      this.isNbStudyHoursBig = this.currentUser.jobyer.isNbStudyHoursBig;
     }
   }
 
@@ -1390,8 +1405,10 @@ export class Profile{
           regionId = this.regionId;
         }
 
+        let studyHoursBigValue = (this.isNbStudyHoursBig ? "OUI" : "NON");
+
         this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthdepId, birthplace, birthCountryId, numStay,
-          dateStay, dateFromStay, dateToStay, isResident, prefecture, this.isFrench, this.isEuropean, regionId)
+          dateStay, dateFromStay, dateToStay, isResident, prefecture, this.isFrench, this.isEuropean, regionId, this.cv, this.nbWorkHours, studyHoursBigValue)
           .then((res: any) => {
 
             //case of authentication failure : server unavailable or connection problem
@@ -1897,5 +1914,39 @@ export class Profile{
   saveLanguages() {
     let id = this.currentUser.estEmployeur ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id;
     this.profileService.saveLanguages(this.savedLanguages, id, this.projectTarget);
+  }
+
+  submitAttachement() {
+    let fileField = jQuery('#cv_field');
+    if (fileField && fileField[0]) {
+      let fs = fileField[0].files;
+      if (fs && fs.length > 0) {
+        let f: any = fs[0];
+        let fr = new FileReader();
+        fr.onload = (file: any) => {
+          let fileContent = file.target.result;
+          let content = fileContent.split(',')[1];
+          this.cv = content;
+        }
+        fr.readAsDataURL(f);
+      }
+    }
+  }
+
+  downloadFile(content) {
+    var url = "data:application/octet-stream;base64," + content;
+    window.open(url);
+  }
+
+  deleteFile() {
+    this.cv = "";
+  }
+
+  watchNbStudyHours(e) {
+    this.isNbStudyHoursBig = (e.target.value == '0' ? true : false);
+  }
+
+  isEmpty(str) {
+    return Utils.isEmpty(str);
   }
 }
