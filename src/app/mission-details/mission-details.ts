@@ -676,4 +676,8 @@ this.nav.present(toast);
   disableAllUI() {
     return this.contract.annule_par != 'null';
   }
+
+  isCanceled() {
+    return Utils.isEmpty(this.contract.annule_par) == false;
+  }
 }

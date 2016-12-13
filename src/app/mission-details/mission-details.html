@@ -317,7 +317,7 @@
                     </button>
                   <button
                             type="button" class="btn btn-danger btn-sm"
-                            *ngIf="contract.annule_par == 'null'"
+                            *ngIf="isCanceled() == false"
                             (click)="removeMission()"
                             [disabled]="canRemoveMission()"
                   >
@@ -327,7 +327,7 @@
                 </div>
 
                 <div class="col-xs-12">
-                  <alert [type]="'warning alert-sm'" *ngIf="contract.annule_par != 'null'">
+                  <alert [type]="'warning alert-sm'" *ngIf="isCanceled()">
                     <div [innerHTML]="'Cette mission a été annulée'"></div>
                   </alert>
                 </div>
