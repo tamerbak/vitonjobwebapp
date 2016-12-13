@@ -364,6 +364,7 @@ export class Home{
     this.recentOffers = [];
     for (let i = 0; i < this.previousRecentOffers.length; i++)
       this.recentOffers.push(this.previousRecentOffers[i]);
+    
 
     this.nextUpcomingOffers = [];
     for (let i = 0; i < this.upcomingOffers.length; i++)

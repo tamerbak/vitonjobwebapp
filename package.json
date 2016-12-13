@@ -97,6 +97,7 @@
     "rxjs": "5.0.0-beta.6",
     "select2-bootstrap-css": "1.4.6",
     "shufflejs": "4.0.0",
+    "swiper": "^3.4.1",
     "tether": "1.1.1",
     "underscore": "1.8.3",
     "webpack-raphael": "2.1.4",
