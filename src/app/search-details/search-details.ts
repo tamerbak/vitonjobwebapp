@@ -68,6 +68,7 @@ export class SearchDetails{
       this.fullName = this.result.entreprise;
     else
       this.fullName = this.result.titre + ' ' + this.result.prenom + ' ' + this.result.nom;
+    
     this.matching = this.result.matching + "%";
 
     //load markers

@@ -12,7 +12,7 @@ declare var jQuery, require, Messenger: any;
 @Component({
   selector: 'modal-options',
   directives: [ROUTER_DIRECTIVES],
-  providers: [OffersService, AdvertService, SmsService],
+  providers: [OffersService, AdvertService, SmsService, MissionService],
   template: require('./modal-options.html'),
   styles: [require('./modal-options.scss')]
 })
