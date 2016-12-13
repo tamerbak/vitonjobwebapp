@@ -50,8 +50,12 @@ export class Profile{
   birthplace: string;
 
   selectedCP: any;
+
+  // Contain the displayed and formatted date
   birthdate: Date;
+  // Contain the data to check and save
   birthdateHidden: Date;
+
   selectedMedecine: any = {id: 0, libelle: ""};
   cni: string;
   numSS: string;
@@ -713,10 +717,10 @@ export class Profile{
 
       } else {
         if (this.currentUser.jobyer.dateNaissance) {
-          var birthDate = moment(new Date(this.currentUser.jobyer.dateNaissance)).format('DD/MM/YYYY');
+          this.birthdate = moment(new Date(this.currentUser.jobyer.dateNaissance)).format('DD/MM/YYYY');
           this.birthdateHidden = new Date(this.currentUser.jobyer.dateNaissance);
           this.isValidBirthdate = true;
-          jQuery('#' + elements[0]).datepicker('update', birthDate);
+          jQuery('#' + elements[0]).datepicker('update', this.birthdate);
         } else {
           this.birthdate = null;
           this.birthdateHidden = null;
@@ -1760,7 +1764,7 @@ export class Profile{
   }
 
   watchNumSS(e) {
-    let numssChecked = AccountConstraints.checkNumss(e, this.title, this.birthdate, this.selectedCommune);
+    let numssChecked = AccountConstraints.checkNumss(e, this.title, moment(this.birthdateHidden).format('YYYY-MM-DD'), this.selectedCommune);
     this.isValidNumSS = numssChecked.isValid;
     this.numSSHint = numssChecked.hint;
     this.isValidForm();

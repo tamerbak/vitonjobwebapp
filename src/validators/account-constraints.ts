@@ -92,24 +92,29 @@ export class AccountConstraints{
       _isValid = false;
     }
     else if (_numSS.length == 15) {
-      let personalInfoHint = "* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles";
+      let personalInfoHint = "* Le numéro de sécurité sociale renseigné ne correspond pas aux informations personnelles : ";
       if (_numSS.length == 15 && !NumSSConstraints.checkGender(_numSS, title)) {
-        _hint = personalInfoHint;
+          personalInfoHint += "civilité";
+          _hint = personalInfoHint;
         _isValid = false;
       }
       else if (_numSS.length == 15 && !NumSSConstraints.checkBirthYear(_numSS, birthdate)) {
+        personalInfoHint += "année de naissance";
         _hint = personalInfoHint;
         _isValid = false;
       }
       else if (_numSS.length == 15 && !NumSSConstraints.checkBirthMonth(_numSS, birthdate)) {
+        personalInfoHint += "mois de naissance";
         _hint = personalInfoHint;
         _isValid = false;
       }
       else if (_numSS.length == 15 && !NumSSConstraints.checkINSEE(_numSS, commune)) {
+        personalInfoHint += "numéro INSEE";
         _hint = personalInfoHint;
         _isValid = false;
       }
       else if (_numSS.length == 15 && !NumSSConstraints.checkModKey(_numSS)) {
+        personalInfoHint += "clé de validation";
         _hint = personalInfoHint;
         _isValid = false;
       } else {
