@@ -333,28 +333,28 @@
           <small class="form-text text-muted"></small>
         </div>
 
+        <div class="work-hours" *ngIf="contractData.isScheduleFixed == 'true'">
+            
+            <div class="">
+              <div class="form-group">
+                <label>Heure de début de travail&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
+                <datetime id="usualSHour" [datepicker]="false" [timepicker]="{ showMeridian: false, minuteStep: 15}" [(ngModel)]="contractData.workStartHour"></datetime>
+                <small class="form-text text-muted"></small>
+              </div>
+            </div>
+
+            <div class="">
+              <div class="form-group">
+                <label>Heure de fin de travail&nbsp;<span  class="color-font" >*</span></label>
+                <datetime id="usualEHour" [datepicker]="false" [timepicker]="{ showMeridian: false, minuteStep: 15 }" [(ngModel)]="contractData.workEndHour"></datetime>
+                <small class="form-text text-muted"></small>
+              </div>
+            </div>
+
+        </div><!-- end work hours -->
+
       </div>
     </div>
-    <div class="row work-hours" *ngIf="contractData.isScheduleFixed == 'true'">
-        <div class="col-md-6 col-sm-6">
-          <div class="form-group">
-            <label>Heure de début de travail&nbsp;<span  style="color: #ff0000;font-size: small;" >*</span></label>
-            <datetime id="usualSHour" [datepicker]="false" [timepicker]="{ showMeridian: false, minuteStep: 15}" [(ngModel)]="contractData.workStartHour"></datetime>
-            <small class="form-text text-muted"></small>
-          </div>
-        </div>
-
-        <div class="col-xs-3 col-2" *ngIf="contractData.isScheduleFixed == 'true'">
-          <div class="form-group">
-            <label>Heure de fin de travail&nbsp;<span  class="color-font" >*</span></label>
-            <datetime id="usualEHour" [datepicker]="false" [timepicker]="{ showMeridian: false, minuteStep: 15 }" [(ngModel)]="contractData.workEndHour" required></datetime>
-            <small class="form-text text-muted"></small>
-          </div>
-        </div>
-
-
-
-      </div>
     <div class="row">
       <div class="col-xs-12 title-form">
         <div class="title">
