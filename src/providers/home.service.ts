@@ -29,6 +29,9 @@ export class HomeService {
       type: projectType
     };
 
+    if(query.type == null)
+      return;
+
     let encodedArg = btoa(JSON.stringify(query));
     var payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
@@ -71,6 +74,9 @@ export class HomeService {
       startIndexOffers: offersOffset,
       type: projectType
     };
+
+    if(query.type == null)
+      return;
 
     let encodedArg = btoa(JSON.stringify(query));
     var payload = {

@@ -8,9 +8,12 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="<%= webpackConfig.metadata.title %>">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.4.0/css/swiper.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
         rel="stylesheet">
   <link href="css/croppie.css" rel="stylesheet">
+  <link href="css/swiper.min.css" rel="stylesheet">
 
   <!-- search engine indexing configuration -->
   <meta name="robots" content="noindex,nofollow"/>
@@ -23,6 +26,10 @@
 
   <!-- base url -->
   <base href="<%= webpackConfig.metadata.baseUrl %>">
+  <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+  <script type="text/javascript" src="scripts/swiper.jquery.min.js"></script>
+  <script type="text/javascript" src="scripts/swiper.min.js"></script>
+  <script type="text/javascript" src="scripts/jquery.smooth-scroll.js"></script>
 
 </head>
 
@@ -52,6 +59,9 @@
   src="http://<%= webpackConfig.metadata.host %>:<%= webpackConfig.metadata.port %>/webpack-dev-server.js"></script>
 <% } %>
 <script src="scripts/md5.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript" src="scripts/swiper.jquery.min.js"></script>
+<script type="text/javascript" src="scripts/swiper.min.js"></script>
 <script src="scripts/ckeditor/ckeditor.js"></script>
 <!-- <script src="scripts/bootstrap.js"></script>
 <script src="scripts/script.js"></script>
