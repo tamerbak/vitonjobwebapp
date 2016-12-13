@@ -30,7 +30,7 @@ export class HomeService {
     };
 
     if(query.type == null)
-      return;
+      query.type = 'jobyer';
 
     let encodedArg = btoa(JSON.stringify(query));
     var payload = {
@@ -76,7 +76,7 @@ export class HomeService {
     };
 
     if(query.type == null)
-      return;
+      query.type = 'jobyer';
 
     let encodedArg = btoa(JSON.stringify(query));
     var payload = {
