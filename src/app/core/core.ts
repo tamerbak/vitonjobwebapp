@@ -35,7 +35,7 @@ export class Core {
   el: ElementRef;
   router: Router;
   chatOpened: boolean;
-  version: string="0.4.6";
+  version: string = "__version__";
 
   constructor(config: ConfigService,
               el: ElementRef,
