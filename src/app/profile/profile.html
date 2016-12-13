@@ -226,7 +226,7 @@
                   Date de naissance
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <datetime id="birthdate" [ngModel]="birthdate" name="birthdate" [timepicker]="false"
+                  <datetime id="birthdate" [(ngModel)]="birthdate" name="birthdate" [timepicker]="false"
                             [datepicker]="{language:'fr-FR',autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}"
                             (ngModelChange)="watchBirthdate($event)"></datetime>
                 </div>
