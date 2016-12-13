@@ -6,6 +6,7 @@ import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {MissionService} from "../../providers/mission-service";
 import {Helpers} from "../../providers/helpers.service";
+import {Utils} from "../utils/utils";
 
 @Component({
   selector: '[mission-list]',
@@ -97,14 +98,14 @@ export class MissionList{
           let item = this.contractList[i];
 
           if (item.date_de_debut) {
-            if (item.signature_jobyer.toUpperCase() == 'OUI' && item.accompli.toUpperCase() == 'NON' && item.annule_par == "null")
+            if (item.signature_jobyer.toUpperCase() == 'OUI' && item.accompli.toUpperCase() == 'NON' && Utils.isEmpty(item.annule_par))
             // Mission en cours
               this.missionNow.push(item);
-            if (item.signature_jobyer.toUpperCase() == 'NON' && item.annule_par == "null")
+            if (item.signature_jobyer.toUpperCase() == 'NON' && Utils.isEmpty(item.annule_par))
             // Mission in futur
               this.missionFutur.push(item);
             //else
-            if (item.accompli.toUpperCase() == 'OUI' || item.annule_par != "null")
+            if (item.accompli.toUpperCase() == 'OUI' || !Utils.isEmpty(item.annule_par))
             // Mission in past
               this.missionPast.push(item);
           }
