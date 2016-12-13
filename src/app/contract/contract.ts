@@ -289,8 +289,8 @@ export class Contract {
       numero: "",
       centreMedecineEntreprise: "",
       adresseCentreMedecineEntreprise: "",
-      centreMedecineETT: "181 - CMIE",
-      adresseCentreMedecineETT: "80 RUE DE CLICHY 75009 PARIS",
+      centreMedecineETT: "CMIE",
+      adresseCentreMedecineETT: "4 rue de La Haye – 95731 ROISSY EN FRANCE",
       contact: this.employerFullName,
       indemniteFinMission: "10.00%",
       indemniteCongesPayes: "10.00%",
@@ -541,8 +541,8 @@ export class Contract {
       num: this.numContrat,
       centreMedecineEntreprise: "",
       adresseCentreMedecineEntreprise: "",
-      centreMedecineETT: "181 - CMIE",
-      adresseCentreMedecineETT: "80 RUE DE CLICHY 75009 PARIS",
+      centreMedecineETT: "CMIE",
+      adresseCentreMedecineETT: "4 rue de La Haye – 95731 ROISSY EN FRANCE",
 
       numero: "",
       contact: this.employerFullName,
@@ -668,8 +668,9 @@ export class Contract {
     jQuery("input[id^='q-timepicker_']").each(function () {
       jQuery(this).attr('required', 'true')
 
-      // + Fix to solve the fullwidth problem
-      jQuery(this).parent().css('width', '100%')
+      // If you wanna solve the fullwidth problem
+      //jQuery(this).parent().css('width', '100%')
+  	  //jQuery("datetime .form-inline").removeClass('form-inline')
     });
   }
   initWorkStartHour(){

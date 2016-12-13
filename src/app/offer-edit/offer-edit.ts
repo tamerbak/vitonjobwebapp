@@ -20,6 +20,7 @@ import {CandidatureService} from "../../providers/candidature-service";
 import {SmsService} from "../../providers/sms-service";
 import {ModalSlots} from "./modal-slots/modal-slots";
 import {AdvertService} from "../../providers/advert.service";
+import {MissionService} from "../../providers/mission-service";
 
 declare var Messenger, jQuery: any;
 declare var google: any;
@@ -32,7 +33,9 @@ declare var require;
   encapsulation: ViewEncapsulation.None,
   styles: [require('./offer-edit.scss')],
   directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime, ModalOptions, ModalOfferTempQuote, ModalSlots],
-  providers: [OffersService, SearchService, FinanceService, LoadListService, ConventionService, CandidatureService, SmsService, AdvertService]
+  providers: [OffersService, SearchService, FinanceService,
+    LoadListService, ConventionService, CandidatureService,
+    SmsService, AdvertService, MissionService]
 })
 
 export class OfferEdit{
