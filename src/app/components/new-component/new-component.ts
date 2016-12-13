@@ -1,40 +1,33 @@
 import {Component, ViewEncapsulation} from "@angular/core";
 import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
-import {SearchService} from "../../providers/search-service";
-import {SharedService} from "../../providers/shared.service";
-import {HomeService} from "../../providers/home.service";
-import {Configs} from "../../configurations/configs";
-import {ModalWelcome} from "../modal-welcome/modal-welcome";
-import {ModalProfile} from "../modal-profile/modal-profile";
-import {ModalUpdatePassword} from "../modal-update-password/modal-update-password";
-import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
-import {ModalGeneralCondition} from "../modal-general-condition/modal-general-condition";
-import {RecruitButton} from "../components/recruit-button/recruit-button";
-import {New} from "../components/new-component/new-component";
+import {SearchService} from "../../../providers/search-service";
+import {SharedService} from "../../../providers/shared.service";
+import {HomeService} from "../../../providers/home.service";
+import {Configs} from "../../../configurations/configs";
+import {RecruitButton} from "../../components/recruit-button/recruit-button";
 
 
 declare var require: any;
 declare var jQuery: any;
-declare var Messenger: any;
+declare var Swiper: any;
 
 @Component({
-  selector: 'home',
-  template: require('./home.html'),
-  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalWelcome, ModalProfile, ModalUpdatePassword, ModalNotificationContract, ModalGeneralCondition, RecruitButton, New],
+  selector: 'new-component',
+  template: require('./new-component.html'),
+  directives: [ROUTER_DIRECTIVES, AlertComponent, RecruitButton],
   providers: [SearchService, HomeService],
-  styles: [require('./home.scss')],
+  styles: [require('./new-component.scss')],
   encapsulation: ViewEncapsulation.None
 })
 
-export class Home{
+export class New{
   currentUser: any;
   projectTarget: string;
-  scQuery: string;
   alerts: Array<Object>;
   hideLoader: boolean = true;
   config: any;
-  isTablet: boolean = false;
+
   /*
    *  HOME SCREEN LISTS
    */
@@ -43,7 +36,7 @@ export class Home{
   recentUsers: any = [];
   previousRecentOffers: any = [];
   previousUpcomingOffers: any = [];
-  previousRecentUsers: any = [];
+
   nextRecentOffers: any = [];
   nextUpcomingOffers: any = [];
   nextRecentUsers: any = [];
@@ -61,62 +54,41 @@ export class Home{
   }
 
   ngOnInit(): void {
-
-    if (this.router.url === '/jobyer') {
-      this.sharedService.setProjectTarget('jobyer');
-    } else if (this.router.url === '/employeur') {
-      this.sharedService.setProjectTarget('employer');
-    }
-    let myContent = jQuery('.content');
-    let myNavBar = jQuery('.navbar-dashboard');
-
     //get params
     this.route.params.forEach((params: Params) => {
       this.obj = params['obj'];
     });
 
     this.currentUser = this.sharedService.getCurrentUser();
-    if (this.currentUser) {
-      this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
-      if (this.currentUser.mot_de_passe_reinitialise == "Oui") {
-        jQuery('#modal-update-password').modal({
-          keyboard: false,
-          backdrop: 'static'
-        });
-        jQuery('#modal-update-password').modal('show');
-      }
+    this.projectTarget = this.sharedService.getProjectTarget();
 
-      if (this.isEmpty(this.currentUser.titre)) {
-        jQuery('#modal-general-condition').modal({
-          keyboard: false,
-          backdrop: 'static'
-        });
-        jQuery('#modal-general-condition').modal('show');
-      }
-    } else {
-      this.projectTarget = this.sharedService.getProjectTarget();
-    }
 
     this.homeService.loadHomeData((this.projectTarget)).then(data => {
       this.homeServiceData = data;
       this.initHomeList();
+
     });
 
     this.config = Configs.setConfigs(this.projectTarget);
 
-    myContent.css({"padding": "0", "padding-right": "0"});
-    if  (screen.width <= 768) {
-      myContent.css({"background-size": "cover"});
-      myNavBar.css({"background-color": "#14baa6", "border-color": "#14baa6"});
-      this.isTablet = true;
-    } else {
-      myContent.css({"background-image": ""});
-      myContent.css({"background-size": "cover"});
-      myNavBar.css({"background-color": "#14baa6", "border-color": "#14baa6"});
-    }
 
     this.sharedService.setCurrentOffer(null);
 
+  }
+
+  cardSwiper(e) {
+    jQuery("#hide").css("display", "flex");
+    console.log( "ready!" );
+    new Swiper('.swiper-container', {
+      nextButton: '.swiper-button-next',
+      prevButton: '.swiper-button-prev',
+      pagination: '.swiper-pagination',
+      grabCursor: true,
+    });
+    this.scrollSmooth();
+  }
+  scrollSmooth() {
+    window.scrollTo(0, 999)
   }
 
   initHomeList() {
@@ -158,10 +130,10 @@ export class Home{
     for (let i = this.maxLines; i < data.length; i++) {
       this.nextRecentUsers.push(data[i]);
     }
+
   }
-  ngOnDestroy() {
-    jQuery('.content').css({"padding": "40px", "padding-top": "60px"});
-  }
+
+
 
   onClickCard(e) {
     console.log(e);
@@ -171,148 +143,31 @@ export class Home{
 
     console.log(el);
     //jQuery('.material-card > .mc-btn-action').click(function () {
-      var card = jQuery(el).parent('.material-card');
-      var icon = jQuery(el).children('i');
-      icon.addClass('fa-spin-fast');
+    var card = jQuery(el).parent('.material-card');
+    var icon = jQuery(el).children('i');
+    icon.addClass('fa-spin-fast');
 
-      if (card.hasClass('mc-active')) {
-        card.removeClass('mc-active');
+    if (card.hasClass('mc-active')) {
+      card.removeClass('mc-active');
 
-        window.setTimeout(function() {
-          icon
-            .removeClass('fa-arrow-left')
-            .removeClass('fa-spin-fast')
-            .addClass('fa-bars');
+      window.setTimeout(function() {
+        icon
+          .removeClass('fa-arrow-left')
+          .removeClass('fa-spin-fast')
+          .addClass('fa-bars');
 
-        }, 800);
-      } else {
-        card.addClass('mc-active');
+      }, 800);
+    } else {
+      card.addClass('mc-active');
 
-        window.setTimeout(function() {
-          icon
-            .removeClass('fa-bars')
-            .removeClass('fa-spin-fast')
-            .addClass('fa-arrow-left');
+      window.setTimeout(function() {
+        icon
+          .removeClass('fa-bars')
+          .removeClass('fa-spin-fast')
+          .addClass('fa-arrow-left');
 
-        }, 800);
-      }
-    //});
-  }
-  doSemanticSearch() {
-    /*if (!this.currentUser) {
-     this.sharedService.setFromPage("home");
-     this.router.navigate(['login']);
-     return;
-     }*/
-
-    if (this.isEmpty(this.scQuery) || !this.scQuery.match(/[a-z]/i)) {
-      this.addAlert("warning", "Veuillez saisir un job avant de lancer la recherche");
-      return;
+      }, 800);
     }
-
-    this.hideLoader = false;
-    this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((data: any) => {
-      this.hideLoader = true;
-      if (data.length == 0) {
-        this.addAlert("warning", "Aucun résultat trouvé pour votre recherche.");
-        return;
-      }
-      this.sharedService.setLastResult(data);
-
-      // If jobyer research, count only offers that employer accept contact
-      let count = 0;
-      if (this.projectTarget == 'jobyer') {
-        for (let i = 0; i < data.length; i++) {
-          if (data[i].accepteCandidature == 'true') {
-            count++;
-          }
-        }
-      } else {
-        count = data.length;
-      }
-
-      Messenger().post({
-        message: 'La recherche pour "' + this.scQuery + '" a donné ' + (count == 1 ? 'un seul résultat' : (count + ' résultats')),
-        type: 'success',
-        showCloseButton: true
-      });
-      this.router.navigate(['search/results']);
-    });
-  }
-
-  checkForEnterKey(e) {
-    if (e.code != "Enter")
-      return;
-
-    this.doSemanticSearch();
-  }
-
-  addAlert(type, msg): void {
-    this.alerts = [{type: type, msg: msg}];
-  }
-
-  isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
-  }
-
-  previousUsers() {
-    if (this.previousRecentUsers.length == 0)
-      return;
-    this.nextRecentUsers = [];
-    for (let i = 0; i < this.recentUsers.length; i++)
-      this.nextRecentUsers.push(this.recentUsers[i]);
-
-    this.recentUsers = [];
-    for (let i = 0; i < this.previousRecentUsers.length; i++) {
-      this.recentUsers.push(this.previousRecentUsers[i]);
-    }
-
-    this.previousRecentUsers = [];
-    let offset = this.homeServiceData.query.startIndex - this.homeServiceData.query.resultCapacity;
-
-    if (offset <= 0) {
-      offset = 0;
-      this.homeServiceData.query.startIndex = offset;
-      return;
-    }
-
-    this.homeServiceData.query.startIndex = offset;
-    this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then((data: any) => {
-      let newData = data.users;
-      let max = newData.length > this.maxLines ? this.maxLines : newData.length;
-      for (let i = 0; i < max; i++) {
-        this.previousRecentUsers.push(newData[i]);
-      }
-    });
-
-  }
-
-  nextUsers() {
-    if (this.nextRecentUsers.length == 0)
-      return;
-    this.previousRecentUsers = [];
-    for (let i = 0; i < this.recentUsers.length; i++)
-      this.previousRecentUsers.push(this.recentUsers[i]);
-
-    this.recentUsers = [];
-    for (let i = 0; i < this.nextRecentUsers.length; i++) {
-      this.recentUsers.push(this.nextRecentUsers[i]);
-    }
-
-    this.nextRecentUsers = [];
-    let offset = this.homeServiceData.query.startIndex + this.homeServiceData.query.resultCapacity;
-    this.homeServiceData.query.startIndex = offset;
-    this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then((data: any) => {
-      let newData = data.users;
-      let max = newData.length > this.maxLines ? this.maxLines : newData.length;
-      for (let i = 0; i < max; i++) {
-        this.nextRecentUsers.push(newData[i]);
-      }
-    });
-
   }
 
   nextOffers() {
@@ -364,7 +219,6 @@ export class Home{
     this.recentOffers = [];
     for (let i = 0; i < this.previousRecentOffers.length; i++)
       this.recentOffers.push(this.previousRecentOffers[i]);
-    
 
     this.nextUpcomingOffers = [];
     for (let i = 0; i < this.upcomingOffers.length; i++)
@@ -417,7 +271,8 @@ export class Home{
       entreprise: '',
       date: '',
       table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
-      idOffre: '0'
+      idOffre: '0',
+
     };
 
     this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
@@ -461,37 +316,10 @@ export class Home{
           } else {
             jQuery('#modal-notification-contract').modal('show');
           }
-
-
-          // this.sharedService.setSearchResult(r);
-          // this.router.navigate(['search/details']);
           break;
         }
       }
     });
 
-  }
-
-  onGCRefused(gcRefused: boolean){
-    var self = this;
-    $('#modal-general-condition').on('hidden.bs.modal', function (e) {
-      if(!gcRefused) {
-        jQuery('#modal-welcome').modal({
-          keyboard: false,
-          backdrop: 'static'
-        });
-        jQuery('#modal-welcome').modal('show');
-        $('#modal-welcome').on('hidden.bs.modal', function (e) {
-          jQuery('#modal-profile').modal({
-            keyboard: false,
-            backdrop: 'static'
-          });
-          jQuery('#modal-profile').modal('show');
-        });
-      }else{
-        self.sharedService.logOut();
-        location.reload();
-      }
-    });
   }
 }
