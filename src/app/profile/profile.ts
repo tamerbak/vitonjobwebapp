@@ -201,6 +201,11 @@ export class Profile{
   nbWorkHours: number;
   nbWorkVitOnJob: number;
 
+  /*
+   * REQUIREMENTS
+   */
+  jobs : any = [];
+
   setImgClasses() {
     return {
       'img-circle': true,//TODO:this.currentUser && this.currentUser.estEmployeur,
@@ -293,10 +298,41 @@ export class Profile{
       startHour : 0,
       endHour : 0
     };
-    if(!this.isEmployer && !this.isRecruiter)
+    if(!this.isEmployer && !this.isRecruiter){
       this.initDisponibilites();
+      this.initRequirements();
+    }
+
   }
 
+  initRequirements(){
+
+    let offers = this.currentUser.jobyer.offers;
+    for(let i = 0 ;i < offers.length ; i++){
+      let jd = offers[i].jobData;
+      let found = false;
+
+      for ( let j = 0 ; j < this.jobs.length ; j++)
+        if(this.jobs[j].id == jd.idJob){
+          found= true;
+          break;
+        }
+
+      if(found)
+        continue;
+
+      this.jobs.push({
+        id : jd.idJob,
+        libelle : jd.job,
+        requirements : []
+      });
+    }
+
+    for(let i = 0 ; i < this.jobs.length ; i++)
+      this.profileService.loadRequirementsByJob(this.jobs[i].id).then((data:any)=>{
+        this.jobs[i].requirements = data;
+      });
+  }
 
   getUserFullname() {
     this.currentUserFullname = (this.currentUser.prenom + " " + this.currentUser.nom).trim();

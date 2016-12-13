@@ -139,18 +139,16 @@ export class ModalOptions{
       if (!data || data.status == "failure") {
         Messenger().post({
           message: "Une erreur est survenue lors de la suppression de l'annonce " + advert.titre,
-          type: 'danger',
+          type: 'error',
           showCloseButton: true
         });
-        this.processing = false;
-        jQuery("#modal-options").modal('hide')
-        return;
+      }else {
+        Messenger().post({
+          message: "l'annonce " + "'" + advert.titre + "'" + " a été supprimée avec succès",
+          type: 'error',
+          showCloseButton: true
+        });
       }
-      Messenger().post({
-        message: "l'annonce " + "'" + advert.titre + "'" + " a été supprimée avec succès",
-        type: 'success',
-        showCloseButton: true
-      });
       this.processing = false;
       jQuery("#modal-options").modal('hide')
     });

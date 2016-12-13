@@ -121,12 +121,14 @@ a.fc-event{
   }
 }
 
-.widget-calendar{
-  @include media-breakpoint-up(xl){
-    margin-top: -100px;
-  }
-}
-
 .two-thirds-field {
   width:75% !important;
+}
+
+.sector-select {
+  width: 100%;
+}
+
+.voj-input-group-addon {
+  padding: 0.600rem 0.75rem;
 }
