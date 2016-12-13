@@ -378,8 +378,8 @@ export class Profile{
     if(this.projectTarget == 'jobyer'){
       this.cv = this.currentUser.jobyer.cv;
       this.nbWorkHours = this.currentUser.jobyer.nbWorkHours;
-      this.nbWorkVitOnJob = this.currentUser.jobyer.nbVitOnJobHours;
-      this.isNbStudyHoursBig = this.currentUser.jobyer.isNbStudyHoursBig;
+      this.nbWorkVitOnJob = this.currentUser.jobyer.nbVitOnJobHours/60;
+      this.isNbStudyHoursBig = this.currentUser.jobyer.nbStudyHoursBig;
     }
   }
 
