@@ -767,7 +767,7 @@ export class OffersService {
   attacheLanguages(offer, table) {
     for (let i = 0; i < offer.languageData.length; i++) {
       let l = offer.languageData[i];
-      this.attacheLanguage(offer.idOffer, table, l.idLanguage, l.level);
+      this.attacheLanguage(offer.idOffer, table, l.id, l.level);
     }
   }
 
