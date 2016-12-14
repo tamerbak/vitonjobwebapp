@@ -886,7 +886,7 @@ export class OfferEdit{
         let endHour = this.toHourString(this.offer.calendarData[i].endHour);
         let startDate = new Date(this.offer.calendarData[i].date);
         let endDate = new Date(this.offer.calendarData[i].dateEnd);
-        
+
         let title = (isPause ? "Pause de ": "Créneau de ");
         var slotTemp = {
           title: title + startHour + " à " + endHour,
@@ -1647,8 +1647,8 @@ export class OfferEdit{
   watchFullTime(e) {
     this.isFulltime = e.target.checked;
     if (this.isFulltime) {
-      this.slot.startHour = new Date(new Date().setHours(9, 0, 0, 0));
-      this.slot.endHour = new Date(new Date().setHours(17, 0, 0, 0));
+      this.slot.startHour = new Date(new Date().setHours(0, 0, 0, 0));
+      this.slot.endHour = new Date(new Date().setHours(23, 59, 0, 0));
       this.slot.pause = false;
       this.isPause = false;
     }
@@ -1827,7 +1827,7 @@ export class OfferEdit{
       select: (start, end, allDay): void => {
         this.startDate = start._d;
         this.endDate = end._d;
-        
+
         /* Add to calculate the plageDate */
         let startTime = (start._d.getDate());
         let endTime = (end._d.getDate() - 1);
@@ -1991,7 +1991,7 @@ export class OfferEdit{
 	    this.addAlert("warning", "Veuillez renseigner l'adresse de la mission.", "general");
 	    errors.push({'type':'required', 'cible':'#autocompleteOfferAdress'})
 	  }
-	  
+
     }
 
     /* Gestion des erreurs */

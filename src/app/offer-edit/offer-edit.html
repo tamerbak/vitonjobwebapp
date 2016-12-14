@@ -261,7 +261,7 @@
             Nombre de postes
           </label>
           <div class="col-xs-12">
-          
+
             <input  id="input-nbPoste"
                     type="number"
                     step="1"
@@ -372,7 +372,7 @@
                             readonly = "true"
                   ></datetime>
                   <input *ngIf="isFulltime" class="form-control"
-                         value="09:00"
+                         value="00:00"
                          readonly/>
                 </div>
                 <div class="col-md-5 col-sm-3 col-xs-6 offer-hour-new">
@@ -383,7 +383,7 @@
                             [(ngModel)]="slot.endHour"
                   ></datetime>
                   <input *ngIf="isFulltime" class="form-control"
-                         value="17:00"
+                         value="23:59"
                          readonly/>
                 </div>
               </div>
