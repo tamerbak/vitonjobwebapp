@@ -117,7 +117,6 @@ export class LoadListService {
   }
 
   loadLanguages(){
-    debugger;
     var sql = "select pk_user_langue as id, libelle, \'junior\' as level from user_langue where UPPER(dirty) ='N' order by libelle asc";
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
