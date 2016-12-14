@@ -746,11 +746,13 @@
 
   <!-- Langues -->
   <div [hidden]="!showForm" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
-    <section class="widget" [hidden]="isRecruiter || isEmployer">
+    <section class="widget">
       <div class="widget-body">
         <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
           <fieldset>
-            <legend><strong>Langues</strong></legend>
+            <legend><strong>
+              {{ isEmployer ? "Langue(s) utilisée(s) au sein de l'entreprise" : "Langue(s) parlée(s)" }}
+            </strong></legend>
             <div class="container-fluid">
               <div class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
@@ -768,6 +770,7 @@
                         class="btn btn-danger mb-xs"
                         role="button"
                         (click)="removeLanguage(item)"
+                        [disabled]="isRecruiter"
                       >
                         <i class="glyphicon glyphicon-trash"></i>
                       </button>
@@ -787,7 +790,7 @@
                         class="btn btn-success mb-xs offer-add-button"
                         role="button"
                         (click)="addLanguage()"
-                        [disabled]="!selectedLanguage"
+                        [disabled]="!selectedLanguage || isRecruiter"
                       >
                         Ajouter
                       </button>
