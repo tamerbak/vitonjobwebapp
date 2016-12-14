@@ -655,7 +655,7 @@ this.nav.present(toast);
   }
 
   removeMission() {
-    if (this.canRemoveMission() == false) {
+    if (this.canRemoveMission() == true) {
       // Validation modal
       this.modalParams.type = "mission.delete";
       this.modalParams.message = "Êtes-vous sûr de vouloir annuler la mission " + '"' + this.contract.titre + '"' + " ?";
@@ -669,8 +669,8 @@ this.nav.present(toast);
 
   canRemoveMission() {
     // Check to at least on contract is not signed
-    return (this.contract.signature_employeur.toUpperCase() == "OUI"
-      && this.contract.signature_jobyer.toUpperCase() == "OUI");
+    return (this.contract.signature_employeur.toUpperCase() != "OUI"
+      || this.contract.signature_jobyer.toUpperCase() != "OUI");
   }
 
   disableAllUI() {

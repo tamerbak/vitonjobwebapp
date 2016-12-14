@@ -317,9 +317,8 @@
                     </button>
                   <button
                             type="button" class="btn btn-danger btn-sm"
-                            *ngIf="isCanceled() == false"
+                            *ngIf="isCanceled() == false && canRemoveMission()"
                             (click)="removeMission()"
-                            [disabled]="canRemoveMission()"
                   >
                         Annuler la mission
                   </button>
