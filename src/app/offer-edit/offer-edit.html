@@ -261,7 +261,7 @@
             Nombre de postes
           </label>
           <div class="col-xs-12">
-          
+
             <input  id="input-nbPoste"
                     type="number"
                     step="1"
@@ -783,18 +783,24 @@
         <!-- Langues -->
         <div class="form-group row">
           <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-            Langues
+            {{ (projectTarget == 'employer') ? 'Langue(s) requise(s)' : 'Langue(s) privilégiée(s)'}}
           </label>
 
           <div class="col-md-8 col-xs-12">
 
             <!-- Selected Languages -->
             <div class="form-group row" *ngFor="let item of offer.languageData">
-              <div class="col-md-6 col-xs-6">
+              <div class="{{ (projectTarget != 'employer') ? 'col-md-9 col-xs-12' : 'col-md-6 col-xs-6' }}">
                 <input class="form-control" value="{{item.libelle}}" disabled/>
               </div>
-              <div class="col-md-3 col-xs-6">
-                <input class="form-control" value="{{item.level == 'junior' ? 'Débutant' : 'Courant'}}" disabled/>
+              <div class="col-md-3 col-xs-6" *ngIf="projectTarget == 'employer'">
+                <!--<input class="form-control" value="{{(item.level == 'junior' ? 'Débutant' : 'Courant')}}" disabled/>-->
+                <select class="form-control" [(ngModel)]="item.level" disabled>
+                  <option value="junior">Débutant</option>
+                  <option value="medium">Intermédiaire</option>
+                  <option value="senior">Courant</option>
+                </select>
+
               </div>
               <div class="col-md-3 col-xs-12">
                 <button
@@ -811,14 +817,15 @@
 
             <!-- New language input -->
             <div class="row">
-              <div class="col-md-6 col-xs-6">
+              <div class="{{ (projectTarget != 'employer') ? 'col-md-9 col-xs-12' : 'col-md-6 col-xs-6' }}">
                 <select class="form-control" [(ngModel)]="selectedLang">
                   <option *ngFor="let l of langs" [value]="l.id">{{l.libelle}}</option>
                 </select>
               </div>
-              <div class="col-md-3 col-xs-6">
+              <div class="col-md-3 col-xs-6" *ngIf="projectTarget == 'employer'">
                 <select class="form-control" [(ngModel)]="selectedLevel">
                   <option value="junior">Débutant</option>
+                  <option value="medium">Intermédiaire</option>
                   <option value="senior">Courant</option>
                 </select>
               </div>
