@@ -25,6 +25,22 @@ export class DateUtils {
     return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " 00:00:00+00";
   }
 
+  public static toDateString(date: number) {
+    let d = new Date(date);
+    let str = d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+    return str;
+  }
+
+  /**
+   * @Description Converts a timeStamp to date string
+   * @param time : a timestamp date
+   */
+  public static toHourString(time: number) {
+    let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
+    let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
+    return hours + ":" + minutes;
+  }
+
   public static formatHours(hours){
     return (hours < 10 ? ('0' + hours) : hours);
   }
