@@ -1648,8 +1648,8 @@ export class OfferEdit{
   watchFullTime(e) {
     this.isFulltime = e.target.checked;
     if (this.isFulltime) {
-      this.slot.startHour = new Date(new Date().setHours(9, 0, 0, 0));
-      this.slot.endHour = new Date(new Date().setHours(17, 0, 0, 0));
+      this.slot.startHour = new Date(new Date().setHours(0, 0, 0, 0));
+      this.slot.endHour = new Date(new Date().setHours(23, 59, 0, 0));
       this.slot.pause = false;
       this.isPause = false;
     }
