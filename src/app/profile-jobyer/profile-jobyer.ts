@@ -84,32 +84,35 @@ export class ProfileJobyer{
   }
 
   initRequirements(){
+    this.profileService.loadOffersByJobyerId(this.jobyer.id).then((data: any) => {
+      if(data && data.data && data.status == "success") {
+        let offers = data.data;
+        for (let i = 0; i < offers.length; i++) {
+          let jd = offers[i].jobData;
+          let found = false;
 
-    let offers = this.currentUser.jobyer.offers;
-    for(let i = 0 ;i < offers.length ; i++){
-      let jd = offers[i].jobData;
-      let found = false;
+          for (let j = 0; j < this.jobs.length; j++)
+            if (this.jobs[j].id == jd.idJob) {
+              found = true;
+              break;
+            }
 
-      for ( let j = 0 ; j < this.jobs.length ; j++)
-        if(this.jobs[j].id == jd.idJob){
-          found= true;
-          break;
+          if (found)
+            continue;
+
+          this.jobs.push({
+            id: jd.idJob,
+            libelle: jd.job,
+            requirements: []
+          });
         }
 
-      if(found)
-        continue;
-
-      this.jobs.push({
-        id : jd.idJob,
-        libelle : jd.job,
-        requirements : []
-      });
-    }
-
-    for(let i = 0 ; i < this.jobs.length ; i++)
-      this.profileService.loadRequirementsByJob(this.jobs[i].id).then((data:any)=>{
-        this.jobs[i].requirements = data;
-      });
+        for (let i = 0; i < this.jobs.length; i++)
+          this.profileService.loadRequirementsByJob(this.jobs[i].id).then((data: any) => {
+            this.jobs[i].requirements = data;
+          });
+      }
+    })
   }
 
   isEmpty(str) {

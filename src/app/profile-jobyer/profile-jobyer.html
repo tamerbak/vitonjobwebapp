@@ -226,12 +226,12 @@
                 </div>
               </div>
 
-              <div class="form-group row" *ngIf="!isEmpty(jobyer.jobAdress)">
+              <div class="form-group row" *ngIf="!isEmpty(jobyer.workAdress)">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Adresse de départ au travail
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <label>{{jobyer.jobAddress.fullAdress}}</label>
+                  <label>{{jobyer.workAdress.fullAdress}}</label>
                 </div>
               </div>
 
@@ -284,7 +284,7 @@
   </div>
 
   <!-- PREREQUIS -->
-  <!--<div class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
+  <div class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12" *ngIf="jobs.length != 0">
     <section class="widget">
       <div class="widget-body">
         <fieldset>
@@ -304,7 +304,7 @@
         </fieldset>
       </div>
     </section>
-  </div>-->
+  </div>
 
   <!-- Qualities -->
   <div class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12" *ngIf="jobyer.qualityData.length != 0">
