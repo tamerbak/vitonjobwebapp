@@ -635,7 +635,7 @@ export class Profile{
 
         this.conventionService.loadConventionData(this.currentUser.employer.id).then((data: any)=>{
           if (data.length > 0) {
-            this.collective_heure_hebdo = data[0].duree_collective_travail_hebdo;
+            this.collective_heure_hebdo = Number(data[0].duree_collective_travail_hebdo);
           } else {
             this.collective_heure_hebdo = 35;
           }
