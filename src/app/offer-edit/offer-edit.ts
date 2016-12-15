@@ -736,7 +736,10 @@ export class OfferEdit{
     this.jobs = jobList.filter((v) => {
       return (v.idsector == sector);
     });
-    this.offer.jobData.sector = sectorsTemp[0].libelle;
+
+    if (sectorsTemp.length > 0) {
+      this.offer.jobData.sector = sectorsTemp[0].libelle;
+    }
   }
 
   /**
