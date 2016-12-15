@@ -690,7 +690,7 @@ export class ProfileService{
   getUserLanguages(id: any, projectTarget: string) {
     let table = projectTarget == 'jobyer' ? 'user_langue_jobyer' : 'user_langue_employeur';
     let foreignKey = projectTarget == 'jobyer' ? 'fk_user_jobyer' : 'fk_user_entreprise';
-    let sql = "select pk_user_langue as id, libelle from user_langue as i, " + table + " as t where i.pk_user_langue = t.fk_user_langue and t." + foreignKey + " = '" + id + "'";
+    let sql = "select pk_user_langue as id, fk_user_niveau as level, libelle from user_langue as i, " + table + " as t where i.pk_user_langue = t.fk_user_langue and t." + foreignKey + " = '" + id + "'";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -736,7 +736,7 @@ export class ProfileService{
     let sql = "";
     for (let i = 0; i < qualities.length; i++) {
       let q = qualities[i];
-      sql = sql + " insert into " + table + " (" + foreignKey + ", fk_user_indispensable) values (" + id + ", " + q.idQuality + "); ";
+      sql = sql + " insert into " + table + " (" + foreignKey + ", fk_user_indispensable) values (" + id + ", " + q.idQuality + ", " + q.level + "); ";
     }
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -764,7 +764,7 @@ export class ProfileService{
     let sql = "";
     for (let i = 0; i < languages.length; i++) {
       let q = languages[i];
-      sql = sql + " insert into " + table + " (" + foreignKey + ", fk_user_langue) values (" + id + ", " + q.id + "); ";
+      sql = sql + " insert into " + table + " (" + foreignKey + ", fk_user_langue, fk_user_niveau) values (" + id + ", " + q.id + ", " + q.level + "); ";
     }
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();

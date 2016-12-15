@@ -767,12 +767,13 @@ export class OffersService {
   attacheLanguages(offer, table) {
     for (let i = 0; i < offer.languageData.length; i++) {
       let l = offer.languageData[i];
-      this.attacheLanguage(offer.idOffer, table, l.idLanguage, l.level);
+      this.attacheLanguage(offer.idOffer, table, l.id, l.level);
     }
   }
 
   attacheLanguage(idOffer, table, idLanguage, level) {
-    let sql = "insert into user_pratique_langue (fk_" + table + ", fk_user_langue, fk_user_niveau) values (" + idOffer + ", " + idLanguage + ", " + ((level == 'junior') ? 1 : 2) + ")";
+    let idLevel: string = (level == 'junior' ? '1' : (level == 'medium' ? '3' : (level == 'senior' ? '2' : '0')));
+    let sql = "insert into user_pratique_langue (fk_" + table + ", fk_user_langue, fk_user_niveau) values (" + idOffer + ", " + idLanguage + ", " + idLevel + ")";
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();

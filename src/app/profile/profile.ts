@@ -189,6 +189,7 @@ export class Profile{
   //languages management
   savedLanguages: any = [];
   selectedLanguage: any;
+  selectedLevel = "1";
   languages: any = [];
 
 
@@ -1904,6 +1905,7 @@ export class Profile{
     if (this.savedLanguages.indexOf(languagesTemp[0]) != -1) {
       return;
     }
+    languagesTemp[0]['level'] = this.selectedLevel;
     this.savedLanguages.push(languagesTemp[0]);
     this.selectedLanguage = "";
 
