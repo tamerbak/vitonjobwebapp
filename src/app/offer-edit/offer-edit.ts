@@ -948,16 +948,19 @@ export class OfferEdit{
 
     // Check that the slot is not overwriting an other one
     if (!slot.pause) {
-      //total hours of one day should be lower than 10h
-      let isDailyDurationRespected = this.offersService.isDailySlotsDurationRespected(slots, slot);
-      if (!isDailyDurationRespected) {
-        this.addAlert("danger", "Le total des heures de travail de chaque journée ne doit pas dépasser les 10 heures. Veuillez réduire la durée de ce créneau", "slot");
-        return false;
-      }
 
-      if(!this.offersService.isSlotRespectsBreaktime(this.slots, this.slot)){
-        this.addAlert("danger", "Veuillez mettre un délai de 11h entre deux créneaux situés sur deux jours calendaires différents.", "slot");
-        return false;
+      if (this.projectTarget == 'employer') {
+        //total hours of one day should be lower than 10h
+        let isDailyDurationRespected = this.offersService.isDailySlotsDurationRespected(slots, slot);
+        if (!isDailyDurationRespected) {
+          this.addAlert("danger", "Le total des heures de travail de chaque journée ne doit pas dépasser les 10 heures. Veuillez réduire la durée de ce créneau", "slot");
+          return false;
+        }
+
+        if(!this.offersService.isSlotRespectsBreaktime(this.slots, this.slot)){
+          this.addAlert("danger", "Veuillez mettre un délai de 11h entre deux créneaux situés sur deux jours calendaires différents.", "slot");
+          return false;
+        }
       }
       for (let i = 0; i < slots.length; i++) {
           // If end hour is 0:00, force 23:59 such as midnight minute
