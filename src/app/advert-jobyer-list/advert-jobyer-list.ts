@@ -1,5 +1,6 @@
 import {Component, ViewEncapsulation} from "@angular/core";
 import {SharedService} from "../../providers/shared.service";
+import {ProfileService} from "../../providers/profile.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {AdvertService} from '../../providers/advert.service';
 import {Utils} from "../utils/utils";
@@ -10,7 +11,7 @@ import {Utils} from "../utils/utils";
   encapsulation: ViewEncapsulation.None,
   styles: [require('./advert-jobyer-list.scss')],
   directives: [ROUTER_DIRECTIVES],
-  providers: [AdvertService]
+  providers: [AdvertService, ProfileService]
 })
 
 export class AdvertJobyerList{
@@ -21,7 +22,8 @@ export class AdvertJobyerList{
 
   constructor(private sharedService: SharedService,
               private router: Router,
-              private advertService: AdvertService) {
+              private advertService: AdvertService,
+              private profileService: ProfileService) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser || (!this.currentUser.estEmployeur && !this.currentUser.estRecruteur)) {
       this.router.navigate(['home']);
@@ -43,8 +45,13 @@ export class AdvertJobyerList{
   }
 
   goToJobyerProfile(jobyer) {
-    this.sharedService.setSelectedJobyer(jobyer);
-    //this.router.navigate(['profile', {obj: 'adv'}]);
+    this.profileService.getJobyerInfo(jobyer.jobyerid).then((data: any) => {
+      if(data && data._body.length != 0 && data.status == "200"){
+        let j = JSON.parse(data._body);
+        this.sharedService.setSelectedJobyer(j);
+        this.router.navigate(['profile/jobyer']);
+      }
+    })
   }
 
   isEmpty(str) {

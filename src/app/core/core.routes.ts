@@ -2,6 +2,7 @@ import {RouterConfig} from "@angular/router";
 import {Core} from "./core";
 import {Home} from "./../home/home";
 import {Profile} from "../profile/profile";
+import {ProfileJobyer} from "../profile-jobyer/profile-jobyer";
 import {Settings} from "../settings/settings";
 import {Attachements} from "../attachements/attachements";
 import {PendingContracts} from "../pending-contracts/pending-contracts";
@@ -49,6 +50,7 @@ export const CoreRoutes: RouterConfig = [
 
       // User parameters
       {path: 'profile', component: Profile, canDeactivate: [ConfirmExitPage]},
+      {path: 'profile/jobyer', component: ProfileJobyer},
       {path: 'settings', component: Settings, canDeactivate: [ConfirmExitPage]},
 
       // Offers management

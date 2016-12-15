@@ -6,7 +6,6 @@ import {MissionService} from "../../providers/mission-service";
 import {SmsService} from "../../providers/sms-service";
 import {AdvertService} from "../../providers/advert.service";
 
-
 declare var jQuery, require, Messenger: any;
 
 @Component({
@@ -16,6 +15,7 @@ declare var jQuery, require, Messenger: any;
   template: require('./modal-options.html'),
   styles: [require('./modal-options.scss')]
 })
+
 export class ModalOptions{
 
   @Input() params: any;
