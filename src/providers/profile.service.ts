@@ -819,6 +819,18 @@ export class ProfileService{
     });
   }
 
+  loadOffersByJobyerId(id){
+    let sql = "select pk_user_jobyer as id from user_offre_jobyer where pk_user_jobyer = " + id;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
   sqlfyText(txt) {
     if (!txt || txt.length == 0)
       return "";
