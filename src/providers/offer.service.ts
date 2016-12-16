@@ -1,8 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Http, Headers} from "@angular/http";
 import {Configs} from "../configurations/configs";
-import { SharedService } from './shared.service';
-import {DateUtils} from "../app/utils/date-utils";
+import {SharedService} from "./shared.service";
 
 @Injectable()
 export class OffersService {
@@ -34,6 +33,29 @@ export class OffersService {
       });
     });
   }
+
+  /**
+   * Return the offer's medatada
+   *
+   * @param idOffer
+   * @param projectTarget
+   * @returns {Promise<T>}
+   */
+  getMetaData(idOffer, projectTarget) {
+    let table = projectTarget == 'jobyer' ? "user_offre_jobyer" : "user_offre_entreprise";
+    let sql = "SELECT lien_video FROM " + table + " WHERE pk_" + table + "=" + idOffer;
+
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
   /**
    * @description Get the corresponding candidates of a specific offer
    * @param offer the reference offer
