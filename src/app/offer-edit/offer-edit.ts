@@ -213,20 +213,13 @@ export class OfferEdit{
         if (c)
           this.convention = c;
         if (this.convention.id > 0) {
-          this.offersService.getConventionNiveaux(this.convention.id).then(data => {
-            this.niveauxConventions = data;
-          });
-          this.offersService.getConventionCoefficients(this.convention.id).then(data => {
-            this.coefficientsConventions = data;
-          });
-          this.offersService.getConventionEchelon(this.convention.id).then(data => {
-            this.echelonsConventions = data;
-          });
-          this.offersService.getConventionCategory(this.convention.id).then(data => {
-            this.categoriesConventions = data;
-          });
-          this.offersService.getConventionParameters(this.convention.id).then(data => {
-            this.parametersConvention = data;
+
+          this.offersService.getConventionFilters(this.convention.id).then((data : any) => {
+            this.niveauxConventions = data.filter((elem) => { return elem.type == 'niv' });
+            this.coefficientsConventions = data.filter((elem) => { return elem.type == 'coe' });
+            this.echelonsConventions = data.filter((elem) => { return elem.type == 'ech' });
+            this.categoriesConventions = data.filter((elem) => { return elem.type == 'cat' });
+            this.parametersConvention = data.filter((elem) => { return elem.type == 'con' });
             this.checkHourRate();
           });
 
