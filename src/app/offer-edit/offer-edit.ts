@@ -214,14 +214,26 @@ export class OfferEdit{
           this.convention = c;
         if (this.convention.id > 0) {
 
-          this.offersService.getConventionFilters(this.convention.id).then((data : any) => {
-            this.niveauxConventions = data.filter((elem) => { return elem.type == 'niv' });
-            this.coefficientsConventions = data.filter((elem) => { return elem.type == 'coe' });
-            this.echelonsConventions = data.filter((elem) => { return elem.type == 'ech' });
-            this.categoriesConventions = data.filter((elem) => { return elem.type == 'cat' });
-            this.parametersConvention = data.filter((elem) => { return elem.type == 'con' });
+          // Loading convention filters / data
+          let filters = this.sharedService.getConventionFilters();
+          if (this.isEmpty(filters) === true) {
+            this.offersService.getConventionFilters(this.convention.id).then((data: any) => {
+              this.sharedService.setConventionFilters(data);
+              this.niveauxConventions = data.filter((elem) => { return elem.type == 'niv' });
+              this.coefficientsConventions = data.filter((elem) => { return elem.type == 'coe' });
+              this.echelonsConventions = data.filter((elem) => { return elem.type == 'ech' });
+              this.categoriesConventions = data.filter((elem) => { return elem.type == 'cat' });
+              this.parametersConvention = data.filter((elem) => { return elem.type == 'con' });
+              this.checkHourRate();
+            });
+          } else {
+            this.niveauxConventions = filters.filter((elem) => { return elem.type == 'niv' });
+            this.coefficientsConventions = filters.filter((elem) => { return elem.type == 'coe' });
+            this.echelonsConventions = filters.filter((elem) => { return elem.type == 'ech' });
+            this.categoriesConventions = filters.filter((elem) => { return elem.type == 'cat' });
+            this.parametersConvention = filters.filter((elem) => { return elem.type == 'con' });
             this.checkHourRate();
-          });
+          }
 
           //get values for "condition de travail"
           if (this.obj != "detail") {
