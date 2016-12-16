@@ -355,7 +355,7 @@ export class OfferEdit{
 
     //loadQualities
     this.qualities = this.sharedService.getQualityList();
-    if (!this.qualities || this.qualities.length == 0) {
+    if (Utils.isEmpty(this.qualities) === true) {
       this.offersService.loadQualities(this.projectTarget).then((data: any) => {
         this.qualities = data.data;
         this.sharedService.setQualityList(this.qualities);
@@ -363,14 +363,13 @@ export class OfferEdit{
     }
 
     //loadLanguages
-    //  Cette partie est commentée pour forcer les prochaines versions à retélécharger la liste des langues triée
-    //this.langs = this.sharedService.getLangList();
-    //if (!this.langs || this.langs.length == 0) {
+    this.langs = this.sharedService.getLangList();
+    if (Utils.isEmpty(this.langs) === true) {
       this.listService.loadLanguages().then((data: any) => {
         this.langs = data.data;
         this.sharedService.setLangList(this.langs);
       });
-    //}
+    }
 
     //init slot
     this.slot = {
