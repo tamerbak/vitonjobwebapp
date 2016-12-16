@@ -241,6 +241,10 @@ export class OfferEdit{
     }
 
     if (this.obj == "detail") {
+
+      /**
+       * Existing offer initialization
+       */
       this.offer = this.sharedService.getCurrentOffer();
 
       //this.initCalendar();
@@ -291,6 +295,10 @@ export class OfferEdit{
 
       this.slots = this.convertEventsToSlots(this.$calendar.fullCalendar('clientEvents'));
     } else {
+
+      /**
+       * New offer initialization
+       */
       var jobData = {
         'class': "com.vitonjob.callouts.auth.model.JobData",
         job: "",
@@ -305,8 +313,15 @@ export class OfferEdit{
         epi: []
       };
       this.offer = {
-        jobData: jobData, calendarData: [], qualityData: [], languageData: [],
-        visible: false, title: "", status: "open", videolink: ""
+        jobData: jobData,
+        calendarData: [],
+        qualityData: [],
+        languageData: [],
+        visible: false,
+        title: "",
+        status: "open",
+        videolink: "",
+        nbPoste: 1
       };
     }
 
