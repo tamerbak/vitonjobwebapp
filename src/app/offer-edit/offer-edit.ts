@@ -241,6 +241,10 @@ export class OfferEdit{
     }
 
     if (this.obj == "detail") {
+
+      /**
+       * Existing offer initialization
+       */
       this.offer = this.sharedService.getCurrentOffer();
 
       //this.initCalendar();
@@ -291,6 +295,10 @@ export class OfferEdit{
 
       this.slots = this.convertEventsToSlots(this.$calendar.fullCalendar('clientEvents'));
     } else {
+
+      /**
+       * New offer initialization
+       */
       var jobData = {
         'class': "com.vitonjob.callouts.auth.model.JobData",
         job: "",
@@ -305,8 +313,15 @@ export class OfferEdit{
         epi: []
       };
       this.offer = {
-        jobData: jobData, calendarData: [], qualityData: [], languageData: [],
-        visible: false, title: "", status: "open", videolink: ""
+        jobData: jobData,
+        calendarData: [],
+        qualityData: [],
+        languageData: [],
+        visible: false,
+        title: "",
+        status: "open",
+        videolink: "",
+        nbPoste: 1
       };
     }
 
@@ -682,14 +697,14 @@ export class OfferEdit{
   }
 
   addPrerequis() {
-    if (!this.prerequisOb || this.prerequisOb == '')
+    if (Utils.isEmpty(this.prerequisOb) === true)
       return;
     this.prerequisObligatoires.push(this.prerequisOb);
     this.prerequisOb = '';
   }
 
   addEPI() {
-    if (!this.epi || this.epi == '')
+    if (Utils.isEmpty(this.epi) === true)
       return;
     this.epiList.push(this.epi);
     this.epi = '';
@@ -1309,13 +1324,6 @@ export class OfferEdit{
     if (section == "conditionEmp") {
       this.alertsConditionEmp = [{type: type, msg: msg}];
     }
-  }
-
-  isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
   }
 
   ngOnDestroy(): void {
@@ -2018,5 +2026,9 @@ export class OfferEdit{
     		window.scrollTo(0, 0);
     }
     return errors.length == 0;
+  }
+
+  isEmpty(str) {
+    return Utils.isEmpty(str);
   }
 }
