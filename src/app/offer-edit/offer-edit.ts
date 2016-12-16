@@ -697,14 +697,14 @@ export class OfferEdit{
   }
 
   addPrerequis() {
-    if (!this.prerequisOb || this.prerequisOb == '')
+    if (Utils.isEmpty(this.prerequisOb) === true)
       return;
     this.prerequisObligatoires.push(this.prerequisOb);
     this.prerequisOb = '';
   }
 
   addEPI() {
-    if (!this.epi || this.epi == '')
+    if (Utils.isEmpty(this.epi) === true)
       return;
     this.epiList.push(this.epi);
     this.epi = '';
@@ -1324,13 +1324,6 @@ export class OfferEdit{
     if (section == "conditionEmp") {
       this.alertsConditionEmp = [{type: type, msg: msg}];
     }
-  }
-
-  isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
   }
 
   ngOnDestroy(): void {
@@ -2033,5 +2026,9 @@ export class OfferEdit{
     		window.scrollTo(0, 0);
     }
     return errors.length == 0;
+  }
+
+  isEmpty(str) {
+    return Utils.isEmpty(str);
   }
 }
