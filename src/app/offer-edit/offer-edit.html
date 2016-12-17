@@ -398,11 +398,15 @@
 
 <div class="row">
   <div class="col-sm-12">
+
     <section widget class="widget widget-offer" *ngIf="projectTarget == 'employer'">
       <header class="bb widget-offer-header">
         <h6><span class="fw-semi-bold widget-offer-header-title">Conditions d'emploi</span></h6>
       </header>
-      <div class="widget-body">
+      <div class="widget-body" *ngIf="!personalizeConvention">
+        <a href="#" (click)="onPersonalizeConvention()">Personnaliser les conditions d'emploi</a>
+      </div>
+      <div class="widget-body" *ngIf="personalizeConvention">
         <fieldset>
           <legend><strong>Conditions d'emploi</strong></legend>
           <alert *ngFor="let alert of alertsConditionEmp; let i = index" [type]="alert.type + ' alert-sm'"

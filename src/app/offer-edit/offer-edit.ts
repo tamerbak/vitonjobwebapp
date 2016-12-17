@@ -85,6 +85,7 @@ export class OfferEdit{
   minHourRate: number = 0;
   invalidHourRateMessage: string = '';
   invalidHourRate = false;
+  personalizeConvention = false;
 
   categoriesHeure: any = [];
   majorationsHeure: any = [];
@@ -158,6 +159,8 @@ export class OfferEdit{
    */
   offerContact : string;
   tel : string;
+
+  personalizeConventionInit : boolean = false;
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -235,12 +238,6 @@ export class OfferEdit{
             this.checkHourRate();
           }
 
-          //get values for "condition de travail"
-          if (this.obj != "detail") {
-            this.getConditionEmpValuesForCreation();
-          } else {
-            this.getConditionEmpValuesForUpdate();
-          }
         }
       });
     }
@@ -698,6 +695,24 @@ export class OfferEdit{
         self.epi = e.choice.libelle;
       }
     )
+  }
+
+  /**
+   * Event when "Personalize Working conditions"
+   */
+  onPersonalizeConvention() {
+    if (this.personalizeConvention === false) {
+      if (this.personalizeConventionInit === false) {
+        //get values for "condition de travail"
+        if (this.obj != "detail") {
+          this.getConditionEmpValuesForCreation();
+        } else {
+          this.getConditionEmpValuesForUpdate();
+        }
+        this.personalizeConventionInit = true;
+      }
+    }
+    this.personalizeConvention = !this.personalizeConvention;
   }
 
   addPrerequis() {
