@@ -1,18 +1,16 @@
 import {Component, ViewEncapsulation} from "@angular/core";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
-import {NKDatetime} from "ng2-datetime/ng2-datetime";
-import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {MissionService} from "../../providers/mission-service";
 import {AuthenticationService} from "../../providers/authentication.service";
 import {SharedService} from "../../providers/shared.service";
 import {Utils} from "../utils/utils";
 import {ProfileService} from "../../providers/profile.service";
-declare var md5, Messenger, jQuery, require: any;
+declare var md5, Messenger, jQuery: any;
 
 @Component({
   selector: '[settings]',
   template: require('./settings.html'),
-  directives: [ROUTER_DIRECTIVES, NKDatetime, AlertComponent],
+  directives: [ROUTER_DIRECTIVES],
   providers: [Utils, MissionService, AuthenticationService, ProfileService],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./settings.scss')]
@@ -63,12 +61,13 @@ export class Settings {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['home']);
+      return;
     } else {
       this.getUserInfos();
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
       if (this.isEmployer) {
         this.missionService.getOptionMission(this.currentUser.id).then((opt: any) => {
-          this.missionOption = opt.data[0].option_mission
+          this.missionOption = opt.data[0].option_mission;
         });
       }
 
@@ -283,12 +282,12 @@ export class Settings {
   modifyPassword() {
     if (this.isValidForm()) {
       this.validation = true;
-      var password1 = this.password1;
-      var password2 = this.password2;
-      var password = md5(this.password1);
-      var oldPassword = md5(this.oldPassword);
+      let password1 = this.password1;
+      let password2 = this.password2;
+      let password = md5(this.password1);
+      let oldPassword = md5(this.oldPassword);
 
-      this.authService.authenticate(this.currentUser.email, this.currentUser.tel, oldPassword, this.projectTarget, false).then((data: any) => {
+      this.authService.authenticate(this.currentUser.email, this.currentUser.tel, oldPassword, this.projectTarget, this.isRecruiter).then((data: any) => {
         //case of authentication failure : server unavailable or connection probleme
         if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
           Messenger().post({
@@ -331,7 +330,6 @@ export class Settings {
           })
           .catch((error: any) => {
             this.validation = false;
-            // console.log(error);
           });
         });
     }
