@@ -16,6 +16,7 @@ import {MissionDetails} from "../mission-details/mission-details";
 import {MissionEndReleve} from "../mission-end-releve/mission-end-releve";
 import {MissionEndInvoice} from "../mission-end-invoice/mission-end-invoice";
 import {Contract} from "../contract/contract";
+import {ContractList} from "../contract-list/contract-list";
 import {Yousign} from "../yousign/yousign";
 import {WalletCreate} from "../wallet-create/wallet-create";
 import {MissionPointing} from "../mission-pointing/mission-pointing";
@@ -73,6 +74,7 @@ export const CoreRoutes: RouterConfig = [
       {path: 'contract/recruitment', component: Yousign, canActivate: [CanAccessPage]},
       {path: 'contract/hours-record', component: MissionEndReleve},
       {path: 'contract/invoice', component: MissionEndInvoice},
+      {path: 'contract/list', component: ContractList},
 
       // Payment
       {path: 'wallet/create', component: WalletCreate, canDeactivate: [ConfirmExitPage]},
