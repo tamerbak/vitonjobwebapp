@@ -96,4 +96,13 @@ export class Utils {
       return "";
     return txt.replace(/'/g, "''");
   }
+
+  public static parseNumber(str) {
+    try {
+      return parseFloat(str);
+    }
+    catch (err) {
+      return 0.0;
+    }
+  }
 }

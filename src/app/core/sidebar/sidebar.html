@@ -86,6 +86,14 @@
       </a>
     </li>
 
+    <li *ngIf="currentUser && currentUser.estEmployeur">
+      <a [routerLink]=" ['/contract/list'] ">
+        <span class="icon">
+            <i class="glyphicon glyphicon-th-list"></i>
+          </span> Contrats en attente
+      </a>
+    </li>
+
     <li [hidden]="currentUser">
       <a [routerLink]=" ['/login'] ">
         <span class="icon">

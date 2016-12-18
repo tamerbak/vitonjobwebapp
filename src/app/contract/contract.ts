@@ -84,6 +84,8 @@ export class Contract {
   epiList : any =[];
   selectedEPI : string;
   offerEpi : any = [];
+  alerts = [];
+  inProgress: boolean = false;
 
 
   dateFormat(d) {
@@ -109,6 +111,7 @@ export class Contract {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['home']);
+      return;
     }
     // Get target to determine configs
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
@@ -162,7 +165,8 @@ export class Contract {
           this.contractData.finTitreTravail = this.simpleDateFormat(this.jobyer.finTitreTravail);
         }
 
-        this.contractData.numeroTitreTravail =this.natureTitre + this.jobyer.titreTravail;this.contractService.getJobyerAdress(this.jobyer).then((adress : string)=>{
+        this.contractData.numeroTitreTravail =this.natureTitre + this.jobyer.titreTravail;
+        this.contractService.getJobyerAdress(this.jobyer.id).then((adress : string)=>{
           this.jobyer.address = adress;
         });
 
@@ -709,36 +713,78 @@ export class Contract {
     return h.toFixed(0);
   }
 
-  goToYousignPage() {
-    let isValid = true;//!this.missingJobyerData() && this.isMissionDateValid;
+  gotoContractListPage(){
+    let isValid = !this.missingJobyerData() && this.isMissionDateValid;
     if(!isValid){
       return;
     }
+    this.inProgress = true;
 
+    //get next num contract
     this.contractService.getNumContract().then((data: any) => {
       this.dataValidation = true;
 
       if (data && data.length > 0) {
-        this.numContrat = this.formatNumContrat(data[0].numct);
-        this.contractData.num = this.numContrat;
-        this.contractData.numero = this.numContrat;
-        this.contractData.adresseInterim = this.workAdress;
-        this.contractData.workAdress = this.workAdress;
+        this.contractData.numero = this.formatNumContrat(data[0].numct);
+      }else{
+        this.addAlert("danger", "Une erreur est survenue lors de la sauvegarde des données. Veuillez rééssayer l'opération.");
+        this.inProgress = false;
+        return;
       }
 
-      if(this.contractData.epiList && this.contractData.epiList.length>0){
-        this.contractData.equipements = '(Voir annexe)';
-      } else {
-        this.contractData.equipements = "Aucun";
-      }
+      //save contrct data
+     this.contractService.saveContract(
+        this.contractData,
+        this.jobyer.id,
+        this.employer.entreprises[0].id,
+        this.projectTarget,
+        this.currentUser.id,
+        this.currentOffer.idOffer).then((data: any) => {
+          if (data && data.status == "success" && data.data && data.data.length > 0) {
+            //contract data saved
+            let idContract = data.data[0].pk_user_contrat;
+            //make the offer state to "en contrat"
+            this.offersService.updateOfferState(this.currentOffer.idOffer, "en contrat").then((data: any) => {
+              if (data && data.status == "success") {
+                this.currentOffer.etat = "en contrat";
+                this.offersService.spliceOfferInLocal(this.currentUser, this.currentOffer, this.projectTarget);
+                this.sharedService.setCurrentUser(this.currentUser);
+                //place offer in archive if nb contract of the selected offer is equal to its nb poste
+                this.checkOfferState(this.currentOffer);
+                //generate hour mission based on the offer slots
+                //TODO : generate break times
+                this.contractService.generateMission(idContract, this.currentOffer);
+                //go to contract list page
+                this.router.navigate(['contract/list']);
+              }else {
+                this.addAlert("danger", "Une erreur est survenue lors de la sauvegarde des données. Veuillez rééssayer l'opération.");
+                this.inProgress = false;
+                return;
+              }
+            })
+          } else {
+            this.addAlert("danger", "Une erreur est survenue lors de la sauvegarde des données. Veuillez rééssayer l'opération.");
+            this.inProgress = false;
+            return;
+          }
+        },
+        (err) => {
+          this.addAlert("danger", "Une erreur est survenue lors de la sauvegarde des données. Veuillez rééssayer l'opération.");
+          this.inProgress = false;
+          return;
+        })
+      });
+    }
 
-      // Go to yousign
-      this.sharedService.setCurrentJobyer(this.jobyer);
-      this.sharedService.setCurrentOffer(this.currentOffer);
-      this.sharedService.setContractData(this.contractData);
-      this.offersService.updateOfferState(this.currentOffer.idOffer, "en contrat");
-      this.router.navigate(['contract/recruitment']);
-    });
+  checkOfferState(offer){
+    this.contractService.getContractsByOffer(offer.idOffer).then((data: any) => {
+      if(data && data.data && data.data.length != 0 && data.data.length >= offer.nbPoste){
+        this.offersService.updateOfferState(offer.idOffer, "en archive");
+        offer.etat = "en archive";
+        this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
+        this.sharedService.setCurrentUser(this.currentUser);
+      }
+    })
   }
 
   formHasChanges(){
@@ -917,5 +963,9 @@ export class Contract {
     if(index>=0){
       this.contractData.epiList.splice(index,1);
     }
+  }
+
+  addAlert(type, msg): void {
+    this.alerts = [{type: type, msg: msg}];
   }
 }

@@ -888,7 +888,7 @@ export class OffersService {
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          resolve(data.data);
+          resolve(data);
         });
     });
   }
