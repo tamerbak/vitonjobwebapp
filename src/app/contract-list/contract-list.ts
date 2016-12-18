@@ -5,8 +5,6 @@ import {ContractService} from '../../providers/contract-service';
 import {OffersService} from '../../providers/offer.service';
 import {Utils} from "../utils/utils";
 import {DateUtils} from "../utils/date-utils";
-import {ConventionService} from "../../providers/convention.service";
-import {isEmpty} from "rxjs/operator/isEmpty";
 
 @Component({
   selector: '[contract-list]',
@@ -14,7 +12,7 @@ import {isEmpty} from "rxjs/operator/isEmpty";
   encapsulation: ViewEncapsulation.None,
   styles: [require('./contract-list.scss')],
   directives: [ROUTER_DIRECTIVES],
-  providers: [ContractService, OffersService, ConventionService]
+  providers: [ContractService, OffersService]
 })
 
 export class ContractList{
@@ -25,8 +23,7 @@ export class ContractList{
   constructor(private sharedService: SharedService,
               private router: Router,
               private contractService: ContractService,
-              private offerService: OffersService,
-              private conventionService: ConventionService) {
+              private offerService: OffersService) {
     this.currentUser = this.sharedService.getCurrentUser();
     //only employers and recruiters can access to the contract list page
     if (!this.currentUser || (!this.currentUser.estEmployeur && !this.currentUser.estRecruteur)) {

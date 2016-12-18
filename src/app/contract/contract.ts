@@ -714,7 +714,7 @@ export class Contract {
   }
 
   gotoContractListPage(){
-    let isValid = true;//!this.missingJobyerData() && this.isMissionDateValid;
+    let isValid = !this.missingJobyerData() && this.isMissionDateValid;
     if(!isValid){
       return;
     }

@@ -529,7 +529,6 @@ export class ContractService {
       "justificationRecours": contract.justification,
       "qualification": contract.qualification,
       "caracteristiquePoste": contract.characteristics,
-      //these two info are initialised nowhere
       "tempsTravail": {
         "nombreHeures": contract.workTimeHours,
         "variables": contract.workTimeVariable,
@@ -537,7 +536,6 @@ export class ContractService {
       "horaireHabituel": {
         "debut": sh,
         "fin": eh,
-        //these info is initialised nowhere
         "variables": contract.workHourVariable,
       },
       "posteARisque": "Non",
