@@ -41,6 +41,7 @@ declare var require;
 export class OfferEdit{
 
   selectedJob: any;
+  initSectorDone = false;
 
   offer: any;
   sectors: any = [];
@@ -320,27 +321,36 @@ export class OfferEdit{
       };
     }
 
-    //load all sectors, if not yet loaded in local
+    let self = this;
+
+    //load all sectors and job, if not yet loaded in local
     this.sectors = this.sharedService.getSectorList();
-    if (!this.sectors || this.sectors.length == 0) {
+    var jobList = this.sharedService.getJobList();
+    if (!this.sectors || this.sectors.length == 0 || !jobList || jobList.length == 0) {
       this.offersService.loadSectorsToLocal().then((data: any) => {
         this.sharedService.setSectorList(data);
         this.sectors = data;
-      })
-    }
 
-    //load all jobs, if not yet loaded in local
-    var jobList = this.sharedService.getJobList();
-    if (!jobList || jobList.length == 0) {
-      this.hideJobLoader = false;
-      this.offersService.loadJobsToLocal().then((data: any) => {
-        this.sharedService.setJobList(data);
-        this.hideJobLoader = true;
+        // Load job
+        this.hideJobLoader = false;
+        this.offersService.loadJobsToLocal().then((data2: any) => {
+          this.sharedService.setJobList(data2);
+          this.hideJobLoader = true;
+
+          if (this.obj == "detail") {
+            //display selected job of the current offer
+            // this.sectorSelected(this.offer.jobData.idSector);
+            self.initSectorDone = true;
+          }
+
+        })
       })
-    }
-    if (this.obj == "detail") {
-      //display selected job of the current offer
-      this.sectorSelected(this.offer.jobData.idSector);
+    } else {
+      if (this.obj == "detail") {
+        //display selected job of the current offer
+        this.sectorSelected(this.offer.jobData.idSector);
+        self.initSectorDone = true;
+      }
     }
 
     //loadQualities
