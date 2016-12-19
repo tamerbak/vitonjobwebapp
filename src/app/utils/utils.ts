@@ -62,9 +62,9 @@ export class Utils {
 
   public static isEmpty(str) {
     if (str == '' || str == 'null' || !str)
-    return true;
+      return true;
     else
-    return false;
+      return false;
   }
 
   public static isNumber(char){
