@@ -49,11 +49,11 @@ export class ContractList{
     let offer = this.offerService.getOfferByIdFromLocal(this.currentUser, contract.idOffer);
 
     //initalize jobyer object
-    let jobyer = {prenom: contract.prenom, nom: contract.nom, numSS: contract.numSS, lieuNaissance: contract.lieuNaissance, nationaliteLibelle: contract.nationaliteLibelle, email: contract.email, tel: contract.tel, adresseDomicile: ''};
+    let jobyer = {prenom: contract.prenom, nom: contract.nom, numSS: contract.numSS, lieuNaissance: contract.lieuNaissance, nationaliteLibelle: contract.nationaliteLibelle, email: contract.email, tel: contract.tel, address: ''};
 
     //get jobyer address
     this.contractService.getJobyerAdress(contract.jobyerId).then((address : string)=>{
-      jobyer.adresseDomicile = address;
+      jobyer.address = address;
 
         //specify if horaire fixes ou variables
       contract.isScheduleFixed = (contract.isScheduleFixed.toUpperCase() == 'OUI' ? 'true' : 'false');

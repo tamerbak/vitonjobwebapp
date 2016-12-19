@@ -500,10 +500,8 @@ export class ContractService {
     let sh = 'Horaires variables selon planning';
     let eh = '';
     if(contract.isScheduleFixed == 'true'){
-      let d = new Date(contract.workStartHour);
-      sh = d.getHours()+":"+d.getMinutes();
-      d = new Date(contract.workEndHour);
-      eh = " à "+d.getHours()+":"+d.getMinutes();
+      sh = DateUtils.toHourString(contract.workStartHour);
+      eh = " à " + DateUtils.toHourString(contract.workEndHour);
     }
 
     this.configuration = Configs.setConfigs(projectTarget);
@@ -516,15 +514,15 @@ export class ContractService {
       "jobyerPrenom": jobyer.prenom,
       "jobyerNom": jobyer.nom,
       "nss": jobyer.numSS,
-      "dateNaissance": DateUtils.parseDate(contract.jobyerBirthDate),
+      "dateNaissance": DateUtils.toDateString(contract.jobyerBirthDate),
       "lieuNaissance": jobyer.lieuNaissance,
       "nationalite": jobyer.nationaliteLibelle,
       "adresseDomicile": jobyer.address,
-      "dateDebutMission": contract.missionStartDate,
-      "dateFinMission": contract.missionEndDate,
+      "dateDebutMission": DateUtils.toDateString(contract.missionStartDate),
+      "dateFinMission": DateUtils.toDateString(contract.missionEndDate),
       "periodeEssai": contract.trialPeriod == null ? "" : ( contract.trialPeriod == 1 ? "1 jour" : (contract.trialPeriod + " jours")),
-      "dateDebutTerme": DateUtils.parseDate(contract.termStartDate),
-      "dateFinTerme": DateUtils.parseDate(contract.termEndDate),
+      "dateDebutTerme": DateUtils.toDateString(contract.termStartDate),
+      "dateFinTerme": DateUtils.toDateString(contract.termEndDate),
       "motifRecours": contract.motif,
       "justificationRecours": contract.justification,
       "qualification": contract.qualification,
@@ -566,11 +564,11 @@ export class ContractService {
       "indemniteCongesPayes": contract.indemniteCongesPayes,
       "moyenAcces": contract.moyenAcces,
       "numeroTitreTravail": contract.numeroTitreTravail,
-      "debutTitreTravail": (contract.debutTitreTravail),
-      "finTitreTravail": (contract.finTitreTravail),
+      "debutTitreTravail": DateUtils.toDateString(contract.debutTitreTravail),
+      "finTitreTravail": DateUtils.toDateString(contract.finTitreTravail),
       "periodesNonTravaillees": contract.periodesNonTravaillees,
-      "debutSouplesse": DateUtils.parseDate(contract.debutSouplesse),
-      "finSouplesse": DateUtils.parseDate(contract.finSouplesse),
+      "debutSouplesse": DateUtils.toDateString(contract.debutSouplesse),
+      "finSouplesse": DateUtils.toDateString(contract.finSouplesse),
       "equipements": contract.equipements,
       "centreMedecineEntreprise": contract.centreMedecineEntreprise,
       "adresseCentreMedecineEntreprise": contract.adresseCentreMedecineEntreprise,
