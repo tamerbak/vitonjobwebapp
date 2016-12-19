@@ -136,8 +136,8 @@ export class EntrepriseEdit {
       ).then((result: any) => {
         if(result.status == 'success') {
           Messenger().post({
-            message: "Entreprise créée avec succès.",
-            type: 'success',
+            message: "Votre demande de création a bien été prise en compte, elle sera effective lors de votre prochaine connexion",
+            type: 'info',
             showCloseButton: true
           });
           this.router.navigate(['app/home']);
