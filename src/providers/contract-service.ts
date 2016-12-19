@@ -463,7 +463,7 @@ export class ContractService {
     if(epis && epis.length>0){
       html = html + "<br><p><b>Equipements de protection individuels</b></p><ul>";
       for (let i = 0; i < epis.length; i++) {
-        let p = epis[i].libelle;
+        let p = epis[i];
         html = html + "<li>"+ p + "</li>";
       }
       html = html + "</ul>";
