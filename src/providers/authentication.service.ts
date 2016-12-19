@@ -127,7 +127,7 @@ export class AuthenticationService {
     };
     return new Promise(resolve => {
       let headers = Configs.getHttpJsonHeaders();
-      this.http.post(this.configuration.calloutURL, JSON.stringify(payload), {headers: headers})
+      this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
           resolve(data);
@@ -205,7 +205,7 @@ export class AuthenticationService {
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
           resolve(data);

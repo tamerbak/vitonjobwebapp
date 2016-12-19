@@ -1,0 +1,99 @@
+@import "../../scss/variables";
+@import "../../../node_modules/bootstrap/scss/_variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+
+.login-page {
+  background-color: $gray-semi-lighter;
+}
+
+.login-page .page-footer {
+
+  margin-bottom: 25px;
+  font-size: $font-size-mini;
+  color: $text-muted;
+  text-align: center;
+  @media (min-height: 600px) {
+    /*position: absolute;*/
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}
+
+.signup-footer {
+  text-align: center;
+}
+
+.widget-signup-container {
+  padding-top: 10%;
+}
+
+.widget-signup-logo {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-weight: $font-weight-normal;
+  .fa-circle {
+    font-size: 13px;
+    margin: 0 20px;
+  }
+}
+
+.widget-signup {
+  padding: 30px;
+
+  > header {
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: $font-weight-normal;
+    }
+  }
+}
+
+.widget-signup-info {
+  font-size: $font-size-mini;
+  color: #888;
+  margin-top: 1px;
+  margin-bottom: 0;
+}
+
+.signup-form {
+  .form-control {
+    font-size: $font-size-mini;
+    border: none;
+    background-color: $gray-lighter;
+    &:focus {
+      background-color: $gray-semi-lighter;
+    }
+  }
+
+  .labelRadio {
+    padding-right: 20px;
+    font-size: 13px;
+  }
+
+  .abc-radio {
+    padding-top: 10px;
+  }
+
+  .parsley-errors-list {
+    font-size: $font-size-smaller;
+    padding-left: 0;
+    margin-bottom: 5px;
+
+    li {
+      list-style: none;
+      color: $brand-danger;
+    }
+  }
+
+  .loaderPosition {
+    position: relative;
+    margin-right: 20px;
+    margin-bottom: 10px;
+  }
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
