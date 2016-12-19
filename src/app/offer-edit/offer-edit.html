@@ -398,30 +398,63 @@
 
 <div class="row">
   <div class="col-sm-12">
+
     <section widget class="widget widget-offer" *ngIf="projectTarget == 'employer'">
       <header class="bb widget-offer-header">
         <h6><span class="fw-semi-bold widget-offer-header-title">Conditions d'emploi</span></h6>
       </header>
-    <div class="widget-body">
-      <fieldset>
-        <legend><strong>Conditions d'emploi</strong></legend>
-        <alert *ngFor="let alert of alertsConditionEmp; let i = index" [type]="alert.type + ' alert-sm'"
-               dismissible="false">
-          <div [innerHTML]="alert.msg"></div>
-        </alert>
+      <div class="widget-body" *ngIf="!personalizeConvention">
+        <a href="#" (click)="onPersonalizeConvention()">Personnaliser les conditions d'emploi</a>
+      </div>
+      <div class="widget-body" *ngIf="personalizeConvention">
+        <fieldset>
+          <legend><strong>Conditions d'emploi</strong></legend>
+          <alert *ngFor="let alert of alertsConditionEmp; let i = index" [type]="alert.type + ' alert-sm'"
+                 dismissible="false">
+            <div [innerHTML]="alert.msg"></div>
+          </alert>
 
-        <table class="table table-condensed">
-          <thead>
-          <tr>
-            <th>Valeurs définies par la convention collective</th>
-            <th colspan="3">Valeurs définies par l'employeur</th>
-          </tr>
-          </thead>
+          <table class="table table-condensed">
+            <thead>
+            <tr>
+              <th>Valeurs définies par la convention collective</th>
+              <th colspan="3">Valeurs définies par l'employeur</th>
+            </tr>
+            </thead>
 
-          <tr *ngFor="let item of categoriesHeure" [hidden]="item.code == 'HT'">
-            <td>{{ item.libelle }}</td>
-            <td>
-              <div class="col-xs-10 input-group">
+            <tr *ngFor="let item of categoriesHeure" [hidden]="item.code == 'HT'">
+              <td>{{ item.libelle }}</td>
+              <td>
+                <div class="col-xs-10 input-group">
+                  <input
+                    type="number"
+                    class="form-control"
+                    [min]="item.coefficient"
+                    [(ngModel)]="item.empValue"
+                    (change)="watchConditionEmp($event, item)"
+                  />
+                  <div class="input-group-addon voj-input-group-addon">{{ preventNull(item.typeValue) }}</div>
+                </div>
+              </td>
+              <td class="text-md-right">
+                <div class="form-inline" *ngIf="item.debut>=0 && item.fin>=0" >
+                  <input type="number" class="form-control" [(ngModel)]="item.debutHeure" min="0" max="23" step="1" />
+                  :
+                  <input type="number" class="form-control" [(ngModel)]="item.debutMinute" min="0" max="59" step="1" />
+                </div>
+              </td>
+              <td class="text-md-right">
+                <div class="form-inline" *ngIf="item.debut>=0 && item.fin>=0" >
+                  <input type="number" class="form-control" [(ngModel)]="item.finHeure" min="0" max="23" step="1" />
+                  :
+                  <input type="number" class="form-control" [(ngModel)]="item.finMinute" min="0" max="59" step="1" />
+                </div>
+              </td>
+            </tr>
+
+            <tr *ngFor="let item of majorationsHeure">
+              <td>{{ item.libelle }}</td>
+              <td>
                 <input
                   type="number"
                   class="form-control"
@@ -430,61 +463,32 @@
                   (change)="watchConditionEmp($event, item)"
                 />
                 <div class="input-group-addon voj-input-group-addon">{{ preventNull(item.typeValue) }}</div>
-              </div>
-            </td>
-            <td class="text-md-right">
-              <div class="form-inline" *ngIf="item.debut>=0 && item.fin>=0" >
-                <input type="number" class="form-control" [(ngModel)]="item.debutHeure" min="0" max="23" step="1" />
-                :
-                <input type="number" class="form-control" [(ngModel)]="item.debutMinute" min="0" max="59" step="1" />
-              </div>
-            </td>
-            <td class="text-md-right">
-              <div class="form-inline" *ngIf="item.debut>=0 && item.fin>=0" >
-                <input type="number" class="form-control" [(ngModel)]="item.finHeure" min="0" max="23" step="1" />
-                :
-                <input type="number" class="form-control" [(ngModel)]="item.finMinute" min="0" max="59" step="1" />
-              </div>
-            </td>
-          </tr>
+              </td>
+              <td></td>
+              <td></td>
+            </tr>
 
-          <tr *ngFor="let item of majorationsHeure">
-            <td>{{ item.libelle }}</td>
-            <td>
-              <input
-                type="number"
-                class="form-control"
-                [min]="item.coefficient"
-                [(ngModel)]="item.empValue"
-                (change)="watchConditionEmp($event, item)"
-              />
-              <div class="input-group-addon voj-input-group-addon">{{ preventNull(item.typeValue) }}</div>
-            </td>
-            <td></td>
-            <td></td>
-          </tr>
+            <tr *ngFor="let item of indemnites">
+              <td>{{ item.libelle }}</td>
+              <td>
+                <div class="col-xs-10 input-group">
+                  <input
+                    type="number"
+                    class="form-control"
+                    [min]="item.coefficient"
+                    [(ngModel)]="item.empValue"
+                    (change)="watchConditionEmp($event, item)"
+                  />
+                  <div class="input-group-addon voj-input-group-addon">{{ preventNull(item.typeValue) }}</div>
+                </div>
+              </td>
+              <td></td>
+              <td></td>
+            </tr>
 
-          <tr *ngFor="let item of indemnites">
-            <td>{{ item.libelle }}</td>
-            <td>
-              <div class="col-xs-10 input-group">
-                <input
-                  type="number"
-                  class="form-control"
-                  [min]="item.coefficient"
-                  [(ngModel)]="item.empValue"
-                  (change)="watchConditionEmp($event, item)"
-                />
-                <div class="input-group-addon voj-input-group-addon">{{ preventNull(item.typeValue) }}</div>
-              </div>
-            </td>
-            <td></td>
-            <td></td>
-          </tr>
+          </table>
 
-        </table>
-
-      </fieldset>
+        </fieldset>
       </div>
     </section>
 

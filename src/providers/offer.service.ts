@@ -1,8 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Http, Headers} from "@angular/http";
 import {Configs} from "../configurations/configs";
-import { SharedService } from './shared.service';
-import {DateUtils} from "../app/utils/date-utils";
+import {SharedService} from "./shared.service";
 
 @Injectable()
 export class OffersService {
@@ -916,6 +915,42 @@ export class OffersService {
             this.convention = data.data[0];
           }
           resolve(this.convention);
+        });
+    });
+  }
+
+  /**
+   * Loading all convention levels given convention ID
+   * @param idConvention
+   * @returns {Promise<T>}
+   */
+  getConventionFilters(idConvention) {
+
+    let sql = `
+      SELECT 'niv' as type, pk_user_niveau_convention_collective AS id, code, libelle
+      FROM user_niveau_convention_collective
+      WHERE fk_user_convention_collective = ` + idConvention + `
+      UNION SELECT 'coe' as type, pk_user_coefficient_convention AS id, code, libelle
+      FROM user_coefficient_convention
+      WHERE fk_user_convention_collective = ` + idConvention + `
+      UNION SELECT 'ech' as type, pk_user_echelon_convention AS id, code, libelle
+      FROM user_echelon_convention
+      WHERE fk_user_convention_collective = ` + idConvention + `
+      UNION SELECT 'cat' as type, pk_user_categorie_convention AS id, code, libelle
+      FROM user_categorie_convention
+      WHERE fk_user_convention_collective = ` + idConvention + `
+    `;
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let list = [];
+          if (data.data && data.data.length > 0) {
+            list = data.data;
+          }
+          resolve(list);
         });
     });
   }

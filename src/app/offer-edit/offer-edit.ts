@@ -85,6 +85,7 @@ export class OfferEdit{
   minHourRate: number = 0;
   invalidHourRateMessage: string = '';
   invalidHourRate = false;
+  personalizeConvention = false;
 
   categoriesHeure: any = [];
   majorationsHeure: any = [];
@@ -159,6 +160,8 @@ export class OfferEdit{
   offerContact : string;
   tel : string;
 
+  personalizeConventionInit : boolean = false;
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private searchService: SearchService,
@@ -207,36 +210,28 @@ export class OfferEdit{
 
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
 
+    //  Load collective convention
     if (this.projectTarget == "employer" && this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
-      //  Load collective convention
-      this.offersService.getConvention(this.currentUser.employer.entreprises[0].conventionCollective.id).then(c => {
-        if (c)
-          this.convention = c;
-        if (this.convention.id > 0) {
-          this.offersService.getConventionNiveaux(this.convention.id).then(data => {
-            this.niveauxConventions = data;
-          });
-          this.offersService.getConventionCoefficients(this.convention.id).then(data => {
-            this.coefficientsConventions = data;
-          });
-          this.offersService.getConventionEchelon(this.convention.id).then(data => {
-            this.echelonsConventions = data;
-          });
-          this.offersService.getConventionCategory(this.convention.id).then(data => {
-            this.categoriesConventions = data;
-          });
-          this.offersService.getConventionParameters(this.convention.id).then(data => {
-            this.parametersConvention = data;
-            this.checkHourRate();
-          });
-
-          //get values for "condition de travail"
-          if (this.obj != "detail") {
-            this.getConditionEmpValuesForCreation();
-          } else {
-            this.getConditionEmpValuesForUpdate();
-          }
-        }
+      this.convention = this.currentUser.employer.entreprises[0].conventionCollective;
+      // Loading convention filters / data
+      let filters = this.sharedService.getConventionFilters();
+      if (this.isEmpty(filters) === true) {
+        this.offersService.getConventionFilters(this.convention.id).then((data: any) => {
+          this.sharedService.setConventionFilters(data);
+          this.niveauxConventions = data.filter((elem) => { return elem.type == 'niv' });
+          this.coefficientsConventions = data.filter((elem) => { return elem.type == 'coe' });
+          this.echelonsConventions = data.filter((elem) => { return elem.type == 'ech' });
+          this.categoriesConventions = data.filter((elem) => { return elem.type == 'cat' });
+        });
+      } else {
+        this.niveauxConventions = filters.filter((elem) => { return elem.type == 'niv' });
+        this.coefficientsConventions = filters.filter((elem) => { return elem.type == 'coe' });
+        this.echelonsConventions = filters.filter((elem) => { return elem.type == 'ech' });
+        this.categoriesConventions = filters.filter((elem) => { return elem.type == 'cat' });
+      }
+      this.offersService.getConventionParameters(this.convention.id).then(data => {
+        this.parametersConvention = data;
+        this.checkHourRate();
       });
     }
 
@@ -340,22 +335,17 @@ export class OfferEdit{
       this.hideJobLoader = false;
       this.offersService.loadJobsToLocal().then((data: any) => {
         this.sharedService.setJobList(data);
-        if (this.obj == "detail") {
-          //display selected job of the current offer
-          this.sectorSelected(this.offer.jobData.idSector);
-        }
         this.hideJobLoader = true;
       })
-    } else {
-      if (this.obj == "detail") {
-        //display selected job of the current offer
-        this.sectorSelected(this.offer.jobData.idSector);
-      }
+    }
+    if (this.obj == "detail") {
+      //display selected job of the current offer
+      this.sectorSelected(this.offer.jobData.idSector);
     }
 
     //loadQualities
     this.qualities = this.sharedService.getQualityList();
-    if (!this.qualities || this.qualities.length == 0) {
+    if (Utils.isEmpty(this.qualities) === true) {
       this.offersService.loadQualities(this.projectTarget).then((data: any) => {
         this.qualities = data.data;
         this.sharedService.setQualityList(this.qualities);
@@ -363,14 +353,13 @@ export class OfferEdit{
     }
 
     //loadLanguages
-    //  Cette partie est commentée pour forcer les prochaines versions à retélécharger la liste des langues triée
-    //this.langs = this.sharedService.getLangList();
-    //if (!this.langs || this.langs.length == 0) {
+    this.langs = this.sharedService.getLangList();
+    if (Utils.isEmpty(this.langs) === true) {
       this.listService.loadLanguages().then((data: any) => {
         this.langs = data.data;
         this.sharedService.setLangList(this.langs);
       });
-    //}
+    }
 
     //init slot
     this.slot = {
@@ -694,6 +683,24 @@ export class OfferEdit{
         self.epi = e.choice.libelle;
       }
     )
+  }
+
+  /**
+   * Event when "Personalize Working conditions"
+   */
+  onPersonalizeConvention() {
+    if (this.personalizeConvention === false) {
+      if (this.personalizeConventionInit === false) {
+        //get values for "condition de travail"
+        if (this.obj != "detail") {
+          this.getConditionEmpValuesForCreation();
+        } else {
+          this.getConditionEmpValuesForUpdate();
+        }
+        this.personalizeConventionInit = true;
+      }
+    }
+    this.personalizeConvention = !this.personalizeConvention;
   }
 
   addPrerequis() {
