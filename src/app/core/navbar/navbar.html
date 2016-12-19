@@ -88,6 +88,16 @@
               - <strong>{{ sharedService.getCurrentUser().employer.entreprises[0].nom }}</strong>
             </span>
           </span>
+          <b class="caret"></b>
+        </a>
+        <!-- ready to use entreprise-selector dropdown-->
+        <entreprise-selector
+          class="dropdown-menu dropdown-menu-right animated animated-fast fadeInUp"
+        ></entreprise-selector>
+      </li>
+
+      <li class="nav-item dropdown">
+        <a href class="nav-link dropdown-toggle" data-toggle="dropdown">
           <span class="circle bg-warning fw-bold ">
 						{{offersNotifications.length}}
 					</span>
@@ -99,6 +109,7 @@
           class="dropdown-menu dropdown-menu-right animated animated-fast fadeInUp"
         ></notifications>
       </li>
+
       <li *ngIf="currentUser" class="nav-item dropdown">
         <a href class="nav-link dropdown-toggle" data-toggle="dropdown">
           <i class="fa fa-cog fa-lg"></i>

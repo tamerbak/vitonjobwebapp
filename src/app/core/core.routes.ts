@@ -30,6 +30,7 @@ import {AdvertEdit} from "../advert-edit/advert-edit";
 import {AdvertJobyerList} from "../advert-jobyer-list/advert-jobyer-list";
 import {ExtraCalendar} from "../extra-calendar/extra-calendar"
 import {Iframe} from '../iframe/iframe';
+import {EntrepriseEdit} from '../entreprise-edit/entreprise-edit';
 
 /**
  * VitOnJob modules
@@ -53,6 +54,8 @@ export const CoreRoutes: RouterConfig = [
       {path: 'profile', component: Profile, canDeactivate: [ConfirmExitPage]},
       {path: 'profile/jobyer', component: ProfileJobyer},
       {path: 'settings', component: Settings, canDeactivate: [ConfirmExitPage]},
+
+      {path: 'entreprise/edit', component: EntrepriseEdit},
 
       // Offers management
       {path: 'offer/list', component: OfferList},
