@@ -16,7 +16,9 @@ export class EntrepriseSelector implements OnInit {
               private sharedService: SharedService,
               private entrepriseService: EntrepriseService
   ) {
-    this.entreprises = this.sharedService.getCurrentUser().employer.entreprises;
+    if (this.sharedService.getCurrentUser().estEmployeur) {
+      this.entreprises = this.sharedService.getCurrentUser().employer.entreprises;
+    }
   }
 
   goToEntrepriseCreationPage() {
