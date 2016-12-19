@@ -114,8 +114,15 @@
           <li><a class="dropdown-item" (click)="logOut()"><i class="fa fa-sign-out"></i> &nbsp; Se déconnecter</a></li>
         </ul>
       </li>
-      <li><a [hidden]="sharedService.getCurrentUser()" class="dropdown-item" [routerLink]=" ['/login'] "><i class="fa fa-sign-in"></i>
-        &nbsp; Se connecter</a></li>
+      <li class="nav-item">
+        <a [hidden]="sharedService.getCurrentUser()" class="dropdown-item" [routerLink]=" ['/login'] "><i class="fa fa-sign-in"></i>
+        &nbsp; Se connecter</a>
+      </li>
+      <li class="nav-item">
+        <a [hidden]="sharedService.getCurrentUser()" class="dropdown-item" [routerLink]=" ['/signup'] "><i class="fa fa-lock"></i>
+          &nbsp; S'inscrire</a>
+      </li>
+
     </ul>
   </div>
 </div>

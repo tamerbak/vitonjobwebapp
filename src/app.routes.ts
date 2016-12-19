@@ -3,11 +3,13 @@ import {CoreRoutes} from './app/core/core.routes';
 import {ErrorPage} from './app/error/error';
 import {LoginPage} from './app/login/login';
 import {REDIRECTTO} from './app/core/core';
+import {SignupPage} from "./app/signup/signup";
 
 export const routes: RouterConfig = [
   ...CoreRoutes,
   { path: 'error', component: ErrorPage},
   { path: 'login', component: LoginPage},
+  { path: 'signup', component: SignupPage},
   {
     path: '',
     redirectTo: '',
