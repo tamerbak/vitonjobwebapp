@@ -27,6 +27,9 @@ export class DateUtils {
   }
 
   public static toDateString(date) {
+    if(Utils.isEmpty(date)){
+      return "";
+    }
     let d = new Date(date);
     let str = d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
     return str;
