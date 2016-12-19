@@ -222,17 +222,17 @@ export class OfferEdit{
           this.coefficientsConventions = data.filter((elem) => { return elem.type == 'coe' });
           this.echelonsConventions = data.filter((elem) => { return elem.type == 'ech' });
           this.categoriesConventions = data.filter((elem) => { return elem.type == 'cat' });
-          this.parametersConvention = data.filter((elem) => { return elem.type == 'con' });
-          this.checkHourRate();
         });
       } else {
         this.niveauxConventions = filters.filter((elem) => { return elem.type == 'niv' });
         this.coefficientsConventions = filters.filter((elem) => { return elem.type == 'coe' });
         this.echelonsConventions = filters.filter((elem) => { return elem.type == 'ech' });
         this.categoriesConventions = filters.filter((elem) => { return elem.type == 'cat' });
-        this.parametersConvention = filters.filter((elem) => { return elem.type == 'con' });
-        this.checkHourRate();
       }
+      this.offersService.getConventionParameters(this.convention.id).then(data => {
+        this.parametersConvention = data;
+        this.checkHourRate();
+      });
     }
 
     if (this.obj == "detail") {
@@ -335,17 +335,12 @@ export class OfferEdit{
       this.hideJobLoader = false;
       this.offersService.loadJobsToLocal().then((data: any) => {
         this.sharedService.setJobList(data);
-        if (this.obj == "detail") {
-          //display selected job of the current offer
-          this.sectorSelected(this.offer.jobData.idSector);
-        }
         this.hideJobLoader = true;
       })
-    } else {
-      if (this.obj == "detail") {
-        //display selected job of the current offer
-        this.sectorSelected(this.offer.jobData.idSector);
-      }
+    }
+    if (this.obj == "detail") {
+      //display selected job of the current offer
+      this.sectorSelected(this.offer.jobData.idSector);
     }
 
     //loadQualities

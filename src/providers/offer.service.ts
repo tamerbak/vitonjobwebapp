@@ -939,9 +939,6 @@ export class OffersService {
       UNION SELECT 'cat' as type, pk_user_categorie_convention AS id, code, libelle
       FROM user_categorie_convention
       WHERE fk_user_convention_collective = ` + idConvention + `
-      UNION SELECT 'con' as type, pk_user_convention_collective AS id, code, libelle
-      FROM user_convention_collective
-      WHERE pk_user_convention_collective  = ` + idConvention + `
     `;
 
     return new Promise(resolve => {
