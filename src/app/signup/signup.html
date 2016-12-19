@@ -24,7 +24,7 @@
             </alert>
             <form class="signup-form mt-lg">
               <div class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">Je créé mon compte en tant que</label>
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">Je crée mon compte en tant que</label>
                 <div class="abc-radio">
                   <input type="radio" name="radio1" id="radio1" value="employeur" (click)="watchRole($event)" checked>
                   <label for="radio1" class="labelRadio">
@@ -41,7 +41,7 @@
               <div class="form-group row" >
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">Téléphone</label>
                 <div class="col-md-4 col-xs-6">
-                  <select class="select2 form-control" [(ngModel)]="index">
+                  <select class="select2 form-control" [(ngModel)]="index" (change)="watchPhone($event)">
                     <option *ngFor="let p of pays" [value]="p.indicatif_telephonique"> {{p.nom}}
                       ({{p.indicatif_telephonique}})
                     </option>
@@ -61,7 +61,7 @@
                     <li class="parsley-required">Veuillez saisir un indicatif valide.</li>
                   </ul>
                   <ul class="parsley-errors-list filled" [hidden]="!phoneExists">
-                    <li class="parsley-required">Ce numéro de téléphone est déjà utilisé. Veuillez en coisir un autre ou vous authentifier</li>
+                    <li class="parsley-required">Ce numéro de téléphone est déjà utilisé. Veuillez en choisir un autre ou vous authentifier</li>
                   </ul>
                 </div>
               </div>
@@ -144,6 +144,6 @@
     </div>
   </main>
   <footer class="signup-footer page-footer">
-    2016 &copy; Vit-On-Job est une marque de Manaona.
+    {{annee}} &copy; Vit-On-Job est une marque de Manaona.
   </footer>
 </div>

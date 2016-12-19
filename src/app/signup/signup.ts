@@ -1,10 +1,9 @@
 import {Component, ViewEncapsulation} from "@angular/core";
-import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from "@angular/router";
+import {Router, ActivatedRoute, Params} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap";
 import {AuthenticationService} from "../../providers/authentication.service";
 import {LoadListService} from "../../providers/load-list.service";
 import {ValidationDataService} from "../../providers/validation-data.service";
-import {ProfileService} from "../../providers/profile.service";
 import {SharedService} from "../../providers/shared.service";
 import {Utils} from "../utils/utils";
 declare function md5(value: string): string;
@@ -12,12 +11,12 @@ declare var Messenger;
 
 
 @Component({
-  directives: [ROUTER_DIRECTIVES, AlertComponent],
+  directives: [AlertComponent],
   selector: '[signup]',
   template: require('./signup.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./signup.scss')],
-  providers: [AuthenticationService, LoadListService, ValidationDataService, ProfileService]
+  providers: [AuthenticationService, LoadListService, ValidationDataService]
 })
 export class SignupPage{
   isRedirectedFromHome : boolean;
@@ -35,16 +34,16 @@ export class SignupPage{
   password2 : string;
   showHidePasswdConfirmIcon : string;
   hideLoader : boolean;
-  isRemembered: boolean;
 
   role : string;
   obj : any;
+
+  annee : any;
 
   constructor(private loadListService: LoadListService,
               private authService: AuthenticationService,
               private validationDataService: ValidationDataService,
               private sharedService: SharedService,
-              private profileService: ProfileService,
               private router: Router,
               private route: ActivatedRoute) {
   }
@@ -73,6 +72,9 @@ export class SignupPage{
     this.route.params.forEach((params: Params) => {
       this.obj = params['obj'];
     });
+
+    let d = new Date();
+    this.annee = d.getFullYear();
   }
 
   signup(){
@@ -82,8 +84,6 @@ export class SignupPage{
     this.hideLoader = false;
     let indPhone=this.index+""+this.phone;
     let pwd = md5(this.password1);
-    if (this.email == null || this.email == 'null')
-      this.email = '';
     this.authService.authenticate(this.email, indPhone, pwd, this.role, false).then((data:any)=>{
       this.hideLoader = true;
       this.sharedService.setProfilImageUrl(null);
@@ -92,23 +92,12 @@ export class SignupPage{
         this.addAlert("danger", "Serveur non disponible ou problème de connexion.");
         return;
       }
-      if (this.isRemembered) {
-        this.sharedService.setStorageType("local");
-      } else {
-        this.sharedService.setStorageType("session");
-      }
+      this.sharedService.setStorageType("local");
       this.sharedService.setCurrentUser(data);
-      let isNewUser = data.newAccount;
-
-      if (this.obj == "recruit" && !isNewUser) {
-        this.router.navigate(['search/results', {obj: 'recruit'}]);
-        return;
-      }
-      if (this.obj == "recruit" && isNewUser) {
+      if (this.obj == "recruit") {
         this.router.navigate(['home', {obj: 'recruit'}]);
         return;
-      }
-      if(this.obj != "recruit"){
+      } else {
         this.router.navigate(['home']);
         return;
       }
@@ -234,13 +223,6 @@ export class SignupPage{
             || this.emailExists
             || this.phoneExists
             || !this.role);
-  }
-
-  isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
   }
 
   addAlert(type, msg): void {
