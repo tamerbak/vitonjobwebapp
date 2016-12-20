@@ -180,6 +180,9 @@ export class OfferList {
           this.router.navigate(['offer/edit', {obj:'detail'}]);
         });
       });
+    }else{
+      this.sharedService.setCurrentOffer(offer);
+      this.router.navigate(['offer/edit', {obj:'detail'}]);
     }
   }
 
