@@ -7,7 +7,7 @@
 <div class="col-lg-6 col-xs-12">
   <section class="widget">
     <div class="widget-body">
-      <div *ngIf="emptySafe"><p class="bg-info attachments-info-box">Vous pouvez installer dès maintenant un document dans votre coffre numérique sécurisé</p></div>
+      <div *ngIf="emptySafe"><p class="attachments-info-box">Vous pouvez installer dès maintenant un document dans votre coffre numérique sécurisé</p></div>
       <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
         <div [hidden]="emptySafe" class="form-group row">
           <label class="col-md-7 col-xs-7 form-control-label"><strong>Document</strong></label>
@@ -52,16 +52,18 @@
             <label class="col-md-4 col-xs-12 form-control-label text-md-right">
               Télécharger
             </label>
-
-            <div class="col-md-8 col-xs-12">
+            <div class="col-md-4 col-xs-12">
               <div class="fileinput fileinput-new" data-provides="fileinput">
-                <div class="fileinput-preview thumbnail width-height" data-trigger="fileinput">
+                <div class="form-group">
+                  <input type="file" name="file" id="file" class="input-file form-control" multiple>
+                  <label for="file" class="btn btn-tertiary js-labelFile">
+                    <i class="icon fa fa-check"></i>
+                    <span class="js-fileName">Choisir un fichier</span>
+                  </label>
+                  <small [hidden]="isEmpty(scanData)">cliquer pour remplacer</small>
                 </div>
-                <div>
-                <span class="btn btn-default btn-file" [hidden]="!isEmpty(scanData)"><span class="fileinput-new">Choisir</span>
-                <input type="file" name="..."></span>
-                  <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Enlever</a>
-                </div>
+
+                <div class="fileinput-preview" data-trigger="fileinput"></div>
               </div>
             </div>
           </div>

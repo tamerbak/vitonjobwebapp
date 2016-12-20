@@ -67,6 +67,7 @@
 
 .attachments-info-box{
   color:#FFF !important;
+  background-color: #14baa6;
   font-size: x-large;
   text-align: center;
 }
@@ -94,8 +95,58 @@
 .attachement-add-btn{
   float: right;
 }
+.inp-file{
+  border: solid 1px #14BAA6;
+  padding: 0.4em;
+  border-radius: 5px;
+  color: #14BAA6;
 
-.width-height {
-  width: 200px;
-  height: 150px;
 }
+.fileinput-preview{
+  margin-top: 1em;
+  text-align: center;
+}
+.btn-tertiary {
+  color: #14baa6;
+  padding: 0;
+  line-height: 40px;
+  margin: auto;
+  display: block;
+  border: 2px solid #14baa6;
+}
+.btn-tertiary:hover, .btn-tertiary:focus {
+  color: #888888;
+  border-color: #888888;
+}
+
+/* input file style */
+.input-file {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+.input-file + .js-labelFile {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 10px;
+  cursor: pointer;
+}
+.input-file + .js-labelFile .icon:before {
+  content: "\f093";
+}
+.input-file + .js-labelFile.has-file .icon:before {
+  content: "\f00c";
+  color: #5AAC7B;
+}
+.fileinput-preview{
+img{
+  border: solid 2px #14baa6;
+  border-radius: 5px;
+  padding: 0.5em;
+}
+}
+
