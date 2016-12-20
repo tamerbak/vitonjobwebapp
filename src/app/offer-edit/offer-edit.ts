@@ -340,8 +340,8 @@ export class OfferEdit{
           if (this.obj == "detail") {
             //display selected job of the current offer
             this.sectorSelected(this.offer.jobData.idSector);
-            self.initSectorDone = true;
           }
+          self.initSectorDone = true;
 
         })
       })
@@ -349,8 +349,8 @@ export class OfferEdit{
       if (this.obj == "detail") {
         //display selected job of the current offer
         this.sectorSelected(this.offer.jobData.idSector);
-        self.initSectorDone = true;
       }
+      self.initSectorDone = true;
     }
 
     //loadQualities
