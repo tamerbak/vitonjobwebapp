@@ -339,7 +339,7 @@ export class OfferEdit{
 
           if (this.obj == "detail") {
             //display selected job of the current offer
-            // this.sectorSelected(this.offer.jobData.idSector);
+            this.sectorSelected(this.offer.jobData.idSector);
             self.initSectorDone = true;
           }
 
@@ -365,7 +365,7 @@ export class OfferEdit{
     //loadLanguages
     this.langs = this.sharedService.getLangList();
     if (Utils.isEmpty(this.langs) === true) {
-      this.listService.loadLanguages().then((data: any) => {
+      this.listService.loadOffersLanguages().then((data: any) => {
         this.langs = data.data;
         this.sharedService.setLangList(this.langs);
       });
@@ -438,7 +438,7 @@ export class OfferEdit{
 
 
     // Initialize constraint between sector and job
-    let sector = jQuery('.sector-select').select2();
+    //let sector = jQuery('.sector-select').select2();
     let job = jQuery('.job-select').select2({
       maximumSelectionLength: 1,
       tokenSeparators: [",", " "],
@@ -486,12 +486,12 @@ export class OfferEdit{
       minimumInputLength: 1
     });
 
-    sector
+    /*sector
       .val(this.offer.jobData.idSector).trigger("change")
       .on("change", function (e) {
           self.sectorSelected(e.val);
         }
-      );
+      );*/
 
     job
       .val(this.offer.jobData.idJob).trigger("change")
@@ -791,7 +791,7 @@ export class OfferEdit{
         this.offer.jobData.sector = sector.libelle;
         let id = parseInt(this.offer.jobData.idSector);
         this.sectorSelected(id);
-        jQuery(".sector-select").select2('val', id);
+        //jQuery(".sector-select").select2('val', id);
 
       });
     }
@@ -1095,7 +1095,7 @@ export class OfferEdit{
     }
     //searching the selected lang in the general list of langs
     var langTemp = this.langs.filter((v) => {
-      return (v.id == this.selectedLang);
+      return (v.idLanguage == this.selectedLang);
     });
     //delete the lang from the current offer lang list, if already existant
     if (this.offer.languageData.indexOf(langTemp[0]) != -1) {

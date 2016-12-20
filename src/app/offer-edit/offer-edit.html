@@ -113,7 +113,7 @@
                 </span>
               </div>
             </div>
-            <select
+            <!--<select
               data-minimum-results-for-search="10"
               data-placeholder="Recherchez votre secteur"
               class="sector-select select2 form-control"
@@ -124,6 +124,10 @@
             >
               <option value=""></option>
               <option *ngFor="let s of sectors" [value]="s.id">{{s.libelle}}</option>
+            </select>-->
+            <select class="form-control" [(ngModel)]="offer.jobData.idSector"
+                    (change)="sectorSelected($event.target.value)" [disabled]="!hideJobLoader">
+              <option *ngFor="let s of sectors" [value]="s.id"> {{s.libelle}}</option>
             </select>
             <alert *ngIf="triedValidate && !offer.jobData.idSector" [type]="'danger alert-sm'">
               <div [innerHTML]="'* Veuillez renseigner le secteur'"></div>
@@ -850,7 +854,7 @@
             <div class="row">
               <div class="{{ (projectTarget != 'employer') ? 'col-md-9 col-xs-12' : 'col-md-6 col-xs-6' }}">
                 <select class="form-control" [(ngModel)]="selectedLang">
-                  <option *ngFor="let l of langs" [value]="l.id">{{l.libelle}}</option>
+                  <option *ngFor="let l of langs" [value]="l.idLanguage">{{l.libelle}}</option>
                 </select>
               </div>
               <div class="col-md-3 col-xs-6" *ngIf="projectTarget == 'employer'">
@@ -888,7 +892,7 @@
             <div class="container-fluid">
               <div class="row">
                 <div class="col-xs-12">
-                  <button type="button" class="btn btn-success fwidth" [disabled]="isOfferInContract || isOfferArchived || !initSectorDone" (click)="editOffer()">
+                  <button type="button" class="btn btn-success fwidth" [disabled]="isOfferInContract || isOfferArchived" (click)="editOffer()">
                     Enregistrer
                   </button>
                 </div>
