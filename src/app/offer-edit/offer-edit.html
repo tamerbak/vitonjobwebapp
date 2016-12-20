@@ -854,7 +854,7 @@
             <div class="row">
               <div class="{{ (projectTarget != 'employer') ? 'col-md-9 col-xs-12' : 'col-md-6 col-xs-6' }}">
                 <select class="form-control" [(ngModel)]="selectedLang">
-                  <option *ngFor="let l of langs" [value]="l.id">{{l.libelle}}</option>
+                  <option *ngFor="let l of langs" [value]="l.idLanguage">{{l.libelle}}</option>
                 </select>
               </div>
               <div class="col-md-3 col-xs-6" *ngIf="projectTarget == 'employer'">
@@ -892,7 +892,7 @@
             <div class="container-fluid">
               <div class="row">
                 <div class="col-xs-12">
-                  <button type="button" class="btn btn-success fwidth" [disabled]="isOfferInContract || isOfferArchived || !initSectorDone" (click)="editOffer()">
+                  <button type="button" class="btn btn-success fwidth" [disabled]="isOfferInContract || isOfferArchived" (click)="editOffer()">
                     Enregistrer
                   </button>
                 </div>

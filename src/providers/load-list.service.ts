@@ -127,4 +127,16 @@ export class LoadListService {
         });
     });
   }
+
+  loadOffersLanguages(){
+    var sql = "select pk_user_langue as \"idLanguage\", libelle, \'junior\' as level from user_langue where UPPER(dirty) ='N' order by libelle asc";
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
 }

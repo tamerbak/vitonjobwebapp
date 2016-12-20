@@ -365,7 +365,7 @@ export class OfferEdit{
     //loadLanguages
     this.langs = this.sharedService.getLangList();
     if (Utils.isEmpty(this.langs) === true) {
-      this.listService.loadLanguages().then((data: any) => {
+      this.listService.loadOffersLanguages().then((data: any) => {
         this.langs = data.data;
         this.sharedService.setLangList(this.langs);
       });
@@ -1095,7 +1095,7 @@ export class OfferEdit{
     }
     //searching the selected lang in the general list of langs
     var langTemp = this.langs.filter((v) => {
-      return (v.id == this.selectedLang);
+      return (v.idLanguage == this.selectedLang);
     });
     //delete the lang from the current offer lang list, if already existant
     if (this.offer.languageData.indexOf(langTemp[0]) != -1) {
