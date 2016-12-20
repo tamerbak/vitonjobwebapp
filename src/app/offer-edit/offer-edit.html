@@ -113,7 +113,7 @@
                 </span>
               </div>
             </div>
-            <select
+            <!--<select
               data-minimum-results-for-search="10"
               data-placeholder="Recherchez votre secteur"
               class="sector-select select2 form-control"
@@ -124,6 +124,10 @@
             >
               <option value=""></option>
               <option *ngFor="let s of sectors" [value]="s.id">{{s.libelle}}</option>
+            </select>-->
+            <select class="form-control" [(ngModel)]="offer.jobData.idSector"
+                    (change)="sectorSelected($event.target.value)" [disabled]="!hideJobLoader">
+              <option *ngFor="let s of sectors" [value]="s.id"> {{s.libelle}}</option>
             </select>
             <alert *ngIf="triedValidate && !offer.jobData.idSector" [type]="'danger alert-sm'">
               <div [innerHTML]="'* Veuillez renseigner le secteur'"></div>
