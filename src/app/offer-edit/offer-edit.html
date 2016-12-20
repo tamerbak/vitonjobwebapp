@@ -801,7 +801,7 @@
                 style="display: block; width: 100%;"
                 class="btn btn-danger mb-xs col-md-2 col-xs-12"
                 role="button"
-                (click)="removeSlot(j)" [disabled]="isDeleteSlotDisabled()">
+                (click)="removeSlot(j)" [disabled]="isDeleteSlotDisabled()  || isOfferInContract || isOfferArchived">
                 <i class="glyphicon glyphicon-trash"></i>
               </button>
             </div>
@@ -817,7 +817,7 @@
 
         <div class="form-group row required">
           <div class="col-md-1 col-sm-2 col-xs-2">
-            <label>
+            <label *ngIf="projectTarget == 'jobyer'">
               <input type="checkbox" [checked]="isFulltime" class="form-control" (change)="watchFullTime($event)"/>
               Jour entier
             </label>
@@ -866,7 +866,7 @@
               class="btn btn-success mb-xs"
               role="button"
               (click)="addSlot()"
-              [disabled]="!(slot.date && slot.startHour && slot.endHour)"
+              [disabled]="!(slot.date && slot.startHour && slot.endHour) || isOfferInContract || isOfferArchived"
             >
               Ajouter
             </button>
