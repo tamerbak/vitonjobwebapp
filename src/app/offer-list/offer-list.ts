@@ -94,34 +94,6 @@ export class OfferList {
     for (let i = 0; i < this.offerList.length; i++) {
       let offer = this.offerList[i];
 
-      //<editor-fold desc="EPI management">
-      //load offer epi
-      this.offersService.loadOfferEPI(this.offerList[i].idOffer,this.projectTarget).then((data:any)=>{
-        this.offerList[i].jobData.epi = [];
-        if(data && data.length != 0) {
-          for (let j = 0; j < data.length; j++)
-            this.offerList[i].jobData.epi.push(data[j].libelle);
-        }
-      });
-
-      if(this.projectTarget == 'employer'){
-        this.offersService.loadOfferPrerequisObligatoires(this.offerList[i].idOffer).then((data:any)=>{
-          this.offerList[i].jobData.prerequisObligatoires = [];
-          if(data && data.length != 0) {
-            for(let j = 0 ; j < data.length ; j++)
-              this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
-          }
-        });
-
-      }else if(this.projectTarget == 'jobyer'){
-        this.offersService.loadOfferNecessaryDocuments(this.offerList[i].idOffer).then((data:any)=>{
-          this.offerList[i].jobData.prerequisObligatoires = [];
-          for(let j = 0 ; j < data.length ; j++)
-            this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
-        });
-      }
-      //</editor-fold>
-
       if (!offer || !offer.jobData || !offer.calendarData ||(offer.calendarData && offer.calendarData.length == 0)) {
         continue;
       }
@@ -191,8 +163,27 @@ export class OfferList {
   }
 
   goToDetailOffer(offer) {
-    this.sharedService.setCurrentOffer(offer);
-    this.router.navigate(['offer/edit', {obj:'detail'}]);
+    if(this.projectTarget == 'employer'){
+      this.offersService.loadOfferPrerequisObligatoires(offer.idOffer).then((data:any)=>{
+        offer.jobData.prerequisObligatoires = [];
+        if(data && data.length != 0) {
+          for(let j = 0 ; j < data.length ; j++)
+            offer.jobData.prerequisObligatoires.push(data[j].libelle);
+        }
+        this.offersService.loadOfferEPI(offer.idOffer,this.projectTarget).then((data:any)=>{
+          offer.jobData.epi = [];
+          if(data && data.length != 0) {
+            for (let j = 0; j < data.length; j++)
+              offer.jobData.epi.push(data[j].libelle);
+          }
+          this.sharedService.setCurrentOffer(offer);
+          this.router.navigate(['offer/edit', {obj:'detail'}]);
+        });
+      });
+    }else{
+      this.sharedService.setCurrentOffer(offer);
+      this.router.navigate(['offer/edit', {obj:'detail'}]);
+    }
   }
 
   autoSearchMode(offer) {
