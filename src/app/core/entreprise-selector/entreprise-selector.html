@@ -1,0 +1,24 @@
+<section class="card entreprises">
+  <header class="card-header">
+    <div class="text-xs-center mb-sm">
+      <button
+        type="button"
+        class="btn btn-default"
+        (click)="goToEntrepriseCreationPage()"
+      >Ajouter une entreprise</button>
+    </div>
+  </header>
+  <!-- entreprise list with .thin-scroll which styles scrollbar for webkit -->
+  <div id="entreprises-list" class="list-group thin-scroll">
+    <div
+      *ngFor="let entreprise of entreprises; let i = index"
+      class="list-group-item"
+      (click)="swapToEntreprise(i)"
+      style="cursor: pointer;"
+    >
+      <p class="no-margin overflow-hidden">
+        <b>{{ entreprise.nom }}</b>
+      </p>
+    </div>
+  </div>
+</section>

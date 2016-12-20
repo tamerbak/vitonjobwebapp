@@ -57,19 +57,20 @@ export class BankAccount {
 
 
     this.currentUser = this.sharedService.getCurrentUser();
-    this.projectTarget = this.sharedService.getProjectTarget();
     if (!this.currentUser) {
       this.router.navigate(['home']);
     } else {
       this.getUserInfos();
       let id = 0;
       let table = '';
-      if (!this.isEmployer) {
+      if (!this.currentUser.estEmployeur && !this.currentUser.estRecruteur) {
         id = this.currentUser.jobyer.id;
         table = 'fk_user_jobyer';
+        this.projectTarget = "jobyer";
       }else{
         id = this.currentUser.employer.entreprises[0].id;
         table = 'fk_user_entreprise';
+        this.projectTarget = "employer";
       }
 
       this.bankService.loadBankAccount(id, table, this.projectTarget).then((data: any)=> {
@@ -78,6 +79,19 @@ export class BankAccount {
             let banks = data.data;
 
             this.bank = banks[banks.length - 1];
+            if(Utils.isEmpty(this.bank.bic) &&
+              Utils.isEmpty(this.bank.detenteur_du_compte) &&
+              Utils.isEmpty(this.bank.iban) &&
+              Utils.isEmpty(this.bank.nom_de_banque)){
+              this.bank = {
+                nom_de_banque : '',
+                detenteur_du_compte : '',
+                iban : '',
+                bic : ''
+              };
+              this.voidAccount = true;
+              return;
+            }
             this.voidAccount = false;
             this.isValidBank = true;
             this.isValidAccountHolder = true;
@@ -119,22 +133,22 @@ export class BankAccount {
 
     this.isValidBank = _isValid;
     this.bankHint = _hint;
-    console.log();
     this.isValidForm();
   }
 
+  getCompany(){
+    return this.sharedService.getCurrentUser().employer.entreprises[0].nom.toLowerCase()
+  }
+
   getUserFullName(){
-    return this.sharedService.getCurrentUser().nom+" "+this.sharedService.getCurrentUser().prenom;
+    return this.sharedService.getCurrentUser().nom.toLowerCase()+" "+this.sharedService.getCurrentUser().prenom.toLowerCase();
   }
 
   getUserReverseFullName(){
-    return this.sharedService.getCurrentUser().prenom+" "+this.sharedService.getCurrentUser().nom;
+    return this.sharedService.getCurrentUser().prenom.toLowerCase()+" "+this.sharedService.getCurrentUser().nom.toLowerCase();
   }
 
   watchAccountHolder(e) {
-    if(this.isEmployer || this.isRecruiter){
-      return;
-    }
 
     let _name = e.target.value;
     let _isValid: boolean = true;
@@ -143,7 +157,10 @@ export class BankAccount {
     if (!_name) {
       _hint = "Ce champ est obligtoire";
       _isValid = false;
-    }else if(_name.trim() !== this.getUserFullName() && _name.trim() !== this.getUserReverseFullName() ){
+    } else if ((this.isEmployer || this.isRecruiter) && _name.toLowerCase().trim() !== this.getCompany()){
+      _hint = "La raison sociale fournie n'est pas conforme à vos informations de profil";
+      _isValid = false;
+    } else if ((!this.isEmployer && !this.isRecruiter) && _name.toLowerCase().trim() !== this.getUserFullName() && _name.trim() !== this.getUserReverseFullName() ){
       _hint = "Le nom et prénom fournis ne sont pas identiques à vos informations de profil";
       _isValid = false;
     } else {
@@ -152,7 +169,6 @@ export class BankAccount {
 
     this.isValidAccountHolder = _isValid;
     this.accountHolderHint = _hint;
-    console.log();
     this.isValidForm();
   }
 
@@ -173,7 +189,6 @@ export class BankAccount {
 
     this.isValidIban = _isValid;
     this.ibanHint = _hint;
-    console.log();
     this.isValidForm();
   }
 
@@ -194,7 +209,6 @@ export class BankAccount {
 
     this.isValidBic = _isValid;
     this.bicHint = _hint;
-    console.log();
     this.isValidForm();
   }
 
@@ -202,7 +216,6 @@ export class BankAccount {
 
   isValidForm() {
     var _isFormValid = false;
-
     if (this.isValidBank && this.isValidAccountHolder && this.isValidIban && this.isValidBic) {
       _isFormValid = true;
     } else {

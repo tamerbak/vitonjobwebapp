@@ -518,6 +518,9 @@
       <alert [type]="'danger alert-sm'" [hidden]="isMissionDateValid">
         <div [innerHTML]="'Vous ne pouvez actuellement pas soumettre ce contrat car les dates de début et fin de mission ne sont pas cohérentes'"></div>
       </alert>
+      <alert [type]="'info alert-sm'" [hidden]="!inProgress">
+        <div [innerHTML]="'La génération du contrat peut prendre un moment, Veuillez patienter ...'"></div>
+      </alert>
       <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
         <div [innerHTML]="alert.msg"></div>
       </alert>

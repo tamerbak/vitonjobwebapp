@@ -41,6 +41,7 @@ declare var require;
 export class OfferEdit{
 
   selectedJob: any;
+  initSectorDone = false;
 
   offer: any;
   sectors: any = [];
@@ -85,6 +86,7 @@ export class OfferEdit{
   minHourRate: number = 0;
   invalidHourRateMessage: string = '';
   invalidHourRate = false;
+  personalizeConvention = false;
 
   categoriesHeure: any = [];
   majorationsHeure: any = [];
@@ -159,6 +161,8 @@ export class OfferEdit{
   offerContact : string;
   tel : string;
 
+  personalizeConventionInit : boolean = false;
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private searchService: SearchService,
@@ -207,36 +211,28 @@ export class OfferEdit{
 
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
 
+    //  Load collective convention
     if (this.projectTarget == "employer" && this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
-      //  Load collective convention
-      this.offersService.getConvention(this.currentUser.employer.entreprises[0].conventionCollective.id).then(c => {
-        if (c)
-          this.convention = c;
-        if (this.convention.id > 0) {
-          this.offersService.getConventionNiveaux(this.convention.id).then(data => {
-            this.niveauxConventions = data;
-          });
-          this.offersService.getConventionCoefficients(this.convention.id).then(data => {
-            this.coefficientsConventions = data;
-          });
-          this.offersService.getConventionEchelon(this.convention.id).then(data => {
-            this.echelonsConventions = data;
-          });
-          this.offersService.getConventionCategory(this.convention.id).then(data => {
-            this.categoriesConventions = data;
-          });
-          this.offersService.getConventionParameters(this.convention.id).then(data => {
-            this.parametersConvention = data;
-            this.checkHourRate();
-          });
-
-          //get values for "condition de travail"
-          if (this.obj != "detail") {
-            this.getConditionEmpValuesForCreation();
-          } else {
-            this.getConditionEmpValuesForUpdate();
-          }
-        }
+      this.convention = this.currentUser.employer.entreprises[0].conventionCollective;
+      // Loading convention filters / data
+      let filters = this.sharedService.getConventionFilters();
+      if (this.isEmpty(filters) === true) {
+        this.offersService.getConventionFilters(this.convention.id).then((data: any) => {
+          this.sharedService.setConventionFilters(data);
+          this.niveauxConventions = data.filter((elem) => { return elem.type == 'niv' });
+          this.coefficientsConventions = data.filter((elem) => { return elem.type == 'coe' });
+          this.echelonsConventions = data.filter((elem) => { return elem.type == 'ech' });
+          this.categoriesConventions = data.filter((elem) => { return elem.type == 'cat' });
+        });
+      } else {
+        this.niveauxConventions = filters.filter((elem) => { return elem.type == 'niv' });
+        this.coefficientsConventions = filters.filter((elem) => { return elem.type == 'coe' });
+        this.echelonsConventions = filters.filter((elem) => { return elem.type == 'ech' });
+        this.categoriesConventions = filters.filter((elem) => { return elem.type == 'cat' });
+      }
+      this.offersService.getConventionParameters(this.convention.id).then(data => {
+        this.parametersConvention = data;
+        this.checkHourRate();
       });
     }
 
@@ -325,37 +321,41 @@ export class OfferEdit{
       };
     }
 
-    //load all sectors, if not yet loaded in local
+    let self = this;
+
+    //load all sectors and job, if not yet loaded in local
     this.sectors = this.sharedService.getSectorList();
-    if (!this.sectors || this.sectors.length == 0) {
+    var jobList = this.sharedService.getJobList();
+    if (!this.sectors || this.sectors.length == 0 || !jobList || jobList.length == 0) {
       this.offersService.loadSectorsToLocal().then((data: any) => {
         this.sharedService.setSectorList(data);
         this.sectors = data;
-      })
-    }
 
-    //load all jobs, if not yet loaded in local
-    var jobList = this.sharedService.getJobList();
-    if (!jobList || jobList.length == 0) {
-      this.hideJobLoader = false;
-      this.offersService.loadJobsToLocal().then((data: any) => {
-        this.sharedService.setJobList(data);
-        if (this.obj == "detail") {
-          //display selected job of the current offer
-          this.sectorSelected(this.offer.jobData.idSector);
-        }
-        this.hideJobLoader = true;
+        // Load job
+        this.hideJobLoader = false;
+        this.offersService.loadJobsToLocal().then((data2: any) => {
+          this.sharedService.setJobList(data2);
+          this.hideJobLoader = true;
+
+          if (this.obj == "detail") {
+            //display selected job of the current offer
+            this.sectorSelected(this.offer.jobData.idSector);
+          }
+          self.initSectorDone = true;
+
+        })
       })
     } else {
       if (this.obj == "detail") {
         //display selected job of the current offer
         this.sectorSelected(this.offer.jobData.idSector);
       }
+      self.initSectorDone = true;
     }
 
     //loadQualities
     this.qualities = this.sharedService.getQualityList();
-    if (!this.qualities || this.qualities.length == 0) {
+    if (Utils.isEmpty(this.qualities) === true) {
       this.offersService.loadQualities(this.projectTarget).then((data: any) => {
         this.qualities = data.data;
         this.sharedService.setQualityList(this.qualities);
@@ -363,14 +363,13 @@ export class OfferEdit{
     }
 
     //loadLanguages
-    //  Cette partie est commentée pour forcer les prochaines versions à retélécharger la liste des langues triée
-    //this.langs = this.sharedService.getLangList();
-    //if (!this.langs || this.langs.length == 0) {
-      this.listService.loadLanguages().then((data: any) => {
+    this.langs = this.sharedService.getLangList();
+    if (Utils.isEmpty(this.langs) === true) {
+      this.listService.loadOffersLanguages().then((data: any) => {
         this.langs = data.data;
         this.sharedService.setLangList(this.langs);
       });
-    //}
+    }
 
     //init slot
     this.slot = {
@@ -439,7 +438,7 @@ export class OfferEdit{
 
 
     // Initialize constraint between sector and job
-    let sector = jQuery('.sector-select').select2();
+    //let sector = jQuery('.sector-select').select2();
     let job = jQuery('.job-select').select2({
       maximumSelectionLength: 1,
       tokenSeparators: [",", " "],
@@ -487,12 +486,12 @@ export class OfferEdit{
       minimumInputLength: 1
     });
 
-    sector
+    /*sector
       .val(this.offer.jobData.idSector).trigger("change")
       .on("change", function (e) {
           self.sectorSelected(e.val);
         }
-      );
+      );*/
 
     job
       .val(this.offer.jobData.idJob).trigger("change")
@@ -696,6 +695,24 @@ export class OfferEdit{
     )
   }
 
+  /**
+   * Event when "Personalize Working conditions"
+   */
+  onPersonalizeConvention() {
+    if (this.personalizeConvention === false) {
+      if (this.personalizeConventionInit === false) {
+        //get values for "condition de travail"
+        if (this.obj != "detail") {
+          this.getConditionEmpValuesForCreation();
+        } else {
+          this.getConditionEmpValuesForUpdate();
+        }
+        this.personalizeConventionInit = true;
+      }
+    }
+    this.personalizeConvention = !this.personalizeConvention;
+  }
+
   addPrerequis() {
     if (Utils.isEmpty(this.prerequisOb) === true)
       return;
@@ -774,7 +791,7 @@ export class OfferEdit{
         this.offer.jobData.sector = sector.libelle;
         let id = parseInt(this.offer.jobData.idSector);
         this.sectorSelected(id);
-        jQuery(".sector-select").select2('val', id);
+        //jQuery(".sector-select").select2('val', id);
 
       });
     }
@@ -1078,7 +1095,7 @@ export class OfferEdit{
     }
     //searching the selected lang in the general list of langs
     var langTemp = this.langs.filter((v) => {
-      return (v.id == this.selectedLang);
+      return (v.idLanguage == this.selectedLang);
     });
     //delete the lang from the current offer lang list, if already existant
     if (this.offer.languageData.indexOf(langTemp[0]) != -1) {
