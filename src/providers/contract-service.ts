@@ -460,11 +460,12 @@ export class ContractService {
       html = html + "</ul>";
     }
 
+    debugger;
     if(epis && epis.length>0){
       html = html + "<br><p><b>Equipements de protection individuels</b></p><ul>";
       for (let i = 0; i < epis.length; i++) {
         let p = epis[i];
-        html = html + "<li>"+ p + "</li>";
+        html = html + "<li>"+ p.libelle + "</li>";
       }
       html = html + "</ul>";
     }
@@ -486,6 +487,7 @@ export class ContractService {
    */
   callYousign(user: any, employer: any, jobyer: any, contract: any, projectTarget: string, currentOffer: any, idQuote: any) {
     let horaires = '';
+    debugger;
     if (currentOffer) {
       horaires = this.prepareHoraire(currentOffer.calendarData,
         contract.prerequis,
@@ -504,8 +506,14 @@ export class ContractService {
       eh = " à " + DateUtils.toHourString(contract.workEndHour);
     }
 
+    if(!contract.epiList || contract.epiList.length == 0){
+      contract.equipements = "Aucun équipement de sécurité";
+    } else {
+      contract.equipements = "Voir annexe";
+    }
+
     this.configuration = Configs.setConfigs(projectTarget);
-    var jsonData = {
+    let jsonData = {
       "titre": employer.titre,
       "prenom": employer.prenom,
       "nom": employer.nom,
@@ -518,8 +526,8 @@ export class ContractService {
       "lieuNaissance": jobyer.lieuNaissance,
       "nationalite": jobyer.nationaliteLibelle,
       "adresseDomicile": jobyer.address,
-      "dateDebutMission": DateUtils.toDateString(contract.missionStartDate),
-      "dateFinMission": DateUtils.toDateString(contract.missionEndDate),
+      "dateDebutMission": contract.missionStartDate,
+      "dateFinMission": contract.missionEndDate,
       "periodeEssai": contract.trialPeriod == null ? "" : ( contract.trialPeriod == 1 ? "1 jour" : (contract.trialPeriod + " jours")),
       "dateDebutTerme": DateUtils.toDateString(contract.termStartDate),
       "dateFinTerme": DateUtils.toDateString(contract.termEndDate),
@@ -547,7 +555,7 @@ export class ContractService {
         "43h": contract.salarySH43,
       },
       "droitRepos": contract.restRight,
-      "adresseInterim": contract.workAdress,
+      "adresseInterim": contract.adresseInterim,
       "client": contract.customer,
       "primeDiverses": contract.primes,
       "SiegeSocial": contract.headOffice,
@@ -583,6 +591,9 @@ export class ContractService {
       "organisationParticuliere":''
     };
 
+    console.clear();
+    console.log(JSON.stringify(jsonData));
+    debugger;
 
     let partner = GlobalConfigs.global['electronic-signature'];
 
