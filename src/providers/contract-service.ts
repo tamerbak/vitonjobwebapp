@@ -460,7 +460,7 @@ export class ContractService {
       html = html + "</ul>";
     }
 
-    debugger;
+
     if(epis && epis.length>0){
       html = html + "<br><p><b>Equipements de protection individuels</b></p><ul>";
       for (let i = 0; i < epis.length; i++) {
@@ -487,7 +487,7 @@ export class ContractService {
    */
   callYousign(user: any, employer: any, jobyer: any, contract: any, projectTarget: string, currentOffer: any, idQuote: any) {
     let horaires = '';
-    debugger;
+
     if (currentOffer) {
       horaires = this.prepareHoraire(currentOffer.calendarData,
         contract.prerequis,
@@ -591,9 +591,7 @@ export class ContractService {
       "organisationParticuliere":''
     };
 
-    console.clear();
-    console.log(JSON.stringify(jsonData));
-    debugger;
+
 
     let partner = GlobalConfigs.global['electronic-signature'];
 
@@ -691,14 +689,12 @@ export class ContractService {
       "" + c.endHour + "," +
       "'NON', " +
       "'NON')";
-    //console.log(sql);
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
       this.http.post(this.configuration.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          //console.log(JSON.stringify(data));
           resolve(data);
         });
     });

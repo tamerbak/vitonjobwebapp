@@ -727,7 +727,6 @@ export class Contract {
 
     //get next num contract
     this.contractService.getNumContract().then((data: any) => {
-      debugger;
       this.dataValidation = true;
 
       if (data && data.length > 0) {
