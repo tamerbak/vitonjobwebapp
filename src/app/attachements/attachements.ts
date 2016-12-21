@@ -117,6 +117,16 @@ export class Attachements {
     });
   }
 
+  previewFile(a){
+   this.attachementSerice.downloadActualFile(a.id, a.fileName).then((data: any)=> {
+      if(data){
+        this.fileContent = data['stream'];
+        return this.fileContent;
+      }else{
+        this.addAlert("danger", "Lq preview du fichier a échoué. Veuillez recommencer l'opération.");
+      }
+    });
+  }
   closeModal(){
     this.fileContent = "";
     this.selFileName = "";
