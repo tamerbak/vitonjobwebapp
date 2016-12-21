@@ -63,4 +63,8 @@ export class EntrepriseService {
         });
     })
   }
+  
+  checkEntrepriseNameAvailable() {
+    return true;
+  }
 }

@@ -13,11 +13,11 @@ import {AddressUtils} from "../utils/addressUtils";
 import {Configs} from "../../configurations/configs";
 import {MapsAPILoader} from "angular2-google-maps/core";
 import {ModalPicture} from "../modal-picture/modal-picture";
+import {ModalCorporamaSearch} from "../modal-corporama-search/modal-corporama-search";
 import {BankAccount} from "../bank-account/bank-account";
 import MaskedInput from "angular2-text-mask";
 import {AccountConstraints} from "../../validators/account-constraints";
 import {scan} from "rxjs/operator/scan";
-import {Helpers} from "../../providers/helpers.service";
 import {ConventionService} from "../../providers/convention.service";
 
 declare var jQuery, require, Messenger, moment: any;
@@ -26,7 +26,7 @@ declare var google: any;
 @Component({
   selector: '[profile]',
   template: require('./profile.html'),
-  directives: [ROUTER_DIRECTIVES, NKDatetime, AlertComponent, ModalPicture, MaskedInput, BankAccount],
+  directives: [ROUTER_DIRECTIVES, NKDatetime, AlertComponent, ModalPicture, MaskedInput, BankAccount, ModalCorporamaSearch],
   providers: [Utils, ProfileService, CommunesService, LoadListService, MedecineService, AttachementsService, AccountConstraints, ConventionService],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./profile.scss')]
@@ -1954,5 +1954,48 @@ export class Profile{
 
   isEmpty(str) {
     return Utils.isEmpty(str);
+  }
+
+  openCoporamaModal() {
+    jQuery("#modal-corporama-search").modal('show');
+  }
+
+  onDismissCorporamaModal(company: any) {
+    debugger;
+    if (!company) {
+      return;
+    }
+
+    if (Utils.isEmpty(this.title) === true) {
+      this.title = (company.title == "M" ? "M." : company.title);
+    }
+    if (Utils.isEmpty(this.lastname) === true) {
+      // Call lastname field watcher
+      this.lastname = company.lastname;
+      this.watchLastname({target: {value: company.lastname}});
+    }
+    if (Utils.isEmpty(this.firstname) === true) {
+      // Call firstname field watcher
+      this.firstname = company.firstname;
+      this.watchFirstname({target: {value: company.firstname}});
+    }
+
+    if (Utils.isEmpty(company.street) === false
+      && Utils.isEmpty(company.zip) === false
+      && Utils.isEmpty(company.city) === false) {
+      let newAdress = company.street + ', ' + company.zip + ' ' + company.city;
+      if (Utils.isEmpty(this.personalAddress) === true || this.personalAddress.toUpperCase() != newAdress.toUpperCase()) {
+        this.personalAddress = newAdress;
+      }
+    }
+
+    // Call company name field watcher
+    this.companyname = company.name.toUpperCase();
+    this.watchCompanyname({target: {value: company.name.toUpperCase()}});
+
+    this.siret = Utils.formatSIREN(company.siren);
+    this.ape = company.naf;
+
+    this.IsCompanyExist(this.companyname, 'companyname');
   }
 }

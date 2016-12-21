@@ -1,0 +1,161 @@
+<div class="modal fade modal-margin-top" id="modal-corporama-search">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel1">Rechercher une entreprise</h4>
+        <div class="container">
+
+          <div class="row">
+            <div class="col-sm-6">
+              <button class="btn btn-default btn-by" [disabled]="typeSearch == 'company'" (click)="searchBy('company')">
+                Par Nom
+              </button>
+            </div>
+            <div class="col-sm-6">
+              <button class="btn btn-default btn-by" [disabled]="typeSearch == 'siren'" (click)="searchBy('siren')">
+                Par SIREN
+              </button>
+            </div>
+          </div>
+
+          <br />
+
+          <div class="form-group">
+            <div class="col-sm-8">
+              <input class="form-control" type="text" [(ngModel)]="inputSearch" placeholder="{{searchPlaceholder}}"/>
+            </div>
+            <div class="col-sm-4">
+              <button class="btn btn-primary btn-by" (click)="searchCompany()">
+                Rechercher
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+
+          <div *ngFor="let alert of alerts">
+            <alert [type]="'danger'+ ' alert-sm'" dismissible="false">
+              {{ alert }}
+            </alert>
+          </div>
+
+          <table class="table table-condensed table-striped">
+            <thead>
+            <tr *ngIf="companies && companies.length > 0 && !noResult">
+              <th class="col-xs-4">
+                Nom de l'entreprise
+              </th>
+              <th class="col-xs-4">
+                SIREN
+              </th>
+              <th class="col-xs-4">
+              </th>
+            </tr>
+            </thead>
+
+            <tr *ngFor="let company of companies" (click)="takeAction(company)" [hidden]="noResult">
+              <td class="col-xs-4">
+                {{company.name}}
+              </td>
+              <td class="col-xs-4">
+                {{company.siren}}
+              </td>
+
+              <td *ngIf="!(typeSearch == 'siren' || hasToRedirect)">
+                <button class="btn btn-default btn-sm" (click)="takeAction(company)">
+                  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                </button>
+              </td>
+              <td *ngIf="typeSearch == 'siren' || hasToRedirect">
+                <div *ngIf="company.hasLeader">
+                  Nom et prénom: {{company.title}} {{company.lastname}}<br />
+                  {{company.firstname}}
+                </div>
+                <div>
+                  NAF: {{company.naf}}
+                </div>
+                <div *ngIf="company.hasAddress">
+                  Adresse: {{company.placename}} {{company.street}} {{company.zip}}<br />
+                  {{company.city}}, France
+                </div>
+              </td>
+            </tr>
+          </table>
+
+        </div>
+      </div>
+      <div class="modal-footer" *ngIf="typeSearch == 'siren' || hasToRedirect">
+        <div class="col-xs-12">
+          <button type="button" class="btn btn-success btn-by" (click)="close()">Selectionner</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!--<ion-header>-->
+    <!--<ion-navbar [attr.primary]="isEmployer ? '' : null" [attr.secondary]="isEmployer ? null : ''" style="opacity: 1;">-->
+        <!--<ion-title>Rechercher une entreprise</ion-title>-->
+        <!--<ion-buttons end>-->
+            <!--<button (click)="closeModal()">-->
+                <!--<ion-icon name="close-circle" style="font-size: xx-large;"></ion-icon>-->
+            <!--</button>-->
+        <!--</ion-buttons>-->
+    <!--</ion-navbar>-->
+<!--</ion-header>-->
+
+<!--<ion-content padding class="modal-corporama-search">-->
+    <!--<ion-segment [(ngModel)]="typeSearch" [style.color]="themeColor">-->
+        <!--<ion-segment-button value="company" (ionSelect)="onCompanynameSelected()">-->
+            <!--Par Nom-->
+        <!--</ion-segment-button>-->
+        <!--<ion-segment-button value="siren" (ionSelect)="onSIRENSelected()">-->
+            <!--Par SIREN-->
+        <!--</ion-segment-button>-->
+    <!--</ion-segment>-->
+
+    <!--<ion-item>-->
+        <!--<ion-input [(ngModel)]="inputSearch" placeholder="{{searchPlaceholder}}"></ion-input>-->
+        <!--<button clear item-right [style.color]="themeColor" (click)="searchCompany()">-->
+            <!--<ion-icon name="search"></ion-icon>-->
+        <!--</button>-->
+    <!--</ion-item>-->
+    <!--<div *ngIf="!isSIRENValid" class="error-box">* Saisissez les 9 chiffres du SIREN-->
+    <!--</div>-->
+
+    <!--<ion-row *ngIf="companies && companies.length > 0 && !noResult">-->
+        <!--<ion-col width-80>-->
+            <!--<h5>Nom de l'entreprise</h5>-->
+        <!--</ion-col>-->
+        <!--<ion-col width-20>-->
+            <!--<h5>SIREN</h5>-->
+        <!--</ion-col>-->
+    <!--</ion-row>-->
+
+    <!--<ion-item *ngFor="let company of companies" (click)="takeAction(company)" text-wrap [hidden]="noResult">-->
+        <!--<ion-row>-->
+            <!--<ion-col width-80>-->
+                <!--<h2>{{company.name}}</h2>-->
+            <!--</ion-col>-->
+            <!--<ion-col width-20>-->
+                <!--<h2>{{company.siren}}</h2>-->
+            <!--</ion-col>-->
+        <!--</ion-row>-->
+
+        <!--<div *ngIf="typeSearch == 'siren' || hasToRedirect">-->
+            <!--<ion-row>-->
+                <!--<h3 *ngIf="company.hasLeader">Nom et prénom: {{company.title}} {{company.lastname}} {{company.firstname}}</h3>-->
+            <!--</ion-row>-->
+            <!--<ion-row>-->
+                <!--<h3>NAF: {{company.naf}}</h3>-->
+            <!--</ion-row>-->
+            <!--<ion-row>-->
+                <!--<h3 *ngIf="company.hasAddress">Adresse: {{company.placename}} {{company.street}} {{company.zip}} {{company.city}}, France</h3>-->
+            <!--</ion-row>-->
+        <!--</div>-->
+    <!--</ion-item>-->
+
+    <!--<div *ngIf="noResult">Votre recherche n'a retourné aucun résultat-->
+    <!--</div>-->
+<!--</ion-content>-->
