@@ -664,9 +664,43 @@
     </section>
   </div>
 
+  <!-- INTERESTING JOBS -->
+  <div [hidden]="!showForm || isEmployer || isRecruiter" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
+    <section class="widget">
+      <fieldset>
+        <legend><strong>Jobs qui m'interesse</strong></legend>
+        <div class="row">
+          <div class="col-md-6 col-sm-6 col-xs-6">
+            <input type="hidden" class="select2 job-select form-control" name="job"
+                   placeholder="Recherchez votre job" [(ngModel)]="selectedJob"/>
+          </div>
+          <div class="col-md-4 col-sm-3 col-sm-3">
+            <select class="form-control" [(ngModel)]="selectedJobLevel">
+              <option value="1">Débutant</option>
+              <option value="2">Expérimenté</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" (click)="addJob()">
+            <span class="glyphicon glyphicon-plus"></span>
+          </button>
+        </div>
+        <div class="row">
+          &nbsp;
+        </div>
+        <div class="row" *ngFor="let j of interestingJobs">
+          <button class="btn btn-danger" (click)="removeJob(j)">
+            <span class="glyphicon glyphicon-minus"></span>
+          </button>
+          <div class="col-md-10 col-sm-10 col-xs-10">
+            {{j.libelle}} - {{j.niveau == '1'?'Débutant':'Expérimenté'}}
+          </div>
+        </div>
+      </fieldset>
+    </section>
+  </div>
+
   <!-- PREREQUIS -->
   <div *ngIf="jobs.length > 0" [hidden]="!showForm || isEmployer || isRecruiter" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
-
 
     <section class="widget">
       <div class="widget-body">
@@ -676,7 +710,7 @@
 
             <div  *ngFor="let j of jobs" class="col-md-6 col-sm-12 col-xs-12">
 
-              <div *ngIf="j.requirements.length > 0" 
+              <div *ngIf="j.requirements.length > 0"
                     class="panel panel-default panel-prerequis">
                 <div class="panel-heading">{{j.libelle}}</div>
                 <div class="panel-body">
