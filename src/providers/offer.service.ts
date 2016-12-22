@@ -938,6 +938,7 @@ export class OffersService {
       UNION SELECT 'cat' as type, pk_user_categorie_convention AS id, code, libelle
       FROM user_categorie_convention
       WHERE fk_user_convention_collective = ` + idConvention + `
+      ORDER BY libelle
     `;
 
     return new Promise(resolve => {
