@@ -339,7 +339,7 @@ export class OfferEdit{
 
           if (this.obj == "detail") {
             //display selected job of the current offer
-            this.sectorSelected(this.offer.jobData.idSector);
+            this.selectNewSector(this.offer.jobData.idSector);
           }
           self.initSectorDone = true;
 
@@ -348,7 +348,7 @@ export class OfferEdit{
     } else {
       if (this.obj == "detail") {
         //display selected job of the current offer
-        this.sectorSelected(this.offer.jobData.idSector);
+        this.selectNewSector(this.offer.jobData.idSector);
       }
       self.initSectorDone = true;
     }
@@ -483,15 +483,10 @@ export class OfferEdit{
       escapeMarkup: function (markup) {
         return markup;
       },
-      minimumInputLength: 1
+      minimumInputLength: 1,
+      initSelection: function(element, callback) {
+      }
     });
-
-    /*sector
-      .val(this.offer.jobData.idSector).trigger("change")
-      .on("change", function (e) {
-          self.sectorSelected(e.val);
-        }
-      );*/
 
     job
       .val(this.offer.jobData.idJob).trigger("change")
@@ -765,13 +760,30 @@ export class OfferEdit{
     });
     //get job list
     var jobList = this.sharedService.getJobList();
-    this.jobs = jobList.filter((v) => {
-      return (v.idsector == sector);
+     this.jobs = jobList.filter((v) => {
+     return (v.idsector == sector);
+     });
+
+    if (sectorsTemp.length > 0) {
+      this.offer.jobData.sector = sectorsTemp[0].libelle;
+    }
+
+    jQuery('.job-select').select2('val', '');
+  }
+
+  selectNewSector(sector) {
+
+    //set sector info in jobdata
+    this.offer.jobData.idSector = sector;
+    //
+    var sectorsTemp = this.sectors.filter((v) => {
+      return (v.id == sector);
     });
 
     if (sectorsTemp.length > 0) {
       this.offer.jobData.sector = sectorsTemp[0].libelle;
     }
+
   }
 
   /**
@@ -790,8 +802,7 @@ export class OfferEdit{
         this.offer.jobData.idSector = sector.id;
         this.offer.jobData.sector = sector.libelle;
         let id = parseInt(this.offer.jobData.idSector);
-        this.sectorSelected(id);
-        //jQuery(".sector-select").select2('val', id);
+        this.selectNewSector(id);
 
       });
     }

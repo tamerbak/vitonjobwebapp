@@ -665,21 +665,29 @@
   </div>
 
   <!-- PREREQUIS -->
-  <div [hidden]="!showForm || isEmployer || isRecruiter" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
+  <div *ngIf="jobs.length > 0" [hidden]="!showForm || isEmployer || isRecruiter" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
+
+
     <section class="widget">
       <div class="widget-body">
         <fieldset>
           <legend><strong>Prérequis</strong></legend>
-          <div class="container-fluid">
-            <div *ngFor="let j of jobs" class="row">
-              <label class="col-md-3 text-md-center" >
-                <strong>{{j.libelle}}</strong>
-              </label>
-              <ul class="col-md-9">
-                <li *ngFor="let r of j.requirements">
-                  {{r.libelle}}
-                </li>
-              </ul>
+          <div class="row">
+
+            <div  *ngFor="let j of jobs" class="col-md-6 col-sm-12 col-xs-12">
+
+              <div *ngIf="j.requirements.length > 0" 
+                    class="panel panel-default panel-prerequis">
+                <div class="panel-heading">{{j.libelle}}</div>
+                <div class="panel-body">
+                  <ul class="">
+                    <li *ngFor="let r of j.requirements">
+                      {{r.libelle}}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
             </div>
 
           </div>
