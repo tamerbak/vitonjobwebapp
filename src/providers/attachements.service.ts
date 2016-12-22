@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
 import "rxjs/add/operator/map";
 import {Configs} from "../configurations/configs";
+import {Utils} from "../app/utils/utils";
 
 @Injectable()
 export class AttachementsService {
@@ -13,8 +14,19 @@ export class AttachementsService {
   }
 
   loadAttachements(user){
-    let sql = "select pk_user_pieces_justificatives, nom_fichier, date_mise_a_jour from user_pieces_justificatives where fk_user_account="+user.id +" and dirty='N'";
-    //console.log(sql);
+
+    let entreprise : any = null;
+    if (user && Utils.isEmpty(user.employer.entreprises) === false && user.employer.entreprises.length > 0) {
+      entreprise = user.employer.entreprises[0];
+    }
+
+    let sql = "select pk_user_pieces_justificatives, nom_fichier, date_mise_a_jour " +
+      "from user_pieces_justificatives " +
+      "where fk_user_account=" + user.id + " " +
+      (entreprise ? "and fk_user_entreprise=" + entreprise.id + " " : "") +
+      "and dirty='N'"
+    ;
+
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -37,8 +49,18 @@ export class AttachementsService {
     });
   }
 
-  removeLastFileVersion(userId, fileName){
-    let sql = "update user_pieces_justificatives set dirty='Y' where fk_user_account="+userId+" and nom_fichier='"+fileName+"' ; "; // remove previous version
+  removeLastFileVersion(user, fileName){
+    let userId = user.id;
+
+    let entreprise : any = null;
+    if (user && Utils.isEmpty(user.employer.entreprises) === false && user.employer.entreprises.length > 0) {
+      entreprise = user.employer.entreprises[0];
+    }
+
+    let sql = "update user_pieces_justificatives set dirty='Y' where " +
+      "fk_user_account="+userId+" " +
+      (entreprise ? "and fk_user_entreprise=" + entreprise.id + " " : "") +
+      "and nom_fichier='"+fileName+"' ; "; // remove previous version
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
       // then on the response it'll map the JSON data to a parsed JS object.
@@ -53,11 +75,28 @@ export class AttachementsService {
     });
   }
 
-  uploadFile(userId, fileName, scanUri) {
-    let d = new Date();
-    this.removeLastFileVersion(userId, fileName);
+  uploadFile(user, fileName, scanUri) {
 
-    let sql = "insert into user_pieces_justificatives (fk_user_account, nom_fichier, date_mise_a_jour) values ("+userId+",'"+fileName+"','"+this.sqlfyDate(d)+"') returning pk_user_pieces_justificatives";
+    let userId = user.id;
+    let d = new Date();
+    this.removeLastFileVersion(user, fileName);
+
+    let entreprise : any = null;
+    if (user && Utils.isEmpty(user.employer.entreprises) === false && user.employer.entreprises.length > 0) {
+      entreprise = user.employer.entreprises[0];
+    }
+
+    let sql = "insert into user_pieces_justificatives (" +
+      "fk_user_account" +
+      ", nom_fichier" +
+      ", date_mise_a_jour" +
+      (entreprise ? ",fk_user_entreprise" : "") +
+      ") values (" +
+      userId +
+      ",'" + fileName +
+      "','" + this.sqlfyDate(d) +
+      (entreprise ? "','" + entreprise.id : "") +
+      "') returning pk_user_pieces_justificatives";
     ////console.log(sql);
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,

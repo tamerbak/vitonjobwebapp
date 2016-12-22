@@ -284,10 +284,7 @@ export class Profile{
       })
     }
 
-
-
     this.allImages = [];
-
 
     this.datepickerOpts = {
       language:'fr-FR',
@@ -552,17 +549,19 @@ export class Profile{
     let field = 'scan';
     let userId = this.isEmployer ? this.currentUser.employer.id : this.currentUser.jobyer.id;
 
-    this.profileService.getScan(userId, field, role).then((file: string)=> {
-      if (file && file.length > 0) {
-        let subfiles = file.split('*');
-        this.allImages = [];
-        for (let i = 0; i < subfiles.length; i++) {
-          this.allImages.push({
-            data: subfiles[i]
+    // Get scan
+    this.attachementsService.loadAttachements(this.currentUser).then((attachments: any) => {
+      let allImagesTmp = [];
+      for (let i = 0; i < attachments.length; ++i) {
+        if (attachments[i].fileName.substr(0, 4) == "scan") {
+          this.attachementsService.downloadActualFile(attachments[i].id, attachments[i].fileName).then((data: any)=> {
+            allImagesTmp.push({
+              data: data.stream
+            });
           });
         }
       }
-
+      this.allImages = allImagesTmp;
     });
 
     var elements = [];
@@ -818,44 +817,20 @@ export class Profile{
 
 
   updateScan(accountId, userId, role) {
-
     if (this.allImages && this.allImages.length > 0) {
-      let scanData = this.allImages[0].data;
-      for (let i = 1; i < this.allImages.length; i++) {
-        scanData = scanData + '*' + this.allImages[i].data;
-      }
-
-      this.profileService.uploadScan(scanData, userId, 'scan', 'upload', role)
-        .then((data: any) => {
-
-          if (!data || data.status == "failure") {
-            Messenger().post({
-              message: 'Serveur non disponible ou problème de connexion',
-              type: 'error',
-              showCloseButton: true
-            });
-            this.currentUser.scanUploaded = false;
-            this.sharedService.setCurrentUser(this.currentUser);
-          }
-
-
-        });
-
       if (accountId) {
         for (let i = 0; i < this.allImages.length; i++) {
           let index = i + 1;
-          this.attachementsService.uploadFile(accountId, 'scan ' + this.scanTitle + ' ' + index, this.allImages[i].data).then((data: any) => {
-
+          this.attachementsService.uploadFile(this.currentUser, 'scan' + this.scanTitle + ' ' + index, this.allImages[i].data).then((data: any) => {
             if (data && data.id != 0) {
               this.attachementsService.uploadActualFile(data.id, data.fileName, this.allImages[i].data);
             }
           });
         }
-
       }
-
+      this.currentUser.scanUploaded = false;
+      this.sharedService.setCurrentUser(this.currentUser);
     }
-
   }
 
   ngAfterViewChecked() {
