@@ -15,7 +15,7 @@
   </div>
 </div>
 
-<div class="row">
+<div class="alert-zone">
   <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
     <div [innerHTML]="alert.msg"></div>
   </alert>
@@ -125,7 +125,7 @@
               <option value=""></option>
               <option *ngFor="let s of sectors" [value]="s.id">{{s.libelle}}</option>
             </select>-->
-            <select class="form-control" [(ngModel)]="offer.jobData.idSector"
+            <select required id="input-sector-select" data-label="Choix du secteur d'activité" class="form-control" [(ngModel)]="offer.jobData.idSector"
                     (change)="sectorSelected($event.target.value)" [disabled]="!hideJobLoader">
               <option *ngFor="let s of sectors" [value]="s.id"> {{s.libelle}}</option>
             </select>
@@ -148,7 +148,8 @@
                     </span>
               </div>
             </div>
-            <input type="hidden" class="select2 job-select form-control" name="job"
+            <input required id="input-job-select" data-label="Choix du Job"
+            type="hidden" class="select2 job-select form-control" name="job"
                    placeholder="Recherchez votre job" [(ngModel)]="selectedJob"/>
             <!--select
               data-minimum-results-for-search="10"
@@ -235,6 +236,9 @@
           </label>
           <div class="col-xs-6">
             <input
+              required
+              id="input-hour-price"
+              data-label="Taux horaire brut"
               type="number"
               step="0.01"
               class="form-control"
@@ -261,7 +265,7 @@
           </label>
           <div class="col-xs-12">
 
-            <input  id="input-nbPoste"
+            <input  id="input-nbPoste" required data-label="Nombre de postes disponibles"
                     type="number"
                     step="1"
                     class="form-control"
@@ -275,7 +279,12 @@
 
   </div>
   <div class="col-lg-9 col-xl-8 col-xs-12">
-    <section class="widget widget-calendar">
+    <section class="widget widget-calendar widget-offer">
+      <header class="bb widget-offer-header">
+        <h6><span class="fw-semi-bold widget-offer-header-title">
+          {{ projectTarget == 'jobyer' ? 'Disponibilités' : 'Horaires de travail'}}
+        </span></h6>
+      </header>
       <div class="widget-body">
         <div class="calendar-controls">
           <div class="btn-group ">
@@ -508,7 +517,8 @@
             {{ projectTarget == 'employer' ? 'Adresse de la mission' : 'Adresse de départ vers le lieu de travail' }}
           </label>
           <div class="col-md-7 col-xs-12">
-            <input id="autocompleteOfferAdress" type="text" class="form-control"
+            <input id="autocompleteOfferAdress" required data-label="Adresse de la mission  "
+                   type="text" class="form-control"
                    placeholder="{{ projectTarget == 'employer' ? 'Saisissez  l\'adresse de la mission' : 'Saisissez  l\'adresse de départ vers le lieu de travail' }}" (keyup)="watchOfferAddress($event)"
                    [(ngModel)]="offerAddress" (input)="autocompleteOfferAddress()" />
           </div>
@@ -697,7 +707,7 @@
           <div [innerHTML]="'* Veuillez renseigner au moins un créneau'"></div>
         </alert>
 
-        <div class="form-group row required">
+        <div class="form-group row requiredVeuillez renseigner le secteur">
           <div class="col-md-1 col-sm-2 col-xs-2">
             <label *ngIf="projectTarget == 'jobyer'">
               <input type="checkbox" [checked]="isFulltime" class="form-control" (change)="watchFullTime($event)"/>

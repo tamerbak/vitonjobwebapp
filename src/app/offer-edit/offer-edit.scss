@@ -31,7 +31,7 @@
     color: white;
   }
 
-  .required > label:after {
+  div.required > label:after {
     content: " *";
     color: red;
   }
@@ -132,8 +132,14 @@ a.fc-event{
   padding: 0.600rem 0.75rem;
 }
 
-input.warning-empty{
-	border-color:red;
+.warning-empty{
+	border-color:red !important;
+}
+[hover]{
+	cursor:pointer;
+}
+.warn-focus{
+	box-shadow:0 0 1em rgba(42,42,42,.42);
 }
 
 
