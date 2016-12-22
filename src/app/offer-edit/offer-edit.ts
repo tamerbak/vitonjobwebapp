@@ -2013,45 +2013,96 @@ export class OfferEdit{
     jQuery('#show-event-modal').modal('hide');
   }
 
+  /* Validation formulaire */
   isFormValid(){
     let roundMin = (Math.round(this.minHourRate * 100) / 100);
     let errors   = [];
 
     //these conditions should be verified for all roles
-    if (!this.offer.jobData.job || this.offer.jobData.job == 0 || !this.offer.jobData.sector || this.offer.jobData.sector == 0 || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || roundMin > this.offer.jobData.remuneration) {
-      this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
-      errors.push({'type':'required'})
+    //if (!this.offer.jobData.job || this.offer.jobData.job == 0 || !this.offer.jobData.sector || this.offer.jobData.sector == 0 || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0) {
+      //this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
+      //errors.push({'type':'required'})
+    //}
+    if (roundMin > this.offer.jobData.remuneration){
+    	this.addAlert("warning", "Veuillez saisir un taux horaire valide.", "general");
+    }
+    if (!this.offer.calendarData || this.offer.calendarData.length == 0) {
+      this.addAlert("warning", "Veuillez saisir les horaires de travail pour continuer.", "general");
+      errors.push({type:'required', label:"Choix des horaires de travail"})
     }
 
     //for employer and recruiter roles, the nbPoste field should be filled
-    if(this.projectTarget == "employer"){
+    /*if(this.projectTarget == "employer"){
       if(!this.offer.nbPoste ||  this.offer.nbPoste <= 0){
-        this.addAlert("warning", "Veuillez renseigner le nombre de poste requis pour cette offre.", "general");
+        //this.addAlert("warning", "Veuillez renseigner le nombre de poste requis pour cette offre.", "general");
         errors.push({'type':'required', 'cible':'#input-nbPoste'})
       }
 
-	  if (jQuery('#autocompleteOfferAdress').val() == ''){
-	    this.addAlert("warning", "Veuillez renseigner l'adresse de la mission.", "general");
-	    errors.push({'type':'required', 'cible':'#autocompleteOfferAdress'})
-	  }
+  	  if (jQuery('#autocompleteOfferAdress').val() == ''){
+  	    //this.addAlert("warning", "Veuillez renseigner l'adresse de la mission.", "general");
+  	    errors.push({'type':'required', 'cible':'#autocompleteOfferAdress'})
+  	  }
+    }*/
 
-    }
+    // Error checking by a global method
+    let required_fields = 'input[required], select[required]';
+    jQuery(required_fields).each(function(){
+
+    	let tn = jQuery(this).prop("tagName");
+
+        if (!jQuery(this).val() || jQuery(this).val() == "0"){
+          let id = '#'+jQuery(this).attr('id') || 0;
+          let label = jQuery(this).data('label') || 'Champ incomplet';
+          let cible = jQuery(this).data('cible') || id;
+          let error = {type:'required', label:false, cible:false};
+
+          if (cible)	error.cible = cible;
+          if (label)	error.label = label;
+
+          // Insert current error object
+          if (error)  	errors.push(error);
+        }
+    });
 
     /* Gestion des erreurs */
     if (errors.length > 0){
-    	let error = errors[0];
+    	let first = errors[0];
 
-    	if (error.cible){
-    		let pos = jQuery(error.cible).offset();
-    		window.scrollTo(pos.left, pos.top - 100);
+		let n = 0;
+		let cpl = "";
+		for (n; n<errors.length;n++){
+			let e = errors[n];
+			
+			if (e.cible){
 
-    		jQuery(error.cible).addClass('warning-empty')
-    		.off('change').on('change', function(){
-    			if (jQuery(this).val())
-    				jQuery(this).removeClass('warning-empty')
-    		});
-    	}else
-    		window.scrollTo(0, 0);
+				if (e.label)
+					cpl += "<br> • <b hover='"+e.cible+"'>"+e.label+"</b>";
+
+				jQuery(e.cible).addClass('warning-empty')
+					.off('change click').on('change click', function(){
+					if (jQuery(this).val())
+				 		jQuery(this).removeClass('warning-empty')
+				});
+			}else
+				cpl += "<br> • <b>"+e.label+"</b>";
+		}
+
+		if (first.cible){
+			let pos = jQuery(first.cible).offset();
+			window.scrollTo(pos.left, pos.top - 100);
+		}else
+			window.scrollTo(0, 0);
+
+		this.addAlert("danger", "Merci de compléter les "+errors.length+' informations suivantes pour valider votre offre :  '+cpl, "general");
+    	
+    	// Mise en surbrillance du champ en erreur survolé
+    	jQuery('[hover]').on('mouseenter', function(){
+    		let c = jQuery(this).attr('hover');
+    		jQuery(c).addClass('warn-focus');
+    	}).on('mouseleave', function(){
+    		let c = jQuery(this).attr('hover');
+    		jQuery(c).removeClass('warn-focus');
+    	})
     }
     return errors.length == 0;
   }
