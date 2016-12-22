@@ -19,6 +19,7 @@ import {AccountConstraints} from "../../validators/account-constraints";
 import {scan} from "rxjs/operator/scan";
 import {Helpers} from "../../providers/helpers.service";
 import {ConventionService} from "../../providers/convention.service";
+import {OffersService} from "../../providers/offer.service";
 
 declare var jQuery, require, Messenger, moment: any;
 declare var google: any;
@@ -27,7 +28,8 @@ declare var google: any;
   selector: '[profile]',
   template: require('./profile.html'),
   directives: [ROUTER_DIRECTIVES, NKDatetime, AlertComponent, ModalPicture, MaskedInput, BankAccount],
-  providers: [Utils, ProfileService, CommunesService, LoadListService, MedecineService, AttachementsService, AccountConstraints, ConventionService],
+  providers: [Utils, ProfileService, CommunesService, LoadListService, MedecineService,
+    AttachementsService, AccountConstraints, ConventionService, OffersService],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./profile.scss')]
 })
@@ -211,6 +213,15 @@ export class Profile{
    */
   jobs : any = [];
 
+  /*
+   * INTERESTING JOBS
+   */
+  jobsList : any = [];
+  selectedJob : any;
+  selectedJobId : any;
+  interestingJobs : any[];
+  selectedJobLevel : string;
+
   setImgClasses() {
     return {
       'img-circle': true,//TODO:this.currentUser && this.currentUser.estEmployeur,
@@ -224,6 +235,7 @@ export class Profile{
               private communesService: CommunesService,
               private attachementsService: AttachementsService,
               private conventionService: ConventionService,
+              private offersService : OffersService,
               private zone: NgZone,
               private router: Router,
               private _loader: MapsAPILoader) {
@@ -303,8 +315,50 @@ export class Profile{
     if(!this.isEmployer && !this.isRecruiter){
       this.initDisponibilites();
       this.initRequirements();
+      this.initinterestingJobs();
     }
 
+  }
+
+  initinterestingJobs(){
+    this.profileService.loadProfileJobs(this.currentUser.jobyer.id).then((data:any)=>{
+      this.interestingJobs = data;
+    });
+  }
+
+  addJob(){
+    if(!this.selectedJob || Utils.isEmpty(this.selectedJob) ||
+      !this.selectedJobLevel || Utils.isEmpty(this.selectedJobLevel)){
+      return;
+    }
+    for(let i = 0 ; i < this.interestingJobs.length ; i++){
+      if(this.interestingJobs[i].libelle == this.selectedJob){
+        return;
+      }
+    }
+    let j = {
+      id : this.selectedJobId,
+      libelle : this.selectedJob,
+      niveau : this.selectedJobLevel
+    };
+    this.interestingJobs.push(j);
+    this.profileService.attachJob(j, this.currentUser.jobyer.id);
+  }
+
+  removeJob(j){
+    let index = -1;
+    for(let i = 0 ; i < this.interestingJobs.length ; i++){
+      if(this.interestingJobs[i].id == j.id){
+        index = i;
+        break;
+      }
+    }
+
+    if(index<0)
+      return;
+
+    this.interestingJobs.splice(index,1);
+    this.profileService.removeJob(j, this.currentUser.jobyer.id);
   }
 
   initRequirements(){
@@ -536,6 +590,7 @@ export class Profile{
    * Initialize form with user values
    */
   initForm() {
+
     this.showForm = true;
     var offset = jQuery("#profileForm").offset().top;
     var point = offset+window.innerHeight-50;
@@ -807,6 +862,66 @@ export class Profile{
         jQuery(".whoDeliver-select").select2('data', {id: data.data[0].id, nom: this.whoDeliverStay});
     });
 
+
+    if (!this.isEmployer && !this.isRecruiter) {
+      this.selectedJobLevel = '1';
+      let self = this;
+      let job = jQuery('.job-select').select2({
+        maximumSelectionLength: 1,
+        tokenSeparators: [",", " "],
+        createSearchChoice: function (term, data) {
+          if (self.jobsList.length == 0) {
+            return {
+              id: '0', libelle: term
+            };
+          }
+        },
+        ajax: {
+          url: Configs.sqlURL,
+          type: 'POST',
+          dataType: 'json',
+          quietMillis: 250,
+          transport: function (params) {
+            params.beforeSend = Configs.getSelect2TextHeaders();
+            return jQuery.ajax(params);
+          },
+          data: function (term, page) {
+            return self.offersService.selectJobs(term, 0);
+          },
+          results: function (data, page) {
+            self.jobsList = data.data;
+            return {results: data.data};
+          },
+          cache: false,
+
+        },
+
+        formatResult: function (item) {
+          return item.libelle;
+        },
+        formatSelection: function (item) {
+          return item.libelle;
+        },
+        dropdownCssClass: "bigdrop",
+        escapeMarkup: function (markup) {
+          return markup;
+        },
+        minimumInputLength: 1,
+        initSelection: function(element, callback) {
+        }
+      });
+
+      job
+        .val(this.selectedJob).trigger("change")
+        .on("change", function (e) {
+            self.jobSelected(e.val);
+          }
+        );
+
+    }
+
+
+
     this.initValidation();
     //$( "#profileForm" ).scrollTop( 300 );
     window.setTimeout(function(){
@@ -815,6 +930,16 @@ export class Profile{
 
   }
 
+  jobSelected(idJob){
+    if(Utils.isEmpty(idJob))
+      return;
+
+    this.selectedJobId = idJob;
+    var jobsTemp = this.jobsList.filter((v) => {
+      return (v.id == idJob);
+    });
+    this.selectedJob = jobsTemp[0].libelle;
+  }
 
   updateScan(accountId, userId, role) {
     if (this.allImages && this.allImages.length > 0) {
@@ -833,14 +958,17 @@ export class Profile{
     }
   }
 
+  ngOnInit(): void{
+
+  }
+
   ngAfterViewChecked() {
+
     if (!this.isEmployer) {
       if (this.dataForNationalitySelectReady) {
         jQuery('.nationalitySelectPicker').selectpicker();
       }
     }
-
-
   }
 
   deleteImage(index) {
