@@ -153,4 +153,8 @@ img{
 .color-small{
   color: #14baa6;
 }
+.required > label:after {
+  content: " *";
+  color: red;
+}
 
