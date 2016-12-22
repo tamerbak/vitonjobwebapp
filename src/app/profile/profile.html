@@ -455,14 +455,14 @@
                          name="medecineTravail"/>
                 </div>
               </div>
+
               <div class="form-group row">
                 <div *ngFor="let i of allImages; let idx = index" class="col-md-2 col-xs-12">
-                    <img style="max-height: 100px;margin:1px"  src="{{i.data}}" alt=""/>
-                    <button class="btn danger" style="width: 100%;" (click)="deleteImage(idx)">
-                      <span class="glyphicon glyphicon-minus"></span>
-                    </button>
+                  <img style="max-height: 100px;margin:1px"  src="{{i.data}}" alt=""/>
+                  <button class="btn danger" style="width: 100%;" (click)="deleteImage(idx)">
+                    <span class="glyphicon glyphicon-minus"></span>
+                  </button>
                 </div>
-
               </div>
 
               <div class="form-group row">
@@ -676,7 +676,7 @@
 
             <div  *ngFor="let j of jobs" class="col-md-6 col-sm-12 col-xs-12">
 
-              <div *ngIf="j.requirements.length > 0" 
+              <div *ngIf="j.requirements.length > 0"
                     class="panel panel-default panel-prerequis">
                 <div class="panel-heading">{{j.libelle}}</div>
                 <div class="panel-body">
