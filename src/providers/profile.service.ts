@@ -706,6 +706,7 @@ export class ProfileService{
     let table = projectTarget == 'jobyer' ? 'user_qualite_du_jobyer' : 'user_qualite_employeur';
     let foreignKey = projectTarget == 'jobyer' ? 'fk_user_jobyer' : 'fk_user_entreprise';
     this.deleteQualities(id, table, foreignKey).then(data => {
+
       if(data && qualities && qualities.length != 0)
         this.attachQualities(qualities, id, table, foreignKey);
     });
@@ -736,13 +737,15 @@ export class ProfileService{
     let sql = "";
     for (let i = 0; i < qualities.length; i++) {
       let q = qualities[i];
-      sql = sql + " insert into " + table + " (" + foreignKey + ", fk_user_indispensable) values (" + id + ", " + q.idQuality + ", " + q.level + "); ";
+      sql = sql + " insert into " + table + " (" + foreignKey + ", fk_user_indispensable) values (" + id + ", " + q.idQuality + "); ";
     }
+
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
+
           resolve(data);
         });
     });
