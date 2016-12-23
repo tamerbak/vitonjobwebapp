@@ -1,0 +1,93 @@
+<div class="modal fade modal-margin-top" id="modal-corporama-search">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel1">Rechercher une entreprise</h4>
+        <div class="container">
+
+          <div class="row">
+            <div class="col-sm-6">
+              <button class="btn btn-default btn-by" [disabled]="typeSearch == 'company'" (click)="searchBy('company')">
+                Par Nom
+              </button>
+            </div>
+            <div class="col-sm-6">
+              <button class="btn btn-default btn-by" [disabled]="typeSearch == 'siren'" (click)="searchBy('siren')">
+                Par SIREN
+              </button>
+            </div>
+          </div>
+
+          <br />
+
+          <div class="form-group">
+            <div class="col-sm-8">
+              <input class="form-control" type="text" [(ngModel)]="inputSearch" placeholder="{{searchPlaceholder}}"/>
+            </div>
+            <div class="col-sm-4">
+              <button class="btn btn-primary btn-by" (click)="searchCompany()">
+                Rechercher
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+
+          <div *ngFor="let alert of alerts">
+            <alert [type]="'danger'+ ' alert-sm'" dismissible="false">
+              {{ alert }}
+            </alert>
+          </div>
+
+          <table class="table table-condensed table-striped">
+            <thead>
+            <tr *ngIf="companies && companies.length > 0 && !noResult">
+              <th class="col-xs-4">
+                Nom de l'entreprise
+              </th>
+              <th class="col-xs-4">
+                SIREN
+              </th>
+              <th class="col-xs-4">
+              </th>
+            </tr>
+            </thead>
+
+            <tr *ngFor="let company of companies" (click)="takeAction(company)" [hidden]="noResult">
+              <td class="col-xs-4">
+                {{company.name}}
+              </td>
+              <td class="col-xs-4">
+                {{company.siren}}
+              </td>
+
+              <td *ngIf="!(typeSearch == 'siren' || hasToRedirect)">
+                <button class="btn btn-default btn-sm" (click)="takeAction(company)">
+                  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                </button>
+              </td>
+              <td *ngIf="typeSearch == 'siren' || hasToRedirect">
+                <div *ngIf="company.hasLeader">
+                  Nom et prénom: {{company.title}} {{company.lastname}}<br />
+                  {{company.firstname}}
+                </div>
+                <div>
+                  NAF: {{company.naf}}
+                </div>
+                <div *ngIf="company.hasAddress">
+                  Adresse: {{company.placename}} {{company.street}} {{company.zip}}<br />
+                  {{company.city}}, France
+                </div>
+              </td>
+            </tr>
+          </table>
+
+        </div>
+      </div>
+      <div class="modal-footer" *ngIf="typeSearch == 'siren' || hasToRedirect">
+        <div class="col-xs-12">
+          <button type="button" class="btn btn-success btn-by" (click)="close()">Selectionner</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
