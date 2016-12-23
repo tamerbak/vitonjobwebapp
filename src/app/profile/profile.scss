@@ -316,6 +316,14 @@ select {
 .panel-prerequis .panel-heading{
 	background-color:#eeeeee;
 }
-.panel-prerequis ul{	
+.panel-prerequis ul{
     padding-left: 2rem;
+}
+.btn-tool {
+  position: absolute;
+  top: 2em !important;
+  left: 50%!important;
+  transform: translate(-50%, -50%)!important;
+  z-index: 1!important;
+
 }
