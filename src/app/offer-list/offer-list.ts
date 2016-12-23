@@ -130,7 +130,18 @@ export class OfferList {
         } else {
           offer.obsolete = false;
           this.globalOfferList[0].list.push(offer);
-          let searchFields = {
+
+          let searchQuery = {
+            class: 'com.vitonjob.recherche.model.SearchQuery',
+            queryType: 'COUNT',
+            idOffer: offer.idOffer,
+            resultsType: this.projectTarget=='jobyer'?'employer':'jobyer'
+          };
+          this.searchService.advancedSearch(searchQuery).then((data:any)=>{
+            offer.correspondantsCount = data.count;
+          });
+
+          /*let searchFields = {
             class: 'com.vitonjob.callouts.recherche.SearchQuery',
             job: offer.jobData.job,
             metier: '',
@@ -143,7 +154,7 @@ export class OfferList {
           };
           this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
             offer.correspondantsCount = data.length;
-          });
+          });*/
         }
       } else {
         //private offers
@@ -212,22 +223,18 @@ export class OfferList {
   launchSearch(offer) {
     if (!offer)
       return;
-    let searchFields = {
-      class: 'com.vitonjob.callouts.recherche.SearchQuery',
-      job: offer.jobData.job,
-      metier: '',
-      lieu: '',
-      nom: '',
-      entreprise: '',
-      date: '',
-      table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
-      idOffre: '0'
+    let searchQuery = {
+      class: 'com.vitonjob.recherche.model.SearchQuery',
+      queryType: 'OFFER',
+      idOffer: offer.idOffer,
+      resultsType: this.projectTarget=='jobyer'?'employer':'jobyer'
     };
-    this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
+    this.searchService.advancedSearch(searchQuery).then((data:any)=>{
       this.sharedService.setLastResult(data);
       this.sharedService.setCurrentOffer(offer);
       this.router.navigate(['search/results']);
     });
+
   }
 
   /**
