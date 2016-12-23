@@ -1,8 +1,5 @@
-import {Configs} from "../../configurations/configs";
-import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Component, Output, EventEmitter} from "@angular/core";
 import {CorporamaService} from "../../providers/corporama-service";
-// TODO import {GlobalService} from "../../providers/global.service";
 import {Utils} from "../utils/utils";
 import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES} from "@angular/router";
@@ -11,8 +8,6 @@ import {AlertComponent} from "ng2-bootstrap";
 declare var jQuery, require: any;
 
 @Component({
-  // templateUrl: 'build/pages/modal-corporama-search/modal-corporama-search.html',
-  // providers: [CorporamaService, SharedService /*, GlobalService*/]
   selector: '[modal-corporama-search]',
   directives: [ROUTER_DIRECTIVES, AlertComponent],
   providers: [CorporamaService, SharedService],
@@ -64,20 +59,10 @@ export class ModalCorporamaSearch {
     }
 
     this.hasToRedirect = false;
-    /* let loading = Loading.create({
-      content: `
-			<div>
-			<img src='img/loading.gif' />
-			</div>
-			`,
-      spinner: 'hide'
-    });
-    this.nav.present(loading);*/
     this.corporamaService.searchCompany(this.typeSearch, this.inputSearch).then((data: any) => {
       if (!data || data.status == "failure" || Utils.isEmpty(data._body)) {
         console.log(data);
-        // TODO : loading.dismiss();
-        // TODO : this.globalService.showAlertValidation("Vit-On-Job", "Service indisponible. Veuillez réessayer ultérieurement.");
+        this.alerts = ["Service indisponible. Veuillez réessayer ultérieurement."];
         this.alerts = ["Service indisponible. Veuillez réessayer ultérieurement."];
         return;
       } else {
@@ -95,36 +80,23 @@ export class ModalCorporamaSearch {
           }
         }
       }
-      // TODO : loading.dismiss();
     });
   }
 
   takeAction(company) {
-    /*let loading = Loading.create({
-     content: `
-     <div>
-     <img src='img/loading.gif' />
-     </div>
-     `,
-     spinner: 'hide',
-     });
-     this.nav.present(loading);*/
+
     if (this.typeSearch == "siren" || this.hasToRedirect) {
-      //loading.dismiss();
       this.close();
 
     } else {
       this.corporamaService.searchCompany("siren", company.siren).then((data: any) => {
         if (!data || data.status == "failure" || Utils.isEmpty(data._body)) {
           console.log(data);
-          //loading.dismiss();
-          // TODO : this.globalService.showAlertValidation("Vit-On-Job", "Service indisponible. Veuillez réessayer ultérieurement.");
           return;
         } else {
           data = JSON.parse(data._body);
           this.companies = this.corporamaService.convertSearchResponse(data);
           this.hasToRedirect = true;
-          //loading.dismiss();
         }
       })
     }

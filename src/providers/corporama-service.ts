@@ -1,7 +1,5 @@
 import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
-// import {Configs} from "../../configurations/configs";
-// import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Configs} from "../configurations/configs";
 
 /**
@@ -11,15 +9,10 @@ import {Configs} from "../configurations/configs";
 
 @Injectable()
 export class CorporamaService {
-  // configuration;
-  // projectTarget;
-
   constructor(
-    public http: Http//, gc: GlobalConfigs
+    public http: Http
   ) {
     this.http = http;
-    // this.projectTarget = gc.getProjectTarget();
-    // this.configuration = Configs.setConfigs(this.projectTarget);
   }
 
   searchCompany(type: string, value: String) {
