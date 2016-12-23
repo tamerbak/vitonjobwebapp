@@ -9,6 +9,7 @@ import {Utils} from "../utils/utils";
 import {AddressUtils} from "../utils/addressUtils";
 import {MapsAPILoader} from "angular2-google-maps/core";
 import MaskedInput from "angular2-text-mask";
+import {ModalCorporamaSearch} from "../modal-corporama-search/modal-corporama-search";
 
 declare var jQuery, Messenger: any;
 declare var google: any;
@@ -17,7 +18,7 @@ declare var google: any;
   selector: '[modal-profile]',
   template: require('./modal-profile.html'),
   styles: [ require('./modal-profile.scss') ],
-  directives: [ROUTER_DIRECTIVES, AlertComponent, MaskedInput],
+  directives: [ROUTER_DIRECTIVES, AlertComponent, MaskedInput, ModalCorporamaSearch],
   providers: [Utils, ProfileService, LoadListService]
 })
 
@@ -940,5 +941,55 @@ export class ModalProfile{
 
   close(): void {
     jQuery('#modal-profile').modal('hide');
+  }
+
+  openCoporamaModal() {
+    jQuery('#modal-profile').on('hidden.bs.modal', function (e) {
+      jQuery('#modal-corporama-search').modal('show');
+      jQuery('#modal-corporama-search').on('hidden.bs.modal', function (e) {
+        jQuery('#modal-profile').modal('show');
+      })
+    });
+    jQuery('#modal-profile').modal('hide');
+  }
+
+  onDismissCorporamaModal(company: any) {
+    debugger;
+    if (!company) {
+      return;
+    }
+
+    if (Utils.isEmpty(this.title) === true) {
+      this.title = (company.title == "M" ? "M." : company.title);
+    }
+    if (Utils.isEmpty(this.lastname) === true) {
+      // Call lastname field watcher
+      this.lastname = company.lastname;
+      this.watchLastname({target: {value: company.lastname}});
+    }
+    if (Utils.isEmpty(this.firstname) === true) {
+      // Call firstname field watcher
+      this.firstname = company.firstname;
+      this.watchFirstname({target: {value: company.firstname}});
+    }
+
+    if (Utils.isEmpty(company.street) === false
+      && Utils.isEmpty(company.zip) === false
+      && Utils.isEmpty(company.city) === false) {
+      let newAdress = company.street + ', ' + company.zip + ' ' + company.city;
+      if (Utils.isEmpty(this.personalAddress) === true || this.personalAddress.toUpperCase() != newAdress.toUpperCase()) {
+        this.personalAddress = newAdress;
+      }
+    }
+
+    // Call company name field watcher
+    this.companyname = company.name.toUpperCase();
+    this.watchCompanyname({target: {value: company.name.toUpperCase()}});
+
+    this.siret = Utils.formatSIREN(company.siren);
+    this.ape = company.naf;
+
+    this.IsCompanyExist(this.companyname, 'companyname');
+
   }
 }
