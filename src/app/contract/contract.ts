@@ -353,7 +353,8 @@ export class Contract {
       periodicite : '',
       offerContact : '',
       contactPhone : '',
-      prerequis : []
+      prerequis : [],
+      adresseInterim : ""
     };
 
     this.offersService.loadEPI().then((data:any)=>{
@@ -609,7 +610,8 @@ export class Contract {
       periodicite : '',
       offerContact : offerContact,
       contactPhone : contactPhone,
-      prerequis : []
+      prerequis : [],
+      adresseInterim : this.workAdress
     };
 
 
@@ -729,11 +731,14 @@ export class Contract {
 
       if (data && data.length > 0) {
         this.contractData.numero = this.formatNumContrat(data[0].numct);
+        this.contractData.num = this.formatNumContrat(data[0].numct);
       }else{
         this.addAlert("danger", "Une erreur est survenue lors de la sauvegarde des données. Veuillez rééssayer l'opération.");
         this.inProgress = false;
         return;
       }
+
+      this.contractData.adresseInterim= this.workAdress;
 
       //save contrct data
      this.contractService.saveContract(

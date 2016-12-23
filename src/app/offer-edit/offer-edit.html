@@ -15,7 +15,7 @@
   </div>
 </div>
 
-<div class="row">
+<div class="alert-zone">
   <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
     <div [innerHTML]="alert.msg"></div>
   </alert>
@@ -125,7 +125,7 @@
               <option value=""></option>
               <option *ngFor="let s of sectors" [value]="s.id">{{s.libelle}}</option>
             </select>-->
-            <select class="form-control" [(ngModel)]="offer.jobData.idSector"
+            <select required id="input-sector-select" data-label="Choix du secteur d'activité" class="form-control" [(ngModel)]="offer.jobData.idSector"
                     (change)="sectorSelected($event.target.value)" [disabled]="!hideJobLoader">
               <option *ngFor="let s of sectors" [value]="s.id"> {{s.libelle}}</option>
             </select>
@@ -148,20 +148,10 @@
                     </span>
               </div>
             </div>
-            <input type="hidden" class="select2 job-select form-control" name="job"
+            <input required id="input-job-select" data-label="Choix du Job"
+            type="hidden" class="select2 job-select form-control" name="job"
                    placeholder="Recherchez votre job" [(ngModel)]="selectedJob"/>
-            <!--select
-              data-minimum-results-for-search="10"
-              data-placeholder="Recherchez votre job"
-              class="job-select select2 form-control"
-              tabindex="-1"
-              name="job"
-              id="job"
-              [disabled]="!hideJobLoader || !offer.jobData.idSector"
-            >
-              <option value=""></option>
-              <option *ngFor="let j of jobs" [value]="j.id">{{j.libelle}}</option>
-            </select-->
+
             <alert *ngIf="triedValidate && !offer.jobData.idJob" [type]="'danger alert-sm'">
               <div [innerHTML]="'* Veuillez renseigner le job'"></div>
             </alert>
@@ -235,6 +225,9 @@
           </label>
           <div class="col-xs-6">
             <input
+              required
+              id="input-hour-price"
+              data-label="Taux horaire brut"
               type="number"
               step="0.01"
               class="form-control"
@@ -261,7 +254,7 @@
           </label>
           <div class="col-xs-12">
 
-            <input  id="input-nbPoste"
+            <input  id="input-nbPoste" required data-label="Nombre de postes disponibles"
                     type="number"
                     step="1"
                     class="form-control"
@@ -275,7 +268,12 @@
 
   </div>
   <div class="col-lg-9 col-xl-8 col-xs-12">
-    <section class="widget widget-calendar">
+    <section class="widget widget-calendar widget-offer">
+      <header class="bb widget-offer-header">
+        <h6><span class="fw-semi-bold widget-offer-header-title">
+          {{ projectTarget == 'jobyer' ? 'Disponibilités' : 'Horaires de travail'}}
+        </span></h6>
+      </header>
       <div class="widget-body">
         <div class="calendar-controls">
           <div class="btn-group ">
@@ -339,7 +337,6 @@
               <!-- Créneaux -->
               <div class="form-group row">
                 <label class="col-md-2 col-xs-4 form-control-label"></label>
-                <!--label class="col-md-4 col-xs-6 form-control-label">Date</label-->
                 <label class="col-md-5 col-xs-4 form-control-label">Heure de début</label>
                 <label class="col-md-5 col-xs-4 form-control-label">Heure de fin</label>
               </div>
@@ -508,7 +505,8 @@
             {{ projectTarget == 'employer' ? 'Adresse de la mission' : 'Adresse de départ vers le lieu de travail' }}
           </label>
           <div class="col-md-7 col-xs-12">
-            <input id="autocompleteOfferAdress" type="text" class="form-control"
+            <input id="autocompleteOfferAdress" required data-label="Adresse de la mission  "
+                   type="text" class="form-control"
                    placeholder="{{ projectTarget == 'employer' ? 'Saisissez  l\'adresse de la mission' : 'Saisissez  l\'adresse de départ vers le lieu de travail' }}" (keyup)="watchOfferAddress($event)"
                    [(ngModel)]="offerAddress" (input)="autocompleteOfferAddress()" />
           </div>
@@ -646,119 +644,6 @@
     </section>
 
     <!-- !JOB -->
-    <!-- DISPO -->
-
-    <!--section widget class="widget widget-offer">
-      <header class="bb widget-offer-header">
-        <h6><span class="fw-semi-bold widget-offer-header-title">Disponibilités</span></h6>
-      </header>
-      <div class="widget-body">
-
-        <legend><strong>Créneaux</strong></legend>
-
-        <!-- Créneaux >
-        <div class="form-group row required">
-          <label class="col-md-2 col-xs-6 form-control-label">Nature</label>
-          <label class="col-md-4 col-xs-6 form-control-label">Date</label>
-          <label class="col-md-2 col-xs-3 form-control-label">Heure de début</label>
-          <label class="col-md-2 col-xs-3 form-control-label">Heure de fin</label>
-        </div>
-
-        <div *ngFor="let item of slots, let j = index">
-          <div class="form-group row">
-            <div class="col-md-2 col-sm-5 col-xs-12">
-              <span>{{item.pause ? 'Pause' : ''}}</span>
-            </div>
-            <div class="col-md-4 col-sm-5 col-xs-12">
-              <input class="form-control" [(ngModel)]="item.date" disabled/>
-            </div>
-            <div class="col-md-2 col-sm-2 col-xs-4 offer-hour-new">
-              <input class="form-control" [(ngModel)]="item.startHour" disabled/>
-            </div>
-            <div class="col-md-2 col-sm-2 col-xs-4 offer-hour-new">
-              <input class="form-control" [(ngModel)]="item.endHour" disabled/>
-            </div>
-            <div class="col-md-2 col-sm-3 col-xs-4 offer-hour-action-button">
-              <button
-                style="display: block; width: 100%;"
-                class="btn btn-danger mb-xs col-md-2 col-xs-12"
-                role="button"
-                (click)="removeSlot(j)" [disabled]="isDeleteSlotDisabled()  || isOfferInContract || isOfferArchived">
-                <i class="glyphicon glyphicon-trash"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <alert *ngFor="let alert of alertsSlot; let i = index" [type]="alert.type + ' alert-sm'" dismissible="false">
-          <div [innerHTML]="alert.msg"></div>
-        </alert>
-        <alert *ngIf="triedValidate && slots.length == 0" [type]="'danger alert-sm'">
-          <div [innerHTML]="'* Veuillez renseigner au moins un créneau'"></div>
-        </alert>
-
-        <div class="form-group row required">
-          <div class="col-md-1 col-sm-2 col-xs-2">
-            <label *ngIf="projectTarget == 'jobyer'">
-              <input type="checkbox" [checked]="isFulltime" class="form-control" (change)="watchFullTime($event)"/>
-              Jour entier
-            </label>
-          </div>
-          <div class="col-md-1 col-sm-2 col-xs-2">
-            <label>
-              <input type="checkbox" [checked]="isPause" class="form-control" (change)="watchPause($event)"/>
-              Pause
-            </label>
-          </div>
-          <div class="col-md-4 col-sm-4 col-xs-10">
-            <datetime
-              id="slotDate"
-              style="display: block; width: 100%;"
-              [timepicker]="false"
-              [datepicker]="datepickerOpts"
-              [(ngModel)]="slot.date"
-            ></datetime>
-          </div>
-          <div class="col-md-2 col-sm-3 col-xs-6 offer-hour-new">
-            <datetime [hidden]="isFulltime"
-              id="slotSHour"
-              [datepicker]="false"
-              [timepicker]="{ showMeridian: false, minuteStep: 15 }"
-              [(ngModel)]="slot.startHour"
-              readonly = "true"
-            ></datetime>
-            <input *ngIf="isFulltime" class="form-control"
-                    value="09:00"
-                    readonly/>
-          </div>
-          <div class="col-md-2 col-sm-3 col-xs-6 offer-hour-new">
-            <datetime [hidden]="isFulltime"
-              id="slotEHour"
-              [datepicker]="false"
-              [timepicker]="{ showMeridian: false, minuteStep: 15 }"
-              [(ngModel)]="slot.endHour"
-            ></datetime>
-            <input *ngIf="isFulltime" class="form-control"
-                   value="17:00"
-                   readonly/>
-          </div>
-          <div class="col-md-2 col-xs-12">
-            <button
-              style="display: block; width: 100%;"
-              class="btn btn-success mb-xs"
-              role="button"
-              (click)="addSlot()"
-              [disabled]="!(slot.date && slot.startHour && slot.endHour) || isOfferInContract || isOfferArchived"
-            >
-              Ajouter
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </section-->
-
-    <!-- !DISPO -->
     <!-- PROFILE -->
 
     <section widget class="widget widget-offer">

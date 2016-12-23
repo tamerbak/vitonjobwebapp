@@ -7,28 +7,8 @@
 <div class="col-lg-6 col-xs-12">
   <section class="widget">
     <div class="widget-body">
-      <div *ngIf="emptySafe"><p class="bg-info attachments-info-box">Vous pouvez installer dès maintenant un document dans votre coffre numérique sécurisé</p></div>
+      <div *ngIf="emptySafe"><p class="attachments-info-box">Vous pouvez installer dès maintenant un document dans votre coffre numérique sécurisé</p></div>
       <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
-        <div [hidden]="emptySafe" class="form-group row">
-          <label class="col-md-7 col-xs-7 form-control-label"><strong>Document</strong></label>
-          <label class="col-md-3 col-xs-3 form-control-label"><strong>Date de création</strong></label>
-          <label class="col-md-1 col-xs-1 form-control-label"></label>
-          <label class="col-md-1 col-xs-1 form-control-label"></label>
-        </div>
-        <div [hidden]="emptySafe" class="form-group row" *ngFor="let a of attachments">
-          <div class="col-md-7 col-xs-7">
-            <span>{{a.fileName}}</span>
-          </div>
-          <div class="col-md-3 col-xs-3">
-            <span>{{a.uploadDate}}</span>
-          </div>
-          <div class="col-md-1 col-xs-1">
-            <button class="btn btn-primary" (click)="viewFile(a)"><span><i class="glyphicon glyphicon-picture" aria-hidden="true" ></i></span></button>
-          </div>
-          <div class="col-md-1 col-xs-1">
-            <button class="btn btn-danger" (click)="deleteFile(a)"><span><i class="glyphicon glyphicon-trash" aria-hidden="true" ></i></span></button>
-          </div>
-        </div>
         <div *ngIf="viewMode" class="form-group row">
           <div class="screen-filler">
             <button class="screen-filler-btn" (click)="closeModal()" ><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
@@ -40,8 +20,8 @@
         </alert>
 
         <fieldset>
-          <legend><strong>Ajouter un nouveau document</strong></legend>
-          <div class="form-group row">
+          <h4>Ajouter un nouveau document</h4>
+          <div class="form-group row required">
             <label class="col-md-4 col-xs-12 form-control-label text-md-right">Nom du document</label>
             <div class="col-md-4 col-xs-12">
               <input type="text" class="form-control" [(ngModel)]="fileName" [disabled]="isUploadInProgress">
@@ -50,18 +30,20 @@
           </div>
           <div class="form-group row">
             <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-              Télécharger
+              Télécharger (JPEG/PNG)
             </label>
-
-            <div class="col-md-8 col-xs-12">
+            <div class="col-md-4 col-xs-12">
               <div class="fileinput fileinput-new" data-provides="fileinput">
-                <div class="fileinput-preview thumbnail width-height" data-trigger="fileinput">
+                <div class="form-group">
+                  <input type="file" name="file" id="file" class="input-file form-control" accept="image/x-png,image/jpeg">
+                  <label for="file" class="btn btn-tertiary js-labelFile">
+                    <i class="icon fa fa-check"></i>
+                    <span class="js-fileName">Choisir un fichier</span>
+                  </label>
+                  <small [hidden]="isEmpty(scanData)">cliquer pour remplacer</small>
                 </div>
-                <div>
-                <span class="btn btn-default btn-file" [hidden]="!isEmpty(scanData)"><span class="fileinput-new">Choisir</span>
-                <input type="file" name="..."></span>
-                  <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Enlever</a>
-                </div>
+
+                <div class="fileinput-preview" data-trigger="fileinput"></div>
               </div>
             </div>
           </div>
@@ -76,5 +58,34 @@
       </form>
     </div>
   </section>
+  <div class="row">
+    <div class="col-xs-12">
+      <section class="widget" [hidden]="emptySafe">
+        <header><h4>Mon coffre numérique</h4></header>
+        <div class="widget-body">
+            <table class="table">
+              <thead>
+              <tr>
+                <th>Description</th>
+                <th>action</th>
+              </tr>
+              </thead>
+              <tbody *ngFor="let a of attachments">
+              <tr>
+                <td>Nom: <small>{{a.fileName}}</small>
+                  <br>
+                  Date: <small>{{a.uploadDate}}</small>
+                </td>
+                <td>
+                <button class="btn btn-primary" (click)="viewFile(a)"><span><i class="glyphicon glyphicon-picture" aria-hidden="true" ></i></span></button>
+                <button class="btn btn-danger" (click)="deleteFile(a)"><span><i class="glyphicon glyphicon-trash" aria-hidden="true" ></i></span></button>
+              </td>
+              </tr>
 
+              </tbody>
+            </table>
+          </div>
+      </section>
+    </div>
+  </div>
 </div>
