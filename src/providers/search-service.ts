@@ -54,6 +54,34 @@ export class SearchService {
     });
   }
 
+  advancedSearch(searchQuery: any) {
+    //  Prepare payload
+    var query = JSON.stringify(searchQuery);
+
+    var payload = {
+      'class': 'fr.protogen.masterdata.model.CCallout',
+      id: 10045,
+      args: [
+        {
+          class: 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'Requete de recherche',
+          value: btoa(query)
+        }
+      ]
+    };
+
+    // don't have the data yet
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          this.data = data;
+          resolve(this.data);
+        });
+    });
+  }
+
   /**
    * @description Performs a natural language search on the database and returns offers
    * @param textQuery

@@ -105,4 +105,11 @@ export class Utils {
       return 0.0;
     }
   }
+
+  public static formatSIREN(siren){
+    let s1 = siren.substr(0, 3);
+    let s2 = siren.substr(3, 3);
+    let s3 = siren.substr(6, 3);
+    return s1 + " " + s2 + " " + s3 + " ";
+  }
 }

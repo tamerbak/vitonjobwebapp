@@ -149,14 +149,23 @@
             <div *ngIf="!isRecruiter">
 
               <div *ngIf="isEmployer" class="form-group row">
+
+                <div (onDismiss)="onDismissCorporamaModal($event)" modal-corporama-search></div>
+
                 <label for="companyname" class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Raison Sociale
                   <span class="asterisk">*</span>
                 </label>
-                <div class="col-md-7 col-xs-12">
+                <div class="col-md-4 col-xs-12">
                   <input type="text" id="companyname" class="form-control" [(ngModel)]="companyname" name="companyname"
                          placeholder="Raison Sociale" (keyup)="watchCompanyname($event)"
                          (change)="IsCompanyExist($event, 'companyname')">
+                </div>
+                <div class="col-md-3 col-xs-12">
+                  <button class="btn btn-default search-button" (click)="openCoporamaModal()">
+                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                    Rechercher
+                  </button>
                 </div>
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
                   <span class="hint label label-danger">{{companynameHint}}</span>
@@ -668,7 +677,7 @@
   <div [hidden]="!showForm || isEmployer || isRecruiter" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
     <section class="widget">
       <fieldset>
-        <legend><strong>Jobs qui m'interesse</strong></legend>
+        <legend><strong>Jobs qui m'intéressent</strong></legend>
         <div class="row">
           <div class="col-md-6 col-sm-6 col-xs-6">
             <input type="hidden" class="select2 job-select form-control" name="job"
