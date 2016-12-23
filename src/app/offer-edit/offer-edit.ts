@@ -143,7 +143,10 @@ export class OfferEdit{
   $calendar: any;
   dragOptions: Object = { zIndex: 999, revert: true, revertDuration: 0 };
   event: any = {};
+
   plageDate: string;
+  isPeriodic: boolean = false;
+
   startDate: any;
   endDate: any;
   createEvent: any;
@@ -1707,6 +1710,11 @@ export class OfferEdit{
     }
   }
 
+  watchPeriodicity(e) {
+    this.isPeriodic = e.target.checked;
+    this.slot.isPeriodic = e.target.checked;
+  }
+
   watchConditionEmp(e, item) {
     this.alertsConditionEmp = [];
     this.isConditionEmpValid = true;
@@ -1874,7 +1882,11 @@ export class OfferEdit{
         /* Add to calculate the plageDate */
         let startTime = (start._d.getDate());
         let endTime = (end._d.getDate() - 1);
+
         this.plageDate = (startTime == endTime) ? 'single' : 'multiple';
+
+
+        this.isPeriodic = true; // Périodique par défaut
 
         this.createEvent = () => {
           this.addSlotInCalendar(start, end, allDay);
@@ -1918,6 +1930,47 @@ export class OfferEdit{
     //slots should be coherent
     this.slot.date = start._d;
     this.slot.dateEnd = end._d;
+
+    if (this.plageDate == "multiple" && this.isPeriodic){
+      
+      this.isPeriodic = false; // to prevent default
+      let nbDays = Math.floor( (this.endDate - this.startDate) / (60*60*24*1000)) + 1 ;   
+      
+      // Boucle de splittage slots
+      for (let n = 0;n<nbDays;n++){
+
+        let date_debut = new Date(this.startDate.getFullYear(), 
+                                  this.startDate.getMonth(), 
+                                  this.startDate.getDate() + n,
+                                  this.startDate.getHours(),
+                                  this.startDate.getMinutes()
+                                  );
+
+        let date_arret = new Date(this.startDate.getFullYear(), 
+                                  this.startDate.getMonth(), 
+                                  this.startDate.getDate() + n,
+                                  this.endDate.getHours(),
+                                  this.endDate.getMinutes()
+                                  );
+
+        let splitted_slot = { from: date_debut, to: date_arret };
+
+        // Actualisation du rendu graphique
+        this.pushSlotInCalendar(splitted_slot)
+
+        // Normalisation du slot généré par le split / day
+        let normalized_slot ={date:date_debut, dateEnd:date_arret, pause:false, allDay:false};
+        
+        // Sauvegarde des slots splittés
+        this.slots.push(normalized_slot);
+        this.slotsToSave.push(normalized_slot);
+        this.offer.calendarData.push(normalized_slot);
+      }
+
+      jQuery('#create-event-modal').modal('hide');
+      return true;
+    }
+
     if (this.checkHour(this.slots, this.slot) == false) {
       end._d.setDate(end._d.getDate() + 1);
       return;
@@ -1943,11 +1996,32 @@ export class OfferEdit{
         true // make the event "stick"
       );
       this.addEvent(evt);
-      this.addSlot('');
+      //this.addSlot('');
     }
     this.$calendar.fullCalendar('unselect');
     jQuery('#create-event-modal').modal('hide');
     this.resetSlotModal();
+  }
+
+  pushSlotInCalendar(slot){
+    let evt = {
+      title: "Créneau Périodique",
+      start: slot.from,
+      end:   slot.to,
+
+      allDay: false,
+      //description: 'ici je peux mettre une description de l\'offre',
+
+      backgroundColor: '#64bd63',
+      textColor: '#fff'
+    }
+    this.$calendar.fullCalendar('renderEvent',
+      evt, true // make the event "stick"
+    );
+    this.addEvent(evt);
+    this.$calendar.fullCalendar('unselect');
+    this.resetSlotModal();
+    return true;
   }
 
   dragSlot(event, revertFunc){

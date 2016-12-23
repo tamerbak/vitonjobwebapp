@@ -349,7 +349,7 @@
               </alert>
 
               <div class="form-group row required">
-                <div class="col-md-2 col-sm-2 col-xs-2">
+                <center class="col-md-2 col-sm-2 col-xs-2">
                   <label *ngIf="projectTarget == 'jobyer'">
                     <input type="checkbox" [checked]="isFulltime" class="form-control" (change)="watchFullTime($event)"/>
                     Jour entier
@@ -358,7 +358,8 @@
                     <input type="checkbox" [checked]="isPause" class="form-control" (change)="watchPause($event)"/>
                     Pause
                   </label>
-                </div>
+                </center>
+
                 <div class="col-md-5 col-sm-3 col-xs-6 offer-hour-new">
                   <datetime [hidden]="isFulltime"
                             id="slotSHour"
@@ -382,6 +383,15 @@
                          value="23:59"
                          readonly/>
                 </div>
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                  
+                  <label *ngIf="plageDate == 'multiple'">
+                    <input type="checkbox" [checked]="isPeriodic" class="form-control" (change)="watchPeriodicity($event)"/>
+                    Périodique
+                  </label>
+
+                </div>
+
               </div>
             </div>
           </section>

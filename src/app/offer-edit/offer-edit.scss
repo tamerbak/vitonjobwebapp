@@ -144,11 +144,11 @@ a.fc-event{
 
 
 /* Fix (add over generic styles) */
-.select2-container .select2-choice > .select2-chosen{
+.select2-container .select2-choice > .select2-chosen, select{
     white-space: pre-wrap;
     text-overflow: clip;
 }
-.select2-container .select2-choice {
+.select2-container .select2-choice, select {
     height: auto !important;
 }
 
