@@ -7,12 +7,13 @@ import {SharedService} from "../../providers/shared.service";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {LoadListService} from "../../providers/load-list.service";
 import MaskedInput from "angular2-text-mask";
+import {ModalCorporamaSearch} from "../modal-corporama-search/modal-corporama-search";
 
 declare var jQuery, require, Messenger: any;
 @Component({
   selector: '[entreprise-edit]',
   template: require('./entreprise-edit.html'),
-  directives: [ROUTER_DIRECTIVES, AlertComponent, MaskedInput],
+  directives: [ROUTER_DIRECTIVES, AlertComponent, MaskedInput, ModalCorporamaSearch],
   styles: [require('./entreprise-edit.scss')],
   providers: [EntrepriseService, ProfileService, SharedService, LoadListService]
 })
@@ -144,5 +145,25 @@ export class EntrepriseEdit {
         }
       });
     }
+  }
+
+  openCoporamaModal() {
+    jQuery("#modal-corporama-search").modal('show');
+  }
+
+  onDismissCorporamaModal(company: any) {
+    debugger;
+    if (!company) {
+      return;
+    }
+
+    // Call company name field watcher
+    this.companyname = company.name.toUpperCase();
+    this.watchCompanyname({target: {value: company.name.toUpperCase()}});
+
+    this.siret = Utils.formatSIREN(company.siren);
+    this.ape = company.naf;
+
+    this.IsCompanyExist(this.companyname, 'companyname');
   }
 }
