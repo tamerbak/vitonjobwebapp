@@ -62,8 +62,14 @@
                       Raison Sociale
                       <span class="asterisk">*</span>
                     </label>
-                    <div class="col-md-7 col-xs-12">
+                    <div class="col-md-4 col-xs-12">
                       <input type="text" id="companyname" class="form-control" [(ngModel)]="companyname" name="companyname" placeholder="Raison Sociale" (keyup)="watchCompanyname($event)" (change)="IsCompanyExist($event, 'companyname')">
+                    </div>
+                    <div class="col-md-3 col-xs-12">
+                      <button class="btn btn-default search-button" (click)="openCoporamaModal()">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        Rechercher
+                      </button>
                     </div>
                     <div class="col-md-offset-4 col-md-7 col-xs-12">
                       <span class="hint label label-danger">{{companynameHint}}</span>
@@ -230,3 +236,5 @@
     </div>
   </div>
 </div>
+
+<div (onDismiss)="onDismissCorporamaModal($event)" modal-corporama-search></div>
