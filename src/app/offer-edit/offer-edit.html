@@ -336,9 +336,8 @@
 
               <!-- Créneaux -->
               <div class="form-group row">
-                <label class="col-md-2 col-xs-4 form-control-label"></label>
-                <label class="col-md-5 col-xs-4 form-control-label">Heure de début</label>
-                <label class="col-md-5 col-xs-4 form-control-label">Heure de fin</label>
+                <label class="col-md-5 col-xs-6 form-control-label">Heure de début</label>
+                <label class="col-md-5 col-xs-6 form-control-label">Heure de fin</label>
               </div>
 
               <alert *ngFor="let alert of alertsSlot; let i = index" [type]="alert.type + ' alert-sm'" dismissible="false">
@@ -349,16 +348,6 @@
               </alert>
 
               <div class="form-group row required">
-                <div class="col-md-2 col-sm-2 col-xs-2">
-                  <label *ngIf="projectTarget == 'jobyer'">
-                    <input type="checkbox" [checked]="isFulltime" class="form-control" (change)="watchFullTime($event)"/>
-                    Jour entier
-                  </label>
-                  <label *ngIf="projectTarget != 'jobyer'">
-                    <input type="checkbox" [checked]="isPause" class="form-control" (change)="watchPause($event)"/>
-                    Pause
-                  </label>
-                </div>
                 <div class="col-md-5 col-sm-3 col-xs-6 offer-hour-new">
                   <datetime [hidden]="isFulltime"
                             id="slotSHour"
@@ -381,6 +370,16 @@
                   <input *ngIf="isFulltime" class="form-control"
                          value="23:59"
                          readonly/>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12 checkbox-box">
+                                   <div class="col-xs-12" *ngIf="projectTarget == 'jobyer'">
+                  <input type="checkbox" id="box-1" [checked]="isFulltime" class="form-control" (change)="watchFullTime($event)">
+                  <label for="box-1">Jour entier</label>
+                </div>
+                  <div class="col-xs-12" *ngIf="projectTarget != 'jobyer'">
+                    <input type="checkbox" id="box-2" [checked]="isPause" class="form-control" (change)="watchPause($event)">
+                    <label for="box-2">Pause</label>
+                  </div>
                 </div>
               </div>
             </div>
