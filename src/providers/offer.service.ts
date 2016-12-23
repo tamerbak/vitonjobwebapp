@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {Http, Headers} from "@angular/http";
 import {Configs} from "../configurations/configs";
 import {SharedService} from "./shared.service";
+import {VOJFramework} from '../voj.framework';
 
 @Injectable()
 export class OffersService {
@@ -20,6 +21,14 @@ export class OffersService {
     };
   }
 
+  /**
+   * TODO Kelvin ERROR : Impossible de fournir une vidéo lors de la création de l'offre
+   * Update youtube video link
+   * @param idOffer
+   * @param youtubeLink
+   * @param projectTarget
+   * @returns {Promise<T>}
+   */
   updateVideoLink(idOffer, youtubeLink, projectTarget){
     let table = projectTarget == 'jobyer' ? "user_offre_jobyer":"user_offre_entreprise";
     let sql = "update "+table+" set lien_video='"+this.sqlfyText(youtubeLink)+"' where pk_"+table+"="+idOffer;
@@ -34,6 +43,7 @@ export class OffersService {
     });
   }
   /**
+   * TODO Kelvin LAG: Optimiser pour ne faire qu'un seul appel au lieu d'un par offre
    * @description Get the corresponding candidates of a specific offer
    * @param offer the reference offer
    * @param projectTarget the project target configuration (jobyer/employer)
@@ -60,6 +70,14 @@ export class OffersService {
     });
   }
 
+  /**
+   * TODO Kelvin ARCHITECTIRE : Centraliser les appels à Générium
+   * Turn On/Off the search mode
+   * @param projectTarget
+   * @param idOffer
+   * @param mode
+   * @returns {Promise<T>}
+   */
   saveAutoSearchMode(projectTarget, idOffer, mode) {
     let table = projectTarget == 'jobyer' ? "user_offre_jobyer" : "user_offre_entreprise";
     let sql = "update " + table + " set recherche_automatique='" + mode + "' where pk_" + table + "=" + idOffer;
@@ -74,6 +92,11 @@ export class OffersService {
     });
   }
 
+  /**
+   * TODO Kelvin WARNING : Les usages ne sont jamais contrôlés. En cas d'erreur de connexion, l'application deviendra instable
+   * Return the sectors list
+   * @returns {Promise<T>}
+   */
   loadSectorsToLocal() {
     let sql = 'select pk_user_metier as id, libelle as libelle from user_metier order by libelle asc';
     return new Promise(resolve => {
@@ -88,7 +111,13 @@ export class OffersService {
     });
   }
 
+  /**
+   * TODO Kelvin LAG : Avec une liste de plus de 11 000 éléments retournés, cette fonction ne devrait pas être appelé
+   * Return the jobs list
+   * @returns {Promise<T>}
+   */
   loadJobsToLocal() {
+    VOJFramework.deprecated();
     let sql = 'select pk_user_job as id, libelle as libelle, fk_user_metier as idSector from user_job order by libelle asc';
     return new Promise(resolve => {
       let headers = new Headers();
