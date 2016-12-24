@@ -1121,6 +1121,9 @@ export class OfferEdit{
     this.selectedLang = "";
   }
 
+  /**
+   * Check the properties then update the local storage with up-to-date values
+   */
   setOfferInLocal() {
     //set offer in local
     if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0)
@@ -1144,6 +1147,9 @@ export class OfferEdit{
     this.offer.contact = this.offerContact;
     this.offer.telephone = this.tel;
 
+    this.updateVideo(false);
+
+    // On offer creation mode
     if (this.obj != "detail") {
       this.offer.calendarData = this.offersService.convertSlotsForSaving(this.slotsToSave);
 
@@ -1168,6 +1174,8 @@ export class OfferEdit{
       } else {
         this.offer.jobData.epi = [];
       }
+
+      this.setOfferInLocal();
 
       //this.router.navigate(['offer/calendar', {offer: this.offer, isOfferToAdd: true}]);
       this.offersService.setOfferInRemote(this.offer, this.projectTarget).then((data: any) => {
@@ -1367,10 +1375,6 @@ export class OfferEdit{
     return true;
   }
 
-  videoUrl() {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(this.youtubeLink);
-  }
-
   updateVideo(deleteLink) {
     this.isLinkValid = true;
     if (deleteLink) {
@@ -1383,17 +1387,13 @@ export class OfferEdit{
       this.youtubeLink = this.youtubeLink.replace("youtu.be", "www.youtube.com/embed").replace("watch?v=", "embed/");
       this.youtubeLinkSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.youtubeLink);
     }
-    this.offersService.updateVideoLink(this.offer.idOffer, this.youtubeLink, this.projectTarget).then(() => {
-      if (deleteLink) {
-        this.videoAvailable = false;
-      } else {
-        this.videoAvailable = true;
-      }
-      this.offer.videolink = this.youtubeLink;
-      this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, this.offer, this.projectTarget);
-      this.sharedService.setCurrentUser(this.currentUser);
-      this.sharedService.setCurrentOffer(this.offer);
-    });
+
+    if (deleteLink) {
+      this.videoAvailable = false;
+    } else {
+      this.videoAvailable = true;
+    }
+    this.offer.videolink = this.youtubeLink;
   }
 
   deleteOffer() {
