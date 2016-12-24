@@ -51,7 +51,19 @@ export class Attachements {
   }
   ngAfterViewInit(): void {
     let self = this;
+    jQuery('.input-file').each(function() {
+      var $input = $(this),
+        $label = $input.next('.js-labelFile'),
+        labelVal = $label.html();
+      $input.on('change', function() {
+        var element = (<HTMLInputElement>document.getElementById('file'));
+        var fileName = '';
+        if (element.value) fileName = element.value.split('\\').pop();
+        fileName ? $label.addClass('has-file').find('.js-fileName').html(fileName) : $label.removeClass('has-file').html(labelVal);
+      });
+    });
     jQuery(document).ready(function () {
+
       jQuery('.fileinput').on('change.bs.fileinput', function (e, file) {
         self.scanData = file.result;
       })
@@ -67,7 +79,7 @@ export class Attachements {
     }
 
     this.isUploadInProgress = true;
-    this.attachementSerice.uploadFile(this.currentUser.id, this.fileName, this.scanData).then((data :any) =>{
+    this.attachementSerice.uploadFile(this.currentUser, this.fileName, this.scanData).then((data: any) => {
       jQuery('.fileinput').fileinput('clear')
       this.fileName ='';
       if(data && data.id != 0){
@@ -104,7 +116,6 @@ export class Attachements {
       }
     });
   }
-
   closeModal(){
     this.fileContent = "";
     this.selFileName = "";

@@ -1,0 +1,421 @@
+<ol class="breadcrumb">
+  <li>VOUS ÊTES ICI</li>
+  <li class="active"><a class="breadcrumb-link" [routerLink]="['/profile']">Profil du Jobyer</a></li>
+</ol>
+<div class="row">
+  <div class="col-xs-12 pull-right" style="margin-bottom: 1em;">
+    <a href="javascript:history.go(-1)"><button type="button" class="btn btn-secondary btn-sm" name="button"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Retour</button></a>
+  </div>
+</div>
+<h1 class="page-title"><span class="fw-semi-bold">Profil du Jobyer {{jobyer.nom}} {{jobyer.prenom}}</span>
+</h1>
+
+<div class="row voj-profile">
+  <div class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
+    <section class="widget">
+      <div class="widget-body">
+        <div class="widget-top-overflow text-white">
+          <div class="height-250 overflow-hidden">
+            <img class="img-fluid" src="assets/images/pictures/19.jpg">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4 col-md-5 col-xs-12 text-xs-center">
+            <div class="post-user post-user-profile">
+              <span class="thumb-xlg">
+                <img
+                  class="img-circle"
+                  src={{jobyer.photo}}
+                  alt="..."
+                  data-toggle="modal"
+                  data-target="#modal-picture"
+                  style="cursor: pointer;"
+                />
+              </span>
+              <h5 class="fw-normal">
+                {{ jobyer.titre }}
+                {{ jobyer.prenom }}
+                <span class="fw-semi-bold">{{ jobyer.nom }}</span>
+              </h5>
+              <p>Jobyer</p>
+              <ul class="contacts">
+                <li><i class="fa fa-phone fa-fw mr-xs"></i><a href="#"> {{ jobyer.tel }}</a></li>
+                <li><i class="fa fa-envelope fa-fw mr-xs"></i><a href="#"> {{ jobyer.email }}</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+
+  <div id="profileForm" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
+    <section class="widget">
+      <div class="widget-body">
+        <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
+          <fieldset>
+            <legend><strong>Détail du profil</strong></legend>
+            <div class="form-group row">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="title">
+                Titre de civilité:
+              </label>
+              <div class="col-md-7 col-xs-12">
+                <label id="title">{{jobyer.titre}}</label>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="lastname" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                Nom:
+              </label>
+              <div class="col-md-7 col-xs-12">
+                <label id="lastname">{{jobyer.nom}}</label>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="firstname" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                Prénom:
+              </label>
+              <div class="col-md-7 col-xs-12">
+                <label id="firstname">{{jobyer.prenom}}</label>
+              </div>
+            </div>
+
+              <div class="form-group row" *ngIf="!isEmpty(jobyer.dateNaissance)">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="birthDate">
+                  Date de naissance:
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <label id="birthDate">{{toDateString(jobyer.dateNaissance)}}</label>
+                </div>
+              </div>
+
+              <div class="form-group row" *ngIf="!isEmpty(jobyer.paysLibelle)">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Pays de naissance:
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <label>{{jobyer.paysLibelle}}</label>
+                </div>
+              </div>
+
+              <div *ngIf="!isFrench && !isEmpty(jobyer.paysIndex)" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Code postal du lieu de naissance:
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <label id="combined-input" >99 {{jobyer.paysIndex}}</label>
+                </div>
+              </div>
+
+              <div *ngIf="isFrench && !isEmpty(jobyer.departmentNum)" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Département de naissance:
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <label >{{jobyer.departmentNum}}</label>
+                </div>
+              </div>
+
+              <div *ngIf="isFrench && !isEmpty(jobyer.lieuNaissance)" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Lieu de naissance:
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <label>{{jobyer.lieuNaissance}}</label>
+                </div>
+              </div>
+
+              <div class="form-group row" *ngIf="!isEmpty(jobyer.numSS)">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  N° de sécurité sociale:
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <label id="numSS">{{jobyer.numSS}}</label>
+                </div>
+              </div>
+
+              <div class="form-group row" *ngIf="!isEmpty(jobyer.natLibelle)">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Nationalité:
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <label >{{jobyer.natLibelle}}</label>
+                </div>
+              </div>
+
+              <div class="form-group row" *ngIf="!isEmpty(jobyer.stateLib)">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Identifiant de nationalité:
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <label >{{jobyer.stateLib}}</label>
+                </div>
+              </div>
+
+              <div *ngIf="!isEuropean && !isEmpty(jobyer.numTS)" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  {{!jobyer.estResident ? 'N° du titre de séjour' : 'N° de la carte résident'}}:
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <label>{{jobyer.numTS}}</label>
+                </div>
+              </div>
+
+              <div *ngIf="isEuropean && isCIN && !isEmpty(jobyer.cni)" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  N° de la CNI ou Passeport:
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <label id="cni">{{jobyer.cni}}</label>
+                </div>
+              </div>
+
+              <div *ngIf="isEuropean && !isCIN && !isEmpty(jobyer.numTS)" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  N° de la carte de ressortissant:
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <label>{{jobyer.numTS}}</label>
+                </div>
+              </div>
+
+              <div class="form-group row" *ngIf="!isEmpty(jobyer.delivranceTS)">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Pièce d'identité délivrée le:
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <label id="dateStay">{{toDateString(jobyer.delivranceTS)}}</label>
+                </div>
+              </div>
+
+              <div class="form-group row" *ngIf="!isEmpty(jobyer.duTS)">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Pièce d'identité valable du:
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <label id="dateFromStay">{{toDateString(jobyer.duTS)}}</label>
+                </div>
+              </div>
+
+              <div class="form-group row" *ngIf="!isEmpty(jobyer.auTS)">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Pièce d'identité valable au:
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <label id="dateToStay">{{toDateString(jobyer.auTS)}}</label>
+                </div>
+              </div>
+
+              <div [hidden]="isEuropean" class="form-group row" *ngIf="!isEmpty(jobyer.prefectureLibelle)">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Délivré par:
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <label>{{jobyer.prefectureLibelle}}</label>
+                </div>
+              </div>
+
+              <div class="form-group row" *ngIf="!isEmpty(jobyer.personnalAdress)">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Adresse personnelle
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <label>{{jobyer.personnalAdress.fullAdress}}</label>
+                </div>
+              </div>
+
+              <div class="form-group row" *ngIf="!isEmpty(jobyer.workAdress)">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Adresse de départ au travail
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <label>{{jobyer.workAdress.fullAdress}}</label>
+                </div>
+              </div>
+
+          </fieldset>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <div class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12" *ngIf="jobyer.calendarData.length != 0">
+    <section class="widget">
+      <div class="widget-body">
+        <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
+          <fieldset>
+            <legend><strong>Disponibilités</strong></legend>
+            <div class="container-fluid">
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label text-md-center" >
+                  <strong>Du</strong>
+                </label>
+                <label class="col-md-3 form-control-label text-md-center" >
+                  <strong>Au</strong>
+                </label>
+                <label class="col-md-2 form-control-label text-md-center" >
+                  <strong>Début</strong>
+                </label>
+                <label class="col-md-2 form-control-label text-md-center" >
+                  <strong>Fin</strong>
+                </label>
+              </div>
+              <div *ngFor="let d of jobyer.calendarData" class="form-group row">
+                <label class="col-md-3 text-md-center" >
+                  {{toDateString(d.date)}}
+                </label>
+                <label class="col-md-3 text-md-center" >
+                  {{toDateString(d.dateEnd)}}
+                </label>
+                <label class="col-md-2 text-md-center" >
+                  {{toHourString(d.startHour)}}
+                </label>
+                <label class="col-md-2 text-md-center" >
+                  {{toHourString(d.endHour)}}
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <!-- PREREQUIS -->
+  <div class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12" *ngIf="jobs.length != 0">
+    <section class="widget">
+      <div class="widget-body">
+        <fieldset>
+          <legend><strong>Prérequis</strong></legend>
+          <div class="container-fluid">
+            <div *ngFor="let j of jobyer.jobs" class="row">
+              <label class="col-md-3 text-md-center" >
+                <strong>{{j.libelle}}</strong>
+              </label>
+              <ul class="col-md-9">
+                <li *ngFor="let r of j.requirements">
+                  {{r.libelle}}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </section>
+  </div>
+
+  <!-- Qualities -->
+  <div class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12" *ngIf="jobyer.qualityData.length != 0">
+    <section class="widget">
+      <div class="widget-body">
+        <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
+          <fieldset>
+            <legend><strong>Qualités</strong></legend>
+            <div class="container-fluid">
+              <div class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Qualités
+                </label>
+                <div class="col-md-8 col-xs-12">
+                  <div class="form-group row" *ngFor="let item of jobyer.qualityData">
+                    <div class="col-md-9 col-xs-9">
+                      <label class="form-control">{{item.libelle}}</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <!-- Langues -->
+  <div class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
+    <section class="widget" *ngIf="jobyer.languageData.length != 0">
+      <div class="widget-body">
+        <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
+          <fieldset>
+            <legend><strong>Langues</strong></legend>
+            <div class="container-fluid">
+              <div class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Langues
+                </label>
+                <div class="col-md-8 col-xs-12">
+                  <div class="form-group row" *ngFor="let item of jobyer.languageData">
+                    <div class="col-md-6 col-xs-9">
+                      <label class="form-control">{{item.libelle}}</label>
+                    </div>
+                    <div class="col-md-6 col-xs-9">
+                      <label class="form-control">{{item.level == 'senior' ? 'Courant' : 'Débutant'}}</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </section>
+
+    <section class="widget" *ngIf="!isEmpty(jobyer.cv)">
+      <div class="widget-body">
+          <fieldset>
+            <legend><strong>CV</strong></legend>
+            <div class="container-fluid">
+              <div class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  CV
+                </label>
+                <div class="col-md-8 col-xs-12">
+                  <div class="col-md-7 col-xs-12">
+                    <button type="button" class="btn btn-success" (click)="downloadFile(jobyer.cv)">
+                      Télécharger
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+      </div>
+    </section>
+
+    <section class="widget">
+      <div class="widget-body">
+        <fieldset>
+          <legend><strong>Nombre d'heures de travail/étude</strong></legend>
+          <div class="container-fluid">
+            <div class="form-group row">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                Nombre d'heures de travail Vit-On-Job:
+              </label>
+              <div class="col-md-8 col-xs-12">
+                  <label>{{jobyer.nbVitOnJobHours/60}}</label>
+              </div>
+            </div>
+
+            <div class="form-group row" *ngIf="!isEmpty(jobyer.nbWorkHours)">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                Nombre d'heures de travail ailleurs:
+              </label>
+              <div class="col-md-8 col-xs-12">
+                  <label>{{jobyer.nbWorkHours}}</label>
+              </div>
+            </div>
+
+            <div class="form-group row" *ngIf="!isEmpty(jobyer.nbStudyHoursBig)">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Nombre d'heures d'étude:</label>
+              <div class="col-md-8 col-xs-12">
+                <label>{{jobyer.nbStudyHoursBig ? 'Plus de 350 heures' : 'Moins de 350 heures'}}</label>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </section>
+  </div>
+</div>

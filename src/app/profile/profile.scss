@@ -305,3 +305,28 @@
 select {
   height: 35px;
 }
+
+/***********************************/
+/**           Panels              **/
+/***********************************/
+
+.panel-prerequis{
+	border:1px solid #e5e5e5;
+}
+.panel-prerequis .panel-heading{
+	background-color:#eeeeee;
+}
+.panel-prerequis ul{
+    padding-left: 2rem;
+}
+.search-button {
+  width: 100%
+}
+.btn-tool {
+  position: absolute;
+  top: 2em !important;
+  left: 50%!important;
+  transform: translate(-50%, -50%)!important;
+  z-index: 1!important;
+
+}

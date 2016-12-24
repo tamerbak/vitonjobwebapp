@@ -8,6 +8,7 @@ import {GOOGLE_MAPS_DIRECTIVES} from "angular2-google-maps/core";
 import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
 import {ModalProfile} from "../modal-profile/modal-profile";
 import {Utils} from "../utils/utils";
+import {AlertComponent} from "ng2-bootstrap";
 
 declare var jQuery: any;
 
@@ -16,7 +17,7 @@ declare var jQuery: any;
   template: require('./search-results.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./search-results.scss')],
-  directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, RecruitButton, ModalNotificationContract, ModalProfile],
+  directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, RecruitButton, ModalNotificationContract, ModalProfile, AlertComponent],
   providers: [SearchService, ProfileService]
 })
 export class SearchResults{

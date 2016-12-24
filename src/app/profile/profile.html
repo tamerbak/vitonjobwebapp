@@ -19,7 +19,7 @@
           <div class="height-250 overflow-hidden">
             <img class="img-fluid" src="assets/images/pictures/19.jpg">
           </div>
-          <div class="btn-toolbar">
+          <div class="btn-tool">
             <button
               [disabled]="showForm" [hidden]="isRecruiter" class="btn btn-outline btn-sm pull-right" data-toggle="modal"
               data-target="#modal-bank-account"
@@ -149,14 +149,23 @@
             <div *ngIf="!isRecruiter">
 
               <div *ngIf="isEmployer" class="form-group row">
+
+                <div (onDismiss)="onDismissCorporamaModal($event)" modal-corporama-search></div>
+
                 <label for="companyname" class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Raison Sociale
                   <span class="asterisk">*</span>
                 </label>
-                <div class="col-md-7 col-xs-12">
+                <div class="col-md-4 col-xs-12">
                   <input type="text" id="companyname" class="form-control" [(ngModel)]="companyname" name="companyname"
                          placeholder="Raison Sociale" (keyup)="watchCompanyname($event)"
                          (change)="IsCompanyExist($event, 'companyname')">
+                </div>
+                <div class="col-md-3 col-xs-12">
+                  <button class="btn btn-default search-button" (click)="openCoporamaModal()">
+                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                    Rechercher
+                  </button>
                 </div>
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
                   <span class="hint label label-danger">{{companynameHint}}</span>
@@ -455,14 +464,14 @@
                          name="medecineTravail"/>
                 </div>
               </div>
+
               <div class="form-group row">
                 <div *ngFor="let i of allImages; let idx = index" class="col-md-2 col-xs-12">
-                    <img style="max-height: 100px;margin:1px"  src="{{i.data}}" alt=""/>
-                    <button class="btn danger" style="width: 100%;" (click)="deleteImage(idx)">
-                      <span class="glyphicon glyphicon-minus"></span>
-                    </button>
+                  <img style="max-height: 100px;margin:1px"  src="{{i.data}}" alt=""/>
+                  <button class="btn danger" style="width: 100%;" (click)="deleteImage(idx)">
+                    <span class="glyphicon glyphicon-minus"></span>
+                  </button>
                 </div>
-
               </div>
 
               <div class="form-group row">
@@ -664,22 +673,64 @@
     </section>
   </div>
 
-  <!-- PREREQUIS -->
+  <!-- INTERESTING JOBS -->
   <div [hidden]="!showForm || isEmployer || isRecruiter" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
+    <section class="widget">
+      <fieldset>
+        <legend><strong>Jobs qui m'intéressent</strong></legend>
+        <div class="row">
+          <div class="col-md-6 col-sm-6 col-xs-6">
+            <input type="hidden" class="select2 job-select form-control" name="job"
+                   placeholder="Recherchez votre job" [(ngModel)]="selectedJob"/>
+          </div>
+          <div class="col-md-4 col-sm-3 col-sm-3">
+            <select class="form-control" [(ngModel)]="selectedJobLevel">
+              <option value="1">Débutant</option>
+              <option value="2">Expérimenté</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" (click)="addJob()">
+            <span class="glyphicon glyphicon-plus"></span>
+          </button>
+        </div>
+        <div class="row">
+          &nbsp;
+        </div>
+        <div class="row" *ngFor="let j of interestingJobs">
+          <button class="btn btn-danger" (click)="removeJob(j)">
+            <span class="glyphicon glyphicon-minus"></span>
+          </button>
+          <div class="col-md-10 col-sm-10 col-xs-10">
+            {{j.libelle}} - {{j.niveau == '1'?'Débutant':'Expérimenté'}}
+          </div>
+        </div>
+      </fieldset>
+    </section>
+  </div>
+
+  <!-- PREREQUIS -->
+  <div *ngIf="jobs.length > 0" [hidden]="!showForm || isEmployer || isRecruiter" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
+
     <section class="widget">
       <div class="widget-body">
         <fieldset>
-          <legend><strong>Prérequis</strong></legend>
-          <div class="container-fluid">
-            <div *ngFor="let j of jobs" class="row">
-              <label class="col-md-3 text-md-center" >
-                <strong>{{j.libelle}}</strong>
-              </label>
-              <ul class="col-md-9">
-                <li *ngFor="let r of j.requirements">
-                  {{r.libelle}}
-                </li>
-              </ul>
+          <legend><strong>Les employeurs peuvent parfois vous demander les prérequis suivants</strong></legend>
+          <div class="row">
+
+            <div  *ngFor="let j of jobs" class="col-md-6 col-sm-12 col-xs-12">
+
+              <div *ngIf="j.requirements.length > 0"
+                    class="panel panel-default panel-prerequis">
+                <div class="panel-heading">{{j.libelle}}</div>
+                <div class="panel-body">
+                  <ul class="">
+                    <li *ngFor="let r of j.requirements">
+                      {{r.libelle}}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
             </div>
 
           </div>
@@ -861,11 +912,11 @@
     <section class="widget" [hidden]="isRecruiter || isEmployer">
       <div class="widget-body">
         <fieldset>
-          <legend><strong>Nombre d'heure de travail/étude</strong></legend>
+          <legend><strong>Nombre d'heures de travail/étude</strong></legend>
           <div class="container-fluid">
             <div class="form-group row">
               <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                Nombre d'heure de travail Vit-On-Job
+                Nombre d'heures de travail Vit-On-Job
               </label>
               <div class="col-md-8 col-xs-12">
                 <div class="col-md-7 col-xs-12">
@@ -876,7 +927,7 @@
 
             <div class="form-group row">
               <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                Nombre d'heure de travail ailleurs
+                Nombre d'heures de travail ailleurs
               </label>
               <div class="col-md-8 col-xs-12">
                 <div class="col-md-7 col-xs-12">

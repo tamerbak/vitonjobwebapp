@@ -62,9 +62,9 @@ export class Utils {
 
   public static isEmpty(str) {
     if (str == '' || str == 'null' || !str)
-    return true;
+      return true;
     else
-    return false;
+      return false;
   }
 
   public static isNumber(char){
@@ -95,5 +95,21 @@ export class Utils {
     if (!txt || txt.length == 0)
       return "";
     return txt.replace(/'/g, "''");
+  }
+
+  public static parseNumber(str) {
+    try {
+      return parseFloat(str);
+    }
+    catch (err) {
+      return 0.0;
+    }
+  }
+
+  public static formatSIREN(siren){
+    let s1 = siren.substr(0, 3);
+    let s2 = siren.substr(3, 3);
+    let s3 = siren.substr(6, 3);
+    return s1 + " " + s2 + " " + s3 + " ";
   }
 }

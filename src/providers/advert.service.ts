@@ -228,7 +228,8 @@ export class AdvertService {
 
   getInterestedJobyers(advertId) {
     let sql = "SELECT " +
-      "j.*, j.pk_user_jobyer as jobyerid, a.pk_user_account as accountid, encode(a.photo_de_profil::bytea, 'escape') as photo" +
+      "j.*, j.pk_user_jobyer as jobyerid, a.pk_user_account as accountid " +
+      //", encode(a.photo_de_profil::bytea, 'escape') as photo" +
       " FROM user_jobyer j, user_interet_jobyer_annonces uija, user_account as a " +
       " WHERE j.pk_user_jobyer = uija.fk_user_jobyer " +
       " and j.dirty='N' " +

@@ -94,34 +94,6 @@ export class OfferList {
     for (let i = 0; i < this.offerList.length; i++) {
       let offer = this.offerList[i];
 
-      //<editor-fold desc="EPI management">
-      //load offer epi
-      this.offersService.loadOfferEPI(this.offerList[i].idOffer,this.projectTarget).then((data:any)=>{
-        this.offerList[i].jobData.epi = [];
-        if(data && data.length != 0) {
-          for (let j = 0; j < data.length; j++)
-            this.offerList[i].jobData.epi.push(data[j].libelle);
-        }
-      });
-
-      if(this.projectTarget == 'employer'){
-        this.offersService.loadOfferPrerequisObligatoires(this.offerList[i].idOffer).then((data:any)=>{
-          this.offerList[i].jobData.prerequisObligatoires = [];
-          if(data && data.length != 0) {
-            for(let j = 0 ; j < data.length ; j++)
-              this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
-          }
-        });
-
-      }else if(this.projectTarget == 'jobyer'){
-        this.offersService.loadOfferNecessaryDocuments(this.offerList[i].idOffer).then((data:any)=>{
-          this.offerList[i].jobData.prerequisObligatoires = [];
-          for(let j = 0 ; j < data.length ; j++)
-            this.offerList[i].jobData.prerequisObligatoires.push(data[j].libelle);
-        });
-      }
-      //</editor-fold>
-
       if (!offer || !offer.jobData || !offer.calendarData ||(offer.calendarData && offer.calendarData.length == 0)) {
         continue;
       }
@@ -158,20 +130,17 @@ export class OfferList {
         } else {
           offer.obsolete = false;
           this.globalOfferList[0].list.push(offer);
-          let searchFields = {
-            class: 'com.vitonjob.callouts.recherche.SearchQuery',
-            job: offer.jobData.job,
-            metier: '',
-            lieu: '',
-            nom: '',
-            entreprise: '',
-            date: '',
-            table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
-            idOffre: '0'
+
+          let searchQuery = {
+            class: 'com.vitonjob.recherche.model.SearchQuery',
+            queryType: 'COUNT',
+            idOffer: offer.idOffer,
+            resultsType: this.projectTarget=='jobyer'?'employer':'jobyer'
           };
-          this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
-            offer.correspondantsCount = data.length;
+          this.searchService.advancedSearch(searchQuery).then((data:any)=>{
+            offer.correspondantsCount = data.count;
           });
+
         }
       } else {
         //private offers
@@ -191,8 +160,27 @@ export class OfferList {
   }
 
   goToDetailOffer(offer) {
-    this.sharedService.setCurrentOffer(offer);
-    this.router.navigate(['offer/edit', {obj:'detail'}]);
+    if(this.projectTarget == 'employer'){
+      this.offersService.loadOfferPrerequisObligatoires(offer.idOffer).then((data:any)=>{
+        offer.jobData.prerequisObligatoires = [];
+        if(data && data.length != 0) {
+          for(let j = 0 ; j < data.length ; j++)
+            offer.jobData.prerequisObligatoires.push(data[j].libelle);
+        }
+        this.offersService.loadOfferEPI(offer.idOffer,this.projectTarget).then((data:any)=>{
+          offer.jobData.epi = [];
+          if(data && data.length != 0) {
+            for (let j = 0; j < data.length; j++)
+              offer.jobData.epi.push(data[j].libelle);
+          }
+          this.sharedService.setCurrentOffer(offer);
+          this.router.navigate(['offer/edit', {obj:'detail'}]);
+        });
+      });
+    }else{
+      this.sharedService.setCurrentOffer(offer);
+      this.router.navigate(['offer/edit', {obj:'detail'}]);
+    }
   }
 
   autoSearchMode(offer) {
@@ -221,22 +209,18 @@ export class OfferList {
   launchSearch(offer) {
     if (!offer)
       return;
-    let searchFields = {
-      class: 'com.vitonjob.callouts.recherche.SearchQuery',
-      job: offer.jobData.job,
-      metier: '',
-      lieu: '',
-      nom: '',
-      entreprise: '',
-      date: '',
-      table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
-      idOffre: '0'
+    let searchQuery = {
+      class: 'com.vitonjob.recherche.model.SearchQuery',
+      queryType: 'OFFER',
+      idOffer: offer.idOffer,
+      resultsType: this.projectTarget=='jobyer'?'employer':'jobyer'
     };
-    this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
+    this.searchService.advancedSearch(searchQuery).then((data:any)=>{
       this.sharedService.setLastResult(data);
       this.sharedService.setCurrentOffer(offer);
       this.router.navigate(['search/results']);
     });
+
   }
 
   /**

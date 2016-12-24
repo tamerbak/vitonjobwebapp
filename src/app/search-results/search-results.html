@@ -13,7 +13,7 @@
 
 <div class="row">
   <div class="col-lg-12 col-xs-12">
-    <section class="widget" widget>
+    <section class="widget" widget *ngIf="searchResults.length != 0">
       <div class="abc-checkbox abc-checkbox-info">
         <input [(ngModel)]="selected" (ngModelChange)="onChange(selected)" id="mapView" type="checkbox">
         <label for="mapView">
@@ -33,6 +33,13 @@
       </div>
 
     </section>
+  </div>
+  <div class="col-lg-12 col-xs-12">
+    <div >
+      <alert *ngIf="searchResults.length == 0" [type]="'info alert-sm'" dismissible="true">
+        Aucun résultat ne correspond à votre recherche
+      </alert>
+    </div>
   </div>
   <div class="col-lg-12 col-xs-12">
     <div *ngFor="let item of searchResults, let i=index">
@@ -72,7 +79,7 @@
               <div class="col-md-1 col-xs-2 pull-xs-left">
                 <recruit-button
                   [jobyer]="item" (onRecruite)="onRecruite($event)"
-                  *ngIf="projectTarget == 'employer' && !isRecruteur"
+                  *ngIf="projectTarget == 'employer'"
                 ></recruit-button>
               </div>
               <div class="col-md-1 col-xs-2">

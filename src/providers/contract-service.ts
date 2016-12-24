@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Configs} from "../configurations/configs";
 import {Http, Headers} from "@angular/http";
-import {Helpers} from "./helpers.service";
+import {DateUtils} from "../app/utils/date-utils";
 import {GlobalConfigs} from "../configurations/globalConfigs";
 import {Utils} from "../app/utils/utils";
 
@@ -18,8 +18,7 @@ export class ContractService {
   data: any = null;
   configuration: any;
 
-  constructor(public http: Http,
-              private helpers: Helpers) {
+  constructor(public http: Http) {
 
   }
 
@@ -70,7 +69,7 @@ export class ContractService {
     });
   }
 
-  getJobyerAdress(jobyer){
+  getJobyerAdress(id){
     let sql = "SELECT    user_adresse_jobyer.fk_user_jobyer,    user_adresse_jobyer.personnelle,    " +
       "user_adresse.nom AS lieu_dit,    user_adresse.numero AS numero,    user_code_postal.code AS cp,    " +
       "user_rue.nom AS rue,    user_ville.nom AS ville " +
@@ -81,12 +80,12 @@ export class ContractService {
       "user_rue.pk_user_rue = user_adresse.fk_user_rue AND   " +
       "user_ville.pk_user_ville = user_adresse.fk_user_ville AND   " +
       "lower_unaccent(user_adresse_jobyer.personnelle)='oui' AND   " +
-      "user_adresse_jobyer.fk_user_jobyer= "+jobyer.id;
+      "user_adresse_jobyer.fk_user_jobyer= "+ id;
 
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe((data:any) => {
           let adr = '';
@@ -163,13 +162,21 @@ export class ContractService {
    * @param employerEntrepriseId
    * @return JSON results in form of created contract Id
    */
-  saveContract(contract: any, jobyerId: Number, employerEntrepriseId: Number, projectTarget: string, yousignJobyerLink, yousignEmployerLink, accountId) {
+  saveContract(contract: any, jobyerId: Number, employerEntrepriseId: Number, projectTarget: string, accountId, idOffer) {
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
     var dt = new Date();
     let epi = (contract.epi?'OUI':'NON');
     let isScheduleFixed = (contract.isScheduleFixed == 'true' ? 'OUI' : 'NON');
+    let listeEPI = "";
+    if(contract.epiList && contract.epiList.length != 0) {
+      for (let i = 0; i < contract.epiList.length; i++) {
+        listeEPI = listeEPI + ";" + contract.epiList[i].libelle;
+      }
+    }
+
     var sql = "INSERT INTO user_contrat (" +
+      " created," +
       " date_de_debut," +
       " date_de_fin," +
       " date_debut_terme," +
@@ -184,7 +191,6 @@ export class ContractService {
       " horaires_fixes," +
       " fk_user_entreprise," +
       " fk_user_jobyer," +
-      " lien_jobyer," +
       " signature_employeur," +
       " signature_jobyer," +
       " taux_indemnite_fin_de_mission," +
@@ -199,34 +205,46 @@ export class ContractService {
       " elements_non_soumis_a_des_cotisations," +
       " recours," +
       " titre," +
-      " demande_employeur," +
-      " demande_jobyer," +
       " option_mission," +
-      " lien_employeur," +
       " equipements_fournis_par_l_ai," +
       " fk_user_periodicite_des_paiements," +
       " embauche_autorise," +
       " epi," +
       " rapatriement_a_la_charge_de_l_ai," +
-      " enveloppe_employeur," +
-      " enveloppe_jobyer" +
+      " liste_epi," +
+      " moyen_d_acces," +
+      " contact_sur_place," +
+      " telephone_contact," +
+      " caracteristiques_du_poste," +
+      " duree_moyenne_mensuelle," +
+      " siege_social," +
+      " statut," +
+      " filiere," +
+      " contact," +
+      " indemnite_fin_de_mission," +
+      " n_titre_travail," +
+      " periodes_non_travaillees," +
+      " centre_de_medecine_entreprise," +
+      " adresse_centre_de_medecine_entreprise," +
+      " risques," +
+      " fk_user_offre_entreprise" +
       ")" +
       " VALUES ("
-      + "" + this.helpers.displayableDateToSQL(contract.missionStartDate) + ","
-      + "" + this.helpers.displayableDateToSQL(contract.missionEndDate) + ","
+      + "'" + new Date().toISOString() + "',"
+      + "" + DateUtils.displayableDateToSQL(contract.missionStartDate) + ","
+      + "" + DateUtils.displayableDateToSQL(contract.missionEndDate) + ","
       + "" + (contract.termStartDate?"'"+contract.termStartDate+"'":"null") + ","
       + "" + (contract.termEndDate?"'"+contract.termEndDate+"'":"null") + ","
-      + "'" + this.helpers.dateToSqlTimestamp(new Date()) + "',"
-      + "'" + this.helpers.timeStrToMinutes(contract.workStartHour) + "',"
-      + "'" + this.helpers.timeStrToMinutes(contract.workEndHour) + "',"
+      + "'" + DateUtils.dateToSqlTimestamp(new Date()) + "',"
+      + "'" + DateUtils.getMinutesFromDate(contract.workStartHour) + "',"
+      + "'" + DateUtils.getMinutesFromDate(contract.workEndHour) + "',"
       + "'" + Utils.sqlfyText(contract.motif) + "',"
-      + "'" + Utils.sqlfyText(contract.num) + "',"
+      + "'" + Utils.sqlfyText(contract.numero) + "',"
       + "'" + contract.trialPeriod + "',"
       + "'" + contract.baseSalary + "',"
       + "'" + isScheduleFixed + "',"
       + "'" + employerEntrepriseId + "',"
       + "'" + jobyerId + "',"
-      + "'" + Utils.sqlfyText(yousignJobyerLink) + "',"
       + "'NON',"
       + "'NON',"
       + "10,"
@@ -241,21 +259,56 @@ export class ContractService {
       + "'" + contract.elementsNonCotisation + "',"
       + "'" + Utils.sqlfyText(contract.justification) + "',"
       + "'" + Utils.sqlfyText(contract.titre) + "',"
-      + "'" + Utils.sqlfyText(contract.demandeEmployer) + "',"
-      + "'" + Utils.sqlfyText(contract.demandeJobyer) + "',"
       + "(select option_mission :: numeric from user_account where pk_user_account = '" + accountId + "'),"
-      + "'" + Utils.sqlfyText(yousignEmployerLink) + "',"
-      + "'"+epi+"',"
-      + "'"+contract.periodicite+"',"
+      + "'" + epi + "',"
+      + "'" + contract.periodicite + "',"
       + "'OUI',"
       + "'" + Utils.sqlfyText(contract.epiProvidedBy) + "',"
       + "'OUI',"
-      + "'"+contract.enveloppeEmployeur+"',"
-      + "'"+contract.enveloppeJobyer+"'"
+      + "'" +Utils.sqlfyText(listeEPI) + "',"
+      + "'" + Utils.sqlfyText(contract.moyenAcces) + "',"
+      + "'" + Utils.sqlfyText(contract.offerContact) + "',"
+      + "'" + Utils.sqlfyText(contract.contactPhone) + "',"
+      + "'" + Utils.sqlfyText(contract.characteristics) + "',"
+      + "'" + contract.MonthlyAverageDuration + "',"
+      + "'" + Utils.sqlfyText(contract.headOffice) + "',"
+      + "'" + Utils.sqlfyText(contract.category) + "',"
+      + "'" + Utils.sqlfyText(contract.sector) + "',"
+      + "'" + Utils.sqlfyText(contract.contact) + "',"
+      + "'" + contract.indemniteFinMission + "',"
+      + "'" + Utils.sqlfyText(contract.numeroTitreTravail) + "',"
+      + "'" + Utils.sqlfyText(contract.periodesNonTravaillees) + "',"
+      + "'" + Utils.sqlfyText(contract.centreMedecineEntreprise) + "',"
+      + "'" + Utils.sqlfyText(contract.adresseCentreMedecineEntreprise) + "',"
+      + "'" + Utils.sqlfyText(contract.postRisks) + "',"
+      + "'" + idOffer + "'"
       + ")"
       + " RETURNING pk_user_contrat";
 
     return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          this.data = data;
+          resolve(this.data);
+        });
+    });
+  }
+
+  updateContract(contractData, projectTarget) {
+    //  Init project parameters
+    this.configuration = Configs.setConfigs(projectTarget);
+    let sql = "UPDATE user_contrat SET " +
+      "lien_jobyer = '" + Utils.sqlfyText(contractData.partnerJobyerLink)
+      + "', lien_employeur = '" + Utils.sqlfyText(contractData.partnerEmployerLink)
+      + "', demande_jobyer = '" + Utils.sqlfyText(contractData.demandeJobyer)
+      + "', demande_employeur = '" + Utils.sqlfyText(contractData.demandeEmployer)
+      + "', enveloppe_employeur = '" + Utils.sqlfyText(contractData.enveloppeEmployeur)
+      + "', enveloppe_jobyer = '" + Utils.sqlfyText(contractData.enveloppeJobyer)
+      + "' WHERE pk_user_contrat = '" + contractData.id + "'" ;
+      return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
       this.http.post(this.configuration.sqlURL, sql, {headers: headers})
@@ -276,8 +329,6 @@ export class ContractService {
 
   setOffer(idContract, idOffer) {
     let sql = "update user_contrat set fk_user_offre_entreprise = " + idOffer + " where pk_user_contrat=" + idContract;
-    //console.log(sql);
-
 
     return new Promise(resolve => {
       let headers = new Headers();
@@ -409,11 +460,12 @@ export class ContractService {
       html = html + "</ul>";
     }
 
+
     if(epis && epis.length>0){
       html = html + "<br><p><b>Equipements de protection individuels</b></p><ul>";
       for (let i = 0; i < epis.length; i++) {
-        let p = epis[i].libelle;
-        html = html + "<li>"+ p + "</li>";
+        let p = epis[i];
+        html = html + "<li>"+ p.libelle + "</li>";
       }
       html = html + "</ul>";
     }
@@ -435,6 +487,7 @@ export class ContractService {
    */
   callYousign(user: any, employer: any, jobyer: any, contract: any, projectTarget: string, currentOffer: any, idQuote: any) {
     let horaires = '';
+
     if (currentOffer) {
       horaires = this.prepareHoraire(currentOffer.calendarData,
         contract.prerequis,
@@ -449,14 +502,18 @@ export class ContractService {
     let sh = 'Horaires variables selon planning';
     let eh = '';
     if(contract.isScheduleFixed == 'true'){
-      let d = new Date(contract.workStartHour);
-      sh = d.getHours()+":"+d.getMinutes();
-      d = new Date(contract.workEndHour);
-      eh = " à "+d.getHours()+":"+d.getMinutes();
+      sh = DateUtils.toHourString(contract.workStartHour.getHours()*60+contract.workStartHour.getMinutes());
+      eh = " à "+DateUtils.toHourString(contract.workEndHour.getHours()*60+contract.workEndHour.getMinutes());
+    }
+
+    if(!contract.epiList || contract.epiList.length == 0){
+      contract.equipements = "Aucun équipement de sécurité";
+    } else {
+      contract.equipements = "Voir annexe";
     }
 
     this.configuration = Configs.setConfigs(projectTarget);
-    var jsonData = {
+    let jsonData = {
       "titre": employer.titre,
       "prenom": employer.prenom,
       "nom": employer.nom,
@@ -465,15 +522,15 @@ export class ContractService {
       "jobyerPrenom": jobyer.prenom,
       "jobyerNom": jobyer.nom,
       "nss": jobyer.numSS,
-      "dateNaissance": this.helpers.parseDate(contract.jobyerBirthDate),
+      "dateNaissance": DateUtils.toDateString(contract.jobyerBirthDate),
       "lieuNaissance": jobyer.lieuNaissance,
       "nationalite": jobyer.nationaliteLibelle,
       "adresseDomicile": jobyer.address,
       "dateDebutMission": contract.missionStartDate,
       "dateFinMission": contract.missionEndDate,
       "periodeEssai": contract.trialPeriod == null ? "" : ( contract.trialPeriod == 1 ? "1 jour" : (contract.trialPeriod + " jours")),
-      "dateDebutTerme": this.helpers.parseDate(contract.termStartDate),
-      "dateFinTerme": this.helpers.parseDate(contract.termEndDate),
+      "dateDebutTerme": DateUtils.toDateString(contract.termStartDate),
+      "dateFinTerme": DateUtils.toDateString(contract.termEndDate),
       "motifRecours": contract.motif,
       "justificationRecours": contract.justification,
       "qualification": contract.qualification,
@@ -498,7 +555,7 @@ export class ContractService {
         "43h": contract.salarySH43,
       },
       "droitRepos": contract.restRight,
-      "adresseInterim": contract.workAdress,
+      "adresseInterim": contract.adresseInterim,
       "client": contract.customer,
       "primeDiverses": contract.primes,
       "SiegeSocial": contract.headOffice,
@@ -515,11 +572,11 @@ export class ContractService {
       "indemniteCongesPayes": contract.indemniteCongesPayes,
       "moyenAcces": contract.moyenAcces,
       "numeroTitreTravail": contract.numeroTitreTravail,
-      "debutTitreTravail": (contract.debutTitreTravail),
-      "finTitreTravail": (contract.finTitreTravail),
+      "debutTitreTravail": DateUtils.toDateString(contract.debutTitreTravail),
+      "finTitreTravail": DateUtils.toDateString(contract.finTitreTravail),
       "periodesNonTravaillees": contract.periodesNonTravaillees,
-      "debutSouplesse": this.helpers.parseDate(contract.debutSouplesse),
-      "finSouplesse": this.helpers.parseDate(contract.finSouplesse),
+      "debutSouplesse": DateUtils.toDateString(contract.debutSouplesse),
+      "finSouplesse": DateUtils.toDateString(contract.finSouplesse),
       "equipements": contract.equipements,
       "centreMedecineEntreprise": contract.centreMedecineEntreprise,
       "adresseCentreMedecineEntreprise": contract.adresseCentreMedecineEntreprise,
@@ -533,6 +590,7 @@ export class ContractService {
       "horaires": horaires,
       "organisationParticuliere":''
     };
+
 
 
     let partner = GlobalConfigs.global['electronic-signature'];
@@ -625,20 +683,18 @@ export class ContractService {
       "validation_employeur) " +
       "values " +
       "(" + idContract + ", " +
-      "'" + this.helpers.dateToSqlTimestamp(d) + "', " +
-      "'" + this.helpers.dateToSqlTimestamp(f) + "', " +
+      "'" + DateUtils.dateToSqlTimestamp(d) + "', " +
+      "'" + DateUtils.dateToSqlTimestamp(f) + "', " +
       "" + c.startHour + ", " +
       "" + c.endHour + "," +
       "'NON', " +
       "'NON')";
-    //console.log(sql);
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
       this.http.post(this.configuration.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          //console.log(JSON.stringify(data));
           resolve(data);
         });
     });
@@ -659,6 +715,27 @@ export class ContractService {
 
   getContractsByOffer(offerId) {
     let sql = 'select * from user_contrat where fk_user_offre_entreprise=' + offerId;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  getNonSignedContracts(entrepriseId){
+    let sql = 'select c.pk_user_contrat as id, c.numero as num, c.fk_user_offre_entreprise as \"idOffer\", c.created, c.tarif_heure as \"baseSalary\", c.horaires_fixes as \"isScheduleFixed\", c.heure_debut as \"workStartHour\", c.heure_fin as \"workEndHour\", c.date_de_debut as \"missionStartDate\", c.date_de_fin as \"missionEndDate\", c.date_debut_terme as \"termStartDate\", c.date_fin_terme as \"termEndDate\", c.periode_essai as \"trialPeriod\", c.motif_de_recours as motif, c.recours as justification, c.surveillance_medicale_renforcee as \"medicalSurv\", c.equipements_fournis_par_l_ai as epi, c.elements_non_soumis_a_des_cotisations as \"elementsNonCotisation\", c.elements_soumis_a_des_cotisations as \"elementsCotisation\", c.zones_transport as \"zonesTitre\", c.titre_transport as \"titreTransport\", c.debut_souplesse as \"debutSouplesse\", c.fin_souplesse as \"finSouplesse\", c.liste_epi as \"epiString\", c.moyen_d_acces as \"moyenAcces\", c.contact_sur_place as \"offerContact\", c.telephone_contact as \"contactPhone\", c.caracteristiques_du_poste as characteristics, c.duree_moyenne_mensuelle as \"MonthlyAverageDuration\", c.siege_social as \"headOffice\", c.statut as category, c.filiere as sector, c.contact, c.indemnite_fin_de_mission as \"indemniteFinMission\", c.n_titre_travail as \"numeroTitreTravail\", c.periodes_non_travaillees as \"periodesNonTravaillees\", c.centre_de_medecine_entreprise as \"centreMedecineEntreprise\", c.adresse_centre_de_medecine_entreprise as \"adresseCentreMedecineEntreprise\", c.risques as \"postRisks\", c.lien_employeur as \"partnerEmployerLink\", ' +
+      ' j.nom, j.prenom, j.numero_securite_sociale as \"numSS\", j.lieu_de_naissance as \"lieuNaissance\",j.date_de_naissance as \"jobyerBirthDate\", j.pk_user_jobyer as \"jobyerId\", j.debut_validite as \"debutTitreTravail\", j.fin_validite as \"finTitreTravail\", ' +
+      ' n.libelle as \"nationaliteLibelle\", ' +
+      ' a.email, a.telephone as tel, ' +
+      ' o.titre as qualification ' +
+      ' from user_contrat as c, user_jobyer as j, user_nationalite as n, user_account as a, user_offre_entreprise as o ' +
+      ' where c.fk_user_entreprise=' + entrepriseId + " and upper(c.signature_employeur) = 'NON' " +
+      " and c.fk_user_jobyer = j.pk_user_jobyer and j.fk_user_nationalite = n.pk_user_nationalite and a.pk_user_account = j.fk_user_account and o.pk_user_offre_entreprise = c.fk_user_offre_entreprise " +
+      " order by c.created desc";
+
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})

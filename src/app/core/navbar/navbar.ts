@@ -6,13 +6,14 @@ import {Notifications} from "../notifications/notifications";
 import {SharedService} from "../../../providers/shared.service";
 import {OffersService} from "../../../providers/offer.service";
 import {NotificationsService} from "../../../providers/notifications.service";
+import {EntrepriseSelector} from "../entreprise-selector/entreprise-selector";
 declare var jQuery: any;
 declare var require: any;
 
 @Component({
   selector: '[navbar]',
   events: ['toggleSidebarEvent', 'toggleAppEvent'],
-  directives: [Notifications, TOOLTIP_DIRECTIVES, ROUTER_DIRECTIVES],
+  directives: [Notifications, EntrepriseSelector, TOOLTIP_DIRECTIVES, ROUTER_DIRECTIVES],
   providers: [OffersService],
   template: require('./navbar.html'),
   styles: [require('./navbar.scss')],

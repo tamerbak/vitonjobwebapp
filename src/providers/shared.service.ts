@@ -269,4 +269,12 @@ export class SharedService {
   setSelectedJobyer(value) {
     this.setStorageVariable("selectedJobyer", value);
   }
+
+  getConventionFilters() {
+    return this.getStorageVariable("conventionFilters");
+  }
+
+  setConventionFilters(value) {
+    this.setStorageVariable("conventionFilters", value);
+  }
 }

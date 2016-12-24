@@ -34,7 +34,7 @@ export class CanAccessPage implements CanActivate {
 
   canActivate( route: ActivatedRouteSnapshot,state: RouterStateSnapshot):boolean {
     if(state.url === "/contract/recruitment"){
-      if(this.router.url === "/contract/recruitment-form"){
+      if(this.router.url === "/contract/list"){
         return true;
       }
     }else if(state.url === "/payment/method"){
@@ -42,8 +42,6 @@ export class CanAccessPage implements CanActivate {
         return true;
       }
     }
-
-
     this.router.navigate(['home']);
   }
 }

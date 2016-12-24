@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {Http, Headers} from "@angular/http";
 import {Configs} from "../configurations/configs";
 import {SharedService} from "./shared.service";
+import {VOJFramework} from '../voj.framework';
 
 @Injectable()
 export class OffersService {
@@ -20,6 +21,14 @@ export class OffersService {
     };
   }
 
+  /**
+   * TODO Kelvin ERROR : Impossible de fournir une vidéo lors de la création de l'offre
+   * Update youtube video link
+   * @param idOffer
+   * @param youtubeLink
+   * @param projectTarget
+   * @returns {Promise<T>}
+   */
   updateVideoLink(idOffer, youtubeLink, projectTarget){
     let table = projectTarget == 'jobyer' ? "user_offre_jobyer":"user_offre_entreprise";
     let sql = "update "+table+" set lien_video='"+this.sqlfyText(youtubeLink)+"' where pk_"+table+"="+idOffer;
@@ -57,6 +66,7 @@ export class OffersService {
   }
 
   /**
+   * TODO Kelvin LAG: Optimiser pour ne faire qu'un seul appel au lieu d'un par offre
    * @description Get the corresponding candidates of a specific offer
    * @param offer the reference offer
    * @param projectTarget the project target configuration (jobyer/employer)
@@ -83,6 +93,14 @@ export class OffersService {
     });
   }
 
+  /**
+   * TODO Kelvin ARCHITECTIRE : Centraliser les appels à Générium
+   * Turn On/Off the search mode
+   * @param projectTarget
+   * @param idOffer
+   * @param mode
+   * @returns {Promise<T>}
+   */
   saveAutoSearchMode(projectTarget, idOffer, mode) {
     let table = projectTarget == 'jobyer' ? "user_offre_jobyer" : "user_offre_entreprise";
     let sql = "update " + table + " set recherche_automatique='" + mode + "' where pk_" + table + "=" + idOffer;
@@ -97,6 +115,11 @@ export class OffersService {
     });
   }
 
+  /**
+   * TODO Kelvin WARNING : Les usages ne sont jamais contrôlés. En cas d'erreur de connexion, l'application deviendra instable
+   * Return the sectors list
+   * @returns {Promise<T>}
+   */
   loadSectorsToLocal() {
     let sql = 'select pk_user_metier as id, libelle as libelle from user_metier order by libelle asc';
     return new Promise(resolve => {
@@ -111,7 +134,13 @@ export class OffersService {
     });
   }
 
+  /**
+   * TODO Kelvin LAG : Avec une liste de plus de 11 000 éléments retournés, cette fonction ne devrait pas être appelé
+   * Return the jobs list
+   * @returns {Promise<T>}
+   */
   loadJobsToLocal() {
+    VOJFramework.deprecated();
     let sql = 'select pk_user_job as id, libelle as libelle, fk_user_metier as idSector from user_job order by libelle asc';
     return new Promise(resolve => {
       let headers = new Headers();
@@ -513,7 +542,7 @@ export class OffersService {
   loadOfferAdress(idOffer, type){
     let to = type =='jobyer'?'user_offre_jobyer':'user_offre_entreprise';
     let table = type =='jobyer'?'user_adresse_jobyer':'user_adresse_entreprise';
-    let sql = "select adresse_google_maps, nom  from user_adresse where pk_user_adresse in (" +
+    let sql = "select adresse_google_maps, nom, numero  from user_adresse where pk_user_adresse in (" +
                   "select fk_user_adresse from "+table+" where pk_"+table+" in (" +
                     "select fk_"+table+" from "+to+" where pk_"+to+"="+idOffer+"" +
                   ")" +
@@ -528,12 +557,11 @@ export class OffersService {
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe((data : any) => {
-
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
           let adr = '';
           if(data && data.data && data.data.length>0)
-            adr = data.data[0].nom + " " + data.data[0].adresse_google_maps;
+            adr = data.data[0].numero+" "+data.data[0].nom + " " + data.data[0].adresse_google_maps;
           resolve(adr.trim());
         });
     });
@@ -910,7 +938,7 @@ export class OffersService {
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          resolve(data.data);
+          resolve(data);
         });
     });
   }
@@ -938,6 +966,43 @@ export class OffersService {
             this.convention = data.data[0];
           }
           resolve(this.convention);
+        });
+    });
+  }
+
+  /**
+   * Loading all convention levels given convention ID
+   * @param idConvention
+   * @returns {Promise<T>}
+   */
+  getConventionFilters(idConvention) {
+
+    let sql = `
+      SELECT 'niv' as type, pk_user_niveau_convention_collective AS id, code, libelle
+      FROM user_niveau_convention_collective
+      WHERE fk_user_convention_collective = ` + idConvention + `
+      UNION SELECT 'coe' as type, pk_user_coefficient_convention AS id, code, libelle
+      FROM user_coefficient_convention
+      WHERE fk_user_convention_collective = ` + idConvention + `
+      UNION SELECT 'ech' as type, pk_user_echelon_convention AS id, code, libelle
+      FROM user_echelon_convention
+      WHERE fk_user_convention_collective = ` + idConvention + `
+      UNION SELECT 'cat' as type, pk_user_categorie_convention AS id, code, libelle
+      FROM user_categorie_convention
+      WHERE fk_user_convention_collective = ` + idConvention + `
+      ORDER BY libelle
+    `;
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let list = [];
+          if (data.data && data.data.length > 0) {
+            list = data.data;
+          }
+          resolve(list);
         });
     });
   }

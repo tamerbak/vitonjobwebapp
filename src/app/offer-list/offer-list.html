@@ -73,8 +73,15 @@
         <div class="clearfix">
           <div class="col-md-1 pull-sm-right pull-md-right pull-lg-right pull-xl-right">
             <div class="input-group-btn grp-search">
-              <button type="button" class="btn btn-secondary btn-sm btn-search" style="background-color: #40aea9; color: white; border-radius: 0.2rem;" (click)="launchSearch(item)" *ngIf="!item.obsolete">{{(item.correspondantsCount < 0) ? '' :
-                        item.correspondantsCount}} Résultats trouvés
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm btn-search"
+                style="background-color: #40aea9; color: white; border-radius: 0.2rem;"
+                (click)="launchSearch(item)"
+                *ngIf="!item.obsolete"
+                [disabled]="item.correspondantsCount <= 0"
+              >
+                {{(item.correspondantsCount < 0) ? '' : item.correspondantsCount}} Résultats trouvés
               </button>
             </div>
           </div>
@@ -83,7 +90,8 @@
             </button>
           </div>
         </div>
-        <div class="alert alert-warning alert-sm alertDispo" *ngIf="item.obsolete">Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilité
+        <div class="alert alert-warning alert-sm alertDispo" *ngIf="item.obsolete">
+          Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilité
         </div>
       </section>
       <section class="widget" widget *ngFor="let item of globalList.list" [hidden]="item.visible || typeOfferModel != '1'">
@@ -112,6 +120,9 @@
             <button type="button" class="btn btn-secondary btn-sm btn-detail-offre-2" (click)="goToDetailOffer(item)">Détails de l'offre
             </button>
           </div>
+        </div>
+        <div class="alert alert-warning alert-sm alertDispo" *ngIf="item.obsolete">
+          Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilité
         </div>
       </section>
       <section class="widget" widget *ngFor="let item of globalList.list" [hidden]="item.etat != 'en archive' || typeOfferModel != '2'">

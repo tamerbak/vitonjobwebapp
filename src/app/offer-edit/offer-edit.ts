@@ -41,6 +41,7 @@ declare var require;
 export class OfferEdit{
 
   selectedJob: any;
+  initSectorDone = false;
 
   offer: any;
   sectors: any = [];
@@ -85,6 +86,7 @@ export class OfferEdit{
   minHourRate: number = 0;
   invalidHourRateMessage: string = '';
   invalidHourRate = false;
+  personalizeConvention = false;
 
   categoriesHeure: any = [];
   majorationsHeure: any = [];
@@ -159,6 +161,8 @@ export class OfferEdit{
   offerContact : string;
   tel : string;
 
+  personalizeConventionInit : boolean = false;
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private searchService: SearchService,
@@ -207,40 +211,36 @@ export class OfferEdit{
 
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
 
+    //  Load collective convention
     if (this.projectTarget == "employer" && this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
-      //  Load collective convention
-      this.offersService.getConvention(this.currentUser.employer.entreprises[0].conventionCollective.id).then(c => {
-        if (c)
-          this.convention = c;
-        if (this.convention.id > 0) {
-          this.offersService.getConventionNiveaux(this.convention.id).then(data => {
-            this.niveauxConventions = data;
-          });
-          this.offersService.getConventionCoefficients(this.convention.id).then(data => {
-            this.coefficientsConventions = data;
-          });
-          this.offersService.getConventionEchelon(this.convention.id).then(data => {
-            this.echelonsConventions = data;
-          });
-          this.offersService.getConventionCategory(this.convention.id).then(data => {
-            this.categoriesConventions = data;
-          });
-          this.offersService.getConventionParameters(this.convention.id).then(data => {
-            this.parametersConvention = data;
-            this.checkHourRate();
-          });
-
-          //get values for "condition de travail"
-          if (this.obj != "detail") {
-            this.getConditionEmpValuesForCreation();
-          } else {
-            this.getConditionEmpValuesForUpdate();
-          }
-        }
+      this.convention = this.currentUser.employer.entreprises[0].conventionCollective;
+      // Loading convention filters / data
+      let filters = this.sharedService.getConventionFilters();
+      if (this.isEmpty(filters) === true) {
+        this.offersService.getConventionFilters(this.convention.id).then((data: any) => {
+          this.sharedService.setConventionFilters(data);
+          this.niveauxConventions = data.filter((elem) => { return elem.type == 'niv' });
+          this.coefficientsConventions = data.filter((elem) => { return elem.type == 'coe' });
+          this.echelonsConventions = data.filter((elem) => { return elem.type == 'ech' });
+          this.categoriesConventions = data.filter((elem) => { return elem.type == 'cat' });
+        });
+      } else {
+        this.niveauxConventions = filters.filter((elem) => { return elem.type == 'niv' });
+        this.coefficientsConventions = filters.filter((elem) => { return elem.type == 'coe' });
+        this.echelonsConventions = filters.filter((elem) => { return elem.type == 'ech' });
+        this.categoriesConventions = filters.filter((elem) => { return elem.type == 'cat' });
+      }
+      this.offersService.getConventionParameters(this.convention.id).then(data => {
+        this.parametersConvention = data;
+        this.checkHourRate();
       });
     }
 
     if (this.obj == "detail") {
+
+      /**
+       * Existing offer initialization
+       */
       this.offer = this.sharedService.getCurrentOffer();
 
       //this.initCalendar();
@@ -291,6 +291,10 @@ export class OfferEdit{
 
       this.slots = this.convertEventsToSlots(this.$calendar.fullCalendar('clientEvents'));
     } else {
+
+      /**
+       * New offer initialization
+       */
       var jobData = {
         'class': "com.vitonjob.callouts.auth.model.JobData",
         job: "",
@@ -305,42 +309,53 @@ export class OfferEdit{
         epi: []
       };
       this.offer = {
-        jobData: jobData, calendarData: [], qualityData: [], languageData: [],
-        visible: false, title: "", status: "open", videolink: ""
+        jobData: jobData,
+        calendarData: [],
+        qualityData: [],
+        languageData: [],
+        visible: false,
+        title: "",
+        status: "open",
+        videolink: "",
+        nbPoste: 1
       };
     }
 
-    //load all sectors, if not yet loaded in local
+    let self = this;
+
+    //load all sectors and job, if not yet loaded in local
     this.sectors = this.sharedService.getSectorList();
-    if (!this.sectors || this.sectors.length == 0) {
+    var jobList = this.sharedService.getJobList();
+    if (!this.sectors || this.sectors.length == 0 || !jobList || jobList.length == 0) {
       this.offersService.loadSectorsToLocal().then((data: any) => {
         this.sharedService.setSectorList(data);
         this.sectors = data;
-      })
-    }
 
-    //load all jobs, if not yet loaded in local
-    var jobList = this.sharedService.getJobList();
-    if (!jobList || jobList.length == 0) {
-      this.hideJobLoader = false;
-      this.offersService.loadJobsToLocal().then((data: any) => {
-        this.sharedService.setJobList(data);
-        if (this.obj == "detail") {
-          //display selected job of the current offer
-          this.sectorSelected(this.offer.jobData.idSector);
-        }
-        this.hideJobLoader = true;
+        // Load job
+        this.hideJobLoader = false;
+        this.offersService.loadJobsToLocal().then((data2: any) => {
+          this.sharedService.setJobList(data2);
+          this.hideJobLoader = true;
+
+          if (this.obj == "detail") {
+            //display selected job of the current offer
+            this.selectNewSector(this.offer.jobData.idSector);
+          }
+          self.initSectorDone = true;
+
+        })
       })
     } else {
       if (this.obj == "detail") {
         //display selected job of the current offer
-        this.sectorSelected(this.offer.jobData.idSector);
+        this.selectNewSector(this.offer.jobData.idSector);
       }
+      self.initSectorDone = true;
     }
 
     //loadQualities
     this.qualities = this.sharedService.getQualityList();
-    if (!this.qualities || this.qualities.length == 0) {
+    if (Utils.isEmpty(this.qualities) === true) {
       this.offersService.loadQualities(this.projectTarget).then((data: any) => {
         this.qualities = data.data;
         this.sharedService.setQualityList(this.qualities);
@@ -348,14 +363,13 @@ export class OfferEdit{
     }
 
     //loadLanguages
-    //  Cette partie est commentée pour forcer les prochaines versions à retélécharger la liste des langues triée
-    //this.langs = this.sharedService.getLangList();
-    //if (!this.langs || this.langs.length == 0) {
-      this.listService.loadLanguages().then((data: any) => {
+    this.langs = this.sharedService.getLangList();
+    if (Utils.isEmpty(this.langs) === true) {
+      this.listService.loadOffersLanguages().then((data: any) => {
         this.langs = data.data;
         this.sharedService.setLangList(this.langs);
       });
-    //}
+    }
 
     //init slot
     this.slot = {
@@ -424,7 +438,7 @@ export class OfferEdit{
 
 
     // Initialize constraint between sector and job
-    let sector = jQuery('.sector-select').select2();
+    //let sector = jQuery('.sector-select').select2();
     let job = jQuery('.job-select').select2({
       maximumSelectionLength: 1,
       tokenSeparators: [",", " "],
@@ -469,15 +483,10 @@ export class OfferEdit{
       escapeMarkup: function (markup) {
         return markup;
       },
-      minimumInputLength: 1
+      minimumInputLength: 1,
+      initSelection: function(element, callback) {
+      }
     });
-
-    sector
-      .val(this.offer.jobData.idSector).trigger("change")
-      .on("change", function (e) {
-          self.sectorSelected(e.val);
-        }
-      );
 
     job
       .val(this.offer.jobData.idJob).trigger("change")
@@ -681,15 +690,33 @@ export class OfferEdit{
     )
   }
 
+  /**
+   * Event when "Personalize Working conditions"
+   */
+  onPersonalizeConvention() {
+    if (this.personalizeConvention === false) {
+      if (this.personalizeConventionInit === false) {
+        //get values for "condition de travail"
+        if (this.obj != "detail") {
+          this.getConditionEmpValuesForCreation();
+        } else {
+          this.getConditionEmpValuesForUpdate();
+        }
+        this.personalizeConventionInit = true;
+      }
+    }
+    this.personalizeConvention = !this.personalizeConvention;
+  }
+
   addPrerequis() {
-    if (!this.prerequisOb || this.prerequisOb == '')
+    if (Utils.isEmpty(this.prerequisOb) === true)
       return;
     this.prerequisObligatoires.push(this.prerequisOb);
     this.prerequisOb = '';
   }
 
   addEPI() {
-    if (!this.epi || this.epi == '')
+    if (Utils.isEmpty(this.epi) === true)
       return;
     this.epiList.push(this.epi);
     this.epi = '';
@@ -733,13 +760,30 @@ export class OfferEdit{
     });
     //get job list
     var jobList = this.sharedService.getJobList();
-    this.jobs = jobList.filter((v) => {
-      return (v.idsector == sector);
+     this.jobs = jobList.filter((v) => {
+     return (v.idsector == sector);
+     });
+
+    if (sectorsTemp.length > 0) {
+      this.offer.jobData.sector = sectorsTemp[0].libelle;
+    }
+
+    jQuery('.job-select').select2('val', '');
+  }
+
+  selectNewSector(sector) {
+
+    //set sector info in jobdata
+    this.offer.jobData.idSector = sector;
+    //
+    var sectorsTemp = this.sectors.filter((v) => {
+      return (v.id == sector);
     });
 
     if (sectorsTemp.length > 0) {
       this.offer.jobData.sector = sectorsTemp[0].libelle;
     }
+
   }
 
   /**
@@ -758,8 +802,7 @@ export class OfferEdit{
         this.offer.jobData.idSector = sector.id;
         this.offer.jobData.sector = sector.libelle;
         let id = parseInt(this.offer.jobData.idSector);
-        this.sectorSelected(id);
-        jQuery(".sector-select").select2('val', id);
+        this.selectNewSector(id);
 
       });
     }
@@ -1063,7 +1106,7 @@ export class OfferEdit{
     }
     //searching the selected lang in the general list of langs
     var langTemp = this.langs.filter((v) => {
-      return (v.id == this.selectedLang);
+      return (v.idLanguage == this.selectedLang);
     });
     //delete the lang from the current offer lang list, if already existant
     if (this.offer.languageData.indexOf(langTemp[0]) != -1) {
@@ -1311,13 +1354,6 @@ export class OfferEdit{
     }
   }
 
-  isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
-  }
-
   ngOnDestroy(): void {
     if (this.obj == "detail" && this.keepCurrentOffer === false
     )
@@ -1419,25 +1455,20 @@ export class OfferEdit{
   launchSearch() {
     this.dataValidation = true;
     var offer = this.offer;
-    if (!offer)
-      return;
-    let searchFields = {
-      class: 'com.vitonjob.callouts.recherche.SearchQuery',
-      job: offer.jobData.job,
-      metier: '',
-      lieu: '',
-      nom: '',
-      entreprise: '',
-      date: '',
-      table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
-      idOffre: '0'
+
+    let searchQuery = {
+      class: 'com.vitonjob.recherche.model.SearchQuery',
+      queryType: 'OFFER',
+      idOffer: offer.idOffer,
+      resultsType: this.projectTarget=='jobyer'?'employer':'jobyer'
     };
-    this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
+    this.searchService.advancedSearch(searchQuery).then((data:any)=>{
       this.sharedService.setLastResult(data);
       this.sharedService.setCurrentOffer(offer);
       this.keepCurrentOffer = true;
       this.router.navigate(['search/results']);
     });
+
   }
 
   autoSearchMode() {
@@ -1977,46 +2008,101 @@ export class OfferEdit{
     jQuery('#show-event-modal').modal('hide');
   }
 
+  /* Validation formulaire */
   isFormValid(){
     let roundMin = (Math.round(this.minHourRate * 100) / 100);
     let errors   = [];
 
     //these conditions should be verified for all roles
-    if (!this.offer.jobData.job || this.offer.jobData.job == 0 || !this.offer.jobData.sector || this.offer.jobData.sector == 0 || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || roundMin > this.offer.jobData.remuneration) {
-      this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
-      errors.push({'type':'required'})
+    //if (!this.offer.jobData.job || this.offer.jobData.job == 0 || !this.offer.jobData.sector || this.offer.jobData.sector == 0 || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0) {
+      //this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
+      //errors.push({'type':'required'})
+    //}
+    if (roundMin > this.offer.jobData.remuneration){
+    	this.addAlert("warning", "Veuillez saisir un taux horaire valide.", "general");
+    }
+    if (!this.offer.calendarData || this.offer.calendarData.length == 0) {
+      this.addAlert("warning", "Veuillez saisir les horaires de travail pour continuer.", "general");
+      errors.push({type:'required', label:"Choix des horaires de travail"})
     }
 
     //for employer and recruiter roles, the nbPoste field should be filled
-    if(this.projectTarget == "employer"){
+    /*if(this.projectTarget == "employer"){
       if(!this.offer.nbPoste ||  this.offer.nbPoste <= 0){
-        this.addAlert("warning", "Veuillez renseigner le nombre de poste requis pour cette offre.", "general");
+        //this.addAlert("warning", "Veuillez renseigner le nombre de poste requis pour cette offre.", "general");
         errors.push({'type':'required', 'cible':'#input-nbPoste'})
       }
 
-	  if (jQuery('#autocompleteOfferAdress').val() == ''){
-	    this.addAlert("warning", "Veuillez renseigner l'adresse de la mission.", "general");
-	    errors.push({'type':'required', 'cible':'#autocompleteOfferAdress'})
-	  }
+  	  if (jQuery('#autocompleteOfferAdress').val() == ''){
+  	    //this.addAlert("warning", "Veuillez renseigner l'adresse de la mission.", "general");
+  	    errors.push({'type':'required', 'cible':'#autocompleteOfferAdress'})
+  	  }
+    }*/
 
-    }
+    // Error checking by a global method
+    let required_fields = 'input[required], select[required]';
+    jQuery(required_fields).each(function(){
+
+    	let tn = jQuery(this).prop("tagName");
+
+        if (!jQuery(this).val() || jQuery(this).val() == "0"){
+          let id = '#'+jQuery(this).attr('id') || 0;
+          let label = jQuery(this).data('label') || 'Champ incomplet';
+          let cible = jQuery(this).data('cible') || id;
+          let error = {type:'required', label:false, cible:false};
+
+          if (cible)	error.cible = cible;
+          if (label)	error.label = label;
+
+          // Insert current error object
+          if (error)  	errors.push(error);
+        }
+    });
 
     /* Gestion des erreurs */
     if (errors.length > 0){
-    	let error = errors[0];
+    	let first = errors[0];
 
-    	if (error.cible){
-    		let pos = jQuery(error.cible).offset();
-    		window.scrollTo(pos.left, pos.top - 100);
+		let n = 0;
+		let cpl = "";
+		for (n; n<errors.length;n++){
+			let e = errors[n];
 
-    		jQuery(error.cible).addClass('warning-empty')
-    		.off('change').on('change', function(){
-    			if (jQuery(this).val())
-    				jQuery(this).removeClass('warning-empty')
-    		});
-    	}else
-    		window.scrollTo(0, 0);
+			if (e.cible){
+
+				if (e.label)
+					cpl += "<br> • <b hover='"+e.cible+"'>"+e.label+"</b>";
+
+				jQuery(e.cible).addClass('warning-empty')
+					.off('change click').on('change click', function(){
+					if (jQuery(this).val())
+				 		jQuery(this).removeClass('warning-empty')
+				});
+			}else
+				cpl += "<br> • <b>"+e.label+"</b>";
+		}
+
+		if (first.cible){
+			let pos = jQuery(first.cible).offset();
+			window.scrollTo(pos.left, pos.top - 100);
+		}else
+			window.scrollTo(0, 0);
+
+		this.addAlert("danger", "Merci de compléter les "+errors.length+' informations suivantes pour valider votre offre :  '+cpl, "general");
+
+    	// Mise en surbrillance du champ en erreur survolé
+    	jQuery('[hover]').on('mouseenter', function(){
+    		let c = jQuery(this).attr('hover');
+    		jQuery(c).addClass('warn-focus');
+    	}).on('mouseleave', function(){
+    		let c = jQuery(this).attr('hover');
+    		jQuery(c).removeClass('warn-focus');
+    	})
     }
     return errors.length == 0;
+  }
+
+  isEmpty(str) {
+    return Utils.isEmpty(str);
   }
 }
