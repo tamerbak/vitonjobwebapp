@@ -11,6 +11,7 @@ import {Utils} from "../utils/utils";
 import {AlertComponent} from "ng2-bootstrap";
 
 declare var jQuery: any;
+declare var Messenger: any;
 
 @Component({
   selector: '[search-results]',
@@ -23,7 +24,13 @@ declare var jQuery: any;
 export class SearchResults{
   @ViewChildren('Map') map: any;
 
+  /**
+   * Search system
+   */
+  scQuery: string;
   searchResults: any;
+  alerts: Array<Object>;
+
   currentUser: any;
   projectTarget: string;
   isRecruteur: boolean = false;
@@ -40,6 +47,7 @@ export class SearchResults{
 
   constructor(private sharedService: SharedService,
               private router: Router,
+              private searchService: SearchService,
               private profileService: ProfileService,
               private route: ActivatedRoute) {
 
@@ -59,13 +67,19 @@ export class SearchResults{
   }
 
   ngOnInit() {
+    this.loadResult();
+  }
+
+  loadResult() {
     //  Retrieving last search
-    this.selected = this.sharedService.getMapView();
+    this.scQuery = this.sharedService.getCurrentSearch();
+    this.selected = this.sharedService.getMapView() !== false;
     if (this.selected) {
       this.mapDisplay = 'block';
     } else {
       this.mapDisplay = 'none';
     }
+    this.searchResultPos = [];
 
     let jsonResults = this.sharedService.getLastResult();
     if (jsonResults) {
@@ -118,7 +132,58 @@ export class SearchResults{
     this.showAppropriateModal(this.obj);
   }
 
+  doSemanticSearch() {
+    /*if (!this.currentUser) {
+     this.sharedService.setFromPage("home");
+     this.router.navigate(['login']);
+     return;
+     }*/
+
+    if (Utils.isEmpty(this.scQuery) || !this.scQuery.match(/[a-z]/i)) {
+      this.addAlert("warning", "Veuillez saisir un job avant de lancer la recherche");
+      return;
+    }
+
+    this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((data: any) => {
+      if (data.length == 0) {
+        this.addAlert("warning", "Aucun résultat trouvé pour votre recherche.");
+        return;
+      }
+
+      // TODO Passer la condition accepteCandidature == 'true' côté callout
+      // If jobyer research, count only offers that employer accept contact
+      let lastResult = [];
+      if (this.projectTarget == 'jobyer') {
+        for (let i = 0; i < data.length; i++) {
+          if (data[i].accepteCandidature == 'true') {
+            lastResult.push(data[i]);
+          }
+        }
+      } else {
+        lastResult = data;
+      }
+      let count = lastResult.length;
+      this.sharedService.setLastResult(lastResult);
+
+      Messenger().post({
+        message: 'La recherche pour "' + this.scQuery + '" a donné ' + (count == 1 ? 'un seul résultat' : (count + ' résultats')),
+        type: 'success',
+        showCloseButton: true
+      });
+      this.sharedService.setCurrentSearch(this.scQuery);
+      this.loadResult();
+    });
+  }
+
+  checkForEnterKey(e) {
+    if (e.code != "Enter")
+      return;
+
+    this.doSemanticSearch();
+  }
+
   onChange(value) {
+    this.selected = value;
     this.sharedService.setMapView(value)
     if (value) {
       this.mapDisplay = 'block';
@@ -219,5 +284,9 @@ export class SearchResults{
         jQuery('#modal-notification-contract').modal('show');
       }
     }
+  }
+
+  addAlert(type, msg): void {
+    this.alerts = [{type: type, msg: msg}];
   }
 }

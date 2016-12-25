@@ -277,4 +277,12 @@ export class SharedService {
   setConventionFilters(value) {
     this.setStorageVariable("conventionFilters", value);
   }
+
+  getCurrentSearch() {
+    return this.getStorageVariable("currentSearch");
+  }
+
+  setCurrentSearch(value) {
+    this.setStorageVariable("currentSearch", value);
+  }
 }

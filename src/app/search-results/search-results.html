@@ -1,26 +1,48 @@
-<ol class="breadcrumb">
-  <li>VOUS ÊTES ICI</li>
-  <li class="active"><a class="breadcrumb-link" [routerLink]="['/search/results']">Résultats de la recherche</a>
-  </li>
-</ol>
-<div class="row">
-  <div class="col-xs-12 pull-right" style="margin-bottom: 1em;">
-    <a href="javascript:history.go(-1)"><button type="button" class="btn btn-secondary btn-sm" name="button"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Retour</button></a>
+<!--<ol class="breadcrumb">-->
+  <!--<li>VOUS ÊTES ICI</li>-->
+  <!--<li class="active"><a class="breadcrumb-link" [routerLink]="['/search/results']">Résultats de la recherche</a>-->
+  <!--</li>-->
+<!--</ol>-->
+<!--<div class="row">-->
+  <!--<div class="col-xs-12 pull-right" style="margin-bottom: 1em;">-->
+    <!--<a href="javascript:history.go(-1)"><button type="button" class="btn btn-secondary btn-sm" name="button"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Retour</button></a>-->
+  <!--</div>-->
+<!--</div>-->
+
+<div class="row search-barr">
+  <div class="col-lg-offset-2 col-lg-8 col-xs-offset-1 col-xs-10">
+    <input placeholder="Rechercher sur Vit-On-Job...." class="search-input" [(ngModel)]="scQuery"  (keyup)="checkForEnterKey($event)"/>
+    <button class="fa fa-search search-button" (click)="doSemanticSearch()"></button>
+  </div>
+  <div class="col-lg-offset-2 col-lg-8 col-xs-offset-1 col-xs-10 nb-results">
+    <!--<a class="adv-search centred-l" [routerLink]=" ['/search/criteria'] ">Recherche avancée</a>-->
+    {{ searchResults.length == 0 ? 'Aucun résultat ne correspond à votre recherche' : ''}}
+    {{ searchResults.length == 1 ? '1 résultat correspond à votre recherche' : ''}}
+    {{ searchResults.length > 1 ? searchResults.length + ' résultats correspondent à votre recherche' : ''}}
   </div>
 </div>
-<h1 class="page-title">{{(currentUser && currentUser.estRecruteur) ? 'Recruteur' : (projectTarget == 'employer' ? 'Employeur' : 'Jobyer')}} - <span class="fw-semi-bold">Résultats de la recherche</span>
-</h1>
 
 <div class="row">
   <div class="col-lg-12 col-xs-12">
-    <section class="widget" widget *ngIf="searchResults.length != 0">
-      <div class="abc-checkbox abc-checkbox-info">
-        <input [(ngModel)]="selected" (ngModelChange)="onChange(selected)" id="mapView" type="checkbox">
-        <label for="mapView">
-          <b>Activer la vue Map</b>
-        </label>
+    <div class="clearfix ng-scope">
+      <div class="btn-toolbar">
+        <div class="btn-group pull-right-important">
+          <button class="btn btn-gray {{ !selected ? 'active' : ''}}" type="button" (click)="onChange(false)">
+            <i class="fa fa-th-list"></i>&nbsp;Vue liste
+          </button>
+          <button class="btn btn-gray {{ selected ? 'active' : ''}}" type="button" (click)="onChange(true)">
+            <i class="fa fa-map-marker"></i>&nbsp;Vue carte
+          </button>
+        </div>
       </div>
-      <div class="widget-middle-overflow windget-padding-md clearfix bg-info" *ngIf="selected" [ngStyle]="{'display':mapDisplay}">
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12 col-xs-12" *ngIf="selected">
+    <section class="widget" widget *ngIf="searchResults.length != 0">
+      <div class="clearfix" *ngIf="selected" [ngStyle]="{'display':mapDisplay}">
         <sebm-google-map #Map [latitude]="lat" [longitude]="lng" [zoom]="10"  class="content-map">
           <sebm-google-map-marker *ngFor="let item of searchResultPos, let i=index" [latitude]="item.lat" [longitude]="item.lng">
             <sebm-google-map-info-window>
@@ -34,14 +56,16 @@
 
     </section>
   </div>
-  <div class="col-lg-12 col-xs-12">
-    <div >
-      <alert *ngIf="searchResults.length == 0" [type]="'info alert-sm'" dismissible="true">
-        Aucun résultat ne correspond à votre recherche
-      </alert>
-    </div>
-  </div>
-  <div class="col-lg-12 col-xs-12">
+
+  <!--<div class="col-lg-12 col-xs-12">-->
+    <!--<div >-->
+      <!--<alert *ngIf="searchResults.length == 0" [type]="'info alert-sm'" dismissible="true">-->
+        <!--Aucun résultat ne correspond à votre recherche-->
+      <!--</alert>-->
+    <!--</div>-->
+  <!--</div>-->
+  <!---->
+  <div class="col-lg-12 col-xs-12" *ngIf="!selected">
     <div *ngFor="let item of searchResults, let i=index">
       <section
         class="widget" widget

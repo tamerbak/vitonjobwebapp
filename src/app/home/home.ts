@@ -12,6 +12,7 @@ import {ModalNotificationContract} from "../modal-notification-contract/modal-no
 import {ModalGeneralCondition} from "../modal-general-condition/modal-general-condition";
 import {RecruitButton} from "../components/recruit-button/recruit-button";
 import {HomeList} from "../components/home-list-component/home-list-component";
+import {Utils} from "../utils/utils";
 
 
 declare var require: any;
@@ -75,6 +76,8 @@ export class Home{
     this.route.params.forEach((params: Params) => {
       this.obj = params['obj'];
     });
+
+    this.scQuery = this.sharedService.getCurrentSearch();
 
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
@@ -206,7 +209,7 @@ export class Home{
      return;
      }*/
 
-    if (this.isEmpty(this.scQuery) || !this.scQuery.match(/[a-z]/i)) {
+    if (Utils.isEmpty(this.scQuery) || !this.scQuery.match(/[a-z]/i)) {
       this.addAlert("warning", "Veuillez saisir un job avant de lancer la recherche");
       return;
     }
@@ -220,6 +223,7 @@ export class Home{
       }
       this.sharedService.setLastResult(data);
 
+      // TODO Passer la condition accepteCandidature == 'true' côté callout
       // If jobyer research, count only offers that employer accept contact
       let count = 0;
       if (this.projectTarget == 'jobyer') {
@@ -237,6 +241,7 @@ export class Home{
         type: 'success',
         showCloseButton: true
       });
+      this.sharedService.setCurrentSearch(this.scQuery);
       this.router.navigate(['search/results']);
     });
   }
