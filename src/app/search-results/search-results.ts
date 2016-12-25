@@ -28,7 +28,9 @@ export class SearchResults{
    * Search system
    */
   scQuery: string;
+  lastScQuery: string;
   searchResults: any;
+  hideResult: boolean =  false;
   alerts: Array<Object>;
 
   currentUser: any;
@@ -73,6 +75,8 @@ export class SearchResults{
   loadResult() {
     //  Retrieving last search
     this.scQuery = this.sharedService.getCurrentSearch();
+    this.lastScQuery = this.scQuery;
+
     this.selected = this.sharedService.getMapView() !== false;
     if (this.selected) {
       this.mapDisplay = 'block';
@@ -144,11 +148,8 @@ export class SearchResults{
       return;
     }
 
+    this.hideResult = true;
     this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((data: any) => {
-      if (data.length == 0) {
-        this.addAlert("warning", "Aucun résultat trouvé pour votre recherche.");
-        return;
-      }
 
       // TODO Passer la condition accepteCandidature == 'true' côté callout
       // If jobyer research, count only offers that employer accept contact
@@ -162,15 +163,9 @@ export class SearchResults{
       } else {
         lastResult = data;
       }
-      let count = lastResult.length;
       this.sharedService.setLastResult(lastResult);
-
-      Messenger().post({
-        message: 'La recherche pour "' + this.scQuery + '" a donné ' + (count == 1 ? 'un seul résultat' : (count + ' résultats')),
-        type: 'success',
-        showCloseButton: true
-      });
       this.sharedService.setCurrentSearch(this.scQuery);
+      this.hideResult = false;
       this.loadResult();
     });
   }
