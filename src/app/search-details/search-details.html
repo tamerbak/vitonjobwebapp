@@ -4,15 +4,18 @@
   </li>
   <li class="active">Détails</li>
 </ol>
+
 <div class="row">
   <div class="col-xs-12 pull-right" style="margin-bottom: 1em;">
-    <a href="javascript:history.go(-1)"><button type="button" class="btn btn-secondary btn-sm" name="button"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Retour</button></a>
+    <a href="javascript:history.go(-1)">
+      <button type="button" class="btn btn-secondary btn-sm" name="button">
+        <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Retour à la liste
+      </button>
+    </a>
   </div>
 </div>
-<h1 class="page-title">{{(currentUser && currentUser.estRecruteur) ? 'Recruteur' : (projectTarget == 'employer' ? 'Employeur' : 'Jobyer')}} - <span class="fw-semi-bold">Détails de l'offre sélectionnée</span>
-</h1>
 
-<div widget class="widget">
+<div widget class="widget" id="search-details">
   <header>
     <div class="post-user mt-n-xs">
       <span class="thumb pull-left mr">
@@ -56,7 +59,7 @@
             </ul>
           </div>
 
-          <div class="col-md-6 col-xs-12">
+          <div class="col-md-6 col-xs-12 button-bar">
             <recruit-button
               [jobyer]="result"
               (onRecruite)="onRecruite($event)"
