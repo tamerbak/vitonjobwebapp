@@ -13,3 +13,17 @@
 .pac-container{
   z-index: 1051 !important;
 }
+
+.search-result-body {
+  border-top: 1px solid #eee;
+
+  legend {
+    margin-top: .5em;
+  }
+
+}
+
+.button-bar {
+  margin-bottom: 20px;
+  text-align: center;
+}
