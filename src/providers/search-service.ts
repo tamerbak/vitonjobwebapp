@@ -90,34 +90,28 @@ export class SearchService {
    */
   semanticSearch(textQuery: string, referenceOffer: number, projectTarget: string) {
     //  Start by identifying the wanted table and prepare the pay load
-    var table = projectTarget == 'jobyer' ? 'user_entreprise' : 'user_jobyer';
-    var query = table + ';' + textQuery;
 
-    var payload = {
+    let searchType = projectTarget == 'jobyer' ? 'employeur' : 'jobyer';
+    let bean =  {
+      class :"com.vitonjob.callouts.recherche.model.RequeteRecherche",
+      sentence :textQuery,
+      type :searchType
+    };
+
+    let payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      id: 10,
+      id: 10046,
       args: [
         {
           class: 'fr.protogen.masterdata.model.CCalloutArguments',
           label: 'Requete de recherche',
-          value: btoa(query)
-        },
-        {
-          class: 'fr.protogen.masterdata.model.CCalloutArguments',
-          label: 'ID Offre',
-          value: btoa(referenceOffer + '')
-        },
-        {
-          class: 'fr.protogen.masterdata.model.CCalloutArguments',
-          label: 'Ordre de tri',
-          value: 'TkQ='
+          value: btoa(JSON.stringify(bean))
         }
       ]
     };
 
     return new Promise(resolve => {
-      let headers = new Headers();
-      headers = Configs.getHttpJsonHeaders();
+      let headers = Configs.getHttpJsonHeaders();
       this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
         .map(res => res.json())
         .subscribe(data => {

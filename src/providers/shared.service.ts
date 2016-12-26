@@ -119,6 +119,14 @@ export class SharedService {
     this.setStorageVariable("lastResult", value);
   }
 
+  getLastIndexation(){
+    return this.getStorageVariable("LAST_INDEX");
+  }
+
+  setLastIndexation(value){
+    this.setStorageVariable("LAST_INDEX", value);
+  }
+
   getSectorList() {
     return this.getStorageVariable("sectorList");
   }

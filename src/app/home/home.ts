@@ -209,17 +209,26 @@ export class Home{
      }*/
 
     if (Utils.isEmpty(this.scQuery) || !this.scQuery.match(/[a-z]/i)) {
-      this.addAlert("warning", "Veuillez saisir un job avant de lancer la recherche");
+      this.addAlert("warning", "Veuillez saisir une requête avant de lancer la recherche");
       return;
     }
 
     this.hideLoader = false;
-    this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((data: any) => {
+    this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((results: any) => {
       this.hideLoader = true;
+      let data = [];
+      if(this.projectTarget == 'jobyer')
+        data = results.offerEnterprise;
+      else
+        data = results.offerJobyers;
+
       if (data.length == 0) {
         this.addAlert("warning", "Aucun résultat trouvé pour votre recherche.");
         return;
       }
+
+
+      this.sharedService.setLastIndexation({resultsIndex : results.indexation});
       this.sharedService.setLastResult(data);
 
       // TODO Passer la condition accepteCandidature == 'true' côté callout
