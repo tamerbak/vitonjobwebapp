@@ -16,8 +16,9 @@ export class EntrepriseSelector implements OnInit {
               private sharedService: SharedService,
               private entrepriseService: EntrepriseService
   ) {
-    if (this.sharedService.getCurrentUser().estEmployeur) {
-      this.entreprises = this.sharedService.getCurrentUser().employer.entreprises;
+    let currentUser = this.sharedService.getCurrentUser();
+    if (currentUser && currentUser.estEmployeur) {
+      this.entreprises = currentUser.employer.entreprises;
     }
   }
 
@@ -29,8 +30,11 @@ export class EntrepriseSelector implements OnInit {
     if (index == 0) {
       return;
     }
-    this.entrepriseService.swapEntreprise(index);
-    this.entreprises = this.sharedService.getCurrentUser().employer.entreprises;
+    let currentUser = this.sharedService.getCurrentUser();
+    if (currentUser && currentUser.estEmployeur) {
+      this.entrepriseService.swapEntreprise(index);
+      this.entreprises = currentUser.employer.entreprises;
+    }
     this.router.navigate(['app/home']);
   }
 
