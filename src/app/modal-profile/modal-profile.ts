@@ -944,9 +944,11 @@ export class ModalProfile{
   }
 
   openCoporamaModal() {
-    jQuery('#modal-profile').on('hidden.bs.modal', function (e) {
+    // l'evenement 'one' permet d'activer une surveillance une seule fois
+    // permet notamment d'éviter les boucles d'evenements infinies 
+    jQuery('#modal-profile').one('hidden.bs.modal', function (e) {
       jQuery('#modal-corporama-search').modal('show');
-      jQuery('#modal-corporama-search').on('hidden.bs.modal', function (e) {
+      jQuery('#modal-corporama-search').one('hidden.bs.modal', function (e) {
         jQuery('#modal-profile').modal('show');
       })
     });
@@ -954,7 +956,7 @@ export class ModalProfile{
   }
 
   onDismissCorporamaModal(company: any) {
-    debugger;
+
     if (!company) {
       return;
     }
