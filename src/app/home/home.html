@@ -58,8 +58,24 @@
     </div>
   </div>
 
-<div modal-update-password></div>
-<div modal-notification-contract [jobyer]="currentJobyer" *ngIf="projectTarget == 'employer' && !isRecruteur"></div>
-<div modal-general-condition (onRefuse)="onGCRefused($event)"></div>
-<div modal-welcome></div>
-<div modal-profile [obj]="obj"></div>
+<div
+  modal-update-password
+  *ngIf="currentUser"
+></div>
+<div
+  modal-notification-contract
+  [jobyer]="currentJobyer"
+  *ngIf="projectTarget == 'employer' && !isRecruteur"
+></div>
+<div
+  modal-general-condition
+  (onRefuse)="onGCRefused($event)"
+></div>
+<div
+  modal-welcome
+  *ngIf="currentUser"
+></div>
+<div
+  modal-profile
+  [obj]="obj" *ngIf="currentUser"
+></div>

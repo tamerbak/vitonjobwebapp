@@ -60,15 +60,17 @@ export class Home{
               private homeService: HomeService,
               private route: ActivatedRoute,
               private sharedService: SharedService) {
-  }
-
-  ngOnInit(): void {
-
     if (this.router.url === '/jobyer') {
       this.sharedService.setProjectTarget('jobyer');
     } else if (this.router.url === '/employeur') {
       this.sharedService.setProjectTarget('employer');
     }
+    this.currentUser = this.sharedService.getCurrentUser();
+    this.scQuery = this.sharedService.getCurrentSearch();
+  }
+
+  ngOnInit(): void {
+
     let myContent = jQuery('.content');
     let myNavBar = jQuery('.navbar-dashboard');
 
@@ -77,9 +79,6 @@ export class Home{
       this.obj = params['obj'];
     });
 
-    this.scQuery = this.sharedService.getCurrentSearch();
-
-    this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
       if (this.currentUser.mot_de_passe_reinitialise == "Oui") {
