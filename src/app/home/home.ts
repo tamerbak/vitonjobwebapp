@@ -164,7 +164,7 @@ export class Home{
     }
   }
   ngOnDestroy() {
-    jQuery('.content').css({"padding": "40px", "padding-top": "60px"});
+    jQuery('.content').css({"padding": "92px 20px 42px 20px"});
   }
 
   onClickCard(e) {
