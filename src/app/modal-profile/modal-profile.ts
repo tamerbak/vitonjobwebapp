@@ -988,6 +988,7 @@ export class ModalProfile{
 
     this.siret = Utils.formatSIREN(company.siren);
     this.ape = company.naf;
+    this.watchApe({target: {value: company.naf}});
 
     this.IsCompanyExist(this.companyname, 'companyname');
 
