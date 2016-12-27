@@ -15,7 +15,7 @@
   </div>
 </div>
 
-<div class="alert-zone">
+<div class="alert-zone fixed">
   <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
     <div [innerHTML]="alert.msg"></div>
   </alert>
@@ -349,16 +349,6 @@
               </alert>
 
               <div class="form-group row required">
-                <center class="col-md-2 col-sm-2 col-xs-2">
-                  <label *ngIf="projectTarget == 'jobyer'">
-                    <input type="checkbox" [checked]="isFulltime" class="form-control" (change)="watchFullTime($event)"/>
-                    Jour entier
-                  </label>
-                  <label *ngIf="projectTarget != 'jobyer'">
-                    <input type="checkbox" [checked]="isPause" class="form-control" (change)="watchPause($event)"/>
-                    Pause
-                  </label>
-                </center>
 
                 <div class="col-md-5 col-sm-3 col-xs-6 offer-hour-new">
                   <datetime [hidden]="isFulltime"
@@ -372,6 +362,7 @@
                          value="00:00"
                          readonly/>
                 </div>
+
                 <div class="col-md-5 col-sm-3 col-xs-6 offer-hour-new">
                   <datetime [hidden]="isFulltime"
                             id="slotEHour"
@@ -383,12 +374,23 @@
                          value="23:59"
                          readonly/>
                 </div>
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                  
-                  <label *ngIf="plageDate == 'multiple'">
-                    <input type="checkbox" [checked]="isPeriodic" class="form-control" (change)="watchPeriodicity($event)"/>
-                    Périodique
-                  </label>
+
+                <div class="row container boxes">
+
+                  <div class="col-xs-12 col-sm-4 col-md-4" *ngIf="projectTarget != 'jobyer'">
+                    <input type="checkbox" id="box-2" [checked]="isPause" class="form-control" (change)="watchPause($event)">
+                    <label for="box-2">Pause</label>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-4 col-md-4" *ngIf="projectTarget == 'jobyer'">
+                    <input type="checkbox" id="box-1" [checked]="isFulltime" class="form-control" (change)="watchFullTime($event)">
+                    <label for="box-1">Jour entier</label>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-4 col-md-4" *ngIf="plageDate != 'single'">
+                    <input type="checkbox" id="box-3" [checked]="isPeriodic" class="form-control" (change)="watchPeriodicity($event)"/>
+                    <label for="box-3"> Périodique</label>
+                  </div>
 
                 </div>
 

@@ -195,13 +195,13 @@ export class OfferEdit{
       this.tel = this.offer.telephone;
     if(this.offer && this.offer.contact)
       this.offerContact = this.offer.contact;
-    this.initCalendar();
 
   }
 
   ngOnInit(): void {
 
     // Init Calendar
+    this.initCalendar();
     this.$calendar = jQuery('#calendar');
     this.$calendar.fullCalendar(this.calendar);
     jQuery('.draggable').draggable(this.dragOptions);
@@ -245,8 +245,6 @@ export class OfferEdit{
        * Existing offer initialization
        */
       this.offer = this.sharedService.getCurrentOffer();
-
-      //this.initCalendar();
 
       this.isOfferArchived = (this.offer.etat == 'en archive' ? true : false);
 
@@ -981,13 +979,14 @@ export class OfferEdit{
     }
 
     // Check that today is over than the selected day
-    if (Date.now() > slot.date.getTime()) {
+    let today = new Date().setHours(0, 0, 0);
+    if (today > slot.date) {
       this.addAlert("danger", "La date sélectionnée doit être supérieure ou égale à la date d'aujourd'hui", "slot");
       return false;
     }
 
     // Check that end hour is over than begin hour
-    if (slot.date >= slot.dateEnd) {
+    if (slot.date.getTime() >= slot.dateEnd.getTime()) {
       this.addAlert("danger", "L'heure de début doit être inférieure à l'heure de fin", "slot");
       return false;
     }
@@ -1003,7 +1002,7 @@ export class OfferEdit{
           return false;
         }
 
-        if(!this.offersService.isSlotRespectsBreaktime(this.slots, this.slot)){
+        if(!this.offersService.isSlotRespectsBreaktime(slots, slot)){
           this.addAlert("danger", "Veuillez mettre un délai de 11h entre deux créneaux situés sur deux jours calendaires différents.", "slot");
           return false;
         }
@@ -1872,10 +1871,17 @@ export class OfferEdit{
       events: this.convertDetailSlotsForCalendar(),
       selectable: true,
       selectHelper: true,
-      eventDurationEditable: false,
+      eventDurationEditable: true,
       eventStartEditable: true,
 
-      select: (start, end, allDay): void => {
+      select: (start, end, allDay): any => {
+
+        let today = new Date().setHours(0,0,0);
+        if ( start._d.getTime() < today ){
+          this.addAlert("warning", "Vous ne pouvez pas sélectionner une date passée.", "general");
+          return false;
+        }
+
         this.startDate = start._d;
         this.endDate = end._d;
 
@@ -1902,6 +1908,12 @@ export class OfferEdit{
 
       eventDrop: (event, delta, revertFunc): void => {
         this.dragSlot(event, revertFunc);
+      },
+      dayRender: (date, cell): void => {
+          let today = new Date()
+              today.setHours(0, 0, 0); // fix difference
+          if (date < today)
+                jQuery(cell).addClass('disabled');
       },
       lang : 'fr'
     };
@@ -1933,11 +1945,11 @@ export class OfferEdit{
 
     if (this.plageDate == "multiple" && this.isPeriodic){
       
-      this.isPeriodic = false; // to prevent default
-      let nbDays = Math.floor( (this.endDate - this.startDate) / (60*60*24*1000)) + 1 ;   
+      this.isPeriodic = false; // setting back to false to prevent default
+      let nbDays = Math.floor( (this.endDate - this.startDate) / (60*60*24*1000) ) + 1;   
       
-      // Boucle de splittage slots
-      for (let n = 0;n<nbDays;n++){
+      // Boucle de splittage slots with fix for special dates
+      for (let n = 0;n < (nbDays>1 ? nbDays : nbDays+1); n++){
 
         let date_debut = new Date(this.startDate.getFullYear(), 
                                   this.startDate.getMonth(), 
@@ -1948,23 +1960,35 @@ export class OfferEdit{
 
         let date_arret = new Date(this.startDate.getFullYear(), 
                                   this.startDate.getMonth(), 
-                                  this.startDate.getDate() + n,
+                                  this.startDate.getDate() + (nbDays>1 ? n : n + 1),
                                   this.endDate.getHours(),
                                   this.endDate.getMinutes()
                                   );
 
+        // Récupération du slot splitté 
         let splitted_slot = { from: date_debut, to: date_arret };
 
-        // Actualisation du rendu graphique
-        this.pushSlotInCalendar(splitted_slot)
-
         // Normalisation du slot généré par le split / day
-        let normalized_slot ={date:date_debut, dateEnd:date_arret, pause:false, allDay:false};
+        let normalized_slot ={date:date_debut, dateEnd:date_arret,
+                              startHour:date_debut, endHour:date_arret,
+                              pause:false, allDay:false};
         
-        // Sauvegarde des slots splittés
-        this.slots.push(normalized_slot);
-        this.slotsToSave.push(normalized_slot);
-        this.offer.calendarData.push(normalized_slot);
+        // + Vérification des slots
+        if (this.checkHour(this.slots, normalized_slot)) {
+
+          // Sauvegarde des slots splittés
+          this.slots.push(normalized_slot);
+          this.slotsToSave.push(normalized_slot);
+          this.offer.calendarData.push(normalized_slot);
+
+          // Actualisation du rendu graphique
+          this.pushSlotInCalendar(splitted_slot)
+        }else{
+          let infos = "";//"<br>" + "- Le "+splitted_slot.from.toLocaleDateString() + '.'; // Can't do multi alerts - fix
+          this.addAlert("warning", " Certains créneaux que vous avez séléctionné ne sont pas valide" + infos, "general");
+        }
+      
+
       }
 
       jQuery('#create-event-modal').modal('hide');
@@ -2004,6 +2028,7 @@ export class OfferEdit{
   }
 
   pushSlotInCalendar(slot){
+
     let evt = {
       title: "Créneau Périodique",
       start: slot.from,
