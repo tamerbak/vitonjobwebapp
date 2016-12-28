@@ -2017,7 +2017,7 @@ export class OfferEdit{
         true // make the event "stick"
       );
       this.addEvent(evt);
-      //this.addSlot('');
+      this.addSlot('');
     }
     this.$calendar.fullCalendar('unselect');
     jQuery('#create-event-modal').modal('hide');
@@ -2124,7 +2124,8 @@ export class OfferEdit{
     }
     if (!this.offer.calendarData || this.offer.calendarData.length == 0) {
       this.addAlert("warning", "Veuillez saisir les horaires de travail pour continuer.", "general");
-      errors.push({type:'required', label:"Choix des horaires de travail"})
+      errors.push({type:'required', 
+      		label: this.projectTarget == 'jobyer' ? "Choix des disponibilités" : "Choix des horaires de travail"})
     }
 
     //for employer and recruiter roles, the nbPoste field should be filled
