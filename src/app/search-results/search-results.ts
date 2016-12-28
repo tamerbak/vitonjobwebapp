@@ -149,10 +149,15 @@ export class SearchResults{
     }
 
     this.hideResult = true;
-    this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((data: any) => {
+    this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((results: any) => {
 
       // TODO Passer la condition accepteCandidature == 'true' côté callout
       // If jobyer research, count only offers that employer accept contact
+      let data = [];
+      if(this.projectTarget == 'jobyer')
+        data = results.offerEnterprise;
+      else
+        data = results.offerJobyers;
       let lastResult = [];
       if (this.projectTarget == 'jobyer') {
         for (let i = 0; i < data.length; i++) {
@@ -163,6 +168,7 @@ export class SearchResults{
       } else {
         lastResult = data;
       }
+      this.sharedService.setLastIndexation({resultsIndex : results.indexation});
       this.sharedService.setLastResult(lastResult);
       this.sharedService.setCurrentSearch(this.scQuery);
       this.hideResult = false;
