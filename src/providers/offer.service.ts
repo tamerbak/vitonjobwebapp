@@ -1262,7 +1262,7 @@ export class OffersService {
     if(idSector && idSector>0){
       constr = "fk_user_metier="+idSector+" AND ";
     }
-    let sql = "select pk_user_job as id, libelle from user_job where "+constr+" ( lower_unaccent(libelle) like lower_unaccent('%"+this.sqlfyText(kw)+"%') or lower_unaccent(libelle) % lower_unaccent('"+this.sqlfyText(kw)+"')) limit 10";
+    let sql = "select pk_user_job as id, libelle from user_job where "+constr+" ( lower_unaccent(libelle) like lower_unaccent('%"+this.sqlfyText(kw)+"%') or lower_unaccent(libelle) % lower_unaccent('"+this.sqlfyText(kw)+"')) order by similarity(lower_unaccent(libelle),lower_unaccent('"+this.sqlfyText(kw)+"')) desc";
     return sql;
   }
 
