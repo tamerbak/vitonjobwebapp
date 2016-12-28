@@ -1,27 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+<assets style="display:none">
   <script src="../../../scripts/swiper.min.js"></script>
-
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-
-  <!-- Link Swiper's CSS -->
   <link rel="stylesheet" href="../../../css/swiper.min.css">
-  <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
-
-
-
-</head>
-<body class="body">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:400,300,200,500,600,700">
+</assets>
 <div class="row row-btn">
   <div class="col-xs-12">
     <button class="button button--arrow button--bounce" href="#one" (click)="cardSwiper($event)"></button>
   </div>
 </div>
-<div class="row" id="hide">
-  <div class="col-sm-4">
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
     <div class="row">
       <div class="col-xs-12 pad-bot">
         <h2>Offres imminentes</h2>
@@ -72,7 +60,7 @@
       </div>
     </div>
   </div>
-  <div class="col-sm-4">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
     <div class="row">
       <div class="col-xs-12 pad-bot">
         <h2>Offres récemment créées</h2>
@@ -124,7 +112,7 @@
       </div>
     </div>
   </div>
-  <div class="col-sm-4">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
     <div class="row">
       <div class="col-xs-12 pad-bot">
         <h2>{{projectTarget == 'jobyer'?'Nouvelles entreprises':'Nouveaux Jobyers'}}</h2>
@@ -168,9 +156,6 @@
           <div class="swiper-button-next"></div>
         </div>
       </div>
-      <script type="text/javascript" src="../../../scripts/jquery.smooth-scroll.js"></script>
     </div>
   </div>
 </div>
-</body>
-</html>

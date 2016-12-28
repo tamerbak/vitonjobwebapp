@@ -12,6 +12,7 @@ import {ModalNotificationContract} from "../modal-notification-contract/modal-no
 import {ModalGeneralCondition} from "../modal-general-condition/modal-general-condition";
 import {RecruitButton} from "../components/recruit-button/recruit-button";
 import {HomeList} from "../components/home-list-component/home-list-component";
+import {Utils} from "../utils/utils";
 
 
 declare var require: any;
@@ -59,15 +60,17 @@ export class Home{
               private homeService: HomeService,
               private route: ActivatedRoute,
               private sharedService: SharedService) {
-  }
-
-  ngOnInit(): void {
-
     if (this.router.url === '/jobyer') {
       this.sharedService.setProjectTarget('jobyer');
     } else if (this.router.url === '/employeur') {
       this.sharedService.setProjectTarget('employer');
     }
+    this.currentUser = this.sharedService.getCurrentUser();
+    this.scQuery = this.sharedService.getCurrentSearch();
+  }
+
+  ngOnInit(): void {
+
     let myContent = jQuery('.content');
     let myNavBar = jQuery('.navbar-dashboard');
 
@@ -76,7 +79,6 @@ export class Home{
       this.obj = params['obj'];
     });
 
-    this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
       if (this.currentUser.mot_de_passe_reinitialise == "Oui") {
@@ -161,44 +163,9 @@ export class Home{
     }
   }
   ngOnDestroy() {
-    jQuery('.content').css({"padding": "40px", "padding-top": "60px"});
+    jQuery('.content').css({"padding": "92px 20px 42px 20px"});
   }
 
-  onClickCard(e) {
-    console.log(e);
-    var el = e.target;
-    if (jQuery(el).hasClass('fa'))
-      el = jQuery(el).parent('a');
-
-    console.log(el);
-    //jQuery('.material-card > .mc-btn-action').click(function () {
-      var card = jQuery(el).parent('.material-card');
-      var icon = jQuery(el).children('i');
-      icon.addClass('fa-spin-fast');
-
-      if (card.hasClass('mc-active')) {
-        card.removeClass('mc-active');
-
-        window.setTimeout(function() {
-          icon
-            .removeClass('fa-arrow-left')
-            .removeClass('fa-spin-fast')
-            .addClass('fa-bars');
-
-        }, 800);
-      } else {
-        card.addClass('mc-active');
-
-        window.setTimeout(function() {
-          icon
-            .removeClass('fa-bars')
-            .removeClass('fa-spin-fast')
-            .addClass('fa-arrow-left');
-
-        }, 800);
-      }
-    //});
-  }
   doSemanticSearch() {
     /*if (!this.currentUser) {
      this.sharedService.setFromPage("home");
@@ -206,20 +173,30 @@ export class Home{
      return;
      }*/
 
-    if (this.isEmpty(this.scQuery) || !this.scQuery.match(/[a-z]/i)) {
-      this.addAlert("warning", "Veuillez saisir un job avant de lancer la recherche");
+    if (Utils.isEmpty(this.scQuery) || !this.scQuery.match(/[a-z]/i)) {
+      this.addAlert("warning", "Veuillez saisir une requête avant de lancer la recherche");
       return;
     }
 
     this.hideLoader = false;
-    this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((data: any) => {
+    this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((results: any) => {
       this.hideLoader = true;
+      let data = [];
+      if(this.projectTarget == 'jobyer')
+        data = results.offerEnterprise;
+      else
+        data = results.offerJobyers;
+
       if (data.length == 0) {
         this.addAlert("warning", "Aucun résultat trouvé pour votre recherche.");
         return;
       }
+
+
+      this.sharedService.setLastIndexation({resultsIndex : results.indexation});
       this.sharedService.setLastResult(data);
 
+      // TODO Passer la condition accepteCandidature == 'true' côté callout
       // If jobyer research, count only offers that employer accept contact
       let count = 0;
       if (this.projectTarget == 'jobyer') {
@@ -237,6 +214,7 @@ export class Home{
         type: 'success',
         showCloseButton: true
       });
+      this.sharedService.setCurrentSearch(this.scQuery);
       this.router.navigate(['search/results']);
     });
   }

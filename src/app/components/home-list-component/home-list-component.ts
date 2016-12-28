@@ -17,7 +17,7 @@ declare var Swiper: any;
   template: require('./home-list-component.html'),
   directives: [ROUTER_DIRECTIVES, AlertComponent, RecruitButton],
   providers: [SearchService, HomeService],
-  styles: [require('./home-list-component.scss')],
+  styles: [ require('./home-list-component.scss')],
   encapsulation: ViewEncapsulation.None
 })
 
@@ -70,25 +70,18 @@ export class HomeList{
     });
 
     this.config = Configs.setConfigs(this.projectTarget);
-
-
     this.sharedService.setCurrentOffer(null);
 
+    jQuery('home-list-component').addClass('fade-in-component');
   }
 
   cardSwiper(e) {
-    jQuery("#hide").css("display", "flex");
-    console.log( "ready!" );
     new Swiper('.swiper-container', {
       nextButton: '.swiper-button-next',
       prevButton: '.swiper-button-prev',
       pagination: '.swiper-pagination',
       grabCursor: true,
     });
-    this.scrollSmooth();
-  }
-  scrollSmooth() {
-    window.scrollTo(0, 999)
   }
 
   initHomeList() {
@@ -136,12 +129,11 @@ export class HomeList{
 
 
   onClickCard(e) {
-    console.log(e);
+
     var el = e.target;
     if (jQuery(el).hasClass('fa'))
       el = jQuery(el).parent('a');
 
-    console.log(el);
     //jQuery('.material-card > .mc-btn-action').click(function () {
     var card = jQuery(el).parent('.material-card');
     var icon = jQuery(el).children('i');
@@ -156,7 +148,7 @@ export class HomeList{
           .removeClass('fa-spin-fast')
           .addClass('fa-bars');
 
-      }, 800);
+      }, 100);
     } else {
       card.addClass('mc-active');
 
@@ -166,7 +158,7 @@ export class HomeList{
           .removeClass('fa-spin-fast')
           .addClass('fa-arrow-left');
 
-      }, 800);
+      }, 100);
     }
   }
 
@@ -195,7 +187,6 @@ export class HomeList{
     let offset = this.homeServiceData.query.startIndexOffers + this.homeServiceData.query.resultCapacityOffers;
     this.homeServiceData.query.startIndexOffers = offset;
     this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then((data: any) => {
-      //debugger;
       let newData = data.recentOffers;
       let max = newData.length > this.maxLines ? this.maxLines : newData.length;
       for (let i = 0; i < max; i++) {
@@ -276,8 +267,6 @@ export class HomeList{
     };
 
     this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
-      debugger;
-      console.log(data);
       for (let i = 0; i < data.length; i++) {
         let r = data[i];
         if (r.idOffre == o.idOffer) {
@@ -304,8 +293,6 @@ export class HomeList{
     };
 
     this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
-      debugger;
-      console.log(data);
       for (let i = 0; i < data.length; i++) {
         let r = data[i];
         if (r.idOffre == o.idOffer) {

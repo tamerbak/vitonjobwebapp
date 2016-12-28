@@ -15,17 +15,18 @@
         </a>
       </li>
     </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <li class="nav-item">
-        <!-- toggles chat -->
-        <a class="nav-link hidden-md-down" href="#" (click)="toggleChat()">
-          <span class="rounded rounded-lg text-white"><i class="glyphicon glyphicon-th fa-lg"></i></span>
-        </a>
-        <a class="nav-link hidden-md-up" href="#" (click)="toggleChat()">
-          <span class="rounded rounded-lg" class="color-span"><i class="glyphicon glyphicon-th fa-lg"></i></span>
-        </a>
-      </li>
-    </ul>
+    <!--<ul class="nav navbar-nav navbar-right">-->
+      <!--<li class="nav-item">-->
+        <!--&lt;!&ndash; toggles chat &ndash;&gt;-->
+        <!--<a class="nav-link hidden-md-down" href="#" (click)="toggleChat()">-->
+          <!--<span class="rounded rounded-lg text-white"><i class="glyphicon glyphicon-th fa-lg"></i></span>-->
+        <!--</a>-->
+        <!--<a class="nav-link hidden-md-up" href="#" (click)="toggleChat()">-->
+          <!--<span class="rounded rounded-lg" class="color-span"><i class="glyphicon glyphicon-th fa-lg"></i></span>-->
+        <!--</a>-->
+      <!--</li>-->
+    <!--</ul>-->
+
     <!--a class="navbar-brand hidden-md-up" href="index.html">
       <i class="fa fa-circle text-gray mr-n-sm"></i>
       <i class="fa fa-circle text-warning"></i>
@@ -38,10 +39,6 @@
     <ul class="nav navbar-nav pull-xs-right hidden-md-up" (click)="$event.preventDefault()">
       <li *ngIf="currentUser" class="nav-item dropdown">
         <a class="nav-link dropdown-toggle bg-transparent" data-toggle="dropdown">
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp;
           <span class="circle bg-warning fw-bold">
 						{{notificationsService.autoSearchOffers.length}}
 					</span>

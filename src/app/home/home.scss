@@ -350,13 +350,16 @@ body {
   width: 90%;
   margin: auto;
 }
-
+.video{
+  /* Hauteur de l'écran*/
+  height:100vh;
+}
 .video video {
   min-width: 100%;
   min-height: 100%;
   width: auto;
   height: auto;
-  margin-top: 50px;
+  margin-top: 0;
   z-index: -100;
 }
 
@@ -593,3 +596,18 @@ body {
   margin-left:1px;
   margin-right:1px;
 }
+
+.page-footer{
+  margin:1% 0;
+}
+/*
+[home-list-component]{
+  animation: pop 2s;
+  animation-delay: 2s;
+
+}
+@keyframes pop {
+  from { opacity:0; }
+  to   { opacity:1; }
+}
+*/

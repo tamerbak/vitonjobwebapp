@@ -203,6 +203,7 @@ input[type="checkbox"]:checked + label:before {
   -webkit-transform: rotate(45deg);
   transform: rotate(45deg);
 }
+
 .row.container.boxes{
   margin-top: 2em;
 }
@@ -224,5 +225,3 @@ td.disabled{
 	background:#eee;
 	opacity:.8;
 }
-
-/* modif to override the bugs */

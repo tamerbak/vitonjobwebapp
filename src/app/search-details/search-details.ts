@@ -3,6 +3,7 @@ import {OffersService} from "../../providers/offer.service";
 import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {GOOGLE_MAPS_DIRECTIVES} from "angular2-google-maps/core";
+import {DomSanitizationService} from '@angular/platform-browser';
 import {RecruitButton} from "../components/recruit-button/recruit-button";
 import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
 import {ModalProfile} from "../modal-profile/modal-profile";
@@ -41,9 +42,14 @@ export class SearchDetails{
   jobyerInterested: boolean;
   candidatureAllowed: boolean;
 
+  videoAvailable: boolean = false;
+  youtubeLink: string;
+  youtubeLinkSafe: any;
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private router: Router,
+              private sanitizer: DomSanitizationService,
               private candidatureService: CandidatureService) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
@@ -68,7 +74,7 @@ export class SearchDetails{
       this.fullName = this.result.entreprise;
     else
       this.fullName = this.result.titre + ' ' + this.result.prenom + ' ' + this.result.nom;
-    
+
     this.matching = this.result.matching + "%";
 
     //load markers
@@ -81,17 +87,38 @@ export class SearchDetails{
     let idOffers = [];
     idOffers.push(this.result.idOffre);
     this.offersService.getOffersLanguages(idOffers, table).then((data: any) => {
-      if (data)
+      if (data) {
         this.languages = data;
+      }
     });
-    this.offersService.getOffersQualities(idOffers, table).then((data: any)=> {
-      if (data)
+    this.offersService.getOffersQualities(idOffers, table).then((data: any) => {
+      if (data) {
         this.qualities = data;
+      }
     });
 
     if(this.projectTarget == 'jobyer' && this.candidatureAllowed) {
       this.setCandidatureButtonLabel();
     }
+  }
+
+  ngAfterViewInit() : void {
+    this.offersService.getMetaData(this.result.idOffre, this.projectTarget == 'jobyer' ? 'employer' : 'jobyer').then((data : any) => {
+      if (data && data.data.length > 0) {
+
+        // Initialize video container
+        let videolink = data.data[0].lien_video;
+        if (videolink && videolink.toUpperCase() == 'NULL') {
+          this.videoAvailable = false;
+        } else {
+          this.videoAvailable = true;
+          this.youtubeLink = videolink.replace("youtu.be", "www.youtube.com/embed").replace("watch?v=", "embed/");
+          this.youtubeLinkSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.youtubeLink);
+        }
+
+      }
+    });
+
   }
 
   onRecruite(params) {

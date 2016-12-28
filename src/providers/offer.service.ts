@@ -42,6 +42,29 @@ export class OffersService {
       });
     });
   }
+
+  /**
+   * Return the offer's medatada
+   *
+   * @param idOffer
+   * @param projectTarget
+   * @returns {Promise<T>}
+   */
+  getMetaData(idOffer, projectTarget) {
+    let table = projectTarget == 'jobyer' ? "user_offre_jobyer" : "user_offre_entreprise";
+    let sql = "SELECT lien_video FROM " + table + " WHERE pk_" + table + "=" + idOffer;
+
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
   /**
    * TODO Kelvin LAG: Optimiser pour ne faire qu'un seul appel au lieu d'un par offre
    * @description Get the corresponding candidates of a specific offer
@@ -931,7 +954,7 @@ export class OffersService {
   getConvention(id){
     let sql = "select pk_user_convention_collective as id, code, libelle " +
       "from user_convention_collective " +
-      "where pk_user_convention_collective ="+id+"";
+      "where pk_user_convention_collective ="+id+" and dirty='N'";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -957,16 +980,16 @@ export class OffersService {
     let sql = `
       SELECT 'niv' as type, pk_user_niveau_convention_collective AS id, code, libelle
       FROM user_niveau_convention_collective
-      WHERE fk_user_convention_collective = ` + idConvention + `
+      WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
       UNION SELECT 'coe' as type, pk_user_coefficient_convention AS id, code, libelle
       FROM user_coefficient_convention
-      WHERE fk_user_convention_collective = ` + idConvention + `
+      WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
       UNION SELECT 'ech' as type, pk_user_echelon_convention AS id, code, libelle
       FROM user_echelon_convention
-      WHERE fk_user_convention_collective = ` + idConvention + `
+      WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
       UNION SELECT 'cat' as type, pk_user_categorie_convention AS id, code, libelle
       FROM user_categorie_convention
-      WHERE fk_user_convention_collective = ` + idConvention + `
+      WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
       ORDER BY libelle
     `;
 
@@ -990,7 +1013,7 @@ export class OffersService {
    * @returns {Promise<T>}
    */
   getConventionNiveaux(idConvention){
-    let sql = "select pk_user_niveau_convention_collective as id, code, libelle from user_niveau_convention_collective where fk_user_convention_collective="+idConvention;
+    let sql = "select pk_user_niveau_convention_collective as id, code, libelle from user_niveau_convention_collective where fk_user_convention_collective="+idConvention+" and dirty='N'";
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -1010,7 +1033,7 @@ export class OffersService {
    * @returns {Promise<T>}
    */
   getConventionCategory(idConvention){
-    let sql = "select pk_user_categorie_convention as id, code, libelle from user_categorie_convention where fk_user_convention_collective="+idConvention;
+    let sql = "select pk_user_categorie_convention as id, code, libelle from user_categorie_convention where fk_user_convention_collective="+idConvention+" and dirty='N'";
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -1030,7 +1053,7 @@ export class OffersService {
    * @returns {Promise<T>}
    */
   getConventionEchelon(idConvention){
-    let sql = "select pk_user_echelon_convention as id, code, libelle from user_echelon_convention where fk_user_convention_collective="+idConvention;
+    let sql = "select pk_user_echelon_convention as id, code, libelle from user_echelon_convention where fk_user_convention_collective="+idConvention+" and dirty='N'";
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -1050,7 +1073,7 @@ export class OffersService {
    * @returns {Promise<T>}
    */
   getConventionCoefficients(idConvention){
-    let sql = "select pk_user_coefficient_convention as id, code, libelle from user_coefficient_convention where fk_user_convention_collective="+idConvention;
+    let sql = "select pk_user_coefficient_convention as id, code, libelle from user_coefficient_convention where fk_user_convention_collective="+idConvention+" and dirty='N'";
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -1073,7 +1096,7 @@ export class OffersService {
     let sql = "select pk_user_parametrage_convention as id, remuneration_de_reference as rate, " +
       "fk_user_convention_collective as idcc, fk_user_categorie_convention as idcat, " +
       "fk_user_echelon_convention as idechelon, fk_user_coefficient_convention as idcoeff, fk_user_niveau_convention_collective as idniv " +
-      "from user_parametrage_convention where fk_user_convention_collective="+idConvention;
+      "from user_parametrage_convention where fk_user_convention_collective="+idConvention+" AND dirty='N'";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -1095,7 +1118,7 @@ export class OffersService {
       "from user_parametrage_convention where " +
       "pk_user_parametrage_convention in (select fk_user_parametrage_convention " +
         "from user_offre_entreprise " +
-        "where pk_user_offre_entreprise="+idOffer+")";
+        "where pk_user_offre_entreprise="+idOffer+") and dirty='N'";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -1106,7 +1129,8 @@ export class OffersService {
             idechelon: null,
             idcat:null,
             idcoeff:null,
-            idniv:null
+            idniv:null,
+            rate:null
           };
           if(data.data && data.data.length>0){
 
@@ -1119,6 +1143,7 @@ export class OffersService {
               parameter.idcoeff = d.idcoeff;
             if(d.idniv && d.idniv != 'null')
               parameter.idniv = d.idniv;
+            parameter.rate = d.rate;
           }
 
           resolve(parameter);
@@ -1239,7 +1264,7 @@ export class OffersService {
     if(idSector && idSector>0){
       constr = "fk_user_metier="+idSector+" AND ";
     }
-    let sql = "select pk_user_job as id, libelle from user_job where "+constr+" ( lower_unaccent(libelle) like lower_unaccent('%"+this.sqlfyText(kw)+"%') or lower_unaccent(libelle) % lower_unaccent('"+this.sqlfyText(kw)+"')) limit 10";
+    let sql = "select pk_user_job as id, libelle from user_job where "+constr+" ( lower_unaccent(libelle) like lower_unaccent('%"+this.sqlfyText(kw)+"%') or lower_unaccent(libelle) % lower_unaccent('"+this.sqlfyText(kw)+"')) order by similarity(lower_unaccent(libelle),lower_unaccent('"+this.sqlfyText(kw)+"')) desc";
     return sql;
   }
 

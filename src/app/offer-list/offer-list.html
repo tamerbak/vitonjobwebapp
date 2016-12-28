@@ -90,7 +90,8 @@
             </button>
           </div>
         </div>
-        <div class="alert alert-warning alert-sm alertDispo" *ngIf="item.obsolete">Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilité
+        <div class="alert alert-warning alert-sm alertDispo" *ngIf="item.obsolete">
+          Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilité
         </div>
       </section>
       <section class="widget" widget *ngFor="let item of globalList.list" [hidden]="item.visible || typeOfferModel != '1'">
@@ -119,6 +120,9 @@
             <button type="button" class="btn btn-secondary btn-sm btn-detail-offre-2" (click)="goToDetailOffer(item)">Détails de l'offre
             </button>
           </div>
+        </div>
+        <div class="alert alert-warning alert-sm alertDispo" *ngIf="item.obsolete">
+          Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilité
         </div>
       </section>
       <section class="widget" widget *ngFor="let item of globalList.list" [hidden]="item.etat != 'en archive' || typeOfferModel != '2'">
