@@ -261,10 +261,12 @@ export class Profile{
           if (this.isEuropean == 1) {
             this.scanTitle = " de votre titre de séjour";
           }
+          this.loadAttachement(this.scanTitle);
         });
 
       } else {
         this.scanTitle = " de votre extrait k-bis";
+        this.loadAttachement(this.scanTitle);
         listService.loadConventions().then((response: any) => {
           this.conventions = response;
         });
@@ -585,6 +587,23 @@ export class Profile{
     return false;
   }
 
+  loadAttachement(scanTitle) {
+    // Get scan
+    this.attachementsService.loadAttachements(this.currentUser).then((attachments: any) => {
+      let allImagesTmp = [];
+      for (let i = 0; i < attachments.length; ++i) {
+        if (attachments[i].fileName.substr(0, 4 + scanTitle.length) == "scan" + scanTitle) {
+          this.attachementsService.downloadActualFile(attachments[i].id, attachments[i].fileName).then((data: any)=> {
+            allImagesTmp.push({
+              data: data.stream
+            });
+          });
+        }
+      }
+      this.allImages = allImagesTmp;
+    });
+  }
+
   /**
    * Initialize form with user values
    */
@@ -602,21 +621,6 @@ export class Profile{
     let role = this.isEmployer ? 'employeur' : 'jobyer';
     let field = 'scan';
     let userId = this.isEmployer ? this.currentUser.employer.id : this.currentUser.jobyer.id;
-
-    // Get scan
-    this.attachementsService.loadAttachements(this.currentUser).then((attachments: any) => {
-      let allImagesTmp = [];
-      for (let i = 0; i < attachments.length; ++i) {
-        if (attachments[i].fileName.substr(0, 4) == "scan") {
-          this.attachementsService.downloadActualFile(attachments[i].id, attachments[i].fileName).then((data: any)=> {
-            allImagesTmp.push({
-              data: data.stream
-            });
-          });
-        }
-      }
-      this.allImages = allImagesTmp;
-    });
 
     var elements = [];
     jQuery("div[id^='q-datepicker_']").each(function () {
@@ -1795,9 +1799,11 @@ export class Profile{
       this.regionId = data.data[0].pk_user_identifiants_nationalite;
       if (this.isEuropean == 0) {
         this.scanTitle = " de votre CNI ou Passeport";
+        this.loadAttachement(this.scanTitle);
       }
       if (this.isEuropean == 1) {
         this.scanTitle = " de votre titre de séjour";
+        this.loadAttachement(this.scanTitle);
       }
     })
   }
