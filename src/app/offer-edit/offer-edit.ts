@@ -235,7 +235,6 @@ export class OfferEdit{
       }
       this.offersService.getConventionParameters(this.convention.id).then(data => {
         this.parametersConvention = data;
-        this.checkHourRate();
       });
     }
 
@@ -320,6 +319,7 @@ export class OfferEdit{
         videolink: "",
         nbPoste: 1
       };
+      this.checkHourRate();
     }
 
     let self = this;
@@ -415,6 +415,8 @@ export class OfferEdit{
       if (parameter.idniv && parameter.idniv != null) {
         this.selectedNivConvID = parseInt(parameter.idniv + '');
       }
+      this.minHourRate = parameter.rate;
+      this.selectedParamConvID = parameter.id;
     });
   }
 
