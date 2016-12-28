@@ -166,41 +166,6 @@ export class Home{
     jQuery('.content').css({"padding": "92px 20px 42px 20px"});
   }
 
-  onClickCard(e) {
-    console.log(e);
-    var el = e.target;
-    if (jQuery(el).hasClass('fa'))
-      el = jQuery(el).parent('a');
-
-    console.log(el);
-    //jQuery('.material-card > .mc-btn-action').click(function () {
-      var card = jQuery(el).parent('.material-card');
-      var icon = jQuery(el).children('i');
-      icon.addClass('fa-spin-fast');
-
-      if (card.hasClass('mc-active')) {
-        card.removeClass('mc-active');
-
-        window.setTimeout(function() {
-          icon
-            .removeClass('fa-arrow-left')
-            .removeClass('fa-spin-fast')
-            .addClass('fa-bars');
-
-        }, 800);
-      } else {
-        card.addClass('mc-active');
-
-        window.setTimeout(function() {
-          icon
-            .removeClass('fa-bars')
-            .removeClass('fa-spin-fast')
-            .addClass('fa-arrow-left');
-
-        }, 800);
-      }
-    //});
-  }
   doSemanticSearch() {
     /*if (!this.currentUser) {
      this.sharedService.setFromPage("home");

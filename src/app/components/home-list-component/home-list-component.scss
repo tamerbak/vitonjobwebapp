@@ -1,4 +1,16 @@
-@import "https://fonts.googleapis.com/css?family=Raleway:400,300,200,500,600,700";
+home-list-component{
+  background:white;
+  display:block;
+  padding:2% 0;
+  display:none;
+  opacity:0;
+  transition:opacity 1s;
+}
+home-list-component.fade-in-component{
+  display:flex;
+  opacity:1;
+}
+
 .fa-spin-fast {
   -webkit-animation: fa-spin-fast 0.2s infinite linear;
   animation: fa-spin-fast 0.2s infinite linear;
@@ -345,14 +357,6 @@ h3 {
 .card-h{
   min-height: 4em;
 }
-body {
-  background: #fff;
-  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-  font-size: 14px;
-  color:#000;
-  margin: 0;
-  padding: 0;
-}
 .swiper-container {
   width: 18em;
 }
@@ -363,9 +367,6 @@ body {
   overflow: hidden;
 }
 
-#hide{
-display: none;
-}
 .button {
   display: inline-block;
   vertical-align: middle;
