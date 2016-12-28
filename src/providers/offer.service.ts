@@ -42,6 +42,29 @@ export class OffersService {
       });
     });
   }
+
+  /**
+   * Return the offer's medatada
+   *
+   * @param idOffer
+   * @param projectTarget
+   * @returns {Promise<T>}
+   */
+  getMetaData(idOffer, projectTarget) {
+    let table = projectTarget == 'jobyer' ? "user_offre_jobyer" : "user_offre_entreprise";
+    let sql = "SELECT lien_video FROM " + table + " WHERE pk_" + table + "=" + idOffer;
+
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
   /**
    * TODO Kelvin LAG: Optimiser pour ne faire qu'un seul appel au lieu d'un par offre
    * @description Get the corresponding candidates of a specific offer
@@ -1239,7 +1262,7 @@ export class OffersService {
     if(idSector && idSector>0){
       constr = "fk_user_metier="+idSector+" AND ";
     }
-    let sql = "select pk_user_job as id, libelle from user_job where "+constr+" ( lower_unaccent(libelle) like lower_unaccent('%"+this.sqlfyText(kw)+"%') or lower_unaccent(libelle) % lower_unaccent('"+this.sqlfyText(kw)+"')) limit 10";
+    let sql = "select pk_user_job as id, libelle from user_job where "+constr+" ( lower_unaccent(libelle) like lower_unaccent('%"+this.sqlfyText(kw)+"%') or lower_unaccent(libelle) % lower_unaccent('"+this.sqlfyText(kw)+"')) order by similarity(lower_unaccent(libelle),lower_unaccent('"+this.sqlfyText(kw)+"')) desc";
     return sql;
   }
 

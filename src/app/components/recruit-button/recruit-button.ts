@@ -7,6 +7,7 @@ declare var jQuery: any;
 @Component({
   selector: 'recruit-button',
   template: require('./recruit-button.html'),
+  styles: [require('./recruit-button.scss')],
 })
 
 export class RecruitButton{

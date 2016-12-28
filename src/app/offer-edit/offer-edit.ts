@@ -1457,25 +1457,20 @@ export class OfferEdit{
   launchSearch() {
     this.dataValidation = true;
     var offer = this.offer;
-    if (!offer)
-      return;
-    let searchFields = {
-      class: 'com.vitonjob.callouts.recherche.SearchQuery',
-      job: offer.jobData.job,
-      metier: '',
-      lieu: '',
-      nom: '',
-      entreprise: '',
-      date: '',
-      table: this.projectTarget == 'jobyer' ? 'user_offre_entreprise' : 'user_offre_jobyer',
-      idOffre: '0'
+
+    let searchQuery = {
+      class: 'com.vitonjob.recherche.model.SearchQuery',
+      queryType: 'OFFER',
+      idOffer: offer.idOffer,
+      resultsType: this.projectTarget=='jobyer'?'employer':'jobyer'
     };
-    this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
+    this.searchService.advancedSearch(searchQuery).then((data:any)=>{
       this.sharedService.setLastResult(data);
       this.sharedService.setCurrentOffer(offer);
       this.keepCurrentOffer = true;
       this.router.navigate(['search/results']);
     });
+
   }
 
   autoSearchMode() {
@@ -2171,7 +2166,7 @@ export class OfferEdit{
 		let cpl = "";
 		for (n; n<errors.length;n++){
 			let e = errors[n];
-			
+
 			if (e.cible){
 
 				if (e.label)
@@ -2193,7 +2188,7 @@ export class OfferEdit{
 			window.scrollTo(0, 0);
 
 		this.addAlert("danger", "Merci de compléter les "+errors.length+' informations suivantes pour valider votre offre :  '+cpl, "general");
-    	
+
     	// Mise en surbrillance du champ en erreur survolé
     	jQuery('[hover]').on('mouseenter', function(){
     		let c = jQuery(this).attr('hover');

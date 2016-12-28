@@ -11,6 +11,7 @@ import {Utils} from "../utils/utils";
 import {AlertComponent} from "ng2-bootstrap";
 
 declare var jQuery: any;
+declare var Messenger: any;
 
 @Component({
   selector: '[search-results]',
@@ -23,7 +24,15 @@ declare var jQuery: any;
 export class SearchResults{
   @ViewChildren('Map') map: any;
 
+  /**
+   * Search system
+   */
+  scQuery: string;
+  lastScQuery: string;
   searchResults: any;
+  hideResult: boolean =  false;
+  alerts: Array<Object>;
+
   currentUser: any;
   projectTarget: string;
   isRecruteur: boolean = false;
@@ -40,6 +49,7 @@ export class SearchResults{
 
   constructor(private sharedService: SharedService,
               private router: Router,
+              private searchService: SearchService,
               private profileService: ProfileService,
               private route: ActivatedRoute) {
 
@@ -59,13 +69,21 @@ export class SearchResults{
   }
 
   ngOnInit() {
+    this.loadResult();
+  }
+
+  loadResult() {
     //  Retrieving last search
-    this.selected = this.sharedService.getMapView();
+    this.scQuery = this.sharedService.getCurrentSearch();
+    this.lastScQuery = this.scQuery;
+
+    this.selected = this.sharedService.getMapView() !== false;
     if (this.selected) {
       this.mapDisplay = 'block';
     } else {
       this.mapDisplay = 'none';
     }
+    this.searchResultPos = [];
 
     let jsonResults = this.sharedService.getLastResult();
     if (jsonResults) {
@@ -118,7 +136,49 @@ export class SearchResults{
     this.showAppropriateModal(this.obj);
   }
 
+  doSemanticSearch() {
+    /*if (!this.currentUser) {
+     this.sharedService.setFromPage("home");
+     this.router.navigate(['login']);
+     return;
+     }*/
+
+    if (Utils.isEmpty(this.scQuery) || !this.scQuery.match(/[a-z]/i)) {
+      this.addAlert("warning", "Veuillez saisir un job avant de lancer la recherche");
+      return;
+    }
+
+    this.hideResult = true;
+    this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((data: any) => {
+
+      // TODO Passer la condition accepteCandidature == 'true' côté callout
+      // If jobyer research, count only offers that employer accept contact
+      let lastResult = [];
+      if (this.projectTarget == 'jobyer') {
+        for (let i = 0; i < data.length; i++) {
+          if (data[i].accepteCandidature == 'true') {
+            lastResult.push(data[i]);
+          }
+        }
+      } else {
+        lastResult = data;
+      }
+      this.sharedService.setLastResult(lastResult);
+      this.sharedService.setCurrentSearch(this.scQuery);
+      this.hideResult = false;
+      this.loadResult();
+    });
+  }
+
+  checkForEnterKey(e) {
+    if (e.code != "Enter")
+      return;
+
+    this.doSemanticSearch();
+  }
+
   onChange(value) {
+    this.selected = value;
     this.sharedService.setMapView(value)
     if (value) {
       this.mapDisplay = 'block';
@@ -219,5 +279,9 @@ export class SearchResults{
         jQuery('#modal-notification-contract').modal('show');
       }
     }
+  }
+
+  addAlert(type, msg): void {
+    this.alerts = [{type: type, msg: msg}];
   }
 }

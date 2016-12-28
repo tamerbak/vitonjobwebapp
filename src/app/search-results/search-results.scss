@@ -1,3 +1,6 @@
+@import "../../../node_modules/bootstrap/scss/_variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+
 .mg-tp {
   margin-top: 7px;
 }
@@ -24,4 +27,54 @@
 
 .underline{
   text-decoration: underline;
+}
+
+.search-button {
+
+  color: #fff;
+  background-color: #14BAA6;
+  width: 50px;
+  line-height: 50px;
+  text-align: center;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  outline: 0;
+  -webkit-transition: box-shadow .3s ease-out;
+  transition: box-shadow .3s ease-out;
+  margin: -4px;
+  float: right;
+  position: relative;
+  top: -5px;
+  margin-top: -45px;
+}
+
+.search-button:active {
+
+}
+
+.search-input {
+  border: 0;
+  outline: 0;
+  line-height: 50px;
+  font-size: 14px;
+  padding: 0 18px;
+  width: 100%;
+}
+
+.search-barr {
+}
+
+.nb-results {
+  font-size: small;
+  color: grey;
+  margin-top: 5px;
+}
+
+.nb-results-xs {
+  text-align: center;
+}
+
+.pull-right-important {
+  float: right !important;
 }

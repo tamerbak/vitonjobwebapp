@@ -30,14 +30,9 @@ export class ModalCorporamaSearch {
   noResult: boolean = false;
 
   projectTarget: string;
-  isEmployer: boolean;
   alerts: string [];
 
-  constructor(private sharedService: SharedService,
-              private corporamaService: CorporamaService) {
-    // Set global configs
-    this.projectTarget = this.sharedService.getCurrentUser().estEmployeur; //TODO : gc.getProjectTarget();
-    this.isEmployer = (this.projectTarget === 'employer');
+  constructor(private corporamaService: CorporamaService) {
   }
 
   searchBy(by) {

@@ -336,9 +336,8 @@
 
               <!-- Créneaux -->
               <div class="form-group row">
-                <label class="col-md-2 col-xs-4 form-control-label"></label>
-                <label class="col-md-5 col-xs-4 form-control-label">Heure de début</label>
-                <label class="col-md-5 col-xs-4 form-control-label">Heure de fin</label>
+                <label class="col-md-5 col-xs-6 form-control-label">Heure de début</label>
+                <label class="col-md-5 col-xs-6 form-control-label">Heure de fin</label>
               </div>
 
               <alert *ngFor="let alert of alertsSlot; let i = index" [type]="alert.type + ' alert-sm'" dismissible="false">
@@ -349,7 +348,6 @@
               </alert>
 
               <div class="form-group row required">
-
                 <div class="col-md-5 col-sm-3 col-xs-6 offer-hour-new">
                   <datetime [hidden]="isFulltime"
                             id="slotSHour"
@@ -374,7 +372,6 @@
                          value="23:59"
                          readonly/>
                 </div>
-
                 <div class="row container boxes">
 
                   <div class="col-xs-12 col-sm-4 col-md-4" *ngIf="projectTarget != 'jobyer'">
@@ -393,7 +390,6 @@
                   </div>
 
                 </div>
-
               </div>
             </div>
           </section>
