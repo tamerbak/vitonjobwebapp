@@ -144,17 +144,18 @@ a.fc-event{
 
 
 /* Fix (add over generic styles) */
-.select2-container .select2-choice > .select2-chosen{
+.select2-container .select2-choice > .select2-chosen, select{
     white-space: pre-wrap;
     text-overflow: clip;
 }
-.select2-container .select2-choice {
+.select2-container .select2-choice, select {
     height: auto !important;
 }
 
 .list-button {
   width: 100%
 }
+
 .boxes {
   margin: auto;
   padding: 50px;
@@ -209,6 +210,25 @@ input[type="checkbox"]:checked + label:before {
   -webkit-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-.checkbox-box{
-  margin-top: 1em;
+
+.row.container.boxes{
+  margin-top: 2em;
+}
+
+/* Alert zone fixed  only for big screen */
+/* Medium Devices, Desktops, bootstrap-lg */
+@media only screen and (min-width: 1200px) {   
+	.alert-zone.fixed{
+	    position: fixed;
+	    top: 0;
+	    right: 0;
+	    margin: 7em 3em 1em 3em;
+	    z-index: 5000;
+	}
+}
+
+td.disabled{
+	cursor: not-allowed;
+	background:#eee;
+	opacity:.8;
 }
