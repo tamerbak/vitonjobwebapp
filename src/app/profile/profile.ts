@@ -657,7 +657,7 @@ export class Profile{
           this.isResident = (data.est_resident == 'Oui' ? true : false);
           this.whoDeliverStay = data.instance_delivrance;
           this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
-          this.nationalityId = data.numero_titre_sejour;
+          this.nationalityId = data.fk_user_nationalite;
           this.isCIN = false;
         } else {
           this.regionId = '41'
