@@ -1,0 +1,9 @@
+offer: {{ offer.idOffer }};
+convention: {{ convention.id }};
+
+<div class="form-group row" *ngFor="let filter of filters">
+  <!--<label class="col-md-12 col-xs-12 form-control-label">{{ filter.name }}</label>-->
+  <div class="col-md-12 col-xs-12">
+    {{ filter.name }} + <div convention-filter [list]="filter.list"></div>
+  </div>
+</div>

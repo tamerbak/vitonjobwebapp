@@ -181,6 +181,18 @@
           </div>
         </div>
 
+        <div convention-parameters [offer]="offer" [convention]="convention"></div>
+
+        <!--<div class="form-group row" *ngIf="convCoefficientsVisible()">-->
+          <!--<label class="col-md-12 col-xs-12 form-control-label">Coefficient</label>-->
+          <!--<div class="col-md-12 col-xs-12">-->
+            <!--<select class="form-control" [(ngModel)]="selectedCoefConvID"-->
+                    <!--(change)="updateHourRateThreshold('COEF',$event.target.value)">-->
+              <!--<option *ngFor="let s of coefficientsConventions" [value]="s.id">{{s.libelle}}</option>-->
+            <!--</select>-->
+          <!--</div>-->
+        <!--</div>-->
+
         <div class="form-group row" *ngIf="convCoefficientsVisible()">
           <label class="col-md-12 col-xs-12 form-control-label">Coefficient</label>
           <div class="col-md-12 col-xs-12">
@@ -217,6 +229,12 @@
             </select>
           </div>
         </div>
+
+
+
+
+
+
 
         <!-- Taux horaire -->
         <div class="form-group row required">

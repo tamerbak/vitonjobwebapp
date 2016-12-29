@@ -21,6 +21,7 @@ import {SmsService} from "../../providers/sms-service";
 import {ModalSlots} from "./modal-slots/modal-slots";
 import {AdvertService} from "../../providers/advert.service";
 import {MissionService} from "../../providers/mission-service";
+import {ConventionParameters} from "./convention-parameters/convention-parameters";
 
 declare var Messenger, jQuery: any;
 declare var google: any;
@@ -32,7 +33,7 @@ declare var require;
   template: require('./offer-edit.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./offer-edit.scss')],
-  directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime, ModalOptions, ModalOfferTempQuote, ModalSlots],
+  directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime, ModalOptions, ModalOfferTempQuote, ModalSlots, ConventionParameters],
   providers: [OffersService, SearchService, FinanceService,
     LoadListService, ConventionService, CandidatureService,
     SmsService, AdvertService, MissionService]
@@ -81,6 +82,14 @@ export class OfferEdit{
   selectedEchConvID: number = 0;
   coefficientsConventions: any = [];
   selectedCoefConvID: number = 0;
+
+  zonesGeoConventions: any = [];
+  indicesConventions: any = [];
+  classesConventions: any = [];
+  statutsConventions: any = [];
+  positionsConventions: any = [];
+  anciennetesConventions: any = [];
+
   parametersConvention: any = [];
   selectedParamConvID: number = 0;
   minHourRate: number = 0;
@@ -184,18 +193,23 @@ export class OfferEdit{
     if (!this.currentUser) {
       this.router.navigate(['home']);
     }
-    this.convention = {
-      id: 0,
-      code: '',
-      libelle: ''
-    }
+
+    this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
 
     this.offer = this.sharedService.getCurrentOffer();
     if(this.offer && this.offer.telephone)
       this.tel = this.offer.telephone;
     if(this.offer && this.offer.contact)
       this.offerContact = this.offer.contact;
-
+    if (this.projectTarget == "employer" && this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
+      this.convention = this.currentUser.employer.entreprises[0].conventionCollective;
+    } else {
+      this.convention = {
+        id: 0,
+        code: '',
+        libelle: ''
+      }
+    }
   }
 
   ngOnInit(): void {
@@ -212,11 +226,8 @@ export class OfferEdit{
       this.advertId = params['adv'];
     });
 
-    this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
-
     //  Load collective convention
     if (this.projectTarget == "employer" && this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
-      this.convention = this.currentUser.employer.entreprises[0].conventionCollective;
       // Loading convention filters / data
       let filters = this.sharedService.getConventionFilters();
       if (this.isEmpty(filters) === true) {
@@ -226,12 +237,24 @@ export class OfferEdit{
           this.coefficientsConventions = data.filter((elem) => { return elem.type == 'coe' });
           this.echelonsConventions = data.filter((elem) => { return elem.type == 'ech' });
           this.categoriesConventions = data.filter((elem) => { return elem.type == 'cat' });
+          this.zonesGeoConventions = data.filter((elem) => { return elem.type == 'zon' });
+          this.indicesConventions = data.filter((elem) => { return elem.type == 'ind' });
+          this.classesConventions = data.filter((elem) => { return elem.type == 'cla' });
+          this.statutsConventions = data.filter((elem) => { return elem.type == 'sta' });
+          this.positionsConventions = data.filter((elem) => { return elem.type == 'pos' });
+          this.anciennetesConventions = data.filter((elem) => { return elem.type == 'anc' });
         });
       } else {
         this.niveauxConventions = filters.filter((elem) => { return elem.type == 'niv' });
         this.coefficientsConventions = filters.filter((elem) => { return elem.type == 'coe' });
         this.echelonsConventions = filters.filter((elem) => { return elem.type == 'ech' });
         this.categoriesConventions = filters.filter((elem) => { return elem.type == 'cat' });
+        this.zonesGeoConventions = filters.filter((elem) => { return elem.type == 'zon' });
+        this.indicesConventions = filters.filter((elem) => { return elem.type == 'ind' });
+        this.classesConventions = filters.filter((elem) => { return elem.type == 'cla' });
+        this.statutsConventions = filters.filter((elem) => { return elem.type == 'sta' });
+        this.positionsConventions = filters.filter((elem) => { return elem.type == 'pos' });
+        this.anciennetesConventions = filters.filter((elem) => { return elem.type == 'anc' });
       }
       this.offersService.getConventionParameters(this.convention.id).then(data => {
         this.parametersConvention = data;
@@ -1941,35 +1964,35 @@ export class OfferEdit{
     this.slot.dateEnd = end._d;
 
     if (this.plageDate == "multiple" && this.isPeriodic){
-      
+
       this.isPeriodic = false; // setting back to false to prevent default
-      let nbDays = Math.floor( (this.endDate - this.startDate) / (60*60*24*1000) ) + 1;   
-      
+      let nbDays = Math.floor( (this.endDate - this.startDate) / (60*60*24*1000) ) + 1;
+
       // Boucle de splittage slots with fix for special dates
       for (let n = 0;n < (nbDays>1 ? nbDays : nbDays+1); n++){
 
-        let date_debut = new Date(this.startDate.getFullYear(), 
-                                  this.startDate.getMonth(), 
+        let date_debut = new Date(this.startDate.getFullYear(),
+                                  this.startDate.getMonth(),
                                   this.startDate.getDate() + n,
                                   this.startDate.getHours(),
                                   this.startDate.getMinutes()
                                   );
 
-        let date_arret = new Date(this.startDate.getFullYear(), 
-                                  this.startDate.getMonth(), 
+        let date_arret = new Date(this.startDate.getFullYear(),
+                                  this.startDate.getMonth(),
                                   this.startDate.getDate() + (nbDays>1 ? n : n + 1),
                                   this.endDate.getHours(),
                                   this.endDate.getMinutes()
                                   );
 
-        // Récupération du slot splitté 
+        // Récupération du slot splitté
         let splitted_slot = { from: date_debut, to: date_arret };
 
         // Normalisation du slot généré par le split / day
         let normalized_slot ={date:date_debut, dateEnd:date_arret,
                               startHour:date_debut, endHour:date_arret,
                               pause:false, allDay:false};
-        
+
         // + Vérification des slots
         if (this.checkHour(this.slots, normalized_slot)) {
 
@@ -1984,7 +2007,7 @@ export class OfferEdit{
           let infos = "";//"<br>" + "- Le "+splitted_slot.from.toLocaleDateString() + '.'; // Can't do multi alerts - fix
           this.addAlert("warning", " Certains créneaux que vous avez séléctionné ne sont pas valide" + infos, "general");
         }
-      
+
 
       }
 
@@ -2124,7 +2147,7 @@ export class OfferEdit{
     }
     if (!this.offer.calendarData || this.offer.calendarData.length == 0) {
       this.addAlert("warning", "Veuillez saisir les horaires de travail pour continuer.", "general");
-      errors.push({type:'required', 
+      errors.push({type:'required',
       		label: this.projectTarget == 'jobyer' ? "Choix des disponibilités" : "Choix des horaires de travail"})
     }
 
