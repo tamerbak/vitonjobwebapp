@@ -841,7 +841,7 @@ export class ProfileService{
     let encodedJobyer = btoa(jobyerDataStr);
     let data = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 20018,
+      'id': 20020,
       'args': [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'JobyerInfo',
