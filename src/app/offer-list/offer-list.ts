@@ -7,6 +7,7 @@ import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {SearchService} from "../../providers/search-service";
 import {Utils} from "../utils/utils";
 import {NotificationsService} from "../../providers/notifications.service";
+import {Ng2PaginationModule} from 'ng2-pagination';
 declare var jQuery,Messenger:any;
 
 @Component({
