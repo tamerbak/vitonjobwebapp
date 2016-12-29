@@ -572,8 +572,8 @@ export class ContractService {
       "indemniteCongesPayes": contract.indemniteCongesPayes,
       "moyenAcces": contract.moyenAcces,
       "numeroTitreTravail": contract.numeroTitreTravail,
-      "debutTitreTravail": DateUtils.toDateString(contract.debutTitreTravail),
-      "finTitreTravail": DateUtils.toDateString(contract.finTitreTravail),
+      "debutTitreTravail": contract.debutTitreTravail,
+      "finTitreTravail": contract.finTitreTravail,
       "periodesNonTravaillees": contract.periodesNonTravaillees,
       "debutSouplesse": DateUtils.toDateString(contract.debutSouplesse),
       "finSouplesse": DateUtils.toDateString(contract.finSouplesse),
@@ -591,7 +591,7 @@ export class ContractService {
       "organisationParticuliere":''
     };
 
-
+    debugger;
 
     let partner = GlobalConfigs.global['electronic-signature'];
 
