@@ -1492,7 +1492,7 @@ export class Profile{
         //var birthcp = this.birthcp;
         var birthdepId = this.birthdepId;
         var numStay = this.numStay;
-        var dateStay = (!Utils.isEmpty(this.dateStay) ? moment(this.dateStay).format('YYYY-MM-DD') : null);
+        var dateStay = (!Utils.isEmpty(this.dateStay) ? moment(this.dateStay).format('MM/DD/YYYY') : null);
         var dateFromStay = (!Utils.isEmpty(this.dateFromStay) ? moment(this.dateFromStay).format('MM/DD/YYYY') : null);
         var dateToStay = (!Utils.isEmpty(this.dateToStay) ? moment(this.dateToStay).format('MM/DD/YYYY') : null);
         var isResident = (this.isResident ? 'Oui' : 'Non');
