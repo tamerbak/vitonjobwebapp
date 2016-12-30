@@ -14,7 +14,7 @@
     <button type="button" class="add-offer btn btn-danger btn-sm" (click)="goToNewOffer()">Créer une offre
       {{projectTarget == 'employer' ? " d'emploi" : " de service"}}
     </button>
-      <button class="btn btn-info btn-sm" role="button" (click)="sortOffers()">
+      <button class="btn btn-info btn-sm add-offer" role="button" (click)="sortOffers()">
           Trier les offres
       </button>
 
@@ -65,7 +65,18 @@
           <div class="col-md-12 col-sm-12 col-xs-12">
             <b>Disponibilités</b>
             <ul>
-              <li *ngFor="let dispo of item.slots, let j = index" [hidden]="dispo.pause"><b>{{dispo.date}} :</b> {{dispo.startHour}} - {{dispo.endHour}} </li>
+              <li *ngFor="let dispo of item.slots, let j = index" [hidden]="dispo.pause">
+
+                <div *ngIf="dispo.nbDays < 1">
+                  le <b>{{dispo.date}} :</b> {{dispo.startHour}} - {{dispo.endHour}}
+                </div>
+                
+                <div *ngIf="dispo.nbDays > 1">
+                  du <b>{{dispo.date}} :</b> {{dispo.startHour}}<br>
+                  au <b>{{dispo.dateEnd}} :</b> {{dispo.endHour}}
+                </div>
+
+              </li>
             </ul>
           </div>
         </div>
@@ -141,7 +152,7 @@
           <div class="col-md-12 col-sm-12 col-xs-12">
             <b>Disponibilités</b>
             <ul>
-              <li *ngFor="let dispo of item.slots, let j = index"><b>{{dispo.date}} :</b> {{dispo.startHour}} - {{dispo.endHour}} </li>
+              <li *ngFor="let dispo of item.slots, let j = index"><b> {{dispo.date}} :</b> {{dispo.startHour}} - {{dispo.endHour}} </li>
             </ul>
           </div>
         </div>

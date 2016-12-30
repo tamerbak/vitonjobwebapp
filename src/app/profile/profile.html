@@ -236,6 +236,7 @@
               <div *ngIf="!isEmployer" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="birthDate">
                   Date de naissance
+                  <span class="asterisk-blue">*</span>
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <datetime id="birthdate" [(ngModel)]="birthdate" name="birthdate" [timepicker]="false"
@@ -262,6 +263,7 @@
               <div *ngIf="!isEmployer && !isFrench" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Code postal du lieu de naissance
+                  <span class="asterisk-blue">*</span>
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <div class="input-group">
@@ -297,6 +299,7 @@
               <div *ngIf="!isEmployer" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   N° de sécurité sociale
+                  <span class="asterisk-blue">*</span>
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <input type="text" id="numSS" class="form-control" [(ngModel)]="numSS" name="numSS"
@@ -389,6 +392,7 @@
               <div [hidden]="isEmployer || isEuropean == 1 || !isCIN" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   N° de la CNI ou Passeport
+                  <span class="asterisk-blue">*</span>
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <input type="text" id="cni" class="form-control" [(ngModel)]="cni" name="cni"
@@ -411,6 +415,7 @@
               <div *ngIf="!isEmployer" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Pièce d'identité délivrée le
+                  <span class="asterisk-blue">*</span>
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <!-- <input id="dateStay" type="date" class="form-control" [(ngModel)]="dateStay"/> -->
@@ -423,6 +428,7 @@
               <div *ngIf="!isEmployer" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Pièce d'identité valable du
+                  <span class="asterisk-blue">*</span>
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <!-- <input id="dateFromStay" type="date" class="form-control" [(ngModel)]="dateFromStay"/> -->
@@ -435,6 +441,7 @@
               <div *ngIf="!isEmployer" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Pièce d'identité valable au
+                  <span class="asterisk-blue">*</span>
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <!-- <input id="dateToStay" type="date" class="form-control" [(ngModel)]="dateToStay"/> -->
@@ -572,7 +579,6 @@
   										</span>
                 </div>
               </div>
-              <button class="btn btn-default" (click)="closeForm()">Annuler</button>
             </div>
           </div>
 
@@ -968,6 +974,7 @@
                   <button type="button" class="btn btn-success fwidth" [disabled]="!isValidForm() || validation" (click)="updateCivility()">
                     Valider
                   </button>
+                  <button class="btn btn-default fwidth" (click)="closeForm()">Annuler</button>
                 </div>
               </div>
             </div>
