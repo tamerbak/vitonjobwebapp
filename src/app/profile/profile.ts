@@ -2040,7 +2040,7 @@ export class Profile{
         fr.onload = (file: any) => {
           let fileContent = file.target.result;
           let content = fileContent.split(',')[1];
-          this.cv = content;
+          this.cv = f.name + ";" + content;
         }
         fr.readAsDataURL(f);
       }
@@ -2048,8 +2048,16 @@ export class Profile{
   }
 
   downloadFile(content) {
-    var url = "data:application/octet-stream;base64," + content;
-    window.open(url);
+    let pureBase64 = content.split(';')[1];
+	let url = "data:application/octet-stream;base64," + pureBase64;
+	
+	let downloadLink = document.createElement("a");
+	downloadLink.href = url;
+	//downloadLink.download = content.split(';')[0];
+	downloadLink.setAttribute("download", content.split(';')[0]);
+	document.body.appendChild(downloadLink);
+	downloadLink.click();
+	document.body.removeChild(downloadLink);
   }
 
   deleteFile() {
