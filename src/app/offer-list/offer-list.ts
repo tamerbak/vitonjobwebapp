@@ -101,11 +101,17 @@ export class OfferList {
       //push slots into offer
       offer.slots =[];
       for (let i = 0; i < offer.calendarData.length; i++) {
+
+        let nb_days_diff = offer.calendarData[i].dateEnd - offer.calendarData[i].date;
+            nb_days_diff = nb_days_diff / (60 * 60 * 24 * 1000);
+
         var slotTemp = {
           date: this.toDateString(offer.calendarData[i].date),
+          dateEnd: this.toDateString(offer.calendarData[i].dateEnd),
           startHour: this.toHourString(offer.calendarData[i].startHour),
           endHour: this.toHourString(offer.calendarData[i].endHour),
-          pause: offer.calendarData[i].pause
+          pause: offer.calendarData[i].pause,
+          nbDays: nb_days_diff
         };
         offer.slots.push(slotTemp);
       }
