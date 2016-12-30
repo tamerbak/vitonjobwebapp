@@ -1,0 +1,58 @@
+<ol class="breadcrumb">
+  <li>VOUS ÊTES ICI</li>
+  <li class="active"><a class="breadcrumb-link" [routerLink]="['/advert/list']">Annonces</a>
+  </li>
+  <li class="active">Détails</li>
+</ol>
+
+<div class="row">
+  <div class="col-xs-12 pull-right" style="margin-bottom: 1em;">
+    <a href="javascript:history.go(-1)">
+      <button type="button" class="btn btn-secondary btn-sm" name="button">
+        <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Retour à la liste
+      </button>
+    </a>
+  </div>
+</div>
+
+<div widget class="widget" id="advert-details">
+  <header>
+    <div class="post-user mt-n-xs">
+      <span class="thumb pull-left mr">
+        <img class="img-circle" [src]="advert.thumbnail.fileContent">
+      </span>
+      <h6 class="mb-xs mt-xs"><span class="fw-semi-bold">{{ advert.titre}}</span></h6>
+    </div>
+  </header>
+
+  <div class="widget-body advert-details-body">
+    <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
+      <div [innerHTML]="alert.msg"></div>
+    </alert>
+    <div class="container-fluid mt-xs">
+      <div class="row">
+
+        <div class="col-md-6 col-xs-12">
+          <div>
+            <legend><strong>Description</strong></legend>
+            <div [innerHTML]="advert.description">
+            </div>
+          </div>
+
+          <div class="col-md-6 col-xs-12 button-bar">
+            <button
+              type="submit"
+              class="btn btn-secondary btn-sm top-element"
+              (click)="switchJobyerInterest()"
+              style="background-color: #40aea9; color: white; float: right;">
+              {{jobyerInterestLabel}}
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6 col-xs-12">
+          <img src="{{advert.imgbg.fileContent}}" alt="Vit-on-job" >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
