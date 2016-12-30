@@ -1,11 +1,7 @@
-<div class="row" style="margin: 0; padding: 0">
-  <div class="col-xs-12 mb-img pad" style="padding: 0">
+<!--<div class="row">
+  <div class="video">
+  <div class="col-xs-12 mb-img pad">
     <div class="container-home">
-      <div align="center" class="video">
-
-        <video class="collapse navbar-collapse" style="padding-left: 0;padding-right: 0" autoplay loop muted src="assets/video/Fotolia_115061056_V_HD720.mov" *ngIf="!isTablet"></video>
-
-
         <div class="home-search" *ngIf="!isTablet">
           <div class="row">
             <div class="logo-home col-xs-12 centred-l"><img class="home-logo centred-l" src="../../assets/images/logo/logo-white.png" alt=""></div>
@@ -35,29 +31,27 @@
               </div>
             </div>
             <div class="col-xs-12 centred-l search-link-mb"><a class="adv-search centred-l" [routerLink]=" ['/search/criteria'] ">Recherche avancée</a></div>
-
           </div>
         </div>
-
-
-      </div>
     </div>
   </div>
-  
   <div class="col-xs-12 pad top centred-l text-center" style="padding: 0">
      <div class="container-fluid list-home-container" [hidden]="upcomingOffers.length==0" style="margin: 0; padding: 0;background-color: #eee;">
       <div class="row">
          <div class="col-xs-12">
            <home-list-component class="pad-top"></home-list-component>
          </div>
-         <div class="col-xs-12 page-footer">
-           2016 &copy; Vit-On-Job est une marque de Manaona.
-         </div>
+
        </div>
       </div>
     </div>
   </div>
-
+</div>
+<div class="row">
+  <div class="col-xs-12 footer">
+    2016 &copy; Vit-On-Job est une marque de Manaona.
+  </div>
+</div>
 <div
   modal-update-password
   *ngIf="currentUser"
@@ -78,4 +72,10 @@
 <div
   modal-profile
   [obj]="obj" *ngIf="currentUser"
-></div>
+></div>-->
+
+  <video id="video" src="assets/video/Fotolia_115061056_V_HD720.mov" autoplay>
+  </video>
+  <div class="row">
+
+  </div>

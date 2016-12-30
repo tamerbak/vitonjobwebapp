@@ -58,21 +58,19 @@ export class HomeList{
     this.route.params.forEach((params: Params) => {
       this.obj = params['obj'];
     });
-
     this.currentUser = this.sharedService.getCurrentUser();
     this.projectTarget = this.sharedService.getProjectTarget();
-
-
     this.homeService.loadHomeData((this.projectTarget)).then(data => {
       this.homeServiceData = data;
       this.initHomeList();
-
     });
-
     this.config = Configs.setConfigs(this.projectTarget);
     this.sharedService.setCurrentOffer(null);
+    if(this.currentUser.estEmployeur){
 
+    }
     jQuery('home-list-component').addClass('fade-in-component');
+    console.log(this.projectTarget);
   }
 
   cardSwiper(e) {

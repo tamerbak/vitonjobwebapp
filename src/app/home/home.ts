@@ -60,11 +60,6 @@ export class Home{
               private homeService: HomeService,
               private route: ActivatedRoute,
               private sharedService: SharedService) {
-    if (this.router.url === '/jobyer') {
-      this.sharedService.setProjectTarget('jobyer');
-    } else if (this.router.url === '/employeur') {
-      this.sharedService.setProjectTarget('employer');
-    }
     this.currentUser = this.sharedService.getCurrentUser();
     this.scQuery = this.sharedService.getCurrentSearch();
   }

@@ -1,10 +1,10 @@
 @import "../../scss/variables";
 @import "../../../node_modules/bootstrap/scss/_variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
-
 /*
  * Bootstrap calendar
  */
+/*
 .total-large {
 width: 100%;
 }
@@ -350,22 +350,6 @@ body {
   width: 90%;
   margin: auto;
 }
-.video{
-  /* Hauteur de l'écran*/
-  height:100vh;
-}
-.video video {
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
-  margin-top: 0;
-  z-index: -100;
-}
-
-/*.content {
-  padding: 0 !important;
-}*/
 
 .calendar .week_days td {
 }
@@ -381,6 +365,7 @@ body {
 /**
  * Mapael
  */
+/*
 .mapTooltip {
   position: fixed;
   padding: 2px;
@@ -452,6 +437,7 @@ body {
 /***********************/
 /* Part:Progress Stats */
 /***********************/
+/*
 .progress-stats {
   .name {
     margin-bottom: 2px;
@@ -474,6 +460,7 @@ body {
 /***********************/
 /*    Part:Stats Row   */
 /***********************/
+/*
 .stats-row {
   margin-bottom: 15px;
 }
@@ -550,7 +537,7 @@ body {
 /***********************************/
 /**          Post Links           **/
 /***********************************/
-
+/*
 .post-links {
   margin-bottom: 0;
   font-size: $font-size-sm;
@@ -596,10 +583,6 @@ body {
   margin-left:1px;
   margin-right:1px;
 }
-
-.page-footer{
-  margin:1% 0;
-}
 /*
 [home-list-component]{
   animation: pop 2s;
@@ -611,3 +594,14 @@ body {
   to   { opacity:1; }
 }
 */
+/*
+.footer{
+  background-color: transparent;
+  text-align: center;
+  color: white;
+}
+*/
+#video {
+  width: 100vw;
+  height: 100vh;
+}

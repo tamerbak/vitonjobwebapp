@@ -142,8 +142,10 @@ export class Navbar implements OnInit {
     this.isEmployer = (role == "employer");
     if (this.isEmployer) {
       this.sharedService.setProjectTarget("jobyer");
+      this.router.navigate(['/jobyer']);
     } else {
       this.sharedService.setProjectTarget("employer");
+      this.router.navigate(['/employeur']);
     }
     this.router.navigate(['home']);
   }
