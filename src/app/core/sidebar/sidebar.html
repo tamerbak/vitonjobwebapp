@@ -70,11 +70,11 @@
       </a>
     </li>
 
-    <li *ngIf="currentUser && currentUser.estEmployeur">
+    <li *ngIf="currentUser">
       <a [routerLink]=" ['/advert/list'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-globe"></i>
-          </span>Annonces
+          </span>{{currentUser.estEmployeur ? 'Mes annonces' : 'Annonces'}}
       </a>
     </li>
 
