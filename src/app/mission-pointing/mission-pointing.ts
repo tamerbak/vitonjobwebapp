@@ -45,17 +45,7 @@ export class MissionPointing {
         let array = this.missionService.getTodayMission(missionHoursTemp);
         this.missionHours = array[0];
         this.missionPauses = array[1];
-        //prepare the mission pauses array to display
-        for (let i = 0; i < this.missionHours.length; i++) {
-          let day = this.missionHours[i];
-          if (this.missionPauses[i] && this.missionPauses[i].length != 0) {
-            for (let j = 0; j < this.missionPauses[i].length; j++) {
-              let pause = this.missionPauses[i][j];
-              this.missionPauses[i][j].pause_debut_temp = (this.isEmpty(pause.pause_debut_new) ? pause.pause_debut : this.missionService.convertToFormattedHour(pause.pause_debut_new));
-              this.missionPauses[i][j].pause_fin_temp = (this.isEmpty(pause.pause_fin_new) ? pause.pause_fin : this.missionService.convertToFormattedHour(pause.pause_fin_new));
-            }
-          }
-        }
+        this.prepareMissionPausesArray();
         //this.disableBtnPointing = this.missionService.disablePointing(this.missionHours, this.missionPauses).disabled;
         //this.nextPointing = this.missionService.disablePointing(this.missionHours, this.missionPauses).nextPointing;
       }
@@ -77,12 +67,27 @@ export class MissionPointing {
             let array = this.missionService.getTodayMission(missionHoursTemp);
             this.missionHours = array[0];
             this.missionPauses = array[1];
+            this.prepareMissionPausesArray();
             //this.disableBtnPointing = true;
             //this.router.navigate(['mission/details']);
           }
         });
       });
     //}
+  }
+
+  prepareMissionPausesArray(){
+    //prepare the mission pauses array to display
+    for (let i = 0; i < this.missionHours.length; i++) {
+      let day = this.missionHours[i];
+      if (this.missionPauses[i] && this.missionPauses[i].length != 0) {
+        for (let j = 0; j < this.missionPauses[i].length; j++) {
+          let pause = this.missionPauses[i][j];
+          this.missionPauses[i][j].pause_debut_temp = (this.isEmpty(pause.pause_debut_new) ? pause.pause_debut : this.missionService.convertToFormattedHour(pause.pause_debut_new));
+          this.missionPauses[i][j].pause_fin_temp = (this.isEmpty(pause.pause_fin_new) ? pause.pause_fin : this.missionService.convertToFormattedHour(pause.pause_fin_new));
+        }
+      }
+    }
   }
 
   upperCase(str) {
