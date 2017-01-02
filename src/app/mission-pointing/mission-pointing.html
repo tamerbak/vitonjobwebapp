@@ -39,6 +39,8 @@
               <th class="text-align-center">
                 Pointée
               </th>
+              <th class="text-align-left">
+              </th>
             </tr>
             </thead>
 
@@ -50,6 +52,13 @@
               </td>
               <td class="text-align-center">
                 {{ (day.heure_debut_pointe) ? day.heure_debut_pointe : '--:--' }}
+              </td>
+              <td class="text-align-left">
+                <button
+                        type="button" class="btn btn-primary btn-sm" [hidden]="!isEmpty(day.heure_debut_pointe)"
+                        (click)="pointHour(false, day, true, false)">
+                  Pointer
+                </button>
               </td>
             </tr>
 
@@ -71,6 +80,13 @@
                     <td class="text-align-right" width="100">
                       {{ (pause.pause_debut_pointe) ? pause.pause_debut_pointe : '--:--' }}
                     </td>
+                    <td>
+                      <button
+                              type="button" class="btn btn-primary btn-sm" [hidden]="!isEmpty(pause.pause_debut_pointe)"
+                              (click)="pointHour(false, pause, true, true)">
+                        Pointer
+                      </button>
+                    </td>
                   </tr>
                   <tr>
                     <td class="text-align-right" width="100">Fin</td>
@@ -80,6 +96,13 @@
                     </td>
                     <td class="text-align-right" width="100">
                       {{ (pause.pause_fin_pointe) ? pause.pause_fin_pointe : '--:--' }}
+                    </td>
+                    <td>
+                      <button
+                              type="button" class="btn btn-primary btn-sm" [hidden]="!isEmpty(pause.pause_fin_pointe)"
+                              (click)="pointHour(false, pause, false, true)">
+                        Pointer
+                      </button>
                     </td>
                   </tr>
                   </tbody>
@@ -95,17 +118,23 @@
               <td class="text-align-center">
                 {{ (day.heure_fin_pointe) ? day.heure_fin_pointe : '--:--' }}
               </td>
+              <td>
+              <button
+                      type="button" class="btn btn-primary btn-sm" [hidden]="!isEmpty(day.heure_fin_pointe)"
+                      (click)="pointHour(false, day, false, false)">
+                Pointer
+              </button>
+              </td>
             </tr>
             </tbody>
           </table>
         </div>
         <div class="col-xs-12">
-          <button
+          <!--<button
             type="button" class="btn btn-primary btn-sm"
-            (click)="pointHour(false)"
-            [disabled]="disableBtnPointing">
+            (click)="pointHour(false)">
             Pointer
-          </button>
+          </button>-->
         </div>
       </div>
     </section>
