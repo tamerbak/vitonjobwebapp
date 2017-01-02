@@ -1,9 +1,18 @@
 offer: {{ offer.idOffer }};
 convention: {{ convention.id }};
 
-<div class="form-group row" *ngFor="let filter of filters">
-  <!--<label class="col-md-12 col-xs-12 form-control-label">{{ filter.name }}</label>-->
-  <div class="col-md-12 col-xs-12">
-    {{ filter.name }} + <div convention-filter [list]="filter.list"></div>
+<div *ngFor="let filter of filters">
+  <div class="form-group row" *ngIf="isEmpty(filter.list) == false">
+    <label class="col-md-12 col-xs-12 form-control-label">{{ filter.label }}</label>
+    <div class="col-md-12 col-xs-12">
+      <div
+        convention-filter
+        [(name)]="filter.name"
+        [(list)]="filter.list"
+        [(selectedElem)]="filter.value"
+        [(disableList)]="filter.disableList"
+        (onFilterChange)="filterChanged($event)"
+      ></div>
+    </div>
   </div>
 </div>

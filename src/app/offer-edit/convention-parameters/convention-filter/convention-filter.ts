@@ -17,10 +17,15 @@ declare var jQuery, Messenger,md5: any;
 export class ConventionFilter {
   @Input()
   list: any;
+  @Input()
+  disableList: any;
+  @Input()
+  name: any;
 
   @Output()
-  refresh = new EventEmitter<any>();
+  onFilterChange = new EventEmitter<any>();
 
+  @Input()
   selectedElem: any;
 
   constructor() {
@@ -29,7 +34,25 @@ export class ConventionFilter {
   ngOnInit() {
   }
 
+  /**
+   * Update current select value and throw onFilterChange event
+   * @param value
+   */
+  filterChange(value) {
+    this.selectedElem = value;
+    this.onFilterChange.emit({
+      name: this.name,
+      value: this.selectedElem
+    });
+  }
+
+  /**
+   * Utils connection for html file
+   * @param value
+   * @returns {boolean}
+   */
   isEmpty(value) {
     return Utils.isEmpty(value);
   }
+
 }

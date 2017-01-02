@@ -1,17 +1,12 @@
-<!--<div class="form-group row" *ngIf="convCoefficientsVisible()">-->
-  <!--<label class="col-md-12 col-xs-12 form-control-label">Coefficient</label>-->
-  <!--<div class="col-md-12 col-xs-12">-->
-    <!--<select class="form-control" [(ngModel)]="selectedCoefConvID"-->
-            <!--(change)="updateHourRateThreshold('COEF',$event.target.value)">-->
-      <!--<option *ngFor="let s of coefficientsConventions" [value]="s.id">{{s.libelle}}</option>-->
-    <!--</select>-->
-  <!--</div>-->
-<!--</div>-->
 
 <select
   class="form-control"
   [(ngModel)]="selectedElem"
   [disabled]="isEmpty(list)"
+  (change)="filterChange($event.target.value)"
 >
-  <option *ngFor="let elem of list" [value]="elem.id">{{ elem.libelle }}</option>
+  <option [value]="null" selected>-</option>
+  <option *ngFor="let elem of list" [value]="elem.id" [hidden]="elem.disabled == 'true'">
+    {{ elem.libelle }}
+  </option>
 </select>

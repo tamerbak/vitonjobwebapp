@@ -978,34 +978,34 @@ export class OffersService {
   getConventionFilters(idConvention) {
 
     let sql = `
-      SELECT 'niv' as type, pk_user_niveau_convention_collective AS id, code, libelle
+      SELECT 'niv' as type, pk_user_niveau_convention_collective AS id, code, libelle, 'false' as disabled
       FROM user_niveau_convention_collective
       WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
-      UNION SELECT 'coe' as type, pk_user_coefficient_convention AS id, code, libelle
+      UNION SELECT 'coe' as type, pk_user_coefficient_convention AS id, code, libelle, 'false' as disabled
       FROM user_coefficient_convention
       WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
-      UNION SELECT 'ech' as type, pk_user_echelon_convention AS id, code, libelle
+      UNION SELECT 'ech' as type, pk_user_echelon_convention AS id, code, libelle, 'false' as disabled
       FROM user_echelon_convention
       WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
-      UNION SELECT 'cat' as type, pk_user_categorie_convention AS id, code, libelle
+      UNION SELECT 'cat' as type, pk_user_categorie_convention AS id, code, libelle, 'false' as disabled
       FROM user_categorie_convention
       WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
-      UNION SELECT 'zon' as type, pk_user_zone_geo_convention AS id, code, libelle
+      UNION SELECT 'zon' as type, pk_user_zone_geo_convention AS id, code, libelle, 'false' as disabled
       FROM user_zone_geo_convention
       WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
-      UNION SELECT 'ind' as type, pk_user_indice_convention AS id, code, libelle
+      UNION SELECT 'ind' as type, pk_user_indice_convention AS id, code, libelle, 'false' as disabled
       FROM user_indice_convention
       WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
-      UNION SELECT 'cla' as type, pk_user_classe_convention AS id, code, libelle
+      UNION SELECT 'cla' as type, pk_user_classe_convention AS id, code, libelle, 'false' as disabled
       FROM user_classe_convention
       WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
-      UNION SELECT 'sta' as type, pk_user_statut_convention AS id, code, libelle
+      UNION SELECT 'sta' as type, pk_user_statut_convention AS id, code, libelle, 'false' as disabled
       FROM user_statut_convention
       WHERE dirty='N'
-      UNION SELECT 'pos' as type, pk_user_position_convention AS id, code, libelle
+      UNION SELECT 'pos' as type, pk_user_position_convention AS id, code, libelle, 'false' as disabled
       FROM user_position_convention
       WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
-      UNION SELECT 'anc' as type, pk_user_anciennete_convention AS id, code, libelle
+      UNION SELECT 'anc' as type, pk_user_anciennete_convention AS id, code, libelle, 'false' as disabled
       FROM user_anciennete_convention
       WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
       ORDER BY libelle

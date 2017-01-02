@@ -90,6 +90,8 @@ export class OfferEdit{
   positionsConventions: any = [];
   anciennetesConventions: any = [];
 
+  conventionComponentMsg: string;
+
   parametersConvention: any = [];
   selectedParamConvID: number = 0;
   minHourRate: number = 0;
@@ -333,6 +335,7 @@ export class OfferEdit{
       };
       this.offer = {
         jobData: jobData,
+        parametrageConvention: -1,
         calendarData: [],
         qualityData: [],
         languageData: [],
@@ -2225,6 +2228,27 @@ export class OfferEdit{
     	})
     }
     return errors.length == 0;
+  }
+
+  /**
+   * Handler that catch all event from conventio parameter component
+   * @param data
+   */
+  conventionParametrageChange(data) {
+    if (!data) {
+      console.warn('Empty convention parameter event');
+    }
+    this.conventionComponentMsg = data.msg;
+    if (!data.parametrageId) {
+      // TODO tester avec parametrageId = 0
+      // Not good combinaison
+      debugger;
+    } else {
+      // good combinaison
+      // Set offer parametrage id
+      this.offer.parametrageConvention = data.parametrageId;
+      debugger;
+    }
   }
 
   isEmpty(str) {
