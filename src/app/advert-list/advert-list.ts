@@ -70,15 +70,26 @@ export class AdvertList {
     this.router.navigate(['advert/edit', {obj:'add'}]);
   }
 
-  gotoAdvert(adv){
+  gotoAdvertDetails(adv){
     this.advertService.loadAdvert(adv).then((data: any) => {
       if(data) {
         this.sharedService.setCurrentAdv(data);
-        if(this.isEmployer){
-          this.router.navigate(['advert/edit', {obj: 'detail'}]);
-        }else{
-          this.router.navigate(['advert/details']);
-        }
+        this.router.navigate(['advert/details']);
+      }else{
+        Messenger().post({
+          message: "Une erreur est survenue lors du chargement de l'annonce.",
+          type: 'error',
+          showCloseButton: true
+        });
+      }
+    })
+  }
+
+  gotoEditAdvert(adv){
+    this.advertService.loadAdvert(adv).then((data: any) => {
+      if(data) {
+        this.sharedService.setCurrentAdv(data);
+        this.router.navigate(['advert/edit', {obj: 'detail'}]);
       }else{
         Messenger().post({
           message: "Une erreur est survenue lors du chargement de l'annonce.",

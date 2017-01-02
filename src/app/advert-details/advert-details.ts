@@ -19,6 +19,7 @@ export class AdvertDetails{
   jobyerInterestLabel: string;
   jobyerInterested: boolean;
   alerts: Array<Object>;
+  isEmployer: boolean;
 
   constructor(private sharedService: SharedService,
               private router: Router,
@@ -30,7 +31,7 @@ export class AdvertDetails{
       this.router.navigate(['home']);
       return;
     }
-
+    this.isEmployer = (this.currentUser.estEmployeur || this.currentUser.estRecruteur);
     this.advert = this.sharedService.getCurrentAdv();
     this.setInterestButtonLabel()
   }
