@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Configs} from '../configurations/configs';
 import {Http, Headers} from '@angular/http';
 import {Utils} from "../app/utils/utils";
+import {DateUtils} from "../app/utils/date-utils";
 
 // import {GlobalConfigs} from '../configurations/globalConfigs';
 // import {Storage, SqlStorage} from 'ionic-angular';
@@ -61,8 +62,8 @@ export class MissionService {
         if (m.id_pause != "null") {
           missionPauses[k] = [{}];
           missionPauses[k][0].id = m.id_pause;
-          missionPauses[k][0].pause_debut = this.convertToFormattedHour(m.pause_debut);
-          missionPauses[k][0].pause_fin = this.convertToFormattedHour(m.pause_fin);
+          missionPauses[k][0].pause_debut =  this.convertToFormattedHour(m.pause_debut);
+          missionPauses[k][0].pause_fin =  this.convertToFormattedHour(m.pause_fin);
           missionPauses[k][0].pause_debut_pointe = this.convertToFormattedHour(m.pause_debut_pointe);
           missionPauses[k][0].pause_fin_pointe = this.convertToFormattedHour(m.pause_fin_pointe);
           missionPauses[k][0].is_pause_debut_corrigee = m.is_pause_debut_corrigee;
@@ -77,8 +78,8 @@ export class MissionService {
         if (m.id_pause != "null") {
           missionPauses[idExistMission][j] = {};
           missionPauses[idExistMission][j].id = m.id_pause;
-          missionPauses[idExistMission][j].pause_debut = this.convertToFormattedHour(m.pause_debut);
-          missionPauses[idExistMission][j].pause_fin = this.convertToFormattedHour(m.pause_fin);
+          missionPauses[idExistMission][j].pause_debut =  this.convertToFormattedHour(m.pause_debut);
+          missionPauses[idExistMission][j].pause_fin =  this.convertToFormattedHour(m.pause_fin);
           missionPauses[idExistMission][j].pause_debut_pointe = this.convertToFormattedHour(m.pause_debut_pointe);
           missionPauses[idExistMission][j].pause_fin_pointe = this.convertToFormattedHour(m.pause_fin_pointe);
           missionPauses[idExistMission][j].is_pause_debut_corrigee = m.is_pause_debut_corrigee;
@@ -90,7 +91,6 @@ export class MissionService {
     }
     return [missionHours, missionPauses];
   }
-
 
   addPauses(missionHours, missionPauses, contractId) {
     //  Init project parameters
@@ -121,6 +121,20 @@ export class MissionService {
         .subscribe((data: any) => {
           this.data = data;
           resolve(this.data);
+        });
+    });
+  }
+
+  setContratToVu(contractId) {
+    let sql = "update user_contrat set vu = 'Oui' where pk_user_contrat = '" + contractId + "'; ";
+
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any) => {
+          resolve(data);
         });
     });
   }
