@@ -53,7 +53,7 @@ export class WalletCreate {
         let cnum = walletId.substring(walletId.length - 4);
         this.walletMsg = {
           type: 'success',
-          msg: 'Si vous désirez utiliser la même carte bancaire que vous avez renseigné au préalable (XXXXXXXXXXXX' + cnum + ') vous pouvez passer cette étape.' + '<a class="btn btn-primary btn-xs pull-xs-right mr-xs" href="#/app/mission/list">Passer</a>'
+          msg: 'Si vous désirez utiliser la même carte bancaire que vous avez renseigné au préalable (XXXXXXXXXXXX' + cnum + ') vous pouvez passer cette étape.' + '<a class="btn btn-primary btn-xs pull-xs-right mr-xs" href="#/mission/list">Passer</a>'
         }
         this.addAlert("", "");
       }else{
