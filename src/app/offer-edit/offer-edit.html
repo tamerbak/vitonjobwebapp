@@ -658,14 +658,14 @@
 
     <section widget class="widget widget-offer">
       <header class="bb widget-offer-header">
-        <h6><span class="fw-semi-bold widget-offer-header-title">Profil recherché</span></h6>
+        <h6><span class="fw-semi-bold widget-offer-header-title">{{ projectTarget == 'employer' ? 'Mon jobyer idéal' : 'Profil recherché' }}</span></h6>
       </header>
       <div class="widget-body">
 
         <!-- Qualities -->
         <div class="form-group row">
           <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-            Mon {{ projectTarget == 'employer' ? 'jobyer' : 'employeur' }} idéal
+            {{ projectTarget == 'employer' ? 'Qualités' : 'Mon employeur idéal' }} 
           </label>
 
           <div class="col-md-8 col-xs-12">
