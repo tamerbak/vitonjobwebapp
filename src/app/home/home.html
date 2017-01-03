@@ -74,8 +74,14 @@
   [obj]="obj" *ngIf="currentUser"
 ></div>-->
 
-  <video id="video" src="assets/video/Fotolia_115061056_V_HD720.mov" autoplay>
+  <video id="video" src="assets/video/decoupage.mov" autoplay loop>
   </video>
-  <div class="row">
 
-  </div>
+    <div class="row background-transparent">
+      <div class="col-xs-12 div-logo-img"><img class="logo-img" src="../../assets/images/logo/logo-white.png" alt=""></div>
+    </div>
+<div modal-update-password *ngIf="currentUser"></div>
+<div modal-notification-contract [jobyer]="currentJobyer" *ngIf="projectTarget == 'employer' && !isRecruteur"></div>
+<div modal-general-condition (onRefuse)="onGCRefused($event)"></div>
+<div modal-welcome *ngIf="currentUser"></div>
+<div modal-profile [obj]="obj" *ngIf="currentUser"></div>

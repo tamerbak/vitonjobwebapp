@@ -602,6 +602,23 @@ body {
 }
 */
 #video {
+  z-index: -1;
   width: 100vw;
-  height: 100vh;
+  position: absolute;
+}
+.logo-img{
+  z-index: 1;
+  width: 40%;
+  margin: 0 auto;
+  display: block;
+
+}
+.background-transparent{
+  background-color: transparent;
+}
+main {
+  background: transparent!important;
+}
+.div-logo-img{
+  margin-top: 30vh;
 }
