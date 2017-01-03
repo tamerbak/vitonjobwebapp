@@ -146,14 +146,20 @@ export class MissionService {
   }
 
   endOfMission(idContrat) {
+    let env = btoa(Configs.env);
     let payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
       'id': 234,
       'args': [
         {
           'class': 'fr.protogen.masterdata.model.CCalloutArguments',
-          label: 'Send contract to tetra',
+          label: 'ID Contract',
           value: btoa(idContrat + "")
+        },
+        {
+          'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'Environment',
+          value: env
         }
       ]
     };
