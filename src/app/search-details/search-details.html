@@ -53,7 +53,7 @@
           </div>
 
           <div [hidden]="!qualities || qualities.length == 0">
-            <legend><strong>Qualités {{ projectTarget == 'employer' ? 'acquises' : 'requises' }} :</strong></legend>
+            <legend><strong>Qualités {{ projectTarget == 'employer' ? 'recherchées' : 'requises' }} :</strong></legend>
             <ul class="post-links">
               <li *ngFor="let q of qualities">{{ q.libelle }}</li>
             </ul>
@@ -148,7 +148,7 @@
             </ul>
           </div>
           <div class="col-lg-6 col-xl-offset-2 col-xs-12 no-margin" [hidden]="!qualities || qualities.length==0">
-            <label>Qualités {{projectTarget == 'employer' ?"acquises":"requises"}}</label>
+            <label>Qualités {{projectTarget == 'employer' ?"recherchées":"requises"}}</label>
             <ul class="post-links">
               <li *ngFor="let q of qualities">{{q.libelle}}</li>
             </ul>

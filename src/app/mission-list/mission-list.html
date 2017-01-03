@@ -7,23 +7,20 @@
     <a href="javascript:history.go(-1)"><button type="button" class="btn btn-secondary btn-sm" name="button"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Retour</button></a>
   </div>
 </div>
-<!--h1 class="page-title">
-  {{currentUser.estRecruteur ? 'Recruteur' : (currentUser.estEmployeur ? 'Employeur' : 'Jobyer')}} - <span class="fw-semi-bold">Missions en lignes</span>
-</h1-->
 <div class="row">
-  <div class="col-xs-12">
-    <div class="btn-group">
-      <label class="btn btn-gray active label-btn" btnRadio="0" [(ngModel)]="typeMissionModel">
+
+
+      <label class="btn btn-gray active label-btn col-xs-12 col-md-12 col-lg-4" btnRadio="0" [(ngModel)]="typeMissionModel">
         Missions en cours ({{ missionNow.length > 0 ? missionNow.length : 'Aucune' }})
       </label>
-      <label class="btn btn-gray label-btn" btnRadio="1" [(ngModel)]="typeMissionModel">
+      <label class="btn btn-gray label-btn col-xs-12 col-md-12 col-lg-4" btnRadio="1" [(ngModel)]="typeMissionModel">
         Missions en attente ({{ missionFutur.length > 0 ? missionFutur.length : 'Aucune' }})
       </label>
-      <label class="btn btn-gray label-btn" btnRadio="2" [(ngModel)]="typeMissionModel">
+      <label class="btn btn-gray label-btn col-xs-12 col-md-12 col-lg-4" btnRadio="2" [(ngModel)]="typeMissionModel">
         Missions terminées ({{ missionPast.length > 0 ? missionPast.length : 'Aucune' }})
       </label>
-    </div>
-  </div>
+
+
 </div>
 
 <div class="row">
@@ -55,13 +52,10 @@
               <button type="button" class="btn btn-secondary btn-sm btn-detail" (click)="goToDetailMission(item)">
                 Détails de la mission
               </button>
-              <!--<div modal-component [hidden]="item.option_mission != '2.0' || isEmployer || upperCase(item.releve_employeur) == 'OUI' || upperCase(item.vu) == 'NON'"></div>-->
               <button
                 type="button" class="btn btn-secondary btn-sm"
                 (click)="goToMissionPointingPage(item)"
-                [hidden]="item.option_mission != '2.0' || isEmployer || upperCase(item.releve_employeur) == 'OUI' || upperCase(item.vu) == 'NON'"
-                [disabled]="item.disableBtnPointing"
-              >
+                [hidden]="item.option_mission != '2.0' || isEmployer || upperCase(item.releve_employeur) == 'OUI' || upperCase(item.vu) == 'NON'">
                 Pointage
               </button>
             </div>

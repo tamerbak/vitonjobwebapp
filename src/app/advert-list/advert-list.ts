@@ -4,6 +4,7 @@ import {SharedService} from "../../providers/shared.service";
 import {Router, ROUTER_DIRECTIVES} from "@angular/router";
 import {ACCORDION_DIRECTIVES, AlertComponent} from "ng2-bootstrap";
 import {ModalOptions} from "../modal-options/modal-options";
+
 declare var Messenger, jQuery: any;
 
 @Component({
@@ -16,6 +17,7 @@ declare var Messenger, jQuery: any;
 })
 export class AdvertList {
   currentUser : any;
+  isEmployer: boolean;
   adverts : any = [];
   modalParams: any = {type: '', message: ''};
 
@@ -24,9 +26,11 @@ export class AdvertList {
               private sharedService : SharedService){
     this.currentUser = this.sharedService.getCurrentUser();
 
-    if(!this.currentUser || (!this.currentUser.estEmployeur && !this.currentUser.estRecruteur)){
+    if(!this.currentUser){
       this.router.navigate(['home']);
+      return;
     }
+    this.isEmployer = (this.currentUser.estEmployeur || this.currentUser.estRecruteur);
   }
 
   ngOnInit(){
@@ -34,24 +38,54 @@ export class AdvertList {
   }
 
   loadAdverts(){
-    this.advertService.loadAdverts(this.currentUser.employer.entreprises[0].id).then((data:any)=>{
-      if(data){
-        this.adverts = data;
-      }else{
-        Messenger().post({
-          message: "Une erreur est survenue lors du chargement des annonces.",
-          type: 'error',
-          showCloseButton: true
-        });
-      }
-    });
+    if (this.isEmployer) {
+      let entrepriseId = this.currentUser.employer.entreprises[0].id;
+      this.advertService.loadAdvertsByEntreprise(entrepriseId).then((data: any) => {
+        if(data){
+          this.adverts = data;
+        }else{
+          Messenger().post({
+            message: "Une erreur est survenue lors du chargement des annonces.",
+            type: 'error',
+            showCloseButton: true
+          });
+        }
+      })
+    } else {
+      this.advertService.loadAdverts().then((data: any) => {
+        if(data){
+          this.adverts = data;
+        }else{
+          Messenger().post({
+            message: "Une erreur est survenue lors du chargement des annonces.",
+            type: 'error',
+            showCloseButton: true
+          });
+        }
+      })
+    }
   }
 
   goToNewAdvert(){
     this.router.navigate(['advert/edit', {obj:'add'}]);
   }
 
-  updateAdv(adv){
+  gotoAdvertDetails(adv){
+    this.advertService.loadAdvert(adv).then((data: any) => {
+      if(data) {
+        this.sharedService.setCurrentAdv(data);
+        this.router.navigate(['advert/details']);
+      }else{
+        Messenger().post({
+          message: "Une erreur est survenue lors du chargement de l'annonce.",
+          type: 'error',
+          showCloseButton: true
+        });
+      }
+    })
+  }
+
+  gotoEditAdvert(adv){
     this.advertService.loadAdvert(adv).then((data: any) => {
       if(data) {
         this.sharedService.setCurrentAdv(data);

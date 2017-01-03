@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
   <li>VOUS ÊTES ICI</li>
-  <li class="active"><a class="breadcrumb-link" [routerLink]="['/advert/list']">Mes annonces</a></li>
+  <li class="active"><a class="breadcrumb-link" [routerLink]="['/advert/list']">{{(currentUser.estEmployeur || currentUser.estRecruteur)? 'Mes annonces' : 'Annonces'}}</a></li>
 </ol>
 
 
@@ -11,13 +11,13 @@
 </div>
 
 
-<h1 class="page-title">Employeur - <span
-  class="fw-semi-bold">Mes annonces</span></h1>
+<h1 class="page-title">{{currentUser.estRecruteur ? 'Recruteur' : (currentUser.estEmployeur ? 'Employeur' : 'Jobyer')}} - <span
+  class="fw-semi-bold">{{(currentUser.estEmployeur || currentUser.estRecruteur)? 'Mes annonces' : 'Annonces'}}</span></h1>
 
 
 <div class="row">
   <div class="col-lg-6 col-xs-12">
-    <button type="button" class="add-offer btn btn-danger btn-sm" (click)="goToNewAdvert()">Créer une annonce
+    <button type="button" class="add-offer btn btn-danger btn-sm" (click)="goToNewAdvert()" *ngIf="isEmployer">Créer une annonce
     </button>
   </div>
 </div>
@@ -38,17 +38,19 @@
       </div>
 
       <div class="col-md-12 col-sm-12 col-xs-12 mr-left" [innerHTML]="adv.briefContent">
-
       </div>
 
       <div class="clearfix">
         <div class="pull-sm-right pull-md-right pull-lg-right pull-xl-right clear-child">
-            <button type="button" class="btn btn-primary btn-sm " style="background-color: #40aea9; color: white; border-radius: 0.2rem;" (click)="updateAdv(adv)">
+            <button type="button" class="btn btn-primary btn-sm " style="background-color: #40aea9; color: white; border-radius: 0.2rem;" (click)="gotoAdvertDetails(adv)">
               Détails
             </button>
-            <button type="button" class="btn btn-danger btn-sm clear-child-3" (click)="deleteAdv(adv)">Supprimer
+          <button type="button" class="btn btn-warning btn-sm clear-child-3" (click)="gotoEditAdvert(adv)" *ngIf="isEmployer">
+            Modifier
+          </button>
+          <button type="button" class="btn btn-danger btn-sm clear-child-3" (click)="deleteAdv(adv)" *ngIf="isEmployer">Supprimer
             </button>
-          <button type="button" class="btn btn-success btn-sm clear-child-3" (click)="goToAdvJobyerInterestList(adv)">{{adv.nbInterest}} jobyer(s) intéressé(s)
+          <button type="button" class="btn btn-success btn-sm clear-child-3" (click)="goToAdvJobyerInterestList(adv)" *ngIf="isEmployer">{{adv.nbInterest}} jobyer(s) intéressé(s)
           </button>
         </div>
       </div>

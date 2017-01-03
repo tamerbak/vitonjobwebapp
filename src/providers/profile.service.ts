@@ -270,6 +270,9 @@ export class ProfileService{
    * @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
    */
   updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, isStay, prefecture, isFrench, isEuropean, regionId, cv, nbWorkHours, studyHoursBigValue) {
+    title = Utils.sqlfyText(title);
+    lastname = Utils.sqlfyText(lastname);
+    firstname = Utils.sqlfyText(firstname);
     let sql = "";
     //building the sql request
     sql = "update user_jobyer set  " +
@@ -310,6 +313,9 @@ export class ProfileService{
   }
 
   updateJobyerCivilityFirstTime(title, lastname, firstname, roleId) {
+    title = Utils.sqlfyText(title);
+    lastname = Utils.sqlfyText(lastname);
+    firstname = Utils.sqlfyText(firstname);
     let sql = "";
     //building the sql request
     sql = "update user_jobyer set  " +
@@ -330,6 +336,10 @@ export class ProfileService{
 
 
   updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId, medecineId, conventionId, collective_heure_hebdo, forRecruitment) {
+    title = Utils.sqlfyText(title);
+    lastname = Utils.sqlfyText(lastname);
+    firstname = Utils.sqlfyText(firstname);
+    companyname = Utils.sqlfyText(companyname);
     // Update employer
     let sql = "update user_employeur set ";
     sql = sql + " titre='" + title + "' ";
@@ -361,6 +371,10 @@ export class ProfileService{
   }
 
   updateEmployerCivilityFirstTime(title, lastname, firstname, companyname, ape, roleId, entrepriseId, conventionId) {
+    title = Utils.sqlfyText(title);
+    lastname = Utils.sqlfyText(lastname);
+    firstname = Utils.sqlfyText(firstname);
+    companyname = Utils.sqlfyText(companyname);
     let sql = "update user_employeur set ";
     sql = sql + " titre='" + title + "' ";
     sql = sql + ", nom='" + lastname + "', prenom='" + firstname + "' where pk_user_employeur=" + roleId + ";";
@@ -393,6 +407,9 @@ export class ProfileService{
   }
 
   updateRecruiterCivility(title, lastname, firstname, accountid) {
+    title = Utils.sqlfyText(title);
+    lastname = Utils.sqlfyText(lastname);
+    firstname = Utils.sqlfyText(firstname);
     let sql = "update user_recruteur set ";
     sql = sql + " titre='" + title + "', ";
     sql = sql + " nom='" + lastname + "', prenom='" + firstname + "' where fk_user_account=" + accountid + ";";
