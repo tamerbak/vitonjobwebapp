@@ -4,12 +4,17 @@ import {SharedService} from "../../providers/shared.service";
 import {AttachementsService} from "../../providers/attachements.service";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {Utils} from "../utils/utils";
-declare var jQuery, require: any;
+import {DomSanitizationService, SafeResourceUrl} from '@angular/platform-browser';
+import {AttachementsDirectory} from "./attachements-directory/attachements-directory";
+
+declare var jQuery, require, Messenger: any;
+
+type Folder = {name: string, folders: Folder[], files: any[]};
 
 @Component({
   selector: '[attachements]',
   template: require('./attachements.html'),
-  directives: [ROUTER_DIRECTIVES, AlertComponent],
+  directives: [ROUTER_DIRECTIVES, AlertComponent, AttachementsDirectory],
   providers: [AttachementsService],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./attachements.scss')]
@@ -17,19 +22,20 @@ declare var jQuery, require: any;
 export class Attachements {
 
   currentUser: any;
-  attachments : any = [];
+  attachments: Folder;
   isEmployer : boolean;
   emptySafe : boolean;
   scanData : string = "";
   fileName : string;
   viewMode :boolean;
   selFileName : string;
-  fileContent:string;
+  fileContent : string;
   alerts: Array<Object>;
   isUploadInProgress: boolean = false;
 
   constructor(private sharedService: SharedService,
               private attachementSerice : AttachementsService,
+              private sanitizer: DomSanitizationService,
               private router: Router) {
     this.emptySafe = false;
     this.currentUser = this.sharedService.getCurrentUser();
@@ -42,10 +48,11 @@ export class Attachements {
 
       this.isEmployer = this.currentUser.estEmployeur;
       this.attachementSerice.loadAttachements(this.currentUser).then(data=>{
-        this.attachments = data;
-        if(!this.attachments || this.attachments.length == 0){
-          this.emptySafe = true;
-        }
+        // this.attachments = data;
+        this.attachments = this.attachementSerice.groupByFolder(data);
+        // if(!this.attachments || this.attachments.length == 0){
+        //   this.emptySafe = true;
+        // }
       });
     }
   }
@@ -87,7 +94,8 @@ export class Attachements {
         this.attachementSerice.uploadActualFile(data.id, data.fileName, this.scanData).then((res: any) => {
           if(res && res.status == "200"){
             this.addAlert("success", "Le fichier a été bien sauvegardé.");
-            this.attachments.push(data);
+            // this.attachments.push(data);
+            this.attachementSerice.addFile(this.attachments, data);
             this.isUploadInProgress = false;
             this.emptySafe = false;
           }else{
@@ -102,7 +110,8 @@ export class Attachements {
     });
   }
 
-  viewFile(a){
+  onViewFile(a){
+    debugger;
     this.fileContent = "";
     this.selFileName = a.fileName;
     this.addAlert("info", "Le téléchargement du fichier est en cours. Veuillez patienter ...");
@@ -116,16 +125,33 @@ export class Attachements {
       }
     });
   }
+
+  photoURL() {
+    return this.sanitizer.bypassSecurityTrustUrl(this.fileContent);
+  }
+
   closeModal(){
     this.fileContent = "";
     this.selFileName = "";
     this.viewMode=false;
   }
 
-  deleteFile(a){
-    this.attachementSerice.deleteAttachement(a);
-    let i = this.attachments.indexOf(a);
-    this.attachments.splice(i,1);
+  onDeleteFile(a) {
+    let result = this.attachementSerice.deleteFile(this.attachments, a);
+    if (result) {
+      Messenger().post({
+        message: 'La fichier ' + a.fileName + ' a bien été supprimé',
+        type: 'success',
+        showCloseButton: true
+      });
+    } else {
+      Messenger().post({
+        message: 'Une erreur est survenur lors de la suppression du fichier ' + a.fileName,
+        type: 'error',
+        showCloseButton: true
+      });
+      debugger;
+    }
   }
 
   addAlert(type, msg): void {

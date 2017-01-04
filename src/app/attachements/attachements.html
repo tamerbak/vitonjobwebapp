@@ -12,7 +12,7 @@
         <div *ngIf="viewMode" class="form-group row">
           <div class="screen-filler">
             <button class="screen-filler-btn" (click)="closeModal()" ><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
-            <img class="screen-filler-img" alt="{{selFileName}}" src="{{fileContent}}" >
+            <img class="screen-filler-img" alt="{{selFileName}}" [src]="photoURL()" >
           </div>
         </div>
         <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
@@ -58,34 +58,23 @@
       </form>
     </div>
   </section>
+
   <div class="row">
     <div class="col-xs-12">
       <section class="widget" [hidden]="emptySafe">
         <header><h4>Mon coffre numérique</h4></header>
         <div class="widget-body">
-            <table class="table">
-              <thead>
-              <tr>
-                <th>Description</th>
-                <th>action</th>
-              </tr>
-              </thead>
-              <tbody *ngFor="let a of attachments">
-              <tr>
-                <td>Nom: <small>{{a.fileName}}</small>
-                  <br>
-                  Date: <small>{{a.uploadDate}}</small>
-                </td>
-                <td>
-                <button class="btn btn-primary" (click)="viewFile(a)"><span><i class="glyphicon glyphicon-picture" aria-hidden="true" ></i></span></button>
-                <button class="btn btn-danger" (click)="deleteFile(a)"><span><i class="glyphicon glyphicon-trash" aria-hidden="true" ></i></span></button>
-              </td>
-              </tr>
-
-              </tbody>
-            </table>
+          <div *ngIf="attachments">
+            <div
+              attachements-directory
+              [(cd)]="attachments"
+              (viewFile)="onViewFile($event)"
+              (deleteFile)="onDeleteFile($event)"
+            ></div>
           </div>
+        </div>
       </section>
     </div>
   </div>
+
 </div>
