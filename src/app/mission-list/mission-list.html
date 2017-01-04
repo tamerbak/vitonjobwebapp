@@ -36,9 +36,9 @@
               {{ item.titre }}
             </h4>
             <p class="description">
-              {{ isEmployer ? 'Vous l\'avez signé ' : 'Signé par ' + item.nom + ' ' }}
+              {{ isEmployer ? 'Vous l\'avez signé ': 'Signé par ' + item.contact + ' ' }}
               le {{ toStringDate(item.date_signature) }}<br/>
-              avec {{ item.prenom }} {{ item.nom }}
+              avec {{ isEmployer ? item.prenom +' '+ item.nom : item.nom  }}
             </p>
             <div class="col-sm-3 col-xs-12 mission-list-data-2">
               <p class="value3 mt-sm">
