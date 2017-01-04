@@ -119,6 +119,7 @@ export class Home{
     }
 
     this.sharedService.setCurrentOffer(null);
+    console.log(this.projectTarget);
 
   }
 

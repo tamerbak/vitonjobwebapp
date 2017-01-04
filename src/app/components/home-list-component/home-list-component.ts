@@ -73,6 +73,7 @@ export class HomeList{
     this.sharedService.setCurrentOffer(null);
 
     jQuery('home-list-component').addClass('fade-in-component');
+    console.log(this.projectTarget);
   }
 
   cardSwiper(e) {

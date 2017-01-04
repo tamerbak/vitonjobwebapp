@@ -62,7 +62,7 @@ export class Navbar implements OnInit {
   }
 
   UpdateOffers(obj) {
-      this.offersNotifications = this.notificationsService.autoSearchOffers;
+    this.offersNotifications = this.notificationsService.autoSearchOffers;
   }
 
   refreshOffers(evt) {
