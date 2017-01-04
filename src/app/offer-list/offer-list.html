@@ -70,7 +70,7 @@
                 <div *ngIf="dispo.nbDays < 1">
                   le <b>{{dispo.date}} :</b> {{dispo.startHour}} - {{dispo.endHour}}
                 </div>
-                
+
                 <div *ngIf="dispo.nbDays > 1">
                   du <b>{{dispo.date}} :</b> {{dispo.startHour}}<br>
                   au <b>{{dispo.dateEnd}} :</b> {{dispo.endHour}}
@@ -92,7 +92,9 @@
                 *ngIf="!item.obsolete"
                 [disabled]="item.correspondantsCount <= 0"
               >
-                {{(item.correspondantsCount < 0) ? '' : item.correspondantsCount}} Résultats trouvés
+                {{ (item.correspondantsCount == 0) ? 'Aucun résultat trouvé' : '' }}
+                {{ (item.correspondantsCount == 1) ? '1 résultat trouvé' : '' }}
+                {{ (item.correspondantsCount > 1) ? item.correspondantsCount + ' résultats trouvés' : '' }}
               </button>
             </div>
           </div>
