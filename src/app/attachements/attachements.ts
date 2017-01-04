@@ -94,7 +94,6 @@ export class Attachements {
         this.attachementSerice.uploadActualFile(data.id, data.fileName, this.scanData).then((res: any) => {
           if(res && res.status == "200"){
             this.addAlert("success", "Le fichier a été bien sauvegardé.");
-            // this.attachments.push(data);
             this.attachementSerice.addFile(this.attachments, data);
             this.isUploadInProgress = false;
             this.emptySafe = false;

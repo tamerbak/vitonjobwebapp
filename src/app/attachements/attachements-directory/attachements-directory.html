@@ -15,20 +15,18 @@
     ></div>
   </li>
   <li *ngFor="let a of cd.files" class="attachement-file">
-    <div class="container">
-      <div class="row">
-        <div class="col-xs-8">
-          <i class="glyphicon glyphicon-file" aria-hidden="true" ></i>
-          {{a.fileName}}
-        </div>
-        <div class="col-xs-4 attachements-action">{{a.uploadDate}}&nbsp;
-          <button class="btn btn-primary btn-xs" (click)="clickViewFile(a)">
-            <span><i class="glyphicon glyphicon-picture" aria-hidden="true" ></i></span>
-          </button>
-          <button class="btn btn-danger btn-xs" (click)="clickDeleteFile(a)">
-            <span><i class="glyphicon glyphicon-trash" aria-hidden="true" ></i></span>
-          </button>
-        </div>
+    <div class="row">
+      <div class="col-xs-8">
+        <i class="glyphicon glyphicon-file" aria-hidden="true" ></i>
+        {{a.fileName}}
+      </div>
+      <div class="col-xs-4 attachements-action">{{a.uploadDate}}&nbsp;
+        <button class="btn btn-primary btn-xs" (click)="clickViewFile(a)">
+          <span><i class="glyphicon glyphicon-picture" aria-hidden="true" ></i></span>
+        </button>
+        <button class="btn btn-danger btn-xs" (click)="clickDeleteFile(a)">
+          <span><i class="glyphicon glyphicon-trash" aria-hidden="true" ></i></span>
+        </button>
       </div>
     </div>
   </li>

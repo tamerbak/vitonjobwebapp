@@ -10,7 +10,7 @@ type Folder = {name: string, folders: Folder[], files: File[]};
 @Injectable()
 export class AttachementsService {
   data: any;
-  attachement: any;
+  attachement: File;
 
   constructor(private http: Http) {
     this.data = null;
@@ -117,7 +117,8 @@ export class AttachementsService {
             this.attachement = {
               id : data.data[0].pk_user_pieces_justificatives,
               fileName : fileName,
-              uploadDate : this.parseDate(this.sqlfyDate(d))
+              uploadDate : this.parseDate(this.sqlfyDate(d)),
+              fileFolder: ''
             };
             this.updateAttachements(userId, this.attachement.id, fileName, scanUri);
           }
@@ -306,8 +307,8 @@ export class AttachementsService {
     return root;
   }
 
-  addFile(attachments, data) {
-    debugger;
+  addFile(folder: Folder, attachement) {
+    folder.files.push(attachement);
   }
 
   private _recursiveDeleteFile(folder: Folder, deep: number, folderTree: string[], attachement: File) {
