@@ -321,6 +321,26 @@ export class OfferEdit{
         nbPoste: 1
       };
       this.checkHourRate();
+
+      if(this.projectTarget == 'employer'){
+          var siegeAddress = this.currentUser.employer.entreprises[0].siegeAdress;
+          this.offerAddress=  siegeAddress.fullAdress;
+          this.nameOA = siegeAddress.name;
+          this.streetNumberOA = siegeAddress.streetNumber;
+          this.streetOA = siegeAddress.street;
+          this.zipCodeOA = siegeAddress.zipCode;
+          this.cityOA = siegeAddress.city;
+          this.countryOA = siegeAddress.country;
+      } else {
+          var personalAdress = this.currentUser.jobyer.personnalAdress;
+          this.offerAddress=  personalAdress.fullAdress;
+          this.nameOA = personalAdress.name;
+          this.streetNumberOA = personalAdress.streetNumber;
+          this.streetOA = personalAdress.street;
+          this.zipCodeOA = personalAdress.zipCode;
+          this.cityOA = personalAdress.city;
+          this.countryOA = personalAdress.country;
+      }
     }
 
     let self = this;
