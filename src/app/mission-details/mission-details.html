@@ -67,7 +67,7 @@
                         <tr>
                             <th>Heure</th>
                             <th class="text-align-right">Prévu</th>
-                            <th class="text-align-center" *ngIf="isEmployer && upperCase(contract.approuve) == 'NON'">
+                            <th class="text-align-center" *ngIf="upperCase(contract.approuve) == 'NON'">
                                 Jobyer
                             </th>
                             <th class="text-align-center"
@@ -114,7 +114,11 @@
                                         <i class="glyphicon glyphicon-remove"></i> Refuser
                                     </button>
                                 </div>
-
+                                <button
+                                        type="button" class="btn btn-primary btn-sm" *ngIf="isEmpty(day.heure_debut_pointe) && !isEmployer && hasJobyerSigned"
+                                        (click)="pointHour(false, day, true, false)">
+                                    Pointer
+                                </button>
                             </td>
                         </tr>
                         <tr *ngFor="let pause of missionPauses[i], let j=index">
@@ -161,6 +165,11 @@
                                                     <i class="glyphicon glyphicon-remove"></i> Refuser
                                                 </button>
                                             </div>
+                                            <button
+                                                    type="button" class="btn btn-primary btn-sm" *ngIf="isEmpty(pause.pause_debut_pointe) && !isEmployer && hasJobyerSigned"
+                                                    (click)="pointHour(false, pause, true, true)">
+                                                Pointer
+                                            </button>
                                         </td>
                                     </tr>
                                     <tr>
@@ -195,6 +204,11 @@
                                                     <i class="glyphicon glyphicon-remove"></i> Refuser
                                                 </button>
                                             </div>
+                                            <button
+                                                    type="button" class="btn btn-primary btn-sm" *ngIf="isEmpty(pause.pause_fin_pointe) && !isEmployer && hasJobyerSigned"
+                                                    (click)="pointHour(false, pause, false, true)">
+                                                Pointer
+                                            </button>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -238,6 +252,11 @@
                                         <i class="glyphicon glyphicon-remove"></i> Refuser
                                     </button>
                                 </div>
+                                <button
+                                        type="button" class="btn btn-primary btn-sm" *ngIf="isEmpty(day.heure_fin_pointe) && !isEmployer && hasJobyerSigned"
+                                        (click)="pointHour(false, day, false, false)">
+                                    Pointer
+                                </button>
                             </td>
                         </tr>
                         </tbody>

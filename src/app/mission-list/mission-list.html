@@ -52,12 +52,12 @@
               <button type="button" class="btn btn-secondary btn-sm btn-detail" (click)="goToDetailMission(item)">
                 Détails de la mission
               </button>
-              <button
+              <!--<button
                 type="button" class="btn btn-secondary btn-sm"
                 (click)="goToMissionPointingPage(item)"
                 [hidden]="item.option_mission != '2.0' || isEmployer || upperCase(item.releve_employeur) == 'OUI' || upperCase(item.vu) == 'NON'">
                 Pointage
-              </button>
+              </button>-->
             </div>
 
             <div class="col-sm-12">
@@ -83,14 +83,14 @@
               Détails de la mission
             </button>
             <!--<div modal-component [hidden]="item.option_mission != '2.0' || isEmployer || upperCase(item.releve_employeur) == 'OUI' || upperCase(item.vu) == 'NON'"></div>-->
-            <button
+           <!-- <button
               type="button" class="btn btn-secondary btn-sm"
               (click)="goToMissionPointingPage(item)"
               [hidden]="item.option_mission != '2.0' || isEmployer || upperCase(item.releve_employeur) == 'OUI' || upperCase(item.vu) == 'NON'"
               [disabled]="item.disableBtnPointing"
             >
               Pointage
-            </button>
+            </button>-->
           </div>
         </div>
       </section>
