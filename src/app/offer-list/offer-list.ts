@@ -253,7 +253,7 @@ export class OfferList {
       if (offer.visible) {
         this.addAlert("info", "Votre offre a bien été déplacée dans «Mes offres en ligne».");
       } else {
-        this.addAlert("info", "Votre offre a bien été déplacée dans «Mes offres en brouillon».");
+        this.addAlert("info", "Votre offre a bien été déplacée dans «Mes offres privées».");
       }
     });
   }
