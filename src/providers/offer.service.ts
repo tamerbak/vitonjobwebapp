@@ -1636,4 +1636,34 @@ export class OffersService {
     }
     return null;
   }
+
+  loadOfferList(roleId, projectTarget){
+      let token = {
+        'class': 'com.vitonjob.callouts.loading.offers.OfferToken',
+        'entrepriseId': (projectTarget == 'employer' ? roleId : ''),
+        'jobyerId': (projectTarget == 'jobyer' ? roleId : '')
+      };
+
+      let tokenStr = JSON.stringify(token);
+      let encodedToken = btoa(tokenStr);
+      let data = {
+        'class': 'fr.protogen.masterdata.model.CCallout',
+        'id': 20024,
+        'args': [{
+          'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'Loading offers',
+          value: encodedToken
+        }]
+      };
+      var stringData = JSON.stringify(data);
+
+      return new Promise(resolve => {
+        let headers = Configs.getHttpJsonHeaders();
+        this.http.post(Configs.calloutURL, stringData, {headers: headers})
+          .map(res => res.json())
+          .subscribe((data: any) => {
+            resolve(data);
+          });
+      });
+  }
 }

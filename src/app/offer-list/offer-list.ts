@@ -86,10 +86,17 @@ export class OfferList {
     this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
     this.globalOfferList.push({header: 'Mes brouillons', list: []});
     this.globalOfferList.push({header: 'Mes offres en archive', list: []});
-    this.offerList = this.projectTarget == 'employer'
-      ? this.sharedService.getCurrentUser().employer.entreprises[0].offers
-      : this.sharedService.getCurrentUser().jobyer.offers;
-    let obsoleteOffers = [];
+    //this.offerList = this.projectTarget == 'employer' ? this.sharedService.getCurrentUser().employer.entreprises[0].offers : this.sharedService.getCurrentUser().jobyer.offers;
+
+    let roleId = (this.projectTarget == 'employer' ?  this.sharedService.getCurrentUser().employer.entreprises[0].id : this.sharedService.getCurrentUser().jobyer.id);
+    this.offersService.loadOfferList(roleId.toString(), this.projectTarget).then((data: any) =>{
+      if(data && data.status == "success"){
+        this.offerList = data.offers;
+      }else{
+        this.addAlert("danger", "Une erreur est survenue lors du chargement des données");
+        return;
+      }
+      let obsoleteOffers = [];
 
     for (let i = 0; i < this.offerList.length; i++) {
       let offer = this.offerList[i];
@@ -157,6 +164,7 @@ export class OfferList {
     }
     //placing obsolete offers in the botton of the list
     this.globalOfferList[0].list = this.globalOfferList[0].list.concat(obsoleteOffers);
+    });
   }
 
   sortOffers(){
