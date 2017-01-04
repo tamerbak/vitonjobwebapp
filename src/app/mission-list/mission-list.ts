@@ -1,5 +1,5 @@
 import {ContractService} from "../../providers/contract-service";
-import {Component, ViewEncapsulation} from "@angular/core";
+import {Type,Component, ViewEncapsulation} from "@angular/core";
 import {ACCORDION_DIRECTIVES, BUTTON_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap";
 import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
@@ -7,13 +7,15 @@ import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {MissionService} from "../../providers/mission-service";
 import {Helpers} from "../../providers/helpers.service";
 import {Utils} from "../utils/utils";
+import { InfiniteScroll } from 'angular2-infinite-scroll';
+//import {OnsLazyRepeat} from 'angular2-onsenui';
 
 @Component({
   selector: '[mission-list]',
   template: require('./mission-list.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./mission-list.scss')],
-  directives: [ROUTER_DIRECTIVES, BUTTON_DIRECTIVES],
+  directives: [ROUTER_DIRECTIVES, BUTTON_DIRECTIVES,InfiniteScroll],
   providers: [ContractService, MissionService, Helpers]
 })
 export class MissionList{
@@ -44,6 +46,26 @@ export class MissionList{
   typeMissionModel: string = '0';
   disableBtnPointing;
 
+    array = [];
+  sum = 100;
+  throttle = 300;
+  scrollDistance = 1;
+
+  addItems(startIndex, endIndex) {
+    for (let i = 0; i < this.sum; ++i) {
+      this.array.push([i, ' ', 'i'].join(''));
+    }
+  }
+
+  onScrollDown () {
+    console.log('scrolled!!');
+
+    // add another 20 items
+    const start = this.sum;
+    this.sum += 20;
+    this.addItems(start, this.sum);
+  }
+
   constructor(private sharedService: SharedService,
               // public gc: GlobalConfigs,
               // public nav: NavController,
@@ -52,7 +74,7 @@ export class MissionList{
               private missionService: MissionService) {
 
     this.currentUser = this.sharedService.getCurrentUser();
-
+    this.addItems(0, this.sum)
     console.log(this.currentUser)
     if (!this.currentUser) {
       this.router.navigate(['home']);

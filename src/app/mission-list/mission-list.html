@@ -7,6 +7,15 @@
     <a href="javascript:history.go(-1)"><button type="button" class="btn btn-secondary btn-sm" name="button"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Retour</button></a>
   </div>
 </div>
+        <div class="search-results"
+            infinite-scroll
+            [infiniteScrollDistance]="2"
+            [infiniteScrollThrottle]="500"
+            (scrolled)="onScrollDown()" >
+            <p *ngFor="let i of array">
+              {{ i }}
+            </p>
+        </div>
 <div class="row">
 
 
