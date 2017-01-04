@@ -78,6 +78,7 @@ export class MissionDetails{
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['home']);
+      return;
     } else {
       this.isEmployer = this.currentUser.estEmployeur;
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
@@ -181,7 +182,7 @@ export class MissionDetails{
   }
 
   validatePauses() {
-    for (var i = 0; i < this.missionHours.length; i++) {
+    /*for (var i = 0; i < this.missionHours.length; i++) {
       if (this.missionPauses[i]) {
         for (var j = 0; j < this.missionPauses[i].length; j++) {
           //verify if there are empty pause hours
@@ -200,6 +201,22 @@ export class MissionDetails{
     }
 
     this.missionService.addPauses(this.missionHours, this.missionPauses, this.contract.pk_user_contrat).then((data: any) => {
+      if (!data || data.status == "failure") {
+        this.addAlert("danger", "Erreur lors de l'enregistrement des données");
+        return;
+      } else {
+        // data saved
+        this.addAlert("success", "Vos données ont été bien enregistrées");
+        // Update contract status
+        this.contract.vu = 'Oui';
+        var message = "Horaire du contrat numéro : " + this.contract.numero + " validé";
+        //this.sendInfoBySMS(message, "toJobyer");
+        if (this.contract.option_mission != "1.0") {
+          //this.missionService.schedulePointeuse(this.contract, this.missionHours, this.missionPauses);
+        }
+      }
+    });*/
+    this.missionService.setContratToVu(this.contract.pk_user_contrat).then((data: any) => {
       if (!data || data.status == "failure") {
         this.addAlert("danger", "Erreur lors de l'enregistrement des données");
         return;

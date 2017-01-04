@@ -69,6 +69,7 @@ export const CoreRoutes: RouterConfig = [
 
       // Mission management
       {path: 'mission/list', component: MissionList},
+      {path: 'mission/list/:type', component: MissionList},
       {path: 'mission/details', component: MissionDetails},
       {path: 'mission/details', component: MissionDetails},
       {path: 'mission/pointing', component: MissionPointing},

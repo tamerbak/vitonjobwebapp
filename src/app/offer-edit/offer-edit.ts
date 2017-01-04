@@ -1454,7 +1454,7 @@ export class OfferEdit{
           })
         }
         Messenger().post({
-          message: "Votre offre a bien été déplacée dans «Mes offres en brouillon».",
+          message: "Votre offre a bien été déplacée dans «Mes offres privées».",
           type: 'success',
           showCloseButton: true
         });

@@ -2,7 +2,7 @@ import {ContractService} from "../../providers/contract-service";
 import {Component, ViewEncapsulation} from "@angular/core";
 import {ACCORDION_DIRECTIVES, BUTTON_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap";
 import {SharedService} from "../../providers/shared.service";
-import {ROUTER_DIRECTIVES, Router} from "@angular/router";
+import {ROUTER_DIRECTIVES, Router,ActivatedRoute} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {MissionService} from "../../providers/mission-service";
 import {Helpers} from "../../providers/helpers.service";
@@ -48,6 +48,7 @@ export class MissionList{
               // public gc: GlobalConfigs,
               // public nav: NavController,
               private router: Router,
+              private route: ActivatedRoute,
               private contractService: ContractService,
               private missionService: MissionService) {
 
@@ -81,6 +82,14 @@ export class MissionList{
   }
 
   ngOnInit() {
+    
+    this.route.params.subscribe(params => {
+       if(params['type']){
+         this.typeMissionModel = params['type'];
+       }else{
+         this.typeMissionModel = '0';
+       }
+    });
 
     //get contracts
     let id;

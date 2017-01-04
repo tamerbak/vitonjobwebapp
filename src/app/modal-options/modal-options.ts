@@ -211,7 +211,7 @@ export class ModalOptions{
       this.sharedService.setCurrentMission(null);
       this.processing = false;
       jQuery("#modal-options").modal('hide')
-      this.router.navigate(['mission/list']);
+      this.router.navigate(['mission/list',{type:2}]);
     });
   }
 }
