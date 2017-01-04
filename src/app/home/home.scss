@@ -1,6 +1,7 @@
 @import "../../scss/variables";
 @import "../../../node_modules/bootstrap/scss/_variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
+
 /*
  * Bootstrap calendar
  */
@@ -606,19 +607,30 @@ body {
   width: 100vw;
   position: absolute;
 }
-.logo-img{
+
+.logo-img {
   z-index: 1;
   width: 40%;
   margin: 0 auto;
   display: block;
 
 }
-.background-transparent{
+
+.background-transparent {
   background-color: transparent;
 }
+
 main {
-  background: transparent!important;
+  background: transparent !important;
 }
-.div-logo-img{
+
+.div-logo-img {
   margin-top: 30vh;
+}
+
+.search {
+  display: flex;
+  position: absolute;
+  margin-top: -25%;
+  width: 100%;
 }

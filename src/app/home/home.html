@@ -51,34 +51,18 @@
   <div class="col-xs-12 footer">
     2016 &copy; Vit-On-Job est une marque de Manaona.
   </div>
-</div>
-<div
-  modal-update-password
-  *ngIf="currentUser"
-></div>
-<div
-  modal-notification-contract
-  [jobyer]="currentJobyer"
-  *ngIf="projectTarget == 'employer' && !isRecruteur"
-></div>
-<div
-  modal-general-condition
-  (onRefuse)="onGCRefused($event)"
-></div>
-<div
-  modal-welcome
-  *ngIf="currentUser"
-></div>
-<div
-  modal-profile
-  [obj]="obj" *ngIf="currentUser"
-></div>-->
-
+</div>-->
   <video id="video" src="../../assets/video/Fotolia_HD1080.mov" autoplay loop>
   </video>
 
     <div class="row background-transparent">
       <div class="col-xs-12 div-logo-img"><img class="logo-img" src="../../assets/images/logo/logo-white.png" alt=""></div>
+      <div class="search col-xs-12">
+        <div class="">
+          <input placeholder="Rechercher sur Vit-On-Job...." class="search__input" [(ngModel)]="scQuery" (keyup)="checkForEnterKey($event)"/>
+          <button class="fa fa-search search__button" (click)="doSemanticSearch()"></button>
+        </div>
+      </div>
     </div>
 <div modal-update-password *ngIf="currentUser"></div>
 <div modal-notification-contract [jobyer]="currentJobyer" *ngIf="projectTarget == 'employer' && !isRecruteur"></div>
