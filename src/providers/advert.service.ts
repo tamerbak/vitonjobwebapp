@@ -14,6 +14,7 @@ export class AdvertService {
     let sql = "SELECT " +
       "uae.pk_user_annonce_entreprise as id" +
       ", uae.titre as titre" +
+      ", uae.lien as link" +
       ", uae.contenu as content" +
       ", uae.thumbnail" +
       ", uae.created " +
@@ -40,6 +41,7 @@ export class AdvertService {
                 'class' : 'com.vitonjob.annonces.Annonce',
                 idEntreprise : idEntreprise,
                 titre : r.titre,
+                link: r.link,
                 description : this.prepareContent(r.content),
                 briefContent : this.prepareBriefContent(r.content),
                 thumbnail : {
@@ -68,6 +70,7 @@ export class AdvertService {
     let sql = "select " +
       "pk_user_annonce_entreprise as id" +
       ", titre as titre" +
+      ", lien as link" +
       ", contenu as content" +
       ", thumbnail" +
       ", created " +
@@ -89,6 +92,7 @@ export class AdvertService {
                 id : r.id,
                 'class' : 'com.vitonjob.annonces.Annonce',
                 titre : r.titre,
+                link: r.link,
                 description : this.prepareContent(r.content),
                 briefContent : this.prepareBriefContent(r.content),
                 thumbnail : {
@@ -146,9 +150,10 @@ export class AdvertService {
 
   saveNewAdvert(advert : any){
     let sql = "insert into user_annonce_entreprise " +
-      "(titre, contenu, piece_jointe, forme_contrat, thumbnail, image_principale, created, fk_user_entreprise) " +
+      "(titre,lien, contenu, piece_jointe, forme_contrat, thumbnail, image_principale, created, fk_user_entreprise) " +
       "values " +
       "('"+Utils.sqlfyText(advert.titre)+"', '" +
+      Utils.sqlfyText(advert.link)+"', " + "'" +
       Utils.sqlfyText(advert.description)+"', " + "'" +
       Utils.sqlfyText(advert.attachement.fileContent)+"', '"+
       Utils.sqlfyText(advert.contractForm)+"', " + "'"+
@@ -177,6 +182,7 @@ export class AdvertService {
     let sql = "UPDATE user_annonce_entreprise " +
       "SET " +
       "titre = '" + Utils.sqlfyText(advert.titre) + "', " +
+      "lien = '" + Utils.sqlfyText(advert.link) + "', " +
       "contenu = '" + Utils.sqlfyText(advert.description) + "', " +
       "piece_jointe = '" + Utils.sqlfyText(advert.attachement.fileContent) + "', " +
       "thumbnail = '" + Utils.sqlfyText(advert.thumbnail.fileContent) + "', " +

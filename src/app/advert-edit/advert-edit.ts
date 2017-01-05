@@ -45,6 +45,7 @@ export class AdvertEdit{
       'class': 'com.vitonjob.annonces.Annonce',
       idEntreprise: this.currentUser.employer.entreprises[0].id,
       titre: '',
+      link: '',
       description: '',
       attachement: {
         'class': 'com.vitonjob.annonces.Attachement',
@@ -174,6 +175,11 @@ export class AdvertEdit{
       return;
     }
 
+    if(!Utils.isEmpty(this.advert.link) && !Utils.isValidUrl(this.advert.link)){
+      this.alert("Le lien spécifié de l'annonce  n'est pas valide", "warning");
+      return;
+    }
+
     this.alert("Prière de patienter, la sauvegarde peut prendre un moment à cause de la taille des fichiers", "info");
 
     if (this.idAdvert) {
@@ -224,6 +230,11 @@ export class AdvertEdit{
       this.alert("Veuillez renseigner le titre de l'annonce avant d'enregistrer", "warning");
       return;
     }
+    
+    if(!Utils.isEmpty(this.advert.link) && !Utils.isValidUrl(this.advert.link)){
+      this.alert("Le lien spécifié de l'annonce  n'est pas valide", "warning");
+      return;
+    }
 
     this.alert("Prière de patienter, la sauvegarde peut prendre un moment à cause de la taille des fichiers", "info");
 
@@ -271,6 +282,7 @@ export class AdvertEdit{
       'class': 'com.vitonjob.annonces.Annonce',
       idEntreprise: this.currentUser.employer.entreprises[0].id,
       titre: '',
+      link:'',
       description: '',
       attachement: {
         'class': 'com.vitonjob.annonces.Attachement',
