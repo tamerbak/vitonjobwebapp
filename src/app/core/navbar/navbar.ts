@@ -135,6 +135,7 @@ export class Navbar implements OnInit {
     this.$el.find('.input-group-addon + .form-control').on('blur focus', function (e): void {
       jQuery(this).parents('.input-group')[e.type === 'focus' ? 'addClass' : 'removeClass']('focus');
     });
+    console.log(this.projectTarget);
   }
 
   switchProjectTarget() {

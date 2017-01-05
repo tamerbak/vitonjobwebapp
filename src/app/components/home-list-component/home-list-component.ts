@@ -27,16 +27,11 @@ export class HomeList{
   alerts: Array<Object>;
   hideLoader: boolean = true;
   config: any;
-
-  /*
-   *  HOME SCREEN LISTS
-   */
   recentOffers: any = [];
   upcomingOffers: any = [];
   recentUsers: any = [];
   previousRecentOffers: any = [];
   previousUpcomingOffers: any = [];
-
   nextRecentOffers: any = [];
   nextUpcomingOffers: any = [];
   nextRecentUsers: any = [];
@@ -73,6 +68,7 @@ export class HomeList{
     this.sharedService.setCurrentOffer(null);
 
     jQuery('home-list-component').addClass('fade-in-component');
+
   }
 
   cardSwiper(e) {
@@ -123,7 +119,6 @@ export class HomeList{
     for (let i = this.maxLines; i < data.length; i++) {
       this.nextRecentUsers.push(data[i]);
     }
-
   }
 
 
