@@ -21,12 +21,19 @@
   </header>
   <div class="widget-body">
     <div class="form-group">
-      <label for="title">Titre</label>
-      <input type="text" class="form-control" id="title" name="title"
-             [(ngModel)]="advert.titre">
+      <label for="title">Intitulé du job</label>
+      <input
+        id="title"
+        data-label=""
+        type="hidden"
+        class="select2 job-select form-control"
+        name="title"
+        placeholder="Recherchez votre job"
+      />
+
     </div>
     <div class="form-group">
-      <label for="content_cke">Contenu</label>
+      <label for="content_cke">Description</label>
       <textarea id="content_cke" name="content_cke" class="form-control">{{advert.description}}</textarea>
     </div>
 
