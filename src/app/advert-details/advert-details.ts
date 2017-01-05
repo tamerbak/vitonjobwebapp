@@ -33,7 +33,8 @@ export class AdvertDetails{
     }
     this.isEmployer = (this.currentUser.estEmployeur || this.currentUser.estRecruteur);
     this.advert = this.sharedService.getCurrentAdv();
-    this.setInterestButtonLabel()
+    this.setInterestButtonLabel();
+    console.log(this.sharedService.getCurrentAdv());
   }
 
   setInterestButtonLabel(){
