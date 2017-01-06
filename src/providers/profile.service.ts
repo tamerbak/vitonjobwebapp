@@ -717,6 +717,19 @@ export class ProfileService{
     });
   }
 
+  getUserSoftwares(jobyerId){
+    let sql = "select exp.pk_user_experience_logiciel_pharmacien as \"expId\", exp.fk_user_logiciels_pharmaciens as \"softId\", exp.annees_experience as experience, log.nom from user_experience_logiciel_pharmacien as exp, user_logiciels_pharmaciens as log where exp.fk_user_logiciels_pharmaciens = log.pk_user_logiciels_pharmaciens and exp.fk_user_jobyer = '" + jobyerId + "'";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data.data);
+        });
+    });
+  }
+
   saveQualities(qualities, id, projectTarget) {
     let table = projectTarget == 'jobyer' ? 'user_qualite_du_jobyer' : 'user_qualite_employeur';
     let foreignKey = projectTarget == 'jobyer' ? 'fk_user_jobyer' : 'fk_user_entreprise';
@@ -734,6 +747,44 @@ export class ProfileService{
       if(data && languages && languages.length != 0)
         this.attachLanguages(languages, id, table, foreignKey);
     })
+  }
+
+  saveSoftware(software, id){
+    let sql = " insert into user_experience_logiciel_pharmacien (fk_user_jobyer, fk_user_logiciels_pharmaciens, annees_experience) values (" + id + ", " + software.id + ", " + software.experience + ") RETURNING pk_user_experience_logiciel_pharmacien; ";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let expId = data.data[0].pk_user_experience_logiciel_pharmacien;
+          resolve(expId);
+        });
+    });
+  }
+
+  deleteSoftware(id){
+    let sql = "delete from user_experience_logiciel_pharmacien where pk_user_experience_logiciel_pharmacien =" + id;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  updateSoftware(id, exp){
+    let sql = "update user_experience_logiciel_pharmacien set annees_experience = " + exp + " where pk_user_experience_logiciel_pharmacien =" + id;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
   }
 
   deleteQualities(id, table, foreignKey) {

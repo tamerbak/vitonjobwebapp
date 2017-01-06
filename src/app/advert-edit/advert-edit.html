@@ -32,6 +32,10 @@
 
     </div>
     <div class="form-group">
+      <label for="title">Lien</label>
+      <input type="text" class="form-control" id="link" name="link" placeholder="Ajouter un lien ex : www.exemple.com" [(ngModel)]="advert.link">
+    </div>
+    <div class="form-group">
       <label for="content_cke">Description</label>
       <textarea id="content_cke" name="content_cke" class="form-control" placeholder="{{descriptionPlaceholder}}">{{advert.description}}</textarea>
     </div>

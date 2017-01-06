@@ -221,6 +221,11 @@ export class Profile{
   interestingJobs : any[];
   selectedJobLevel : string;
 
+  savedSoftwares: any[] = [];
+  selectedSoftware: any;
+  softwares: any[];
+  expSoftware: number = 1;
+
   setImgClasses() {
     return {
       'img-circle': true,//TODO:this.currentUser && this.currentUser.estEmployeur,
@@ -296,6 +301,11 @@ export class Profile{
         this.sharedService.setLangList(this.languages);
       })
     }
+
+    //load Softwares for jobyers pharmaciens
+    this.listService.loadPharmacieSoftwares().then((data: any) => {
+      this.softwares = data.data;
+    })
 
     this.allImages = [];
 
@@ -437,6 +447,13 @@ export class Profile{
       this.nbWorkHours = this.currentUser.jobyer.nbWorkHours;
       this.nbWorkVitOnJob = this.currentUser.jobyer.nbVitOnJobHours/60;
       this.isNbStudyHoursBig = this.currentUser.jobyer.nbStudyHoursBig;
+
+      // get mastered softwares for jobyers pharmaciens
+      this.profileService.getUserSoftwares(this.currentUser.jobyer.id).then((data: any) => {
+        if (data) {
+          this.savedSoftwares = data;
+        }
+      });
     }
   }
 
@@ -2030,6 +2047,14 @@ export class Profile{
     this.profileService.saveLanguages(this.savedLanguages, id, this.projectTarget);
   }
 
+  saveSoftware(software) {
+    let id = this.currentUser.jobyer.id;
+    this.profileService.saveSoftware(software, id).then((expId: any) =>{
+      let savedSoft = {expId:expId, softId: software.id, experience: software.experience, nom: software.nom};
+      this.savedSoftwares.push(savedSoft);
+    })
+  }
+
   submitAttachement() {
     let fileField = jQuery('#cv_field');
     if (fileField && fileField[0]) {
@@ -2113,5 +2138,44 @@ export class Profile{
     this.ape = company.naf;
 
     this.IsCompanyExist(this.companyname, 'companyname');
+  }
+
+  removeSoftware(item){
+    this.savedSoftwares.splice(this.savedSoftwares.indexOf(item), 1);
+    this.profileService.deleteSoftware(item.expId);
+  }
+
+  addSoftware(){
+    if (Utils.isEmpty(this.selectedSoftware)) {
+      return;
+    }
+
+    let softwaresTemp = this.softwares.filter((v)=> {
+      return (v.id == this.selectedSoftware);
+    });
+
+    //if the selected software is already saved, do not re-add it
+    for(let i = 0; i < this.savedSoftwares.length; i++) {
+      if (this.savedSoftwares[i].softId == this.selectedSoftware) {
+        if (this.savedSoftwares[i].experience == this.expSoftware) {
+          this.selectedSoftware = "";
+          this.expSoftware = 1;
+          return;
+        } else {
+          this.profileService.updateSoftware(this.savedSoftwares[i].expId, this.expSoftware).then((data: any) => {
+            this.savedSoftwares[i].experience = this.expSoftware;
+            this.selectedSoftware = "";
+            this.expSoftware = 1;
+          });
+          return;
+        }
+      }
+    }
+
+    //if software is not yet addes
+    softwaresTemp[0].experience = (this.expSoftware <= 1 ? 1 : this.expSoftware);
+    this.saveSoftware(softwaresTemp[0]);
+    this.selectedSoftware = "";
+    this.expSoftware = 1;
   }
 }
