@@ -21,15 +21,22 @@
   </header>
   <div class="widget-body">
     <div class="form-group">
-      <label for="title">Titre</label>
-      <input type="text" class="form-control" id="title" name="title" placeholder="Titre de l'annonce, par ex.: Offre d'emploi Pharmacien hospitalier / Pharmacienne hospitalière" [(ngModel)]="advert.titre">
+      <label for="title">Intitulé du job</label>
+      <input
+        id="title"
+        type="hidden"
+        class="select2 job-select form-control"
+        name="title"
+        placeholder="Titre de l'annonce, par ex.: Pharmacien hospitalier / Pharmacienne hospitalière"
+      />
+
     </div>
     <div class="form-group">
       <label for="title">Lien</label>
       <input type="text" class="form-control" id="link" name="link" placeholder="Ajouter un lien ex : www.exemple.com" [(ngModel)]="advert.link">
     </div>
     <div class="form-group">
-      <label for="content_cke">Contenu</label>
+      <label for="content_cke">Description</label>
       <textarea id="content_cke" name="content_cke" class="form-control" placeholder="{{descriptionPlaceholder}}">{{advert.description}}</textarea>
     </div>
 

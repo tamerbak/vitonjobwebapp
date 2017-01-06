@@ -8,6 +8,7 @@ import {ProfileService} from "../../providers/profile.service";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {ModalComponent} from "./modal-component/modal-component";
 import {Utils} from "../utils/utils";
+import {EnvironmentService} from "../../providers/environment.service";
 declare function md5(value: string): string;
 declare var Messenger;
 
@@ -20,7 +21,7 @@ declare var Messenger;
   template: require('./login.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./login.scss')],
-  providers: [AuthenticationService, LoadListService, ValidationDataService, ProfileService]
+  providers: [AuthenticationService, LoadListService, ValidationDataService, ProfileService, EnvironmentService]
 })
 export class LoginPage{
   index: number;
@@ -67,6 +68,7 @@ export class LoginPage{
               private validationDataService: ValidationDataService,
               private sharedService: SharedService,
               private profileService: ProfileService,
+              private environmentService: EnvironmentService,
               private router: Router,
               private route: ActivatedRoute) {
   }
