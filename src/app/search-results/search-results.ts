@@ -46,6 +46,7 @@ export class SearchResults{
   currentJobyer: any;
   fromPage: string = "recruitment";
   obj: string;
+  indexationMode : boolean;
 
   constructor(private sharedService: SharedService,
               private router: Router,
@@ -65,6 +66,7 @@ export class SearchResults{
     //get params
     this.route.params.forEach((params: Params) => {
       this.obj = params['obj'];
+      this.indexationMode = (params['searchType'] && params['searchType']=='semantic');
     });
   }
 
@@ -137,19 +139,22 @@ export class SearchResults{
   }
 
   doSemanticSearch() {
-    /*if (!this.currentUser) {
-     this.sharedService.setFromPage("home");
-     this.router.navigate(['login']);
-     return;
-     }*/
 
     if (Utils.isEmpty(this.scQuery) || !this.scQuery.match(/[a-z]/i)) {
-      this.addAlert("warning", "Veuillez saisir un job avant de lancer la recherche");
+      this.addAlert("warning", "Veuillez saisir une requête avant de lancer la recherche");
       return;
     }
 
     this.hideResult = true;
-    this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((data: any) => {
+    this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((results: any) => {
+
+      let data = [];
+      if(this.projectTarget == 'jobyer')
+        data = results.offerEnterprise;
+      else
+        data = results.offerJobyers;
+
+      this.indexationMode = true;
 
       // TODO Passer la condition accepteCandidature == 'true' côté callout
       // If jobyer research, count only offers that employer accept contact
@@ -163,6 +168,8 @@ export class SearchResults{
       } else {
         lastResult = data;
       }
+
+      this.sharedService.setLastIndexation({resultsIndex : results.indexation});
       this.sharedService.setLastResult(lastResult);
       this.sharedService.setCurrentSearch(this.scQuery);
       this.hideResult = false;
@@ -219,6 +226,19 @@ export class SearchResults{
     let o = this.sharedService.getCurrentOffer();
     this.sharedService.setSearchResult(item);
     this.router.navigate(['search/details']);
+    if(this.indexationMode){
+      let data = this.sharedService.getLastIndexation();
+      let index = null;
+      if(data){
+        index = data;
+        if(index.resultsIndex && index.resultsIndex>0)
+          this.searchService.correctIndexation(index.resultsIndex, item.idJob).then(data=>{
+            index.resultsIndex = 0;
+            this.sharedService.setLastIndexation(index);
+          });
+      }
+
+    }
     //this.router.navigate(['search/details', {item, o}]);
   }
 

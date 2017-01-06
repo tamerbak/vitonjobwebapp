@@ -127,8 +127,20 @@
                   Mot de passe actuel
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input type="password" id="oldPassword" class="form-control" [(ngModel)]="oldPassword" name="oldPassword"
-                         (keyup)="watchOldPassword($event)">
+                  <div id="hidePasswd" class="input-group">
+                    <input [(ngModel)]="oldPassword" class="form-control" type="password" (keyup)="watchOldPassword($event)">
+                    <div class="input-group-btn">
+                      <button type="button" class="btn btn-success" (click)="showHideOldPasswd()"><i
+                        class="{{showHidePasswdIcon}}"></i></button>
+                    </div>
+                  </div>
+                  <div id="showPasswd" class="input-group" style="display:none;">
+                    <input [(ngModel)]="oldPassword" class="form-control" type="text" (keyup)="watchOldPassword($event)">
+                    <div class="input-group-btn">
+                      <button type="button" class="btn btn-success" (click)="showHideOldPasswd()"><i
+                        class="{{showHidePasswdIcon}}"></i></button>
+                    </div>
+                  </div>
                 </div>
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
                   <span class="hint label label-danger">{{oldPasswordHint}}</span>
@@ -140,8 +152,20 @@
                   Nouveau mot de passe
                 </label>
                 <div class="col-md-7 col-xs-12">
-                  <input type="password" id="password1" class="form-control" [(ngModel)]="password1" name="password1"
-                         (keyup)="watchPassword1($event)">
+                  <div id="hidePasswd1" class="input-group">
+                    <input [(ngModel)]="password1" class="form-control" type="password" (keyup)="watchPassword1($event)">
+                    <div class="input-group-btn">
+                      <button type="button" class="btn btn-success" (click)="showHidePasswd1()"><i
+                        class="{{showHidePasswd1Icon}}"></i></button>
+                    </div>
+                  </div>
+                  <div id="showPasswd1" class="input-group" style="display:none;">
+                    <input [(ngModel)]="password1" class="form-control" type="text" (keyup)="watchPassword1($event)">
+                    <div class="input-group-btn">
+                      <button type="button" class="btn btn-success" (click)="showHidePasswd1()"><i
+                        class="{{showHidePasswd1Icon}}"></i></button>
+                    </div>
+                  </div>
                 </div>
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
                   <span class="hint label label-danger">{{password1Hint}}</span>
@@ -152,11 +176,22 @@
                 <label for="password2" class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Confirmation du mot de passe
                 </label>
-                <div class="col-md-7 col-xs-12">
-                  <input type="password" id="password2" class="form-control" [(ngModel)]="password2" name="password2"
-                         (keyup)="watchPassword2($event)">
+                                <div class="col-md-7 col-xs-12">
+                  <div id="hidePasswdConfirm" class="input-group">
+                    <input [(ngModel)]="password2" class="form-control" type="password" (keyup)="watchPassword2($event)">
+                    <div class="input-group-btn">
+                      <button type="button" class="btn btn-success" (click)="showHidePasswdConfirm()"><i
+                        class="{{showHidePasswdConfirmIcon}}"></i></button>
+                    </div>
+                  </div>
+                  <div id="showPasswdConfirm" class="input-group" style="display:none;">
+                    <input [(ngModel)]="password2" class="form-control" type="text" (keyup)="watchPassword2($event)">
+                    <div class="input-group-btn">
+                      <button type="button" class="btn btn-success" (click)="showHidePasswdConfirm()"><i
+                        class="{{showHidePasswdConfirmIcon}}"></i></button>
+                    </div>
+                  </div>
                 </div>
-
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
                   <span class="hint label label-danger">{{password2Hint}}</span>
                 </div>

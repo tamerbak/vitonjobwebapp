@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Configs} from '../configurations/configs';
 import {Http, Headers} from '@angular/http';
+import {Utils} from "../app/utils/utils";
+import {DateUtils} from "../app/utils/date-utils";
 
 // import {GlobalConfigs} from '../configurations/globalConfigs';
 // import {Storage, SqlStorage} from 'ionic-angular';
@@ -60,8 +62,8 @@ export class MissionService {
         if (m.id_pause != "null") {
           missionPauses[k] = [{}];
           missionPauses[k][0].id = m.id_pause;
-          missionPauses[k][0].pause_debut = this.convertToFormattedHour(m.pause_debut);
-          missionPauses[k][0].pause_fin = this.convertToFormattedHour(m.pause_fin);
+          missionPauses[k][0].pause_debut =  this.convertToFormattedHour(m.pause_debut);
+          missionPauses[k][0].pause_fin =  this.convertToFormattedHour(m.pause_fin);
           missionPauses[k][0].pause_debut_pointe = this.convertToFormattedHour(m.pause_debut_pointe);
           missionPauses[k][0].pause_fin_pointe = this.convertToFormattedHour(m.pause_fin_pointe);
           missionPauses[k][0].is_pause_debut_corrigee = m.is_pause_debut_corrigee;
@@ -76,8 +78,8 @@ export class MissionService {
         if (m.id_pause != "null") {
           missionPauses[idExistMission][j] = {};
           missionPauses[idExistMission][j].id = m.id_pause;
-          missionPauses[idExistMission][j].pause_debut = this.convertToFormattedHour(m.pause_debut);
-          missionPauses[idExistMission][j].pause_fin = this.convertToFormattedHour(m.pause_fin);
+          missionPauses[idExistMission][j].pause_debut =  this.convertToFormattedHour(m.pause_debut);
+          missionPauses[idExistMission][j].pause_fin =  this.convertToFormattedHour(m.pause_fin);
           missionPauses[idExistMission][j].pause_debut_pointe = this.convertToFormattedHour(m.pause_debut_pointe);
           missionPauses[idExistMission][j].pause_fin_pointe = this.convertToFormattedHour(m.pause_fin_pointe);
           missionPauses[idExistMission][j].is_pause_debut_corrigee = m.is_pause_debut_corrigee;
@@ -89,7 +91,6 @@ export class MissionService {
     }
     return [missionHours, missionPauses];
   }
-
 
   addPauses(missionHours, missionPauses, contractId) {
     //  Init project parameters
@@ -124,6 +125,20 @@ export class MissionService {
     });
   }
 
+  setContratToVu(contractId) {
+    let sql = "update user_contrat set vu = 'Oui' where pk_user_contrat = '" + contractId + "'; ";
+
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any) => {
+          resolve(data);
+        });
+    });
+  }
+
   signSchedule(contract) {
     var sql: any;
     if (this.projectTarget == "jobyer") {
@@ -145,14 +160,20 @@ export class MissionService {
   }
 
   endOfMission(idContrat) {
+    let env = btoa(Configs.env);
     let payload = {
       'class': 'fr.protogen.masterdata.model.CCallout',
       'id': 234,
       'args': [
         {
           'class': 'fr.protogen.masterdata.model.CCalloutArguments',
-          label: 'Send contract to tetra',
+          label: 'ID Contract',
           value: btoa(idContrat + "")
+        },
+        {
+          'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'Environment',
+          value: env
         }
       ]
     };
@@ -349,16 +370,16 @@ export class MissionService {
      });*/
   }
 
-  savePointing(pointing) {
+  savePointing(pointing, isStart, isPause) {
     var sql;
-    if (pointing.id_pause) {
-      if (pointing.start) {
-        sql = "update user_pause set debut_pointe = '" + pointing.pointe + "' where pk_user_pause = '" + pointing.id_pause + "'";
+    if (isPause) {
+      if (isStart) {
+        sql = "update user_pause set debut_pointe = '" + pointing.pointe + "' where pk_user_pause = '" + pointing.id + "'";
       } else {
-        sql = "update user_pause set fin_pointe = '" + pointing.pointe + "' where pk_user_pause = '" + pointing.id_pause + "'";
+        sql = "update user_pause set fin_pointe = '" + pointing.pointe + "' where pk_user_pause = '" + pointing.id + "'";
       }
     } else {
-      if (pointing.start) {
+      if (isStart) {
         sql = "update user_heure_mission set heure_debut_pointe = '" + pointing.pointe + "' where pk_user_heure_mission = '" + pointing.id + "'";
       } else {
         sql = "update user_heure_mission set heure_fin_pointe = '" + pointing.pointe + "' where pk_user_heure_mission = '" + pointing.id + "'";

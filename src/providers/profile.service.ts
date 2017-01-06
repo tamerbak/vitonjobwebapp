@@ -270,6 +270,9 @@ export class ProfileService{
    * @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
    */
   updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, isStay, prefecture, isFrench, isEuropean, regionId, cv, nbWorkHours, studyHoursBigValue) {
+    title = Utils.sqlfyText(title);
+    lastname = Utils.sqlfyText(lastname);
+    firstname = Utils.sqlfyText(firstname);
     let sql = "";
     //building the sql request
     sql = "update user_jobyer set  " +
@@ -310,6 +313,9 @@ export class ProfileService{
   }
 
   updateJobyerCivilityFirstTime(title, lastname, firstname, roleId) {
+    title = Utils.sqlfyText(title);
+    lastname = Utils.sqlfyText(lastname);
+    firstname = Utils.sqlfyText(firstname);
     let sql = "";
     //building the sql request
     sql = "update user_jobyer set  " +
@@ -330,6 +336,10 @@ export class ProfileService{
 
 
   updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId, medecineId, conventionId, collective_heure_hebdo, forRecruitment) {
+    title = Utils.sqlfyText(title);
+    lastname = Utils.sqlfyText(lastname);
+    firstname = Utils.sqlfyText(firstname);
+    companyname = Utils.sqlfyText(companyname);
     // Update employer
     let sql = "update user_employeur set ";
     sql = sql + " titre='" + title + "' ";
@@ -361,6 +371,10 @@ export class ProfileService{
   }
 
   updateEmployerCivilityFirstTime(title, lastname, firstname, companyname, ape, roleId, entrepriseId, conventionId) {
+    title = Utils.sqlfyText(title);
+    lastname = Utils.sqlfyText(lastname);
+    firstname = Utils.sqlfyText(firstname);
+    companyname = Utils.sqlfyText(companyname);
     let sql = "update user_employeur set ";
     sql = sql + " titre='" + title + "' ";
     sql = sql + ", nom='" + lastname + "', prenom='" + firstname + "' where pk_user_employeur=" + roleId + ";";
@@ -393,6 +407,9 @@ export class ProfileService{
   }
 
   updateRecruiterCivility(title, lastname, firstname, accountid) {
+    title = Utils.sqlfyText(title);
+    lastname = Utils.sqlfyText(lastname);
+    firstname = Utils.sqlfyText(firstname);
     let sql = "update user_recruteur set ";
     sql = sql + " titre='" + title + "', ";
     sql = sql + " nom='" + lastname + "', prenom='" + firstname + "' where fk_user_account=" + accountid + ";";
@@ -700,6 +717,19 @@ export class ProfileService{
     });
   }
 
+  getUserSoftwares(jobyerId){
+    let sql = "select exp.pk_user_experience_logiciel_pharmacien as \"expId\", exp.fk_user_logiciels_pharmaciens as \"softId\", exp.annees_experience as experience, log.nom from user_experience_logiciel_pharmacien as exp, user_logiciels_pharmaciens as log where exp.fk_user_logiciels_pharmaciens = log.pk_user_logiciels_pharmaciens and exp.fk_user_jobyer = '" + jobyerId + "'";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data.data);
+        });
+    });
+  }
+
   saveQualities(qualities, id, projectTarget) {
     let table = projectTarget == 'jobyer' ? 'user_qualite_du_jobyer' : 'user_qualite_employeur';
     let foreignKey = projectTarget == 'jobyer' ? 'fk_user_jobyer' : 'fk_user_entreprise';
@@ -717,6 +747,44 @@ export class ProfileService{
       if(data && languages && languages.length != 0)
         this.attachLanguages(languages, id, table, foreignKey);
     })
+  }
+
+  saveSoftware(software, id){
+    let sql = " insert into user_experience_logiciel_pharmacien (fk_user_jobyer, fk_user_logiciels_pharmaciens, annees_experience) values (" + id + ", " + software.id + ", " + software.experience + ") RETURNING pk_user_experience_logiciel_pharmacien; ";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let expId = data.data[0].pk_user_experience_logiciel_pharmacien;
+          resolve(expId);
+        });
+    });
+  }
+
+  deleteSoftware(id){
+    let sql = "delete from user_experience_logiciel_pharmacien where pk_user_experience_logiciel_pharmacien =" + id;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  updateSoftware(id, exp){
+    let sql = "update user_experience_logiciel_pharmacien set annees_experience = " + exp + " where pk_user_experience_logiciel_pharmacien =" + id;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
   }
 
   deleteQualities(id, table, foreignKey) {
@@ -841,7 +909,7 @@ export class ProfileService{
     let encodedJobyer = btoa(jobyerDataStr);
     let data = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 20018,
+      'id': 20020,
       'args': [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'JobyerInfo',

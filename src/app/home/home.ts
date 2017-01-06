@@ -215,7 +215,7 @@ export class Home{
         showCloseButton: true
       });
       this.sharedService.setCurrentSearch(this.scQuery);
-      this.router.navigate(['search/results']);
+      this.router.navigate(['search/results',{searchType:'semantic'}]);
     });
   }
 

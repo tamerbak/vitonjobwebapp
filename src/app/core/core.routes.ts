@@ -27,6 +27,7 @@ import {PaymentMethod} from "../payment-method/payment-method";
 import {About} from "../about/about";
 import {AdvertList} from "../advert-list/advert-list";
 import {AdvertEdit} from "../advert-edit/advert-edit";
+import {AdvertDetails} from "../advert-details/advert-details";
 import {AdvertJobyerList} from "../advert-jobyer-list/advert-jobyer-list";
 import {ExtraCalendar} from "../extra-calendar/extra-calendar"
 import {Iframe} from '../iframe/iframe';
@@ -68,6 +69,7 @@ export const CoreRoutes: RouterConfig = [
 
       // Mission management
       {path: 'mission/list', component: MissionList},
+      {path: 'mission/list/:type', component: MissionList},
       {path: 'mission/details', component: MissionDetails},
       {path: 'mission/details', component: MissionDetails},
       {path: 'mission/pointing', component: MissionPointing},
@@ -97,6 +99,7 @@ export const CoreRoutes: RouterConfig = [
       // Advert
       {path: 'advert/list', component: AdvertList},
       {path: 'advert/edit', component: AdvertEdit},
+      {path: 'advert/details', component: AdvertDetails},
       {path: 'advert/jobyer/list', component: AdvertJobyerList},
       // Iframes
       {path: 'iframe/quote', component: Iframe}

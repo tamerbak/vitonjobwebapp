@@ -221,6 +221,11 @@ export class Profile{
   interestingJobs : any[];
   selectedJobLevel : string;
 
+  savedSoftwares: any[] = [];
+  selectedSoftware: any;
+  softwares: any[];
+  expSoftware: number = 1;
+
   setImgClasses() {
     return {
       'img-circle': true,//TODO:this.currentUser && this.currentUser.estEmployeur,
@@ -261,10 +266,12 @@ export class Profile{
           if (this.isEuropean == 1) {
             this.scanTitle = " de votre titre de séjour";
           }
+          this.loadAttachement(this.scanTitle);
         });
 
       } else {
         this.scanTitle = " de votre extrait k-bis";
+        this.loadAttachement(this.scanTitle);
         listService.loadConventions().then((response: any) => {
           this.conventions = response;
         });
@@ -294,6 +301,11 @@ export class Profile{
         this.sharedService.setLangList(this.languages);
       })
     }
+
+    //load Softwares for jobyers pharmaciens
+    this.listService.loadPharmacieSoftwares().then((data: any) => {
+      this.softwares = data.data;
+    })
 
     this.allImages = [];
 
@@ -435,6 +447,13 @@ export class Profile{
       this.nbWorkHours = this.currentUser.jobyer.nbWorkHours;
       this.nbWorkVitOnJob = this.currentUser.jobyer.nbVitOnJobHours/60;
       this.isNbStudyHoursBig = this.currentUser.jobyer.nbStudyHoursBig;
+
+      // get mastered softwares for jobyers pharmaciens
+      this.profileService.getUserSoftwares(this.currentUser.jobyer.id).then((data: any) => {
+        if (data) {
+          this.savedSoftwares = data;
+        }
+      });
     }
   }
 
@@ -585,6 +604,23 @@ export class Profile{
     return false;
   }
 
+  loadAttachement(scanTitle) {
+    // Get scan
+    this.attachementsService.loadAttachements(this.currentUser).then((attachments: any) => {
+      let allImagesTmp = [];
+      for (let i = 0; i < attachments.length; ++i) {
+        if (attachments[i].fileName.substr(0, 4 + scanTitle.length) == "scan" + scanTitle) {
+          this.attachementsService.downloadActualFile(attachments[i].id, attachments[i].fileName).then((data: any)=> {
+            allImagesTmp.push({
+              data: data.stream
+            });
+          });
+        }
+      }
+      this.allImages = allImagesTmp;
+    });
+  }
+
   /**
    * Initialize form with user values
    */
@@ -602,21 +638,6 @@ export class Profile{
     let role = this.isEmployer ? 'employeur' : 'jobyer';
     let field = 'scan';
     let userId = this.isEmployer ? this.currentUser.employer.id : this.currentUser.jobyer.id;
-
-    // Get scan
-    this.attachementsService.loadAttachements(this.currentUser).then((attachments: any) => {
-      let allImagesTmp = [];
-      for (let i = 0; i < attachments.length; ++i) {
-        if (attachments[i].fileName.substr(0, 4) == "scan") {
-          this.attachementsService.downloadActualFile(attachments[i].id, attachments[i].fileName).then((data: any)=> {
-            allImagesTmp.push({
-              data: data.stream
-            });
-          });
-        }
-      }
-      this.allImages = allImagesTmp;
-    });
 
     var elements = [];
     jQuery("div[id^='q-datepicker_']").each(function () {
@@ -657,7 +678,7 @@ export class Profile{
           this.isResident = (data.est_resident == 'Oui' ? true : false);
           this.whoDeliverStay = data.instance_delivrance;
           this.numStay = !Utils.isEmpty(data.numero_titre_sejour) ? data.numero_titre_sejour : "";
-          this.nationalityId = data.numero_titre_sejour;
+          this.nationalityId = data.fk_user_nationalite;
           this.isCIN = false;
         } else {
           this.regionId = '41'
@@ -1492,7 +1513,7 @@ export class Profile{
         //var birthcp = this.birthcp;
         var birthdepId = this.birthdepId;
         var numStay = this.numStay;
-        var dateStay = (!Utils.isEmpty(this.dateStay) ? moment(this.dateStay).format('YYYY-MM-DD') : null);
+        var dateStay = (!Utils.isEmpty(this.dateStay) ? moment(this.dateStay).format('MM/DD/YYYY') : null);
         var dateFromStay = (!Utils.isEmpty(this.dateFromStay) ? moment(this.dateFromStay).format('MM/DD/YYYY') : null);
         var dateToStay = (!Utils.isEmpty(this.dateToStay) ? moment(this.dateToStay).format('MM/DD/YYYY') : null);
         var isResident = (this.isResident ? 'Oui' : 'Non');
@@ -1795,9 +1816,11 @@ export class Profile{
       this.regionId = data.data[0].pk_user_identifiants_nationalite;
       if (this.isEuropean == 0) {
         this.scanTitle = " de votre CNI ou Passeport";
+        this.loadAttachement(this.scanTitle);
       }
       if (this.isEuropean == 1) {
         this.scanTitle = " de votre titre de séjour";
+        this.loadAttachement(this.scanTitle);
       }
     })
   }
@@ -2024,6 +2047,14 @@ export class Profile{
     this.profileService.saveLanguages(this.savedLanguages, id, this.projectTarget);
   }
 
+  saveSoftware(software) {
+    let id = this.currentUser.jobyer.id;
+    this.profileService.saveSoftware(software, id).then((expId: any) =>{
+      let savedSoft = {expId:expId, softId: software.id, experience: software.experience, nom: software.nom};
+      this.savedSoftwares.push(savedSoft);
+    })
+  }
+
   submitAttachement() {
     let fileField = jQuery('#cv_field');
     if (fileField && fileField[0]) {
@@ -2034,7 +2065,7 @@ export class Profile{
         fr.onload = (file: any) => {
           let fileContent = file.target.result;
           let content = fileContent.split(',')[1];
-          this.cv = content;
+          this.cv = f.name + ";" + content;
         }
         fr.readAsDataURL(f);
       }
@@ -2042,8 +2073,16 @@ export class Profile{
   }
 
   downloadFile(content) {
-    var url = "data:application/octet-stream;base64," + content;
-    window.open(url);
+    let pureBase64 = content.split(';')[1];
+	let url = "data:application/octet-stream;base64," + pureBase64;
+	
+	let downloadLink = document.createElement("a");
+	downloadLink.href = url;
+	//downloadLink.download = content.split(';')[0];
+	downloadLink.setAttribute("download", content.split(';')[0]);
+	document.body.appendChild(downloadLink);
+	downloadLink.click();
+	document.body.removeChild(downloadLink);
   }
 
   deleteFile() {
@@ -2099,5 +2138,44 @@ export class Profile{
     this.ape = company.naf;
 
     this.IsCompanyExist(this.companyname, 'companyname');
+  }
+
+  removeSoftware(item){
+    this.savedSoftwares.splice(this.savedSoftwares.indexOf(item), 1);
+    this.profileService.deleteSoftware(item.expId);
+  }
+
+  addSoftware(){
+    if (Utils.isEmpty(this.selectedSoftware)) {
+      return;
+    }
+
+    let softwaresTemp = this.softwares.filter((v)=> {
+      return (v.id == this.selectedSoftware);
+    });
+
+    //if the selected software is already saved, do not re-add it
+    for(let i = 0; i < this.savedSoftwares.length; i++) {
+      if (this.savedSoftwares[i].softId == this.selectedSoftware) {
+        if (this.savedSoftwares[i].experience == this.expSoftware) {
+          this.selectedSoftware = "";
+          this.expSoftware = 1;
+          return;
+        } else {
+          this.profileService.updateSoftware(this.savedSoftwares[i].expId, this.expSoftware).then((data: any) => {
+            this.savedSoftwares[i].experience = this.expSoftware;
+            this.selectedSoftware = "";
+            this.expSoftware = 1;
+          });
+          return;
+        }
+      }
+    }
+
+    //if software is not yet addes
+    softwaresTemp[0].experience = (this.expSoftware <= 1 ? 1 : this.expSoftware);
+    this.saveSoftware(softwaresTemp[0]);
+    this.selectedSoftware = "";
+    this.expSoftware = 1;
   }
 }

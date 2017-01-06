@@ -167,7 +167,7 @@ input[type="checkbox"] + label {
   position: relative;
   padding-left: 35px;
   margin-bottom: 20px;
-  font: 14px/20px 'Open Sans', Arial, sans-serif;
+  font: 14px/20px;
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -210,7 +210,7 @@ input[type="checkbox"]:checked + label:before {
 
 /* Alert zone fixed  only for big screen */
 /* Medium Devices, Desktops, bootstrap-lg */
-@media only screen and (min-width: 1200px) {   
+@media only screen and (min-width: 1200px) {
 	.alert-zone.fixed{
 	    position: fixed;
 	    top: 0;

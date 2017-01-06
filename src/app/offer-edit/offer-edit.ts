@@ -160,6 +160,7 @@ export class OfferEdit{
 
   startDate: any;
   endDate: any;
+  untilDate: any;
   createEvent: any;
   isEventCreated = false;
 
@@ -346,6 +347,26 @@ export class OfferEdit{
         nbPoste: 1
       };
       this.checkHourRate();
+
+      if(this.projectTarget == 'employer'){
+          var siegeAddress = this.currentUser.employer.entreprises[0].siegeAdress;
+          this.offerAddress=  siegeAddress.fullAdress;
+          this.nameOA = siegeAddress.name;
+          this.streetNumberOA = siegeAddress.streetNumber;
+          this.streetOA = siegeAddress.street;
+          this.zipCodeOA = siegeAddress.zipCode;
+          this.cityOA = siegeAddress.city;
+          this.countryOA = siegeAddress.country;
+      } else {
+          var personalAdress = this.currentUser.jobyer.personnalAdress;
+          this.offerAddress=  personalAdress.fullAdress;
+          this.nameOA = personalAdress.name;
+          this.streetNumberOA = personalAdress.streetNumber;
+          this.streetOA = personalAdress.street;
+          this.zipCodeOA = personalAdress.zipCode;
+          this.cityOA = personalAdress.city;
+          this.countryOA = personalAdress.country;
+      }
     }
 
     let self = this;
@@ -892,21 +913,26 @@ export class OfferEdit{
   }
 
   addSlot(ev) {
+
     if (this.slot.startHour == 0 || this.slot.endHour == 0) {
       return;
     }
 
     if (this.obj != "detail") {
+    	
       this.slots.push(this.slot);
       this.slotsToSave.push(this.slot);
+      this.offer.calendarData.push(this.slot);
       return;
     }else{
+
       if(ev != 'drop'){
         this.slots.push(this.slot);
         let slotClone = this.offersService.cloneSlot(this.slot);
         let slotToSave = this.offersService.convertSlotsForSaving([slotClone]);
         this.offer.calendarData.push(slotToSave[0]);
       }
+
       this.offersService.updateOfferCalendar(this.offer, this.projectTarget).then(() => {
         this.setOfferInLocal();
         //this.slots = [];
@@ -1474,7 +1500,7 @@ export class OfferEdit{
           })
         }
         Messenger().post({
-          message: "Votre offre a bien été déplacée dans «Mes offres en brouillon».",
+          message: "Votre offre a bien été déplacée dans «Mes offres privées».",
           type: 'success',
           showCloseButton: true
         });
@@ -1906,6 +1932,7 @@ export class OfferEdit{
         }
 
         this.startDate = start._d;
+        this.untilDate = new Date( end._d.getTime() - (24*60*60*1000) );
         this.endDate = end._d;
 
         /* Add to calculate the plageDate */
@@ -2216,7 +2243,7 @@ export class OfferEdit{
 		}else
 			window.scrollTo(0, 0);
 
-		this.addAlert("danger", "Merci de compléter les "+errors.length+' informations suivantes pour valider votre offre :  '+cpl, "general");
+		this.addAlert("danger", "Merci de compléter les informations suivantes pour valider votre offre :  " + cpl, "general");
 
     	// Mise en surbrillance du champ en erreur survolé
     	jQuery('[hover]').on('mouseenter', function(){

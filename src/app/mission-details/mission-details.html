@@ -57,17 +57,17 @@
                         <tr>
                             <th colspan="4">
                                 Jour {{i + 1}}: {{day.jour_debut | dateConverter:'long'}}
-                                <button class="btn btn-default pull-right" (click)="addPause(i)"
+                                <!--<button class="btn btn-default pull-right" (click)="addPause(i)"
                                         [hidden]="!isNewMission || !isEmployer || upperCase(contract.signature_jobyer) == 'NON'">
                   <span class="glyphicon glyphicon-plus">
                     </span> Ajouter pause
-                                </button>
+                                </button>-->
                             </th>
                         </tr>
                         <tr>
                             <th>Heure</th>
                             <th class="text-align-right">Prévu</th>
-                            <th class="text-align-center" *ngIf="isEmployer && upperCase(contract.approuve) == 'NON'">
+                            <th class="text-align-center" *ngIf="upperCase(contract.approuve) == 'NON'">
                                 Jobyer
                             </th>
                             <th class="text-align-center"
@@ -114,7 +114,11 @@
                                         <i class="glyphicon glyphicon-remove"></i> Refuser
                                     </button>
                                 </div>
-
+                                <button
+                                        type="button" class="btn btn-primary btn-sm" *ngIf="isEmpty(day.heure_debut_pointe) && !isEmployer && hasJobyerSigned"
+                                        (click)="pointHour(false, day, true, false)">
+                                    Pointer
+                                </button>
                             </td>
                         </tr>
                         <tr *ngFor="let pause of missionPauses[i], let j=index">
@@ -124,17 +128,18 @@
                                     <tr>
                                         <td class="text-align-right" width="100">Pause {{j + 1}}</td>
                                         <td class="text-align-right" colspan="3">
-                                            <button (click)="deletePause(i, j)" [hidden]="!isNewMission || !isEmployer">
+                                            <!--<button (click)="deletePause(i, j)" [hidden]="!isNewMission || !isEmployer">
                                                 <i class="glyphicon glyphicon-trash"></i>
-                                            </button>
+                                            </button>-->
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="text-align-right" width="100">Début</td>
                                         <td class="text-align-right" width="100">
-                                            <input type="time" [(ngModel)]="pause.pause_debut_temp"
+                                        <!--    <input type="time" [(ngModel)]="pause.pause_debut_temp"
                                                    [style.backgroundColor]="!isEmpty(pause.pause_debut_new) ? 'orange' : 'gray'"
-                                                   [disabled]="!isEmployer || upperCase(contract.vu) == 'OUI'"/>
+                                                   [disabled]="!isEmployer || upperCase(contract.vu) == 'OUI'"/>-->
+                                        {{pause.pause_debut_temp}}
                                         </td>
                                         <td class="text-align-right" width="100">
                                             <input type="time" [(ngModel)]="pause.pause_debut_pointe"
@@ -160,14 +165,20 @@
                                                     <i class="glyphicon glyphicon-remove"></i> Refuser
                                                 </button>
                                             </div>
+                                            <button
+                                                    type="button" class="btn btn-primary btn-sm" *ngIf="isEmpty(pause.pause_debut_pointe) && !isEmployer && hasJobyerSigned"
+                                                    (click)="pointHour(false, pause, true, true)">
+                                                Pointer
+                                            </button>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="text-align-right" width="100">Fin</td>
                                         <td class="text-align-right" width="100">
-                                            <input type="time" [(ngModel)]="pause.pause_fin_temp"
+                                            <!--<input type="time" [(ngModel)]="pause.pause_fin_temp"
                                                    [style.backgroundColor]="!isEmpty(pause.pause_fin_new) ? 'orange' : 'gray'"
-                                                   [disabled]="!isEmployer || upperCase(contract.vu) == 'OUI'"/>
+                                                   [disabled]="!isEmployer || upperCase(contract.vu) == 'OUI'"/>-->
+                                            {{pause.pause_fin_temp}}
                                         </td>
                                         <td class="text-align-right" width="100">
                                             <input type="time" [(ngModel)]="pause.pause_fin_pointe"
@@ -193,6 +204,11 @@
                                                     <i class="glyphicon glyphicon-remove"></i> Refuser
                                                 </button>
                                             </div>
+                                            <button
+                                                    type="button" class="btn btn-primary btn-sm" *ngIf="isEmpty(pause.pause_fin_pointe) && !isEmployer && hasJobyerSigned"
+                                                    (click)="pointHour(false, pause, false, true)">
+                                                Pointer
+                                            </button>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -236,6 +252,11 @@
                                         <i class="glyphicon glyphicon-remove"></i> Refuser
                                     </button>
                                 </div>
+                                <button
+                                        type="button" class="btn btn-primary btn-sm" *ngIf="isEmpty(day.heure_fin_pointe) && !isEmployer && hasJobyerSigned"
+                                        (click)="pointHour(false, day, false, false)">
+                                    Pointer
+                                </button>
                             </td>
                         </tr>
                         </tbody>
@@ -306,7 +327,7 @@
                     >
                         Signer les horaires
                     </button>
-                    <button
+                    <!--<button
                             type="button" class="btn btn-primary btn-sm"
                             (click)="resetForm()"
                             [style.color]="themeColor"
@@ -314,7 +335,7 @@
                             [disabled]="disableAllUI()"
                     >
                         Réinitialiser
-                    </button>
+                    </button>-->
                   <button
                             type="button" class="btn btn-danger btn-sm"
                             *ngIf="isCanceled() == false"

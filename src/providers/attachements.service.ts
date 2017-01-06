@@ -4,10 +4,13 @@ import "rxjs/add/operator/map";
 import {Configs} from "../configurations/configs";
 import {Utils} from "../app/utils/utils";
 
+type File = {id : string, fileName : string, uploadDate : string, fileFolder: string}
+type Folder = {name: string, folders: Folder[], files: File[]};
+
 @Injectable()
 export class AttachementsService {
   data: any;
-  attachement: any;
+  attachement: File;
 
   constructor(private http: Http) {
     this.data = null;
@@ -20,11 +23,12 @@ export class AttachementsService {
       entreprise = user.employer.entreprises[0];
     }
 
-    let sql = "select pk_user_pieces_justificatives, nom_fichier, date_mise_a_jour " +
-      "from user_pieces_justificatives " +
-      "where fk_user_account=" + user.id + " " +
-      (entreprise ? "and fk_user_entreprise=" + entreprise.id + " " : "") +
-      "and dirty='N'"
+    let sql = "SELECT pj.pk_user_pieces_justificatives, pj.nom_fichier, pj.date_mise_a_jour, d.file_folder " +
+      "FROM user_pieces_justificatives pj " +
+      "LEFT JOIN row_document d ON d.file_name = pj.nom_fichier " +
+      "WHERE fk_user_account=" + user.id + " " +
+      (entreprise ? "and pj.fk_user_entreprise=" + entreprise.id + " " : "") +
+      "and pj.dirty='N' AND d.id_window = 2538"
     ;
 
     return new Promise(resolve => {
@@ -39,7 +43,8 @@ export class AttachementsService {
               this.data.push({
                 id : data.data[i].pk_user_pieces_justificatives,
                 fileName : data.data[i].nom_fichier,
-                uploadDate : this.parseDate(data.data[i].date_mise_a_jour)
+                uploadDate : this.parseDate(data.data[i].date_mise_a_jour),
+                fileFolder: data.data[i].file_folder,
               });
             }
           }
@@ -112,7 +117,8 @@ export class AttachementsService {
             this.attachement = {
               id : data.data[0].pk_user_pieces_justificatives,
               fileName : fileName,
-              uploadDate : this.parseDate(this.sqlfyDate(d))
+              uploadDate : this.parseDate(this.sqlfyDate(d)),
+              fileFolder: ''
             };
             this.updateAttachements(userId, this.attachement.id, fileName, scanUri);
           }
@@ -256,11 +262,100 @@ export class AttachementsService {
     });
   }
 
+  private _recursiveGroupeByFolder(folder: Folder, deep: number, folderTree: string[], attachement: File): Folder {
+    if (deep < folderTree.length && Utils.isEmpty(folderTree[deep]) == false) {
+      console.log(folderTree[deep]);
+
+      // Check if folder exists or create it
+      let subFolders = folder.folders.filter((sf) => {
+        return (sf.name == folderTree[deep]);
+      });
+      let subFolder : Folder = {name: folderTree[deep], folders: [], files: []};
+      if (Utils.isEmpty(subFolders) == false) {
+        subFolder = subFolders[0];
+      }
+
+      // {name: folderTree[deep], folders: [], files: []};
+      subFolder = this._recursiveGroupeByFolder(
+        subFolder,
+        deep + 1,
+        folderTree,
+        attachement
+      );
+
+      if (Utils.isEmpty(subFolders) == true) {
+        folder.folders.push(subFolder);
+      }
+    } else {
+      folder.files.push(attachement);
+    }
+    return folder;
+  }
+
+  /**
+   * Order attachments by folder
+   * @param data
+   * @returns Folder
+   */
+  groupByFolder(data: any): Folder {
+    let root: Folder = {name: "Mes documents", folders: [], files: []};
+    data.forEach((attachement: any) => {
+      let folderTree : string [] = attachement.fileFolder.split('/');
+      this._recursiveGroupeByFolder(root, 0, folderTree, attachement);
+    });
+
+    return root;
+  }
+
+  addFile(folder: Folder, attachement) {
+    folder.files.push(attachement);
+  }
+
+  private _recursiveDeleteFile(folder: Folder, deep: number, folderTree: string[], attachement: File) {
+    if (deep < folderTree.length) {
+
+      // Check if folder exists or create it
+      let subFolders = folder.folders.filter((sf) => {
+        return (sf.name == folderTree[deep]);
+      });
+      if (Utils.isEmpty(subFolders) == false) {
+        return this._recursiveDeleteFile(subFolders[0], deep + 1, folderTree, attachement);
+      }
+    } else {
+      let i = folder.files.indexOf(attachement);
+      folder.files.splice(i, 1);
+      this.deleteAttachement(attachement);
+      return true;
+    }
+    return false;
+  }
+
+  deleteFile(attachments, attachement: File) {
+    let folderTree : string [] = attachement.fileFolder.split('/');
+    return this._recursiveDeleteFile(attachments, 0, folderTree, attachement);
+  }
+
   parseDate(strdate) {
     if (!strdate)
       return '';
     let d = strdate.split(' ')[0];
     let date = d.split('-')[2] + '/' + d.split('-')[1] + '/' + d.split('-')[0];
+    return date;
+  }
+
+  getYear(strdate) {
+    if (!strdate)
+      return '';
+    let d = strdate.split(' ')[0];
+    let date = d.split('-')[0];
+    return date;
+  }
+
+  getMonth(strdate) {
+    if (!strdate)
+      return '';
+    let d = strdate.split(' ')[0];
+    let date = d.split('-')[1];
     return date;
   }
 

@@ -30,6 +30,10 @@ export class Settings {
   password2Hint: string = "";
   oldPasswordHint: string = "";
 
+  showHidePasswdIcon: string;
+  showHidePasswd1Icon: string;
+  showHidePasswdConfirmIcon: string;
+
   //currentUser params
   projectTarget:string;
   currentUser: any;
@@ -118,6 +122,60 @@ export class Settings {
 
   }
 
+  ngOnInit(): void {
+    this.showHidePasswdIcon = "fa fa-eye";
+    this.showHidePasswd1Icon = "fa fa-eye";
+    this.showHidePasswdConfirmIcon = "fa fa-eye";
+  }
+
+  showHideOldPasswd() {
+    let divHide = document.getElementById('hidePasswd');
+    let divShow = document.getElementById('showPasswd');
+
+    if (divHide.style.display == 'none') {
+      divHide.style.display = 'flex';
+      divShow.style.display = 'none';
+      this.showHidePasswdIcon = "fa fa-eye";
+    }
+    else {
+      divHide.style.display = 'none';
+      divShow.style.display = 'flex';
+      this.showHidePasswdIcon = "fa fa-eye-slash";
+    }
+  }
+
+  showHidePasswd1() {
+    let divHide = document.getElementById('hidePasswd1');
+    let divShow = document.getElementById('showPasswd1');
+
+    if (divHide.style.display == 'none') {
+      divHide.style.display = 'flex';
+      divShow.style.display = 'none';
+      this.showHidePasswd1Icon = "fa fa-eye";
+    }
+    else {
+      divHide.style.display = 'none';
+      divShow.style.display = 'flex';
+      this.showHidePasswd1Icon = "fa fa-eye-slash";
+    }
+  }
+
+  showHidePasswdConfirm() {
+    let divHide = document.getElementById('hidePasswdConfirm');
+    let divShow = document.getElementById('showPasswdConfirm');
+
+    if (divHide.style.display == 'none') {
+      divHide.style.display = 'flex';
+      divShow.style.display = 'none';
+      this.showHidePasswdConfirmIcon = "fa fa-eye";
+    }
+    else {
+      divHide.style.display = 'none';
+      divShow.style.display = 'flex';
+      this.showHidePasswdConfirmIcon = "fa fa-eye-slash";
+    }
+  }
+
   initPasswordPhaseForm() {
     this.password1 ="";
     this.password2 ="";
@@ -189,6 +247,10 @@ export class Settings {
       _isValid = false;
     } else {
       _hint = "";
+    }
+
+    if(_isValid && this.password1.length >= 6){
+      this.isValidPassword1 = true;
     }
 
     this.isValidPassword2 = _isValid;

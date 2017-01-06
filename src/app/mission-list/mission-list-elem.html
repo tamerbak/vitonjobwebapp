@@ -10,9 +10,9 @@
       <p class="info">Dernier Bar avant la Fin du Monde, 19 Avenue Victoria, 75001 Paris--</p>
 
       <p class="description">
-        {{ isEmployer ? 'Vous l\'avez signé ' : 'Signé par ' + item.nom + ' ' }}
-        le {{ toStringDate(item.date_signature) }}
-        avec M. {{ item.prenom }} {{ item.nom }}S
+        {{ isEmployer ? 'Vous l\'avez signé ': 'Signé par ' + item.contact + ' ' }}
+        le {{ toStringDate(item.date_signature) }}<br/>
+        avec {{ isEmployer ? item.prenom +' '+ item.nom : item.nom  }}
       </p>
 
       <div class="col-sm-9">

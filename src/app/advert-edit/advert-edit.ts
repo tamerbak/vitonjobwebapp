@@ -28,6 +28,7 @@ export class AdvertEdit{
   coverData: any;
   alerts: any = [];
   contractFormArray = [];
+  descriptionPlaceholder: string;
 
   constructor(private advertService: AdvertService,
               private router: Router,
@@ -44,6 +45,7 @@ export class AdvertEdit{
       'class': 'com.vitonjob.annonces.Annonce',
       idEntreprise: this.currentUser.employer.entreprises[0].id,
       titre: '',
+      link: '',
       description: '',
       attachement: {
         'class': 'com.vitonjob.annonces.Attachement',
@@ -69,6 +71,11 @@ export class AdvertEdit{
 
   ngOnInit() {
     window['CKEDITOR']['replace']('content_cke');
+    this.descriptionPlaceholder = "<p><span style='font-family:Trebuchet MS,Helvetica,sans-serif'><u><span style='font-size:22px'><strong>Description de l&#39;annonce</strong></span></u></span></p>" +
+      "    <p><span style='font-size:36px'><strong>L</strong></span>orem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas id ex luctus, feugiat nisi in, elementum orci. Pellentesque et porta odio. Sed magna arcu, ullamcorper vitae lacinia eu, fringilla sit amet arcu. Vivamus porta massa a elit feugiat vehicula. Aliquam erat volutpat. Praesent volutpat a dolor ac bibendum. Aenean ultrices bibendum nisl, at tristique neque ornare placerat. Donec convallis rhoncus mauris ut commodo. Fusce pulvinar sagittis turpis ut rhoncus.</p> " +
+      "<p><em>Sed dapibus porta enim, vitae fringilla tellus imperdiet id. Ut placerat imperdiet ante et pharetra. Etiam dapibus, diam eu convallis scelerisque, arcu nisl efficitur urna, et faucibus lorem nisl non odio. Nulla congue urna at mi luctus, sit amet congue metus dictum. Quisque mollis aliquet tellus, non aliquet diam accumsan ac. Pellentesque ac suscipit nibh. Nulla facilisi. Integer hendrerit ac felis eget sollicitudin. Etiam cursus quis lectus mollis tempor. Nam sapien dolor, ultricies sit amet eleifend non, aliquet eu tortor.</em></p> " +
+      "<p><strong>Etiam gravida sed risus id ultricies. Proin malesuada purus condimentum leo porta dapibus. Proin sollicitudin et tellus at lobortis. Mauris posuere malesuada sagittis. Suspendisse non lectus id diam viverra pellentesque sit amet semper lorem. Nullam a justo et libero placerat auctor sed eu justo. Proin eget erat id libero posuere condimentum. Sed facilisis gravida mauris, eget varius nibh suscipit in. Etiam vel quam eu tortor elementum commodo quis eget lectus. Pellentesque id pellentesque lacus, vitae pellentesque massa.</strong></p> " +
+      "<p>&nbsp;</p>"
 
     //obj = "add", "detail"
     this.route.params.forEach((params: Params) => {
@@ -168,6 +175,11 @@ export class AdvertEdit{
       return;
     }
 
+    if(!Utils.isEmpty(this.advert.link) && !Utils.isValidUrl(this.advert.link)){
+      this.alert("Le lien spécifié de l'annonce  n'est pas valide", "warning");
+      return;
+    }
+
     this.alert("Prière de patienter, la sauvegarde peut prendre un moment à cause de la taille des fichiers", "info");
 
     if (this.idAdvert) {
@@ -218,6 +230,11 @@ export class AdvertEdit{
       this.alert("Veuillez renseigner le titre de l'annonce avant d'enregistrer", "warning");
       return;
     }
+    
+    if(!Utils.isEmpty(this.advert.link) && !Utils.isValidUrl(this.advert.link)){
+      this.alert("Le lien spécifié de l'annonce  n'est pas valide", "warning");
+      return;
+    }
 
     this.alert("Prière de patienter, la sauvegarde peut prendre un moment à cause de la taille des fichiers", "info");
 
@@ -265,6 +282,7 @@ export class AdvertEdit{
       'class': 'com.vitonjob.annonces.Annonce',
       idEntreprise: this.currentUser.employer.entreprises[0].id,
       titre: '',
+      link:'',
       description: '',
       attachement: {
         'class': 'com.vitonjob.annonces.Attachement',

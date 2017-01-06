@@ -50,14 +50,7 @@ export class ModalGeneralCondition{
 
   refuse() {
     this.hasRefused = true;
-    if (this.projectTarget === 'employer') {
-      this.refusalMsg = "Merci d'être venu sur notre plateforme pour recruter en quelques clics!";
-    } else {
-      this.refusalMsg = "Merci d'être venu sur notre plateforme pour trouver un job à proximité!";
-    }
-    this.refusalMsg = this.refusalMsg +
-      " En refusant les Conditions Générales, nous sommes ravis d'échanger avec vous pour essayer de " +
-      "comprendre votre refus.";
+    this.refusalMsg = "Si vous le souhaitez, nous serions ravis d'échanger avec vous pour bien comprendre les raisons de votre refus.";
   }
 
   logOut(contactMe) {

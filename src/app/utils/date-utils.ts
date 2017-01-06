@@ -112,6 +112,16 @@ export class DateUtils {
     return h + m;
   }
 
+  public static getFormattedHourFromDate(d){
+    if(Utils.isEmpty(d)){
+      return "--:--";
+    }
+    let date = new Date(d);
+    let h = date.getHours();
+    let m = date.getMinutes();
+    return h + ":" + (m < 10 ? ('0' + m) : m);
+  }
+
   public static formatHours(hours){
     return (hours < 10 ? ('0' + hours) : hours);
   }

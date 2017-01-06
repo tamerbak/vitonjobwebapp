@@ -45,30 +45,21 @@ export class MissionPointing {
         let array = this.missionService.getTodayMission(missionHoursTemp);
         this.missionHours = array[0];
         this.missionPauses = array[1];
-        //prepare the mission pauses array to display
-        for (let i = 0; i < this.missionHours.length; i++) {
-          let day = this.missionHours[i];
-          if (this.missionPauses[i] && this.missionPauses[i].length != 0) {
-            for (let j = 0; j < this.missionPauses[i].length; j++) {
-              let pause = this.missionPauses[i][j];
-              this.missionPauses[i][j].pause_debut_temp = (this.isEmpty(pause.pause_debut_new) ? pause.pause_debut : this.missionService.convertToFormattedHour(pause.pause_debut_new));
-              this.missionPauses[i][j].pause_fin_temp = (this.isEmpty(pause.pause_fin_new) ? pause.pause_fin : this.missionService.convertToFormattedHour(pause.pause_fin_new));
-            }
-          }
-        }
-        this.disableBtnPointing = this.missionService.disablePointing(this.missionHours, this.missionPauses).disabled;
-        this.nextPointing = this.missionService.disablePointing(this.missionHours, this.missionPauses).nextPointing;
+        this.prepareMissionPausesArray();
+        //this.disableBtnPointing = this.missionService.disablePointing(this.missionHours, this.missionPauses).disabled;
+        //this.nextPointing = this.missionService.disablePointing(this.missionHours, this.missionPauses).nextPointing;
       }
     });
   }
 
-  pointHour(autoPointing) {
-    if (this.nextPointing) {
+  pointHour(autoPointing, day, isStart, isPause) {
+    //if (this.nextPointing) {
       let h = new Date().getHours();
       let m = new Date().getMinutes();
       let minutesNow = this.missionService.convertHoursToMinutes(h + ':' + m);
-      this.nextPointing.pointe = minutesNow;
-      this.missionService.savePointing(this.nextPointing).then((data: any) => {
+      day.pointe = minutesNow;
+
+      this.missionService.savePointing(day, isStart, isPause).then((data: any) => {
         //retrieve mission hours of today
         this.missionService.listMissionHours(this.contract, true).then((data: any) => {
           if (data.data) {
@@ -76,11 +67,26 @@ export class MissionPointing {
             let array = this.missionService.getTodayMission(missionHoursTemp);
             this.missionHours = array[0];
             this.missionPauses = array[1];
-            this.disableBtnPointing = true;
+            this.prepareMissionPausesArray();
+            //this.disableBtnPointing = true;
             //this.router.navigate(['mission/details']);
           }
         });
       });
+    //}
+  }
+
+  prepareMissionPausesArray(){
+    //prepare the mission pauses array to display
+    for (let i = 0; i < this.missionHours.length; i++) {
+      let day = this.missionHours[i];
+      if (this.missionPauses[i] && this.missionPauses[i].length != 0) {
+        for (let j = 0; j < this.missionPauses[i].length; j++) {
+          let pause = this.missionPauses[i][j];
+          this.missionPauses[i][j].pause_debut_temp = (this.isEmpty(pause.pause_debut_new) ? pause.pause_debut : this.missionService.convertToFormattedHour(pause.pause_debut_new));
+          this.missionPauses[i][j].pause_fin_temp = (this.isEmpty(pause.pause_fin_new) ? pause.pause_fin : this.missionService.convertToFormattedHour(pause.pause_fin_new));
+        }
+      }
     }
   }
 
@@ -91,9 +97,6 @@ export class MissionPointing {
   }
 
   isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
+    return Utils.isEmpty(str);
   }
 }

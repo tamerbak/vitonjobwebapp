@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
 import {Configs} from "../configurations/configs";
 import {Utils} from "../app/utils/utils";
+import {DateUtils} from "../app/utils/date-utils";
 
 @Injectable()
 export class AdvertService {
@@ -9,10 +10,11 @@ export class AdvertService {
 
   }
 
-  loadAdverts(idEntreprise){
+  loadAdvertsByEntreprise(idEntreprise){
     let sql = "SELECT " +
       "uae.pk_user_annonce_entreprise as id" +
       ", uae.titre as titre" +
+      ", uae.lien as link" +
       ", uae.contenu as content" +
       ", uae.thumbnail" +
       ", uae.created " +
@@ -22,7 +24,8 @@ export class AdvertService {
       " ON uae.pk_user_annonce_entreprise = uija.fk_user_annonce_entreprise " +
       " WHERE uae.dirty='N' and uae.fk_user_entreprise="+idEntreprise+"" +
       " GROUP BY uae.pk_user_annonce_entreprise " +
-      " ORDER BY uae.created DESC";
+      " ORDER BY uae.created DESC ";
+      //" LIMIT " + limit + " OFFSET " + offset;
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -38,6 +41,7 @@ export class AdvertService {
                 'class' : 'com.vitonjob.annonces.Annonce',
                 idEntreprise : idEntreprise,
                 titre : r.titre,
+                link: r.link,
                 description : this.prepareContent(r.content),
                 briefContent : this.prepareBriefContent(r.content),
                 thumbnail : {
@@ -54,6 +58,52 @@ export class AdvertService {
                 nbInterest: r.nbInterest
               };
 
+              adverts.push(adv);
+            }
+          }
+          resolve(adverts);
+        });
+    });
+  }
+
+  loadAdverts(){
+    let sql = "select " +
+      "pk_user_annonce_entreprise as id" +
+      ", titre as titre" +
+      ", lien as link" +
+      ", contenu as content" +
+      ", thumbnail" +
+      ", created " +
+      ", fk_user_offre_entreprise as \"offerId\" " +
+      " from user_annonce_entreprise " +
+      " where dirty='N' order by created desc ";
+      //" limit " + limit + " offset " + offset;
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any) => {
+          let adverts = [];
+          if(data && data.data){
+            for(let i = 0 ; i < data.data.length ; i++){
+              let r = data.data[i];
+              let adv = {
+                id : r.id,
+                'class' : 'com.vitonjob.annonces.Annonce',
+                titre : r.titre,
+                link: r.link,
+                description : this.prepareContent(r.content),
+                briefContent : this.prepareBriefContent(r.content),
+                thumbnail : {
+                  'class':'com.vitonjob.annonces.Attachement',
+                  code : 0,
+                  status : '',
+                  fileContent : this.prepareImage(r.thumbnail),
+                },
+                created : this.parseDate(r.created),
+                offerId: r.offerId
+              };
               adverts.push(adv);
             }
           }
@@ -100,9 +150,10 @@ export class AdvertService {
 
   saveNewAdvert(advert : any){
     let sql = "insert into user_annonce_entreprise " +
-      "(titre, contenu, piece_jointe, forme_contrat, thumbnail, image_principale, created, fk_user_entreprise) " +
+      "(titre,lien, contenu, piece_jointe, forme_contrat, thumbnail, image_principale, created, fk_user_entreprise) " +
       "values " +
       "('"+Utils.sqlfyText(advert.titre)+"', '" +
+      Utils.sqlfyText(advert.link)+"', " + "'" +
       Utils.sqlfyText(advert.description)+"', " + "'" +
       Utils.sqlfyText(advert.attachement.fileContent)+"', '"+
       Utils.sqlfyText(advert.contractForm)+"', " + "'"+
@@ -131,6 +182,7 @@ export class AdvertService {
     let sql = "UPDATE user_annonce_entreprise " +
       "SET " +
       "titre = '" + Utils.sqlfyText(advert.titre) + "', " +
+      "lien = '" + Utils.sqlfyText(advert.link) + "', " +
       "contenu = '" + Utils.sqlfyText(advert.description) + "', " +
       "piece_jointe = '" + Utils.sqlfyText(advert.attachement.fileContent) + "', " +
       "thumbnail = '" + Utils.sqlfyText(advert.thumbnail.fileContent) + "', " +
@@ -235,6 +287,44 @@ export class AdvertService {
       " and j.dirty='N' " +
       " and a.pk_user_account=j.fk_user_account " +
       " and uija.fk_user_annonce_entreprise=" + advertId + ";"
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  getInterestAnnonce(advertId, jobyerId){
+    let sql = "select * from user_interet_jobyer_annonces where fk_user_annonce_entreprise = " + advertId + " and fk_user_jobyer = " + jobyerId;
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  deleteAdvertInterest(advertId, jobyerId){
+    let sql = "delete from user_interet_jobyer_annonces where fk_user_annonce_entreprise = " + advertId + " and fk_user_jobyer = " + jobyerId;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  saveAdvertInterest(advertId, jobyerId){
+    let sql = "insert into user_interet_jobyer_annonces (date, fk_user_annonce_entreprise, fk_user_jobyer) values ('" + DateUtils.sqlfy(new Date()) + "', " + advertId + ", " + jobyerId + ")";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();

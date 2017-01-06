@@ -572,8 +572,8 @@ export class ContractService {
       "indemniteCongesPayes": contract.indemniteCongesPayes,
       "moyenAcces": contract.moyenAcces,
       "numeroTitreTravail": contract.numeroTitreTravail,
-      "debutTitreTravail": DateUtils.toDateString(contract.debutTitreTravail),
-      "finTitreTravail": DateUtils.toDateString(contract.finTitreTravail),
+      "debutTitreTravail": contract.debutTitreTravail,
+      "finTitreTravail": contract.finTitreTravail,
       "periodesNonTravaillees": contract.periodesNonTravaillees,
       "debutSouplesse": DateUtils.toDateString(contract.debutSouplesse),
       "finSouplesse": DateUtils.toDateString(contract.finSouplesse),
@@ -591,7 +591,7 @@ export class ContractService {
       "organisationParticuliere":''
     };
 
-
+    debugger;
 
     let partner = GlobalConfigs.global['electronic-signature'];
 
@@ -663,9 +663,28 @@ export class ContractService {
   generateMission(idContract, offer) {
     let calendar = offer.calendarData;
     if (calendar && calendar.length > 0) {
+      //sort calendar by start date
+      calendar.sort(function(a, b) {
+        return b.date - a.date;
+      });
       for (let i = 0; i < calendar.length; i++) {
         let c = calendar[i];
-        this.generateMissionHour(idContract, c);
+        if(c.pause){
+          //j keeps the index of the pause
+          let j = i;
+          // i should be incremented to verify the next slot (either mission hour or pause)
+          i = i + 1;
+          while(calendar[i].pause){
+            i = i + 1;
+          }
+          this.generateMissionHour(idContract, calendar[i]).then((data: any) => {
+            for(let k = j; k < i; k++) {
+              this.generateMissionPause(calendar[k], data.data[0].pk_user_heure_mission);
+            }
+          });
+        }else{
+          this.generateMissionHour(idContract, c);
+        }
       }
     }
   }
@@ -688,10 +707,31 @@ export class ContractService {
       "" + c.startHour + ", " +
       "" + c.endHour + "," +
       "'NON', " +
-      "'NON')";
+      "'NON')" +
+      " RETURNING pk_user_heure_mission";
+    ;
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
+      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  generateMissionPause(c, missionHourId) {
+    let sql = "insert into user_pause " +
+      "(fk_user_heure_mission, " +
+      "debut, " +
+      "fin) " +
+      "values " +
+      "(" + missionHourId + ", " +
+      "'" + DateUtils.getMinutesFromDate(new Date(c.date)) + "', " +
+      "'" + DateUtils.getMinutesFromDate(new Date(c.dateEnd)) + "')";
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
       this.http.post(this.configuration.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {

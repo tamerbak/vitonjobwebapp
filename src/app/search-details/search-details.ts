@@ -66,10 +66,7 @@ export class SearchDetails{
 
   ngOnInit(): void {
     //get offer title, employer/jobyer name and matching
-    if (this.result.titreOffre)
-      this.fullTitle = this.result.titreOffre;
-    if (this.result.titreoffre)
-      this.fullTitle = this.fullTitle + this.result.titreoffre;
+    this.fullTitle = this.result.titreOffre;
     if (this.projectTarget != "employer")
       this.fullName = this.result.entreprise;
     else
