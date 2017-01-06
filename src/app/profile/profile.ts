@@ -20,6 +20,7 @@ import {AccountConstraints} from "../../validators/account-constraints";
 import {scan} from "rxjs/operator/scan";
 import {ConventionService} from "../../providers/convention.service";
 import {OffersService} from "../../providers/offer.service";
+import {EnvironmentService} from "../../providers/environment.service";
 
 declare var jQuery, require, Messenger, moment: any;
 declare var google: any;
@@ -27,7 +28,7 @@ declare var google: any;
 @Component({
   selector: '[profile]',
   template: require('./profile.html'),
-  providers: [Utils, ProfileService, CommunesService, LoadListService, MedecineService, AttachementsService, AccountConstraints, ConventionService, OffersService],
+  providers: [Utils, ProfileService, CommunesService, LoadListService, MedecineService, AttachementsService, AccountConstraints, ConventionService, OffersService, EnvironmentService],
   directives: [ROUTER_DIRECTIVES, NKDatetime, AlertComponent, ModalPicture, MaskedInput, BankAccount, ModalCorporamaSearch],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./profile.scss')]
@@ -237,6 +238,7 @@ export class Profile{
               private offersService : OffersService,
               private zone: NgZone,
               private router: Router,
+              private environmentService: EnvironmentService,
               private _loader: MapsAPILoader) {
 
     this.currentUser = this.sharedService.getCurrentUser();
@@ -2050,7 +2052,7 @@ export class Profile{
   downloadFile(content) {
     let pureBase64 = content.split(';')[1];
 	let url = "data:application/octet-stream;base64," + pureBase64;
-	
+
 	let downloadLink = document.createElement("a");
 	downloadLink.href = url;
 	//downloadLink.download = content.split(';')[0];
