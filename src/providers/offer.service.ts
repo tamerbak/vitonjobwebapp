@@ -190,10 +190,6 @@ export class OffersService {
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
 
-    offerData.class = 'com.vitonjob.callouts.auth.model.OfferData';
-    offerData.idOffer = 0;
-    offerData.jobyerId = 0;
-    offerData.entrepriseId = 0;
     offerData.status = "OUI";
     offerData.visible = true;
 

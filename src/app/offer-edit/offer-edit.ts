@@ -23,6 +23,9 @@ import {AdvertService} from "../../providers/advert.service";
 import {MissionService} from "../../providers/mission-service";
 import {ConventionParameters} from "./convention-parameters/convention-parameters";
 
+import {Offer} from "../../dto/offer";
+import {Job} from "../../dto/job";
+
 declare var Messenger, jQuery: any;
 declare var google: any;
 declare var moment: any;
@@ -44,7 +47,7 @@ export class OfferEdit{
   selectedJob: any;
   initSectorDone = false;
 
-  offer: any;
+  offer: Offer;
   sectors: any = [];
   jobs: any = [];
   selectedSector: any;
@@ -104,7 +107,6 @@ export class OfferEdit{
   indemnites: any = [];
   dataValidation: boolean = false;
 
-  offrePrivacyTitle: string;
   autoSearchModeTitle: string;
   modalParams: any = {type: '', message: ''};
   keepCurrentOffer: boolean = false;
@@ -286,13 +288,7 @@ export class OfferEdit{
         this.youtubeLink = this.offer.videolink.replace("youtu.be", "www.youtube.com/embed").replace("watch?v=", "embed/");
         this.youtubeLinkSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.youtubeLink);
       }
-      if (this.offer.visible) {
-        this.offrePrivacyTitle = this.offer.visible ? "Rendre l'offre privée" : "Rendre l'offre privée";
 
-      }
-      else {
-        this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée" : "Mettre l'offre en ligne";
-      }
       this.autoSearchModeTitle = this.offer.rechercheAutomatique ? "Désactiver la recherche auto" : "Activer la recherche auto";
       if (this.offer.obsolete) {
         //display alert if offer is obsolete
@@ -321,31 +317,10 @@ export class OfferEdit{
       /**
        * New offer initialization
        */
-      var jobData = {
-        'class': "com.vitonjob.callouts.auth.model.JobData",
-        job: "",
-        sector: "",
-        idSector: 0,
-        idJob: 0,
-        level: 'junior',
-        remuneration: null,
-        currency: 'euro',
-        validated: false,
-        prerequisObligatoires: [],
-        epi: []
-      };
-      this.offer = {
-        jobData: jobData,
-        parametrageConvention: -1,
-        calendarData: [],
-        qualityData: [],
-        languageData: [],
-        visible: false,
-        title: "",
-        status: "open",
-        videolink: "",
-        nbPoste: 1
-      };
+      this.offer = new Offer();
+      this.offer.jobData = new Job();
+      this.offer.telephone = this.currentUser.telephone;
+
       this.checkHourRate();
 
       if(this.projectTarget == 'employer'){
@@ -464,6 +439,7 @@ export class OfferEdit{
       }
       this.minHourRate = parameter.rate;
       this.selectedParamConvID = parameter.id;
+      this.offer.parametrageConventionObj = parameter;
     });
   }
 
@@ -851,9 +827,7 @@ export class OfferEdit{
       this.offersService.loadSectorByJobId(idJob).then((sector: any) => {
         this.offer.jobData.idSector = sector.id;
         this.offer.jobData.sector = sector.libelle;
-        let id = parseInt(this.offer.jobData.idSector);
-        this.selectNewSector(id);
-
+        this.selectNewSector(this.offer.jobData.idSector);
       });
     }
   }
@@ -919,7 +893,7 @@ export class OfferEdit{
     }
 
     if (this.obj != "detail") {
-    	
+
       this.slots.push(this.slot);
       this.slotsToSave.push(this.slot);
       this.offer.calendarData.push(this.slot);
@@ -1481,14 +1455,12 @@ export class OfferEdit{
       this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
       this.sharedService.setCurrentUser(this.currentUser);
       if (offer.visible) {
-        this.offrePrivacyTitle = this.offer.visible ? "Rendre l'offre privée" : "Rendre l'offre privée";
         Messenger().post({
           message: "Votre offre a bien été déplacée dans «Mes offres en ligne».",
           type: 'success',
           showCloseButton: true
         });
       } else {
-        this.offrePrivacyTitle = this.offer.visble ? "Rendre l'offre privée" : "Mettre l'offre en ligne";
         if(this.projectTarget == 'employer'){
           this.candidatureService.getJobyersByOfferCandidature(this.offer.idOffer).then((data: any) => {
             if(data && data.data && data.data.length >= 1){
@@ -2266,16 +2238,17 @@ export class OfferEdit{
       console.warn('Empty convention parameter event');
     }
     this.conventionComponentMsg = data.msg;
-    if (!data.parametrageId) {
-      // TODO tester avec parametrageId = 0
-      // Not good combinaison
-      debugger;
-    } else {
+    if (data.parametrageId > 0) {
       // good combinaison
       // Set offer parametrage id
-      this.offer.parametrageConvention = data.parametrageId;
-      debugger;
+      // this.offer.parametrageConvention = data.parametrageId;
+      this.selectedParamConvID = data.parametrageId;
+    } else {
+      // TODO tester avec parametrageId = 0
+      // Not good combinaison
+      // Afficher un message
     }
+    debugger;
   }
 
   isEmpty(str) {

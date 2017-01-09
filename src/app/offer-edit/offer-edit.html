@@ -190,6 +190,13 @@
         ></div>
 
         <div>conventionMessage: {{conventionComponentMsg}}</div>
+        <div>selectedParamConvID: {{selectedParamConvID}}</div>
+        <div>offer.parametrageConvention: {{offer.parametrageConvention}}</div>
+
+        <alert *ngIf="selectedParamConvID == 0" [type]="'danger alert-sm'">
+          <div [innerHTML]="'<b>gras</b>* Le taux horaire devrait être supérieur ou égal à ' + invalidHourRateMessage"></div>
+        </alert>
+
 
         <!--<div class="form-group row" *ngIf="convCoefficientsVisible()">-->
           <!--<label class="col-md-12 col-xs-12 form-control-label">Coefficient</label>-->
@@ -329,7 +336,7 @@
             <h5 *ngIf="event.title" class="modal-title">{{ event.title }}</h5>
           </div>
           <div class="modal-body">
-            
+
               <alert *ngFor="let alert of alertsSlot; let i = index" [type]="alert.type + ' alert-sm'" dismissible="false">
                 <div [innerHTML]="alert.msg"></div>
               </alert>
@@ -691,7 +698,7 @@
         <!-- Qualities -->
         <div class="form-group row">
           <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-            {{ projectTarget == 'employer' ? 'Qualités' : 'Mon employeur idéal' }} 
+            {{ projectTarget == 'employer' ? 'Qualités' : 'Mon employeur idéal' }}
           </label>
 
           <div class="col-md-8 col-xs-12">
@@ -826,7 +833,7 @@
                 </div>
                 <div class="col-lg-6 col-md-6 col-xs-12">
                   <button type="submit" class="btn btn-primary fwidth" (click)="changePrivacy()" [disabled]="isOfferInContract || isOfferArchived">
-                    {{offrePrivacyTitle}}
+                    {{ offer.visible ? "Rendre l'offre privée" : "Mettre l'offre en ligne" }}
                   </button>
                 </div>
 
