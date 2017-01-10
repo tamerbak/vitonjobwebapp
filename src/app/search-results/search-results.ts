@@ -97,7 +97,8 @@ export class SearchResults{
         r.index = i + 1;
         r.avatar = "../assets/images/avatar.png";
 
-        if (r.latitude !== '0' && r.longitude !== '0') {
+        if ((r.latitude !== '0' && r.longitude !== '0') &&
+          !Utils.isEmpty(r.latitude) && !Utils.isEmpty(r.longitude)) {
           let info = "";
           let toffer = '';
           if(r.titreOffre && r.titreOffre.length>0)

@@ -9,6 +9,8 @@ import {ModalNotificationContract} from "../modal-notification-contract/modal-no
 import {ModalProfile} from "../modal-profile/modal-profile";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {CandidatureService} from "../../providers/candidature-service";
+import {Utils} from "../utils/utils";
+
 
 declare var jQuery: any;
 
@@ -75,9 +77,18 @@ export class SearchDetails{
     this.matching = this.result.matching + "%";
 
     //load markers
-    this.lat = +this.result.latitude;
-    this.lng = +this.result.longitude;
-    this.zoom = 12;
+    if ((this.result.latitude !== '0' && this.result.longitude !== '0') &&
+      !Utils.isEmpty(this.result.latitude) && !Utils.isEmpty(this.result.longitude)){
+      this.lat = +this.result.latitude;
+      this.lng = +this.result.longitude;
+      this.zoom = 12;
+    } else {
+      this.lat = 48.856494;
+      this.lng = 2.345503;
+      this.zoom = 8;
+    }
+
+
 
     //get qualities and langs of the selected offer
     let table = this.projectTarget == "employer" ? 'user_offre_jobyer' : 'user_offre_entreprise';
