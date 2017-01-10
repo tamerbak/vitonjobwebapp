@@ -167,6 +167,12 @@ export class OfferEdit{
 
   personalizeConventionInit : boolean = false;
 
+  savedSoftwares: any[] = [];
+  selectedSoftware: any;
+  softwares: any[];
+  expSoftware: number = 1;
+
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private searchService: SearchService,
@@ -390,6 +396,20 @@ export class OfferEdit{
       this.listService.loadOffersLanguages().then((data: any) => {
         this.langs = data.data;
         this.sharedService.setLangList(this.langs);
+      });
+    }
+
+    //load Softwares for jobyers pharmaciens
+    this.listService.loadPharmacieSoftwares().then((data: any) => {
+      this.softwares = data.data;
+    });
+
+    // get mastered softwares for jobyers pharmaciens
+    if (this.obj == "detail") {
+      this.offersService.getOfferSoftwares(this.offer.idOffer).then((data: any) => {
+        if (data) {
+          this.savedSoftwares = data;
+        }
       });
     }
 
@@ -893,7 +913,7 @@ export class OfferEdit{
     }
 
     if (this.obj != "detail") {
-    	
+
       this.slots.push(this.slot);
       this.slotsToSave.push(this.slot);
       this.offer.calendarData.push(this.slot);
@@ -1251,6 +1271,12 @@ export class OfferEdit{
 
         if (this.projectTarget == 'employer' && this.selectedParamConvID)
           this.offersService.saveOfferConventionParameters(offer.idOffer, this.selectedParamConvID);
+
+        if(this.projectTarget == 'employer'){
+          for(let i = 0; i < this.savedSoftwares.length; i++){
+            this.saveSoftware(this.savedSoftwares[i], offer.idOffer);
+          }
+        }
 
         this.sharedService.setCurrentUser(this.currentUser);
         Messenger().post({
@@ -1968,35 +1994,35 @@ export class OfferEdit{
     this.slot.dateEnd = end._d;
 
     if (this.plageDate == "multiple" && this.isPeriodic){
-      
+
       this.isPeriodic = false; // setting back to false to prevent default
-      let nbDays = Math.floor( (this.endDate - this.startDate) / (60*60*24*1000) ) + 1;   
-      
+      let nbDays = Math.floor( (this.endDate - this.startDate) / (60*60*24*1000) ) + 1;
+
       // Boucle de splittage slots with fix for special dates
       for (let n = 0;n < (nbDays>1 ? nbDays : nbDays+1); n++){
 
-        let date_debut = new Date(this.startDate.getFullYear(), 
-                                  this.startDate.getMonth(), 
+        let date_debut = new Date(this.startDate.getFullYear(),
+                                  this.startDate.getMonth(),
                                   this.startDate.getDate() + n,
                                   this.startDate.getHours(),
                                   this.startDate.getMinutes()
                                   );
 
-        let date_arret = new Date(this.startDate.getFullYear(), 
-                                  this.startDate.getMonth(), 
+        let date_arret = new Date(this.startDate.getFullYear(),
+                                  this.startDate.getMonth(),
                                   this.startDate.getDate() + (nbDays>1 ? n : n + 1),
                                   this.endDate.getHours(),
                                   this.endDate.getMinutes()
                                   );
 
-        // Récupération du slot splitté 
+        // Récupération du slot splitté
         let splitted_slot = { from: date_debut, to: date_arret };
 
         // Normalisation du slot généré par le split / day
         let normalized_slot ={date:date_debut, dateEnd:date_arret,
                               startHour:date_debut, endHour:date_arret,
                               pause:false, allDay:false};
-        
+
         // + Vérification des slots
         if (this.checkHour(this.slots, normalized_slot)) {
 
@@ -2011,7 +2037,7 @@ export class OfferEdit{
           let infos = "";//"<br>" + "- Le "+splitted_slot.from.toLocaleDateString() + '.'; // Can't do multi alerts - fix
           this.addAlert("warning", " Certains créneaux que vous avez séléctionné ne sont pas valide" + infos, "general");
         }
-      
+
 
       }
 
@@ -2151,7 +2177,7 @@ export class OfferEdit{
     }
     if (!this.offer.calendarData || this.offer.calendarData.length == 0) {
       this.addAlert("warning", "Veuillez saisir les horaires de travail pour continuer.", "general");
-      errors.push({type:'required', 
+      errors.push({type:'required',
       		label: this.projectTarget == 'jobyer' ? "Choix des disponibilités" : "Choix des horaires de travail"})
     }
 
@@ -2229,6 +2255,71 @@ export class OfferEdit{
     	})
     }
     return errors.length == 0;
+  }
+
+  saveSoftware(software, idOffer) {
+    this.offersService.saveSoftware(software, idOffer).then((expId: any) =>{
+      let savedSoft = {expId:expId, softId: software.id, experience: software.experience, nom: software.nom};
+      if(this.obj == 'detail'){
+        this.savedSoftwares.push(savedSoft);
+      }
+    })
+  }
+
+  removeSoftware(item){
+    this.savedSoftwares.splice(this.savedSoftwares.indexOf(item), 1);
+    if(this.obj == 'detail'){
+      this.offersService.deleteSoftware(item.expId);
+    }
+  }
+
+  addSoftware(){
+    if (Utils.isEmpty(this.selectedSoftware)) {
+      return;
+    }
+    let softwaresTemp = this.softwares.filter((v)=> {
+      return (v.id == this.selectedSoftware);
+    });
+
+
+    //if the selected software is already saved, do not re-add it
+    for(let i = 0; i < this.savedSoftwares.length; i++) {
+      if (this.savedSoftwares[i].softId == this.selectedSoftware) {
+        if (this.savedSoftwares[i].experience == this.expSoftware) {
+          this.selectedSoftware = "";
+          this.expSoftware = 1;
+          return;
+        } else {
+          if (this.obj == 'detail') {
+            this.offersService.updateSoftware(this.savedSoftwares[i].expId, this.expSoftware).then((data:any) => {
+              this.savedSoftwares[i].experience = this.expSoftware;
+              this.selectedSoftware = "";
+              this.expSoftware = 1;
+            });
+            return;
+          }else {
+            this.savedSoftwares[i].experience = this.expSoftware;
+            this.selectedSoftware = "";
+            this.expSoftware = 1;
+            return;
+          }
+        }
+      }
+    }
+
+    if(this.obj == 'detail'){
+      //if software is not yet added
+      softwaresTemp[0].experience = (this.expSoftware <= 1 ? 1 : this.expSoftware);
+      this.saveSoftware(softwaresTemp[0], this.offer.idOffer);
+      this.selectedSoftware = "";
+      this.expSoftware = 1;
+    }else{
+      softwaresTemp[0].experience = (this.expSoftware <= 1 ? 1 : this.expSoftware);
+      softwaresTemp[0].softId = softwaresTemp[0].id;
+      this.savedSoftwares.push(softwaresTemp[0]);
+      this.selectedSoftware = "";
+      this.expSoftware = 1;
+    }
   }
 
   isEmpty(str) {
