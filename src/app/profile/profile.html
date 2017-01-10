@@ -56,6 +56,7 @@
               </p>
               <p *ngIf="!isEmployer && !isRecruiter">Jobyer</p>
               <p *ngIf="environmentService.get('EMPLOYER_PHARMA') == 'true'">(PHARMACIE)</p>
+              <p *ngIf="environmentService.get('JOBYER_PHARMA') == 'true'">(PHARMACIE)</p>
               <button [disabled]="showForm" class="btn btn-primary btn-sm mt" (click)="initForm()">
                 <i class="fa fa-pencil-square-o ml-xs"></i>&nbsp;
                 Modifier les informations
