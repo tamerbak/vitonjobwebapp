@@ -630,6 +630,7 @@ export class ModalProfile{
               let value = this.isSpontaneaousContact ? "Oui" : "Non";
               this.profileService.updateSpontaneousContact(value, accountId);
               this.currentUser.accepteCandidature = value;
+              this.sharedService.setCurrentUser(this.currentUser);
 
               Messenger().post({
                 message: 'Vos données ont été bien enregistrées',
