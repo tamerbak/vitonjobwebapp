@@ -608,7 +608,7 @@ export class Profile{
 
   loadAttachement(scanTitle) {
     // Get scan
-    this.attachementsService.loadAttachements(this.currentUser).then((attachments: any) => {
+    this.attachementsService.loadAttachements(this.currentUser, 'Scans').then((attachments: any) => {
       let allImagesTmp = [];
       for (let i = 0; i < attachments.length; ++i) {
         if (attachments[i].fileName.substr(0, 4 + scanTitle.length) == "scan" + scanTitle) {
@@ -968,7 +968,7 @@ export class Profile{
       if (accountId) {
         for (let i = 0; i < this.allImages.length; i++) {
           let index = i + 1;
-          this.attachementsService.uploadFile(this.currentUser, 'scan' + this.scanTitle + ' ' + index, this.allImages[i].data).then((data: any) => {
+          this.attachementsService.uploadFile(this.currentUser, 'scan' + this.scanTitle + ' ' + index, this.allImages[i].data, 'Scans').then((data: any) => {
             if (data && data.id != 0) {
               this.attachementsService.uploadActualFile(data.id, data.fileName, this.allImages[i].data);
             }

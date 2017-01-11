@@ -16,20 +16,19 @@ export class AttachementsService {
     this.data = null;
   }
 
-  loadAttachements(user){
+  loadAttachements(user, folder) {
 
     let entreprise : any = null;
     if (user && Utils.isEmpty(user.employer.entreprises) === false && user.employer.entreprises.length > 0) {
       entreprise = user.employer.entreprises[0];
     }
 
-    let sql = "SELECT pj.pk_user_pieces_justificatives, pj.nom_fichier, pj.date_mise_a_jour, d.file_folder " +
+    let sql = "SELECT pj.pk_user_pieces_justificatives, pj.nom_fichier, pj.date_mise_a_jour, pj.dossier " +
       "FROM user_pieces_justificatives pj " +
-      "LEFT JOIN row_document d ON d.file_name = pj.nom_fichier " +
-      "WHERE fk_user_account=" + user.id + " " +
-      (entreprise ? "and pj.fk_user_entreprise=" + entreprise.id + " " : "") +
-      "and pj.dirty='N' AND d.id_window = 2538"
-    ;
+      "WHERE fk_user_account=" + user.id +
+      ((entreprise) ? " AND pj.fk_user_entreprise=" + entreprise.id : "") +
+      ((Utils.isEmpty(folder) == false && folder != '*') ? " AND pj.dossier ILIKE '" + Utils.sqlfyText(folder) + "'" : "")  +
+      " AND pj.dirty='N'";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -44,7 +43,7 @@ export class AttachementsService {
                 id : data.data[i].pk_user_pieces_justificatives,
                 fileName : data.data[i].nom_fichier,
                 uploadDate : this.parseDate(data.data[i].date_mise_a_jour),
-                fileFolder: data.data[i].file_folder,
+                fileFolder: data.data[i].dossier,
               });
             }
           }
@@ -80,7 +79,7 @@ export class AttachementsService {
     });
   }
 
-  uploadFile(user, fileName, scanUri) {
+  uploadFile(user, fileName, scanUri, fileFolder) {
 
     let userId = user.id;
     let d = new Date();
@@ -94,11 +93,13 @@ export class AttachementsService {
     let sql = "insert into user_pieces_justificatives (" +
       "fk_user_account" +
       ", nom_fichier" +
+      ", dossier" +
       ", date_mise_a_jour" +
       (entreprise ? ",fk_user_entreprise" : "") +
       ") values (" +
       userId +
       ",'" + fileName +
+      "','" + fileFolder +
       "','" + this.sqlfyDate(d) +
       (entreprise ? "','" + entreprise.id : "") +
       "') returning pk_user_pieces_justificatives";
@@ -120,7 +121,7 @@ export class AttachementsService {
               uploadDate : this.parseDate(this.sqlfyDate(d)),
               fileFolder: ''
             };
-            this.updateAttachements(userId, this.attachement.id, fileName, scanUri);
+            this.updateAttachements(userId, this.attachement.id, fileName, scanUri, fileFolder);
           }
 
           resolve(this.attachement);
@@ -150,13 +151,14 @@ export class AttachementsService {
     });
   }
 
-  updateAttachements(userId, idAttachment, fileName, scanUri){
+  updateAttachements(userId, idAttachment, fileName, scanUri, fileFolder){
     let today = this.sqlfyDate(new Date());
-    let storageId = "{	\"class\":\"com.vitonjob.callouts.AttachementDownload\", \"idBean\" : <<DBID>>,	\"idAttachement\" : "+idAttachment+"}";
+    let storageId = "{\"class\":\"com.vitonjob.callouts.AttachementDownload\",\"idBean\":<<DBID>>,\"idAttachement\":"+idAttachment+"}";
     let rowId = userId;
     let sql =  "insert into row_document " +
       "(" +
       "file_name, " +
+      "file_folder, " +
       "file_extension, " +
       "date_creation, " +
       "file_version, " +
@@ -170,6 +172,7 @@ export class AttachementsService {
       "text_content" +
       ") values (" +
       "'"+fileName+"'," +
+      "'"+Utils.sqlfyText(fileFolder)+"'," +
       "'jpg'," +
       "'"+today+"'," +
       "1," +
@@ -184,6 +187,7 @@ export class AttachementsService {
     sql = sql+"insert into row_document " +
       "(" +
       "file_name, " +
+      "file_folder, " +
       "file_extension, " +
       "date_creation, " +
       "file_version, " +
@@ -197,6 +201,7 @@ export class AttachementsService {
       "text_content" +
       ") values (" +
       "'"+fileName+"'," +
+      "'"+Utils.sqlfyText(fileFolder)+"'," +
       "'jpg'," +
       "'"+today+"'," +
       "1," +
@@ -331,7 +336,10 @@ export class AttachementsService {
   }
 
   deleteFile(attachments, attachement: File) {
-    let folderTree : string [] = attachement.fileFolder.split('/');
+    let folderTree : string [] = [];
+    if (Utils.isEmpty(attachement.fileFolder) == false) {
+      folderTree = attachement.fileFolder.split('/');
+    }
     return this._recursiveDeleteFile(attachments, 0, folderTree, attachement);
   }
 
