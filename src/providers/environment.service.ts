@@ -10,14 +10,7 @@ export class EnvironmentService {
   environment: any[];
 
   constructor(private http: Http, private sharedService: SharedService) {
-    let currentUser = sharedService.getCurrentUser();
-    if (Utils.isEmpty(currentUser) == false) {
-      this.loadUserEnvironment(currentUser.id).then((data: any) => {
-        this.environment = data;
-      });
-    } else {
-      this.environment = [];
-    }
+    this.reload();
   }
 
   loadUserEnvironment(accountId) {
@@ -61,5 +54,20 @@ export class EnvironmentService {
       }
     }
     return null;
+  }
+
+  reload() {
+    let currentUser = this.sharedService.getCurrentUser();
+    if (Utils.isEmpty(currentUser) == false) {
+      this.loadUserEnvironment(currentUser.id).then((data: any) => {
+        this.environment = data;
+      });
+    } else {
+      this.environment = [];
+    }
+  }
+
+  clear(): void {
+    this.environment = [];
   }
 }

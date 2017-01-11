@@ -355,7 +355,10 @@ export class Profile{
       niveau : this.selectedJobLevel
     };
     this.interestingJobs.push(j);
-    this.profileService.attachJob(j, this.currentUser.jobyer.id);
+    this.profileService.attachJob(j, this.currentUser.jobyer.id).then((data: any)=> {
+      // Refresh environment
+      this.environmentService.reload();
+    });
   }
 
   removeJob(j){
@@ -371,7 +374,10 @@ export class Profile{
       return;
 
     this.interestingJobs.splice(index,1);
-    this.profileService.removeJob(j, this.currentUser.jobyer.id);
+    this.profileService.removeJob(j, this.currentUser.jobyer.id).then((data: any)=> {
+      // Refresh environment
+      this.environmentService.reload();
+    });
   }
 
   initRequirements(){
@@ -1602,6 +1608,9 @@ export class Profile{
             ////console.log(error);
             this.validation = false;
           });
+
+        // Refresh environment
+        this.environmentService.reload();
 
       }
     }
