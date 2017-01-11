@@ -335,3 +335,16 @@ select {
   z-index: 1!important;
 
 }
+
+.widget-profile-header {
+  background-color: $navbar-dashboard-bg;
+  border-color: $navbar-dashboard-border;
+  border-radius: 4px 4px 0 0;
+  margin-bottom: 0px !important;
+  table-layout: fixed;
+  color: white;
+}
+
+.widget-body-profile {
+  margin-top: 15px;
+}
