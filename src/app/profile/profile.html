@@ -601,7 +601,6 @@
       <div class="widget-body widget-body-profile">
         <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
           <fieldset>
-            <!--<legend><strong>Disponibilités</strong></legend>-->
             <div class="container-fluid">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label text-md-center" >
@@ -674,9 +673,12 @@
                   ></datetime>
                 </div>
 
-                <button class="col-md-2 btn btn-primary" (click)="addDisponibilityEntry()"
-                        [disabled]="!(dispoToCreate.startDate && dispoToCreate.endDate && dispoToCreate.startHour && dispoToCreate.endHour) || paradox()">
-                  <span class="glyphicon glyphicon-plus"></span>
+                <button
+                  class="col-md-2 btn btn-success"
+                  (click)="addDisponibilityEntry()"
+                  [disabled]="!(dispoToCreate.startDate && dispoToCreate.endDate && dispoToCreate.startHour && dispoToCreate.endHour) || paradox()"
+                >
+                  Ajouter
                 </button>
               </div>
             </div>
@@ -706,8 +708,8 @@
                   <option value="2">Expérimenté</option>
                 </select>
               </div>
-              <button class="btn btn-primary" (click)="addJob()">
-                <span class="glyphicon glyphicon-plus"></span>
+              <button class="col-md-2 btn btn-success" [disabled]="!selectedJob" (click)="addJob()">
+                Ajouter
               </button>
             </div>
             <div class="row">
@@ -716,7 +718,7 @@
             <div class="group-form row" *ngFor="let j of interestingJobs">
               <div class="col-md-10 col-sm-10 col-xs-10">
                 <button class="btn btn-sm btn-danger" (click)="removeJob(j)">
-                  <span class="glyphicon glyphicon-minus"></span>
+                  <i class="glyphicon glyphicon-trash"></i>
                 </button>
                 {{j.libelle}} - {{j.niveau == '1'?'Débutant':'Expérimenté'}}
               </div>
@@ -998,45 +1000,67 @@
                   Logiciels
                 </label>
                 <div class="col-md-8 col-xs-12">
-                  <div class="form-group row" *ngFor="let item of savedSoftwares">
-                    <div class="col-md-6 col-xs-6">
-                      <input class="form-control" value="{{item.nom}}" disabled/>
-                    </div>
-                    <div class="col-md-3 col-xs-6">
-                      <input class="form-control" value="{{item.experience}}" disabled/>
-                    </div>
-                    <div class="col-md-3 col-xs-12">
-                      <button
-                        style="display: block; width: 100%;"
-                        class="btn btn-danger mb-xs"
-                        role="button"
-                        (click)="removeSoftware(item)">
-                        <i class="glyphicon glyphicon-trash"></i>
-                      </button>
-                    </div>
-                  </div>
 
-                  <!-- Ajouter les logiciels maitrisés-->
-                  <div class="row">
-                    <div class="col-md-6 col-xs-6">
-                      <select class="form-control" [(ngModel)]="selectedSoftware">
-                        <option *ngFor="let s of softwares" [value]="s.id">{{s.nom}}</option>
-                      </select>
-                    </div>
-                    <div class="col-md-3 col-xs-6">
-                      <input class="form-control" type="number" min="0" step="1" [(ngModel)]="expSoftware"/>
-                    </div>
-                    <div class="col-md-3 col-xs-12">
-                      <button
-                        style="display: block; width: 100%;"
-                        class="btn btn-success mb-xs offer-add-button"
-                        role="button"
-                        (click)="addSoftware()"
-                        [disabled]="!selectedSoftware">
-                        Ajouter
-                      </button>
-                    </div>
-                  </div>
+                  <table class="table table-condensed">
+                    <tr>
+                      <td>Nom</td>
+                      <td>Durée d'expérience</td>
+                    </tr>
+
+                    <tr *ngFor="let item of savedSoftwares">
+                      <td>
+                        <input class="form-control" value="{{ item.nom }}" disabled />
+                      </td>
+                      <td>
+                        <select class="form-control" [(ngModel)]="item.experience" disabled>
+                          <option value="-1" selected></option>
+                          <option value="0">Moins d'1 an</option>
+                          <option value="0.25">Entre 0 et 3 mois</option>
+                          <option value="0.5">Entre 3 et 6 mois</option>
+                          <option value="1">Entre 6 mois et 1 an</option>
+                          <option value="2">Plus d'1 an</option>
+                        </select>
+                      </td>
+                      <td>
+                        <button
+                          style="display: block; width: 100%;"
+                          class="btn btn-danger mb-xs"
+                          role="button"
+                          (click)="removeSoftware(item)">
+                          <i class="glyphicon glyphicon-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <select class="form-control" [(ngModel)]="selectedSoftware">
+                          <option *ngFor="let s of softwares" [value]="s.id">{{s.nom}}</option>
+                        </select>
+                      </td>
+                      <td>
+                        <select class="form-control" [(ngModel)]="expSoftware">
+                          <option value="-1" selected disabled></option>
+                          <option value="0">Moins d'1 an</option>
+                          <option value="0.25">Entre 0 et 3 mois</option>
+                          <option value="0.5">Entre 3 et 6 mois</option>
+                          <option value="1">Entre 6 mois et 1 an</option>
+                          <option value="2">Plus d'1 an</option>
+                        </select>
+                      </td>
+                      <td>
+                        <button
+                          style="display: block; width: 100%;"
+                          class="btn btn-success mb-xs offer-add-button"
+                          role="button"
+                          (click)="addSoftware()"
+                          [disabled]="!selectedSoftware">
+                          Ajouter
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
+
                 </div>
               </div>
             </div>

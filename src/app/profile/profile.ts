@@ -225,7 +225,7 @@ export class Profile{
   savedSoftwares: any[] = [];
   selectedSoftware: any;
   softwares: any[];
-  expSoftware: number = 1;
+  expSoftware: number = -1;
 
   setImgClasses() {
     return {
@@ -2170,13 +2170,13 @@ export class Profile{
       if (this.savedSoftwares[i].softId == this.selectedSoftware) {
         if (this.savedSoftwares[i].experience == this.expSoftware) {
           this.selectedSoftware = "";
-          this.expSoftware = 1;
+          this.expSoftware = -1;
           return;
         } else {
           this.profileService.updateSoftware(this.savedSoftwares[i].expId, this.expSoftware).then((data: any) => {
             this.savedSoftwares[i].experience = this.expSoftware;
             this.selectedSoftware = "";
-            this.expSoftware = 1;
+            this.expSoftware = -1;
           });
           return;
         }
@@ -2184,9 +2184,9 @@ export class Profile{
     }
 
     //if software is not yet addes
-    softwaresTemp[0].experience = (this.expSoftware <= 1 ? 1 : this.expSoftware);
+    softwaresTemp[0].experience = this.expSoftware;
     this.saveSoftware(softwaresTemp[0]);
     this.selectedSoftware = "";
-    this.expSoftware = 1;
+    this.expSoftware = -1;
   }
 }
