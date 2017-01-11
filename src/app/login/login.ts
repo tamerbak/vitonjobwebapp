@@ -124,6 +124,7 @@ export class LoginPage{
         return;
       }
       this.authService.authenticate(this.email, indPhone, pwd, this.role, this.isRecruteur).then((data: any) => {
+        
         this.hideLoader = true;
         //case of authentication failure : server unavailable or connection probleme
         if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
@@ -157,6 +158,9 @@ export class LoginPage{
         this.authService.getPasswordStatus(tel).then((dataPwd: any) => {
           if(dataPwd && dataPwd.data && dataPwd.data.length > 0) {
             data.mot_de_passe_reinitialise = dataPwd.data[0].mot_de_passe_reinitialise;
+          }
+          if(Utils.isEmpty(data.titre) && data.estRecruteur ){
+            data.changePassword = true;
           }
           this.sharedService.setCurrentUser(data);
           this.profileService.loadProfilePicture(data.id).then((pic: any) => {

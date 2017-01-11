@@ -28,6 +28,9 @@ export class ModalUpdatePassword{
   isValidPassword1: boolean = false;
   isValidPassword2: boolean = false;
 
+  showHidePasswdIcon: string;
+  showHidePasswdConfirmIcon: string;
+
   password1Hint: string = "";
   password2Hint: string = "";
 
@@ -59,6 +62,44 @@ export class ModalUpdatePassword{
       this.getUserInfos();
       this.initValidation();
 
+    }
+  }
+
+  ngOnInit(){
+    this.showHidePasswdIcon = "fa fa-eye";
+    this.showHidePasswdConfirmIcon = "fa fa-eye";
+  }
+
+  showHidePasswd() {
+    let divHide = document.getElementById('hidePasswd');
+    let divShow = document.getElementById('showPasswd');
+
+    if (divHide.style.display == 'none') {
+      divHide.style.display = 'flex';
+      divShow.style.display = 'none';
+      this.showHidePasswdIcon = "fa fa-eye";
+    }
+    else {
+      divHide.style.display = 'none';
+      divShow.style.display = 'flex';
+      this.showHidePasswdIcon = "fa fa-eye-slash";
+    }
+  }
+
+
+  showHidePasswdConfirm() {
+    let divHide = document.getElementById('hidePasswdConfirm');
+    let divShow = document.getElementById('showPasswdConfirm');
+
+    if (divHide.style.display == 'none') {
+      divHide.style.display = 'flex';
+      divShow.style.display = 'none';
+      this.showHidePasswdConfirmIcon = "fa fa-eye";
+    }
+    else {
+      divHide.style.display = 'none';
+      divShow.style.display = 'flex';
+      this.showHidePasswdConfirmIcon = "fa fa-eye-slash";
     }
   }
 
@@ -153,6 +194,9 @@ export class ModalUpdatePassword{
             type: 'success',
             showCloseButton: true
           });
+          if(this.currentUser.changePassword){
+            this.currentUser.changePassword = false;
+          }
           this.validation = false;
           this.currentUser.mot_de_passe_reinitialise ="Non";
           this.sharedService.setCurrentUser(this.currentUser);

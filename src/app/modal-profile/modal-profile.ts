@@ -564,6 +564,14 @@ export class ModalProfile{
               type: 'success',
               showCloseButton: true
             });
+
+            if(this.currentUser.changePassword){
+                jQuery('#modal-profile').modal('hide');
+                jQuery('#modal-profile').one('hidden.bs.modal', function (e) {
+                  jQuery('#modal-update-password').modal('show');
+                })
+            }
+            
             //redirecting to offers page if new User
             if (isNewUser) {
               this.router.navigate(['home']);
