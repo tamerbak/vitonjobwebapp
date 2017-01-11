@@ -47,7 +47,7 @@ export class Attachements {
     } else {
 
       this.isEmployer = this.currentUser.estEmployeur;
-      this.attachementSerice.loadAttachements(this.currentUser).then(data=>{
+      this.attachementSerice.loadAttachements(this.currentUser, '*').then(data=>{
         // this.attachments = data;
         this.attachments = this.attachementSerice.groupByFolder(data);
         // if(!this.attachments || this.attachments.length == 0){
@@ -86,7 +86,7 @@ export class Attachements {
     }
 
     this.isUploadInProgress = true;
-    this.attachementSerice.uploadFile(this.currentUser, this.fileName, this.scanData).then((data: any) => {
+    this.attachementSerice.uploadFile(this.currentUser, this.fileName, this.scanData, 'Autres').then((data: any) => {
       jQuery('.fileinput').fileinput('clear')
       this.fileName ='';
       if(data && data.id != 0){
