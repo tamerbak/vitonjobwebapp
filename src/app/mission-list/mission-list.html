@@ -41,6 +41,7 @@
               avec {{ isEmployer ? item.prenom +' '+ item.nom : item.nom  }}
             </p>
             <div class="col-sm-3 col-xs-12 mission-list-data-2">
+              <b>Date de la mission</b>
               <p class="value3 mt-sm">
                 {{ toStringDate(item.date_de_debut) }}
                 {{(toStringDate(item.date_de_fin) != toStringDate(item.date_de_debut))
@@ -71,6 +72,7 @@
           </div>
 
           <div class="col-sm-12 col-xs-12 mission-list-data pull-xs-right">
+            <b>Date de la mission</b>
             <p class="value3 mt-sm">
               {{ toStringDate(item.date_de_debut) }}
               {{(toStringDate(item.date_de_fin) != toStringDate(item.date_de_debut))
