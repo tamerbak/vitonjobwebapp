@@ -36,9 +36,11 @@ export class MissionList{
   missionsObjNow: any;
   missionsObjFutur: any;
   missionsObjPast: any;
+  missionsObjCanceled: any;
   missionNow: any;
   missionFutur: any;
   missionPast: any;
+  missionCanceled: any;
 
   // Web
   typeMissionModel: string = '0';
@@ -70,15 +72,18 @@ export class MissionList{
     this.missionNow = [];
     this.missionFutur = [];
     this.missionPast = [];
+    this.missionCanceled = [];
 
     this.missionsObjNow = {header: 'Missions en cours', list: this.missionNow, loaded: false};
     this.missionsObjFutur = {header: 'Missions en attente', list: this.missionFutur, loaded: false};
     this.missionsObjPast = {header: 'Missions terminées', list: this.missionPast, loaded: false};
+    this.missionsObjCanceled = {header: 'Missions Annulées', list: this.missionCanceled, loaded: false};
 
     this.missionList = [];
     this.missionList.push(this.missionsObjNow);
     this.missionList.push(this.missionsObjFutur);
     this.missionList.push(this.missionsObjPast);
+    this.missionList.push(this.missionsObjCanceled);
   }
 
   ngOnInit() {
@@ -114,9 +119,12 @@ export class MissionList{
             // Mission in futur
               this.missionFutur.push(item);
             //else
-            if (item.accompli.toUpperCase() == 'OUI' || !Utils.isEmpty(item.annule_par))
+            if (item.accompli.toUpperCase() == 'OUI' && Utils.isEmpty(item.annule_par))
             // Mission in past
               this.missionPast.push(item);
+            if (!Utils.isEmpty(item.annule_par))
+            // Mission canceled
+              this.missionCanceled.push(item);
           }
           //retrieve mission hours of today
           this.missionService.listMissionHours(item, true).then((data: any) => {
@@ -144,6 +152,10 @@ export class MissionList{
         });
 
         this.missionPast = this.missionPast.sort((a, b) => {
+          return this.dayDifference(b.date_de_debut, a.date_de_debut)
+        });
+
+        this.missionCanceled = this.missionCanceled.sort((a, b) => {
           return this.dayDifference(b.date_de_debut, a.date_de_debut)
         });
       }
