@@ -16,7 +16,7 @@ export class Job {
   epi: any[];
 
   constructor() {
-    this.class = 'com.vitonjob.callouts.auth.model.JobData';
+    this.class = 'com.vitonjob.callouts.offer.model.JobData';
 
     this.job = "";
     this.sector = "";

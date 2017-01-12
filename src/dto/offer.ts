@@ -3,6 +3,7 @@
  */
 
 import {Job} from "./job";
+import {CalendarSlot} from "./calendar-slot";
 
 export class Offer {
   'class': string;
@@ -12,7 +13,6 @@ export class Offer {
   videolink: string;
   jobData: Job;
   parametrageConvention: number;
-  parametrageConventionObj: any[];
 
   calendarData: any[];
   qualityData: any[];
@@ -32,12 +32,11 @@ export class Offer {
   entrepriseId: number;
 
   constructor() {
-    this.class  = 'com.vitonjob.callouts.auth.model.OfferData';
+    this.class  = 'com.vitonjob.callouts.offer.model.OfferData';
 
     this.idOffer = 0;
     this.jobData = null;
-    this.parametrageConvention = -1;
-    this.parametrageConventionObj = [];
+    this.parametrageConvention = 0;
     this.calendarData = [];
     this.qualityData = [];
     this.languageData = [];

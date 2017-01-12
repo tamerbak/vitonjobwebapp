@@ -1,17 +1,16 @@
 /**
  * Created by kelvin on 29/12/2016.
  */
-import {Component, EventEmitter, Input, Output} from "@angular/core";
+import {Component, EventEmitter, Input, Output, SimpleChanges} from "@angular/core";
 import {ROUTER_DIRECTIVES} from "@angular/router";
 import {ConventionFilter} from "./convention-filter/convention-filter";
 import {OffersService} from "../../../providers/offer.service";
 import {SharedService} from "../../../providers/shared.service";
 import {ConventionService} from "../../../providers/convention.service";
 import {Utils} from "../../utils/utils";
-// import {OffersService} from "../../providers/offer.service";
-// import {SharedService} from "../../providers/shared.service";
+import {Offer} from "../../../dto/offer";
 
-declare var jQuery, Messenger,md5: any;
+declare var jQuery, Messenger, md5: any;
 
 class Filter {
   name: string;
@@ -25,16 +24,17 @@ class Filter {
   selector: '[convention-parameters]',
   template: require('./convention-parameters.html'),
   directives: [ROUTER_DIRECTIVES, ConventionFilter],
-  // providers: [OffersService],
-  // styles: [require('./convention-parameters.scss')]
 })
 
 export class ConventionParameters {
   @Input()
-  offer: any;
+  offer: Offer;
 
   @Input()
   convention: any;
+
+  @Input()
+  toSync: boolean = false;
 
   @Output()
   onValidParametrage = new EventEmitter<any>();
@@ -79,17 +79,47 @@ export class ConventionParameters {
       {name: 'pos', label: 'Position'},
       {name: 'anc', label: 'Ancienneté'}
     ];
+
     this.offersService.getConventionFilters(this.convention.id).then((data: any[]) => {
-      console.log(data);
       this.sharedService.setConventionFilters(data);
       for (let i = 0; i < this.filtersList.length; ++i) {
         this.addFilter(data, this.filtersList[i].name, this.filtersList[i].label);
       }
     });
     this.conventionService.getParametragesByConvetion(this.convention.id).then((data: any) => {
-      console.log(data);
       this.parameters = data;
+      this.syncData();
     });
+
+  }
+
+  syncData() {
+
+    // If selected parametrage, initialize selects
+    if (this.offer.parametrageConvention > 0 && Utils.isEmpty(this.parameters) == false) {
+      let selectedFilter = this.parameters.filter((filter)=> {
+        return (filter.id == this.offer.parametrageConvention);
+      });
+      if (selectedFilter.length == 1) {
+        for (let i = 0; i < this.filtersList.length; ++i) {
+          this.selectedFilters[this.filtersList[i].name] = selectedFilter[0][this.filtersList[i].name];
+        }
+      }
+    }
+    this.checkCombinaison(true);
+  }
+
+  /**
+   * Used to force sync of the selects on offer edit page
+   *
+   * @param changes
+   */
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['toSync'] && changes['toSync'].previousValue != changes['toSync'].currentValue) {
+      if (this.offer.parametrageConvention > 0) {
+        this.syncData();
+      }
+    }
   }
 
   addFilter(data, name, label) {
@@ -114,23 +144,23 @@ export class ConventionParameters {
       return;
     }
     this.selectedFilters[data.name] = data.value;
-    this.checkCombinaison();
+    for (let i = 0; i < this.filters.length; ++i) {
+      if (this.filters[i].name == data.name) {
+        this.filters[i].value = data.value;
+        break;
+      }
+    }
+    this.checkCombinaison(Utils.isEmpty(data.value) == false);
   }
 
   /**
    * Check if select filters build a complete parametrage set or not.
    * Complete means that selected filters match with on parametrage
    */
-  checkCombinaison() {
-    let result = {
-      filters : this.selectedFilters,
-    };
+  checkCombinaison(addedFilter: boolean) {
 
-    console.log('Tous les paramètrages');
-    console.log(this.parameters);
-    // debugger;
-    let filterdParamers = this.parameters.filter((param) => {
-      return (
+    let filteredParamers = this.parameters.filter((param) => {
+      let keep = (
         (Utils.isEmpty(this.selectedFilters.niv) == true || param['niv'] == this.selectedFilters.niv) &&
         (Utils.isEmpty(this.selectedFilters.coe) == true || param['coe'] == this.selectedFilters.coe) &&
         (Utils.isEmpty(this.selectedFilters.ech) == true || param['ech'] == this.selectedFilters.ech) &&
@@ -142,32 +172,32 @@ export class ConventionParameters {
         (Utils.isEmpty(this.selectedFilters.pos) == true || param['pos'] == this.selectedFilters.pos) &&
         (Utils.isEmpty(this.selectedFilters.anc) == true || param['anc'] == this.selectedFilters.anc)
       );
+      return keep;
     });
-    console.log('Paramètrages filtrés');
-    console.log(filterdParamers);
-    debugger;
 
-    if (Utils.isEmpty(filterdParamers) == true) {
+    if (Utils.isEmpty(filteredParamers) == true) {
       console.error('convention : empty result, invalid params');
-    } else if (filterdParamers.length == 1) {
-      console.log('convention : param found');
+    } else if (filteredParamers.length == 1) {
 
-      // Complete all the select
-      for (let i = 0; i < this.filters.length; ++i) {
-        this.filters[i].value = filterdParamers[0][this.filters[i].name];
+      // Complete all the select value and the return object
+      if (addedFilter == true) {
+        for (let i = 0; i < this.filters.length; ++i) {
+          this.filters[i].value = filteredParamers[0][this.filters[i].name];
+          this.selectedFilters[this.filters[i].name] = filteredParamers[0][this.filters[i].name];
+        }
       }
-
+      let minRate: number = parseFloat(filteredParamers[0].rate);
+      this.epureParametrageListe(filteredParamers);
       this.onValidParametrage.emit({
-        filters: this.selectedFilters,
-        msg: "La combinaison est complète",
-        parametrageId: filterdParamers[0].id
+        filters: filteredParamers[0],
+        msg: "Pour cette clasification, le taux horaire minimum est de " + minRate.toFixed(2),
+        parametrageId: filteredParamers[0].id
       });
     } else {
-      console.log('convention : multiple param found');
-      this.epureParametrageListe(filterdParamers);
+      this.epureParametrageListe(filteredParamers);
       this.onPartialParametrage.emit({
         filters: this.selectedFilters,
-        msg: "La combinaison n'est pas compplète, taux par défaut appliqué",
+        msg: "La classification n'est pas compplète",
         parametrageId: null
       });
     }
@@ -176,7 +206,7 @@ export class ConventionParameters {
   /**
    * Update toHide filter do allow only possible value in UI
    */
-  epureParametrageListe(filterdParamers) {
+  epureParametrageListe(filteredParamers) {
     // For each filter (position, echelon, etc)
     for (let i = 0; i < this.filters.length; ++i) {
       // let filter = this.filters[i];
@@ -185,7 +215,7 @@ export class ConventionParameters {
         // Check for each possible value
         for (let j = 0; j < this.filters[i].list.length; ++j) {
           // The list of parametrage using it
-          let using = filterdParamers.filter((elem) => {
+          let using = filteredParamers.filter((elem) => {
             return elem[this.filters[i].name] == this.filters[i].list[j].id;
           });
           // If the list empty, that means this filter cannot be used

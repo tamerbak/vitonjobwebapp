@@ -2,7 +2,12 @@ import {Injectable} from "@angular/core";
 import {Http, Headers} from "@angular/http";
 import {Configs} from "../configurations/configs";
 import {SharedService} from "./shared.service";
-import {VOJFramework} from '../voj.framework';
+import {VOJFramework} from "../voj.framework";
+import {Offer} from "../dto/offer";
+import {CCalloutArguments} from "../dto/generium/ccallout-arguments";
+import {CCallout} from "../dto/generium/ccallout";
+
+const OFFER_CALLOUT_ID = 40002;
 
 @Injectable()
 export class OffersService {
@@ -12,7 +17,7 @@ export class OffersService {
   listJobs: any;
   convention : any;
 
-  constructor(private http: Http,private sharedService:SharedService) {
+  constructor(private http: Http, private sharedService:SharedService) {
     this.http = http;
     this.convention = {
       id:0,
@@ -186,63 +191,106 @@ export class OffersService {
                 }
     }
 
-  setOfferInRemote(offerData: any, projectTarget: string) {
+  /**
+   * Get an offer
+   *
+   * @param idOffer
+   * @param projectTarget
+   * @param offer
+   * @returns {Promise<T>}
+   */
+  getOfferById(idOffer: number, projectTarget: string, offer: Offer): any {
+
+    let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
+      new CCalloutArguments('Voir offre', {
+        'class': 'com.vitonjob.callouts.offer.model.OfferToken',
+        'idOffer': idOffer
+      }),
+      new CCalloutArguments('Configuration', {
+        'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
+        'mode': 'view',
+        'userType': (projectTarget === 'employer') ? btoa('employeur') : btoa('jobyer')
+      }),
+    ]);
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.calloutURL, payloadFinal.forge(), {headers: headers})
+        .subscribe((data: any) => {
+          let remoteOffer: Offer = JSON.parse(data._body);
+          offer = remoteOffer;
+          resolve(data);
+        });
+    });
+  }
+
+  /**
+   * Create an offer
+   *
+   * @param offer
+   * @param projectTarget
+   * @returns {Promise<T>}
+   */
+  createOffer(offer: Offer, projectTarget: string) {
+    offer.idOffer = 0;
+    return this.saveOffer(offer, projectTarget);
+  }
+
+  /**
+   * Save an offer
+   *
+   * @param offer
+   * @param projectTarget
+   * @returns {Promise<T>}
+   */
+  saveOffer(offer: Offer, projectTarget: string) {
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
 
-    offerData.status = "OUI";
-    offerData.visible = true;
+    offer.status = "OUI";
+    offer.visible = true;
 
     switch (projectTarget) {
       case 'employer' :
-        offerData.entrepriseId = offerData.identity;
+        offer.entrepriseId = offer.identity;
         break;
       case 'jobyer':
-        offerData.jobyerId = offerData.identity;
+        offer.jobyerId = offer.identity;
         break;
     }
-    //remove identity key/value from offerData object
 
-    delete offerData['identity'];
-    delete offerData.jobData['idLevel'];
+    //remove identity key/value from offer object
+    delete offer['identity'];
+    delete offer.jobData['idLevel'];
+    delete offer['slots'];
 
+    // TODO HACK force jobData type
+    offer.jobData.class = 'com.vitonjob.callouts.offer.model.JobData';
 
-    // store in remote database
-    let stringData = JSON.stringify(offerData);
-
-    let encoded = btoa(stringData);
-
-    let payload = {
-      'class': 'fr.protogen.masterdata.model.CCallout',
-      id: 10043,
-      args: [{
-        'class': 'fr.protogen.masterdata.model.CCalloutArguments',
-        label: 'creation offre',
-        value: encoded
-      },
-        {
-          'class': 'fr.protogen.masterdata.model.CCalloutArguments',
-          label: 'type utilisateur',
-          value: (projectTarget === 'employer') ? btoa('employeur') : btoa('jobyer')
-        }]
-    };
+    let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
+      new CCalloutArguments('Création/Edition offre', offer),
+      new CCalloutArguments('Configuration', {
+        'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
+        'mode': offer.idOffer == 0 ? 'creation' : 'edition',
+        'userType': (projectTarget === 'employer') ? btoa('employeur') : btoa('jobyer')
+      }),
+    ]);
 
     return new Promise(resolve => {
-      let headers = new Headers();
-      headers = Configs.getHttpJsonHeaders();
-      this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
-        .subscribe((data:any) => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.calloutURL, payloadFinal.forge(), {headers: headers})
+        .subscribe((data: any) => {
           let idOffer = JSON.parse(data._body).idOffer;
 
-          this.updateEPI(idOffer,offerData.jobData.epi,projectTarget);
+          this.updateEPI(idOffer, offer.jobData.epi, projectTarget);
 
-          if(offerData.jobData.prerequisObligatoires && offerData.jobData.prerequisObligatoires.length>0){
+          if (offer.jobData.prerequisObligatoires && offer.jobData.prerequisObligatoires.length > 0) {
             switch (projectTarget) {
               case 'employer' :
-                this.updatePrerequisObligatoires(idOffer,offerData.jobData.prerequisObligatoires);
+                this.updatePrerequisObligatoires(idOffer, offer.jobData.prerequisObligatoires);
                 break;
               case 'jobyer':
-                this.updateNecessaryDocuments(idOffer,offerData.jobData.prerequisObligatoires);
+                this.updateNecessaryDocuments(idOffer, offer.jobData.prerequisObligatoires);
                 break;
             }
 

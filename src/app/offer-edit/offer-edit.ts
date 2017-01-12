@@ -48,6 +48,7 @@ export class OfferEdit{
   initSectorDone = false;
 
   offer: Offer;
+
   sectors: any = [];
   jobs: any = [];
   selectedSector: any;
@@ -77,30 +78,10 @@ export class OfferEdit{
    * Collective conventions management
    */
   convention: any;
-  niveauxConventions: any = [];
-  selectedNivConvID: number = 0;
-  categoriesConventions: any = [];
-  selectedCatConvID: number = 0;
-  echelonsConventions: any = [];
-  selectedEchConvID: number = 0;
-  coefficientsConventions: any = [];
-  selectedCoefConvID: number = 0;
-
-  zonesGeoConventions: any = [];
-  indicesConventions: any = [];
-  classesConventions: any = [];
-  statutsConventions: any = [];
-  positionsConventions: any = [];
-  anciennetesConventions: any = [];
-
   conventionComponentMsg: string;
-
-  parametersConvention: any = [];
-  selectedParamConvID: number = 0;
-  minHourRate: number = 0;
-  invalidHourRateMessage: string = '';
-  invalidHourRate = false;
   personalizeConvention = false;
+  minimumClassificationRate: number = -1;
+  refreshParametrage: boolean = false;
 
   categoriesHeure: any = [];
   majorationsHeure: any = [];
@@ -201,11 +182,28 @@ export class OfferEdit{
 
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
 
-    this.offer = this.sharedService.getCurrentOffer();
-    if(this.offer && this.offer.telephone)
+    //obj = "add", "detail", or "recruit"
+    this.route.params.forEach((params: Params) => {
+      this.obj = params['obj'];
+      this.advertId = params['adv'];
+    });
+
+    if (this.obj == "detail") {
+      this.offer = this.sharedService.getCurrentOffer();
+      this.offersService.getOfferById(this.offer.idOffer, this.projectTarget, this.offer).then(()=> {
+        this.refreshParametrage = true;
+      });
+    } else {
+      this.offer = new Offer();
+      this.offer.jobData = new Job();
+    }
+
+    if(this.offer && this.offer.telephone) {
       this.tel = this.offer.telephone;
-    if(this.offer && this.offer.contact)
+    }
+    if(this.offer && this.offer.contact) {
       this.offerContact = this.offer.contact;
+    }
     if (this.projectTarget == "employer" && this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
       this.convention = this.currentUser.employer.entreprises[0].conventionCollective;
     } else {
@@ -225,53 +223,11 @@ export class OfferEdit{
     this.$calendar.fullCalendar(this.calendar);
     jQuery('.draggable').draggable(this.dragOptions);
 
-    //obj = "add", "detail", or "recruit"
-    this.route.params.forEach((params: Params) => {
-      this.obj = params['obj'];
-      this.advertId = params['adv'];
-    });
-
-    //  Load collective convention
-    if (this.projectTarget == "employer" && this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
-      // Loading convention filters / data
-      let filters = this.sharedService.getConventionFilters();
-      if (this.isEmpty(filters) === true) {
-        this.offersService.getConventionFilters(this.convention.id).then((data: any) => {
-          this.sharedService.setConventionFilters(data);
-          this.niveauxConventions = data.filter((elem) => { return elem.type == 'niv' });
-          this.coefficientsConventions = data.filter((elem) => { return elem.type == 'coe' });
-          this.echelonsConventions = data.filter((elem) => { return elem.type == 'ech' });
-          this.categoriesConventions = data.filter((elem) => { return elem.type == 'cat' });
-          this.zonesGeoConventions = data.filter((elem) => { return elem.type == 'zon' });
-          this.indicesConventions = data.filter((elem) => { return elem.type == 'ind' });
-          this.classesConventions = data.filter((elem) => { return elem.type == 'cla' });
-          this.statutsConventions = data.filter((elem) => { return elem.type == 'sta' });
-          this.positionsConventions = data.filter((elem) => { return elem.type == 'pos' });
-          this.anciennetesConventions = data.filter((elem) => { return elem.type == 'anc' });
-        });
-      } else {
-        this.niveauxConventions = filters.filter((elem) => { return elem.type == 'niv' });
-        this.coefficientsConventions = filters.filter((elem) => { return elem.type == 'coe' });
-        this.echelonsConventions = filters.filter((elem) => { return elem.type == 'ech' });
-        this.categoriesConventions = filters.filter((elem) => { return elem.type == 'cat' });
-        this.zonesGeoConventions = filters.filter((elem) => { return elem.type == 'zon' });
-        this.indicesConventions = filters.filter((elem) => { return elem.type == 'ind' });
-        this.classesConventions = filters.filter((elem) => { return elem.type == 'cla' });
-        this.statutsConventions = filters.filter((elem) => { return elem.type == 'sta' });
-        this.positionsConventions = filters.filter((elem) => { return elem.type == 'pos' });
-        this.anciennetesConventions = filters.filter((elem) => { return elem.type == 'anc' });
-      }
-      this.offersService.getConventionParameters(this.convention.id).then(data => {
-        this.parametersConvention = data;
-      });
-    }
-
     if (this.obj == "detail") {
 
       /**
        * Existing offer initialization
        */
-      this.offer = this.sharedService.getCurrentOffer();
 
       this.isOfferArchived = (this.offer.etat == 'en archive' ? true : false);
 
@@ -309,7 +265,6 @@ export class OfferEdit{
       this.offersService.loadOfferAdress(this.offer.idOffer, this.projectTarget).then((data: any) => {
         this.offerAddress = data;
       });
-      this.updateConventionParameters(this.offer.idOffer);
 
       this.slots = this.convertEventsToSlots(this.$calendar.fullCalendar('clientEvents'));
     } else {
@@ -317,11 +272,7 @@ export class OfferEdit{
       /**
        * New offer initialization
        */
-      this.offer = new Offer();
-      this.offer.jobData = new Job();
       this.offer.telephone = this.currentUser.telephone;
-
-      this.checkHourRate();
 
       if(this.projectTarget == 'employer'){
           var siegeAddress = this.currentUser.employer.entreprises[0].siegeAdress;
@@ -410,37 +361,6 @@ export class OfferEdit{
       todayHighlight: true,
       format: 'dd/mm/yyyy'
     };
-
-    /*this.advertMode = this.sharedService.getAdvertMode();
-    if(!this.advertMode){
-      this.advertMode= {
-        advMode : false,
-        id : 0
-      };
-    }
-
-    this.sharedService.setAdvertMode({advMode : false, id : 0});*/
-  }
-
-  updateConventionParameters(idOffer) {
-    this.offersService.getOfferConventionParameters(idOffer).then((parameter: any) => {
-
-      if (parameter.idechelon && parameter.idechelon != null) {
-        this.selectedEchConvID = parseInt(parameter.idechelon + '');
-      }
-      if (parameter.idcat && parameter.idcat != null) {
-        this.selectedCatConvID = parseInt(parameter.idcat + '');
-      }
-      if (parameter.idcoeff && parameter.idcoeff != null) {
-        this.selectedCoefConvID = parseInt(parameter.idcoeff + '');
-      }
-      if (parameter.idniv && parameter.idniv != null) {
-        this.selectedNivConvID = parseInt(parameter.idniv + '');
-      }
-      this.minHourRate = parameter.rate;
-      this.selectedParamConvID = parameter.id;
-      this.offer.parametrageConventionObj = parameter;
-    });
   }
 
   ngAfterViewInit() {
@@ -1164,7 +1084,7 @@ export class OfferEdit{
     this.sharedService.setCurrentOffer(this.offer);
   }
 
-  editOffer() {
+  saveOffer() {
     this.triedValidate = true;
     //values of condition de travail should not be null
     if (!this.isConditionEmpValid) {
@@ -1200,7 +1120,7 @@ export class OfferEdit{
       }
 
       //this.router.navigate(['offer/calendar', {offer: this.offer, isOfferToAdd: true}]);
-      this.offersService.setOfferInRemote(this.offer, this.projectTarget).then((data: any) => {
+      this.offersService.createOffer(this.offer, this.projectTarget).then((data: any) => {
         this.dataValidation = true;
         let offer = JSON.parse(data._body);
 
@@ -1247,11 +1167,6 @@ export class OfferEdit{
           this.currentUser.jobyer.offers.push(offer);
         }
 
-        // Offer convention parameters
-
-        if (this.projectTarget == 'employer' && this.selectedParamConvID)
-          this.offersService.saveOfferConventionParameters(offer.idOffer, this.selectedParamConvID);
-
         this.sharedService.setCurrentUser(this.currentUser);
         Messenger().post({
           message: "L'offre " + "'" + this.offer.title + "'" + " a été ajoutée avec succès",
@@ -1274,6 +1189,11 @@ export class OfferEdit{
         }
       });
     } else {
+
+      this.offersService.saveOffer(this.offer, this.projectTarget).then((data: any) => {
+        console.log('L offre a été sauvegardée avec succès');
+      });
+
       if (this.projectTarget == 'employer') {
         //save values of condition de travail
         this.saveConditionEmp(this.offer);
@@ -1301,9 +1221,6 @@ export class OfferEdit{
         }
       }
 
-      if (this.projectTarget == 'employer' && this.selectedParamConvID) {
-        this.offersService.saveOfferConventionParameters(this.offer.idOffer, this.selectedParamConvID);
-      }
       this.validateJob();
     }
   }
@@ -1312,7 +1229,7 @@ export class OfferEdit{
     // --> Job state
     this.dataValidation = true;
     this.offer.title = this.offer.jobData.job + ' ' + ((this.offer.jobData.level != 'junior') ? 'Expérimenté' : 'Débutant');
-    if (!this.offer.jobData.job || !this.offer.jobData.sector || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0 || this.minHourRate > this.offer.jobData.remuneration) {
+    if (!this.offer.jobData.job || !this.offer.jobData.sector || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0) {
       this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
       return;
     }
@@ -1536,111 +1453,6 @@ export class OfferEdit{
 
       });
     }
-  }
-
-
-//<editor-fold desc="Convention collective management">
-  /**
-   * If a collective convention is loaded we need to set the salary to the minimum rate of its parameters
-   */
-  checkHourRate() {
-    if (!this.parametersConvention || this.parametersConvention.length == 0)
-      return;
-
-    this.selectedParamConvID = this.parametersConvention[0].id;
-    this.minHourRate = this.parametersConvention[0].rate;
-    for (let i = 1; i < this.parametersConvention.length; i++) {
-      if (this.minHourRate > this.parametersConvention[i].rate) {
-        this.selectedParamConvID = this.parametersConvention[i].id;
-        this.minHourRate = this.parametersConvention[i].rate;
-      }
-    }
-
-    this.validateRate(this.offer.jobData.remuneration);
-  }
-
-  /**
-   *
-   * @param rate
-   * @returns {boolean}
-   */
-  validateRate(rate) {
-    let r = parseFloat(rate);
-    let roundMin = (Math.round(this.minHourRate * 100) / 100);
-
-    if (r >= roundMin) {
-      this.invalidHourRateMessage = '0.00';
-      this.invalidHourRate = false;
-      return true;
-    }
-
-    this.invalidHourRateMessage = roundMin + '';
-    this.invalidHourRate = true;
-    return false;
-  }
-
-
-  convParametersVisible() {
-    if (!this.parametersConvention || this.parametersConvention.length == 0 || !this.offer.jobData.remuneration || this.offer.jobData.remuneration == 0)
-      return false;
-    return true;
-  }
-
-  convNiveauxVisible() {
-    if (!this.niveauxConventions || this.niveauxConventions.length == 0)
-      return false;
-    return true;
-  }
-
-  convCoefficientsVisible() {
-    if (!this.coefficientsConventions || this.coefficientsConventions.length == 0)
-      return false;
-    return true;
-  }
-
-  convEchelonsVisible() {
-    if (!this.echelonsConventions || this.echelonsConventions.length == 0)
-      return false;
-    return true;
-  }
-
-  convCategoriesVisible() {
-    if (!this.categoriesConventions || this.categoriesConventions.length == 0)
-      return false;
-    return true;
-  }
-
-  updateHourRateThreshold(field: string, value: number) {
-    if (!this.parametersConvention || this.parametersConvention.length == 0)
-      return;
-
-    //  Ensure to take the maximum threshold before checking other options
-    for (let i = 0; i < this.parametersConvention.length; i++) {
-      if (this.minHourRate <= this.parametersConvention[i].rate) {
-        this.selectedParamConvID = this.parametersConvention[i].id;
-        this.minHourRate = this.parametersConvention[i].rate;
-      }
-    }
-
-    //  Now let's seek the suitable parameters
-    for (let i = 0; i < this.parametersConvention.length; i++) {
-
-      if (field == 'CAT' && value > 0 && this.parametersConvention[i].idcat != value)
-        continue;
-      if (field == 'COEF' && value > 0 && this.parametersConvention[i].idcoeff != value)
-        continue;
-      if (field == 'ECH' && value > 0 && this.parametersConvention[i].idechelon != value)
-        continue;
-      if (field == 'NIV' && value > 0 && this.parametersConvention[i].idniv != value)
-        continue;
-
-      if (this.minHourRate > this.parametersConvention[i].rate) {
-        this.selectedParamConvID = this.parametersConvention[i].id;
-        this.minHourRate = this.parametersConvention[i].rate;
-      }
-    }
-
-    this.validateRate(this.offer.jobData.remuneration);
   }
 
   watchOfferAddress(e) {
@@ -2134,37 +1946,19 @@ export class OfferEdit{
     jQuery('#show-event-modal').modal('hide');
   }
 
-  /* Validation formulaire */
+  /**
+   * Form validation process
+   *
+   * @returns {boolean}
+   */
   isFormValid(){
-    let roundMin = (Math.round(this.minHourRate * 100) / 100);
     let errors   = [];
 
-    //these conditions should be verified for all roles
-    //if (!this.offer.jobData.job || this.offer.jobData.job == 0 || !this.offer.jobData.sector || this.offer.jobData.sector == 0 || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0) {
-      //this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
-      //errors.push({'type':'required'})
-    //}
-    if (roundMin > this.offer.jobData.remuneration){
-    	this.addAlert("warning", "Veuillez saisir un taux horaire valide.", "general");
-    }
     if (!this.offer.calendarData || this.offer.calendarData.length == 0) {
       this.addAlert("warning", "Veuillez saisir les horaires de travail pour continuer.", "general");
       errors.push({type:'required',
       		label: this.projectTarget == 'jobyer' ? "Choix des disponibilités" : "Choix des horaires de travail"})
     }
-
-    //for employer and recruiter roles, the nbPoste field should be filled
-    /*if(this.projectTarget == "employer"){
-      if(!this.offer.nbPoste ||  this.offer.nbPoste <= 0){
-        //this.addAlert("warning", "Veuillez renseigner le nombre de poste requis pour cette offre.", "general");
-        errors.push({'type':'required', 'cible':'#input-nbPoste'})
-      }
-
-  	  if (jQuery('#autocompleteOfferAdress').val() == ''){
-  	    //this.addAlert("warning", "Veuillez renseigner l'adresse de la mission.", "general");
-  	    errors.push({'type':'required', 'cible':'#autocompleteOfferAdress'})
-  	  }
-    }*/
 
     // Error checking by a global method
     let required_fields = 'input[required], select[required]';
@@ -2233,22 +2027,20 @@ export class OfferEdit{
    * Handler that catch all event from conventio parameter component
    * @param data
    */
-  conventionParametrageChange(data) {
+  conventionParametrageChange(data: {filters: any, msg: string, parametrageId: number}) {
     if (!data) {
       console.warn('Empty convention parameter event');
     }
     this.conventionComponentMsg = data.msg;
     if (data.parametrageId > 0) {
-      // good combinaison
-      // Set offer parametrage id
-      // this.offer.parametrageConvention = data.parametrageId;
-      this.selectedParamConvID = data.parametrageId;
+      // Good classification: set offer parametrage id
+      this.offer.parametrageConvention = data.parametrageId;
+      this.minimumClassificationRate = parseFloat(parseFloat(data.filters.rate).toFixed(2));
     } else {
-      // TODO tester avec parametrageId = 0
-      // Not good combinaison
-      // Afficher un message
+      // Not good classification: display message
+      this.offer.parametrageConvention = -1;
+      this.minimumClassificationRate = -1;
     }
-    debugger;
   }
 
   isEmpty(str) {

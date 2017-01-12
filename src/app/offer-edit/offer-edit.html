@@ -181,75 +181,29 @@
           </div>
         </div>
 
-        <div
-          convention-parameters
-          [offer]="offer"
-          [convention]="convention"
-          (onValidParametrage)="conventionParametrageChange($event)"
-          (onPartialParametrage)="conventionParametrageChange($event)"
-        ></div>
+        <div *ngIf="projectTarget == 'employer' && ((obj == 'add') || (offer && offer.parametrageConvention != 0))">
+          <div
+            convention-parameters
+            [(offer)]="offer"
+            [(convention)]="convention"
+            [(toSync)]="refreshParametrage"
+            (onValidParametrage)="conventionParametrageChange($event)"
+            (onPartialParametrage)="conventionParametrageChange($event)"
+          ></div>
 
-        <div>conventionMessage: {{conventionComponentMsg}}</div>
-        <div>selectedParamConvID: {{selectedParamConvID}}</div>
-        <div>offer.parametrageConvention: {{offer.parametrageConvention}}</div>
-
-        <alert *ngIf="selectedParamConvID == 0" [type]="'danger alert-sm'">
-          <div [innerHTML]="'<b>gras</b>* Le taux horaire devrait être supérieur ou égal à ' + invalidHourRateMessage"></div>
-        </alert>
-
-
-        <!--<div class="form-group row" *ngIf="convCoefficientsVisible()">-->
-          <!--<label class="col-md-12 col-xs-12 form-control-label">Coefficient</label>-->
-          <!--<div class="col-md-12 col-xs-12">-->
-            <!--<select class="form-control" [(ngModel)]="selectedCoefConvID"-->
-                    <!--(change)="updateHourRateThreshold('COEF',$event.target.value)">-->
-              <!--<option *ngFor="let s of coefficientsConventions" [value]="s.id">{{s.libelle}}</option>-->
-            <!--</select>-->
-          <!--</div>-->
-        <!--</div>-->
-
-        <div class="form-group row" *ngIf="convCoefficientsVisible()">
-          <label class="col-md-12 col-xs-12 form-control-label">Coefficient</label>
-          <div class="col-md-12 col-xs-12">
-            <select class="form-control" [(ngModel)]="selectedCoefConvID"
-                    (change)="updateHourRateThreshold('COEF',$event.target.value)">
-              <option *ngFor="let s of coefficientsConventions" [value]="s.id">{{s.libelle}}</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="convNiveauxVisible()">
-          <label class="col-md-12 col-xs-12 form-control-label">Niveau</label>
-          <div class="col-md-12 col-xs-12">
-            <select class="form-control" [(ngModel)]="selectedNivConvID"
-                    (change)="updateHourRateThreshold('NIV',$event.target.value)">
-              <option *ngFor="let s of niveauxConventions" [value]="s.id">{{s.libelle}}</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="convEchelonsVisible()">
-          <label class="col-md-12 col-xs-12 form-control-label">Echelon</label>
-          <div class="col-md-12 col-xs-12">
-            <select class="form-control" [(ngModel)]="selectedEchConvID"
-                    (change)="updateHourRateThreshold('ECH',$event.target.value)">
-              <option *ngFor="let s of echelonsConventions" [value]="s.id">{{s.libelle}}</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="convCategoriesVisible()">
-          <label class="col-md-12 col-xs-12 form-control-label">Catégorie</label>
-          <div class="col-md-12 col-xs-12">
-            <select class="form-control" [(ngModel)]="selectedCatConvID"
-                    (change)="updateHourRateThreshold('CAT',$event.target.value)">
-              <option *ngFor="let s of categoriesConventions" [value]="s.id">{{s.libelle}}</option>
-            </select>
-          </div>
+          <alert *ngIf="offer.parametrageConvention == 0" [type]="'danger alert-sm'">
+            <div [innerHTML]="'<b>Attention: </b> veuillez selectionner un paramètrage complet. Valeur par défaut utilisée: ' + invalidHourRateMessage"></div>
+          </alert>
+          <alert *ngIf="offer.parametrageConvention != 0" [type]="'danger alert-sm'">
+            <div [innerHTML]="'<b>Attention: </b> ' + minimumClassificationRate"></div>
+          </alert>
         </div>
 
-
-
-
-
-
+        <!--<div>conventionMessage: {{conventionComponentMsg}}</div>-->
+        <!--<div>selectedParamConvID: {{selectedParamConvID}}</div>-->
+        <!--<div>offer.parametrageConvention: {{offer.parametrageConvention}}</div>-->
+        <!--<div>min: {{ minimumClassificationRate }}</div>-->
+        <!--<div>actual: {{ offer.jobData.remuneration }}</div>-->
 
         <!-- Taux horaire -->
         <div class="form-group row required">
@@ -266,7 +220,6 @@
               class="form-control"
               min="0"
               [(ngModel)]="offer.jobData.remuneration"
-              (change)="validateRate($event.target.value)"
             />
           </div>
           <div class="col-xs-6">
@@ -275,8 +228,14 @@
             </select>
           </div>
           <div class="col-xs-12">
-            <alert *ngIf="invalidHourRate " [type]="'danger alert-sm'">
-              <div [innerHTML]="'* Le taux horaire devrait être supérieur ou égal à ' + invalidHourRateMessage"></div>
+            <alert
+              [hidden]="!(minimumClassificationRate > 0 && offer.jobData.remuneration < minimumClassificationRate)"
+              [type]="'danger alert-sm'"
+            >
+              <div [innerHTML]="'* Le taux horaire devrait être supérieur ou égal à ' + minimumClassificationRate"></div>
+            </alert>
+            <alert [hidden]="!(minimumClassificationRate == -1)" [type]="'info alert-sm'">
+              <div [innerHTML]="'* Veuillez renseigner la classification pour connaitre le taux horaire minimum'"></div>
             </alert>
           </div>
         </div>
@@ -820,7 +779,7 @@
             <div class="container-fluid">
               <div class="row">
                 <div class="col-xs-12">
-                  <button type="button" class="btn btn-success fwidth" [disabled]="isOfferInContract || isOfferArchived || !initSectorDone" (click)="editOffer()">
+                  <button type="button" class="btn btn-success fwidth" [disabled]="isOfferInContract || isOfferArchived || !initSectorDone" (click)="saveOffer()">
                     Enregistrer
                   </button>
                 </div>
