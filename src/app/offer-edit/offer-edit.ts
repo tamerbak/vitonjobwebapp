@@ -2259,7 +2259,7 @@ export class OfferEdit{
 
   saveSoftware(software, idOffer) {
     this.offersService.saveSoftware(software, idOffer).then((expId: any) =>{
-      let savedSoft = {expId:expId, softId: software.id, experience: software.experience, nom: software.nom};
+      let savedSoft = {expId:expId, softId: software.id, nom: software.nom};
       if(this.obj == 'detail'){
         this.savedSoftwares.push(savedSoft);
       }
@@ -2285,40 +2285,19 @@ export class OfferEdit{
     //if the selected software is already saved, do not re-add it
     for(let i = 0; i < this.savedSoftwares.length; i++) {
       if (this.savedSoftwares[i].softId == this.selectedSoftware) {
-        if (this.savedSoftwares[i].experience == this.expSoftware) {
-          this.selectedSoftware = "";
-          this.expSoftware = 1;
-          return;
-        } else {
-          if (this.obj == 'detail') {
-            this.offersService.updateSoftware(this.savedSoftwares[i].expId, this.expSoftware).then((data:any) => {
-              this.savedSoftwares[i].experience = this.expSoftware;
-              this.selectedSoftware = "";
-              this.expSoftware = 1;
-            });
-            return;
-          }else {
-            this.savedSoftwares[i].experience = this.expSoftware;
-            this.selectedSoftware = "";
-            this.expSoftware = 1;
-            return;
-          }
-        }
+        this.selectedSoftware = "";
+        return;
       }
     }
 
     if(this.obj == 'detail'){
       //if software is not yet added
-      softwaresTemp[0].experience = (this.expSoftware <= 1 ? 1 : this.expSoftware);
       this.saveSoftware(softwaresTemp[0], this.offer.idOffer);
       this.selectedSoftware = "";
-      this.expSoftware = 1;
     }else{
-      softwaresTemp[0].experience = (this.expSoftware <= 1 ? 1 : this.expSoftware);
       softwaresTemp[0].softId = softwaresTemp[0].id;
       this.savedSoftwares.push(softwaresTemp[0]);
       this.selectedSoftware = "";
-      this.expSoftware = 1;
     }
   }
 

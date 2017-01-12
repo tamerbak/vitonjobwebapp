@@ -1638,7 +1638,7 @@ export class OffersService {
   }
 
   getOfferSoftwares(offerId){
-    let sql = "select exp.pk_user_logiciels_des_offres as \"expId\", exp.fk_user_logiciels_pharmaciens as \"softId\", exp.experience, log.nom from user_logiciels_des_offres as exp, user_logiciels_pharmaciens as log where exp.fk_user_logiciels_pharmaciens = log.pk_user_logiciels_pharmaciens and exp.fk_user_offre_entreprise = '" + offerId + "'";
+    let sql = "select exp.pk_user_logiciels_des_offres as \"expId\", exp.fk_user_logiciels_pharmaciens as \"softId\", log.nom from user_logiciels_des_offres as exp, user_logiciels_pharmaciens as log where exp.fk_user_logiciels_pharmaciens = log.pk_user_logiciels_pharmaciens and exp.fk_user_offre_entreprise = '" + offerId + "'";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -1651,7 +1651,7 @@ export class OffersService {
   }
 
   saveSoftware(software, offerId){
-    let sql = " insert into user_logiciels_des_offres (fk_user_offre_entreprise, fk_user_logiciels_pharmaciens, experience) values (" + offerId + ", " + software.id + ", " + software.experience + ") RETURNING pk_user_logiciels_des_offres; ";
+    let sql = " insert into user_logiciels_des_offres (fk_user_offre_entreprise, fk_user_logiciels_pharmaciens) values (" + offerId + ", " + software.id + ") RETURNING pk_user_logiciels_des_offres; ";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
