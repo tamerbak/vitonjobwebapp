@@ -48,7 +48,7 @@
     "angular2-datatable": "0.4.2",
     "angular2-google-map-auto-complete": "^1.0.5",
     "angular2-google-maps": "0.12.0",
-    "angular2-infinite-scroll": "^0.1.95",
+    "angular2-infinite-scroll": "0.1.95",
     "angular2-swiper": "^0.8.1",
     "angular2-text-mask": "0.18.4",
     "animate.css": "3.5.1",
