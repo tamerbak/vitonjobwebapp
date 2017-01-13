@@ -82,7 +82,7 @@ export class MissionList{
     this.missionsObjNow = {header: 'Missions en cours', list: this.missionNow, loaded: false};
     this.missionsObjFutur = {header: 'Missions en attente', list: this.missionFutur, loaded: false};
     this.missionsObjPast = {header: 'Missions terminées', list: this.missionPast, loaded: false};
-    this.missionsObjCanceled = {header: 'Missions Annulées', list: this.missionCanceled, loaded: false};
+    this.missionsObjCanceled = {header: 'Missions annulées', list: this.missionCanceled, loaded: false};
 
     this.missionList = [];
     this.missionList.push(this.missionsObjNow);
@@ -97,12 +97,31 @@ export class MissionList{
     }
   }
 
-  getContractsByType(type){
+  ngOnInit() {
+    
+    this.route.params.subscribe(params => {
+       if(params['type']){
+         this.typeMissionModel = params['type'];
+       }else{
+         this.typeMissionModel = '0';
+       }
+    });
+
+    //get contracts
+    this.getContractsByType(this.typeMissionModel);
+  }
+
+  loadList(type){
+    this.getContractsByType(type);
+  }
+
+    getContractsByType(type){
       this.contractService.getContracts(this.userId, this.projectTarget).then((data: any) => {
-        this.missionNow = []
-        this.missionFutur = []
-       this.missionPast =[]
-       this.missionCanceled=[]
+      this.missionNow = []
+      this.missionFutur = []
+      this.missionPast =[]
+      this.missionCanceled=[]
+
       if (data.data) {
         this.contractList = data.data;
         for (let i = 0; i < this.contractList.length; i++) {
@@ -112,13 +131,15 @@ export class MissionList{
             if (item.signature_jobyer.toUpperCase() == 'OUI' && item.accompli.toUpperCase() == 'NON' && Utils.isEmpty(item.annule_par))
             // Mission en cours
               this.missionNow.push(item);
+              
             if (item.signature_jobyer.toUpperCase() == 'NON' && Utils.isEmpty(item.annule_par))
             // Mission in futur
               this.missionFutur.push(item);
-            //else
+
             if (item.accompli.toUpperCase() == 'OUI' && Utils.isEmpty(item.annule_par))
             // Mission in past
               this.missionPast.push(item);
+
             if (!Utils.isEmpty(item.annule_par))
             // Mission canceled
               this.missionCanceled.push(item);
@@ -130,12 +151,6 @@ export class MissionList{
               let array = this.missionService.getTodayMission(missionHoursTemp);
               let missionHours = array[0];
               let missionPauses = array[1];
-              //item.disableBtnPointing = this.missionService.disablePointing(missionHours, missionPauses).disabled;
-              /*let autoPointing = navParams.get('autoPointing');
-               if(autoPointing){
-               this.nextPointing = navParams.get('nextPointing')
-               this.pointHour(true);
-               }*/
             }
           });
           if(type == 0){
@@ -155,24 +170,6 @@ export class MissionList{
       }
     });
 
-  }
-
-  ngOnInit() {
-    
-    this.route.params.subscribe(params => {
-       if(params['type']){
-         this.typeMissionModel = params['type'];
-       }else{
-         this.typeMissionModel = '0';
-       }
-    });
-
-    //get contracts
-    this.getContractsByType(this.typeMissionModel);
-  }
-
-  loadList(type){
-    this.getContractsByType(type);
   }
 
 
