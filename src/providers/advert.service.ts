@@ -103,6 +103,7 @@ export class AdvertService {
                   status : '',
                   fileContent : this.prepareImage(r.thumbnail),
                 },
+                isThumbnail : r.thumbnail && r.thumbnail.length > 0,
                 created : this.parseDate(r.created),
                 offerId: r.offerId
               };
