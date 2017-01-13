@@ -268,7 +268,10 @@ export class OfferEdit{
       /**
        * New offer initialization
        */
-      this.offer.telephone = this.currentUser.tel;
+      this.offer.telephone = (Utils.isEmpty(this.currentUser.tel) == false)
+        ? this.currentUser.tel.replace('+33', '0')
+        : ''
+      ;
       this.offer.contact = (this.currentUser.prenom + " " + this.currentUser.nom).trim();
 
       if(this.projectTarget == 'employer'){
