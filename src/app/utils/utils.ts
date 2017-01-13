@@ -23,9 +23,9 @@ export class Utils {
       MT: 31, MU: 30, NL: 18, NO: 15, PK: 24, PL: 28, PS: 29, PT: 25, QA: 29,
       RO: 24, RS: 22, SA: 24, SE: 24, SI: 19, SK: 24, SM: 27, TN: 24, TR: 26
     };
-    let iban = String(str).toUpperCase().replace(/[^A-Z0-9]/g, '');
-    let code = iban.match(/^([A-Z]{2})(\d{2})([A-Z\d]+)$/);
-    let digits;
+    let iban = String(str).toUpperCase().replace(/[^A-Z0-9]/g, ''),
+     code = iban.match(/^([A-Z]{2})(\d{2})([A-Z\d]+)$/),
+     digits;
 
     // check syntax and length
     if (!code || iban.length !== CODE_LENGTHS[code[1]]) {
@@ -36,7 +36,12 @@ export class Utils {
       return String(letter.charCodeAt(0) - 55);
     });
     // final check
-    return Utils.mod97(digits);
+    let check = Utils.mod97(digits);
+    if (!str || str.length == 0)
+      return true;
+    if (check == false)
+      return false;
+    return check == 1;
   }
 
   public static isValidBIC(str: string): boolean {
