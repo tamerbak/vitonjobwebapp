@@ -26,70 +26,7 @@
 
 <div class="row">
   <div class="col-lg-3 col-xl-4 col-xs-12">
-    <!-- VIDEO -->
 
-    <section widget class="widget widget-offer">
-      <header class="bb widget-offer-header">
-        <h6><span class="fw-semi-bold widget-offer-header-title">Vidéo</span></h6>
-      </header>
-      <div class="widget-body widget-offer">
-
-        <div *ngIf="videoAvailable" class="form-group row required">
-          <div class="col-xs-12">
-            <iframe class="iframe-class" width="100%" height="360px"
-                    [style.display]="videoAvailable?'block':'none'" target="_parent" [src]="youtubeLinkSafe">
-            </iframe>
-          </div>
-        </div>
-
-        <div *ngIf="!videoAvailable" class="form-group row">
-          <div *ngIf="!isLinkValid" class="col-xs-12">
-            <alert [type]="'danger alert-sm'">
-              <div [innerHTML]="'Le lien de la vidéo est non valide'"></div>
-            </alert>
-          </div>
-
-          <div class="col-sm-12 col-xs-12">
-            <input
-              id="youtubeLink"
-              class="form-control"
-              name="youtubeLink"
-              placeholder="Je me valorise avec une vidéo"
-              type="text"
-              [(ngModel)]="youtubeLink"
-            />
-          </div>
-          <div class="col-sm-12 col-xs-12">
-            <button
-              class="btn btn-primary offer-video-btn"
-              style="display: block; width: 100%;"
-              (click)="updateVideo(false)"
-              [disabled]="!youtubeLink || isOfferInContract || isOfferArchived"
-            >
-              <i class="glyphicon glyphicon-facetime-video"></i>
-              Ajouter
-            </button>
-          </div>
-        </div>
-
-        <div *ngIf="videoAvailable" class="form-group row required">
-          <div class="col-xs-12">
-            <button
-              class="btn btn-success offer-video-btn"
-              style="display: block; width: 100%;"
-              (click)="updateVideo(true)"
-              [disabled]="isOfferInContract || isOfferArchived"
-            >
-              <i class="glyphicon glyphicon-trash"></i>
-              Supprimer
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- !VIDEO -->
     <!-- JOB -->
 
     <section widget class="widget widget-offer" >
@@ -252,6 +189,7 @@
     </section>
 
   </div>
+
   <div class="col-lg-9 col-xl-8 col-xs-12">
     <section class="widget widget-calendar widget-offer">
       <header class="bb widget-offer-header">
@@ -388,6 +326,71 @@
         </div>
       </div>
     </div>
+
+    <!-- VIDEO -->
+
+    <section widget class="widget widget-offer">
+      <header class="bb widget-offer-header">
+        <h6><span class="fw-semi-bold widget-offer-header-title">Vidéo</span></h6>
+      </header>
+      <div class="widget-body widget-offer">
+
+        <div *ngIf="videoAvailable" class="form-group row required">
+          <div class="col-xs-12">
+            <iframe class="iframe-class" width="100%" height="360px"
+                    [style.display]="videoAvailable?'block':'none'" target="_parent" [src]="youtubeLinkSafe">
+            </iframe>
+          </div>
+        </div>
+
+        <div *ngIf="!videoAvailable" class="form-group row">
+          <div *ngIf="!isLinkValid" class="col-xs-12">
+            <alert [type]="'danger alert-sm'">
+              <div [innerHTML]="'Le lien de la vidéo est non valide'"></div>
+            </alert>
+          </div>
+
+          <div class="col-sm-12 col-xs-12">
+            <input
+              id="youtubeLink"
+              class="form-control"
+              name="youtubeLink"
+              placeholder="Je me valorise avec une vidéo"
+              type="text"
+              [(ngModel)]="youtubeLink"
+            />
+          </div>
+          <div class="col-sm-12 col-xs-12">
+            <button
+              class="btn btn-primary offer-video-btn"
+              style="display: block; width: 100%;"
+              (click)="updateVideo(false)"
+              [disabled]="!youtubeLink || isOfferInContract || isOfferArchived"
+            >
+              <i class="glyphicon glyphicon-facetime-video"></i>
+              Ajouter
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="videoAvailable" class="form-group row required">
+          <div class="col-xs-12">
+            <button
+              class="btn btn-success offer-video-btn"
+              style="display: block; width: 100%;"
+              (click)="updateVideo(true)"
+              [disabled]="isOfferInContract || isOfferArchived"
+            >
+              <i class="glyphicon glyphicon-trash"></i>
+              Supprimer
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- !VIDEO -->
   </div>
 
 </div>
