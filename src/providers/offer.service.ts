@@ -1698,4 +1698,55 @@ export class OffersService {
     }
     return null;
   }
+
+  getOfferSoftwares(offerId){
+    let sql = "select exp.pk_user_logiciels_des_offres as \"expId\", exp.fk_user_logiciels_pharmaciens as \"softId\", log.nom from user_logiciels_des_offres as exp, user_logiciels_pharmaciens as log where exp.fk_user_logiciels_pharmaciens = log.pk_user_logiciels_pharmaciens and exp.fk_user_offre_entreprise = '" + offerId + "'";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data.data);
+        });
+    });
+  }
+
+  saveSoftware(software, offerId){
+    let sql = " insert into user_logiciels_des_offres (fk_user_offre_entreprise, fk_user_logiciels_pharmaciens) values (" + offerId + ", " + software.id + ") RETURNING pk_user_logiciels_des_offres; ";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let expId = data.data[0].pk_user_logiciels_des_offres;
+          resolve(expId);
+        });
+    });
+  }
+
+  deleteSoftware(id){
+    let sql = "delete from user_logiciels_des_offres where pk_user_logiciels_des_offres =" + id;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  updateSoftware(id, exp){
+    let sql = "update user_logiciels_des_offres set experience = " + exp + " where pk_user_logiciels_des_offres =" + id;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
 }

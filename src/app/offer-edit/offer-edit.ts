@@ -155,6 +155,12 @@ export class OfferEdit{
 
   personalizeConventionInit : boolean = false;
 
+  savedSoftwares: any[] = [];
+  selectedSoftware: any;
+  softwares: any[];
+  expSoftware: number = 1;
+
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private searchService: SearchService,
@@ -333,6 +339,20 @@ export class OfferEdit{
       this.listService.loadOffersLanguages().then((data: any) => {
         this.langs = data.data;
         this.sharedService.setLangList(this.langs);
+      });
+    }
+
+    //load Softwares for jobyers pharmaciens
+    this.listService.loadPharmacieSoftwares().then((data: any) => {
+      this.softwares = data.data;
+    });
+
+    // get mastered softwares for jobyers pharmaciens
+    if (this.obj == "detail") {
+      this.offersService.getOfferSoftwares(this.offer.idOffer).then((data: any) => {
+        if (data) {
+          this.savedSoftwares = data;
+        }
       });
     }
 
@@ -1153,6 +1173,12 @@ export class OfferEdit{
             });
           }
           this.currentUser.jobyer.offers.push(offer);
+        }
+
+        if(this.projectTarget == 'employer'){
+          for(let i = 0; i < this.savedSoftwares.length; i++){
+            this.saveSoftware(this.savedSoftwares[i], offer.idOffer);
+          }
         }
 
         this.sharedService.setCurrentUser(this.currentUser);
@@ -2033,6 +2059,50 @@ export class OfferEdit{
 
   displayClassification() {
     return this.projectTarget == 'employer' && ((this.obj == 'add') || (this.offer && this.offer.parametrageConvention != 0));
+  }
+
+  saveSoftware(software, idOffer) {
+    this.offersService.saveSoftware(software, idOffer).then((expId: any) =>{
+      let savedSoft = {expId:expId, softId: software.id, nom: software.nom};
+      if(this.obj == 'detail'){
+        this.savedSoftwares.push(savedSoft);
+      }
+    })
+  }
+
+  removeSoftware(item){
+    this.savedSoftwares.splice(this.savedSoftwares.indexOf(item), 1);
+    if(this.obj == 'detail'){
+      this.offersService.deleteSoftware(item.expId);
+    }
+  }
+
+  addSoftware(){
+    if (Utils.isEmpty(this.selectedSoftware)) {
+      return;
+    }
+    let softwaresTemp = this.softwares.filter((v)=> {
+      return (v.id == this.selectedSoftware);
+    });
+
+
+    //if the selected software is already saved, do not re-add it
+    for(let i = 0; i < this.savedSoftwares.length; i++) {
+      if (this.savedSoftwares[i].softId == this.selectedSoftware) {
+        this.selectedSoftware = "";
+        return;
+      }
+    }
+
+    if(this.obj == 'detail'){
+      //if software is not yet added
+      this.saveSoftware(softwaresTemp[0], this.offer.idOffer);
+      this.selectedSoftware = "";
+    }else{
+      softwaresTemp[0].softId = softwaresTemp[0].id;
+      this.savedSoftwares.push(softwaresTemp[0]);
+      this.selectedSoftware = "";
+    }
   }
 
   isEmpty(str) {

@@ -624,6 +624,8 @@ this.nav.present(toast);
 
     document.getElementById("iframPlaceHolder").appendChild(iframe);
 
+    window.scrollTo(0,document.body.scrollHeight);
+
   }
 
   openModifyScheduleModal() {

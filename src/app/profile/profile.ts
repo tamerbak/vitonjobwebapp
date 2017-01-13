@@ -20,6 +20,7 @@ import {AccountConstraints} from "../../validators/account-constraints";
 import {scan} from "rxjs/operator/scan";
 import {ConventionService} from "../../providers/convention.service";
 import {OffersService} from "../../providers/offer.service";
+import {EnvironmentService} from "../../providers/environment.service";
 
 declare var jQuery, require, Messenger, moment: any;
 declare var google: any;
@@ -27,7 +28,7 @@ declare var google: any;
 @Component({
   selector: '[profile]',
   template: require('./profile.html'),
-  providers: [Utils, ProfileService, CommunesService, LoadListService, MedecineService, AttachementsService, AccountConstraints, ConventionService, OffersService],
+  providers: [Utils, ProfileService, CommunesService, LoadListService, MedecineService, AttachementsService, AccountConstraints, ConventionService, OffersService, EnvironmentService],
   directives: [ROUTER_DIRECTIVES, NKDatetime, AlertComponent, ModalPicture, MaskedInput, BankAccount, ModalCorporamaSearch],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./profile.scss')]
@@ -224,7 +225,7 @@ export class Profile{
   savedSoftwares: any[] = [];
   selectedSoftware: any;
   softwares: any[];
-  expSoftware: number = 1;
+  expSoftware: number = -1;
 
   setImgClasses() {
     return {
@@ -242,6 +243,7 @@ export class Profile{
               private offersService : OffersService,
               private zone: NgZone,
               private router: Router,
+              private environmentService: EnvironmentService,
               private _loader: MapsAPILoader) {
 
     this.currentUser = this.sharedService.getCurrentUser();
@@ -353,7 +355,10 @@ export class Profile{
       niveau : this.selectedJobLevel
     };
     this.interestingJobs.push(j);
-    this.profileService.attachJob(j, this.currentUser.jobyer.id);
+    this.profileService.attachJob(j, this.currentUser.jobyer.id).then((data: any)=> {
+      // Refresh environment
+      this.environmentService.reload();
+    });
   }
 
   removeJob(j){
@@ -369,7 +374,10 @@ export class Profile{
       return;
 
     this.interestingJobs.splice(index,1);
-    this.profileService.removeJob(j, this.currentUser.jobyer.id);
+    this.profileService.removeJob(j, this.currentUser.jobyer.id).then((data: any)=> {
+      // Refresh environment
+      this.environmentService.reload();
+    });
   }
 
   initRequirements(){
@@ -606,7 +614,7 @@ export class Profile{
 
   loadAttachement(scanTitle) {
     // Get scan
-    this.attachementsService.loadAttachements(this.currentUser).then((attachments: any) => {
+    this.attachementsService.loadAttachements(this.currentUser, 'Scans').then((attachments: any) => {
       let allImagesTmp = [];
       for (let i = 0; i < attachments.length; ++i) {
         if (attachments[i].fileName.substr(0, 4 + scanTitle.length) == "scan" + scanTitle) {
@@ -966,7 +974,7 @@ export class Profile{
       if (accountId) {
         for (let i = 0; i < this.allImages.length; i++) {
           let index = i + 1;
-          this.attachementsService.uploadFile(this.currentUser, 'scan' + this.scanTitle + ' ' + index, this.allImages[i].data).then((data: any) => {
+          this.attachementsService.uploadFile(this.currentUser, 'scan' + this.scanTitle + ' ' + index, this.allImages[i].data, 'Scans').then((data: any) => {
             if (data && data.id != 0) {
               this.attachementsService.uploadActualFile(data.id, data.fileName, this.allImages[i].data);
             }
@@ -1601,6 +1609,9 @@ export class Profile{
             this.validation = false;
           });
 
+        // Refresh environment
+        this.environmentService.reload();
+
       }
     }
   }
@@ -2075,7 +2086,7 @@ export class Profile{
   downloadFile(content) {
     let pureBase64 = content.split(';')[1];
 	let url = "data:application/octet-stream;base64," + pureBase64;
-	
+
 	let downloadLink = document.createElement("a");
 	downloadLink.href = url;
 	//downloadLink.download = content.split(';')[0];
@@ -2159,13 +2170,13 @@ export class Profile{
       if (this.savedSoftwares[i].softId == this.selectedSoftware) {
         if (this.savedSoftwares[i].experience == this.expSoftware) {
           this.selectedSoftware = "";
-          this.expSoftware = 1;
+          this.expSoftware = -1;
           return;
         } else {
           this.profileService.updateSoftware(this.savedSoftwares[i].expId, this.expSoftware).then((data: any) => {
             this.savedSoftwares[i].experience = this.expSoftware;
             this.selectedSoftware = "";
-            this.expSoftware = 1;
+            this.expSoftware = -1;
           });
           return;
         }
@@ -2173,9 +2184,9 @@ export class Profile{
     }
 
     //if software is not yet addes
-    softwaresTemp[0].experience = (this.expSoftware <= 1 ? 1 : this.expSoftware);
+    softwaresTemp[0].experience = this.expSoftware;
     this.saveSoftware(softwaresTemp[0]);
     this.selectedSoftware = "";
-    this.expSoftware = 1;
+    this.expSoftware = -1;
   }
 }

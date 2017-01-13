@@ -8,6 +8,7 @@ import {ProfileService} from "../../providers/profile.service";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {ModalComponent} from "./modal-component/modal-component";
 import {Utils} from "../utils/utils";
+import {EnvironmentService} from "../../providers/environment.service";
 declare function md5(value: string): string;
 declare var Messenger;
 
@@ -20,7 +21,7 @@ declare var Messenger;
   template: require('./login.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./login.scss')],
-  providers: [AuthenticationService, LoadListService, ValidationDataService, ProfileService]
+  providers: [AuthenticationService, LoadListService, ValidationDataService, ProfileService, EnvironmentService]
 })
 export class LoginPage{
   index: number;
@@ -67,6 +68,7 @@ export class LoginPage{
               private validationDataService: ValidationDataService,
               private sharedService: SharedService,
               private profileService: ProfileService,
+              private environmentService: EnvironmentService,
               private router: Router,
               private route: ActivatedRoute) {
   }
@@ -122,6 +124,7 @@ export class LoginPage{
         return;
       }
       this.authService.authenticate(this.email, indPhone, pwd, this.role, this.isRecruteur).then((data: any) => {
+        
         this.hideLoader = true;
         //case of authentication failure : server unavailable or connection probleme
         if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {
@@ -155,6 +158,9 @@ export class LoginPage{
         this.authService.getPasswordStatus(tel).then((dataPwd: any) => {
           if(dataPwd && dataPwd.data && dataPwd.data.length > 0) {
             data.mot_de_passe_reinitialise = dataPwd.data[0].mot_de_passe_reinitialise;
+          }
+          if(Utils.isEmpty(data.titre) && data.estRecruteur ){
+            data.changePassword = true;
           }
           this.sharedService.setCurrentUser(data);
           this.profileService.loadProfilePicture(data.id).then((pic: any) => {

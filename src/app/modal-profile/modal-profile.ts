@@ -564,6 +564,14 @@ export class ModalProfile{
               type: 'success',
               showCloseButton: true
             });
+
+            if(this.currentUser.changePassword){
+                jQuery('#modal-profile').modal('hide');
+                jQuery('#modal-profile').one('hidden.bs.modal', function (e) {
+                  jQuery('#modal-update-password').modal('show');
+                })
+            }
+            
             //redirecting to offers page if new User
             if (isNewUser) {
               this.router.navigate(['home']);
@@ -630,6 +638,7 @@ export class ModalProfile{
               let value = this.isSpontaneaousContact ? "Oui" : "Non";
               this.profileService.updateSpontaneousContact(value, accountId);
               this.currentUser.accepteCandidature = value;
+              this.sharedService.setCurrentUser(this.currentUser);
 
               Messenger().post({
                 message: 'Vos données ont été bien enregistrées',

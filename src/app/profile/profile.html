@@ -55,6 +55,8 @@
                 {{ currentUser.employer.entreprises[0].nom }}
               </p>
               <p *ngIf="!isEmployer && !isRecruiter">Jobyer</p>
+              <p *ngIf="environmentService.get('EMPLOYER_PHARMA') == 'true'">(PHARMACIE)</p>
+              <p *ngIf="environmentService.get('JOBYER_PHARMA') == 'true'">(PHARMACIE)</p>
               <button [disabled]="showForm" class="btn btn-primary btn-sm mt" (click)="initForm()">
                 <i class="fa fa-pencil-square-o ml-xs"></i>&nbsp;
                 Modifier les informations
@@ -91,10 +93,12 @@
 
   <div id="profileForm" [hidden]="!showForm" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
     <section class="widget">
-      <div class="widget-body">
+      <header class="bb widget-profile-header">
+        <h6><span class="fw-semi-bold">Saisie des Informations</span></h6>
+      </header>
+      <div class="widget-body widget-body-profile">
         <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
           <fieldset>
-            <legend><strong>Saisie des Informations</strong></legend>
             <alert *ngIf="isNewUser" [type]="'info'+ ' alert-sm'" dismissible="true">
               <div>
                 <span class="fw-semi-bold">Bienvenue sur Vit-On-Job.</span><br>
@@ -289,6 +293,7 @@
               <div [hidden]="isEmployer || !isFrench" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Lieu de naissance
+                  <span class="asterisk-blue">*</span>
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <input type="hidden" class="select2 commune-select form-control" name="birthplace"
@@ -313,6 +318,7 @@
               <div *ngIf="!isEmployer" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Nationalité
+                  <span class="asterisk-blue">*</span>
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <select
@@ -385,6 +391,7 @@
                          [checked]="!isCIN">
                   <label for="ueRadio" class="labelRadio">
                     Carte de ressortissant d'un état membre de l'UE
+                    <span class="asterisk-blue">*</span>
                   </label>
                 </div>
               </div>
@@ -572,7 +579,7 @@
           </div>
           <div class="clearfix">
             <div class="btn-toolbar pull-xs-right m-t-1">
-              <div class="widget-body btn loaderPosition" [hidden]="!validation">
+              <div class="widget-body widget-body-profile btn loaderPosition" [hidden]="!validation">
                 <div class="loader animated fadeIn handle">
   										<span class="spinner">
   											<i class="fa fa-spinner fa-spin"></i>
@@ -591,10 +598,12 @@
 
   <div [hidden]="!showForm || isEmployer || isRecruiter" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
     <section class="widget">
-      <div class="widget-body">
+      <header class="bb widget-profile-header">
+        <h6><span class="fw-semi-bold">Disponibilités</span></h6>
+      </header>
+      <div class="widget-body widget-body-profile">
         <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
           <fieldset>
-            <legend><strong>Disponibilités</strong></legend>
             <div class="container-fluid">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label text-md-center" >
@@ -667,9 +676,12 @@
                   ></datetime>
                 </div>
 
-                <button class="col-md-2 btn btn-primary" (click)="addDisponibilityEntry()"
-                        [disabled]="!(dispoToCreate.startDate && dispoToCreate.endDate && dispoToCreate.startHour && dispoToCreate.endHour) || paradox()">
-                  <span class="glyphicon glyphicon-plus"></span>
+                <button
+                  class="col-md-2 btn btn-success"
+                  (click)="addDisponibilityEntry()"
+                  [disabled]="!(dispoToCreate.startDate && dispoToCreate.endDate && dispoToCreate.startHour && dispoToCreate.endHour) || paradox()"
+                >
+                  Ajouter
                 </button>
               </div>
             </div>
@@ -682,35 +694,41 @@
   <!-- INTERESTING JOBS -->
   <div [hidden]="!showForm || isEmployer || isRecruiter" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
     <section class="widget">
-      <fieldset>
-        <legend><strong>Jobs qui m'intéressent</strong></legend>
-        <div class="row">
-          <div class="col-md-6 col-sm-6 col-xs-6">
-            <input type="hidden" class="select2 job-select form-control" name="job"
-                   placeholder="Recherchez votre job" [(ngModel)]="selectedJob"/>
+      <header class="bb widget-profile-header">
+        <h6><span class="fw-semi-bold">Jobs qui m'intéressent</span></h6>
+      </header>
+      <div class="widget-body widget-body-profile">
+        <fieldset>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-6 col-sm-6 col-xs-6">
+                <input type="hidden" class="select2 job-select form-control" name="job"
+                       placeholder="Recherchez votre job" [(ngModel)]="selectedJob"/>
+              </div>
+              <div class="col-md-4 col-sm-3 col-sm-3">
+                <select class="form-control" [(ngModel)]="selectedJobLevel">
+                  <option value="1">Débutant</option>
+                  <option value="2">Expérimenté</option>
+                </select>
+              </div>
+              <button class="col-md-2 btn btn-success" [disabled]="!selectedJob" (click)="addJob()">
+                Ajouter
+              </button>
+            </div>
+            <div class="row">
+              &nbsp;
+            </div>
+            <div class="group-form row" *ngFor="let j of interestingJobs">
+              <div class="col-md-10 col-sm-10 col-xs-10">
+                <button class="btn btn-sm btn-danger" (click)="removeJob(j)">
+                  <i class="glyphicon glyphicon-trash"></i>
+                </button>
+                {{j.libelle}} - {{j.niveau == '1'?'Débutant':'Expérimenté'}}
+              </div>
+            </div>
           </div>
-          <div class="col-md-4 col-sm-3 col-sm-3">
-            <select class="form-control" [(ngModel)]="selectedJobLevel">
-              <option value="1">Débutant</option>
-              <option value="2">Expérimenté</option>
-            </select>
-          </div>
-          <button class="btn btn-primary" (click)="addJob()">
-            <span class="glyphicon glyphicon-plus"></span>
-          </button>
-        </div>
-        <div class="row">
-          &nbsp;
-        </div>
-        <div class="row" *ngFor="let j of interestingJobs">
-          <button class="btn btn-danger" (click)="removeJob(j)">
-            <span class="glyphicon glyphicon-minus"></span>
-          </button>
-          <div class="col-md-10 col-sm-10 col-xs-10">
-            {{j.libelle}} - {{j.niveau == '1'?'Débutant':'Expérimenté'}}
-          </div>
-        </div>
-      </fieldset>
+        </fieldset>
+      </div>
     </section>
   </div>
 
@@ -718,9 +736,11 @@
   <div *ngIf="jobs.length > 0" [hidden]="!showForm || isEmployer || isRecruiter" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
 
     <section class="widget">
-      <div class="widget-body">
+      <header class="bb widget-profile-header">
+        <h6><span class="fw-semi-bold">Les employeurs peuvent parfois vous demander les prérequis suivants</span></h6>
+      </header>
+      <div class="widget-body widget-body-profile">
         <fieldset>
-          <legend><strong>Les employeurs peuvent parfois vous demander les prérequis suivants</strong></legend>
           <div class="row">
 
             <div  *ngFor="let j of jobs" class="col-md-6 col-sm-12 col-xs-12">
@@ -749,10 +769,12 @@
   <!-- Qualities -->
   <div [hidden]="!showForm || isRecruiter" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
     <section class="widget">
-      <div class="widget-body">
+      <header class="bb widget-profile-header">
+        <h6><span class="fw-semi-bold">{{ isEmployer ? "Nos qualités" : "Mes qualités" }}</span></h6>
+      </header>
+      <div class="widget-body widget-body-profile">
         <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
           <fieldset>
-            <legend><strong>{{ isEmployer ? "Nos qualités" : "Mes qualités" }}</strong></legend>
             <div class="container-fluid">
               <div class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
@@ -807,12 +829,12 @@
   <!-- Langues -->
   <div [hidden]="!showForm" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
     <section class="widget">
-      <div class="widget-body">
+      <header class="bb widget-profile-header">
+        <h6><span class="fw-semi-bold">{{ isEmployer ? "Langue(s) utilisée(s) au sein de l'entreprise" : "Langue(s) parlée(s)" }}</span></h6>
+      </header>
+      <div class="widget-body widget-body-profile">
         <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
           <fieldset>
-            <legend><strong>
-              {{ isEmployer ? "Langue(s) utilisée(s) au sein de l'entreprise" : "Langue(s) parlée(s)" }}
-            </strong></legend>
             <div class="container-fluid">
               <div class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
@@ -878,71 +900,12 @@
       </div>
     </section>
 
-    <!-- Logiciels maitrisés: pour les jobyers pharmaciens-->
-    <section class="widget" *ngIf="!isEmployer">
-      <div class="widget-body">
-        <form class="profile-form form-horizontal" role="form">
-          <fieldset>
-            <legend><strong>
-              Logiciels maitrisés
-            </strong></legend>
-            <div class="container-fluid">
-              <div class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Logiciels
-                </label>
-                <div class="col-md-8 col-xs-12">
-                  <div class="form-group row" *ngFor="let item of savedSoftwares">
-                    <div class="col-md-6 col-xs-6">
-                      <input class="form-control" value="{{item.nom}}" disabled/>
-                    </div>
-                    <div class="col-md-3 col-xs-6">
-                      <input class="form-control" value="{{item.experience}}" disabled/>
-                    </div>
-                    <div class="col-md-3 col-xs-12">
-                      <button
-                              style="display: block; width: 100%;"
-                              class="btn btn-danger mb-xs"
-                              role="button"
-                              (click)="removeSoftware(item)">
-                        <i class="glyphicon glyphicon-trash"></i>
-                      </button>
-                    </div>
-                  </div>
-
-                  <!-- Ajouter les logiciels maitrisés-->
-                  <div class="row">
-                    <div class="col-md-6 col-xs-6">
-                      <select class="form-control" [(ngModel)]="selectedSoftware">
-                        <option *ngFor="let s of softwares" [value]="s.id">{{s.nom}}</option>
-                      </select>
-                    </div>
-                    <div class="col-md-3 col-xs-6">
-                      <input class="form-control" type="number" min="0" step="1" [(ngModel)]="expSoftware"/>
-                    </div>
-                    <div class="col-md-3 col-xs-12">
-                      <button
-                              style="display: block; width: 100%;"
-                              class="btn btn-success mb-xs offer-add-button"
-                              role="button"
-                              (click)="addSoftware()"
-                              [disabled]="!selectedSoftware">
-                        Ajouter
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </fieldset>
-        </form>
-      </div>
-    </section>
-
     <section class="widget" [hidden]="isRecruiter || isEmployer">
-      <div class="widget-body">
+      <header class="bb widget-profile-header">
+        <h6><span class="fw-semi-bold">Mon CV</span></h6>
+      </header>
+      <div class="widget-body widget-body-profile">
           <fieldset>
-            <legend><strong>Mon CV</strong></legend>
             <div class="container-fluid">
               <div class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
@@ -976,10 +939,12 @@
       </div>
     </section>
 
-    <section class="widget" [hidden]="isRecruiter || isEmployer">
-      <div class="widget-body">
+    <section class="widget" *ngIf="!isEmployer && environmentService.get('JOBYER_PHARMA') == 'true'">
+      <header class="bb widget-profile-header">
+        <h6><span class="fw-semi-bold">Nombre d'heures travaillées</span></h6>
+      </header>
+      <div class="widget-body widget-body-profile">
         <fieldset>
-          <legend><strong>Nombre d'heures de travail/étude</strong></legend>
           <div class="container-fluid">
             <div class="form-group row">
               <label class="col-md-4 col-xs-12 form-control-label text-md-right">
@@ -1004,17 +969,17 @@
             </div>
 
             <div class="form-group row">
-              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Nombre d'heures d'étude</label>
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right">Nombre d'heures travaillées en pharmacie</label>
               <div class="abc-radio">
                 <input type="radio" name="radio4" id="nbHourBigRadio" value="0" (click)="watchNbStudyHours($event)"
                        [checked]="isNbStudyHoursBig">
                 <label for="nbHourBigRadio" class="labelRadio">
-                  Plus de 350 heures d'étude
+                  Plus de 350 heures
                 </label>
                 <input type="radio" name="radio4" id="nbHourSmallRadio" value="1" (click)="watchNbStudyHours($event)"
                        [checked]="!isNbStudyHoursBig">
                 <label for="nbHourSmallRadio" class="labelRadio">
-                  Moins de 350 heures d'étude
+                  Moins de 350 heures
                 </label>
               </div>
             </div>
@@ -1024,9 +989,92 @@
       </div>
     </section>
 
+    <!-- Logiciels maitrisés: pour les jobyers pharmaciens-->
+    <section class="widget" *ngIf="!isEmployer && environmentService.get('JOBYER_PHARMA') == 'true'">
+      <header class="bb widget-profile-header">
+        <h6><span class="fw-semi-bold">Logiciel(s) maitrisé(s)</span></h6>
+      </header>
+      <div class="widget-body widget-body-profile">
+        <form class="profile-form form-horizontal" role="form">
+          <fieldset>
+            <div class="container-fluid">
+              <div class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Logiciels
+                </label>
+                <div class="col-md-8 col-xs-12">
+
+                  <table class="table table-condensed">
+                    <tr>
+                      <td>Nom</td>
+                      <td>Durée d'expérience</td>
+                    </tr>
+
+                    <tr *ngFor="let item of savedSoftwares">
+                      <td>
+                        <input class="form-control" value="{{ item.nom }}" disabled />
+                      </td>
+                      <td>
+                        <select class="form-control" [(ngModel)]="item.experience" disabled>
+                          <option value="-1" selected></option>
+                          <option value="0">Moins d'1 an</option>
+                          <option value="0.25">Entre 0 et 3 mois</option>
+                          <option value="0.5">Entre 3 et 6 mois</option>
+                          <option value="1">Entre 6 mois et 1 an</option>
+                          <option value="2">Plus d'1 an</option>
+                        </select>
+                      </td>
+                      <td>
+                        <button
+                          style="display: block; width: 100%;"
+                          class="btn btn-danger mb-xs"
+                          role="button"
+                          (click)="removeSoftware(item)">
+                          <i class="glyphicon glyphicon-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <select class="form-control" [(ngModel)]="selectedSoftware">
+                          <option *ngFor="let s of softwares" [value]="s.id">{{s.nom}}</option>
+                        </select>
+                      </td>
+                      <td>
+                        <select class="form-control" [(ngModel)]="expSoftware">
+                          <option value="-1" selected disabled></option>
+                          <option value="0">Moins d'1 an</option>
+                          <option value="0.25">Entre 0 et 3 mois</option>
+                          <option value="0.5">Entre 3 et 6 mois</option>
+                          <option value="1">Entre 6 mois et 1 an</option>
+                          <option value="2">Plus d'1 an</option>
+                        </select>
+                      </td>
+                      <td>
+                        <button
+                          style="display: block; width: 100%;"
+                          class="btn btn-success mb-xs offer-add-button"
+                          role="button"
+                          (click)="addSoftware()"
+                          [disabled]="!selectedSoftware">
+                          Ajouter
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
+
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </section>
+
     <section class="widget" widget>
 
-      <div class="widget-body">
+      <div class="widget-body widget-body-profile">
         <form class="form-horizontal" role="form">
           <div class="form-actions">
             <div class="container-fluid">

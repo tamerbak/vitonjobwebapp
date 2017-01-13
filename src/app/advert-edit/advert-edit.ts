@@ -5,6 +5,7 @@ import {Router, ROUTER_DIRECTIVES, ActivatedRoute, Params} from "@angular/router
 import {AlertComponent} from "ng2-bootstrap";
 import {Utils} from "../utils/utils";
 import {OffersService} from "../../providers/offer.service";
+import {Configs} from "../../configurations/configs";
 
 declare var jQuery: any;
 declare var Messenger: any;
@@ -29,6 +30,9 @@ export class AdvertEdit{
   alerts: any = [];
   contractFormArray = [];
   descriptionPlaceholder: string;
+
+  selectedJob = [];
+  jobs = [];
 
   constructor(private advertService: AdvertService,
               private router: Router,
@@ -89,6 +93,8 @@ export class AdvertEdit{
       this.prepareImageForDisplaying(this.advert.thumbnail, 'thumbnail');
       this.prepareImageForDisplaying(this.advert.imgbg, 'cover');
     }
+
+    this.prepareInputs();
   }
 
   ngAfterViewInit(): void {
@@ -140,6 +146,69 @@ export class AdvertEdit{
     let ifr = object.contents().find("body");
     let html = ifr.html();
     return html;
+  }
+
+  /**
+   * Prepare input such as select
+   */
+  prepareInputs() {
+    var self = this;
+
+    let job = jQuery('.job-select').select2({
+      maximumSelectionLength: 1,
+      tokenSeparators: [",", " "],
+      createSearchChoice: function (term, data) {
+        if (self.jobs.length == 0) {
+          return {
+            id: '0', libelle: term
+          };
+        }
+      },
+      ajax: {
+        url: Configs.sqlURL,
+        type: 'POST',
+        dataType: 'json',
+        quietMillis: 250,
+        transport: function (params) {
+          params.beforeSend = Configs.getSelect2TextHeaders();
+          return jQuery.ajax(params);
+        },
+        data: function (term, page) {
+          return self.offerService.selectJobs(term, 0);
+        },
+        results: function (data, page) {
+          self.jobs = data.data;
+          return {results: data.data};
+        },
+        cache: false,
+
+      },
+
+      formatResult: function (item) {
+        let libelle = item.libelle;
+        if (item.id == 0) {
+          libelle = libelle + " (H/F)"
+        } else {
+          libelle = "Proposition : " + libelle
+        }
+        return libelle;
+      },
+      formatSelection: function (item) {
+        let libelle = item.libelle;
+        if (item.id == 0) {
+          libelle = libelle + " (H/F)"
+        }
+        self.advert.titre = libelle;
+        return libelle;
+      },
+      dropdownCssClass: "bigdrop",
+      escapeMarkup: function (markup) {
+        return markup;
+      },
+      minimumInputLength: 1,
+      initSelection: function(element, callback) {
+      }
+    });
   }
 
   prepareImageForDisplaying(obj, name) {

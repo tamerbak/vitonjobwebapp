@@ -10,14 +10,17 @@
 <div class="row">
 
 
-      <label class="btn btn-gray active label-btn col-xs-12 col-md-12 col-lg-4" btnRadio="0" [(ngModel)]="typeMissionModel">
+      <label class="btn btn-gray active label-btn col-xs-12 col-md-12 col-lg-3" btnRadio="0" [(ngModel)]="typeMissionModel" (click)=loadList(0)>
         Missions en cours ({{ missionNow.length > 0 ? missionNow.length : 'Aucune' }})
       </label>
-      <label class="btn btn-gray label-btn col-xs-12 col-md-12 col-lg-4" btnRadio="1" [(ngModel)]="typeMissionModel">
+      <label class="btn btn-gray label-btn col-xs-12 col-md-12 col-lg-3" btnRadio="1" [(ngModel)]="typeMissionModel" (click)=loadList(1)>
         Missions en attente ({{ missionFutur.length > 0 ? missionFutur.length : 'Aucune' }})
       </label>
-      <label class="btn btn-gray label-btn col-xs-12 col-md-12 col-lg-4" btnRadio="2" [(ngModel)]="typeMissionModel">
+      <label class="btn btn-gray label-btn col-xs-12 col-md-12 col-lg-3" btnRadio="2" [(ngModel)]="typeMissionModel" (click)=loadList(2)>
         Missions terminées ({{ missionPast.length > 0 ? missionPast.length : 'Aucune' }})
+      </label>
+      <label class="btn btn-gray label-btn col-xs-12 col-md-12 col-lg-3" btnRadio="3" [(ngModel)]="typeMissionModel" (click)=loadList(3)>
+        Missions annulées ({{ missionCanceled.length > 0 ? missionCanceled.length : 'Aucune' }})
       </label>
 
 
@@ -25,10 +28,9 @@
 
 <div class="row">
   <div class="col-xs-12">
-    <div *ngFor="let missionTypeList of [missionNow, missionFutur, missionPast]; let i = index;"
-         style="margin-bottom: 10px;">
+    <div style="margin-bottom: 10px;">
 
-      <section class="widget" widget *ngFor="let item of missionTypeList" [hidden]="i != typeMissionModel">
+      <section class="widget" widget *ngFor="let item of currentTypeList">
         <div class="widget-body row">
 
           <div class="col-sm-12">
@@ -41,6 +43,7 @@
               avec {{ isEmployer ? item.prenom +' '+ item.nom : item.nom  }}
             </p>
             <div class="col-sm-3 col-xs-12 mission-list-data-2">
+              <b>Date de la mission</b>
               <p class="value3 mt-sm">
                 {{ toStringDate(item.date_de_debut) }}
                 {{(toStringDate(item.date_de_fin) != toStringDate(item.date_de_debut))
@@ -71,6 +74,7 @@
           </div>
 
           <div class="col-sm-12 col-xs-12 mission-list-data pull-xs-right">
+            <b>Date de la mission</b>
             <p class="value3 mt-sm">
               {{ toStringDate(item.date_de_debut) }}
               {{(toStringDate(item.date_de_fin) != toStringDate(item.date_de_debut))
