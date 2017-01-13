@@ -19,6 +19,7 @@ export class AdvertService {
       ", uae.thumbnail" +
       ", uae.created " +
       ", uae.fk_user_offre_entreprise as \"offerId\" " +
+      ", uae.temps_partiel as \"tempsPartiel\" " +
       ", count(uija.fk_user_jobyer) as \"nbInterest\" " +
       " FROM user_annonce_entreprise uae LEFT JOIN user_interet_jobyer_annonces uija " +
       " ON uae.pk_user_annonce_entreprise = uija.fk_user_annonce_entreprise " +
@@ -55,7 +56,8 @@ export class AdvertService {
                 rubriques : [],
                 created : this.parseDate(r.created),
                 offerId: r.offerId,
-                nbInterest: r.nbInterest
+                nbInterest: r.nbInterest,
+                isPartialTime: (r.tempsPartiel.toUpperCase() == 'OUI')
               };
 
               adverts.push(adv);
@@ -116,6 +118,7 @@ export class AdvertService {
     let sql = "select " +
       "piece_jointe as attachement" +
       ", image_principale as imgbg" +
+      ", temps_partiel as \"tempsPartiel\" " +
       ", forme_contrat" +
       " from user_annonce_entreprise " +
       "where dirty='N' and pk_user_annonce_entreprise=" + advert.id;
@@ -142,6 +145,7 @@ export class AdvertService {
                   fileName: this.getImageName(r.imgbg)
                 };
                 advert.contractForm = r.forme_contrat;
+                advert.isPartialTime = (r.tempsPartiel.toUpperCase() == 'OUI');
               }
           resolve(advert);
         });
@@ -150,13 +154,14 @@ export class AdvertService {
 
   saveNewAdvert(advert : any){
     let sql = "insert into user_annonce_entreprise " +
-      "(titre,lien, contenu, piece_jointe, forme_contrat, thumbnail, image_principale, created, fk_user_entreprise) " +
+      "(titre,lien, contenu, piece_jointe, forme_contrat, temps_partiel, thumbnail, image_principale, created, fk_user_entreprise) " +
       "values " +
       "('"+Utils.sqlfyText(advert.titre)+"', '" +
       Utils.sqlfyText(advert.link)+"', " + "'" +
       Utils.sqlfyText(advert.description)+"', " + "'" +
       Utils.sqlfyText(advert.attachement.fileContent)+"', '"+
       Utils.sqlfyText(advert.contractForm)+"', " + "'"+
+      (advert.isPartialTime ? 'Oui' : 'Non')+"', " + "'"+
       Utils.sqlfyText(advert.thumbnail.fileContent)+"', " + "'"+
       Utils.sqlfyText(advert.imgbg.fileContent)+"', '"+
       new Date().toISOString()+"', " +
@@ -187,6 +192,7 @@ export class AdvertService {
       "piece_jointe = '" + Utils.sqlfyText(advert.attachement.fileContent) + "', " +
       "thumbnail = '" + Utils.sqlfyText(advert.thumbnail.fileContent) + "', " +
       "forme_contrat = '" + Utils.sqlfyText(advert.contractForm) + "', " +
+      "temps_partiel = '" + (advert.isPartialTime ? 'Oui' : 'Non') + "', " +
       "image_principale = '" + Utils.sqlfyText(advert.imgbg.fileContent) + "' " +
       "WHERE " +
       "pk_user_annonce_entreprise = " + advert.id + ";"

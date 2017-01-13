@@ -30,6 +30,7 @@ export class AdvertEdit{
   alerts: any = [];
   contractFormArray = [];
   descriptionPlaceholder: string;
+  contractForm: any;
 
   selectedJob = [];
   jobs = [];
@@ -69,8 +70,13 @@ export class AdvertEdit{
         status: '',
         fileContent: ''
       },
-      contractForm: ''
+      contractForm: '',
+      isPartialTime: false
     };
+
+    this.contractForm = {
+      isInterim: false, isFormation: false, isCDD: false, isCDI: false
+    }
   }
 
   ngOnInit() {
@@ -232,20 +238,50 @@ export class AdvertEdit{
     }
     //contract form
     if(!this.isEmpty(this.advert.contractForm)) {
-      this.contractFormArray = this.advert.contractForm.split(";");
+      let contractForms = this.advert.contractForm.split(';');
+      for(let i = 0; i < contractForms.length; i++){
+        if(contractForms[i] == "Intérim"){
+          this.contractForm.isInterim = true;
+        }
+        if(contractForms[i] == "Formation"){
+          this.contractForm.isFormation = true;
+        }
+        if(contractForms[i] == "CDD"){
+          this.contractForm.isCDD = true;
+        }
+        if(contractForms[i] == "CDI"){
+          this.contractForm.isCDI = true;
+        }
+      }
+    }
+  }
+
+  prepareDataForSaving(){
+    this.advert.description = btoa(this.ckExport());
+    this.advert.contractForm = '';
+    if (this.contractForm.isInterim) {
+      this.advert.contractForm = this.advert.contractForm + ";Intérim";
+    }
+    if (this.contractForm.isFormation) {
+      this.advert.contractForm = this.advert.contractForm + ";Formation";
+    }
+    if (this.contractForm.isCDD) {
+      this.advert.contractForm = this.advert.contractForm + ";CDD";
+    }
+    if (this.contractForm.isCDI) {
+      this.advert.contractForm = this.advert.contractForm + ";CDI";
     }
   }
 
   saveAdvert() {
-    this.advert.description = btoa(this.ckExport());
-
+    this.prepareDataForSaving();
     if(!this.isFormValid()){
       this.alert("Veuillez renseigner le titre de l'annonce avant d'enregistrer", "warning");
       return;
     }
 
     if(!Utils.isEmpty(this.advert.link) && !Utils.isValidUrl(this.advert.link)){
-      this.alert("Le lien spécifié de l'annonce  n'est pas valide", "warning");
+      this.alert("Le lien spécifié de l'annonce n'est pas valide", "warning");
       return;
     }
 
@@ -293,15 +329,15 @@ export class AdvertEdit{
   }
 
   saveAdvertWithOffer() {
-    this.advert.description = btoa(this.ckExport());
+    this.prepareDataForSaving();
 
     if(!this.isFormValid()){
       this.alert("Veuillez renseigner le titre de l'annonce avant d'enregistrer", "warning");
       return;
     }
-    
+
     if(!Utils.isEmpty(this.advert.link) && !Utils.isValidUrl(this.advert.link)){
-      this.alert("Le lien spécifié de l'annonce  n'est pas valide", "warning");
+      this.alert("Le lien spécifié de l'annonce n'est pas valide", "warning");
       return;
     }
 
@@ -371,7 +407,8 @@ export class AdvertEdit{
         status: '',
         fileContent: ''
       },
-      contractForm: ''
+      contractForm: '',
+      isPartialTime: false
     };
     this.idAdvert = null;
 
@@ -403,21 +440,15 @@ export class AdvertEdit{
     window.open(url);
   }
 
+  watchTimeForm(e){
+    this.advert.isPartialTime = (e.target.value == '0' ? true : false);
+  }
+
   isFormValid(){
     if(this.advert && !this.isEmpty(this.advert.titre)){
       return true;
     } else {
       return false;
-    }
-  }
-
-  setContractFormSelected(selectElement) {
-    this.advert.contractForm = '';
-    for (let i = 0; i < selectElement.options.length; i++) {
-      let optionElement = selectElement.options[i];
-      if (optionElement.selected == true) {
-        this.advert.contractForm = this.advert.contractForm + ";" + optionElement.text;
-      }
     }
   }
 
