@@ -1836,7 +1836,7 @@ export class OfferEdit{
           this.pushSlotInCalendar(splitted_slot)
         }else{
           let infos = "";//"<br>" + "- Le "+splitted_slot.from.toLocaleDateString() + '.'; // Can't do multi alerts - fix
-          this.addAlert("warning", " Certains créneaux que vous avez séléctionné ne sont pas valide" + infos, "general");
+          this.addAlert("warning", " Certains créneaux que vous avez sélectionnés ne sont pas valides" + infos, "general");
         }
 
 
