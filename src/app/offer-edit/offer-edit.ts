@@ -190,9 +190,11 @@ export class OfferEdit{
 
     if (this.obj == "detail") {
       this.offer = this.sharedService.getCurrentOffer();
-      this.offersService.getOfferById(this.offer.idOffer, this.projectTarget, this.offer).then(()=> {
-        this.refreshParametrage = true;
-      });
+      if (this.projectTarget == 'employer') {
+        this.offersService.getOfferById(this.offer.idOffer, this.projectTarget, this.offer).then(()=> {
+          this.refreshParametrage = true;
+        });
+      }
     } else {
       this.offer = new Offer();
       this.offer.jobData = new Job();
@@ -2041,6 +2043,10 @@ export class OfferEdit{
       this.offer.parametrageConvention = -1;
       this.minimumClassificationRate = -1;
     }
+  }
+
+  displayClassification() {
+    return this.projectTarget == 'employer' && ((this.obj == 'add') || (this.offer && this.offer.parametrageConvention != 0));
   }
 
   isEmpty(str) {

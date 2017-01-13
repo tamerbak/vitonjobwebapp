@@ -181,7 +181,7 @@
           </div>
         </div>
 
-        <div *ngIf="projectTarget == 'employer' && ((obj == 'add') || (offer && offer.parametrageConvention != 0))">
+        <div *ngIf="displayClassification()">
           <div
             convention-parameters
             [(offer)]="offer"
@@ -190,13 +190,6 @@
             (onValidParametrage)="conventionParametrageChange($event)"
             (onPartialParametrage)="conventionParametrageChange($event)"
           ></div>
-
-          <alert *ngIf="offer.parametrageConvention == 0" [type]="'danger alert-sm'">
-            <div [innerHTML]="'<b>Attention: </b> veuillez selectionner un paramètrage complet. Valeur par défaut utilisée: ' + invalidHourRateMessage"></div>
-          </alert>
-          <alert *ngIf="offer.parametrageConvention != 0" [type]="'danger alert-sm'">
-            <div [innerHTML]="'<b>Attention: </b> ' + minimumClassificationRate"></div>
-          </alert>
         </div>
 
         <!--<div>conventionMessage: {{conventionComponentMsg}}</div>-->
@@ -227,7 +220,7 @@
               <option>EUR</option>
             </select>
           </div>
-          <div class="col-xs-12">
+          <div class="col-xs-12" *ngIf="displayClassification()">
             <alert
               [hidden]="!(minimumClassificationRate > 0 && offer.jobData.remuneration < minimumClassificationRate)"
               [type]="'danger alert-sm'"
