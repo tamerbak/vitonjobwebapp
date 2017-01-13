@@ -42,6 +42,9 @@ export class MissionList{
   missionPast: any;
   missionCanceled: any;
 
+  currentTypeList: any;
+  userId:any;
+
   // Web
   typeMissionModel: string = '0';
   disableBtnPointing;
@@ -69,6 +72,8 @@ export class MissionList{
 
     this.contractList = [];
 
+    this.currentTypeList = [];
+
     this.missionNow = [];
     this.missionFutur = [];
     this.missionPast = [];
@@ -77,13 +82,19 @@ export class MissionList{
     this.missionsObjNow = {header: 'Missions en cours', list: this.missionNow, loaded: false};
     this.missionsObjFutur = {header: 'Missions en attente', list: this.missionFutur, loaded: false};
     this.missionsObjPast = {header: 'Missions terminées', list: this.missionPast, loaded: false};
-    this.missionsObjCanceled = {header: 'Missions Annulées', list: this.missionCanceled, loaded: false};
+    this.missionsObjCanceled = {header: 'Missions annulées', list: this.missionCanceled, loaded: false};
 
     this.missionList = [];
     this.missionList.push(this.missionsObjNow);
     this.missionList.push(this.missionsObjFutur);
     this.missionList.push(this.missionsObjPast);
     this.missionList.push(this.missionsObjCanceled);
+
+    if (this.isEmployer) {
+      this.userId = this.currentUser.employer.entreprises[0].id;
+    } else {
+      this.userId = this.currentUser.jobyer.id;
+    }
   }
 
   ngOnInit() {
@@ -97,14 +108,19 @@ export class MissionList{
     });
 
     //get contracts
-    let id;
-    if (this.isEmployer) {
-      id = this.currentUser.employer.entreprises[0].id;
-    } else {
-      id = this.currentUser.jobyer.id;
-    }
+    this.getContractsByType(this.typeMissionModel);
+  }
 
-    this.contractService.getContracts(id, this.projectTarget).then((data: any) => {
+  loadList(type){
+    this.getContractsByType(type);
+  }
+
+    getContractsByType(type){
+      this.contractService.getContracts(this.userId, this.projectTarget).then((data: any) => {
+      this.missionNow = []
+      this.missionFutur = []
+      this.missionPast =[]
+      this.missionCanceled=[]
 
       if (data.data) {
         this.contractList = data.data;
@@ -115,13 +131,15 @@ export class MissionList{
             if (item.signature_jobyer.toUpperCase() == 'OUI' && item.accompli.toUpperCase() == 'NON' && Utils.isEmpty(item.annule_par))
             // Mission en cours
               this.missionNow.push(item);
+              
             if (item.signature_jobyer.toUpperCase() == 'NON' && Utils.isEmpty(item.annule_par))
             // Mission in futur
               this.missionFutur.push(item);
-            //else
+
             if (item.accompli.toUpperCase() == 'OUI' && Utils.isEmpty(item.annule_par))
             // Mission in past
               this.missionPast.push(item);
+
             if (!Utils.isEmpty(item.annule_par))
             // Mission canceled
               this.missionCanceled.push(item);
@@ -133,33 +151,25 @@ export class MissionList{
               let array = this.missionService.getTodayMission(missionHoursTemp);
               let missionHours = array[0];
               let missionPauses = array[1];
-              //item.disableBtnPointing = this.missionService.disablePointing(missionHours, missionPauses).disabled;
-              /*let autoPointing = navParams.get('autoPointing');
-               if(autoPointing){
-               this.nextPointing = navParams.get('nextPointing')
-               this.pointHour(true);
-               }*/
             }
           });
+          if(type == 0){
+            this.currentTypeList = this.missionNow;
+          }else if(type == 1){
+            this.currentTypeList = this.missionFutur;
+          }else if(type == 2){
+            this.currentTypeList = this.missionPast;
+          }else if(type == 3){
+            this.currentTypeList = this.missionCanceled;
+          }
         }
 
-        this.missionNow = this.missionNow.sort((a, b) => {
-          return this.dayDifference(b.date_de_debut, a.date_de_debut)
-        });
-
-        this.missionFutur = this.missionFutur.sort((a, b) => {
-          return this.dayDifference(a.date_de_debut, b.date_de_debut)
-        });
-
-        this.missionPast = this.missionPast.sort((a, b) => {
-          return this.dayDifference(b.date_de_debut, a.date_de_debut)
-        });
-
-        this.missionCanceled = this.missionCanceled.sort((a, b) => {
+        this.currentTypeList = this.currentTypeList.sort((a, b) => {
           return this.dayDifference(b.date_de_debut, a.date_de_debut)
         });
       }
     });
+
   }
 
 
