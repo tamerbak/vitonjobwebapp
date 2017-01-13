@@ -150,20 +150,49 @@
 
     <div class="form-group">
       <label class="col-md-4 col-xs-12 form-control-label">
-        Forme contrat<span class="help-block">Sélectionner la forme de contrat souhaitée pour votre offre (Maintenez la touche Ctrl (Windows) ou Cmd (Mac) appuyée pour sélectionner plusieurs options)</span>
+        Forme du contrat
       </label>
 
       <div class="col-md-8 col-xs-12">
-        <select multiple [(ngModel)]="contractFormArray" (change)="setContractFormSelected($event.target)">
-          <option value="Intérim">Intérim</option>
-          <option value="Formation">Formation</option>
-          <option value="CDD">CDD</option>
-          <option value="CDI">CDI</option>
-          <option value="CDI partiel">CDI partiel</option>
-        </select>
+        <label>
+          <input type="checkbox" [(ngModel)]="contractForm.isInterim">
+          Intérim
+        </label>
+        <label>
+          <input type="checkbox" [(ngModel)]="contractForm.isFormation">
+          Formation
+        </label>
+        <label>
+          <input type="checkbox" [(ngModel)]="contractForm.isCDD">
+          CDD
+        </label>
+        <label>
+          <input type="checkbox" [(ngModel)]="contractForm.isCDI">
+          CDI
+        </label>
       </div>
     </div>
 
+    <div class="form-group">
+      <label class="col-md-4 col-xs-12 form-control-label">
+        Durée du contrat
+      </label>
+
+
+
+      <div class="abc-radio">
+        <input type="radio" name="radio1" id="partialTime" value="0" (click)="watchTimeForm($event)"
+               [checked]="advert.isPartialTime">
+        <label for="partialTime" class="labelRadio">
+          Temps partiel
+        </label>
+        <input type="radio" name="radio1" id="fullTime" value="1" (click)="watchTimeForm($event)"
+               [checked]="!advert.isPartialTime">
+        <label for="fullTime" class="labelRadio">
+          Temps plein
+        </label>
+      </div>
+    </div>
   </div>
 
   <div class="container-fluid">
