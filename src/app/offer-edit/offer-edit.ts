@@ -153,12 +153,6 @@ export class OfferEdit{
   advertMode : any;
   advertId: string;
 
-  /*
-   *  Contact
-   */
-  offerContact : string;
-  tel : string;
-
   personalizeConventionInit : boolean = false;
 
   constructor(private sharedService: SharedService,
@@ -200,12 +194,6 @@ export class OfferEdit{
       this.offer.jobData = new Job();
     }
 
-    if(this.offer && this.offer.telephone) {
-      this.tel = this.offer.telephone;
-    }
-    if(this.offer && this.offer.contact) {
-      this.offerContact = this.offer.contact;
-    }
     if (this.projectTarget == "employer" && this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
       this.convention = this.currentUser.employer.entreprises[0].conventionCollective;
     } else {
@@ -274,7 +262,8 @@ export class OfferEdit{
       /**
        * New offer initialization
        */
-      this.offer.telephone = this.currentUser.telephone;
+      this.offer.telephone = this.currentUser.tel;
+      this.offer.contact = (this.currentUser.prenom + " " + this.currentUser.nom).trim();
 
       if(this.projectTarget == 'employer'){
           var siegeAddress = this.currentUser.employer.entreprises[0].siegeAdress;
@@ -1092,9 +1081,6 @@ export class OfferEdit{
     if (!this.isConditionEmpValid) {
       return;
     }
-
-    this.offer.contact = this.offerContact;
-    this.offer.telephone = this.tel;
 
     if (this.obj != "detail") {
       this.offer.calendarData = this.offersService.convertSlotsForSaving(this.slotsToSave);

@@ -93,6 +93,11 @@ export class SearchResults{
       for (let i = 0; i < this.searchResults.length; i++) {
         let r = this.searchResults[i];
 
+        // Security for removed account
+        if (r.idJobyer == 0) {
+          continue;
+        }
+
         r.matching = Number(r.matching).toFixed(2);
         r.index = i + 1;
         r.avatar = "../assets/images/avatar.png";

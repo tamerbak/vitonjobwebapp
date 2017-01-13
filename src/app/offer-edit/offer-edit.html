@@ -512,7 +512,7 @@
             Contact sur place
           </label>
           <div class="col-md-7 col-xs-12">
-            <input id="contactsp" type="text" class="form-control" [(ngModel)]="offerContact" />
+            <input id="contactsp" type="text" class="form-control" [(ngModel)]="offer.contact" />
           </div>
         </div>
         <div class="form-group row" *ngIf="projectTarget == 'employer'">
@@ -520,7 +520,7 @@
             N° Téléphone
           </label>
           <div class="col-md-7 col-xs-12">
-            <input id="phonesp" type="text" class="form-control" [(ngModel)]="tel" />
+            <input id="phonesp" type="text" class="form-control" [(ngModel)]="offer.telephone" />
           </div>
         </div>
 
