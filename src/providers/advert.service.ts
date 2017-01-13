@@ -10,7 +10,7 @@ export class AdvertService {
 
   }
 
-  loadAdvertsByEntreprise(idEntreprise){
+  loadAdvertsByEntreprise(idEntreprise, offset, limit){
     let sql = "SELECT " +
       "uae.pk_user_annonce_entreprise as id" +
       ", uae.titre as titre" +
@@ -25,8 +25,8 @@ export class AdvertService {
       " ON uae.pk_user_annonce_entreprise = uija.fk_user_annonce_entreprise " +
       " WHERE uae.dirty='N' and uae.fk_user_entreprise="+idEntreprise+"" +
       " GROUP BY uae.pk_user_annonce_entreprise " +
-      " ORDER BY uae.created DESC ";
-      //" LIMIT " + limit + " OFFSET " + offset;
+      " ORDER BY uae.created DESC " +
+      " LIMIT " + limit + " OFFSET " + offset;
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -68,7 +68,7 @@ export class AdvertService {
     });
   }
 
-  loadAdverts(){
+  loadAdverts(offset, limit){
     let sql = "select " +
       "pk_user_annonce_entreprise as id" +
       ", titre as titre" +
@@ -78,8 +78,8 @@ export class AdvertService {
       ", created " +
       ", fk_user_offre_entreprise as \"offerId\" " +
       " from user_annonce_entreprise " +
-      " where dirty='N' order by created desc ";
-      //" limit " + limit + " offset " + offset;
+      " where dirty='N' order by created desc "+
+      " limit " + limit + " offset " + offset;
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
