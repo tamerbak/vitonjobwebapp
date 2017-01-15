@@ -178,34 +178,10 @@ export class ContractService {
     if (projectTarget == 'employer') {
       var sql = employerSql + typeSql + orderBySql + rangeSql;
     } else {
-      var sql = rangeSql + typeSql + orderBySql + rangeSql;
+      var sql = jobyerSql + typeSql + orderBySql + rangeSql;
     }
 
     //console.log(sql);
-    return new Promise(resolve => {
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-
-          this.data = data;
-          resolve(this.data);
-        });
-    });
-  }
-
-  getNowContracts(id: number, projectTarget: string) {
-    //  Init project parameters
-    this.configuration = Configs.setConfigs(projectTarget);
-    if (projectTarget == 'employer') {
-      var sql = "SELECT c.pk_user_contrat,c.*, j.nom, j.prenom FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='" + id + "' and c.date_de_debut is not null and upper(c.signature_jobyer) = 'OUI' and upper(c.accompli)='NON' and c.annule_par is null order by c.pk_user_contrat";
-    } else {
-      var sql = "SELECT c.pk_user_contrat,c.*, e.nom_ou_raison_sociale as nom FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "' and c.date_de_debut is not null and upper(c.signature_jobyer) = 'OUI' and upper(c.accompli)='NON' and c.annule_par is null order by c.pk_user_contrat";
-    }
-
-    //console.log(sql);
-
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
@@ -226,30 +202,6 @@ export class ContractService {
       var sql = "SELECT count(*) FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='" + id + "' and c.date_de_debut is not null and upper(c.signature_jobyer) = 'OUI' and upper(c.accompli)='NON' and c.annule_par is null";
     } else {
       var sql = "SELECT count(*) FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "' and c.date_de_debut is not null and upper(c.signature_jobyer) = 'OUI' and upper(c.accompli)='NON' and c.annule_par is null";
-    }
-
-    //console.log(sql);
-
-    return new Promise(resolve => {
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-
-          this.data = data;
-          resolve(this.data);
-        });
-    });
-  }
-
-  getFutureContracts(id: number, projectTarget: string) {
-    //  Init project parameters
-    this.configuration = Configs.setConfigs(projectTarget);
-    if (projectTarget == 'employer') {
-      var sql = "SELECT c.pk_user_contrat,c.*, j.nom, j.prenom FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='" + id + "' and c.date_de_debut is not null and upper(c.signature_jobyer) = 'NON' and c.annule_par is null order by c.pk_user_contrat";
-    } else {
-      var sql = "SELECT c.pk_user_contrat,c.*, e.nom_ou_raison_sociale as nom FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "' and c.date_de_debut is not null and upper(c.signature_jobyer) = 'NON' and c.annule_par is null order by c.pk_user_contrat";
     }
 
     //console.log(sql);
@@ -291,30 +243,6 @@ export class ContractService {
     });
   }
 
-  getPastContracts(id: number, projectTarget: string) {
-    //  Init project parameters
-    this.configuration = Configs.setConfigs(projectTarget);
-    if (projectTarget == 'employer') {
-      var sql = "SELECT c.pk_user_contrat,c.*, j.nom, j.prenom FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='" + id + "' and c.date_de_debut is not null and upper(c.accompli) = 'OUI' and c.annule_par is null order by c.pk_user_contrat";
-    } else {
-      var sql = "SELECT c.pk_user_contrat,c.*, e.nom_ou_raison_sociale as nom FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "' and c.date_de_debut is not null and upper(c.accompli) = 'OUI' and c.annule_par is null order by c.pk_user_contrat";
-    }
-
-    //console.log(sql);
-
-    return new Promise(resolve => {
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-
-          this.data = data;
-          resolve(this.data);
-        });
-    });
-  }
-
   getPastContractsCount(id: number, projectTarget: string) {
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
@@ -322,30 +250,6 @@ export class ContractService {
       var sql = "SELECT count(*) FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='" + id + "' and c.date_de_debut is not null and upper(c.accompli) = 'OUI' and c.annule_par is null";
     } else {
       var sql = "SELECT count(*) FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "' and c.date_de_debut is not null and upper(c.accompli) = 'OUI' and c.annule_par is null";
-    }
-
-    //console.log(sql);
-
-    return new Promise(resolve => {
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-
-          this.data = data;
-          resolve(this.data);
-        });
-    });
-  }
-
-  getCanceledContracts(id: number, projectTarget: string) {
-    //  Init project parameters
-    this.configuration = Configs.setConfigs(projectTarget);
-    if (projectTarget == 'employer') {
-      var sql = "SELECT c.pk_user_contrat,c.*, j.nom, j.prenom FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='" + id + "' and c.date_de_debut is not null and c.annule_par is not null order by c.pk_user_contrat";
-    } else {
-      var sql = "SELECT c.pk_user_contrat,c.*, e.nom_ou_raison_sociale as nom FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "' and c.date_de_debut is not null and c.annule_par is not null order by c.pk_user_contrat";
     }
 
     //console.log(sql);

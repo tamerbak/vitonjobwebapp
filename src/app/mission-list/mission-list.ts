@@ -20,6 +20,7 @@ import { InfiniteScroll } from 'angular2-infinite-scroll';
 export class MissionList{
   projectTarget: string;
   isEmployer: boolean;
+  loading:boolean = true;
 
   employer: any;
   jobyer: any;
@@ -159,6 +160,7 @@ export class MissionList{
   }
 
     getContractsByType(type){
+        this.loading = true;
         this.contractService.getContractsByType(type,this.queryOffset,this.queryLimit,this.userId, this.projectTarget).then((data: any) => {
           if (data.data) {
             this.contractList = data.data;
@@ -174,6 +176,7 @@ export class MissionList{
             this.currentTypeList = this.currentTypeList.sort((a, b) => {
               return this.dayDifference(b.date_de_debut, a.date_de_debut)
             });
+            this.loading = false;
           }
         });
     }
