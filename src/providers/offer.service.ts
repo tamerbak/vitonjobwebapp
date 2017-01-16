@@ -218,7 +218,12 @@ export class OffersService {
       this.http.post(Configs.calloutURL, payloadFinal.forge(), {headers: headers})
         .subscribe((data: any) => {
           let remoteOffer: Offer = JSON.parse(data._body);
-          offer = remoteOffer;
+
+          // Copy every properties from remote to local
+          Object.keys(remoteOffer).forEach((key) => {
+            offer[key] = remoteOffer[key];
+          });
+
           resolve(data);
         });
     });
