@@ -1,9 +1,10 @@
-import {Component, ViewEncapsulation} from "@angular/core";
+import {Component, ViewEncapsulation, Type} from "@angular/core";
 import {AdvertService} from "../../providers/advert.service";
 import {SharedService} from "../../providers/shared.service";
 import {Router, ROUTER_DIRECTIVES} from "@angular/router";
 import {ACCORDION_DIRECTIVES, AlertComponent} from "ng2-bootstrap";
 import {ModalOptions} from "../modal-options/modal-options";
+import { InfiniteScroll } from 'angular2-infinite-scroll';
 
 declare var Messenger, jQuery: any;
 
@@ -12,7 +13,7 @@ declare var Messenger, jQuery: any;
   template: require('./advert-list.html'),
   encapsulation: ViewEncapsulation.None,
   styles:[require('./advert-list.scss')],
-  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalOptions],
+  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalOptions, InfiniteScroll],
   providers:[AdvertService]
 })
 export class AdvertList {
@@ -20,6 +21,10 @@ export class AdvertList {
   isEmployer: boolean;
   adverts : any = [];
   modalParams: any = {type: '', message: ''};
+  //determine the number of elements that should be skipped by the loading adverts query
+  queryOffset: number = 0;
+  //determine the number of elemens to be retrieved by the loading adverts query
+  queryLimit: number = 7;
 
   constructor(private advertService : AdvertService,
               private router : Router,
@@ -40,9 +45,10 @@ export class AdvertList {
   loadAdverts(){
     if (this.isEmployer) {
       let entrepriseId = this.currentUser.employer.entreprises[0].id;
-      this.advertService.loadAdvertsByEntreprise(entrepriseId).then((data: any) => {
+      this.advertService.loadAdvertsByEntreprise(entrepriseId, this.queryOffset, this.queryLimit).then((data: any) => {
         if(data){
-          this.adverts = data;
+          this.adverts = this.adverts.concat(data);
+          this.queryOffset = this.queryOffset + this.queryLimit;
         }else{
           Messenger().post({
             message: "Une erreur est survenue lors du chargement des annonces.",
@@ -52,9 +58,10 @@ export class AdvertList {
         }
       })
     } else {
-      this.advertService.loadAdverts().then((data: any) => {
+      this.advertService.loadAdverts(this.queryOffset, this.queryLimit).then((data: any) => {
         if(data){
-          this.adverts = data;
+          this.adverts = this.adverts.concat(data);
+          this.queryOffset = this.queryOffset + this.queryLimit;
         }else{
           Messenger().post({
             message: "Une erreur est survenue lors du chargement des annonces.",
@@ -117,5 +124,9 @@ export class AdvertList {
   goToAdvJobyerInterestList(adv){
     this.sharedService.setCurrentAdv(adv);
     this.router.navigate(['advert/jobyer/list']);
+  }
+
+  onScrollDown () {
+    this.loadAdverts();
   }
 }

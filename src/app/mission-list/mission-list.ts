@@ -7,18 +7,20 @@ import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {MissionService} from "../../providers/mission-service";
 import {Helpers} from "../../providers/helpers.service";
 import {Utils} from "../utils/utils";
+import { InfiniteScroll } from 'angular2-infinite-scroll';
 
 @Component({
   selector: '[mission-list]',
   template: require('./mission-list.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./mission-list.scss')],
-  directives: [ROUTER_DIRECTIVES, BUTTON_DIRECTIVES],
+  directives: [ROUTER_DIRECTIVES, BUTTON_DIRECTIVES,InfiniteScroll],
   providers: [ContractService, MissionService, Helpers]
 })
 export class MissionList{
   projectTarget: string;
   isEmployer: boolean;
+  loading:boolean = true;
 
   employer: any;
   jobyer: any;
@@ -42,7 +44,15 @@ export class MissionList{
   missionPast: any;
   missionCanceled: any;
 
+  missionNowCount: string ="";
+  missionFutureCount: string ="";
+  missionPastCount: string ="";
+  missionCanceledCount: string ="";
+
   currentTypeList: any;
+
+  queryOffset:number = 0;
+  queryLimit:number = 5;
   userId:any;
 
   // Web
@@ -59,7 +69,6 @@ export class MissionList{
 
     this.currentUser = this.sharedService.getCurrentUser();
 
-    console.log(this.currentUser)
     if (!this.currentUser) {
       this.router.navigate(['home']);
       return;
@@ -109,69 +118,80 @@ export class MissionList{
 
     //get contracts
     this.getContractsByType(this.typeMissionModel);
+    this.getContractsCount();
+  }
+
+  onScrollDown () {
+    this.getContractsByType(this.typeMissionModel);
   }
 
   loadList(type){
+    this.currentTypeList =[];
+    this.queryOffset =0;
+    this.queryLimit =5;
+    this.getContractsCount();
     this.getContractsByType(type);
   }
 
-    getContractsByType(type){
-      this.contractService.getContracts(this.userId, this.projectTarget).then((data: any) => {
-      this.missionNow = []
-      this.missionFutur = []
-      this.missionPast =[]
-      this.missionCanceled=[]
-
-      if (data.data) {
-        this.contractList = data.data;
-        for (let i = 0; i < this.contractList.length; i++) {
-          let item = this.contractList[i];
-
-          if (item.date_de_debut) {
-            if (item.signature_jobyer.toUpperCase() == 'OUI' && item.accompli.toUpperCase() == 'NON' && Utils.isEmpty(item.annule_par))
-            // Mission en cours
-              this.missionNow.push(item);
-              
-            if (item.signature_jobyer.toUpperCase() == 'NON' && Utils.isEmpty(item.annule_par))
-            // Mission in futur
-              this.missionFutur.push(item);
-
-            if (item.accompli.toUpperCase() == 'OUI' && Utils.isEmpty(item.annule_par))
-            // Mission in past
-              this.missionPast.push(item);
-
-            if (!Utils.isEmpty(item.annule_par))
-            // Mission canceled
-              this.missionCanceled.push(item);
-          }
-          //retrieve mission hours of today
-          this.missionService.listMissionHours(item, true).then((data: any) => {
-            if (data.data) {
-              let missionHoursTemp = data.data;
-              let array = this.missionService.getTodayMission(missionHoursTemp);
-              let missionHours = array[0];
-              let missionPauses = array[1];
-            }
-          });
-          if(type == 0){
-            this.currentTypeList = this.missionNow;
-          }else if(type == 1){
-            this.currentTypeList = this.missionFutur;
-          }else if(type == 2){
-            this.currentTypeList = this.missionPast;
-          }else if(type == 3){
-            this.currentTypeList = this.missionCanceled;
-          }
+  getContractsCount(){
+     this.contractService.getNowContractsCount(this.userId, this.projectTarget).then((data: any) => {
+        if (data.data) {
+          this.missionNowCount = data.data[0].count == 0 ? 'Aucune':''+data.data[0].count;
         }
+     });
 
-        this.currentTypeList = this.currentTypeList.sort((a, b) => {
-          return this.dayDifference(b.date_de_debut, a.date_de_debut)
-        });
-      }
-    });
+     this.contractService.getFutureContractsCount(this.userId, this.projectTarget).then((data: any) => {
+        if (data.data) {
+          this.missionFutureCount = data.data[0].count == 0 ? 'Aucune':(''+data.data[0].count);
+        }
+     });
 
+     this.contractService.getPastContractsCount(this.userId, this.projectTarget).then((data: any) => {
+        if (data.data) {
+          this.missionPastCount = data.data[0].count == 0 ? 'Aucune':data.data[0].count;
+        }
+      });
+
+      this.contractService.getCanceledContractsCount(this.userId, this.projectTarget).then((data: any) => {
+        if (data.data) {
+          this.missionCanceledCount = data.data[0].count == 0 ? 'Aucune':data.data[0].count;
+        }
+      });
   }
 
+    getContractsByType(type){
+        this.loading = true;
+        this.contractService.getContractsByType(type,this.queryOffset,this.queryLimit,this.userId, this.projectTarget).then((data: any) => {
+          if (data.data) {
+            this.contractList = data.data;
+            for (let i = 0; i < this.contractList.length; i++) {
+              let item = this.contractList[i];
+              this.currentTypeList.push(item);
+              
+              //retrieve mission hours of today
+              this.getMissionHours(item);
+              this.queryOffset = this.queryOffset + this.queryLimit;
+            }
+
+            this.currentTypeList = this.currentTypeList.sort((a, b) => {
+              return this.dayDifference(b.date_de_debut, a.date_de_debut)
+            });
+            this.loading = false;
+          }
+        });
+    }
+
+
+  getMissionHours(item){
+      this.missionService.listMissionHours(item, true).then((data: any) => {
+        if (data.data) {
+          let missionHoursTemp = data.data;
+          let array = this.missionService.getTodayMission(missionHoursTemp);
+          let missionHours = array[0];
+          let missionPauses = array[1];
+        }
+      });
+  }
 
   dayDifference(first, second) {
     if (first)

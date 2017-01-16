@@ -20,6 +20,7 @@ export class AdvertDetails{
   jobyerInterested: boolean;
   alerts: Array<Object>;
   isEmployer: boolean;
+  contractForm: any[] = [];
 
   constructor(private sharedService: SharedService,
               private router: Router,
@@ -33,7 +34,12 @@ export class AdvertDetails{
     }
     this.isEmployer = (this.currentUser.estEmployeur || this.currentUser.estRecruteur);
     this.advert = this.sharedService.getCurrentAdv();
-    this.setInterestButtonLabel()
+    this.setInterestButtonLabel();
+    this.splitContractForm();
+  }
+
+  splitContractForm(){
+    this.contractForm = this.advert.contractForm.split(';');
   }
 
   setInterestButtonLabel(){
