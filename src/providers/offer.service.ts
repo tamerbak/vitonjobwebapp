@@ -7,7 +7,7 @@ import {Offer} from "../dto/offer";
 import {CCalloutArguments} from "../dto/generium/ccallout-arguments";
 import {CCallout} from "../dto/generium/ccallout";
 
-const OFFER_CALLOUT_ID = 40002;
+const OFFER_CALLOUT_ID = 40003;
 
 @Injectable()
 export class OffersService {
@@ -171,7 +171,6 @@ export class OffersService {
                     let rawData = data.employer;
                     if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
                         //adding userId for remote storing
-                        offerData.identity = rawData.entreprises[0].id;
                         offers = rawData.entreprises[0].offers;
                         offers.push(offerData);
                         // Save new offer list in SqlStorage :
@@ -179,8 +178,6 @@ export class OffersService {
                     }
                 } else { // jobyer
                     let rawData = data.jobyer;
-                    if(rawData)
-                        offerData.identity = rawData.id;
                     if (rawData && rawData.offers) {
                         //adding userId for remote storing
                         offers = rawData.offers;
@@ -255,22 +252,16 @@ export class OffersService {
     offer.status = "OUI";
     offer.visible = true;
 
-    switch (projectTarget) {
-      case 'employer' :
-        offer.entrepriseId = offer.identity;
-        break;
-      case 'jobyer':
-        offer.jobyerId = offer.identity;
-        break;
-    }
-
-    //remove identity key/value from offer object
-    delete offer['identity'];
     delete offer.jobData['idLevel'];
     delete offer['slots'];
 
     // TODO HACK force jobData type
     offer.jobData.class = 'com.vitonjob.callouts.offer.model.JobData';
+    if ((projectTarget === 'employer') && offer.entrepriseId == 0) {
+      console.error('Missing entreprise id');
+    } else if ((projectTarget !== 'employer') && offer.jobyerId == 0) {
+      console.error('Missing jobyer id');
+    }
 
     let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
       new CCalloutArguments('Création/Edition offre', offer),

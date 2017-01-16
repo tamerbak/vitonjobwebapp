@@ -1115,7 +1115,12 @@ export class OfferEdit{
 
       let level = (this.offer.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant';
       this.offer.title = this.offer.jobData.job + " " + level;
-      this.offer.identity = (this.projectTarget == 'employer' ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id);
+
+      if (this.projectTarget == 'employer') {
+        this.offer.entrepriseId = this.currentUser.employer.entreprises[0].id;
+      } else {
+        this.offer.jobyerId = this.currentUser.jobyer.id;
+      }
 
       //  Deal with requirements
       if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0) {
