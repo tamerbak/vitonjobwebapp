@@ -52,7 +52,7 @@ export class Home{
   homeServiceData: any = [];
   maxLines: number = 8;
   obj: string;
-
+  
   currentJobyer: any;
 
   constructor(private router: Router,

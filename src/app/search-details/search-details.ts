@@ -47,7 +47,7 @@ export class SearchDetails{
   videoAvailable: boolean = false;
   youtubeLink: string;
   youtubeLinkSafe: any;
-  obj: string = "recruit";
+  subject: string = "recruit";
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,

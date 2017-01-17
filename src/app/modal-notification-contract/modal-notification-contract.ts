@@ -17,7 +17,7 @@ export class ModalNotificationContract{
   @Input()
   offer: any;
   @Input()
-  obj: string;
+  subject: string;
 
   currentUser: any;
   projectTarget: string;
@@ -92,7 +92,7 @@ export class ModalNotificationContract{
   gotoNewOffer() {
     jQuery('#modal-notification-contract').modal('hide');
     //this.sharedService.setCurrentJobyer(this.jobyer);
-    this.router.navigate(['offer/edit', {obj:this.obj}]);
+    this.router.navigate(['offer/edit', {obj:this.subject}]);
   }
 
   gotoLogin(){

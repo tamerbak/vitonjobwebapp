@@ -48,6 +48,7 @@ export class SearchResults{
   fromPage: string = "recruitment";
   obj: string;
   indexationMode : boolean;
+  subject: string = "recruit";
 
   constructor(private sharedService: SharedService,
               private router: Router,

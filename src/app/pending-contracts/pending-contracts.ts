@@ -23,7 +23,7 @@ export class PendingContracts {
   jobyerList: any[] = [];
   currentJobyer: any;
   currentOffer: any;
-  obj: string = "pendingContracts";
+  subject: string = "pendingContracts";
 
   constructor(private sharedService: SharedService,
               private recruitmentService: RecruitmentService,
