@@ -106,6 +106,12 @@
                   *ngIf="projectTarget == 'employer'"
                 ></recruit-button>
               </div>
+              <div class="col-md-1 col-xs-2 pull-xs-left">
+                <grouped-recruit-button
+                  [jobyer]="item"
+                  *ngIf="projectTarget == 'employer' && currentUser"
+                ></grouped-recruit-button>
+              </div>
               <div class="col-md-1 col-xs-2">
                 <button
                   type="button"
