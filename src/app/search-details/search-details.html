@@ -159,5 +159,5 @@
   </div>
 </div>-->
 
-<div modal-notification-contract [jobyer]="result" [obj]="obj" *ngIf="projectTarget == 'employer' && !isRecruteur"></div>
+<div modal-notification-contract [jobyer]="result" [subject]="subject" *ngIf="projectTarget == 'employer' && !isRecruteur"></div>
 <div modal-profile [fromPage]="fromPage" [jobyer]="result" (onProfileUpdated)="onProfileUpdated($event)"></div>
