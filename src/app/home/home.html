@@ -43,7 +43,7 @@
       </div>
     </div>
   </div>
-  
+
   <div class="col-xs-12 pad top centred-l text-center" style="padding: 0">
      <div class="container-fluid list-home-container" [hidden]="upcomingOffers.length==0" style="margin: 0; padding: 0;background-color: #eee;">
       <div class="row">
@@ -64,7 +64,7 @@
 ></div>
 <div
   modal-notification-contract
-  [jobyer]="currentJobyer"
+  [jobyer]="currentJobyer" [obj]="obj"
   *ngIf="projectTarget == 'employer' && !isRecruteur"
 ></div>
 <div

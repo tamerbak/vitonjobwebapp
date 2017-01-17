@@ -16,6 +16,8 @@ export class ModalNotificationContract{
   jobyer: any;
   @Input()
   offer: any;
+  @Input()
+  obj: string;
 
   currentUser: any;
   projectTarget: string;
@@ -76,7 +78,6 @@ export class ModalNotificationContract{
   }
 
   gotoModalOffers() {
-
     jQuery('#modal-notification-contract').modal('hide');
     jQuery('#modal-notification-contract').on('hidden.bs.modal', function () {
       jQuery('#modal-offers').modal({
@@ -86,13 +87,12 @@ export class ModalNotificationContract{
       jQuery('#modal-offers').modal('show');
       jQuery('#modal-notification-contract').unbind('hidden');
     })
-
   }
 
   gotoNewOffer() {
     jQuery('#modal-notification-contract').modal('hide');
     //this.sharedService.setCurrentJobyer(this.jobyer);
-    this.router.navigate(['offer/edit', {obj:'recruit'}]);
+    this.router.navigate(['offer/edit', {obj:this.obj}]);
   }
 
   gotoLogin(){
