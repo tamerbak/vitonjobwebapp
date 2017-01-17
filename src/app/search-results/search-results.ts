@@ -4,6 +4,7 @@ import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from "@angular/router
 import {SearchService} from "../../providers/search-service";
 import {ProfileService} from "../../providers/profile.service";
 import {RecruitButton} from "../components/recruit-button/recruit-button";
+import {GroupedRecruitButton} from "../components/grouped-recruit-button/grouped-recruit-button";
 import {GOOGLE_MAPS_DIRECTIVES} from "angular2-google-maps/core";
 import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
 import {ModalProfile} from "../modal-profile/modal-profile";
@@ -18,7 +19,7 @@ declare var Messenger: any;
   template: require('./search-results.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./search-results.scss')],
-  directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, RecruitButton, ModalNotificationContract, ModalProfile, AlertComponent],
+  directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, RecruitButton, GroupedRecruitButton, ModalNotificationContract, ModalProfile, AlertComponent],
   providers: [SearchService, ProfileService]
 })
 export class SearchResults{
@@ -255,6 +256,11 @@ export class SearchResults{
       });
       jQuery('#modal-notification-contract').modal('show');
     }
+  }
+
+  onGroupedRecruite(params) {
+    this.currentJobyer = params.jobyer;
+    this.sharedService.setCurrentJobyer(this.currentJobyer);
   }
 
   onProfileUpdated(params) {
