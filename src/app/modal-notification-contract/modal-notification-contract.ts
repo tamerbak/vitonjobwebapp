@@ -1,7 +1,8 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, SimpleChanges} from "@angular/core";
 import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {ModalOffers} from "../modal-offers/modal-offers";
+import {Utils} from "../utils/utils";
 
 declare var jQuery: any;
 
@@ -13,6 +14,8 @@ declare var jQuery: any;
 export class ModalNotificationContract{
   @Input()
   jobyer: any;
+  @Input()
+  offer: any;
 
   currentUser: any;
   projectTarget: string;
@@ -50,7 +53,7 @@ export class ModalNotificationContract{
   initState(params){
     this.initByModalOffers = params.init;
     let o = this.sharedService.getCurrentOffer();
-    if (o != null) {
+    if (o != null || !Utils.isEmpty(this.offer)) {
       this.showOfferNotif = false;
       this.showContractNotif = true;
       this.showAuthNotif = false;
@@ -65,10 +68,11 @@ export class ModalNotificationContract{
     jQuery('#modal-notification-contract').modal('hide');
     let o = this.sharedService.getCurrentOffer();
     //navigate to contract page
-    if (o != null) {
-      this.sharedService.setCurrentJobyer(this.jobyer);
-      this.router.navigate(['contract/recruitment-form']);
+    if (Utils.isEmpty(o)) {
+      this.sharedService.setCurrentOffer(this.offer);
     }
+    this.sharedService.setCurrentJobyer(this.jobyer);
+    this.router.navigate(['contract/recruitment-form']);
   }
 
   gotoModalOffers() {
@@ -94,6 +98,10 @@ export class ModalNotificationContract{
   gotoLogin(){
     jQuery('#modal-notification-contract').modal('hide');
     this.router.navigate(['login', {obj:'recruit'}]);
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.initState({});
   }
 
   close(): void {

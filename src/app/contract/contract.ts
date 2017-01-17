@@ -763,7 +763,7 @@ export class Contract {
                 //generate hour mission based on the offer slots
                 this.contractService.generateMission(this.contractData.id, this.currentOffer);
                 //update recrutement groupé state
-                this.recruitmentSrvice.updateRecrutementGroupeState(this.currentUser.id, this.currentOffer.idOffer, this.jobyer.id, this.currentOffer.jobData.idJob);
+                this.recruitmentSrvice.updateRecrutementGroupeState(this.jobyer.rgId);
                 //generate docusign envelop
                 this.saveDocusignInfo();
               }else {

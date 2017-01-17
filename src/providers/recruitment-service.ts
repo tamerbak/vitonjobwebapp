@@ -60,7 +60,7 @@ export class RecruitmentService {
   }
 
   getNonSignedGroupedRecruitments(accountId){
-    let sql = "select rg.created, j.pk_user_jobyer as id, j.nom, j.prenom, o.titre from user_jobyer as j, user_recrutement_groupe as rg " +
+    let sql = "select rg.pk_user_recrutement_groupe as \"rgId\", rg.created, j.pk_user_jobyer as id, j.nom, j.prenom, o.titre, o.pk_user_offre_entreprise as \"offerId\" from user_jobyer as j, user_recrutement_groupe as rg " +
       " LEFT JOIN user_offre_entreprise as o  ON " +
       " rg.fk_user_offre_entreprise = o.pk_user_offre_entreprise " +
       " where rg.fk_user_account = " + accountId + " and " +
@@ -78,12 +78,9 @@ export class RecruitmentService {
     });
   }
 
-  updateRecrutementGroupeState(userId, offerId, jobyerId, jobId){
+  updateRecrutementGroupeState(rgId){
     let sql = "update user_recrutement_groupe set en_contrat = 'Oui' where " +
-      " fk_user_offre_entreprise = " + offerId + " and " +
-      " fk_user_account = " + userId + " and " +
-      " fk_user_jobyer = " + jobyerId + " and " +
-      " fk_user_job = " + jobId;
+      " pk_user_recrutement_groupe = " + rgId;
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
