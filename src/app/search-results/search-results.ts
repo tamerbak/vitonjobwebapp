@@ -94,6 +94,8 @@ export class SearchResults{
       for (let i = 0; i < this.searchResults.length; i++) {
         let r = this.searchResults[i];
 
+        r.availabilityText = this.getAvailabilityText(r.availability.text);
+        r.availabiltyMinutes = this.getAvailabilityMinutes(r.availability.text);
         r.matching = Number(r.matching).toFixed(2);
         r.index = i + 1;
         r.avatar = "../assets/images/avatar.png";
@@ -138,6 +140,29 @@ export class SearchResults{
     }
 
     this.showAppropriateModal(this.obj);
+  }
+
+  getAvailabilityText(text){
+    var parts = text.split("et ");
+    var hours = parseInt(parts[0]);
+    var minutes = parseInt(parts[1]);
+    var hoursText = hours == 0 ? '':(hours + (hours == 1 ? " heure":" heures"));
+    var minutesText = minutes == 0 ? '':(minutes + (minutes == 1 ?  " minute":" minutes"));
+    var fullText = (hoursText == '' ? '': hoursText) + (minutesText == ''? '':(hoursText == ''? minutesText:(" et "+minutesText)));
+    return fullText;
+  }
+
+  getAvailabilityMinutes(text){
+    var parts = text.split("et ");
+    var hours = parseInt(parts[0]);
+    var minutes = parseInt(parts[1]);
+    return hours*60 + minutes;
+  }
+
+  sortResults(){
+    this.searchResults.sort((a, b) => {
+     return a.availabiltyMinutes - b.availabiltyMinutes;
+     })
   }
 
   doSemanticSearch() {
