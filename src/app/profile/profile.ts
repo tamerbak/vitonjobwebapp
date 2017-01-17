@@ -250,6 +250,7 @@ export class Profile{
 
     if (!this.currentUser) {
       this.router.navigate(['home']);
+      return;
     } else {
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
       this.getUserInfos();

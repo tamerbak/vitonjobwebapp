@@ -47,6 +47,9 @@ export class CorporamaService {
 
   convertSearchResponse(response) {
     let companies: any [] = [];
+    if (!response || !response.response) {
+      return companies;
+    }
     if (response.response.operation == "search") {
       let results = response.response.results.legal;
       for (let i = 0; i < results.length; i++) {
