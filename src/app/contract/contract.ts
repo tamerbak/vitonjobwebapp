@@ -15,7 +15,7 @@ import {SmsService} from "../../providers/sms-service";
 import {ConventionService} from "../../providers/convention.service";
 import {FinanceService} from "../../providers/finance.service";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
-
+import {RecruitmentService} from "../../providers/recruitment-service";
 declare var Messenger,jQuery,moment: any;
 
 /**
@@ -27,7 +27,7 @@ declare var Messenger,jQuery,moment: any;
   template: require('./contract.html'),
   styles: [require('./contract.scss')],
   directives: [AlertComponent, NKDatetime],
-  providers: [ContractService, MedecineService, ParametersService, Helpers,SmsService, OffersService,ProfileService,LoadListService, ConventionService, FinanceService, GlobalConfigs]
+  providers: [ContractService, MedecineService, ParametersService, Helpers,SmsService, OffersService,ProfileService,LoadListService, ConventionService, FinanceService, GlobalConfigs, RecruitmentService]
 })
 export class Contract {
 
@@ -109,7 +109,8 @@ export class Contract {
               private offersService : OffersService,
               private smsService: SmsService,
               private router: Router,
-              private financeService: FinanceService) {
+              private financeService: FinanceService,
+              private recruitmentSrvice: RecruitmentService) {
 
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
@@ -760,8 +761,9 @@ export class Contract {
                 //place offer in archive if nb contract of the selected offer is equal to its nb poste
                 this.checkOfferState(this.currentOffer);
                 //generate hour mission based on the offer slots
-                //TODO : generate break times
                 this.contractService.generateMission(this.contractData.id, this.currentOffer);
+                //update recrutement groupé state
+                this.recruitmentSrvice.updateRecrutementGroupeState(this.currentUser.id, this.currentOffer.idOffer, this.jobyer.id, this.currentOffer.jobData.idJob);
                 //generate docusign envelop
                 this.saveDocusignInfo();
               }else {
