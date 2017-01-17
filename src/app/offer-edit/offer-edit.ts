@@ -58,8 +58,8 @@ export class OfferEdit{
   currentUser: any;
   slot: any;
   slots = [];
-  selectedQuality: any;
-  selectedLang: any;
+  selectedQuality: string = "";
+  selectedLang: string = "";
   selectedLevel = "junior";
   slotsToSave = [];
   alerts: Array<Object>;
@@ -201,6 +201,8 @@ export class OfferEdit{
       this.offer.jobData = new Job();
     }
 
+    this.loadLists();
+
     if (this.projectTarget == "employer" && this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
       this.convention = this.currentUser.employer.entreprises[0].conventionCollective;
     } else {
@@ -210,6 +212,33 @@ export class OfferEdit{
         libelle: ''
       }
     }
+  }
+
+  loadLists(): void {
+
+    //loadQualities
+    this.qualities = this.sharedService.getQualityList();
+    if (Utils.isEmpty(this.qualities) === true) {
+      this.offersService.loadQualities(this.projectTarget).then((data: any) => {
+        this.qualities = data.data;
+        this.sharedService.setQualityList(this.qualities);
+      })
+    }
+
+    //loadLanguages
+    this.langs = this.sharedService.getLangList();
+    if (Utils.isEmpty(this.langs) === true) {
+      this.listService.loadOffersLanguages().then((data: any) => {
+        this.langs = data.data;
+        this.sharedService.setLangList(this.langs);
+      });
+    }
+
+    //load Softwares for jobyers pharmaciens
+    this.listService.loadPharmacieSoftwares().then((data: any) => {
+      this.softwares = data.data;
+    });
+
   }
 
   ngOnInit(): void {
@@ -327,29 +356,6 @@ export class OfferEdit{
       }
       self.initSectorDone = true;
     }
-
-    //loadQualities
-    this.qualities = this.sharedService.getQualityList();
-    if (Utils.isEmpty(this.qualities) === true) {
-      this.offersService.loadQualities(this.projectTarget).then((data: any) => {
-        this.qualities = data.data;
-        this.sharedService.setQualityList(this.qualities);
-      })
-    }
-
-    //loadLanguages
-    this.langs = this.sharedService.getLangList();
-    if (Utils.isEmpty(this.langs) === true) {
-      this.listService.loadOffersLanguages().then((data: any) => {
-        this.langs = data.data;
-        this.sharedService.setLangList(this.langs);
-      });
-    }
-
-    //load Softwares for jobyers pharmaciens
-    this.listService.loadPharmacieSoftwares().then((data: any) => {
-      this.softwares = data.data;
-    });
 
     // get mastered softwares for jobyers pharmaciens
     if (this.obj == "detail") {

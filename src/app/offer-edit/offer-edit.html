@@ -680,6 +680,7 @@
             <div class="row">
               <div class="col-md-9 col-xs-12">
                 <select class="form-control" [(ngModel)]="selectedQuality">
+                  <option [value]=""></option>
                   <option *ngFor="let q of qualities" [value]="q.idQuality">{{q.libelle}}</option>
                 </select>
               </div>
@@ -737,6 +738,7 @@
             <div class="row">
               <div class="{{ (projectTarget != 'employer') ? 'col-md-9 col-xs-12' : 'col-md-6 col-xs-6' }}">
                 <select class="form-control" [(ngModel)]="selectedLang">
+                  <option [value]=""></option>
                   <option *ngFor="let l of langs" [value]="l.idLanguage">{{l.libelle}}</option>
                 </select>
               </div>
