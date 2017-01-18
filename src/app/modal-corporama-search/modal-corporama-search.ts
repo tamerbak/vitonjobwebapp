@@ -58,7 +58,6 @@ export class ModalCorporamaSearch {
       if (!data || data.status == "failure" || Utils.isEmpty(data._body)) {
         console.log(data);
         this.alerts = ["Service indisponible. Veuillez réessayer ultérieurement."];
-        this.alerts = ["Service indisponible. Veuillez réessayer ultérieurement."];
         return;
       } else {
         data = JSON.parse(data._body);
