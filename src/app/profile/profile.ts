@@ -2010,11 +2010,6 @@ export class Profile{
     this.saveQualities();
   }
 
-  // removeLanguage(item) {
-  //   this.savedLanguages.splice(this.savedLanguages.indexOf(item), 1);
-  //   this.saveLanguages();
-  // }
-  //
   addQuality() {
     if (Utils.isEmpty(this.selectedQuality)) {
       return;
@@ -2032,25 +2027,6 @@ export class Profile{
     this.saveQualities();
   }
 
-  // addLanguage(){
-  //   if (Utils.isEmpty(this.selectedLanguage)) {
-  //     return;
-  //   }
-  //
-  //   //debugger;
-  //   var languagesTemp = this.languages.filter((v)=> {
-  //     return (v.id == this.selectedLanguage);
-  //   });
-  //   if (this.savedLanguages.indexOf(languagesTemp[0]) != -1) {
-  //     return;
-  //   }
-  //   languagesTemp[0]['level'] = this.selectedLevel;
-  //   this.savedLanguages.push(languagesTemp[0]);
-  //   this.selectedLanguage = "";
-  //
-  //   this.saveLanguages();
-  // }
-  //
   saveQualities() {
     let id = this.currentUser.estEmployeur ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id;
     this.profileService.saveQualities(this.savedQualities, id, this.projectTarget);

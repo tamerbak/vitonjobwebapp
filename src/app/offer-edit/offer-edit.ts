@@ -1065,35 +1065,6 @@ export class OfferEdit{
     }
   }
 
-  removeLanguage(item) {
-    this.offer.languageData.splice(this.offer.languageData.indexOf(item), 1);
-    if (this.obj == "detail") {
-      this.offersService.updateOfferLanguages(this.offer, this.projectTarget);
-      this.setOfferInLocal();
-    }
-  }
-
-  addLanguage() {
-    if (this.isEmpty(this.selectedLang)) {
-      return;
-    }
-    //searching the selected lang in the general list of langs
-    var langTemp = this.langs.filter((v) => {
-      return (v.id == this.selectedLang);
-    });
-    //delete the lang from the current offer lang list, if already existant
-    if (this.offer.languageData.indexOf(langTemp[0]) != -1) {
-      this.offer.languageData.splice(this.offer.languageData.indexOf(langTemp[0]), 1);
-    }
-    langTemp[0]['level'] = this.selectedLevel;
-    this.offer.languageData.push(langTemp[0]);
-    if (this.obj == "detail") {
-      this.offersService.updateOfferLanguages(this.offer, this.projectTarget);
-      this.setOfferInLocal();
-    }
-    this.selectedLang = "";
-  }
-
   setOfferInLocal() {
     //set offer in local
     if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0)
