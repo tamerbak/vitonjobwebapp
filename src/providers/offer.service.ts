@@ -206,7 +206,7 @@ export class OffersService {
       new CCalloutArguments('Configuration', {
         'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
         'mode': 'view',
-        'userType': (projectTarget === 'employer') ? btoa('employeur') : btoa('jobyer')
+        'userType': (projectTarget === 'employer') ? 'employeur' : 'jobyer'
       }),
     ]);
 
@@ -268,7 +268,7 @@ export class OffersService {
       new CCalloutArguments('Configuration', {
         'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
         'mode': offer.idOffer == 0 ? 'creation' : 'edition',
-        'userType': (projectTarget === 'employer') ? btoa('employeur') : btoa('jobyer')
+        'userType': (projectTarget === 'employer') ? 'employeur' : 'jobyer'
       }),
     ]);
 
@@ -279,6 +279,7 @@ export class OffersService {
           let idOffer = JSON.parse(data._body).idOffer;
 
           this.updateEPI(idOffer, offer.jobData.epi, projectTarget);
+          offer.idOffer = idOffer;
 
           if (offer.jobData.prerequisObligatoires && offer.jobData.prerequisObligatoires.length > 0) {
             switch (projectTarget) {
@@ -297,6 +298,7 @@ export class OffersService {
   }
 
   updateEPI(idOffer,plist,projectTarget){
+    //debugger;
     var table = projectTarget == 'employer' ? "user_epi_employeur":"user_epi_jobyer";
     var fk = projectTarget == 'employer' ? "fk_user_offre_entreprise":"fk_user_offre_jobyer";
     let sql = "delete from "+table+"where "+ fk+"="+idOffer;
@@ -861,9 +863,9 @@ export class OffersService {
     }
   }
 
-  attacheLanguage(idOffer, table, idLanguage, level) {
+  attacheLanguage(idOffer, table, id, level) {
     let idLevel: string = (level == 'junior' ? '1' : (level == 'medium' ? '3' : (level == 'senior' ? '2' : '0')));
-    let sql = "insert into user_pratique_langue (fk_" + table + ", fk_user_langue, fk_user_niveau) values (" + idOffer + ", " + idLanguage + ", " + idLevel + ")";
+    let sql = "insert into user_pratique_langue (fk_" + table + ", fk_user_langue, fk_user_niveau) values (" + idOffer + ", " + id + ", " + idLevel + ")";
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();

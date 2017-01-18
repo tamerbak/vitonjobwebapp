@@ -119,6 +119,7 @@
         </div>
 
         <div *ngIf="displayClassification()">
+          <legend><strong>Classification</strong></legend>
           <div
             convention-parameters
             [(offer)]="offer"
@@ -128,12 +129,6 @@
             (onPartialParametrage)="conventionParametrageChange($event)"
           ></div>
         </div>
-
-        <!--<div>conventionMessage: {{conventionComponentMsg}}</div>-->
-        <!--<div>selectedParamConvID: {{selectedParamConvID}}</div>-->
-        <!--<div>offer.parametrageConvention: {{offer.parametrageConvention}}</div>-->
-        <!--<div>min: {{ minimumClassificationRate }}</div>-->
-        <!--<div>actual: {{ offer.jobData.remuneration }}</div>-->
 
         <!-- Taux horaire -->
         <div class="form-group row required">
@@ -700,69 +695,84 @@
         </div>
 
         <!-- Langues -->
-        <div class="form-group row">
-          <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-            {{ (projectTarget == 'employer') ? 'Langue(s) requise(s)' : 'Langue(s) privilégiée(s)'}}
-          </label>
 
-          <div class="col-md-8 col-xs-12">
+        <div
+          class="form-group row"
+          select-languages
+          [(selectedList)]="offer.languageData"
+          [hasLevel]="projectTarget == 'employer'"
+          [canEdit]="!(isOfferInContract || isOfferArchived)"
+          [label]="(projectTarget == 'employer') ? 'Langue(s) requise(s)' : 'Langue(s) privilégiée(s)'"
+        ></div>
+        <!--<div>hasLevel: {{ projectTarget == 'employer' }}</div>-->
+        <!--<div>canEdit: {{ !(isOfferInContract || isOfferArchived) }}</div>-->
 
-            <!-- Selected Languages -->
-            <div class="form-group row" *ngFor="let item of offer.languageData">
-              <div class="{{ (projectTarget != 'employer') ? 'col-md-9 col-xs-12' : 'col-md-6 col-xs-6' }}">
-                <input class="form-control" value="{{item.libelle}}" disabled/>
-              </div>
-              <div class="col-md-3 col-xs-6" *ngIf="projectTarget == 'employer'">
-                <!--<input class="form-control" value="{{(item.level == 'junior' ? 'Débutant' : 'Courant')}}" disabled/>-->
-                <select class="form-control" [(ngModel)]="item.level" disabled>
-                  <option value="junior">Débutant</option>
-                  <option value="medium">Intermédiaire</option>
-                  <option value="senior">Courant</option>
-                </select>
+        <!--(onAdd)="saveLanguages()"-->
+        <!--(onRemove)="saveLanguages()"-->
 
-              </div>
-              <div class="col-md-3 col-xs-12">
-                <button
-                  style="display: block; width: 100%;"
-                  class="btn btn-danger mb-xs btn-remove-language"
-                  role="button"
-                  [disabled]="isOfferInContract || isOfferArchived"
-                  (click)="removeLanguage(item)"
-                >
-                  <i class="glyphicon glyphicon-trash"></i>
-                </button>
-              </div>
-            </div>
+        <!--<div class="form-group row">-->
+          <!--<label class="col-md-4 col-xs-12 form-control-label text-md-right">-->
+            <!--{{ (projectTarget == 'employer') ? 'Langue(s) requise(s)' : 'Langue(s) privilégiée(s)'}}-->
+          <!--</label>-->
 
-            <!-- New language input -->
-            <div class="row">
-              <div class="{{ (projectTarget != 'employer') ? 'col-md-9 col-xs-12' : 'col-md-6 col-xs-6' }}">
-                <select class="form-control" [(ngModel)]="selectedLang">
-                  <option [value]=""></option>
-                  <option *ngFor="let l of langs" [value]="l.idLanguage">{{l.libelle}}</option>
-                </select>
-              </div>
-              <div class="col-md-3 col-xs-6" *ngIf="projectTarget == 'employer'">
-                <select class="form-control" [(ngModel)]="selectedLevel">
-                  <option value="junior">Débutant</option>
-                  <option value="medium">Intermédiaire</option>
-                  <option value="senior">Courant</option>
-                </select>
-              </div>
-              <div class="col-md-3 col-xs-12">
-                <button
-                  style="display: block; width: 100%;"
-                  class="btn btn-success mb-xs"
-                  role="button"
-                  (click)="addLanguage()"
-                  [disabled]="!(selectedLang && selectedLevel) || isOfferInContract || isOfferArchived"
-                >
-                  Ajouter
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+          <!--<div class="col-md-8 col-xs-12">-->
+
+            <!--&lt;!&ndash; Selected Languages &ndash;&gt;-->
+            <!--<div class="form-group row" *ngFor="let item of offer.languageData">-->
+              <!--<div class="{{ (projectTarget != 'employer') ? 'col-md-9 col-xs-12' : 'col-md-6 col-xs-6' }}">-->
+                <!--<input class="form-control" value="{{item.libelle}}" disabled/>-->
+              <!--</div>-->
+              <!--<div class="col-md-3 col-xs-6" *ngIf="projectTarget == 'employer'">-->
+                <!--&lt;!&ndash;<input class="form-control" value="{{(item.level == 'junior' ? 'Débutant' : 'Courant')}}" disabled/>&ndash;&gt;-->
+                <!--<select class="form-control" [(ngModel)]="item.level" disabled>-->
+                  <!--<option value="junior">Débutant</option>-->
+                  <!--<option value="medium">Intermédiaire</option>-->
+                  <!--<option value="senior">Courant</option>-->
+                <!--</select>-->
+
+              <!--</div>-->
+              <!--<div class="col-md-3 col-xs-12">-->
+                <!--<button-->
+                  <!--style="display: block; width: 100%;"-->
+                  <!--class="btn btn-danger mb-xs btn-remove-language"-->
+                  <!--role="button"-->
+                  <!--[disabled]="isOfferInContract || isOfferArchived"-->
+                  <!--(click)="removeLanguage(item)"-->
+                <!--&gt;-->
+                  <!--<i class="glyphicon glyphicon-trash"></i>-->
+                <!--</button>-->
+              <!--</div>-->
+            <!--</div>-->
+
+            <!--&lt;!&ndash; New language input &ndash;&gt;-->
+            <!--<div class="row">-->
+              <!--<div class="{{ (projectTarget != 'employer') ? 'col-md-9 col-xs-12' : 'col-md-6 col-xs-6' }}">-->
+                <!--<select class="form-control" [(ngModel)]="selectedLang">-->
+                  <!--<option [value]=""></option>-->
+                  <!--<option *ngFor="let l of langs" [value]="l.id">{{l.libelle}}</option>-->
+                <!--</select>-->
+              <!--</div>-->
+              <!--<div class="col-md-3 col-xs-6" *ngIf="projectTarget == 'employer'">-->
+                <!--<select class="form-control" [(ngModel)]="selectedLevel">-->
+                  <!--<option value="junior">Débutant</option>-->
+                  <!--<option value="medium">Intermédiaire</option>-->
+                  <!--<option value="senior">Courant</option>-->
+                <!--</select>-->
+              <!--</div>-->
+              <!--<div class="col-md-3 col-xs-12">-->
+                <!--<button-->
+                  <!--style="display: block; width: 100%;"-->
+                  <!--class="btn btn-success mb-xs"-->
+                  <!--role="button"-->
+                  <!--(click)="addLanguage()"-->
+                  <!--[disabled]="!(selectedLang && selectedLevel) || isOfferInContract || isOfferArchived"-->
+                <!--&gt;-->
+                  <!--Ajouter-->
+                <!--</button>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
 
         <div class="form-group row" *ngIf="projectTarget == 'employer'">
           <label class="col-md-4 col-xs-12 form-control-label text-md-right">

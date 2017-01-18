@@ -400,7 +400,7 @@ export class Home{
     };
 
     this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
-      debugger;
+      //debugger;
       console.log(data);
       for (let i = 0; i < data.length; i++) {
         let r = data[i];
@@ -428,7 +428,7 @@ export class Home{
     };
 
     this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
-      debugger;
+      //debugger;
       console.log(data);
       for (let i = 0; i < data.length; i++) {
         let r = data[i];

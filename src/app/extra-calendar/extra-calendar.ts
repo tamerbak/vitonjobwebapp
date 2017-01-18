@@ -123,7 +123,7 @@ export class ExtraCalendar {
       eventClick: (event): void => {
         this.event = event;
         jQuery('#show-event-modal').modal('show');
-        debugger;
+        //debugger;
       },
       editable: true,
       droppable: true,

@@ -110,7 +110,7 @@ export class Attachements {
   }
 
   onViewFile(a){
-    debugger;
+    //debugger;
     this.fileContent = "";
     this.selFileName = a.fileName;
     this.addAlert("info", "Le téléchargement du fichier est en cours. Veuillez patienter ...");
@@ -149,7 +149,7 @@ export class Attachements {
         type: 'error',
         showCloseButton: true
       });
-      debugger;
+      //debugger;
     }
   }
 

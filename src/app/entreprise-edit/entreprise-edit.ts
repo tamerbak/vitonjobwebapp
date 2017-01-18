@@ -152,7 +152,7 @@ export class EntrepriseEdit {
   }
 
   onDismissCorporamaModal(company: any) {
-    debugger;
+    //debugger;
     if (!company) {
       return;
     }

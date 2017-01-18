@@ -25,6 +25,7 @@ import {ConventionParameters} from "./convention-parameters/convention-parameter
 
 import {Offer} from "../../dto/offer";
 import {Job} from "../../dto/job";
+import {SelectLanguages} from "../components/select-languages/select-languages";
 
 declare var Messenger, jQuery: any;
 declare var google: any;
@@ -36,7 +37,7 @@ declare var require;
   template: require('./offer-edit.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./offer-edit.scss')],
-  directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime, ModalOptions, ModalOfferTempQuote, ModalSlots, ConventionParameters],
+  directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime, ModalOptions, ModalOfferTempQuote, ModalSlots, ConventionParameters, SelectLanguages],
   providers: [OffersService, SearchService, FinanceService,
     LoadListService, ConventionService, CandidatureService,
     SmsService, AdvertService, MissionService]
@@ -194,6 +195,7 @@ export class OfferEdit{
       if (this.projectTarget == 'employer') {
         this.offersService.getOfferById(this.offer.idOffer, this.projectTarget, this.offer).then(()=> {
           this.refreshParametrage = true;
+          //debugger;
         });
       }
     } else {
@@ -228,7 +230,7 @@ export class OfferEdit{
     //loadLanguages
     this.langs = this.sharedService.getLangList();
     if (Utils.isEmpty(this.langs) === true) {
-      this.listService.loadOffersLanguages().then((data: any) => {
+      this.listService.loadLanguages().then((data: any) => {
         this.langs = data.data;
         this.sharedService.setLangList(this.langs);
       });
@@ -1077,7 +1079,7 @@ export class OfferEdit{
     }
     //searching the selected lang in the general list of langs
     var langTemp = this.langs.filter((v) => {
-      return (v.idLanguage == this.selectedLang);
+      return (v.id == this.selectedLang);
     });
     //delete the lang from the current offer lang list, if already existant
     if (this.offer.languageData.indexOf(langTemp[0]) != -1) {
@@ -2077,6 +2079,7 @@ export class OfferEdit{
   }
 
   saveSoftware(software, idOffer) {
+    //debugger;
     this.offersService.saveSoftware(software, idOffer).then((expId: any) =>{
       let savedSoft = {expId:expId, softId: software.id, nom: software.nom};
       if(this.obj == 'detail'){
