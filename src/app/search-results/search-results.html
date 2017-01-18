@@ -32,8 +32,12 @@
 
 <div class="row">
   <div class="col-lg-12 col-xs-12">
+
     <div class="clearfix ng-scope">
       <div class="btn-toolbar">
+        <button [hidden]="selected || projectTarget != 'employer'" class="btn btn-info btn-sm add-offer" role="button" (click)="sortResults()">
+          Trier les résultats
+        </button>
         <div class="btn-group pull-right-important">
           <button class="btn btn-gray {{ !selected ? 'active' : ''}}" type="button" (click)="onChange(false)">
             <i class="fa fa-th-list"></i>&nbsp;Vue liste
@@ -85,8 +89,13 @@
             <div class="row">
               <h5 class="name no-margin mb-xs col-md-8 col-xs-12">{{item.titreoffre}}</h5>
             </div>
+            <div class="row" [hidden]="projectTarget != 'employer'">
+              <h6 class="name no-margin mb-xs col-md-8 col-xs-12"><b>Disponibilité: </b>{{item.availabilityText}}</h6>
+            </div>
+
 
           </div>
+
           <div class="col-md-3 col-xs-4">
             <div class="row">
               <h4 class="pull-xs-right" style="margin-bottom:0px">
@@ -139,5 +148,5 @@
     </div>
   </div>
 </div>
-<div modal-notification-contract [jobyer]="currentJobyer"></div>
+<div modal-notification-contract [jobyer]="currentJobyer" [subject]="subject"></div>
 <div modal-profile [fromPage]="fromPage" [jobyer]="currentJobyer" (onProfileUpdated)="onProfileUpdated($event)"></div>

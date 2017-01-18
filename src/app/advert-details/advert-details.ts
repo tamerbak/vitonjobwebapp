@@ -3,6 +3,7 @@ import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {AdvertService} from "../../providers/advert.service";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
+import {Utils} from "../utils/utils";
 
 @Component({
   selector: '[advert-details]',
@@ -16,6 +17,7 @@ export class AdvertDetails{
   currentUser: any;
   projectTarget: string;
   advert: any;
+  isValidLink:boolean;
   jobyerInterestLabel: string;
   jobyerInterested: boolean;
   alerts: Array<Object>;
@@ -34,6 +36,7 @@ export class AdvertDetails{
     }
     this.isEmployer = (this.currentUser.estEmployeur || this.currentUser.estRecruteur);
     this.advert = this.sharedService.getCurrentAdv();
+    this.isValidLink = !Utils.isEmpty(this.advert.link);
     this.setInterestButtonLabel();
     this.splitContractForm();
   }

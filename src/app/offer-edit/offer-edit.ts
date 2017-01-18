@@ -1214,9 +1214,16 @@ export class OfferEdit{
         if (this.obj == "add") {
           //redirect to offer-list and display public offers
           this.router.navigate(['offer/list', {typeOfferModel: '0'}]);
-        } else {
+        }
+
+        if (this.obj == "recruit") {
           this.sharedService.setCurrentOffer(offer);
           this.router.navigate(['search/results', {obj: 'recruit'}]);
+        }
+
+        if (this.obj == "pendingContracts") {
+          this.sharedService.setCurrentOffer(offer);
+          this.router.navigate(['pendingContracts', {obj: this.obj}]);
         }
       });
     } else {

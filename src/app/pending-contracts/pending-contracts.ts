@@ -3,6 +3,7 @@ import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {SharedService} from "../../providers/shared.service";
 import {RecruitmentService} from "../../providers/recruitment-service";
 import {ProfileService} from "../../providers/profile.service";
+import {OffersService} from "../../providers/offer.service";
 import {DateUtils} from "../utils/date-utils";
 import {Utils} from "../utils/utils";
 import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
@@ -12,7 +13,7 @@ declare var jQuery, require: any;
   selector: '[pending-contracts]',
   template: require('./pending-contracts.html'),
   directives: [ROUTER_DIRECTIVES, ModalNotificationContract],
-  providers: [RecruitmentService, ProfileService],
+  providers: [RecruitmentService, ProfileService, OffersService],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./pending-contracts.scss')]
 })
@@ -22,10 +23,12 @@ export class PendingContracts {
   jobyerList: any[] = [];
   currentJobyer: any;
   currentOffer: any;
+  subject: string = "pendingContracts";
 
   constructor(private sharedService: SharedService,
               private recruitmentService: RecruitmentService,
               private profileService: ProfileService,
+              private offerService: OffersService,
               private router: Router) {
     this.currentUser = this.sharedService.getCurrentUser();
     //only employers and recruiters can access to the contract list page
@@ -37,6 +40,7 @@ export class PendingContracts {
     if (this.projectTarget == "jobyer") {
       this.router.navigate(['home']);
     }
+    this.sharedService.setCurrentOffer(null);
   }
 
   ngOnInit() {
@@ -48,13 +52,18 @@ export class PendingContracts {
   }
 
   goToContractForm(item){
-    if(Utils.isEmpty(item.titre)){
-      this.sharedService.setCurrentOffer(null);
+    this.sharedService.setCurrentOffer(null);
+    if(!Utils.isEmpty(item.offerId)){
+      this.currentOffer = this.offerService.getOfferByIdFromLocal(this.currentUser, item.offerId);
+    }
+    else{
+      this.currentOffer = null;
     }
     this.profileService.getJobyerInfo(item.id).then((data: any) => {
       if(data && data._body.length != 0 && data.status == "200"){
         let j = JSON.parse(data._body);
         this.currentJobyer = j;
+        this.currentJobyer.rgId = item.rgId;
         this.sharedService.setCurrentJobyer(this.currentJobyer);
         jQuery('#modal-notification-contract').modal({
           keyboard: false,
@@ -63,7 +72,6 @@ export class PendingContracts {
         jQuery('#modal-notification-contract').modal('show');
       }
     })
-
   }
 
   toDateString(d){
