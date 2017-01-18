@@ -120,7 +120,7 @@ export class ModalOptions{
     offer.etat = '';
     offer.idOffer = "";
     this.offersService.setOfferInLocal(offer, this.projectTarget);
-    this.offersService.setOfferInRemote(offer, this.projectTarget).then((data: any) => {
+    this.offersService.saveOffer(offer, this.projectTarget).then((data: any) => {
       Messenger().post({
         message: "l'offre " + "'" + offer.title + "'" + " a été copiée avec succès",
         type: 'success',

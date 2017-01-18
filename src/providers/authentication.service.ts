@@ -76,7 +76,7 @@ export class AuthenticationService {
    * @return JSON results in the form of user accounts
    */
   authenticate(email, phone, password, projectTarget, isRecruteur) {
-    //debugger;
+
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
 

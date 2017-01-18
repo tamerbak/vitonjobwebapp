@@ -95,6 +95,11 @@ export class SearchResults{
       for (let i = 0; i < this.searchResults.length; i++) {
         let r = this.searchResults[i];
 
+        // Security for removed account
+        if (r.idJobyer == 0) {
+          continue;
+        }
+
         r.availabilityText = this.getAvailabilityText(r.availability.text);
         r.availabiltyMinutes = this.getAvailabilityMinutes(r.availability.text);
         r.matching = Number(r.matching).toFixed(2);

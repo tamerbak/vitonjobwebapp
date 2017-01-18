@@ -571,7 +571,7 @@ export class ModalProfile{
                   jQuery('#modal-update-password').modal('show');
                 })
             }
-            
+
             //redirecting to offers page if new User
             if (isNewUser) {
               this.router.navigate(['home']);
@@ -954,7 +954,7 @@ export class ModalProfile{
 
   openCoporamaModal() {
     // l'evenement 'one' permet d'activer une surveillance une seule fois
-    // permet notamment d'éviter les boucles d'evenements infinies 
+    // permet notamment d'éviter les boucles d'evenements infinies
     jQuery('#modal-profile').one('hidden.bs.modal', function (e) {
       jQuery('#modal-corporama-search').modal('show');
       jQuery('#modal-corporama-search').one('hidden.bs.modal', function (e) {

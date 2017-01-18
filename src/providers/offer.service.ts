@@ -2,7 +2,12 @@ import {Injectable} from "@angular/core";
 import {Http, Headers} from "@angular/http";
 import {Configs} from "../configurations/configs";
 import {SharedService} from "./shared.service";
-import {VOJFramework} from '../voj.framework';
+import {VOJFramework} from "../voj.framework";
+import {Offer} from "../dto/offer";
+import {CCalloutArguments} from "../dto/generium/ccallout-arguments";
+import {CCallout} from "../dto/generium/ccallout";
+
+const OFFER_CALLOUT_ID = 40003;
 
 @Injectable()
 export class OffersService {
@@ -12,7 +17,7 @@ export class OffersService {
   listJobs: any;
   convention : any;
 
-  constructor(private http: Http,private sharedService:SharedService) {
+  constructor(private http: Http, private sharedService:SharedService) {
     this.http = http;
     this.convention = {
       id:0,
@@ -166,7 +171,6 @@ export class OffersService {
                     let rawData = data.employer;
                     if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
                         //adding userId for remote storing
-                        offerData.identity = rawData.entreprises[0].id;
                         offers = rawData.entreprises[0].offers;
                         offers.push(offerData);
                         // Save new offer list in SqlStorage :
@@ -174,8 +178,6 @@ export class OffersService {
                     }
                 } else { // jobyer
                     let rawData = data.jobyer;
-                    if(rawData)
-                        offerData.identity = rawData.id;
                     if (rawData && rawData.offers) {
                         //adding userId for remote storing
                         offers = rawData.offers;
@@ -186,67 +188,106 @@ export class OffersService {
                 }
     }
 
-  setOfferInRemote(offerData: any, projectTarget: string) {
+  /**
+   * Get an offer
+   *
+   * @param idOffer
+   * @param projectTarget
+   * @param offer
+   * @returns {Promise<T>}
+   */
+  getOfferById(idOffer: number, projectTarget: string, offer: Offer): any {
+
+    let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
+      new CCalloutArguments('Voir offre', {
+        'class': 'com.vitonjob.callouts.offer.model.OfferToken',
+        'idOffer': idOffer
+      }),
+      new CCalloutArguments('Configuration', {
+        'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
+        'mode': 'view',
+        'userType': (projectTarget === 'employer') ? 'employeur' : 'jobyer'
+      }),
+    ]);
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.calloutURL, payloadFinal.forge(), {headers: headers})
+        .subscribe((data: any) => {
+          let remoteOffer: Offer = JSON.parse(data._body);
+
+          // Copy every properties from remote to local
+          Object.keys(remoteOffer).forEach((key) => {
+            offer[key] = remoteOffer[key];
+          });
+
+          resolve(data);
+        });
+    });
+  }
+
+  /**
+   * Create an offer
+   *
+   * @param offer
+   * @param projectTarget
+   * @returns {Promise<T>}
+   */
+  createOffer(offer: Offer, projectTarget: string) {
+    offer.idOffer = 0;
+    return this.saveOffer(offer, projectTarget);
+  }
+
+  /**
+   * Save an offer
+   *
+   * @param offer
+   * @param projectTarget
+   * @returns {Promise<T>}
+   */
+  saveOffer(offer: Offer, projectTarget: string) {
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
 
-    offerData.class = 'com.vitonjob.callouts.auth.model.OfferData';
-    offerData.idOffer = 0;
-    offerData.jobyerId = 0;
-    offerData.entrepriseId = 0;
-    offerData.status = "OUI";
-    offerData.visible = true;
+    offer.status = "OUI";
+    offer.visible = true;
 
-    switch (projectTarget) {
-      case 'employer' :
-        offerData.entrepriseId = offerData.identity;
-        break;
-      case 'jobyer':
-        offerData.jobyerId = offerData.identity;
-        break;
+    delete offer.jobData['idLevel'];
+    delete offer['slots'];
+
+    // TODO HACK force jobData type
+    offer.jobData.class = 'com.vitonjob.callouts.offer.model.JobData';
+    if ((projectTarget === 'employer') && offer.entrepriseId == 0) {
+      console.error('Missing entreprise id');
+    } else if ((projectTarget !== 'employer') && offer.jobyerId == 0) {
+      console.error('Missing jobyer id');
     }
-    //remove identity key/value from offerData object
 
-    delete offerData['identity'];
-    delete offerData.jobData['idLevel'];
-
-
-    // store in remote database
-    let stringData = JSON.stringify(offerData);
-
-    let encoded = btoa(stringData);
-
-    let payload = {
-      'class': 'fr.protogen.masterdata.model.CCallout',
-      id: 10043,
-      args: [{
-        'class': 'fr.protogen.masterdata.model.CCalloutArguments',
-        label: 'creation offre',
-        value: encoded
-      },
-        {
-          'class': 'fr.protogen.masterdata.model.CCalloutArguments',
-          label: 'type utilisateur',
-          value: (projectTarget === 'employer') ? btoa('employeur') : btoa('jobyer')
-        }]
-    };
+    let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
+      new CCalloutArguments('Création/Edition offre', offer),
+      new CCalloutArguments('Configuration', {
+        'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
+        'mode': offer.idOffer == 0 ? 'creation' : 'edition',
+        'userType': (projectTarget === 'employer') ? 'employeur' : 'jobyer'
+      }),
+    ]);
 
     return new Promise(resolve => {
-      let headers = new Headers();
-      headers = Configs.getHttpJsonHeaders();
-      this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
-        .subscribe((data:any) => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.calloutURL, payloadFinal.forge(), {headers: headers})
+        .subscribe((data: any) => {
           let idOffer = JSON.parse(data._body).idOffer;
 
-          this.updateEPI(idOffer,offerData.jobData.epi,projectTarget);
+          this.updateEPI(idOffer, offer.jobData.epi, projectTarget);
+          offer.idOffer = idOffer;
 
-          if(offerData.jobData.prerequisObligatoires && offerData.jobData.prerequisObligatoires.length>0){
+          if (offer.jobData.prerequisObligatoires && offer.jobData.prerequisObligatoires.length > 0) {
             switch (projectTarget) {
               case 'employer' :
-                this.updatePrerequisObligatoires(idOffer,offerData.jobData.prerequisObligatoires);
+                this.updatePrerequisObligatoires(idOffer, offer.jobData.prerequisObligatoires);
                 break;
               case 'jobyer':
-                this.updateNecessaryDocuments(idOffer,offerData.jobData.prerequisObligatoires);
+                this.updateNecessaryDocuments(idOffer, offer.jobData.prerequisObligatoires);
                 break;
             }
 
@@ -821,9 +862,9 @@ export class OffersService {
     }
   }
 
-  attacheLanguage(idOffer, table, idLanguage, level) {
+  attacheLanguage(idOffer, table, id, level) {
     let idLevel: string = (level == 'junior' ? '1' : (level == 'medium' ? '3' : (level == 'senior' ? '2' : '0')));
-    let sql = "insert into user_pratique_langue (fk_" + table + ", fk_user_langue, fk_user_niveau) values (" + idOffer + ", " + idLanguage + ", " + idLevel + ")";
+    let sql = "insert into user_pratique_langue (fk_" + table + ", fk_user_langue, fk_user_niveau) values (" + idOffer + ", " + id + ", " + idLevel + ")";
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
@@ -978,17 +1019,35 @@ export class OffersService {
   getConventionFilters(idConvention) {
 
     let sql = `
-      SELECT 'niv' as type, pk_user_niveau_convention_collective AS id, code, libelle
+      SELECT 'niv' as type, pk_user_niveau_convention_collective AS id, code, libelle, 'false' as disabled
       FROM user_niveau_convention_collective
       WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
-      UNION SELECT 'coe' as type, pk_user_coefficient_convention AS id, code, libelle
+      UNION SELECT 'coe' as type, pk_user_coefficient_convention AS id, code, libelle, 'false' as disabled
       FROM user_coefficient_convention
       WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
-      UNION SELECT 'ech' as type, pk_user_echelon_convention AS id, code, libelle
+      UNION SELECT 'ech' as type, pk_user_echelon_convention AS id, code, libelle, 'false' as disabled
       FROM user_echelon_convention
       WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
-      UNION SELECT 'cat' as type, pk_user_categorie_convention AS id, code, libelle
+      UNION SELECT 'cat' as type, pk_user_categorie_convention AS id, code, libelle, 'false' as disabled
       FROM user_categorie_convention
+      WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
+      UNION SELECT 'zon' as type, pk_user_zone_geo_convention AS id, code, libelle, 'false' as disabled
+      FROM user_zone_geo_convention
+      WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
+      UNION SELECT 'ind' as type, pk_user_indice_convention AS id, code, libelle, 'false' as disabled
+      FROM user_indice_convention
+      WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
+      UNION SELECT 'cla' as type, pk_user_classe_convention AS id, code, libelle, 'false' as disabled
+      FROM user_classe_convention
+      WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
+      UNION SELECT 'sta' as type, pk_user_statut_convention AS id, code, libelle, 'false' as disabled
+      FROM user_statut_convention
+      WHERE dirty='N'
+      UNION SELECT 'pos' as type, pk_user_position_convention AS id, code, libelle, 'false' as disabled
+      FROM user_position_convention
+      WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
+      UNION SELECT 'anc' as type, pk_user_anciennete_convention AS id, code, libelle, 'false' as disabled
+      FROM user_anciennete_convention
       WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
       ORDER BY libelle
     `;

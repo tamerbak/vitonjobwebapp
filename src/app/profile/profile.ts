@@ -21,6 +21,7 @@ import {scan} from "rxjs/operator/scan";
 import {ConventionService} from "../../providers/convention.service";
 import {OffersService} from "../../providers/offer.service";
 import {EnvironmentService} from "../../providers/environment.service";
+import {SelectLanguages} from "../components/select-languages/select-languages";
 
 declare var jQuery, require, Messenger, moment: any;
 declare var google: any;
@@ -29,7 +30,7 @@ declare var google: any;
   selector: '[profile]',
   template: require('./profile.html'),
   providers: [Utils, ProfileService, CommunesService, LoadListService, MedecineService, AttachementsService, AccountConstraints, ConventionService, OffersService, EnvironmentService],
-  directives: [ROUTER_DIRECTIVES, NKDatetime, AlertComponent, ModalPicture, MaskedInput, BankAccount, ModalCorporamaSearch],
+  directives: [ROUTER_DIRECTIVES, NKDatetime, AlertComponent, ModalPicture, MaskedInput, BankAccount, ModalCorporamaSearch, SelectLanguages],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./profile.scss')]
 })
@@ -250,6 +251,7 @@ export class Profile{
 
     if (!this.currentUser) {
       this.router.navigate(['home']);
+      return;
     } else {
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
       this.getUserInfos();
@@ -2008,11 +2010,6 @@ export class Profile{
     this.saveQualities();
   }
 
-  removeLanguage(item) {
-    this.savedLanguages.splice(this.savedLanguages.indexOf(item), 1);
-    this.saveLanguages();
-  }
-
   addQuality() {
     if (Utils.isEmpty(this.selectedQuality)) {
       return;
@@ -2028,24 +2025,6 @@ export class Profile{
     this.selectedQuality = "";
 
     this.saveQualities();
-  }
-
-  addLanguage(){
-    if (Utils.isEmpty(this.selectedLanguage)) {
-      return;
-    }
-
-    var languagesTemp = this.languages.filter((v)=> {
-      return (v.id == this.selectedLanguage);
-    });
-    if (this.savedLanguages.indexOf(languagesTemp[0]) != -1) {
-      return;
-    }
-    languagesTemp[0]['level'] = this.selectedLevel;
-    this.savedLanguages.push(languagesTemp[0]);
-    this.selectedLanguage = "";
-
-    this.saveLanguages();
   }
 
   saveQualities() {
@@ -2113,7 +2092,7 @@ export class Profile{
   }
 
   onDismissCorporamaModal(company: any) {
-    debugger;
+
     if (!company) {
       return;
     }

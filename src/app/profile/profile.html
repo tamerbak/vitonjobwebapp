@@ -57,6 +57,7 @@
               <p *ngIf="!isEmployer && !isRecruiter">Jobyer</p>
               <p *ngIf="environmentService.get('EMPLOYER_PHARMA') == 'true'">(PHARMACIE)</p>
               <p *ngIf="environmentService.get('JOBYER_PHARMA') == 'true'">(PHARMACIE)</p>
+              <p *ngIf="environmentService.get('IS_LAURA') == 'true'">(COUCOU Laura)</p>
               <button [disabled]="showForm" class="btn btn-primary btn-sm mt" (click)="initForm()">
                 <i class="fa fa-pencil-square-o ml-xs"></i>&nbsp;
                 Modifier les informations
@@ -802,6 +803,7 @@
                   <div class="row">
                     <div class="col-md-9 col-xs-12">
                       <select class="form-control" [(ngModel)]="selectedQuality">
+                        <option [value]=""></option>
                         <option *ngFor="let q of qualities" [value]="q.idQuality">{{q.libelle}}</option>
                       </select>
                     </div>
@@ -836,64 +838,16 @@
         <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
           <fieldset>
             <div class="container-fluid">
-              <div class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Langues
-                </label>
-                <div class="col-md-8 col-xs-12">
-                  <!-- Selected Qualities -->
-                  <div class="form-group row" *ngFor="let item of savedLanguages">
-                    <div class="{{ isEmployer ? 'col-md-9 col-xs-12' : 'col-md-6 col-xs-6' }}">
-                      <input class="form-control" value="{{item.libelle}}" disabled/>
-                    </div>
-                    <div class="col-md-3 col-xs-6" *ngIf="!isEmployer">
-                      <select class="form-control" [(ngModel)]="item.level" disabled>
-                        <option value="1">Débutant</option>
-                        <option value="3">Intermédiaire</option>
-                        <option value="2">Courant</option>
-                      </select>
-                    </div>
-                    <div class="col-md-3 col-xs-12">
-                      <button
-                        style="display: block; width: 100%;"
-                        class="btn btn-danger mb-xs"
-                        role="button"
-                        (click)="removeLanguage(item)"
-                        [disabled]="isRecruiter"
-                      >
-                        <i class="glyphicon glyphicon-trash"></i>
-                      </button>
-                    </div>
-                  </div>
-
-                  <!-- New language input -->
-                  <div class="row">
-                    <div class="{{ (isEmployer || isRecruiter) ? 'col-md-9 col-xs-12' : 'col-md-6 col-xs-6' }}">
-                      <select class="form-control" [(ngModel)]="selectedLanguage">
-                        <option *ngFor="let q of languages" [value]="q.id">{{q.libelle}}</option>
-                      </select>
-                    </div>
-                    <div class="col-md-3 col-xs-6" *ngIf="!isEmployer && !isRecruiter">
-                      <select class="form-control" [(ngModel)]="selectedLevel">
-                        <option value="1">Débutant</option>
-                        <option value="3">Intermédiaire</option>
-                        <option value="2">Courant</option>
-                      </select>
-                    </div>
-                    <div class="col-md-3 col-xs-12">
-                      <button
-                        style="display: block; width: 100%;"
-                        class="btn btn-success mb-xs offer-add-button"
-                        role="button"
-                        (click)="addLanguage()"
-                        [disabled]="!selectedLanguage || isRecruiter"
-                      >
-                        Ajouter
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <div
+                class="form-group row"
+                select-languages
+                [(selectedList)]="savedLanguages"
+                [hasLevel]="!(isEmployer || isRecruiter)"
+                [canEdit]="!isRecruiter"
+                [label]="Langues"
+                (onAdd)="saveLanguages()"
+                (onRemove)="saveLanguages()"
+              ></div>
             </div>
           </fieldset>
         </form>
