@@ -49,11 +49,9 @@ export class SelectLanguages {
 
     //loadLanguages
     this.list = this.sharedService.getLangList();
-    //debugger;
     if (!this.list || this.list.length == 0) {
       this.listService.loadLanguages().then((data: any) => {
         this.list = data.data;
-        //debugger;
         this.sharedService.setLangList(this.list);
       })
     }
@@ -71,8 +69,6 @@ export class SelectLanguages {
     if (Utils.isEmpty(this.selectedElem)) {
       return;
     }
-
-    //debugger;
 
     // Get the list element
     var languagesTemp = this.list.filter((v)=> {

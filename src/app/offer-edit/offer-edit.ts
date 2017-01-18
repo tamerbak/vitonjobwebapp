@@ -195,7 +195,6 @@ export class OfferEdit{
       if (this.projectTarget == 'employer') {
         this.offersService.getOfferById(this.offer.idOffer, this.projectTarget, this.offer).then(()=> {
           this.refreshParametrage = true;
-          //debugger;
         });
       }
     } else {
@@ -2057,7 +2056,6 @@ export class OfferEdit{
   }
 
   saveSoftware(software, idOffer) {
-    //debugger;
     this.offersService.saveSoftware(software, idOffer).then((expId: any) =>{
       let savedSoft = {expId:expId, softId: software.id, nom: software.nom};
       if(this.obj == 'detail'){

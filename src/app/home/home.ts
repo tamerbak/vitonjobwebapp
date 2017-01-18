@@ -52,7 +52,7 @@ export class Home{
   homeServiceData: any = [];
   maxLines: number = 8;
   obj: string;
-  
+
   currentJobyer: any;
 
   constructor(private router: Router,
@@ -319,7 +319,7 @@ export class Home{
     let offset = this.homeServiceData.query.startIndexOffers + this.homeServiceData.query.resultCapacityOffers;
     this.homeServiceData.query.startIndexOffers = offset;
     this.homeService.loadMore(this.projectTarget, this.homeServiceData.query.startIndex, this.homeServiceData.query.startIndexOffers).then((data: any) => {
-      //debugger;
+
       let newData = data.recentOffers;
       let max = newData.length > this.maxLines ? this.maxLines : newData.length;
       for (let i = 0; i < max; i++) {
@@ -400,8 +400,7 @@ export class Home{
     };
 
     this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
-      //debugger;
-      console.log(data);
+
       for (let i = 0; i < data.length; i++) {
         let r = data[i];
         if (r.idOffre == o.idOffer) {
@@ -428,8 +427,7 @@ export class Home{
     };
 
     this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
-      //debugger;
-      console.log(data);
+
       for (let i = 0; i < data.length; i++) {
         let r = data[i];
         if (r.idOffre == o.idOffer) {

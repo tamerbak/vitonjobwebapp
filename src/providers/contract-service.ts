@@ -727,8 +727,6 @@ export class ContractService {
       "organisationParticuliere":''
     };
 
-    //debugger;
-
     let partner = GlobalConfigs.global['electronic-signature'];
 
     var dataSign = JSON.stringify(

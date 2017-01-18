@@ -123,7 +123,6 @@ export class ExtraCalendar {
       eventClick: (event): void => {
         this.event = event;
         jQuery('#show-event-modal').modal('show');
-        //debugger;
       },
       editable: true,
       droppable: true,
@@ -153,7 +152,7 @@ export class ExtraCalendar {
       },
       lang : 'fr'
     };
-    
+
     if (this.isOfferToAdd) {
       if (this.offer) {
         this.calendar.events.push({
@@ -164,7 +163,7 @@ export class ExtraCalendar {
           backgroundColor: '#64bd63',
           textColor: '#fff',
           description: 'Time to go back'
-        }); 
+        });
       }
     }
   };

@@ -298,7 +298,6 @@ export class OffersService {
   }
 
   updateEPI(idOffer,plist,projectTarget){
-    //debugger;
     var table = projectTarget == 'employer' ? "user_epi_employeur":"user_epi_jobyer";
     var fk = projectTarget == 'employer' ? "fk_user_offre_entreprise":"fk_user_offre_jobyer";
     let sql = "delete from "+table+"where "+ fk+"="+idOffer;
