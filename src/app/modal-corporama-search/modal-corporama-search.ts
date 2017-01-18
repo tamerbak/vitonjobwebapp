@@ -58,7 +58,6 @@ export class ModalCorporamaSearch {
       if (!data || data.status == "failure" || Utils.isEmpty(data._body)) {
         console.log(data);
         this.alerts = ["Service indisponible. Veuillez réessayer ultérieurement."];
-        this.alerts = ["Service indisponible. Veuillez réessayer ultérieurement."];
         return;
       } else {
         data = JSON.parse(data._body);
@@ -68,6 +67,7 @@ export class ModalCorporamaSearch {
         if (!this.companies || this.companies.length == 0) {
           this.noResult = true;
           this.alerts = ['Votre recherche n\'a retourné aucun résultat'];
+          return;
         }
         if (this.companies.length == 1) {
           if (Utils.isEmpty(this.companies[0].name)) {
@@ -91,6 +91,18 @@ export class ModalCorporamaSearch {
         } else {
           data = JSON.parse(data._body);
           this.companies = this.corporamaService.convertSearchResponse(data);
+
+          //if no result was returned
+          if (!this.companies || this.companies.length == 0) {
+            this.noResult = true;
+            this.alerts = ['Votre recherche n\'a retourné aucun résultat'];
+          }
+          if (this.companies && this.companies.length == 1) {
+            if (Utils.isEmpty(this.companies[0].name)) {
+              this.noResult = true;
+            }
+          }
+
           this.hasToRedirect = true;
         }
       })

@@ -38,7 +38,6 @@ export class AttachementsService {
           this.data = [];
           if(data.data){
             for(let i = 0 ; i < data.data.length ; i++){
-              //debugger;
               this.data.push({
                 id : data.data[i].pk_user_pieces_justificatives,
                 fileName : data.data[i].nom_fichier,
@@ -73,7 +72,6 @@ export class AttachementsService {
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          //debugger;
           resolve(data);
         });
     });
@@ -112,7 +110,6 @@ export class AttachementsService {
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          //debugger;
           this.attachement = null;
           if(data.data){
             this.attachement = {
@@ -145,7 +142,6 @@ export class AttachementsService {
       let headers = Configs.getHttpJsonHeaders();
       this.http.post(Configs.fssURL, stringData, {headers:headers})
         .subscribe(data => {
-          //debugger;
           resolve(data);
         });
     });
@@ -223,7 +219,6 @@ export class AttachementsService {
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          //debugger;
           resolve(this.data);
         });
     });
@@ -260,7 +255,6 @@ export class AttachementsService {
       this.http.post(Configs.fssURL, stringData, {headers:headers})
         .map(res => res.json())
         .subscribe(data => {
-          //debugger;
           this.data = data;
           resolve(this.data);
         });

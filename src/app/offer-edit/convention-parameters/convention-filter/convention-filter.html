@@ -1,0 +1,12 @@
+
+<select
+  class="form-control"
+  [(ngModel)]="selectedElem"
+  [disabled]="isEmpty(list)"
+  (change)="filterChange($event.target.value)"
+>
+  <option [value]="null" selected>-</option>
+  <option *ngFor="let elem of list" [value]="elem.id" [hidden]="elem.disabled == 'true'">
+    {{ elem.libelle }}
+  </option>
+</select>
