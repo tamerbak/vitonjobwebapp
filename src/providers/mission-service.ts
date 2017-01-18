@@ -22,10 +22,15 @@ export class MissionService {
     this.configuration = Configs.setConfigs('employer');
   }
 
-  listMissionHours(contract, forPointing) {
+  listMissionHours(contract, forPointing,getDates = false) {
     if (forPointing) {
-      var sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, h.heure_debut_pointe, h.heure_fin_pointe, h.debut_corrigee as is_heure_debut_corrigee, h.fin_corrigee as is_heure_fin_corrigee, h.heure_debut_new, h.heure_fin_new, p.debut as pause_debut, p.fin as pause_fin, p.debut_pointe as pause_debut_pointe, p.fin_pointe as pause_fin_pointe, p.debut_corrigee as is_pause_debut_corrigee, p.fin_corrigee as is_pause_fin_corrigee, p.debut_new as pause_debut_new, p.fin_new as pause_fin_new, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '" + contract.pk_user_contrat + "' order by h.jour_debut, p.debut";
-    } else {
+      if(!getDates){
+        var sql = "SELECT h.pk_user_heure_mission as id, h.date_debut_pointe, h.date_fin_pointe, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, h.heure_debut_pointe, h.heure_fin_pointe, h.debut_corrigee as is_heure_debut_corrigee, h.fin_corrigee as is_heure_fin_corrigee, h.heure_debut_new, h.heure_fin_new, p.debut as pause_debut, p.fin as pause_fin, p.date_debut_pointe as date_pause_debut_point, p.date_fin_pointe as date_pause_fin_point,p.debut_pointe as pause_debut_pointe, p.fin_pointe as pause_fin_pointe, p.debut_corrigee as is_pause_debut_corrigee, p.fin_corrigee as is_pause_fin_corrigee, p.debut_new as pause_debut_new, p.fin_new as pause_fin_new, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '" + contract.pk_user_contrat + "' order by h.jour_debut, p.debut";
+      }else{
+        var sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, h.heure_debut_pointe, h.heure_fin_pointe, h.debut_corrigee as is_heure_debut_corrigee, h.fin_corrigee as is_heure_fin_corrigee, h.heure_debut_new, h.heure_fin_new, p.debut as pause_debut, p.fin as pause_fin, p.debut_pointe as pause_debut_pointe, p.fin_pointe as pause_fin_pointe, p.debut_corrigee as is_pause_debut_corrigee, p.fin_corrigee as is_pause_fin_corrigee, p.debut_new as pause_debut_new, p.fin_new as pause_fin_new, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '" + contract.pk_user_contrat + "' order by h.jour_debut, p.debut";
+      
+      }
+  } else {
       var sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, h.heure_debut_new, h.heure_fin_new, p.debut as pause_debut, p.fin as pause_fin, p.debut_new as pause_debut_new, p.fin_new as pause_fin_new, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '" + contract.pk_user_contrat + "' order by h.jour_debut, p.debut";
     }
 
@@ -54,6 +59,8 @@ export class MissionService {
         //push the mission
         m.heure_debut_pointe = this.convertToFormattedHour(m.heure_debut_pointe);
         m.heure_fin_pointe = this.convertToFormattedHour(m.heure_fin_pointe);
+        m.date_debut_pointe = m.date_debut_pointe;
+        m.date_fin_pointe = m.date_fin_pointe;
         missionHours.push(m);
         k = missionHours.length - 1;
         //push the id mission to not stock the same mission many time
@@ -70,6 +77,9 @@ export class MissionService {
           missionPauses[k][0].is_pause_fin_corrigee = m.is_pause_fin_corrigee;
           missionPauses[k][0].pause_debut_new = m.pause_debut_new;
           missionPauses[k][0].pause_fin_new = m.pause_fin_new;
+          missionPauses[k][0].date_pause_debut_pointe = m.date_pause_debut_pointe;
+          missionPauses[k][0].date_pause_fin_pointe = m.date_pause_fin_pointe;
+
         }
       } else {
         //if the mission is already pushed, just push its pause
@@ -86,6 +96,8 @@ export class MissionService {
           missionPauses[idExistMission][j].is_pause_fin_corrigee = m.is_pause_fin_corrigee;
           missionPauses[idExistMission][j].pause_fin_new = m.pause_fin_new;
           missionPauses[idExistMission][j].pause_debut_new = m.pause_debut_new;
+          missionPauses[idExistMission][j].date_pause_debut_pointe = m.date_pause_debut_pointe;
+          missionPauses[idExistMission][j].date_pause_fin_pointe = m.date_pause_fin_pointe;
         }
       }
     }

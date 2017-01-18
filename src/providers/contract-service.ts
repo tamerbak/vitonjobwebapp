@@ -421,6 +421,7 @@ export class ContractService {
       + ")"
       + " RETURNING pk_user_contrat";
 
+      console.log(sql);
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();

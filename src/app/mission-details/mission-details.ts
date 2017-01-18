@@ -13,6 +13,7 @@ import {DateConverter} from "../../pipes/date-converter/date-converter";
 import {TimeConverter} from "../../pipes/time-converter/time-converter";
 
 import {ModalModifySchedule} from "./modal-modify-schedule/modal-modify-schedule";
+import {ModalJobyerPointing} from "./modal-jobyer-pointing/modal-jobyer-pointing";
 import {ModalInfo} from "../modal-info/modal-info";
 import {Utils} from "../utils/utils";
 import {ModalOptions} from "../modal-options/modal-options";
@@ -26,7 +27,7 @@ declare var jQuery: any;
   styles: [require('./mission-details.scss')],
   pipes: [DateConverter, TimeConverter],
   providers: [ContractService, SharedService, MissionService, FinanceService, GlobalConfigs],
-  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalModifySchedule, ModalInfo, ModalOptions]
+  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalModifySchedule,ModalJobyerPointing, ModalInfo, ModalOptions]
 })
 export class MissionDetails{
 // TODO Set dynamically
@@ -81,6 +82,7 @@ export class MissionDetails{
       this.router.navigate(['home']);
       return;
     } else {
+      console.log(this.missionHours)
       this.isEmployer = this.currentUser.estEmployeur;
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
 
@@ -100,15 +102,22 @@ export class MissionDetails{
         this.prerequisObligatoires = [];
       }
 
+      console.log(this.contract.option_mission);
+
       this.hasJobyerSigned = (this.contract.signature_jobyer.toUpperCase() == "OUI" ? true : false);
       var forPointing = this.contract.option_mission != "1.0" ? true : false;
-      this.missionService.listMissionHours(this.contract, forPointing).then(
+      var getDates = this.contract.option_mission == "2.0" ? true : false;
+      console.log(forPointing);
+      this.missionService.listMissionHours(this.contract, forPointing,getDates).then(
         (data: any) => {
           if (data.data) {
+            console.log(data.data)
             this.initialMissionHours = data.data;
             //initiate pauses array
             var array = this.missionService.constructMissionHoursArray(this.initialMissionHours);
+            console.log(array);
             this.missionHours = array[0];
+            console.log(this.missionHours);
             this.missionPauses = array[1];
             //prepare the mission pauses array to display
             this.prepareMissionHoursArray()
@@ -336,20 +345,53 @@ export class MissionDetails{
     return true;
   }
 
-  generateTimesheet() {
-    this.missionService.saveCorrectedMissions(
-      this.contract.pk_user_contrat, this.missionHours, this.missionPauses
-    ).then((data: any) => {
-      if (data && data.status == "success") {
-        console.log("timesheet saved");
-        var message = "Le relevé d'heure du contrat numéro : " + this.contract.numero + "vous a été envoyé";
-        var objectifNotif = "MissionDetailsPage";
-        this.sendInfoBySMS(message, "toJobyer");
-
-        // Return to the list
-        this.navigationPreviousPage();
+  isHoursPointed(){
+    var isValid = true;
+    for (let i = 0; i < this.missionHours.length; i++) {
+      let day = this.missionHours[i];
+      if(day.heure_debut_pointe == "" || day.heure_debut_pointe == "" ){
+        isValid = false;
+        return isValid;
       }
-    });
+      
+      if (this.missionPauses[i] && this.missionPauses[i].length != 0) {
+        for (let j = 0; j < this.missionPauses[i].length; j++) {
+          let pause = this.missionPauses[i][j];
+          if(pause.pause_debut_pointe == "" || pause.pause_debut_pointe == "" ){
+            isValid = false;
+            return isValid;
+          }
+        }
+      }
+
+    }
+    return isValid;
+  }
+
+  generateTimesheet() {
+    let canGenerate = false;
+    if(this.contract.option_mission == "2.0" && this.isHoursPointed()){
+      canGenerate = true;
+    }else{
+      canGenerate = true;
+    }
+
+    if(canGenerate){
+      this.missionService.saveCorrectedMissions(
+        this.contract.pk_user_contrat, this.missionHours, this.missionPauses
+      ).then((data: any) => {
+        if (data && data.status == "success") {
+          console.log("timesheet saved");
+          var message = "Le relevé d'heure du contrat numéro : " + this.contract.numero + "vous a été envoyé";
+          var objectifNotif = "MissionDetailsPage";
+          this.sendInfoBySMS(message, "toJobyer");
+
+          // Return to the list
+          this.navigationPreviousPage();
+        }
+      });
+    }
+    
   }
 
   signSchedule() {
@@ -634,6 +676,14 @@ this.nav.present(toast);
       backdrop: 'static'
     });
     jQuery('#modal-modify-schedule').modal('show');
+  }
+
+  openJobyerPointingModal() {
+    jQuery('#modal-jobyer-pointing').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+    jQuery('#modal-jobyer-pointing').modal('show');
   }
 
   addAlert(type, msg): void {

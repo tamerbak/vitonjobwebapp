@@ -62,11 +62,11 @@
   modal-update-password
   *ngIf="currentUser"
 ></div>
-<div
+<!--<div
   modal-notification-contract
   [jobyer]="currentJobyer" [obj]="obj"
   *ngIf="projectTarget == 'employer' && !isRecruteur"
-></div>
+></div>-->
 <div
   modal-general-condition
   (onRefuse)="onGCRefused($event)"
