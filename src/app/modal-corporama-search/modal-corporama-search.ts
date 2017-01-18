@@ -68,6 +68,7 @@ export class ModalCorporamaSearch {
         if (!this.companies || this.companies.length == 0) {
           this.noResult = true;
           this.alerts = ['Votre recherche n\'a retourné aucun résultat'];
+          return;
         }
         if (this.companies.length == 1) {
           if (Utils.isEmpty(this.companies[0].name)) {
@@ -97,7 +98,7 @@ export class ModalCorporamaSearch {
             this.noResult = true;
             this.alerts = ['Votre recherche n\'a retourné aucun résultat'];
           }
-          if (this.companies.length == 1) {
+          if (this.companies && this.companies.length == 1) {
             if (Utils.isEmpty(this.companies[0].name)) {
               this.noResult = true;
             }
