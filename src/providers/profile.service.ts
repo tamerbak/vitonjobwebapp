@@ -74,7 +74,7 @@ export class ProfileService{
     let encodedAddress = btoa(addressDataStr);
     let data = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 20029,
+      'id': 20030,
       'args': [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'Adresse',
@@ -107,14 +107,14 @@ export class ProfileService{
       'streetNumber': streetNumber,
       'role': role,
       'id': id,
-      'type': (role == "jobyer" ? 'travaille' : 'adresse_de_travail')
+      'type': (role == "jobyer" ? 'depart_vers_le_travail' : 'adresse_de_travail')
 
     };
     let addressDataStr = JSON.stringify(addressData);
     let encodedAddress = btoa(addressDataStr);
     let data = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 20029,
+      'id': 20030,
       'args': [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'Adresse',
@@ -150,7 +150,7 @@ export class ProfileService{
     let encodedAddress = btoa(addressDataStr);
     let data = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 20029,
+      'id': 20030,
       'args': [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'Adresse',
