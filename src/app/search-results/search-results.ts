@@ -148,7 +148,7 @@ export class SearchResults{
     var hoursText = hours == 0 ? '':(hours + (hours == 1 ? " heure":" heures"));
     var minutesText = minutes == 0 ? '':(minutes + (minutes == 1 ?  " minute":" minutes"));
     var fullText = (hoursText == '' ? '': hoursText) + (minutesText == ''? '':(hoursText == ''? minutesText:(" et "+minutesText)));
-    return fullText;
+    return fullText== '' ? "Disponible":fullText;
   }
 
   getAvailabilityMinutes(text){
