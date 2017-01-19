@@ -240,7 +240,7 @@ export class ProfileService{
   }
 
   countEntreprisesByRaisonSocial(companyname: string) {
-    let sql = "select count(*) from user_entreprise where nom_ou_raison_sociale='" + companyname + "';";
+    let sql = "select count(*) from user_entreprise where upper(nom_ou_raison_sociale)='" + companyname.toUpperCase() + "';";
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
