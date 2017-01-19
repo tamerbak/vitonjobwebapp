@@ -2108,6 +2108,12 @@ export class Profile{
       && Utils.isEmpty(company.city) === false) {
       let newAdress = company.street + ', ' + company.zip + ' ' + company.city;
       if (Utils.isEmpty(this.personalAddress) === true || this.personalAddress.toUpperCase() != newAdress.toUpperCase()) {
+        this.streetPA = company.street;
+        this.streetNumberPA = "";
+        this.namePA = "";
+        this.cityPA = company.city;
+        this.countryPA = "France";
+        this.zipCodePA = company.zip;
         this.personalAddress = newAdress;
       }
     }
