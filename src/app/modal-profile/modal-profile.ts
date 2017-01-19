@@ -571,7 +571,7 @@ export class ModalProfile{
                   jQuery('#modal-update-password').modal('show');
                 })
             }
-            
+
             //redirecting to offers page if new User
             if (isNewUser) {
               this.router.navigate(['home']);
@@ -954,7 +954,7 @@ export class ModalProfile{
 
   openCoporamaModal() {
     // l'evenement 'one' permet d'activer une surveillance une seule fois
-    // permet notamment d'éviter les boucles d'evenements infinies 
+    // permet notamment d'éviter les boucles d'evenements infinies
     jQuery('#modal-profile').one('hidden.bs.modal', function (e) {
       jQuery('#modal-corporama-search').modal('show');
       jQuery('#modal-corporama-search').one('hidden.bs.modal', function (e) {
@@ -970,19 +970,11 @@ export class ModalProfile{
       return;
     }
 
-    if (Utils.isEmpty(this.title) === true) {
-      this.title = (company.title == "M" ? "M." : company.title);
-    }
-    if (Utils.isEmpty(this.lastname) === true) {
-      // Call lastname field watcher
-      this.lastname = company.lastname;
-      this.watchLastname({target: {value: company.lastname}});
-    }
-    if (Utils.isEmpty(this.firstname) === true) {
-      // Call firstname field watcher
-      this.firstname = company.firstname;
-      this.watchFirstname({target: {value: company.firstname}});
-    }
+    this.title = (company.title == "M" ? "M." : company.title);
+    this.lastname = company.lastname;
+    this.watchLastname({target: {value: company.lastname}});
+    this.firstname = company.firstname;
+    this.watchFirstname({target: {value: company.firstname}});
 
     if (Utils.isEmpty(company.street) === false
       && Utils.isEmpty(company.zip) === false
