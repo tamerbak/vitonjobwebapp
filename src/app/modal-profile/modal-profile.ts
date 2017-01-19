@@ -588,10 +588,11 @@ export class ModalProfile{
 
         if (this.isEmployer) {
           var companyname = (!this.companyname ? this.currentUser.employer.entreprises[0].nom : this.companyname);
+          var siret = this.siret ? this.siret.substring(0, 17) : "";
           var ape = this.ape ? this.ape.substring(0, 5).toUpperCase() : "";
           var entrepriseId = this.currentUser.employer.entreprises[0].id;
 
-          this.profileService.updateEmployerCivilityFirstTime(title, lastname, firstname, companyname, ape, userRoleId, entrepriseId, this.conventionId).then((res: any) => {
+          this.profileService.updateEmployerCivilityFirstTime(title, lastname, firstname, companyname, siret, ape, userRoleId, entrepriseId, this.conventionId).then((res: any) => {
             //case of update failure : server unavailable or connection problem
             if (!res || res.status == "failure") {
               Messenger().post({
@@ -608,6 +609,7 @@ export class ModalProfile{
               this.currentUser.prenom = this.firstname;
               this.currentUser.employer.entreprises[0].nom = this.companyname;
               this.currentUser.employer.entreprises[0].naf = ape;
+              this.currentUser.employer.entreprises[0].siret = siret;
               this.currentUser.newAccount = false;
               let code = '';
               let libelle = '';
@@ -981,6 +983,12 @@ export class ModalProfile{
       && Utils.isEmpty(company.city) === false) {
       let newAdress = company.street + ', ' + company.zip + ' ' + company.city;
       if (Utils.isEmpty(this.personalAddress) === true || this.personalAddress.toUpperCase() != newAdress.toUpperCase()) {
+        this.streetPA = company.street;
+        this.streetNumberPA = "";
+        this.namePA = "";
+        this.cityPA = company.city;
+        this.countryPA = "France";
+        this.zipCodePA = company.zip;
         this.personalAddress = newAdress;
       }
     }

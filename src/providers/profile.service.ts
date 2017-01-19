@@ -370,7 +370,7 @@ export class ProfileService{
     })
   }
 
-  updateEmployerCivilityFirstTime(title, lastname, firstname, companyname, ape, roleId, entrepriseId, conventionId) {
+  updateEmployerCivilityFirstTime(title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId, conventionId) {
     title = Utils.sqlfyText(title);
     lastname = Utils.sqlfyText(lastname);
     firstname = Utils.sqlfyText(firstname);
@@ -383,7 +383,8 @@ export class ProfileService{
       sql = sql + " , fk_user_convention_collective='" + conventionId + "' ";
     }
     ape = (!ape ? "" : ape);
-    sql = sql + " , ape_ou_naf='" + ape + "' where  pk_user_entreprise=" + entrepriseId;
+    siret = (!siret ? "" : siret);
+    sql = sql + " , siret = '" + siret + "', ape_ou_naf='" + ape + "' where  pk_user_entreprise=" + entrepriseId;
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
