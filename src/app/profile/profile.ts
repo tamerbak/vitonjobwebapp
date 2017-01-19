@@ -2097,19 +2097,11 @@ export class Profile{
       return;
     }
 
-    if (Utils.isEmpty(this.title) === true) {
-      this.title = (company.title == "M" ? "M." : company.title);
-    }
-    if (Utils.isEmpty(this.lastname) === true) {
-      // Call lastname field watcher
-      this.lastname = company.lastname;
-      this.watchLastname({target: {value: company.lastname}});
-    }
-    if (Utils.isEmpty(this.firstname) === true) {
-      // Call firstname field watcher
-      this.firstname = company.firstname;
-      this.watchFirstname({target: {value: company.firstname}});
-    }
+    this.title = (company.title == "M" ? "M." : company.title);
+    this.lastname = company.lastname;
+    this.watchLastname({target: {value: company.lastname}});
+    this.firstname = company.firstname;
+    this.watchFirstname({target: {value: company.firstname}});
 
     if (Utils.isEmpty(company.street) === false
       && Utils.isEmpty(company.zip) === false
