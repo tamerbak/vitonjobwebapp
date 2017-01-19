@@ -124,14 +124,14 @@ class JobyerConfigs implements AbstractConfigs {
 
 export class Configs {
 
-  public static env: string = 'DEV';
+  public static env: string = 'PROD';
 
-  public static calloutURL: string = 'https://bopreprod.vitonjob.com/api/business';
-  public static sqlURL: string = 'https://bopreprod.vitonjob.com/api/sql';
-  public static yousignURL: string = 'https://bopreprod.vitonjob.com/api/business';
-  public static smsURL: string = 'https://bopreprod.vitonjob.com/api/envoisms';
-  public static emailURL: string = 'https://bopreprod.vitonjob.com/api/envoimail';
-  public static fssURL: string = 'https://bopreprod.vitonjob.com/api/fssjs';
+  public static calloutURL: string = 'http://vojpreprod.us-west-2.elasticbeanstalk.com/api/business';
+  public static sqlURL: string = 'http://vojpreprod.us-west-2.elasticbeanstalk.com/api/sql';
+  public static yousignURL: string = 'http://vojpreprod.us-west-2.elasticbeanstalk.com/api/business';
+  public static smsURL: string = 'http://vojpreprod.us-west-2.elasticbeanstalk.com/api/envoisms';
+  public static emailURL: string = 'http://vojpreprod.us-west-2.elasticbeanstalk.com/api/envoimail';
+  public static fssURL: string = 'http://vojpreprod.us-west-2.elasticbeanstalk.com/api/fssjs';
 
   public static googleMapApiKey: string = 'AIzaSyD6de5QuqKPECTwNSkmBfeRmiTb9147S_Y';
 

@@ -465,61 +465,6 @@ export class MissionDetails{
     return disable;
   }
 
-
-  /**
-   * Stars picker
-   *
-   setStarPicker() {
-
-let picker = Picker.create();
-let options: PickerColumnOption[] = new Array<PickerColumnOption>();
-for (let i = 1; i <= 5; i++) {
-options.push({
-value: i,
-text: this.writeStars(i)
-})
-}
-
-let column = {
-selectedIndex: this.rating,
-options: options
-};
-picker.addColumn(column);
-picker.addButton('Annuler');
-picker.addButton({
-text: 'OK',
-handler: data => {
-//debugger;
-this.rating = data.undefined.value;
-this.starsText = this.writeStars(this.rating);
-this.notationService.saveContractNotation(this.contract, this.projectTarget, this.rating);
-}
-});
-this.nav.present(picker);
-}
-
-   /**
-   * writing stars
-   * @param number of stars writed
-   *
-   writeStars(number: number): string {
-let starText = '';
-for (let i = 0; i < number; i++) {
-starText += '\u2605'
-}
-return starText;
-}
-
-   presentToast(message: string, duration: number) {
-let toast = Toast.create({
-message: message,
-duration: duration * 1000
-});
-this.nav.present(toast);
-}
-
-   */
-
   onPointedHourClick(i, j, isStartMission, isStartPause, decision) {
     if (!this.isEmployer || this.upperCase(this.contract.releve_employeur) == 'OUI') {
       return;
@@ -607,7 +552,7 @@ this.nav.present(toast);
   }
 
   launchContractModal() {
-    //debugger;
+
     //jQuery('#modal-contract').modal('show');
     //Create to Iframe to show the contract in the modal
     this.isSignContractClicked = true;

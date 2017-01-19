@@ -227,4 +227,75 @@ export class ConventionService {
         });
     });
   }
+
+  getParametragesByConvetion(idConvention) {
+
+    let sql = "SELECT " +
+      "pk_user_parametrage_convention as id, " +
+      "remuneration_de_reference as rate, " +
+      "fk_user_niveau_convention_collective niv, " +
+      "fk_user_coefficient_convention coe, " +
+      "fk_user_echelon_convention ech, " +
+      "fk_user_categorie_convention cat, " +
+      "fk_user_zone_geo_convention zon, " +
+      "fk_user_indice_convention ind, " +
+      "fk_user_classe_convention cla, " +
+      "fk_user_statut_convention sta, " +
+      "fk_user_position_convention pos, " +
+      "fk_user_anciennete_convention anc " +
+      "FROM user_parametrage_convention " +
+      "WHERE fk_user_convention_collective=" + idConvention + " " +
+        "AND dirty='N' " +
+        "AND (du IS NOT NULL AND du < NOW()) AND (au > NOW() OR au IS NULL) ;"
+    ;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any) => {
+          resolve(data.data);
+        });
+    });
+  }
+
+  /**
+   * Return the list of parametrage according to filters (position, echelon, niveau, etc.)
+   * @param idConvention
+   * @param filters
+   * @returns {Promise<T>}
+   *
+  getconventionParametrageByFilter(idConvention, filters) {
+    let sql = "SELECT " +
+      "pk_user_parametrage_convention as id, " +
+      "remuneration_de_reference as rate, " +
+      "fk_user_convention_collective as idcc, " +
+      "fk_user_categorie_convention as idcat, " +
+      "fk_user_echelon_convention as idechelon, " +
+      "fk_user_coefficient_convention as idcoeff, f" +
+      "k_user_niveau_convention_collective as idniv " +
+      "FROM user_parametrage_convention " +
+      "WHERE " +
+      "fk_user_convention_collective="+idConvention+" AND dirty='N' " +
+      (filters && Utils.isEmpty(filters.niv) ? "AND fk_user_niveau_convention_collective = " + filters.niv + " " : "") +
+      (filters && Utils.isEmpty(filters.coe) ? "AND fk_user_coefficient_convention = " + filters.coe + " " : "") +
+      (filters && Utils.isEmpty(filters.ech) ? "AND fk_user_echelon_convention = " + filters.ech + " " : "") +
+      (filters && Utils.isEmpty(filters.cat) ? "AND fk_user_categorie_convention = " + filters.cat + " " : "") +
+      (filters && Utils.isEmpty(filters.zon) ? "AND fk_user_zone_geo_convention = " + filters.zon + " " : "") +
+      (filters && Utils.isEmpty(filters.ind) ? "AND fk_user_indice_convention = " + filters.ind + " " : "") +
+      (filters && Utils.isEmpty(filters.cla) ? "AND fk_user_classe_convention = " + filters.cla + " " : "") +
+      (filters && Utils.isEmpty(filters.sta) ? "AND fk_user_statut_convention = " + filters.sta + " " : "") +
+      (filters && Utils.isEmpty(filters.pos) ? "AND fk_user_position_convention = " + filters.pos + " " : "") +
+      (filters && Utils.isEmpty(filters.anc) ? "AND fk_user_anciennete_convention = " + filters.anc + " " : "") +
+
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any) => {
+          resolve(data.data);
+        });
+    });
+
+  }/**/
 }

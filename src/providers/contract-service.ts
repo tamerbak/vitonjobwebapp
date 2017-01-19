@@ -159,7 +159,7 @@ export class ContractService {
     //  Init project parameters
     var employerSql = "SELECT c.pk_user_contrat,c.*, j.nom, j.prenom FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='" + id + "'";
     var jobyerSql = "SELECT c.pk_user_contrat,c.*, e.nom_ou_raison_sociale as nom FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "'";
-    
+
     var typeSql ="";
     if(type ==0){
       typeSql = " and c.date_de_debut is not null and upper(c.signature_jobyer) = 'OUI' and upper(c.accompli)='NON' and c.annule_par is null";
@@ -374,7 +374,7 @@ export class ContractService {
       + "'" + DateUtils.dateToSqlTimestamp(new Date()) + "',"
       + "'" + DateUtils.getMinutesFromDate(contract.workStartHour) + "',"
       + "'" + DateUtils.getMinutesFromDate(contract.workEndHour) + "',"
-      + "'" + Utils.sqlfyText(contract.motif) + "',"
+      + "'" + Utils.sqlfyText(contract.justification) + "',"
       + "'" + Utils.sqlfyText(contract.numero) + "',"
       + "'" + contract.trialPeriod + "',"
       + "'" + contract.baseSalary + "',"
@@ -393,7 +393,7 @@ export class ContractService {
       + "'" + Utils.sqlfyText(contract.usualWorkTimeHours) + "',"
       + "'" + contract.elementsCotisation + "',"
       + "'" + contract.elementsNonCotisation + "',"
-      + "'" + Utils.sqlfyText(contract.justification) + "',"
+      + "'" + Utils.sqlfyText(contract.motif) + "',"
       + "'" + Utils.sqlfyText(contract.titre) + "',"
       + "(select option_mission :: numeric from user_account where pk_user_account = '" + accountId + "'),"
       + "'" + epi + "',"
@@ -727,8 +727,6 @@ export class ContractService {
       "organisationParticuliere":''
     };
 
-    debugger;
-
     let partner = GlobalConfigs.global['electronic-signature'];
 
     var dataSign = JSON.stringify(
@@ -756,7 +754,7 @@ export class ContractService {
     // Compute ID according to env
     let calloutId = 10337;
     if (Configs.env == 'PROD') {
-      calloutId = 10002;
+      calloutId = 10537;
     }
 
     var payload = {

@@ -21,6 +21,7 @@ import {scan} from "rxjs/operator/scan";
 import {ConventionService} from "../../providers/convention.service";
 import {OffersService} from "../../providers/offer.service";
 import {EnvironmentService} from "../../providers/environment.service";
+import {SelectLanguages} from "../components/select-languages/select-languages";
 
 declare var jQuery, require, Messenger, moment: any;
 declare var google: any;
@@ -29,7 +30,7 @@ declare var google: any;
   selector: '[profile]',
   template: require('./profile.html'),
   providers: [Utils, ProfileService, CommunesService, LoadListService, MedecineService, AttachementsService, AccountConstraints, ConventionService, OffersService, EnvironmentService],
-  directives: [ROUTER_DIRECTIVES, NKDatetime, AlertComponent, ModalPicture, MaskedInput, BankAccount, ModalCorporamaSearch],
+  directives: [ROUTER_DIRECTIVES, NKDatetime, AlertComponent, ModalPicture, MaskedInput, BankAccount, ModalCorporamaSearch, SelectLanguages],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./profile.scss')]
 })
@@ -250,6 +251,7 @@ export class Profile{
 
     if (!this.currentUser) {
       this.router.navigate(['home']);
+      return;
     } else {
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
       this.getUserInfos();
@@ -1283,14 +1285,11 @@ export class Profile{
     //verify if company exists
     if (field == "companyname") {
       this.profileService.countEntreprisesByRaisonSocial(this.companyname).then((res: any) => {
-        if (res.data[0].count != 0 && this.companyname != this.currentUser.employer.entreprises[0].nom) {
-          if (!Utils.isEmpty(this.currentUser.employer.entreprises[0].nom)) {
+        if (res.data[0].count != 0 && this.companyname.toUpperCase() != this.currentUser.employer.entreprises[0].nom.toUpperCase()) {
+          if (!Utils.isEmpty(this.companyname)) {
             this.companyAlert = "L'entreprise " + this.companyname + " existe déjà. Veuillez saisir une autre raison sociale.";
             this.showCurrentCompanyBtn = true;
             // this.companyname = this.currentUser.employer.entreprises[0].nom;
-          } else {
-            this.companyAlert = this.companyInfosAlert('companyname');
-            this.showCurrentCompanyBtn = false;
           }
         } else {
           this.companyAlert = "";
@@ -2008,11 +2007,6 @@ export class Profile{
     this.saveQualities();
   }
 
-  removeLanguage(item) {
-    this.savedLanguages.splice(this.savedLanguages.indexOf(item), 1);
-    this.saveLanguages();
-  }
-
   addQuality() {
     if (Utils.isEmpty(this.selectedQuality)) {
       return;
@@ -2028,24 +2022,6 @@ export class Profile{
     this.selectedQuality = "";
 
     this.saveQualities();
-  }
-
-  addLanguage(){
-    if (Utils.isEmpty(this.selectedLanguage)) {
-      return;
-    }
-
-    var languagesTemp = this.languages.filter((v)=> {
-      return (v.id == this.selectedLanguage);
-    });
-    if (this.savedLanguages.indexOf(languagesTemp[0]) != -1) {
-      return;
-    }
-    languagesTemp[0]['level'] = this.selectedLevel;
-    this.savedLanguages.push(languagesTemp[0]);
-    this.selectedLanguage = "";
-
-    this.saveLanguages();
   }
 
   saveQualities() {
@@ -2113,30 +2089,28 @@ export class Profile{
   }
 
   onDismissCorporamaModal(company: any) {
-    debugger;
+
     if (!company) {
       return;
     }
 
-    if (Utils.isEmpty(this.title) === true) {
-      this.title = (company.title == "M" ? "M." : company.title);
-    }
-    if (Utils.isEmpty(this.lastname) === true) {
-      // Call lastname field watcher
-      this.lastname = company.lastname;
-      this.watchLastname({target: {value: company.lastname}});
-    }
-    if (Utils.isEmpty(this.firstname) === true) {
-      // Call firstname field watcher
-      this.firstname = company.firstname;
-      this.watchFirstname({target: {value: company.firstname}});
-    }
+    this.title = (company.title == "M" ? "M." : company.title);
+    this.lastname = company.lastname;
+    this.watchLastname({target: {value: company.lastname}});
+    this.firstname = company.firstname;
+    this.watchFirstname({target: {value: company.firstname}});
 
     if (Utils.isEmpty(company.street) === false
       && Utils.isEmpty(company.zip) === false
       && Utils.isEmpty(company.city) === false) {
       let newAdress = company.street + ', ' + company.zip + ' ' + company.city;
       if (Utils.isEmpty(this.personalAddress) === true || this.personalAddress.toUpperCase() != newAdress.toUpperCase()) {
+        this.streetPA = company.street;
+        this.streetNumberPA = "";
+        this.namePA = "";
+        this.cityPA = company.city;
+        this.countryPA = "France";
+        this.zipCodePA = company.zip;
         this.personalAddress = newAdress;
       }
     }

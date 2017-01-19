@@ -26,70 +26,7 @@
 
 <div class="row">
   <div class="col-lg-3 col-xl-4 col-xs-12">
-    <!-- VIDEO -->
 
-    <section widget class="widget widget-offer">
-      <header class="bb widget-offer-header">
-        <h6><span class="fw-semi-bold widget-offer-header-title">Vidéo</span></h6>
-      </header>
-      <div class="widget-body widget-offer">
-
-        <div *ngIf="videoAvailable" class="form-group row required">
-          <div class="col-xs-12">
-            <iframe class="iframe-class" width="100%" height="360px"
-                    [style.display]="videoAvailable?'block':'none'" target="_parent" [src]="youtubeLinkSafe">
-            </iframe>
-          </div>
-        </div>
-
-        <div *ngIf="!videoAvailable" class="form-group row">
-          <div *ngIf="!isLinkValid" class="col-xs-12">
-            <alert [type]="'danger alert-sm'">
-              <div [innerHTML]="'Le lien de la vidéo est non valide'"></div>
-            </alert>
-          </div>
-
-          <div class="col-sm-12 col-xs-12">
-            <input
-              id="youtubeLink"
-              class="form-control"
-              name="youtubeLink"
-              placeholder="Je me valorise avec une vidéo"
-              type="text"
-              [(ngModel)]="youtubeLink"
-            />
-          </div>
-          <div class="col-sm-12 col-xs-12">
-            <button
-              class="btn btn-primary offer-video-btn"
-              style="display: block; width: 100%;"
-              (click)="updateVideo(false)"
-              [disabled]="!youtubeLink || isOfferInContract || isOfferArchived"
-            >
-              <i class="glyphicon glyphicon-facetime-video"></i>
-              Ajouter
-            </button>
-          </div>
-        </div>
-
-        <div *ngIf="videoAvailable" class="form-group row required">
-          <div class="col-xs-12">
-            <button
-              class="btn btn-success offer-video-btn"
-              style="display: block; width: 100%;"
-              (click)="updateVideo(true)"
-              [disabled]="isOfferInContract || isOfferArchived"
-            >
-              <i class="glyphicon glyphicon-trash"></i>
-              Supprimer
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- !VIDEO -->
     <!-- JOB -->
 
     <section widget class="widget widget-offer" >
@@ -181,41 +118,16 @@
           </div>
         </div>
 
-        <div class="form-group row" *ngIf="convCoefficientsVisible()">
-          <label class="col-md-12 col-xs-12 form-control-label">Coefficient</label>
-          <div class="col-md-12 col-xs-12">
-            <select class="form-control" [(ngModel)]="selectedCoefConvID"
-                    (change)="updateHourRateThreshold('COEF',$event.target.value)">
-              <option *ngFor="let s of coefficientsConventions" [value]="s.id">{{s.libelle}}</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="convNiveauxVisible()">
-          <label class="col-md-12 col-xs-12 form-control-label">Niveau</label>
-          <div class="col-md-12 col-xs-12">
-            <select class="form-control" [(ngModel)]="selectedNivConvID"
-                    (change)="updateHourRateThreshold('NIV',$event.target.value)">
-              <option *ngFor="let s of niveauxConventions" [value]="s.id">{{s.libelle}}</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="convEchelonsVisible()">
-          <label class="col-md-12 col-xs-12 form-control-label">Echelon</label>
-          <div class="col-md-12 col-xs-12">
-            <select class="form-control" [(ngModel)]="selectedEchConvID"
-                    (change)="updateHourRateThreshold('ECH',$event.target.value)">
-              <option *ngFor="let s of echelonsConventions" [value]="s.id">{{s.libelle}}</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="convCategoriesVisible()">
-          <label class="col-md-12 col-xs-12 form-control-label">Catégorie</label>
-          <div class="col-md-12 col-xs-12">
-            <select class="form-control" [(ngModel)]="selectedCatConvID"
-                    (change)="updateHourRateThreshold('CAT',$event.target.value)">
-              <option *ngFor="let s of categoriesConventions" [value]="s.id">{{s.libelle}}</option>
-            </select>
-          </div>
+        <div *ngIf="displayClassification()">
+          <legend><strong>Classification</strong></legend>
+          <div
+            convention-parameters
+            [(offer)]="offer"
+            [(convention)]="convention"
+            [(toSync)]="refreshParametrage"
+            (onValidParametrage)="conventionParametrageChange($event)"
+            (onPartialParametrage)="conventionParametrageChange($event)"
+          ></div>
         </div>
 
         <!-- Taux horaire -->
@@ -233,7 +145,6 @@
               class="form-control"
               min="0"
               [(ngModel)]="offer.jobData.remuneration"
-              (change)="validateRate($event.target.value)"
             />
           </div>
           <div class="col-xs-6">
@@ -241,9 +152,15 @@
               <option>EUR</option>
             </select>
           </div>
-          <div class="col-xs-12">
-            <alert *ngIf="invalidHourRate " [type]="'danger alert-sm'">
-              <div [innerHTML]="'* Le taux horaire devrait être supérieur ou égal à ' + invalidHourRateMessage"></div>
+          <div class="col-xs-12" *ngIf="displayClassification()">
+            <alert
+              [hidden]="!(minimumClassificationRate > 0 && offer.jobData.remuneration < minimumClassificationRate)"
+              [type]="'danger alert-sm'"
+            >
+              <div [innerHTML]="'* Le taux horaire devrait être supérieur ou égal à ' + minimumClassificationRate"></div>
+            </alert>
+            <alert [hidden]="!(minimumClassificationRate == -1)" [type]="'info alert-sm'">
+              <div [innerHTML]="'* Veuillez renseigner la classification pour connaitre le taux horaire minimum'"></div>
             </alert>
           </div>
         </div>
@@ -267,6 +184,7 @@
     </section>
 
   </div>
+
   <div class="col-lg-9 col-xl-8 col-xs-12">
     <section class="widget widget-calendar widget-offer">
       <header class="bb widget-offer-header">
@@ -403,6 +321,71 @@
         </div>
       </div>
     </div>
+
+    <!-- VIDEO -->
+
+    <section widget class="widget widget-offer">
+      <header class="bb widget-offer-header">
+        <h6><span class="fw-semi-bold widget-offer-header-title">Vidéo</span></h6>
+      </header>
+      <div class="widget-body widget-offer">
+
+        <div *ngIf="videoAvailable" class="form-group row required">
+          <div class="col-xs-12">
+            <iframe class="iframe-class" width="100%" height="360px"
+                    [style.display]="videoAvailable?'block':'none'" target="_parent" [src]="youtubeLinkSafe">
+            </iframe>
+          </div>
+        </div>
+
+        <div *ngIf="!videoAvailable" class="form-group row">
+          <div *ngIf="!isLinkValid" class="col-xs-12">
+            <alert [type]="'danger alert-sm'">
+              <div [innerHTML]="'Le lien de la vidéo est non valide'"></div>
+            </alert>
+          </div>
+
+          <div class="col-sm-12 col-xs-12">
+            <input
+              id="youtubeLink"
+              class="form-control"
+              name="youtubeLink"
+              placeholder="Je me valorise avec une vidéo"
+              type="text"
+              [(ngModel)]="youtubeLink"
+            />
+          </div>
+          <div class="col-sm-12 col-xs-12">
+            <button
+              class="btn btn-primary offer-video-btn"
+              style="display: block; width: 100%;"
+              (click)="updateVideo(false)"
+              [disabled]="!youtubeLink || isOfferInContract || isOfferArchived"
+            >
+              <i class="glyphicon glyphicon-facetime-video"></i>
+              Ajouter
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="videoAvailable" class="form-group row required">
+          <div class="col-xs-12">
+            <button
+              class="btn btn-success offer-video-btn"
+              style="display: block; width: 100%;"
+              (click)="updateVideo(true)"
+              [disabled]="isOfferInContract || isOfferArchived"
+            >
+              <i class="glyphicon glyphicon-trash"></i>
+              Supprimer
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- !VIDEO -->
   </div>
 
 </div>
@@ -527,7 +510,7 @@
             Contact sur place
           </label>
           <div class="col-md-7 col-xs-12">
-            <input id="contactsp" type="text" class="form-control" [(ngModel)]="offerContact" />
+            <input id="contactsp" type="text" class="form-control" [(ngModel)]="offer.contact" />
           </div>
         </div>
         <div class="form-group row" *ngIf="projectTarget == 'employer'">
@@ -535,7 +518,7 @@
             N° Téléphone
           </label>
           <div class="col-md-7 col-xs-12">
-            <input id="phonesp" type="text" class="form-control" [(ngModel)]="tel" />
+            <input id="phonesp" type="text" class="form-control" [(ngModel)]="offer.telephone" />
           </div>
         </div>
 
@@ -692,6 +675,7 @@
             <div class="row">
               <div class="col-md-9 col-xs-12">
                 <select class="form-control" [(ngModel)]="selectedQuality">
+                  <option [value]=""></option>
                   <option *ngFor="let q of qualities" [value]="q.idQuality">{{q.libelle}}</option>
                 </select>
               </div>
@@ -711,68 +695,14 @@
         </div>
 
         <!-- Langues -->
-        <div class="form-group row">
-          <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-            {{ (projectTarget == 'employer') ? 'Langue(s) requise(s)' : 'Langue(s) privilégiée(s)'}}
-          </label>
-
-          <div class="col-md-8 col-xs-12">
-
-            <!-- Selected Languages -->
-            <div class="form-group row" *ngFor="let item of offer.languageData">
-              <div class="{{ (projectTarget != 'employer') ? 'col-md-9 col-xs-12' : 'col-md-6 col-xs-6' }}">
-                <input class="form-control" value="{{item.libelle}}" disabled/>
-              </div>
-              <div class="col-md-3 col-xs-6" *ngIf="projectTarget == 'employer'">
-                <!--<input class="form-control" value="{{(item.level == 'junior' ? 'Débutant' : 'Courant')}}" disabled/>-->
-                <select class="form-control" [(ngModel)]="item.level" disabled>
-                  <option value="junior">Débutant</option>
-                  <option value="medium">Intermédiaire</option>
-                  <option value="senior">Courant</option>
-                </select>
-
-              </div>
-              <div class="col-md-3 col-xs-12">
-                <button
-                  style="display: block; width: 100%;"
-                  class="btn btn-danger mb-xs btn-remove-language"
-                  role="button"
-                  [disabled]="isOfferInContract || isOfferArchived"
-                  (click)="removeLanguage(item)"
-                >
-                  <i class="glyphicon glyphicon-trash"></i>
-                </button>
-              </div>
-            </div>
-
-            <!-- New language input -->
-            <div class="row">
-              <div class="{{ (projectTarget != 'employer') ? 'col-md-9 col-xs-12' : 'col-md-6 col-xs-6' }}">
-                <select class="form-control" [(ngModel)]="selectedLang">
-                  <option *ngFor="let l of langs" [value]="l.idLanguage">{{l.libelle}}</option>
-                </select>
-              </div>
-              <div class="col-md-3 col-xs-6" *ngIf="projectTarget == 'employer'">
-                <select class="form-control" [(ngModel)]="selectedLevel">
-                  <option value="junior">Débutant</option>
-                  <option value="medium">Intermédiaire</option>
-                  <option value="senior">Courant</option>
-                </select>
-              </div>
-              <div class="col-md-3 col-xs-12">
-                <button
-                  style="display: block; width: 100%;"
-                  class="btn btn-success mb-xs"
-                  role="button"
-                  (click)="addLanguage()"
-                  [disabled]="!(selectedLang && selectedLevel) || isOfferInContract || isOfferArchived"
-                >
-                  Ajouter
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div
+          class="form-group row"
+          select-languages
+          [(selectedList)]="offer.languageData"
+          [hasLevel]="projectTarget == 'employer'"
+          [canEdit]="!(isOfferInContract || isOfferArchived)"
+          [label]="(projectTarget == 'employer') ? 'Langue(s) requise(s)' : 'Langue(s) privilégiée(s)'"
+        ></div>
 
         <div class="form-group row" *ngIf="projectTarget == 'employer'">
           <label class="col-md-4 col-xs-12 form-control-label text-md-right">
@@ -830,7 +760,7 @@
             <div class="container-fluid">
               <div class="row">
                 <div class="col-xs-12">
-                  <button type="button" class="btn btn-success fwidth" [disabled]="isOfferInContract || isOfferArchived || !initSectorDone" (click)="editOffer()">
+                  <button type="button" class="btn btn-success fwidth" [disabled]="isOfferInContract || isOfferArchived || !initSectorDone" (click)="saveOffer()">
                     Enregistrer
                   </button>
                 </div>
@@ -843,7 +773,7 @@
                 </div>
                 <div class="col-lg-6 col-md-6 col-xs-12">
                   <button type="submit" class="btn btn-primary fwidth" (click)="changePrivacy()" [disabled]="isOfferInContract || isOfferArchived">
-                    {{offrePrivacyTitle}}
+                    {{ offer.visible ? "Rendre l'offre privée" : "Mettre l'offre en ligne" }}
                   </button>
                 </div>
 

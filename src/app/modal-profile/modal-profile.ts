@@ -571,7 +571,7 @@ export class ModalProfile{
                   jQuery('#modal-update-password').modal('show');
                 })
             }
-            
+
             //redirecting to offers page if new User
             if (isNewUser) {
               this.router.navigate(['home']);
@@ -588,10 +588,11 @@ export class ModalProfile{
 
         if (this.isEmployer) {
           var companyname = (!this.companyname ? this.currentUser.employer.entreprises[0].nom : this.companyname);
+          var siret = this.siret ? this.siret.substring(0, 17) : "";
           var ape = this.ape ? this.ape.substring(0, 5).toUpperCase() : "";
           var entrepriseId = this.currentUser.employer.entreprises[0].id;
 
-          this.profileService.updateEmployerCivilityFirstTime(title, lastname, firstname, companyname, ape, userRoleId, entrepriseId, this.conventionId).then((res: any) => {
+          this.profileService.updateEmployerCivilityFirstTime(title, lastname, firstname, companyname, siret, ape, userRoleId, entrepriseId, this.conventionId).then((res: any) => {
             //case of update failure : server unavailable or connection problem
             if (!res || res.status == "failure") {
               Messenger().post({
@@ -608,6 +609,7 @@ export class ModalProfile{
               this.currentUser.prenom = this.firstname;
               this.currentUser.employer.entreprises[0].nom = this.companyname;
               this.currentUser.employer.entreprises[0].naf = ape;
+              this.currentUser.employer.entreprises[0].siret = siret;
               this.currentUser.newAccount = false;
               let code = '';
               let libelle = '';
@@ -954,7 +956,7 @@ export class ModalProfile{
 
   openCoporamaModal() {
     // l'evenement 'one' permet d'activer une surveillance une seule fois
-    // permet notamment d'éviter les boucles d'evenements infinies 
+    // permet notamment d'éviter les boucles d'evenements infinies
     jQuery('#modal-profile').one('hidden.bs.modal', function (e) {
       jQuery('#modal-corporama-search').modal('show');
       jQuery('#modal-corporama-search').one('hidden.bs.modal', function (e) {
@@ -970,25 +972,23 @@ export class ModalProfile{
       return;
     }
 
-    if (Utils.isEmpty(this.title) === true) {
-      this.title = (company.title == "M" ? "M." : company.title);
-    }
-    if (Utils.isEmpty(this.lastname) === true) {
-      // Call lastname field watcher
-      this.lastname = company.lastname;
-      this.watchLastname({target: {value: company.lastname}});
-    }
-    if (Utils.isEmpty(this.firstname) === true) {
-      // Call firstname field watcher
-      this.firstname = company.firstname;
-      this.watchFirstname({target: {value: company.firstname}});
-    }
+    this.title = (company.title == "M" ? "M." : company.title);
+    this.lastname = company.lastname;
+    this.watchLastname({target: {value: company.lastname}});
+    this.firstname = company.firstname;
+    this.watchFirstname({target: {value: company.firstname}});
 
     if (Utils.isEmpty(company.street) === false
       && Utils.isEmpty(company.zip) === false
       && Utils.isEmpty(company.city) === false) {
       let newAdress = company.street + ', ' + company.zip + ' ' + company.city;
       if (Utils.isEmpty(this.personalAddress) === true || this.personalAddress.toUpperCase() != newAdress.toUpperCase()) {
+        this.streetPA = company.street;
+        this.streetNumberPA = "";
+        this.namePA = "";
+        this.cityPA = company.city;
+        this.countryPA = "France";
+        this.zipCodePA = company.zip;
         this.personalAddress = newAdress;
       }
     }

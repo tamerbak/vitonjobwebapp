@@ -276,12 +276,11 @@ export class AdvertEdit{
   saveAdvert() {
     this.prepareDataForSaving();
     if(!this.isFormValid()){
+      if(!Utils.isEmpty(this.advert.link) && !Utils.isValidUrl(this.advert.link)){
+        this.alert("Le lien spécifié de l'annonce n'est pas valide", "warning");
+        return;
+      }
       this.alert("Veuillez renseigner le titre de l'annonce avant d'enregistrer", "warning");
-      return;
-    }
-
-    if(!Utils.isEmpty(this.advert.link) && !Utils.isValidUrl(this.advert.link)){
-      this.alert("Le lien spécifié de l'annonce n'est pas valide", "warning");
       return;
     }
 
@@ -332,14 +331,15 @@ export class AdvertEdit{
     this.prepareDataForSaving();
 
     if(!this.isFormValid()){
+      if(!Utils.isEmpty(this.advert.link) && !Utils.isValidUrl(this.advert.link)){
+        this.alert("Le lien spécifié de l'annonce n'est pas valide", "warning");
+        return;
+      }
       this.alert("Veuillez renseigner le titre de l'annonce avant d'enregistrer", "warning");
       return;
     }
 
-    if(!Utils.isEmpty(this.advert.link) && !Utils.isValidUrl(this.advert.link)){
-      this.alert("Le lien spécifié de l'annonce n'est pas valide", "warning");
-      return;
-    }
+    
 
     this.alert("Prière de patienter, la sauvegarde peut prendre un moment à cause de la taille des fichiers", "info");
 
@@ -444,9 +444,14 @@ export class AdvertEdit{
     this.advert.isPartialTime = (e.target.value == '0' ? true : false);
   }
 
+
   isFormValid(){
     if(this.advert && !this.isEmpty(this.advert.titre)){
-      return true;
+      if(!Utils.isEmpty(this.advert.link) && !Utils.isValidUrl(this.advert.link)){
+        return false;
+      }else{
+        return true;
+      }
     } else {
       return false;
     }

@@ -66,16 +66,15 @@ export class ProfileService{
       'pays': pays,
       'name': name,
       'streetNumber': streetNumber,
-      // 'role': (this.projectTarget == 'employer' ? 'employeur' : this.projectTarget),
       'role': role,
       'id': id,
-      'type': 'personnelle'
+      'type': (role == "jobyer" ? 'personnelle' : 'siege_social')
     };
     let addressDataStr = JSON.stringify(addressData);
     let encodedAddress = btoa(addressDataStr);
     let data = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 10017,
+      'id': 20030,
       'args': [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'Adresse',
@@ -108,13 +107,14 @@ export class ProfileService{
       'streetNumber': streetNumber,
       'role': role,
       'id': id,
-      'type': 'travaille'
+      'type': (role == "jobyer" ? 'depart_vers_le_travail' : 'adresse_de_travail')
+
     };
     let addressDataStr = JSON.stringify(addressData);
     let encodedAddress = btoa(addressDataStr);
     let data = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 10017,
+      'id': 20030,
       'args': [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'Adresse',
@@ -150,7 +150,7 @@ export class ProfileService{
     let encodedAddress = btoa(addressDataStr);
     let data = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      'id': 10017,
+      'id': 20030,
       'args': [{
         'class': 'fr.protogen.masterdata.model.CCalloutArguments',
         label: 'Adresse',
@@ -240,7 +240,7 @@ export class ProfileService{
   }
 
   countEntreprisesByRaisonSocial(companyname: string) {
-    let sql = "select count(*) from user_entreprise where nom_ou_raison_sociale='" + companyname + "';";
+    let sql = "select count(*) from user_entreprise where upper(nom_ou_raison_sociale)='" + companyname.toUpperCase() + "';";
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
@@ -370,7 +370,7 @@ export class ProfileService{
     })
   }
 
-  updateEmployerCivilityFirstTime(title, lastname, firstname, companyname, ape, roleId, entrepriseId, conventionId) {
+  updateEmployerCivilityFirstTime(title, lastname, firstname, companyname, siret, ape, roleId, entrepriseId, conventionId) {
     title = Utils.sqlfyText(title);
     lastname = Utils.sqlfyText(lastname);
     firstname = Utils.sqlfyText(firstname);
@@ -383,7 +383,8 @@ export class ProfileService{
       sql = sql + " , fk_user_convention_collective='" + conventionId + "' ";
     }
     ape = (!ape ? "" : ape);
-    sql = sql + " , ape_ou_naf='" + ape + "' where  pk_user_entreprise=" + entrepriseId;
+    siret = (!siret ? "" : siret);
+    sql = sql + " , siret = '" + siret + "', ape_ou_naf='" + ape + "' where  pk_user_entreprise=" + entrepriseId;
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
