@@ -645,7 +645,12 @@ export class ContractService {
     if(!contract.epiList || contract.epiList.length == 0){
       contract.equipements = "Aucun équipement de sécurité";
     } else {
-      contract.equipements = "Voir annexe";
+      //contract.equipements = "Voir annexe";
+      let listeEPI = "";
+      for (let i = 0; i < contract.epiList.length; i++) {
+        listeEPI = listeEPI + contract.epiList[i].libelle + " fourni par " + contract.epiProvidedBy + "<br>";
+      }
+      contract.equipements = listeEPI;
     }
 
     this.configuration = Configs.setConfigs(projectTarget);

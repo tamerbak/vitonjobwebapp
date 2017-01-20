@@ -565,7 +565,7 @@ export class Contract {
       debutSouplesse: null,
       finSouplesse: null,
       equipements: "",
-      interim: "HubJob.fr",
+      interim: "HubJob.com",
       missionStartDate: this.getStartDate(),
       missionEndDate: this.getEndDate(),
       trialPeriod: trial,

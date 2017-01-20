@@ -1285,14 +1285,11 @@ export class Profile{
     //verify if company exists
     if (field == "companyname") {
       this.profileService.countEntreprisesByRaisonSocial(this.companyname).then((res: any) => {
-        if (res.data[0].count != 0 && this.companyname != this.currentUser.employer.entreprises[0].nom) {
-          if (!Utils.isEmpty(this.currentUser.employer.entreprises[0].nom)) {
+        if (res.data[0].count != 0 && this.companyname.toUpperCase() != this.currentUser.employer.entreprises[0].nom.toUpperCase()) {
+          if (!Utils.isEmpty(this.companyname)) {
             this.companyAlert = "L'entreprise " + this.companyname + " existe déjà. Veuillez saisir une autre raison sociale.";
             this.showCurrentCompanyBtn = true;
             // this.companyname = this.currentUser.employer.entreprises[0].nom;
-          } else {
-            this.companyAlert = this.companyInfosAlert('companyname');
-            this.showCurrentCompanyBtn = false;
           }
         } else {
           this.companyAlert = "";
@@ -2108,6 +2105,12 @@ export class Profile{
       && Utils.isEmpty(company.city) === false) {
       let newAdress = company.street + ', ' + company.zip + ' ' + company.city;
       if (Utils.isEmpty(this.personalAddress) === true || this.personalAddress.toUpperCase() != newAdress.toUpperCase()) {
+        this.streetPA = company.street;
+        this.streetNumberPA = "";
+        this.namePA = "";
+        this.cityPA = company.city;
+        this.countryPA = "France";
+        this.zipCodePA = company.zip;
         this.personalAddress = newAdress;
       }
     }
