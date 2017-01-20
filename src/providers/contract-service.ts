@@ -672,8 +672,8 @@ export class ContractService {
       "periodeEssai": contract.trialPeriod == null ? "" : ( contract.trialPeriod == 1 ? "1 jour" : (contract.trialPeriod + " jours")),
       "dateDebutTerme": DateUtils.toDateString(contract.termStartDate),
       "dateFinTerme": DateUtils.toDateString(contract.termEndDate),
-      "motifRecours": contract.motif,
-      "justificationRecours": contract.justification,
+      "motifRecours": contract.justification,
+      "justificationRecours": contract.motif,
       "qualification": contract.qualification,
       "caracteristiquePoste": contract.characteristics,
       "tempsTravail": {
