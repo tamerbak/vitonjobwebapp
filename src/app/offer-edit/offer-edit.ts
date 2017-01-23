@@ -26,6 +26,7 @@ import {ConventionParameters} from "./convention-parameters/convention-parameter
 import {Offer} from "../../dto/offer";
 import {Job} from "../../dto/job";
 import {SelectLanguages} from "../components/select-languages/select-languages";
+import {SelectListCapitalyze} from "../components/select-list-capitalyze/select-list-capitalyze";
 
 declare var Messenger, jQuery: any;
 declare var google: any;
@@ -37,10 +38,27 @@ declare var require;
   template: require('./offer-edit.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./offer-edit.scss')],
-  directives: [ROUTER_DIRECTIVES, AlertComponent, NKDatetime, ModalOptions, ModalOfferTempQuote, ModalSlots, ConventionParameters, SelectLanguages],
-  providers: [OffersService, SearchService, FinanceService,
-    LoadListService, ConventionService, CandidatureService,
-    SmsService, AdvertService, MissionService]
+  directives: [
+    ROUTER_DIRECTIVES,
+    AlertComponent,
+    NKDatetime,
+    ModalOptions,
+    ModalOfferTempQuote,
+    ModalSlots,
+    ConventionParameters,
+    SelectLanguages,
+    SelectListCapitalyze
+  ],
+  providers: [
+    OffersService,
+    SearchService,
+    FinanceService,
+    LoadListService,
+    ConventionService,
+    CandidatureService,
+    SmsService,
+    AdvertService,
+    MissionService]
 })
 
 export class OfferEdit{
@@ -330,16 +348,16 @@ export class OfferEdit{
 
     //load all sectors and job, if not yet loaded in local
     this.sectors = this.sharedService.getSectorList();
-    var jobList = this.sharedService.getJobList();
-    if (!this.sectors || this.sectors.length == 0 || !jobList || jobList.length == 0) {
+    // var jobList = this.sharedService.getJobList();
+    if (!this.sectors || this.sectors.length == 0) {//} || !jobList || jobList.length == 0) {
       this.offersService.loadSectorsToLocal().then((data: any) => {
         this.sharedService.setSectorList(data);
         this.sectors = data;
 
         // Load job
         this.hideJobLoader = false;
-        this.offersService.loadJobsToLocal().then((data2: any) => {
-          this.sharedService.setJobList(data2);
+        // this.offersService.loadJobsToLocal().then((data2: any) => {
+          // this.sharedService.setJobList(data2);
           this.hideJobLoader = true;
 
           if (this.obj == "detail") {
@@ -348,7 +366,7 @@ export class OfferEdit{
           }
           self.initSectorDone = true;
 
-        })
+        // })
       })
     } else {
       if (this.obj == "detail") {

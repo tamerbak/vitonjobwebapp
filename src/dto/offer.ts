@@ -1,11 +1,10 @@
-/**
- * Created by kelvin on 09/01/2017.
- */
-
 import {Job} from "./job";
 import {CalendarSlot} from "./calendar-slot";
+import {AbstractGCallout} from "./generium/abstract-gcallout";
+import {Equipment} from "./equipment";
+import {Requirement} from "./requirement";
 
-export class Offer {
+export class Offer extends AbstractGCallout {
   'class': string;
   idOffer: number;
   title: string;
@@ -17,6 +16,8 @@ export class Offer {
   calendarData: any[];
   qualityData: any[];
   languageData: any[];
+  requirementData: Requirement[];
+  equipmentData: Equipment[];
 
   visible: boolean;
   telephone: string;
@@ -32,7 +33,7 @@ export class Offer {
   entrepriseId: number;
 
   constructor() {
-    this.class  = 'com.vitonjob.callouts.offer.model.OfferData';
+    super('com.vitonjob.callouts.offer.model.OfferData');
 
     this.idOffer = 0;
     this.jobData = null;
@@ -40,6 +41,8 @@ export class Offer {
     this.calendarData = [];
     this.qualityData = [];
     this.languageData = [];
+    this.requirementData = [];
+    this.equipmentData = [];
     this.visible = false;
     this.title = "";
     this.status = "open";

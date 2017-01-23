@@ -16,6 +16,39 @@ export class LoadListService {
     this.http = http;
   }
 
+  loadList(src: string, selectedList: any) {
+
+    let ids: number[] = [];
+    for (let i = 0; i < selectedList.length; ++i) {
+      ids.push(selectedList[i].id);
+    }
+
+    let sql = "SELECT " +
+      "pk_user_" + src + " as id" +
+      ", libelle " +
+      "FROM user_" + src + " " +
+      "WHERE dirty = 'N'"
+    ;
+    if (ids.length > 0) {
+      sql += " AND pk_user_" + src + " IN (" + ids.join() + ");";
+    }
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          if (data.status == "success") {
+            resolve(data.data);
+          } else {
+            resolve(null);
+          }
+        });
+    });
+
+  }
+
   /**
    * @description load a list of countries with their codes
    * @return JSON results in the form of {country name, country code}

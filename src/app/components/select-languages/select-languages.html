@@ -5,10 +5,10 @@
   <!-- Selected Qualities -->
   <div class="form-group row" *ngFor="let item of selectedList">
     <div class="{{ !hasLevel ? 'col-md-9 col-xs-12' : 'col-md-6 col-xs-6' }}">
-      <input class="form-control" value="{{item.libelle}}" disabled/>
+      <input class="form-control" [value]="getLabel(item.idLanguage)" disabled/>
     </div>
     <div class="col-md-3 col-xs-6" *ngIf="hasLevel">
-      <select class="form-control" [(ngModel)]="item.level" disabled>
+      <select class="form-control" [(ngModel)]="item.idLevel" disabled>
         <option value="1">Débutant</option>
         <option value="3">Intermédiaire</option>
         <option value="2">Courant</option>
@@ -31,7 +31,7 @@
   <div class="row">
     <div class="{{ !hasLevel ? 'col-md-9 col-xs-12' : 'col-md-6 col-xs-6' }}">
       <select class="form-control" [(ngModel)]="selectedElem">
-        <option [value]=""></option>
+        <option [value]="0"></option>
         <option *ngFor="let elem of list" [value]="elem.id">{{ elem.libelle }}</option>
       </select>
     </div>

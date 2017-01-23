@@ -1,8 +1,6 @@
-/**
- * Created by kelvin on 09/01/2017.
- */
+import {AbstractGCallout} from "./generium/abstract-gcallout";
 
-export class Job {
+export class Job  extends AbstractGCallout {
   'class': string;
   job: string;
   sector: string;
@@ -16,7 +14,7 @@ export class Job {
   epi: any[];
 
   constructor() {
-    this.class = 'com.vitonjob.callouts.offer.model.JobData';
+    super('com.vitonjob.callouts.offer.model.JobData');
 
     this.job = "";
     this.sector = "";

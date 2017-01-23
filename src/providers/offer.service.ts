@@ -7,7 +7,7 @@ import {Offer} from "../dto/offer";
 import {CCalloutArguments} from "../dto/generium/ccallout-arguments";
 import {CCallout} from "../dto/generium/ccallout";
 
-const OFFER_CALLOUT_ID = 40003;
+const OFFER_CALLOUT_ID = 40005;
 
 @Injectable()
 export class OffersService {
@@ -271,6 +271,8 @@ export class OffersService {
         'userType': (projectTarget === 'employer') ? 'employeur' : 'jobyer'
       }),
     ]);
+
+    console.log(payloadFinal.forge());
 
     return new Promise(resolve => {
       let headers = Configs.getHttpJsonHeaders();
@@ -833,50 +835,6 @@ export class OffersService {
   }
 
   /*
-   *  Update Offer languages
-   */
-
-  updateOfferLanguages(offer, projectTarget) {
-    let table = projectTarget == 'jobyer' ? 'user_offre_jobyer' : 'user_offre_entreprise';
-    this.deleteLanguages(offer, table);
-    this.attacheLanguages(offer, table);
-  }
-
-  deleteLanguages(offer, table) {
-    let sql = "delete from user_pratique_langue where fk_" + table + "=" + offer.idOffer;
-    return new Promise(resolve => {
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          resolve(data);
-        });
-    });
-  }
-
-  attacheLanguages(offer, table) {
-    for (let i = 0; i < offer.languageData.length; i++) {
-      let l = offer.languageData[i];
-      this.attacheLanguage(offer.idOffer, table, l.id, l.level);
-    }
-  }
-
-  attacheLanguage(idOffer, table, id, level) {
-    let idLevel: string = (level == 'junior' ? '1' : (level == 'medium' ? '3' : (level == 'senior' ? '2' : '0')));
-    let sql = "insert into user_pratique_langue (fk_" + table + ", fk_user_langue, fk_user_niveau) values (" + idOffer + ", " + id + ", " + idLevel + ")";
-    return new Promise(resolve => {
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          resolve(data);
-        });
-    });
-  }
-
-  /*
    *  Update offer statut, job and title
    */
 
@@ -952,18 +910,6 @@ export class OffersService {
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          resolve(data.data);
-        });
-    });
-  }
-
-  updateNbPoste(nbPoste, offerId){
-    let sql = "update user_offre_entreprise set nombre_de_postes = " + nbPoste + " where pk_user_offre_entreprise = " + offerId;
-    return new Promise(resolve => {
-      let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
@@ -1062,162 +1008,6 @@ export class OffersService {
             list = data.data;
           }
           resolve(list);
-        });
-    });
-  }
-
-  /**
-   * Loading all convention levels given convention ID
-   * @param idConvention
-   * @returns {Promise<T>}
-   */
-  getConventionNiveaux(idConvention){
-    let sql = "select pk_user_niveau_convention_collective as id, code, libelle from user_niveau_convention_collective where fk_user_convention_collective="+idConvention+" and dirty='N'";
-    return new Promise(resolve => {
-      let headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          let list = [];
-          if(data.data && data.data.length>0)
-            list = data.data;
-          resolve(list);
-        });
-    });
-  }
-
-  /**
-   * Loading all convention category given convention ID
-   * @param idConvention
-   * @returns {Promise<T>}
-   */
-  getConventionCategory(idConvention){
-    let sql = "select pk_user_categorie_convention as id, code, libelle from user_categorie_convention where fk_user_convention_collective="+idConvention+" and dirty='N'";
-    return new Promise(resolve => {
-      let headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          let list = [];
-          if(data.data && data.data.length>0)
-            list = data.data;
-          resolve(list);
-        });
-    });
-  }
-
-  /**
-   * Loading all convention echelons given convention ID
-   * @param idConvention
-   * @returns {Promise<T>}
-   */
-  getConventionEchelon(idConvention){
-    let sql = "select pk_user_echelon_convention as id, code, libelle from user_echelon_convention where fk_user_convention_collective="+idConvention+" and dirty='N'";
-    return new Promise(resolve => {
-      let headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          let list = [];
-          if(data.data && data.data.length>0)
-            list = data.data;
-          resolve(list);
-        });
-    });
-  }
-
-  /**
-   * Loading all convention coefficients given convention ID
-   * @param idConvention
-   * @returns {Promise<T>}
-   */
-  getConventionCoefficients(idConvention){
-    let sql = "select pk_user_coefficient_convention as id, code, libelle from user_coefficient_convention where fk_user_convention_collective="+idConvention+" and dirty='N'";
-    return new Promise(resolve => {
-      let headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          let list = [];
-          if(data.data && data.data.length>0)
-            list = data.data;
-          resolve(list);
-        });
-    });
-  }
-
-  /**
-   * Loading convention parameters
-   * @param idConvention
-   * @returns {Promise<T>}
-   */
-  getConventionParameters(idConvention){
-    let sql = "select pk_user_parametrage_convention as id, remuneration_de_reference as rate, " +
-      "fk_user_convention_collective as idcc, fk_user_categorie_convention as idcat, " +
-      "fk_user_echelon_convention as idechelon, fk_user_coefficient_convention as idcoeff, fk_user_niveau_convention_collective as idniv " +
-      "from user_parametrage_convention where fk_user_convention_collective="+idConvention+" AND dirty='N'";
-
-    return new Promise(resolve => {
-      let headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          let list = [];
-          if(data.data && data.data.length>0)
-            list = data.data;
-          resolve(list);
-        });
-    });
-  }
-
-  getOfferConventionParameters(idOffer){
-    let sql = "select pk_user_parametrage_convention as id, remuneration_de_reference as rate, " +
-      "fk_user_convention_collective as idcc, fk_user_categorie_convention as idcat, " +
-      "fk_user_echelon_convention as idechelon, fk_user_coefficient_convention as idcoeff, fk_user_niveau_convention_collective as idniv " +
-      "from user_parametrage_convention where " +
-      "pk_user_parametrage_convention in (select fk_user_parametrage_convention " +
-        "from user_offre_entreprise " +
-        "where pk_user_offre_entreprise="+idOffer+") and dirty='N'";
-
-    return new Promise(resolve => {
-      let headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe((data:any) => {
-          let parameter = {
-            idechelon: null,
-            idcat:null,
-            idcoeff:null,
-            idniv:null,
-            rate:null
-          };
-          if(data.data && data.data.length>0){
-
-            let d = data.data[0];
-            if(d.idechelon && d.idechelon != 'null')
-              parameter.idechelon = d.idechelon;
-            if(d.idcat && d.idcat != 'null')
-              parameter.idcat = d.idcat;
-            if(d.idcoeff && d.idcoeff != 'null')
-              parameter.idcoeff = d.idcoeff;
-            if(d.idniv && d.idniv != 'null')
-              parameter.idniv = d.idniv;
-            parameter.rate = d.rate;
-          }
-
-          resolve(parameter);
-        });
-    });
-  }
-
-  saveOfferConventionParameters(idOffer, idParameter){
-    let sql = 'update user_offre_entreprise set fk_user_parametrage_convention='+idParameter+' where pk_user_offre_entreprise='+idOffer;
-    return new Promise(resolve => {
-      let headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          resolve(data);
         });
     });
   }

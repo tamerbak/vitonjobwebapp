@@ -1,8 +1,6 @@
-/**
- * Created by kelvin on 10/01/2017.
- */
+import {AbstractGCallout} from "./generium/abstract-gcallout";
 
-export class CalendarSlot {
+export class CalendarSlot extends AbstractGCallout {
   'class': string;
   idCalendar: number;
   date: string;     // yyyy-mm-dd 00:00:00+00
@@ -13,7 +11,7 @@ export class CalendarSlot {
   pause: boolean;
 
   constructor() {
-    this.class = 'com.vitonjob.callouts.offer.model.CalendarData';
+    super('com.vitonjob.callouts.offer.model.CalendarData');
 
     this.idCalendar = 0;
     this.date = '';

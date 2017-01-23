@@ -1,0 +1,76 @@
+<label class="col-md-4 col-xs-12 form-control-label text-md-right">
+  {{ label }}
+</label>
+<div class="col-md-8 col-xs-12">
+  <!-- Selected Qualities -->
+  <div class="form-group row" *ngFor="let item of selectedList">
+    <!--<div class="{{ !hasLevel ? 'col-md-9 col-xs-12' : 'col-md-6 col-xs-6' }}">-->
+    <div class="col-md-9 col-xs-12">
+      <input class="form-control" [value]="getLabel(item.id)" disabled />
+    </div>
+    <!--<div class="col-md-3 col-xs-6" *ngIf="hasLevel">-->
+      <!--<select class="form-control" [(ngModel)]="item.idLevel" disabled>-->
+        <!--<option value="1">Débutant</option>-->
+        <!--<option value="3">Intermédiaire</option>-->
+        <!--<option value="2">Courant</option>-->
+      <!--</select>-->
+    <!--</div>-->
+    <div class="col-md-3 col-xs-12">
+      <button
+        style="display: block; width: 100%;"
+        class="btn btn-danger mb-xs"
+        role="button"
+        (click)="removeElement(item)"
+        [disabled]="!canEdit"
+      >
+        <i class="glyphicon glyphicon-trash"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- New listCapitalyze input -->
+  <div class="row">
+    <!--<div class="{{ !hasLevel ? 'col-md-9 col-xs-12' : 'col-md-6 col-xs-6' }}">-->
+    <div class="col-md-9 col-xs-12">
+
+      <!-- Dynamic list -->
+      <input
+        *ngIf="isDynamicList() === true"
+        class="form-control select2 {{ selectClass }} {{ selectClass2 }}"
+        placeholder="{{ placeholder }}"
+        [(ngModel)]="selectedElem"
+      />
+
+      <!-- Static list -->
+      <select
+        *ngIf="isDynamicList() === false"
+        class="form-control"
+        [(ngModel)]="selectedElem"
+      >
+        <option [value]="0"></option>
+        <option *ngFor="let elem of list" [value]="elem.id">
+          {{ elem.libelle }}
+        </option>
+      </select>
+
+    </div>
+    <!--<div class="col-md-3 col-xs-6" *ngIf="hasLevel">-->
+      <!--<select class="form-control" [(ngModel)]="selectedLevel">-->
+        <!--<option value="1">Débutant</option>-->
+        <!--<option value="3">Intermédiaire</option>-->
+        <!--<option value="2">Courant</option>-->
+      <!--</select>-->
+    <!--</div>-->
+    <div class="col-md-3 col-xs-12">
+      <button
+        style="display: block; width: 100%;"
+        class="btn btn-success mb-xs offer-add-button"
+        role="button"
+        (click)="addElement()"
+        [disabled]="!selectedElem || (hasLevel && !selectedLevel) || !canEdit"
+      >
+        Ajouter
+      </button>
+    </div>
+  </div>
+</div>

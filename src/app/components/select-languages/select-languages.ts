@@ -7,12 +7,10 @@ import {ROUTER_DIRECTIVES} from "@angular/router";
 import {SharedService} from "../../../providers/shared.service";
 import {Utils} from "../../utils/utils";
 import {LoadListService} from "../../../providers/load-list.service";
+import {Language} from "../../../dto/language";
 // import {ConventionFilter} from "./convention-filter/convention-filter";
 
 declare var jQuery, Messenger, md5: any;
-
-class Language {
-}
 
 @Component({
   selector: '[select-languages]',
@@ -20,7 +18,6 @@ class Language {
   directives: [ROUTER_DIRECTIVES],
   providers: [LoadListService],
 })
-
 export class SelectLanguages {
   @Input()
   selectedList: any = [];
@@ -40,8 +37,8 @@ export class SelectLanguages {
   @Output()
   onRemove = new EventEmitter<any>();
 
-  selectedElem: any = "";
-  selectedLevel = "1";
+  selectedElem: string = "0";
+  selectedLevel: string = "1";
   list: any = [];
 
   constructor(private sharedService: SharedService,
@@ -78,16 +75,20 @@ export class SelectLanguages {
       return;
     }
 
+    let language: Language = new Language();
+    language.idLanguage = Number(languagesTemp[0]['id']);
+
     if (this.hasLevel == true) {
-      languagesTemp[0]['level'] = this.selectedLevel;
+      language.idLevel = Number(this.selectedLevel);
     }
+
     // Add the new element to the list
-    this.selectedList.push(languagesTemp[0]);
+    this.selectedList.push(language);
 
     // Emit event to the parent
     this.onAdd.emit(this.selectedElem);
 
-    this.selectedElem = "";
+    this.selectedElem = "0";
   }
 
   removeElement(item) {
@@ -97,6 +98,13 @@ export class SelectLanguages {
     this.selectedList.splice(this.selectedList.indexOf(item), 1);
 
     this.onRemove.emit(item);
+  }
+
+  getLabel(id: number): string {
+    var languagesTemp = this.list.filter((v)=> {
+      return (v.id == id);
+    });
+    return languagesTemp[0].libelle;
   }
 
 }
