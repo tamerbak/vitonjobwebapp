@@ -138,7 +138,7 @@ export class LoadListService {
   loadQualities(projectTarget: string, type: string) {
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
-    var sql = "select pk_user_indispensable as \"idQuality\", libelle as libelle from user_indispensable where UPPER(dirty) ='N' and type='" + type + "'";
+    var sql = "select pk_user_indispensable as \"id\", libelle as libelle from user_indispensable where UPPER(dirty) ='N' and type='" + type + "'";
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})

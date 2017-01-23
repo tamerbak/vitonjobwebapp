@@ -548,143 +548,21 @@
           [placeholder]="'Formations et habilitations'"
         ></div>
 
+        <div
+          *ngIf="projectTarget == 'employer'"
+          class="form-group row"
+          select-list-capitalyze
+          [(selectedList)]="offer.equipmentData"
+          [list]=""
+          [src]="'epi'"
+          [allowNewEntry]="true"
+          [canSearch]="false"
+          [canEdit]="true"
+          [label]="'Equipement de protection individuel (generic)'"
+          [placeholder]="'Equipement de protection individuel'"
+        ></div>
 
-        <!--<div class="form-group row" *ngIf="projectTarget == 'employer'">-->
-          <!--<label class="col-md-4 col-xs-12 form-control-label text-md-right">-->
-            <!--Formations et habilitations-->
-          <!--</label>-->
-          <!--<div class="col-md-8 col-xs-12">-->
-
-            <!--&lt;!&ndash; Selected specifications &ndash;&gt;-->
-            <!--<div class="form-group row" *ngFor="let p of prerequisObligatoires">-->
-              <!--<div class="col-md-9 col-xs-9">-->
-                <!--<input class="form-control" value="{{ p }}" disabled />-->
-              <!--</div>-->
-              <!--<div class="col-md-3 col-xs-3">-->
-                <!--<button-->
-                  <!--class="btn btn-danger list-button"-->
-                  <!--role="button"-->
-                  <!--(click)="removePrerequis(p)"-->
-                  <!--[disabled]="isOfferInContract || isOfferArchived"-->
-                <!--&gt;-->
-                  <!--<i class="glyphicon glyphicon-trash"></i>-->
-                <!--</button>-->
-              <!--</div>-->
-            <!--</div>-->
-
-            <!--&lt;!&ndash; New specificatoin input &ndash;&gt;-->
-            <!--<div class="row">-->
-              <!--<div class="col-md-9 col-xs-12">-->
-                <!--<input-->
-                  <!--*ngIf="projectTarget == 'employer'"-->
-                  <!--type="hidden"-->
-                  <!--class="select2 prerequis-select form-control"-->
-                  <!--name="prerequis"-->
-                  <!--placeholder="Formations et habilitations"-->
-                  <!--[(ngModel)]="prerequisOb"-->
-                <!--/>-->
-              <!--</div>-->
-              <!--<div class="col-md-3 col-xs-12">-->
-                <!--<button-->
-                  <!--class="btn btn-success list-button"-->
-                  <!--role="button"-->
-                  <!--(click)="addPrerequis()"-->
-                  <!--[disabled]="isOfferInContract || isOfferArchived || isEmpty(prerequisOb) === true"-->
-                <!--&gt;-->
-                  <!--Ajouter-->
-                <!--</button>-->
-              <!--</div>-->
-            <!--</div>-->
-
-          <!--</div>-->
-        <!--</div>-->
       </div>
-
-      <!-- Langues -->
-      <!--<div-->
-        <!--class="form-group row"-->
-        <!--select-languages-->
-        <!--[(selectedList)]="offer.languageData"-->
-        <!--[hasLevel]="projectTarget == 'employer'"-->
-        <!--[canEdit]="!(isOfferInContract || isOfferArchived)"-->
-        <!--[label]="(projectTarget == 'employer') ? 'Langue(s) requise(s)' : 'Langue(s) privilégiée(s)'"-->
-      <!--&gt;</div>-->
-
-      <!--<div-->
-        <!--*ngIf="projectTarget == 'employer'"-->
-        <!--class="form-group row"-->
-        <!--select-list-capitalyze-->
-      <!--&gt;</div>-->
-
-        <!--[(selectedList)]="offer.languageData"-->
-        <!--[hasLevel]="projectTarget == 'employer'"-->
-        <!--[canEdit]="!(isOfferInContract || isOfferArchived)"-->
-        <!--[label]="(projectTarget == 'employer') ? 'Langue(s) requise(s)' : 'Langue(s) privilégiée(s)'"-->
-
-      <div
-        *ngIf="projectTarget == 'employer'"
-        class="form-group row"
-        select-list-capitalyze
-        [(selectedList)]="offer.equipmentData"
-        [list]=""
-        [src]="'epi'"
-        [allowNewEntry]="true"
-        [canSearch]="false"
-        [canEdit]="true"
-        [label]="'Equipement de protection individuel (generic)'"
-        [placeholder]="'Equipement de protection individuel'"
-      ></div>
-
-      <!--<div class="form-group row" *ngIf="projectTarget == 'employer'">-->
-        <!--<label class="col-md-4 col-xs-12 form-control-label text-md-right">-->
-          <!--Equipement de protection individuel-->
-        <!--</label>-->
-        <!--<div class="col-md-8 col-xs-12">-->
-
-          <!--&lt;!&ndash; Selected protections &ndash;&gt;-->
-          <!--<div class="form-group row" *ngFor="let e of epiList">-->
-            <!--<div class="col-md-9 col-xs-9">-->
-              <!--<input class="form-control" value="{{ e }}" disabled />-->
-            <!--</div>-->
-            <!--<div class="col-md-3 col-xs-3">-->
-              <!--<button-->
-                <!--class="btn btn-danger list-button"-->
-                <!--role="button"-->
-                <!--(click)="removeEPI(p)"-->
-                <!--[disabled]="isOfferInContract || isOfferArchived"-->
-              <!--&gt;-->
-                <!--<i class="glyphicon glyphicon-trash"></i>-->
-              <!--</button>-->
-            <!--</div>-->
-          <!--</div>-->
-
-          <!--&lt;!&ndash; New protection input &ndash;&gt;-->
-          <!--<div class="row">-->
-            <!--<div class="col-md-9 col-xs-12">-->
-              <!--<input-->
-                <!--*ngIf="projectTarget == 'employer'"-->
-                <!--type="hidden"-->
-                <!--class="select2 epi-select form-control"-->
-                <!--name="EPI"-->
-                <!--placeholder="Equipement de protection individuel"-->
-                <!--[(ngModel)]="epi"-->
-              <!--/>-->
-            <!--</div>-->
-            <!--<div class="col-md-3 col-xs-12">-->
-              <!--<button-->
-                <!--class="btn btn-success list-button"-->
-                <!--role="button"-->
-                <!--(click)="addEPI()"-->
-                <!--[disabled]="isOfferInContract || isOfferArchived || isEmpty(epi) === true"-->
-              <!--&gt;-->
-                <!--Ajouter-->
-              <!--</button>-->
-            <!--</div>-->
-          <!--</div>-->
-
-        <!--</div>-->
-      <!--</div>-->
-
     </section>
 
     <!-- !JOB -->
@@ -697,65 +575,17 @@
       <div class="widget-body">
 
         <!-- Qualities -->
-        <div class="form-group row">
-          <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-            {{ projectTarget == 'employer' ? 'Qualités' : 'Mon employeur idéal' }}
-          </label>
-
-          <div class="col-md-8 col-xs-12">
-
-            <!-- Selected Qualities -->
-            <div class="form-group row" *ngFor="let item of offer.qualityData">
-              <div class="col-md-9 col-xs-9">
-                <input class="form-control" value="{{item.libelle}}" disabled/>
-              </div>
-              <div class="col-md-3 col-xs-3">
-                <button
-                  style="display: block;"
-                  class="btn btn-danger mb-xs list-button"
-                  role="button"
-                  [disabled]="isOfferInContract || isOfferArchived"
-                  (click)="removeQuality(item)"
-                >
-                  <i class="glyphicon glyphicon-trash"></i>
-                </button>
-              </div>
-            </div>
-
-            <!-- New quality input -->
-            <div class="row">
-              <div class="col-md-9 col-xs-12">
-                <select class="form-control" [(ngModel)]="selectedQuality">
-                  <option [value]=""></option>
-                  <option *ngFor="let q of qualities" [value]="q.idQuality">{{q.libelle}}</option>
-                </select>
-              </div>
-              <div class="col-md-3 col-xs-12">
-                <button
-                  style="display: block; width: 100%;"
-                  class="btn btn-success mb-xs"
-                  role="button"
-                  (click)="addQuality()"
-                  [disabled]="!selectedQuality || isOfferInContract || isOfferArchived"
-                >
-                  Ajouter
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!--<div-->
-          <!--class="form-group row"-->
-          <!--select-list-capitalyze-->
-          <!--[(selectedList)]="offer.qualityData"-->
-          <!--[list]="qualities"-->
-          <!--[src]=""-->
-          <!--[allowNewEntry]="false"-->
-          <!--[canSearch]="false"-->
-          <!--[canEdit]="true"-->
-          <!--[label]="(projectTarget == 'employer' ? 'Qualités' : 'Mon employeur idéal') + ' (generic)'"-->
-        <!--&gt;</div>-->
+        <div
+          class="form-group row"
+          select-list-capitalyze
+          [(selectedList)]="offer.qualityData"
+          [list]="qualities"
+          [src]=""
+          [allowNewEntry]="false"
+          [canSearch]="false"
+          [canEdit]="true"
+          [label]="(projectTarget == 'employer' ? 'Qualités' : 'Mon employeur idéal') + ' (generic)'"
+        ></div>
 
         <!-- Langues -->
         <div

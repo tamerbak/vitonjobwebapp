@@ -7,7 +7,7 @@ import {Offer} from "../dto/offer";
 import {CCalloutArguments} from "../dto/generium/ccallout-arguments";
 import {CCallout} from "../dto/generium/ccallout";
 
-const OFFER_CALLOUT_ID = 40005;
+const OFFER_CALLOUT_ID = 40012;
 
 @Injectable()
 export class OffersService {
@@ -161,32 +161,32 @@ export class OffersService {
     });
   }
 
-  setOfferInLocal(offerData:any, projectTarget:string) {
-        //  Init project parameters
-        let offers:any;
-        let result:any;
+  setOfferInLocal(offerData: any, projectTarget: string) {
+    //  Init project parameters
+    let offers: any;
+    let result: any;
 
-                var data = this.sharedService.getCurrentUser();
-                if (projectTarget === 'employer') {
-                    let rawData = data.employer;
-                    if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
-                        //adding userId for remote storing
-                        offers = rawData.entreprises[0].offers;
-                        offers.push(offerData);
-                        // Save new offer list in SqlStorage :
-                        this.sharedService.setCurrentUser(data);
-                    }
-                } else { // jobyer
-                    let rawData = data.jobyer;
-                    if (rawData && rawData.offers) {
-                        //adding userId for remote storing
-                        offers = rawData.offers;
-                        offers.push(offerData);
-                        // Save new offer list in SqlStorage :
-                        this.sharedService.setCurrentUser(data);
-                    }
-                }
+    var data = this.sharedService.getCurrentUser();
+    if (projectTarget === 'employer') {
+      let rawData = data.employer;
+      if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
+        //adding userId for remote storing
+        offers = rawData.entreprises[0].offers;
+        offers.push(offerData);
+        // Save new offer list in SqlStorage :
+        this.sharedService.setCurrentUser(data);
+      }
+    } else { // jobyer
+      let rawData = data.jobyer;
+      if (rawData && rawData.offers) {
+        //adding userId for remote storing
+        offers = rawData.offers;
+        offers.push(offerData);
+        // Save new offer list in SqlStorage :
+        this.sharedService.setCurrentUser(data);
+      }
     }
+  }
 
   /**
    * Get an offer
@@ -278,238 +278,7 @@ export class OffersService {
       let headers = Configs.getHttpJsonHeaders();
       this.http.post(Configs.calloutURL, payloadFinal.forge(), {headers: headers})
         .subscribe((data: any) => {
-          let idOffer = JSON.parse(data._body).idOffer;
-
-          this.updateEPI(idOffer, offer.jobData.epi, projectTarget);
-          offer.idOffer = idOffer;
-
-          if (offer.jobData.prerequisObligatoires && offer.jobData.prerequisObligatoires.length > 0) {
-            switch (projectTarget) {
-              case 'employer' :
-                this.updatePrerequisObligatoires(idOffer, offer.jobData.prerequisObligatoires);
-                break;
-              case 'jobyer':
-                this.updateNecessaryDocuments(idOffer, offer.jobData.prerequisObligatoires);
-                break;
-            }
-
-          }
-          resolve(data);
-        });
-    });
-  }
-
-  updateEPI(idOffer,plist,projectTarget){
-    var table = projectTarget == 'employer' ? "user_epi_employeur":"user_epi_jobyer";
-    var fk = projectTarget == 'employer' ? "fk_user_offre_entreprise":"fk_user_offre_jobyer";
-    let sql = "delete from "+table+"where "+ fk+"="+idOffer;
-    return new Promise(resolve => {
-      // We're using Angular Http provider to request the data,
-      // then on the response it'll map the JSON data to a parsed JS object.
-      // Next we process the data and resolve the promise with the new data.
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-
-          for(let i = 0 ; i < plist.length ; i++){
-            this.getEPI(plist[i]).then(id=>{
-              if(id>0){
-                this.doUpdateEPI(idOffer, id, projectTarget);
-              }else{
-                this.insertEPI(plist[i]).then(id=>{
-                  this.doUpdateEPI(idOffer, id, projectTarget);
-                });
-              }
-            });
-          }
-          resolve(data);
-        });
-    });
-   }
-
-  updateNecessaryDocuments(idOffer,plist){
-    let sql = "delete from user_prerequis_jobyer where fk_user_offre_jobyer="+idOffer;
-    return new Promise(resolve => {
-      // We're using Angular Http provider to request the data,
-      // then on the response it'll map the JSON data to a parsed JS object.
-      // Next we process the data and resolve the promise with the new data.
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-
-          for(let i = 0 ; i < plist.length ; i++){
-            this.getPrerequis(plist[i]).then(id=>{
-              if(id>0){
-                this.doUpdateNecessaryDocuments(idOffer, id);
-              }else{
-                this.insertPrerequis(plist[i]).then(id=>{
-                  this.doUpdateNecessaryDocuments(idOffer, id);
-                });
-              }
-            });
-          }
-          resolve(data);
-        });
-    });
-   }
-
-  updatePrerequisObligatoires(idOffer,plist){
-    let sql = "delete from user_prerequis_obligatoires where fk_user_offre_entreprise="+idOffer;
-    return new Promise(resolve => {
-      // We're using Angular Http provider to request the data,
-      // then on the response it'll map the JSON data to a parsed JS object.
-      // Next we process the data and resolve the promise with the new data.
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-
-          for(let i = 0 ; i < plist.length ; i++){
-            this.getPrerequis(plist[i]).then(id=>{
-              if(id>0){
-                this.doUpdatePrerequisObligatoire(idOffer, id);
-              }else{
-                this.insertPrerequis(plist[i]).then(id=>{
-                  this.doUpdatePrerequisObligatoire(idOffer, id);
-                });
-              }
-            });
-          }
-          resolve(data);
-        });
-    });
-  }
-
-  getPrerequis(p){
-    let sql = "select pk_user_prerquis as id from user_prerquis where lower_unaccent(libelle) = lower_unaccent('"+p+"')";
-    return new Promise(resolve => {
-      // We're using Angular Http provider to request the data,
-      // then on the response it'll map the JSON data to a parsed JS object.
-      // Next we process the data and resolve the promise with the new data.
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-
-          let id = -1;
-          if(data.data && data.data.length>0)
-            id = data.data[0].id;
-          resolve(id);
-        });
-    });
-  }
-
-  getEPI(p){
-    let sql = "select pk_user_epi as id from user_epi where lower_unaccent(libelle) = lower_unaccent('"+p+"')";
-    return new Promise(resolve => {
-      // We're using Angular Http provider to request the data,
-      // then on the response it'll map the JSON data to a parsed JS object.
-      // Next we process the data and resolve the promise with the new data.
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-
-          let id = -1;
-          if(data.data && data.data.length>0)
-            id = data.data[0].id;
-          resolve(id);
-        });
-    });
-  }
-
-  insertEPI(p){
-    let sql = "insert into user_epi (libelle) values ('"+p+"') returning pk_user_epi";
-    return new Promise(resolve => {
-      // We're using Angular Http provider to request the data,
-      // then on the response it'll map the JSON data to a parsed JS object.
-      // Next we process the data and resolve the promise with the new data.
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-
-          let id = -1;
-          if(data.data && data.data.length>0)
-            id = data.data[0].pk_user_epi;
-          resolve(id);
-        });
-    });
-  }
-
-  insertPrerequis(p){
-    let sql = "insert into user_prerquis (libelle) values ('"+p+"') returning pk_user_prerquis";
-    return new Promise(resolve => {
-      // We're using Angular Http provider to request the data,
-      // then on the response it'll map the JSON data to a parsed JS object.
-      // Next we process the data and resolve the promise with the new data.
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-
-          let id = -1;
-          if(data.data && data.data.length>0)
-            id = data.data[0].pk_user_prerquis;
-          resolve(id);
-        });
-    });
-  }
-
-  doUpdatePrerequisObligatoire(idOffer, idp){
-    let sql = "insert into user_prerequis_obligatoires (fk_user_offre_entreprise, fk_user_prerquis) values ("+idOffer+","+idp+")";
-    return new Promise(resolve => {
-      // We're using Angular Http provider to request the data,
-      // then on the response it'll map the JSON data to a parsed JS object.
-      // Next we process the data and resolve the promise with the new data.
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          resolve(data);
-        });
-    });
-  }
-
-  doUpdateNecessaryDocuments(idOffer, idp){
-    let sql = "insert into user_prerequis_jobyer (fk_user_offre_jobyer, fk_user_prerquis) values ("+idOffer+","+idp+")";
-    return new Promise(resolve => {
-      // We're using Angular Http provider to request the data,
-      // then on the response it'll map the JSON data to a parsed JS object.
-      // Next we process the data and resolve the promise with the new data.
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          resolve(data);
-        });
-    });
-  }
-
-  doUpdateEPI(idOffer, idp, projectTarget){
-    var table = projectTarget == 'employer' ? "user_epi_employeur":"user_epi_jobyer";
-    var fk = projectTarget == 'employer' ? "fk_user_offre_entreprise":"fk_user_offre_jobyer";
-    let sql = "insert into "+table+" ("+fk+",fk_user_epi) values ("+idOffer+","+idp+")";
-    return new Promise(resolve => {
-      // We're using Angular Http provider to request the data,
-      // then on the response it'll map the JSON data to a parsed JS object.
-      // Next we process the data and resolve the promise with the new data.
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
+          offer.idOffer = JSON.parse(data._body).idOffer;
           resolve(data);
         });
     });
@@ -613,42 +382,12 @@ export class OffersService {
   updateOfferJob(offer, projectTarget) {
     this.configuration = Configs.setConfigs(projectTarget);
     if (projectTarget == 'jobyer') {
-      this.updateOfferJobyerJob(offer).then(data => {
-        this.updateOfferJobyerTitle(offer);
-      });
-
+      this.updateOfferJobyerTitle(offer);
     } else {
-      this.updateOfferEntrepriseJob(offer).then(data => {
-        this.updateOfferEntrepriseTitle(offer);
-      });
+      this.updateOfferEntrepriseTitle(offer);
     }
   }
 
-  updateOfferJobyerJob(offer) {
-    let sql = "update user_pratique_job set fk_user_job=" + offer.jobData.idJob + ", fk_user_niveau=" + (offer.jobData.level == 'junior' ? 1 : 2) + " " +
-      "where fk_user_offre_jobyer=" + offer.idOffer;
-    return new Promise(resolve => {
-      // We're using Angular Http provider to request the data,
-      // then on the response it'll map the JSON data to a parsed JS object.
-      // Next we process the data and resolve the promise with the new data.
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          // we've got back the raw data, now generate the core schedule data
-          // and save the data for later reference
-          if(offer.jobData.prerequisObligatoires){
-            this.updateNecessaryDocuments(offer.idOffer,offer.jobData.prerequisObligatoires);
-          }
-
-          if(offer.jobData.epi){
-            this.updateEPI(offer.idOffer,offer.jobData.epi,"jobyer");
-          }
-          resolve(data);
-        });
-    });
-  }
 
   updateOfferJobyerTitle(offer) {
     let sql = "update user_offre_jobyer set titre='" + offer.title.replace("'", "''") + "', tarif_a_l_heure='" + offer.jobData.remuneration + "' where pk_user_offre_jobyer=" + offer.idOffer;
@@ -665,33 +404,6 @@ export class OffersService {
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
 
-          resolve(data);
-        });
-    });
-  }
-
-  updateOfferEntrepriseJob(offer) {
-    let sql = "update user_pratique_job set fk_user_job=" + offer.jobData.idJob + ", fk_user_niveau=" + (offer.jobData.level == 'junior' ? 1 : 2) + " " +
-      "where fk_user_offre_entreprise=" + offer.idOffer;
-    return new Promise(resolve => {
-      // We're using Angular Http provider to request the data,
-      // then on the response it'll map the JSON data to a parsed JS object.
-      // Next we process the data and resolve the promise with the new data.
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-
-          if(offer.jobData.prerequisObligatoires){
-            this.updatePrerequisObligatoires(offer.idOffer,offer.jobData.prerequisObligatoires);
-          }
-
-          if(offer.jobData.epi){
-            this.updateEPI(offer.idOffer,offer.jobData.epi,"employer");
-          }
-          // we've got back the raw data, now generate the core schedule data
-          // and save the data for later reference
           resolve(data);
         });
     });
@@ -771,49 +483,6 @@ export class OffersService {
     });
   }
 
-  /*
-   *  Update offer qualities
-   */
-
-  updateOfferQualities(offer, projectTarget) {
-    let table = projectTarget == 'jobyer' ? 'user_offre_jobyer' : 'user_offre_entreprise';
-    this.deleteQualities(offer, table);
-    this.attachQualities(offer, table);
-  }
-
-  deleteQualities(offer, table) {
-    let sql = "delete from user_pratique_indispensable where fk_" + table + "=" + offer.idOffer;
-    return new Promise(resolve => {
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          resolve(data);
-        });
-    });
-  }
-
-  attachQualities(offer, table) {
-    for (let i = 0; i < offer.qualityData.length; i++) {
-      let q = offer.qualityData[i];
-      this.attacheQuality(offer.idOffer, table, q.idQuality);
-    }
-  }
-
-  attacheQuality(idOffer, table, idQuality) {
-    let sql = "insert into user_pratique_indispensable (fk_" + table + ", fk_user_indispensable) values (" + idOffer + ", " + idQuality + ")";
-    return new Promise(resolve => {
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          resolve(data);
-        });
-    });
-  }
-
   /**
    * @description     loading qualities list
    * @return qualities list in the format {id : X, libelle : X}
@@ -822,7 +491,7 @@ export class OffersService {
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
     let type = (projectTarget != "jobyer") ? 'jobyer' : 'employeur';
-    var sql = "select pk_user_indispensable as \"idQuality\", libelle as libelle from user_indispensable where type='" + type + "'";
+    var sql = "select pk_user_indispensable as \"id\", libelle as libelle from user_indispensable where type='" + type + "'";
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();

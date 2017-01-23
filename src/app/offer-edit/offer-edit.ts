@@ -127,7 +127,6 @@ export class OfferEdit{
    */
   epi: string = '';
   epiItems: any = [];
-  epiList: any = [];
 
   /*
    * Offer adress
@@ -210,11 +209,11 @@ export class OfferEdit{
 
     if (this.obj == "detail") {
       this.offer = this.sharedService.getCurrentOffer();
-      if (this.projectTarget == 'employer') {
+      // if (this.projectTarget == 'employer') {
         this.offersService.getOfferById(this.offer.idOffer, this.projectTarget, this.offer).then(()=> {
           this.refreshParametrage = true;
         });
-      }
+      // }
     } else {
       this.offer = new Offer();
       this.offer.jobData = new Job();
@@ -296,16 +295,6 @@ export class OfferEdit{
         this.addAlert("warning", "Attention: Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilités.", "general");
         //display calendar slots of the current offer
       }
-      if (this.offer.jobData.prerequisObligatoires && this.offer.jobData.prerequisObligatoires.length > 0)
-        this.prerequisObligatoires = this.offer.jobData.prerequisObligatoires;
-      else
-        this.prerequisObligatoires = [];
-
-      //epi
-      if (this.offer.jobData.epi && this.offer.jobData.epi.length > 0)
-        this.epiList = this.offer.jobData.epi;
-      else
-        this.epiList = [];
 
       this.offersService.loadOfferAdress(this.offer.idOffer, this.projectTarget).then((data: any) => {
         this.offerAddress = data;
@@ -489,191 +478,191 @@ export class OfferEdit{
     }
 
 
-    /*
-     * PREREQUIS
-     */
-    jQuery('.prerequis-select').select2({
-      maximumSelectionLength: 1,
-      tokenSeparators: [",", " "],
-      createSearchChoice: function (term, data) {
-        if (self.prerequisObList.length == 0) {
-          return {
-            id: '0', libelle: term
-          };
-        }
-      },
-      ajax: {
-        url: Configs.sqlURL,
-        type: 'POST',
-        dataType: 'json',
-        quietMillis: 250,
-        transport: function (params) {
-          params.beforeSend = Configs.getSelect2TextHeaders();
-          return jQuery.ajax(params);
-        },
-        data: function (term, page) {
-          return self.offersService.selectPrerequis(term);
-        },
-        results: function (data, page) {
-          self.prerequisObList = data.data;
-          return {results: data.data};
-        },
-        cache: false,
+    // /*
+    //  * PREREQUIS
+    //  */
+    // jQuery('.prerequis-select').select2({
+    //   maximumSelectionLength: 1,
+    //   tokenSeparators: [",", " "],
+    //   createSearchChoice: function (term, data) {
+    //     if (self.prerequisObList.length == 0) {
+    //       return {
+    //         id: '0', libelle: term
+    //       };
+    //     }
+    //   },
+    //   ajax: {
+    //     url: Configs.sqlURL,
+    //     type: 'POST',
+    //     dataType: 'json',
+    //     quietMillis: 250,
+    //     transport: function (params) {
+    //       params.beforeSend = Configs.getSelect2TextHeaders();
+    //       return jQuery.ajax(params);
+    //     },
+    //     data: function (term, page) {
+    //       return self.offersService.selectPrerequis(term);
+    //     },
+    //     results: function (data, page) {
+    //       self.prerequisObList = data.data;
+    //       return {results: data.data};
+    //     },
+    //     cache: false,
+    //
+    //   },
+    //
+    //   formatResult: function (item) {
+    //     return item.libelle;
+    //   },
+    //   formatSelection: function (item) {
+    //     return item.libelle;
+    //   },
+    //   dropdownCssClass: "bigdrop",
+    //   escapeMarkup: function (markup) {
+    //     return markup;
+    //   },
+    //   minimumInputLength: 1
+    // });
+    // jQuery('.prerequis-select').on('select2-selecting',
+    //   (e) => {
+    //     self.prerequisOb = e.choice.libelle;
+    //   }
+    // )
+    //
+    // /*
+    //  * PREREQUIS
+    //  */
+    // jQuery('.prerequis-jobyer-select').select2({
+    //   maximumSelectionLength: 1,
+    //   tokenSeparators: [",", " "],
+    //   ajax: {
+    //     url: Configs.sqlURL,
+    //     type: 'POST',
+    //     dataType: 'json',
+    //     quietMillis: 250,
+    //     transport: function (params) {
+    //       params.beforeSend = Configs.getSelect2TextHeaders();
+    //       return jQuery.ajax(params);
+    //     },
+    //     data: function (term, page) {
+    //       return self.offersService.selectPrerequis(term);
+    //     },
+    //     results: function (data, page) {
+    //       self.prerequisObList = data.data;
+    //       return {results: data.data};
+    //     },
+    //     cache: false,
+    //
+    //   },
+    //
+    //   formatResult: function (item) {
+    //     return item.libelle;
+    //   },
+    //   formatSelection: function (item) {
+    //     return item.libelle;
+    //   },
+    //   dropdownCssClass: "bigdrop",
+    //   escapeMarkup: function (markup) {
+    //     return markup;
+    //   },
+    //   minimumInputLength: 1
+    // });
+    // jQuery('.prerequis-jobyer-select').on('select2-selecting',
+    //   (e) => {
+    //     self.prerequisOb = e.choice.libelle;
+    //   }
+    // )
 
-      },
-
-      formatResult: function (item) {
-        return item.libelle;
-      },
-      formatSelection: function (item) {
-        return item.libelle;
-      },
-      dropdownCssClass: "bigdrop",
-      escapeMarkup: function (markup) {
-        return markup;
-      },
-      minimumInputLength: 1
-    });
-    jQuery('.prerequis-select').on('select2-selecting',
-      (e) => {
-        self.prerequisOb = e.choice.libelle;
-      }
-    )
-
-    /*
-     * PREREQUIS
-     */
-    jQuery('.prerequis-jobyer-select').select2({
-      maximumSelectionLength: 1,
-      tokenSeparators: [",", " "],
-      ajax: {
-        url: Configs.sqlURL,
-        type: 'POST',
-        dataType: 'json',
-        quietMillis: 250,
-        transport: function (params) {
-          params.beforeSend = Configs.getSelect2TextHeaders();
-          return jQuery.ajax(params);
-        },
-        data: function (term, page) {
-          return self.offersService.selectPrerequis(term);
-        },
-        results: function (data, page) {
-          self.prerequisObList = data.data;
-          return {results: data.data};
-        },
-        cache: false,
-
-      },
-
-      formatResult: function (item) {
-        return item.libelle;
-      },
-      formatSelection: function (item) {
-        return item.libelle;
-      },
-      dropdownCssClass: "bigdrop",
-      escapeMarkup: function (markup) {
-        return markup;
-      },
-      minimumInputLength: 1
-    });
-    jQuery('.prerequis-jobyer-select').on('select2-selecting',
-      (e) => {
-        self.prerequisOb = e.choice.libelle;
-      }
-    )
-
-    //epi select2
-
-    jQuery('.epi-select').select2({
-      maximumSelectionLength: 1,
-      tokenSeparators: [",", " "],
-      createSearchChoice: function (term, data) {
-        if (self.epiItems.length == 0) {
-          return {
-            id: '0', libelle: term
-          };
-        }
-      },
-      ajax: {
-        url: Configs.sqlURL,
-        type: 'POST',
-        dataType: 'json',
-        quietMillis: 250,
-        transport: function (params) {
-          params.beforeSend = Configs.getSelect2TextHeaders();
-          return jQuery.ajax(params);
-        },
-        data: function (term, page) {
-          return self.offersService.selectEPI(term);
-        },
-        results: function (data, page) {
-          self.epiItems = data.data;
-          return {results: data.data};
-        },
-        cache: false,
-
-      },
-
-      formatResult: function (item) {
-        return item.libelle;
-      },
-      formatSelection: function (item) {
-        return item.libelle;
-      },
-      dropdownCssClass: "bigdrop",
-      escapeMarkup: function (markup) {
-        return markup;
-      },
-      minimumInputLength: 1
-    });
-    jQuery('.epi-select').on('select2-selecting',
-      (e) => {
-        self.epi = e.choice.libelle;
-      }
-    )
-
-    jQuery('.epi-jobyer-select').select2({
-      maximumSelectionLength: 1,
-      tokenSeparators: [",", " "],
-      ajax: {
-        url: Configs.sqlURL,
-        type: 'POST',
-        dataType: 'json',
-        quietMillis: 250,
-        transport: function (params) {
-          params.beforeSend = Configs.getSelect2TextHeaders();
-          return jQuery.ajax(params);
-        },
-        data: function (term, page) {
-          return self.offersService.selectEPI(term);
-        },
-        results: function (data, page) {
-          self.prerequisObList = data.data;
-          return {results: data.data};
-        },
-        cache: false,
-
-      },
-
-      formatResult: function (item) {
-        return item.libelle;
-      },
-      formatSelection: function (item) {
-        return item.libelle;
-      },
-      dropdownCssClass: "bigdrop",
-      escapeMarkup: function (markup) {
-        return markup;
-      },
-      minimumInputLength: 1
-    });
-    jQuery('.epi-jobyer-select').on('select2-selecting',
-      (e) => {
-        self.epi = e.choice.libelle;
-      }
-    )
+    // //epi select2
+    //
+    // jQuery('.epi-select').select2({
+    //   maximumSelectionLength: 1,
+    //   tokenSeparators: [",", " "],
+    //   createSearchChoice: function (term, data) {
+    //     if (self.epiItems.length == 0) {
+    //       return {
+    //         id: '0', libelle: term
+    //       };
+    //     }
+    //   },
+    //   ajax: {
+    //     url: Configs.sqlURL,
+    //     type: 'POST',
+    //     dataType: 'json',
+    //     quietMillis: 250,
+    //     transport: function (params) {
+    //       params.beforeSend = Configs.getSelect2TextHeaders();
+    //       return jQuery.ajax(params);
+    //     },
+    //     data: function (term, page) {
+    //       return self.offersService.selectEPI(term);
+    //     },
+    //     results: function (data, page) {
+    //       self.epiItems = data.data;
+    //       return {results: data.data};
+    //     },
+    //     cache: false,
+    //
+    //   },
+    //
+    //   formatResult: function (item) {
+    //     return item.libelle;
+    //   },
+    //   formatSelection: function (item) {
+    //     return item.libelle;
+    //   },
+    //   dropdownCssClass: "bigdrop",
+    //   escapeMarkup: function (markup) {
+    //     return markup;
+    //   },
+    //   minimumInputLength: 1
+    // });
+    // jQuery('.epi-select').on('select2-selecting',
+    //   (e) => {
+    //     self.epi = e.choice.libelle;
+    //   }
+    // )
+    //
+    // jQuery('.epi-jobyer-select').select2({
+    //   maximumSelectionLength: 1,
+    //   tokenSeparators: [",", " "],
+    //   ajax: {
+    //     url: Configs.sqlURL,
+    //     type: 'POST',
+    //     dataType: 'json',
+    //     quietMillis: 250,
+    //     transport: function (params) {
+    //       params.beforeSend = Configs.getSelect2TextHeaders();
+    //       return jQuery.ajax(params);
+    //     },
+    //     data: function (term, page) {
+    //       return self.offersService.selectEPI(term);
+    //     },
+    //     results: function (data, page) {
+    //       self.prerequisObList = data.data;
+    //       return {results: data.data};
+    //     },
+    //     cache: false,
+    //
+    //   },
+    //
+    //   formatResult: function (item) {
+    //     return item.libelle;
+    //   },
+    //   formatSelection: function (item) {
+    //     return item.libelle;
+    //   },
+    //   dropdownCssClass: "bigdrop",
+    //   escapeMarkup: function (markup) {
+    //     return markup;
+    //   },
+    //   minimumInputLength: 1
+    // });
+    // jQuery('.epi-jobyer-select').on('se@lect2-selecting',
+    //   (e) => {
+    //     self.epi = e.choice.libelle;
+    //   }
+    // )
   }
 
   /**
@@ -692,48 +681,6 @@ export class OfferEdit{
       }
     }
     this.personalizeConvention = !this.personalizeConvention;
-  }
-
-  addPrerequis() {
-    if (Utils.isEmpty(this.prerequisOb) === true)
-      return;
-    this.prerequisObligatoires.push(this.prerequisOb);
-    this.prerequisOb = '';
-  }
-
-  addEPI() {
-    if (Utils.isEmpty(this.epi) === true)
-      return;
-    this.epiList.push(this.epi);
-    this.epi = '';
-  }
-
-  removePrerequis(p) {
-    let index = -1;
-    for (let i = 0; i < this.prerequisObligatoires.length; i++)
-      if (this.prerequisObligatoires[i] == p) {
-        index = i;
-        break;
-      }
-
-    if (index < 0)
-      return;
-
-    this.prerequisObligatoires.splice(index, 1);
-  }
-
-  removeEPI(p) {
-    let index = -1;
-    for (let i = 0; i < this.epiList.length; i++)
-      if (this.epi[i] == p) {
-        index = i;
-        break;
-      }
-
-    if (index < 0)
-      return;
-
-    this.epiList.splice(index, 1);
   }
 
   sectorSelected(sector) {
@@ -1040,56 +987,8 @@ export class OfferEdit{
     return (this.obj == "detail" && this.slots && this.slots.length == 1);
   }
 
-//</editor-fold>
-
-  removeQuality(item) {
-    this.offer.qualityData.splice(this.offer.qualityData.indexOf(item), 1);
-    if (this.obj == "detail") {
-      this.offersService.updateOfferQualities(this.offer, this.projectTarget);
-      this.setOfferInLocal();
-    }
-  }
-
-  addQuality() {
-    if (this.isEmpty(this.selectedQuality)) {
-      return;
-    }
-    if (this.obj == "detail") {
-      //searching the selected quality in the list of qualities of the current offer
-      var q1 = this.offer.qualityData.filter((v) => {
-        return (v.idQuality == this.selectedQuality);
-      });
-      //ignore the add request if quality is already added
-      if (this.offer.qualityData.indexOf(q1[0]) != -1) {
-        return;
-      }
-      //searching the selected quality in the generel list of qualities
-      var q2 = this.qualities.filter((v) => {
-        return (v.idQuality == this.selectedQuality);
-      });
-      this.offer.qualityData.push(q2[0]);
-      this.offersService.updateOfferQualities(this.offer, this.projectTarget);
-      this.setOfferInLocal();
-    } else {
-      var qualitiesTemp = this.qualities.filter((v) => {
-        return (v.idQuality == this.selectedQuality);
-      });
-      if (this.offer.qualityData.indexOf(qualitiesTemp[0]) != -1) {
-        return;
-      }
-      this.offer.qualityData.push(qualitiesTemp[0]);
-      this.selectedQuality = "";
-    }
-  }
-
   setOfferInLocal() {
     //set offer in local
-    if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0)
-      this.offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
-
-    if (this.epiList && this.epiList.length > 0)
-      this.offer.jobData.epi = this.epiList;
-
     this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, this.offer, this.projectTarget);
     this.sharedService.setCurrentUser(this.currentUser);
     this.sharedService.setCurrentOffer(this.offer);
@@ -1118,33 +1017,10 @@ export class OfferEdit{
         this.offer.jobyerId = this.currentUser.jobyer.id;
       }
 
-      //  Deal with requirements
-      if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0) {
-        this.offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
-      } else {
-        this.offer.jobData.prerequisObligatoires = [];
-      }
-
-      // epi list
-      if (this.epiList && this.epiList.length > 0) {
-        this.offer.jobData.epi = this.epiList;
-      } else {
-        this.offer.jobData.epi = [];
-      }
-
       //this.router.navigate(['offer/calendar', {offer: this.offer, isOfferToAdd: true}]);
       this.offersService.createOffer(this.offer, this.projectTarget).then((data: any) => {
         this.dataValidation = true;
         let offer = JSON.parse(data._body);
-
-
-        if (this.prerequisObligatoires && this.prerequisObligatoires.length > 0) {
-          offer.jobData.prerequisObligatoires = this.prerequisObligatoires;
-        }
-
-        if (this.epiList && this.epiList.length > 0) {
-          offer.jobData.epi = this.epiList;
-        }
 
         if (this.projectTarget == 'employer') {
 

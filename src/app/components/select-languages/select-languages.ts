@@ -2,7 +2,7 @@
  * Created by kelvin on 17/01/2017.
  */
 
-import {Component, EventEmitter, Input, Output} from "@angular/core";
+import {Component, EventEmitter, Input, Output, ChangeDetectorRef} from "@angular/core";
 import {ROUTER_DIRECTIVES} from "@angular/router";
 import {SharedService} from "../../../providers/shared.service";
 import {Utils} from "../../utils/utils";
@@ -42,7 +42,8 @@ export class SelectLanguages {
   list: any = [];
 
   constructor(private sharedService: SharedService,
-              private listService: LoadListService) {
+              private listService: LoadListService,
+              private cdr: ChangeDetectorRef) {
 
     //loadLanguages
     this.list = this.sharedService.getLangList();
@@ -50,6 +51,7 @@ export class SelectLanguages {
       this.listService.loadLanguages().then((data: any) => {
         this.list = data.data;
         this.sharedService.setLangList(this.list);
+        this.cdr.detectChanges();
       })
     }
 
@@ -101,6 +103,10 @@ export class SelectLanguages {
   }
 
   getLabel(id: number): string {
+    if (Utils.isEmpty(this.list) == true) {
+      return "Chargement...";
+    }
+
     var languagesTemp = this.list.filter((v)=> {
       return (v.id == id);
     });

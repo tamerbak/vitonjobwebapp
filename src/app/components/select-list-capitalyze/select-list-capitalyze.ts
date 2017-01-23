@@ -2,16 +2,12 @@
  * Created by kelvin on 17/01/2017.
  */
 
-import {Component, EventEmitter, Input, Output, SimpleChanges} from "@angular/core";
+import {Component, EventEmitter, Input, Output, SimpleChanges, ChangeDetectorRef} from "@angular/core";
 import {ROUTER_DIRECTIVES} from "@angular/router";
-import {SharedService} from "../../../providers/shared.service";
 import {Utils} from "../../utils/utils";
 import {LoadListService} from "../../../providers/load-list.service";
-import {ListCapitalyze} from "../../../dto/generic/list-capitalyze";
 import {Configs} from "../../../configurations/configs";
 import {ListElem} from "../../../dto/generic/list-elem";
-// import {ListCapitalyze} from "../../../dto/listCapitalyze";
-// import {ConventionFilter} from "./convention-filter/convention-filter";
 
 declare var jQuery, Messenger, md5: any;
 
@@ -61,29 +57,15 @@ export class SelectListCapitalyze {
 
   dinamycListIsLoading = false;
 
-  constructor(private sharedService: SharedService,
-              private listService: LoadListService) {
+  constructor(private listService: LoadListService,
+              private cdr: ChangeDetectorRef) {
 
     this.randomId = Math.floor((Math.random() * 1000000) + 1);
     this.selectClass = 'list-select-' + this.randomId;
     this.selectClass2 = 'list-select-test';
-
-    // //loadListCapitalyze
-    // this.list = this.sharedService.getLangList();
-    // if (!this.list || this.list.length == 0) {
-    //   this.listService.loadListCapitalyze().then((data: any) => {
-    //     this.list = data.data;
-    //     this.sharedService.setLangList(this.list);
-    //   })
-    // }
-
   }
 
   ngOnInit() {
-
-    // if (this.isDynamicList()) {
-    //   this.initializeDynamicSelect();
-    // }
 
   }
 
@@ -91,34 +73,8 @@ export class SelectListCapitalyze {
 
     if (this.isDynamicList()) {
       this.initializeDynamicSelect();
-      // this.dynamicAddElements(this.selectedList);
     }
 
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    // if (changes['toSync'] && changes['toSync'].previousValue != changes['toSync'].currentValue) {
-    //   if (this.offer.parametrageConvention > 0) {
-    //     this.syncData();
-    //   }
-    // }
-    if (this.isDynamicList()
-      && changes.hasOwnProperty('selectedList')
-      && Utils.isEmpty(changes['selectedList'].currentValue) == false) {
-      this.listService.loadList(this.src, changes['selectedList'].currentValue).then((data: any) => {
-        this.list = data;
-        this.dinamycListIsLoading = false;
-      });
-    }
-  }
-
-  dynamicAddElements(idList: string[]) {
-    if (Utils.isEmpty(idList) === false) {
-      this.listService.loadList(this.src, idList).then((data: any) => {
-        this.list = data;
-        this.dinamycListIsLoading = false;
-      });
-    }
   }
 
   addElement() {
@@ -166,14 +122,8 @@ export class SelectListCapitalyze {
         return "Chargement...";
       }
     }
-    // if (Utils.isEmpty(this.list) == true) {
-    //   console.log(this.selectedList);
-    //   if (Utils.isEmpty(this.selectedList) === false) {
-    //     this.dynamicAddElements(this.selectedList);
-    //   }
-    //   return "-";
-    // }
-    if (this.list) {
+
+    if (this.list && Utils.isEmpty(this.list) === false) {
       let listTemp = this.list.filter((v)=> {
         return (v.id == id);
       });
@@ -183,7 +133,9 @@ export class SelectListCapitalyze {
       return listTemp[0].libelle;
     }
 
-    return "Soyez la première personne à proposer une valeur";
+    if (this.isDynamicList() === false) {
+      return "Soyez la première personne à proposer une valeur";
+    }
   }
 
   initializeDynamicSelect() {
@@ -238,16 +190,11 @@ export class SelectListCapitalyze {
 
       formatResult: function (item) {
 
-        // let listTemp = this.list.filter((v)=> {
-        //   return (v.id == item.id);
-        // });
-        // if (Utils.isEmpty(listTemp) == true) {
         if (self.list == null) {
           self.list = [];
         }
         if (item.id != '0') {
           self.list.push(item);
-        // }
         }
 
         return item.libelle;

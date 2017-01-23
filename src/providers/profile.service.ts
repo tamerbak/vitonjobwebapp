@@ -804,7 +804,7 @@ export class ProfileService{
     let sql = "";
     for (let i = 0; i < qualities.length; i++) {
       let q = qualities[i];
-      sql = sql + " insert into " + table + " (" + foreignKey + ", fk_user_indispensable) values (" + id + ", " + q.idQuality + "); ";
+      sql = sql + " insert into " + table + " (" + foreignKey + ", fk_user_indispensable) values (" + id + ", " + q.id + "); ";
     }
 
     return new Promise(resolve => {

@@ -2013,7 +2013,7 @@ export class Profile{
     }
 
     var qualitiesTemp = this.qualities.filter((v)=> {
-      return (v.idQuality == this.selectedQuality);
+      return (v.id == this.selectedQuality);
     });
     if (this.savedQualities.indexOf(qualitiesTemp[0]) != -1) {
       return;
