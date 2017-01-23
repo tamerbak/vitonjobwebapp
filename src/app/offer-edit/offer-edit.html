@@ -62,8 +62,14 @@
               <option value=""></option>
               <option *ngFor="let s of sectors" [value]="s.id">{{s.libelle}}</option>
             </select>-->
-            <select required id="input-sector-select" data-label="Choix du secteur d'activité" class="form-control" [(ngModel)]="offer.jobData.idSector"
-                    (change)="sectorSelected($event.target.value)" [disabled]="!hideJobLoader">
+            <select
+              required id="input-sector-select"
+              data-label="Choix du secteur d'activité"
+              class="form-control"
+              (change)="sectorSelected($event.target.value)"
+              [disabled]="!hideJobLoader"
+            >
+              <option value="0"></option>
               <option *ngFor="let s of sectors" [value]="s.id"> {{s.libelle}}</option>
             </select>
             <alert *ngIf="triedValidate && !offer.jobData.idSector" [type]="'danger alert-sm'">
@@ -623,6 +629,7 @@
             <div class="row">
               <div class="col-md-9 col-xs-12">
                 <select class="form-control" [(ngModel)]="selectedSoftware">
+                  <option [value]="0"></option>
                   <option *ngFor="let s of softwares" [value]="s.id">{{s.nom}}</option>
                 </select>
               </div>

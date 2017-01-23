@@ -321,7 +321,7 @@ export class OfferEdit{
 
     //load all sectors and job, if not yet loaded in local
     this.sectors = this.sharedService.getSectorList();
-    // var jobList = this.sharedService.getJobList();
+
     if (!this.sectors || this.sectors.length == 0) {//} || !jobList || jobList.length == 0) {
       this.offersService.loadSectorsToLocal().then((data: any) => {
         this.sharedService.setSectorList(data);
@@ -377,13 +377,13 @@ export class OfferEdit{
   }
 
   ngAfterViewInit() {
-    var self = this;
+    let self = this;
     this._loader.load().then(() => {
       this.autocompleteOA = new google.maps.places.Autocomplete(document.getElementById("autocompleteOfferAdress"), this.addressOptions);
     });
 
     //get timepickers elements
-    var elements = []
+    var elements = [];
     jQuery("input[id^='q-timepicker_']").each(function () {
       elements.push(this.id);
     });
@@ -397,7 +397,6 @@ export class OfferEdit{
 
 
     // Initialize constraint between sector and job
-    //let sector = jQuery('.sector-select').select2();
     let job = jQuery('.job-select').select2({
       maximumSelectionLength: 1,
       tokenSeparators: [",", " "],
@@ -436,6 +435,7 @@ export class OfferEdit{
         return item.libelle;
       },
       formatSelection: function (item) {
+        self.jobs.push(item);
         return item.libelle;
       },
       dropdownCssClass: "bigdrop",
@@ -488,11 +488,6 @@ export class OfferEdit{
     var sectorsTemp = this.sectors.filter((v) => {
       return (v.id == sector);
     });
-    //get job list
-    var jobList = this.sharedService.getJobList();
-     this.jobs = jobList.filter((v) => {
-     return (v.idsector == sector);
-     });
 
     if (sectorsTemp.length > 0) {
       this.offer.jobData.sector = sectorsTemp[0].libelle;

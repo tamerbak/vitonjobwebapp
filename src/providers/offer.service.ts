@@ -126,7 +126,7 @@ export class OffersService {
    * @returns {Promise<T>}
    */
   loadSectorsToLocal() {
-    let sql = 'select pk_user_metier as id, libelle as libelle from user_metier order by libelle asc';
+    let sql = 'select pk_user_metier as id, libelle as libelle from user_metier where dirty = \'N\' order by libelle asc';
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
@@ -782,7 +782,7 @@ export class OffersService {
     if(idSector && idSector>0){
       constr = "fk_user_metier="+idSector+" AND ";
     }
-    let sql = "select pk_user_job as id, libelle from user_job where "+constr+" ( lower_unaccent(libelle) like lower_unaccent('%"+this.sqlfyText(kw)+"%') or lower_unaccent(libelle) % lower_unaccent('"+this.sqlfyText(kw)+"')) order by similarity(lower_unaccent(libelle),lower_unaccent('"+this.sqlfyText(kw)+"')) desc";
+    let sql = "select pk_user_job as id, libelle, fk_user_metier as idsector from user_job where "+constr+" ( lower_unaccent(libelle) like lower_unaccent('%"+this.sqlfyText(kw)+"%') or lower_unaccent(libelle) % lower_unaccent('"+this.sqlfyText(kw)+"')) order by similarity(lower_unaccent(libelle),lower_unaccent('"+this.sqlfyText(kw)+"')) desc";
     return sql;
   }
 
@@ -809,7 +809,7 @@ export class OffersService {
 
   loadSectorByJobId(id){
     let sql = "select pk_user_metier as id, libelle from user_metier where pk_user_metier in " +
-      "(select fk_user_metier from user_job where pk_user_job="+id+")";
+      "(select fk_user_metier from user_job where pk_user_job="+id+") and dirty='N'";
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
       // then on the response it'll map the JSON data to a parsed JS object.
