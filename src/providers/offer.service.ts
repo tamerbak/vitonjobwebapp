@@ -252,7 +252,7 @@ export class OffersService {
     offer.status = "OUI";
     offer.visible = true;
 
-    delete offer.jobData['idLevel'];
+    delete offer.jobData['level'];
     delete offer['slots'];
 
     // TODO HACK force jobData type

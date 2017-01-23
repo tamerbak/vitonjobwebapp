@@ -78,10 +78,10 @@ export class SelectLanguages {
     }
 
     let language: Language = new Language();
-    language.idLanguage = Number(languagesTemp[0]['id']);
+    language.id = Number(languagesTemp[0]['id']);
 
     if (this.hasLevel == true) {
-      language.idLevel = Number(this.selectedLevel);
+      language.level = Number(this.selectedLevel);
     }
 
     // Add the new element to the list
