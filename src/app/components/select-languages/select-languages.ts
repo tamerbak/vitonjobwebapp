@@ -103,6 +103,11 @@ export class SelectLanguages {
   }
 
   getLabel(id: number): string {
+
+    if (!id) {
+      return;
+    }
+
     if (Utils.isEmpty(this.list) == true) {
       return "Chargement...";
     }
