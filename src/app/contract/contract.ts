@@ -670,8 +670,6 @@ export class Contract {
     //jQuery('#endmission').datepicker('update', this.contractData.missionEndDate);
     jQuery('#' + elements[4]).datepicker('update', "");
     jQuery('#' + elements[5]).datepicker('update', "");
-
-
   }
 
   updateTimePickers(){
