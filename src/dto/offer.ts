@@ -1,5 +1,4 @@
 import {Job} from "./job";
-import {CalendarSlot} from "./calendar-slot";
 import {AbstractGCallout} from "./generium/abstract-gcallout";
 import {Equipment} from "./equipment";
 import {Requirement} from "./requirement";
@@ -58,4 +57,5 @@ export class Offer extends AbstractGCallout {
     this.jobyerId = 0;
     this.entrepriseId = 0;
   }
-};
+}
+;
