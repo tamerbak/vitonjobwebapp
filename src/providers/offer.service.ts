@@ -244,7 +244,20 @@ export class OffersService {
    */
   createOffer(offer: Offer, projectTarget: string) {
     offer.idOffer = 0;
-    return this.saveOffer(offer, projectTarget);
+    return this._uploadOffer(offer, projectTarget);
+  }
+
+  /**
+   * Copy an offer
+   *
+   * @param offer
+   * @param projectTarget
+   * @returns {Promise<T>}
+   */
+  copyOffer(offer: Offer, projectTarget: string) {
+    offer.idOffer = 0;
+    offer.etat = '';
+    return this._uploadOffer(offer, projectTarget);
   }
 
   /**
@@ -255,6 +268,17 @@ export class OffersService {
    * @returns {Promise<T>}
    */
   saveOffer(offer: Offer, projectTarget: string) {
+    return this._uploadOffer(offer, projectTarget);
+  }
+
+  /**
+   * Upload offer to the callout
+   *
+   * @param offer
+   * @param projectTarget
+   * @returns {Promise<T>}
+   */
+  private _uploadOffer(offer: Offer, projectTarget: string) {
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
 
@@ -266,8 +290,8 @@ export class OffersService {
     // Change slot format from Date to Timestamp
     if (offer['calendarData'] && Utils.isEmpty(offer['calendarData']) === false) {
       for (let i = 0; i < offer['calendarData'].length; ++i) {
-        offer['calendarData'][i].date = offer['calendarData'][i].date.getTime();
-        offer['calendarData'][i].dateEnd = offer['calendarData'][i].dateEnd.getTime();
+        offer['calendarData'][i].date = new Date(offer['calendarData'][i].date).getTime();
+        offer['calendarData'][i].dateEnd = new Date(offer['calendarData'][i].dateEnd).getTime();
       }
     }
 

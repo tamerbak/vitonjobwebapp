@@ -546,7 +546,7 @@
               </div>
               <div *ngIf="obj === 'detail'" class="row">
                 <div class="col-md-6 col-xs-12">
-                  <button type="submit" class="btn btn-primary fwidth" (click)="copyOffer()">
+                  <button type="submit" class="btn btn-primary fwidth" [disabled]="!fullLoad" (click)="copyOffer()">
                     Copier l'offre
                   </button>
                 </div>

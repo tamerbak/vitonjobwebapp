@@ -116,11 +116,8 @@ export class ModalOptions{
       return;
     }
 
-    offer.title = offer.title + " (Copie)";
-    offer.etat = '';
-    offer.idOffer = "";
     this.offersService.setOfferInLocal(offer, this.projectTarget);
-    this.offersService.saveOffer(offer, this.projectTarget).then((data: any) => {
+    this.offersService.copyOffer(offer, this.projectTarget).then((data: any) => {
       Messenger().post({
         message: "l'offre " + "'" + offer.title + "'" + " a été copiée avec succès",
         type: 'success',
