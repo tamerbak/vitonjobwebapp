@@ -9,7 +9,6 @@ import {Utils} from "../../utils/utils";
 import {DateUtils} from "../../utils/date-utils";
 import {ModalSlots} from "./modal-slots/modal-slots";
 import {AdvertService} from "../../../providers/advert.service";
-import {Offer} from "../../../dto/offer";
 import {CalendarSlot} from "../../../dto/calendar-slot";
 
 declare var Messenger, jQuery: any;
@@ -32,10 +31,7 @@ declare var require;
 })
 export class Calendar {
   @Input()
-  slots = [];
-
-  @Input()
-  offer: Offer;
+  slots: any[];
 
   projectTarget: string;
   currentUser: any;
@@ -97,10 +93,6 @@ export class Calendar {
     this.$calendar.fullCalendar(this.calendar);
     jQuery('.draggable').draggable(this.dragOptions);
 
-    this.slots = this.convertEventsToSlots(this.$calendar.fullCalendar('clientEvents'));
-
-    let self = this;
-
     //init slot
     this.slot = new CalendarSlot();
 
@@ -156,7 +148,7 @@ export class Calendar {
         this.slotsToSave.splice(index, 1);
       }
     } else {
-      if (this.offer.calendarData.length == 1) {
+      if (this.slots.length == 1) {
         this.addAlert("danger", "Une offre doit avoir au moins un créneau de disponibilité. Veuillez ajouter un autre créneau avant de pouvoir supprimer celui-ci.", "slot");
         return;
       }
@@ -173,11 +165,11 @@ export class Calendar {
           return new Date(event.start._d).getTime() == ev[0].start && new Date(event.end._d).getTime() == ev[0].end;
         });
         //remove slot from local
-        this.offer.calendarData.splice(index, 1);
+        this.slots.splice(index, 1);
         this.slots.splice(index, 1);
         //remove slot from remote
-        this.offersService.updateOfferCalendar(this.offer, this.projectTarget).then(() => {
-        });
+        // this.offersService.updateOfferCalendar(this.offer, this.projectTarget).then(() => {
+        // });
       }
     }
     this.closeDetailsModal();
@@ -193,7 +185,7 @@ export class Calendar {
 
       this.slots.push(this.slot);
       this.slotsToSave.push(this.slot);
-      this.offer.calendarData.push(this.slot);
+      // this.slots.push(this.slot);
       return;
     } else {
 
@@ -208,7 +200,7 @@ export class Calendar {
           slot.endHour = slotToSave[0].endHour;
           slot.pause = slotToSave[0].pause;
           slot.startHour = slotToSave[0].startHour;
-          this.offer.calendarData.push(slot);
+          this.slots.push(slot);
         }
       }
     }
@@ -226,13 +218,13 @@ export class Calendar {
   }
 
   initSlots() {
-    for (let i = 0; i < this.offer.calendarData.length; i++) {
+    for (let i = 0; i < this.slots.length; i++) {
       let slotTemp = {
-        date: new Date(this.offer.calendarData[i].date),
-        dateEnd: new Date(this.offer.calendarData[i].dateEnd),
-        startHour: new Date(this.offer.calendarData[i].date),
-        endHour: new Date(this.offer.calendarData[i].dateEnd),
-        pause: this.offer.calendarData[i].pause
+        date: new Date(this.slots[i].date),
+        dateEnd: new Date(this.slots[i].dateEnd),
+        startHour: new Date(this.slots[i].date),
+        endHour: new Date(this.slots[i].dateEnd),
+        pause: this.slots[i].pause
       };
       this.slots.push(slotTemp);
     }
@@ -240,7 +232,7 @@ export class Calendar {
 
   convertDetailSlotsForCalendar(refreshDisplay: boolean) {
     let events = [];
-    if (this.offer) {
+    if (this.slots) {
       for (let i = 0; i < this.slots.length; i++) {
 
         let isPause = this.slots[i].pause;
@@ -251,7 +243,7 @@ export class Calendar {
 
         let title = (isPause ? "Pause de " : "Créneau de ");
         let slotTemp = {
-          id : this.slots[i].idCalendar,
+          id: this.slots[i].idCalendar,
           title: title + startHour + " à " + endHour,
           start: startDate.setHours(+startHour.split(":")[0], +startHour.split(":")[1], 0, 0),
           end: endDate.setHours(+endHour.split(":")[0], +endHour.split(":")[1], 0, 0),
@@ -728,8 +720,8 @@ export class Calendar {
         this.slotsToSave = this.convertEventsToSlots(evs);
         this.resetSlotModal();
       } else {
-        this.offer.calendarData = [];
-        this.offer.calendarData = this.offersService.convertSlotsForSaving(this.slots);
+        this.slots = [];
+        this.slots = this.offersService.convertSlotsForSaving(this.slots);
         this.addSlot("drop");
       }
     } else {

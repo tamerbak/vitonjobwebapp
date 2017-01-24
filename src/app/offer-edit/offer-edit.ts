@@ -1,6 +1,6 @@
 import {Component, NgZone, ViewEncapsulation} from "@angular/core";
 import {OffersService} from "../../providers/offer.service";
-import {DomSanitizationService} from '@angular/platform-browser';
+import {DomSanitizationService} from "@angular/platform-browser";
 import {SharedService} from "../../providers/shared.service";
 import {SearchService} from "../../providers/search-service";
 import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from "@angular/router";
@@ -21,7 +21,6 @@ import {SmsService} from "../../providers/sms-service";
 import {AdvertService} from "../../providers/advert.service";
 import {MissionService} from "../../providers/mission-service";
 import {ConventionParameters} from "./convention-parameters/convention-parameters";
-
 import {Offer} from "../../dto/offer";
 import {Job} from "../../dto/job";
 import {SelectLanguages} from "../components/select-languages/select-languages";
@@ -81,7 +80,6 @@ export class OfferEdit{
   slot: any;
   slots = [];
 
-  slotsToSave = [];
   alerts: Array<Object>;
   alertsSlot: Array<Object>;
   alertsConditionEmp: Array<Object>;
@@ -542,10 +540,9 @@ export class OfferEdit{
     }
 
     if (this.obj != "detail") {
-      this.offer.calendarData = this.offersService.convertSlotsForSaving(this.slotsToSave);
 
-      if(!this.isFormValid()){
-          return;
+      if (!this.isFormValid()) {
+        return;
       }
 
       let level = (this.offer.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant';
@@ -560,7 +557,7 @@ export class OfferEdit{
       //this.router.navigate(['offer/calendar', {offer: this.offer, isOfferToAdd: true}]);
       this.offersService.createOffer(this.offer, this.projectTarget).then((data: any) => {
         this.dataValidation = true;
-        let offer = JSON.parse(data._body);
+        let offer = this.offer;
 
         if (this.projectTarget == 'employer') {
 

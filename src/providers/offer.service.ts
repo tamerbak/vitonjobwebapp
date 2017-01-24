@@ -471,56 +471,6 @@ export class OffersService {
     });
   }
 
-  /*
-   *  Update offer calendar
-   */
-  updateOfferCalendar(offer, projectTarget) {
-    return new Promise(resolve => {
-      let table = projectTarget == 'jobyer' ? 'user_offre_jobyer' : 'user_offre_entreprise';
-      this.deleteCalendar(offer, table);
-      this.attacheCalendar(offer, table);
-      resolve();
-    });
-  }
-
-  deleteCalendar(offer, table) {
-    let sql = "delete from user_disponibilites_des_offres where fk_" + table + "=" + offer.idOffer;
-    return new Promise(resolve => {
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          resolve(data);
-        });
-    });
-  }
-
-  attacheCalendar(offer, table) {
-    for (let i = 0; i < offer.calendarData.length; i++) {
-      let l = offer.calendarData[i];
-      this.attacheDay(offer.idOffer, table, l);
-    }
-  }
-
-  attacheDay(idOffer, table, day) {
-    let d = new Date(day.date);
-    let sdate = this.sqlfy(d);
-    let de = new Date(day.dateEnd);
-    let edate = this.sqlfy(de);
-    let isPause = day.pause ? "OUI" : "NON";
-    let sql = "insert into user_disponibilites_des_offres (fk_" + table + ", jour, jour_de_fin, heure_debut, heure_fin, pause) values (" + idOffer + ", '" + sdate + "', '" + edate + "', " + day.startHour + ", " + day.endHour + ", '" + isPause + "')";
-    return new Promise(resolve => {
-      let headers = new Headers();
-      headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          resolve(data);
-        });
-    });
-  }
-
   /**
    * @description     loading qualities list
    * @return qualities list in the format {id : X, libelle : X}
