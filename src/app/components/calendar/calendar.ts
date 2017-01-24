@@ -201,30 +201,6 @@ export class Calendar {
     }
   }
 
-  convertSlotsForDisplay(s) {
-    let slotTemp = {
-      date: this.toDateString(s.date),
-      dateEnd: this.toDateString(s.dateEnd),
-      startHour: this.toHourString(s.startHour),
-      endHour: this.toHourString(s.endHour),
-      pause: s.pause
-    };
-    return slotTemp;
-  }
-
-  initSlots() {
-    for (let i = 0; i < this.slots.length; i++) {
-      let slotTemp = {
-        date: new Date(this.slots[i].date),
-        dateEnd: new Date(this.slots[i].dateEnd),
-        startHour: new Date(this.slots[i].date),
-        endHour: new Date(this.slots[i].dateEnd),
-        pause: this.slots[i].pause
-      };
-      this.slots.push(slotTemp);
-    }
-  }
-
   convertDetailSlotsForCalendar(refreshDisplay: boolean) {
     let events = [];
     if (this.slots) {
@@ -428,31 +404,6 @@ export class Calendar {
     // this.slot.isPeriodic = e.target.checked;
     // TODO KELVIN a voir
   }
-
-  decimalAdjust(type, value, exp) {
-    // Si la valeur de exp n'est pas définie ou vaut zéro...
-    if (typeof exp === 'undefined' || +exp === 0) {
-      return Math[type](value);
-    }
-    value = +value;
-    exp = +exp;
-    // Si la valeur n'est pas un nombre
-    // ou si exp n'est pas un entier...
-    if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
-      return NaN;
-    }
-    // Décalage
-    value = value.toString().split('e');
-    value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
-    // Décalage inversé
-    value = value.toString().split('e');
-    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
-  }
-
-  preventNull(str) {
-    return Utils.preventNull(str);
-  }
-
 
   // calendar functions
   addEvent(event): void {
