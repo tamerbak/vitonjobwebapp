@@ -126,7 +126,7 @@ export class Calendar {
 
   ngAfterViewInit() {
     //get timepickers elements
-    var elements = [];
+    let elements = [];
     jQuery("input[id^='q-timepicker_']").each(function () {
       elements.push(this.id);
     });
@@ -250,7 +250,7 @@ export class Calendar {
         let endDate = new Date(this.slots[i].dateEnd);
 
         let title = (isPause ? "Pause de " : "Créneau de ");
-        var slotTemp = {
+        let slotTemp = {
           id : this.slots[i].idCalendar,
           title: title + startHour + " à " + endHour,
           start: startDate.setHours(+startHour.split(":")[0], +startHour.split(":")[1], 0, 0),
@@ -381,7 +381,7 @@ export class Calendar {
    * @param date : a timestamp date
    */
   toDateString(date: number) {
-    var dateOptions = {
+    let dateOptions = {
       weekday: "long", month: "long", year: "numeric",
       day: "numeric"//, hour: "2-digit", minute: "2-digit"
     };
@@ -619,18 +619,27 @@ export class Calendar {
 
         // Normalisation du slot généré par le split / day
         let normalized_slot = {
-          date: date_debut, dateEnd: date_arret,
-          startHour: date_debut, endHour: date_arret,
-          pause: false, allDay: false
+          date: date_debut,
+          dateEnd: date_arret,
+          startHour: date_debut,
+          endHour: date_arret,
+          pause: false,
+          allDay: false
         };
 
         // + Vérification des slots
         if (this.checkHour(this.slots, normalized_slot)) {
 
           // Sauvegarde des slots splittés
-          this.slots.push(normalized_slot);
+          this.slots.push({
+            date: date_debut,
+            dateEnd: date_arret,
+            startHour: hs * 60 + ms,
+            endHour: he * 60 + me,
+            pause: false,
+            allDay: false
+          });
           this.slotsToSave.push(normalized_slot);
-          this.offer.calendarData.push(normalized_slot);
 
           // Actualisation du rendu graphique
           this.pushSlotInCalendar(splitted_slot)
