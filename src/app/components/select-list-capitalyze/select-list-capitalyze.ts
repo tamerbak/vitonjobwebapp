@@ -77,6 +77,17 @@ export class SelectListCapitalyze {
 
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (this.isDynamicList()
+      && changes.hasOwnProperty('selectedList')
+      && Utils.isEmpty(changes['selectedList'].currentValue) == false) {
+      this.listService.loadList(this.src, changes['selectedList'].currentValue).then((data: any) => {
+        this.list = data;
+        this.dinamycListIsLoading = false;
+      });
+    }
+  }
+
   addElement() {
 
     if (this.canEdit == false) {
