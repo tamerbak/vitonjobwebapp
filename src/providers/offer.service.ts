@@ -6,6 +6,7 @@ import {VOJFramework} from "../voj.framework";
 import {Offer} from "../dto/offer";
 import {CCalloutArguments} from "../dto/generium/ccallout-arguments";
 import {CCallout} from "../dto/generium/ccallout";
+import {Utils} from "../app/utils/utils";
 
 const OFFER_CALLOUT_ID = 40012;
 
@@ -221,6 +222,14 @@ export class OffersService {
             offer[key] = remoteOffer[key];
           });
 
+          // Change slot format from Timestamp to Date
+          if (offer['calendarData'] && Utils.isEmpty(offer['calendarData']) === false) {
+            for (let i = 0; i < offer['calendarData'].length; ++i) {
+              offer['calendarData'][i].date = new Date(offer['calendarData'][i].date);
+              offer['calendarData'][i].dateEnd = new Date(offer['calendarData'][i].dateEnd);
+            }
+          }
+
           resolve(data);
         });
     });
@@ -252,8 +261,15 @@ export class OffersService {
     offer.status = "OUI";
     offer.visible = true;
 
-    delete offer.jobData['level'];
     delete offer['slots'];
+
+    // Change slot format from Date to Timestamp
+    if (offer['calendarData'] && Utils.isEmpty(offer['calendarData']) === false) {
+      for (let i = 0; i < offer['calendarData'].length; ++i) {
+        offer['calendarData'][i].date = offer['calendarData'][i].date.getTime();
+        offer['calendarData'][i].dateEnd = offer['calendarData'][i].dateEnd.getTime();
+      }
+    }
 
     // TODO HACK force jobData type
     offer.jobData.class = 'com.vitonjob.callouts.offer.model.JobData';
@@ -271,8 +287,6 @@ export class OffersService {
         'userType': (projectTarget === 'employer') ? 'employeur' : 'jobyer'
       }),
     ]);
-
-    console.log(payloadFinal.forge());
 
     return new Promise(resolve => {
       let headers = Configs.getHttpJsonHeaders();

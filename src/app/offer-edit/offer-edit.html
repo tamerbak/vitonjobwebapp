@@ -192,144 +192,23 @@
   </div>
 
   <div class="col-lg-9 col-xl-8 col-xs-12">
+
+    <!-- CALENDAR -->
     <section class="widget widget-calendar widget-offer">
       <header class="bb widget-offer-header">
         <h6><span class="fw-semi-bold widget-offer-header-title">
           {{ projectTarget == 'jobyer' ? 'Disponibilités' : 'Horaires de travail'}}
         </span></h6>
       </header>
-      <div class="widget-body">
-        <div class="calendar-controls">
-          <div class="btn-group ">
-            <button class="btn btn-default" (click)="prev()"><i class="fa fa-angle-left"></i></button>
-            <button class="btn btn-default" (click)="next()"><i class="fa fa-angle-right"></i></button>
-          </div>
-          <!--<div class="btn-group pull-right" data-toggle="buttons">
-            <label class="btn btn-default active" (click)="changeView('month')">
-              <input type="radio" name="view" value="month"> Mois
-            </label>
-            <label class="btn btn-default" (click)="changeView('agendaWeek')">
-              <input type="radio" name="view" value="agendaWeek"> Semaine
-            </label>
-            <label class="btn btn-default" (click)="changeView('agendaDay')">
-              <input type="radio" name="view" value="agendaDay"> Jour
-            </label>
-          </div>-->
-        </div>
-        <div id="calendar"></div>
-      </div>
+      <div
+        voj-calendar
+        [(slots)]="offer.calendarData"
+        [(offer)]="offer"
+      ></div>
     </section>
-    <div class="modal fade modal-margin-top" id="show-event-modal">
-      <div class="modal-dialog " role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h5 *ngIf="event.title" class="modal-title">{{ event.title }}</h5>
-          </div>
-          <div class="modal-body">
-
-              <alert *ngFor="let alert of alertsSlot; let i = index" [type]="alert.type + ' alert-sm'" dismissible="false">
-                <div [innerHTML]="alert.msg"></div>
-              </alert>
-            <p><i class="fa fa-calendar text-muted fs-sm"></i> &nbsp; Du: {{ toDateString(event.start)}} à {{getHourFromDate(event.start)}}</p>
-            <p><i class="fa fa-calendar text-muted fs-sm"></i> &nbsp; Au: {{ toDateString(event.end)}} à {{getHourFromDate(event.end)}}</p>
-          </div>
-          <div class="modal-footer no-border">
-            <button type="button" class="btn btn-default" (click)="closeDetailsModal()">Annuler</button>
-            <button (click)="removeSlot(event)" class="btn btn-danger">Supprimer</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal fade modal-margin-top" id="create-event-modal">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <section widget class="widget widget-offer">
-            <header class="bb widget-offer-header">
-              <h6><span class="fw-semi-bold widget-offer-header-title">Disponibilités</span></h6>
-            </header>
-            <div class="widget-body">
-              <legend>
-                <strong>
-                  Créneau du {{toDateString(startDate)}}
-                </strong>
-                <strong>
-                  {{ plageDate == 'multiple' ? 'au ' + toDateString(untilDate) : ''}}
-                </strong>
-              </legend>
-
-              <!-- Créneaux -->
-              <div class="form-group row">
-                <label class="col-md-5 col-xs-6 form-control-label">Heure de début</label>
-                <label class="col-md-5 col-xs-6 form-control-label">Heure de fin</label>
-              </div>
-              <div class="hidden-lg-up">
-                <alert *ngFor="let alert of alertsSlot; let i = index" [type]="alert.type + ' alert-sm'" dismissible="false">
-                  <div [innerHTML]="alert.msg"></div>
-                </alert>
-                <alert *ngIf="triedValidate && slots.length == 0" [type]="'danger alert-sm'">
-                  <div [innerHTML]="'* Veuillez renseigner au moins un créneau'"></div>
-                </alert>
-              </div>
-
-              <div class="form-group row required">
-                <div class="col-md-5 col-sm-3 col-xs-6 offer-hour-new">
-                  <datetime [hidden]="isFulltime"
-                            id="slotSHour"
-                            [datepicker]="false"
-                            [timepicker]="{ showMeridian: false, minuteStep: 15 }"
-                            [(ngModel)]="slot.startHour"
-                            readonly = "true"
-                  ></datetime>
-                  <input *ngIf="isFulltime" class="form-control"
-                         value="00:00"
-                         readonly/>
-                </div>
-
-                <div class="col-md-5 col-sm-3 col-xs-6 offer-hour-new">
-                  <datetime [hidden]="isFulltime"
-                            id="slotEHour"
-                            [datepicker]="false"
-                            [timepicker]="{ showMeridian: false, minuteStep: 15 }"
-                            [(ngModel)]="slot.endHour"
-                  ></datetime>
-                  <input *ngIf="isFulltime" class="form-control"
-                         value="23:59"
-                         readonly/>
-                </div>
-                <div class="row container boxes">
-
-                  <div class="col-xs-12 col-sm-4 col-md-4" *ngIf="projectTarget != 'jobyer'">
-                    <input type="checkbox" id="box-2" [checked]="isPause" class="form-control" (change)="watchPause($event)">
-                    <label for="box-2">Pause</label>
-                  </div>
-
-                  <div class="col-xs-12 col-sm-4 col-md-4" *ngIf="projectTarget == 'jobyer'">
-                    <input type="checkbox" id="box-1" [checked]="isFulltime" class="form-control" (change)="watchFullTime($event)">
-                    <label for="box-1">Jour entier</label>
-                  </div>
-
-                  <div class="col-xs-12 col-sm-4 col-md-4" *ngIf="plageDate != 'single'">
-                    <input type="checkbox" id="box-3" [checked]="isPeriodic" class="form-control" (change)="watchPeriodicity($event)"/>
-                    <label for="box-3"> Périodique</label>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <div class="modal-footer no-border">
-            <button (click)="closeModal()" class="btn btn-default">Annuler</button>
-            <button (click)="createEvent()" [disabled]="!(slot.startHour && slot.endHour)" class="btn btn-success">Ajouter</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- !CALENDAR -->
 
     <!-- VIDEO -->
-
     <section widget class="widget widget-offer">
       <header class="bb widget-offer-header">
         <h6><span class="fw-semi-bold widget-offer-header-title">Vidéo</span></h6>
@@ -390,8 +269,8 @@
 
       </div>
     </section>
-
     <!-- !VIDEO -->
+
   </div>
 
 </div>

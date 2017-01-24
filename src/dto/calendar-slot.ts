@@ -3,10 +3,10 @@ import {AbstractGCallout} from "./generium/abstract-gcallout";
 export class CalendarSlot extends AbstractGCallout {
   'class': string;
   idCalendar: number;
-  date: string;     // yyyy-mm-dd 00:00:00+00
-  dateEnd: string;  // yyyy-mm-dd 00:00:00+00
-  startHour: number;
-  endHour: number;
+  date: any; // Date
+  dateEnd: any; // Date
+  startHour: any; // minute
+  endHour: any; // minute
   type: string;
   pause: boolean;
 
@@ -14,10 +14,10 @@ export class CalendarSlot extends AbstractGCallout {
     super('com.vitonjob.callouts.offer.model.CalendarData');
 
     this.idCalendar = 0;
-    this.date = '';
-    this.dateEnd = '';
-    this.startHour = -1;
-    this.endHour = -1;
+    this.date = 0;
+    this.dateEnd = 0;
+    this.startHour = 0;
+    this.endHour = 0;
     this.type = '';
     this.pause = false;
   }
