@@ -73,4 +73,12 @@
       </button>
     </div>
   </div>
+
+  <div class="row">
+    <div class="col-xs-12" >
+      <alert *ngIf="containDeprecatedValue()" [type]="'info alert-sm'">
+        <div [innerHTML]="'* Valeur dépréciée : celle-ci peut seulement être conservée ou retirée'"></div>
+      </alert>
+    </div>
+  </div>
 </div>

@@ -26,11 +26,14 @@ export class LoadListService {
     let sql = "SELECT " +
       "pk_user_" + src + " as id" +
       ", libelle " +
-      "FROM user_" + src + " " +
-      "WHERE dirty = 'N'"
+      ", dirty " +
+      "FROM user_" + src + " "
     ;
     if (ids.length > 0) {
-      sql += " AND pk_user_" + src + " IN (" + ids.join() + ");";
+      sql += "WHERE pk_user_" + src + " IN (" + ids.join() + ");";
+    } else {
+      sql += "WHERE dirty = 'N';";
+
     }
 
     return new Promise(resolve => {

@@ -8,6 +8,7 @@ import {Utils} from "../../utils/utils";
 import {LoadListService} from "../../../providers/load-list.service";
 import {Configs} from "../../../configurations/configs";
 import {ListElem} from "../../../dto/generic/list-elem";
+import {AlertComponent} from "ng2-bootstrap";
 
 declare var jQuery, Messenger, md5: any;
 
@@ -15,7 +16,7 @@ declare var jQuery, Messenger, md5: any;
   selector: '[select-list-capitalyze]',
   template: require('./select-list-capitalyze.html'),
   styles: [require('./select-list-capitalyze.scss')],
-  directives: [ROUTER_DIRECTIVES],
+  directives: [ROUTER_DIRECTIVES, AlertComponent],
   providers: [LoadListService],
 })
 export class SelectListCapitalyze {
@@ -141,12 +142,24 @@ export class SelectListCapitalyze {
       if (Utils.isEmpty(listTemp) == true) {
         return "Aucun résultat trouvé";
       }
-      return listTemp[0].libelle;
+      return listTemp[0].libelle + (listTemp[0].dirty == 'Y' ? ' *' : '');
     }
 
     if (this.isDynamicList() === false) {
       return "Soyez la première personne à proposer une valeur";
     }
+  }
+
+  containDeprecatedValue() {
+    if (Utils.isEmpty(this.list) === true) {
+      return false;
+    }
+    for (let i = 0; i < this.list.length; ++i) {
+      if (this.list[i].dirty && this.list[i].dirty == 'Y') {
+        return true;
+      }
+    }
+    return false;
   }
 
   initializeDynamicSelect() {
@@ -183,8 +196,9 @@ export class SelectListCapitalyze {
             ", libelle " +
             "FROM user_" + self.src +  " " +
             "WHERE " +
-            "lower_unaccent(libelle) like lower_unaccent('%" + term + "%') " +
-            "OR lower_unaccent(libelle) % lower_unaccent('" + term + "')"
+            "(lower_unaccent(libelle) like lower_unaccent('%" + term + "%') " +
+            "OR lower_unaccent(libelle) % lower_unaccent('" + term + "'))" +
+            " AND dirty = 'N'"
           ;
           // TODO Retirer les éléments déjà selectionnés
           console.log('initializeDynamicSelect('+self.src+').data(+term+)');
