@@ -1184,7 +1184,7 @@ export class OfferEdit {
   }
 
   displayClassification() {
-    return this.projectTarget == 'employer' && ((this.obj == 'add') || (this.offer && this.offer.parametrageConvention != 0));
+    return this.projectTarget == 'employer';
   }
 
   saveSoftware(software, idOffer) {
