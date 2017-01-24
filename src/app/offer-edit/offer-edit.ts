@@ -69,6 +69,8 @@ export class OfferEdit{
 
   offer: Offer;
 
+  fullLoad: boolean = false;
+
   sectors: any = [];
   jobs: any = [];
 
@@ -191,6 +193,7 @@ export class OfferEdit{
       // if (this.projectTarget == 'employer') {
         this.offersService.getOfferById(this.offer.idOffer, this.projectTarget, this.offer).then(()=> {
           this.refreshParametrage = true;
+          this.fullLoad = true;
         });
       // }
     } else {
@@ -793,6 +796,7 @@ export class OfferEdit{
   }
 
   copyOffer() {
+    this.sharedService.setCurrentOffer(this.offer);
     this.dataValidation = true;
     this.modalParams.type = "offer.copy";
     this.modalParams.message = "Voulez-vous ajouter une nouvelle offre à partir de celle-ci ?";
