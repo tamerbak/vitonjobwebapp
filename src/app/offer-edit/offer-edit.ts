@@ -1,6 +1,6 @@
 import {Component, NgZone, ViewEncapsulation} from "@angular/core";
 import {OffersService} from "../../providers/offer.service";
-import {DomSanitizationService} from '@angular/platform-browser';
+import {DomSanitizationService} from "@angular/platform-browser";
 import {SharedService} from "../../providers/shared.service";
 import {SearchService} from "../../providers/search-service";
 import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from "@angular/router";
@@ -21,7 +21,6 @@ import {SmsService} from "../../providers/sms-service";
 import {AdvertService} from "../../providers/advert.service";
 import {MissionService} from "../../providers/mission-service";
 import {ConventionParameters} from "./convention-parameters/convention-parameters";
-
 import {Offer} from "../../dto/offer";
 import {Job} from "../../dto/job";
 import {SelectLanguages} from "../components/select-languages/select-languages";
@@ -62,7 +61,7 @@ declare var require;
   ]
 })
 
-export class OfferEdit{
+export class OfferEdit {
 
   selectedJob: any;
   initSectorDone = false;
@@ -81,7 +80,6 @@ export class OfferEdit{
   slot: any;
   slots = [];
 
-  slotsToSave = [];
   alerts: Array<Object>;
   alertsSlot: Array<Object>;
   alertsConditionEmp: Array<Object>;
@@ -149,10 +147,10 @@ export class OfferEdit{
   /*
    *  ADVERTISEMENTS MANAGEMENT
    */
-  advertMode : any;
+  advertMode: any;
   advertId: string;
 
-  personalizeConventionInit : boolean = false;
+  personalizeConventionInit: boolean = false;
 
   savedSoftwares: any[] = [];
   selectedSoftware: any;
@@ -173,7 +171,7 @@ export class OfferEdit{
               private conventionService: ConventionService,
               private candidatureService: CandidatureService,
               private smsService: SmsService,
-              private advertService : AdvertService) {
+              private advertService: AdvertService) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['home']);
@@ -191,10 +189,10 @@ export class OfferEdit{
     if (this.obj == "detail") {
       this.offer = this.sharedService.getCurrentOffer();
       // if (this.projectTarget == 'employer') {
-        this.offersService.getOfferById(this.offer.idOffer, this.projectTarget, this.offer).then(()=> {
-          this.refreshParametrage = true;
-          this.fullLoad = true;
-        });
+      this.offersService.getOfferById(this.offer.idOffer, this.projectTarget, this.offer).then(()=> {
+        this.refreshParametrage = true;
+        this.fullLoad = true;
+      });
       // }
     } else {
       this.offer = new Offer();
@@ -252,7 +250,7 @@ export class OfferEdit{
       this.isOfferArchived = (this.offer.etat == 'en archive' ? true : false);
 
       this.isOfferInContract = (this.offer.etat == 'en contrat' ? true : false);
-      if(this.isOfferInContract){
+      if (this.isOfferInContract) {
         //display alert if offer is in contract
         this.addAlert("info", "Cette offre est en contrat. Vous ne pouvez donc pas la modifier.", "general");
       }
@@ -287,24 +285,24 @@ export class OfferEdit{
       ;
       this.offer.contact = (this.currentUser.prenom + " " + this.currentUser.nom).trim();
 
-      if(this.projectTarget == 'employer'){
-          var siegeAddress = this.currentUser.employer.entreprises[0].siegeAdress;
-          this.offerAddress=  siegeAddress.fullAdress;
-          this.nameOA = siegeAddress.name;
-          this.streetNumberOA = siegeAddress.streetNumber;
-          this.streetOA = siegeAddress.street;
-          this.zipCodeOA = siegeAddress.zipCode;
-          this.cityOA = siegeAddress.city;
-          this.countryOA = siegeAddress.country;
+      if (this.projectTarget == 'employer') {
+        var siegeAddress = this.currentUser.employer.entreprises[0].siegeAdress;
+        this.offerAddress = siegeAddress.fullAdress;
+        this.nameOA = siegeAddress.name;
+        this.streetNumberOA = siegeAddress.streetNumber;
+        this.streetOA = siegeAddress.street;
+        this.zipCodeOA = siegeAddress.zipCode;
+        this.cityOA = siegeAddress.city;
+        this.countryOA = siegeAddress.country;
       } else {
-          var personalAdress = this.currentUser.jobyer.personnalAdress;
-          this.offerAddress=  personalAdress.fullAdress;
-          this.nameOA = personalAdress.name;
-          this.streetNumberOA = personalAdress.streetNumber;
-          this.streetOA = personalAdress.street;
-          this.zipCodeOA = personalAdress.zipCode;
-          this.cityOA = personalAdress.city;
-          this.countryOA = personalAdress.country;
+        var personalAdress = this.currentUser.jobyer.personnalAdress;
+        this.offerAddress = personalAdress.fullAdress;
+        this.nameOA = personalAdress.name;
+        this.streetNumberOA = personalAdress.streetNumber;
+        this.streetOA = personalAdress.street;
+        this.zipCodeOA = personalAdress.zipCode;
+        this.cityOA = personalAdress.city;
+        this.countryOA = personalAdress.country;
       }
     }
 
@@ -321,14 +319,14 @@ export class OfferEdit{
         // Load job
         this.hideJobLoader = false;
         // this.offersService.loadJobsToLocal().then((data2: any) => {
-          // this.sharedService.setJobList(data2);
-          this.hideJobLoader = true;
+        // this.sharedService.setJobList(data2);
+        this.hideJobLoader = true;
 
-          if (this.obj == "detail") {
-            //display selected job of the current offer
-            this.selectNewSector(this.offer.jobData.idSector);
-          }
-          self.initSectorDone = true;
+        if (this.obj == "detail") {
+          //display selected job of the current offer
+          this.selectNewSector(this.offer.jobData.idSector);
+        }
+        self.initSectorDone = true;
 
         // })
       })
@@ -434,7 +432,7 @@ export class OfferEdit{
         return markup;
       },
       minimumInputLength: 1,
-      initSelection: function(element, callback) {
+      initSelection: function (element, callback) {
       }
     });
 
@@ -542,10 +540,9 @@ export class OfferEdit{
     }
 
     if (this.obj != "detail") {
-      this.offer.calendarData = this.offersService.convertSlotsForSaving(this.slotsToSave);
 
-      if(!this.isFormValid()){
-          return;
+      if (!this.isFormValid()) {
+        return;
       }
 
       let level = (this.offer.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant';
@@ -560,7 +557,7 @@ export class OfferEdit{
       //this.router.navigate(['offer/calendar', {offer: this.offer, isOfferToAdd: true}]);
       this.offersService.createOffer(this.offer, this.projectTarget).then((data: any) => {
         this.dataValidation = true;
-        let offer = JSON.parse(data._body);
+        let offer = this.offer;
 
         if (this.projectTarget == 'employer') {
 
@@ -596,8 +593,8 @@ export class OfferEdit{
           this.currentUser.jobyer.offers.push(offer);
         }
 
-        if(this.projectTarget == 'employer'){
-          for(let i = 0; i < this.savedSoftwares.length; i++){
+        if (this.projectTarget == 'employer') {
+          for (let i = 0; i < this.savedSoftwares.length; i++) {
             this.saveSoftware(this.savedSoftwares[i], offer.idOffer);
           }
         }
@@ -609,9 +606,9 @@ export class OfferEdit{
           showCloseButton: true
         });
         //redirection depending on the case
-        if(!Utils.isEmpty(this.advertId)){
+        if (!Utils.isEmpty(this.advertId)) {
           this.advertService.updateAdvertWithOffer(this.advertId, offer.idOffer).then((data: any) => {
-            this.router.navigate(['advert/edit', {obj:'add'}]);
+            this.router.navigate(['advert/edit', {obj: 'add'}]);
           });
           return;
         }
@@ -689,11 +686,11 @@ export class OfferEdit{
     }
 
     //redirection depending on the case
-    if(!Utils.isEmpty(this.advertId)){
+    if (!Utils.isEmpty(this.advertId)) {
       this.advertService.updateAdvertWithOffer(this.advertId, this.offer.idOffer);
       this.router.navigate(['advert/list']);
       return;
-    }else{
+    } else {
       //redirect to offer-list and display public offers
       var typeOffer = this.offer.visible ? 0 : 1;
       this.router.navigate(['offer/list', {typeOfferModel: typeOffer}]);
@@ -821,10 +818,10 @@ export class OfferEdit{
           showCloseButton: true
         });
       } else {
-        if(this.projectTarget == 'employer'){
+        if (this.projectTarget == 'employer') {
           this.candidatureService.getJobyersByOfferCandidature(this.offer.idOffer).then((data: any) => {
-            if(data && data.data && data.data.length >= 1){
-              for(let i = 0; i < data.data.length; i++){
+            if (data && data.data && data.data.length >= 1) {
+              for (let i = 0; i < data.data.length; i++) {
                 let jobyer = data.data[i];
                 this.smsService.sendSms(jobyer.telephone, "L'offre " + this.offer.title + " auquelle vous avez postulé, publiée par " + this.currentUser.employer.entreprises[0].nom + " est passée à l'état privée.");
               }
@@ -848,9 +845,9 @@ export class OfferEdit{
       class: 'com.vitonjob.recherche.model.SearchQuery',
       queryType: 'OFFER',
       idOffer: offer.idOffer,
-      resultsType: this.projectTarget=='jobyer'?'employer':'jobyer'
+      resultsType: this.projectTarget == 'jobyer' ? 'employer' : 'jobyer'
     };
-    this.searchService.advancedSearch(searchQuery).then((data:any)=>{
+    this.searchService.advancedSearch(searchQuery).then((data: any)=> {
       this.sharedService.setLastResult(data);
       this.sharedService.setCurrentOffer(offer);
       this.keepCurrentOffer = true;
@@ -889,7 +886,7 @@ export class OfferEdit{
       let self = this;
       this.financeService.loadPrevQuotePdf(offer.idOffer).then((data: any) => {
 
-        let file64 ='data:application/pdf;base64, ' + data.pdf;
+        let file64 = 'data:application/pdf;base64, ' + data.pdf;
         this.sharedService.setCurrentQuote(file64);
         this.keepCurrentOffer = true;
         self.router.navigate(['iframe/quote']);
@@ -936,30 +933,30 @@ export class OfferEdit{
     });
   }
 
-  constructAdress(){
+  constructAdress() {
     let adr = "";
-    if(this.nameOA && this.nameOA.length>0){
-      adr = adr+this.nameOA+", ";
+    if (this.nameOA && this.nameOA.length > 0) {
+      adr = adr + this.nameOA + ", ";
     }
 
-    if(this.streetNumberOA && this.streetNumberOA.length>0){
-      adr = adr+this.streetNumberOA+", ";
+    if (this.streetNumberOA && this.streetNumberOA.length > 0) {
+      adr = adr + this.streetNumberOA + ", ";
     }
 
-    if(this.streetOA && this.streetOA.length>0){
-      adr = adr+this.streetOA+", ";
+    if (this.streetOA && this.streetOA.length > 0) {
+      adr = adr + this.streetOA + ", ";
     }
 
-    if(this.cityOA && this.cityOA.length>0){
-      adr = adr+this.cityOA+", ";
+    if (this.cityOA && this.cityOA.length > 0) {
+      adr = adr + this.cityOA + ", ";
     }
 
-    if(this.zipCodeOA && this.zipCodeOA.length>0){
-      adr = adr+this.zipCodeOA+", ";
+    if (this.zipCodeOA && this.zipCodeOA.length > 0) {
+      adr = adr + this.zipCodeOA + ", ";
     }
 
-    if(this.countryOA && this.countryOA.length>0){
-      adr = adr+this.countryOA;
+    if (this.countryOA && this.countryOA.length > 0) {
+      adr = adr + this.countryOA;
     }
 
     return adr.trim();
@@ -1002,24 +999,24 @@ export class OfferEdit{
   }
 
   decimalAdjust(type, value, exp) {
-  // Si la valeur de exp n'est pas définie ou vaut zéro...
-  if (typeof exp === 'undefined' || +exp === 0) {
-    return Math[type](value);
+    // Si la valeur de exp n'est pas définie ou vaut zéro...
+    if (typeof exp === 'undefined' || +exp === 0) {
+      return Math[type](value);
+    }
+    value = +value;
+    exp = +exp;
+    // Si la valeur n'est pas un nombre
+    // ou si exp n'est pas un entier...
+    if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+      return NaN;
+    }
+    // Décalage
+    value = value.toString().split('e');
+    value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+    // Décalage inversé
+    value = value.toString().split('e');
+    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
   }
-  value = +value;
-  exp = +exp;
-  // Si la valeur n'est pas un nombre
-  // ou si exp n'est pas un entier...
-  if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
-    return NaN;
-  }
-  // Décalage
-  value = value.toString().split('e');
-  value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
-  // Décalage inversé
-  value = value.toString().split('e');
-  return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
-}
 
   saveConditionEmp(offer) {
     if (this.obj != 'detail' || !this.isConditionEmpExist) {
@@ -1043,8 +1040,8 @@ export class OfferEdit{
     });
     this.majorationsHeure = [];
     /*this.offersService.getHoursMajoration(this.convention.id).then(data => {
-      this.majorationsHeure = this.conventionService.convertValuesToPercent(data);
-    });*/
+     this.majorationsHeure = this.conventionService.convertValuesToPercent(data);
+     });*/
     this.offersService.getIndemnites(this.convention.id).then(data => {
       this.indemnites = this.conventionService.convertValuesToPercent(data);
     });
@@ -1064,16 +1061,16 @@ export class OfferEdit{
     });
     this.majorationsHeure = [];
     /*this.conventionService.getHoursMajorationEmp(this.convention.id, this.offer.idOffer).then((data: any) => {
-      if (!data || data.length == 0) {
-        this.isConditionEmpExist = false;
-        this.offersService.getHoursMajoration(this.convention.id).then(data => {
-          this.majorationsHeure = this.conventionService.convertValuesToPercent(data);
-        });
-      } else {
-        this.isConditionEmpExist = true;
-        this.majorationsHeure = this.conventionService.convertValuesToPercent(data);
-      }
-    });*/
+     if (!data || data.length == 0) {
+     this.isConditionEmpExist = false;
+     this.offersService.getHoursMajoration(this.convention.id).then(data => {
+     this.majorationsHeure = this.conventionService.convertValuesToPercent(data);
+     });
+     } else {
+     this.isConditionEmpExist = true;
+     this.majorationsHeure = this.conventionService.convertValuesToPercent(data);
+     }
+     });*/
     this.conventionService.getIndemnitesEmp(this.convention.id, this.offer.idOffer).then((data: any) => {
       if (!data || data.length == 0) {
         this.isConditionEmpExist = false;
@@ -1092,74 +1089,76 @@ export class OfferEdit{
    *
    * @returns {boolean}
    */
-  isFormValid(){
-    let errors   = [];
+  isFormValid() {
+    let errors = [];
 
     if (!this.offer.calendarData || this.offer.calendarData.length == 0) {
       this.addAlert("warning", "Veuillez saisir les horaires de travail pour continuer.", "general");
-      errors.push({type:'required',
-      		label: this.projectTarget == 'jobyer' ? "Choix des disponibilités" : "Choix des horaires de travail"})
+      errors.push({
+        type: 'required',
+        label: this.projectTarget == 'jobyer' ? "Choix des disponibilités" : "Choix des horaires de travail"
+      })
     }
 
     // Error checking by a global method
     let required_fields = 'input[required], select[required]';
-    jQuery(required_fields).each(function(){
+    jQuery(required_fields).each(function () {
 
-    	let tn = jQuery(this).prop("tagName");
+      let tn = jQuery(this).prop("tagName");
 
-        if (!jQuery(this).val() || jQuery(this).val() == "0"){
-          let id = '#'+jQuery(this).attr('id') || 0;
-          let label = jQuery(this).data('label') || 'Champ incomplet';
-          let cible = jQuery(this).data('cible') || id;
-          let error = {type:'required', label:false, cible:false};
+      if (!jQuery(this).val() || jQuery(this).val() == "0") {
+        let id = '#' + jQuery(this).attr('id') || 0;
+        let label = jQuery(this).data('label') || 'Champ incomplet';
+        let cible = jQuery(this).data('cible') || id;
+        let error = {type: 'required', label: false, cible: false};
 
-          if (cible)	error.cible = cible;
-          if (label)	error.label = label;
+        if (cible)  error.cible = cible;
+        if (label)  error.label = label;
 
-          // Insert current error object
-          if (error)  	errors.push(error);
-        }
+        // Insert current error object
+        if (error)    errors.push(error);
+      }
     });
 
     /* Gestion des erreurs */
-    if (errors.length > 0){
-    	let first = errors[0];
+    if (errors.length > 0) {
+      let first = errors[0];
 
-		let n = 0;
-		let cpl = "";
-		for (n; n<errors.length;n++){
-			let e = errors[n];
+      let n = 0;
+      let cpl = "";
+      for (n; n < errors.length; n++) {
+        let e = errors[n];
 
-			if (e.cible){
+        if (e.cible) {
 
-				if (e.label)
-					cpl += "<br> • <b hover='"+e.cible+"'>"+e.label+"</b>";
+          if (e.label)
+            cpl += "<br> • <b hover='" + e.cible + "'>" + e.label + "</b>";
 
-				jQuery(e.cible).addClass('warning-empty')
-					.off('change click').on('change click', function(){
-					if (jQuery(this).val())
-				 		jQuery(this).removeClass('warning-empty')
-				});
-			}else
-				cpl += "<br> • <b>"+e.label+"</b>";
-		}
+          jQuery(e.cible).addClass('warning-empty')
+            .off('change click').on('change click', function () {
+            if (jQuery(this).val())
+              jQuery(this).removeClass('warning-empty')
+          });
+        } else
+          cpl += "<br> • <b>" + e.label + "</b>";
+      }
 
-		if (first.cible){
-			let pos = jQuery(first.cible).offset();
-			window.scrollTo(pos.left, pos.top - 100);
-		}else
-			window.scrollTo(0, 0);
+      if (first.cible) {
+        let pos = jQuery(first.cible).offset();
+        window.scrollTo(pos.left, pos.top - 100);
+      } else
+        window.scrollTo(0, 0);
 
-		this.addAlert("danger", "Merci de compléter les informations suivantes pour valider votre offre :  " + cpl, "general");
+      this.addAlert("danger", "Merci de compléter les informations suivantes pour valider votre offre :  " + cpl, "general");
 
-    	// Mise en surbrillance du champ en erreur survolé
-    	jQuery('[hover]').on('mouseenter', function(){
-    		let c = jQuery(this).attr('hover');
-    		jQuery(c).addClass('warn-focus');
-    	}).on('mouseleave', function(){
-    		let c = jQuery(this).attr('hover');
-    		jQuery(c).removeClass('warn-focus');
-    	})
+      // Mise en surbrillance du champ en erreur survolé
+      jQuery('[hover]').on('mouseenter', function () {
+        let c = jQuery(this).attr('hover');
+        jQuery(c).addClass('warn-focus');
+      }).on('mouseleave', function () {
+        let c = jQuery(this).attr('hover');
+        jQuery(c).removeClass('warn-focus');
+      })
     }
     return errors.length == 0;
   }
@@ -1189,22 +1188,22 @@ export class OfferEdit{
   }
 
   saveSoftware(software, idOffer) {
-    this.offersService.saveSoftware(software, idOffer).then((expId: any) =>{
-      let savedSoft = {expId:expId, softId: software.id, nom: software.nom};
-      if(this.obj == 'detail'){
+    this.offersService.saveSoftware(software, idOffer).then((expId: any) => {
+      let savedSoft = {expId: expId, softId: software.id, nom: software.nom};
+      if (this.obj == 'detail') {
         this.savedSoftwares.push(savedSoft);
       }
     })
   }
 
-  removeSoftware(item){
+  removeSoftware(item) {
     this.savedSoftwares.splice(this.savedSoftwares.indexOf(item), 1);
-    if(this.obj == 'detail'){
+    if (this.obj == 'detail') {
       this.offersService.deleteSoftware(item.expId);
     }
   }
 
-  addSoftware(){
+  addSoftware() {
     if (Utils.isEmpty(this.selectedSoftware)) {
       return;
     }
@@ -1214,18 +1213,18 @@ export class OfferEdit{
 
 
     //if the selected software is already saved, do not re-add it
-    for(let i = 0; i < this.savedSoftwares.length; i++) {
+    for (let i = 0; i < this.savedSoftwares.length; i++) {
       if (this.savedSoftwares[i].softId == this.selectedSoftware) {
         this.selectedSoftware = "";
         return;
       }
     }
 
-    if(this.obj == 'detail'){
+    if (this.obj == 'detail') {
       //if software is not yet added
       this.saveSoftware(softwaresTemp[0], this.offer.idOffer);
       this.selectedSoftware = "";
-    }else{
+    } else {
       softwaresTemp[0].softId = softwaresTemp[0].id;
       this.savedSoftwares.push(softwaresTemp[0]);
       this.selectedSoftware = "";

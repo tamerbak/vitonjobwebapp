@@ -197,13 +197,12 @@
     <section class="widget widget-calendar widget-offer">
       <header class="bb widget-offer-header">
         <h6><span class="fw-semi-bold widget-offer-header-title">
-          {{ projectTarget == 'jobyer' ? 'Disponibilités' : 'Horaires de travail'}}
+          {{ projectTarget == 'jobyer' ? 'Disponibilités' : 'Horaires de travail' }}
         </span></h6>
       </header>
       <div
         voj-calendar
         [(slots)]="offer.calendarData"
-        [(offer)]="offer"
       ></div>
     </section>
     <!-- !CALENDAR -->
