@@ -37,7 +37,6 @@ export class Calendar {
   currentUser: any;
   slot: CalendarSlot;
 
-  slotsToSave = [];
   alerts: Array<Object>;
   alertsSlot: Array<Object>;
   alertsConditionEmp: Array<Object>;
@@ -145,7 +144,6 @@ export class Calendar {
           return new Date(event.start._d).getTime() == new Date(ev[0].start._d).getTime() && new Date(event.end._d).getTime() == new Date(ev[0].end._d).getTime();
         });
         this.slots.splice(index, 1);
-        this.slotsToSave.splice(index, 1);
       }
     } else {
       if (this.slots.length == 1) {
@@ -175,33 +173,30 @@ export class Calendar {
     this.closeDetailsModal();
   }
 
+  /**
+   * Forge well formatted calendar slot and add it the the slots list
+   *
+   * @param ev
+   */
   addSlot(ev) {
 
     if (this.slot.startHour == 0 || this.slot.endHour == 0) {
       return;
     }
 
-    if (this.obj != "detail") {
+    if (this.obj != "detail" || ev != 'drop') {
 
-      this.slots.push(this.slot);
-      this.slotsToSave.push(this.slot);
-      // this.slots.push(this.slot);
-      return;
-    } else {
+      let slotClone = this.offersService.cloneSlot(this.slot);
+      let slotToSave = this.offersService.convertSlotsForSaving([slotClone]);
 
-      if (ev != 'drop') {
-        let slotClone = this.offersService.cloneSlot(this.slot);
-        let slotToSave = this.offersService.convertSlotsForSaving([slotClone]);
-
-        if (slotToSave[0]) {
-          let slot = new CalendarSlot();
-          slot.date = new Date(slotToSave[0].date);
-          slot.dateEnd = new Date(slotToSave[0].dateEnd);
-          slot.endHour = slotToSave[0].endHour;
-          slot.pause = slotToSave[0].pause;
-          slot.startHour = slotToSave[0].startHour;
-          this.slots.push(slot);
-        }
+      if (slotToSave[0]) {
+        let slot = new CalendarSlot();
+        slot.date = new Date(slotToSave[0].date);
+        slot.dateEnd = new Date(slotToSave[0].dateEnd);
+        slot.endHour = slotToSave[0].endHour;
+        slot.pause = slotToSave[0].pause;
+        slot.startHour = slotToSave[0].startHour;
+        this.slots.push(slot);
       }
     }
   }
@@ -631,7 +626,6 @@ export class Calendar {
             pause: false,
             allDay: false
           });
-          this.slotsToSave.push(normalized_slot);
 
           // Actualisation du rendu graphique
           this.pushSlotInCalendar(splitted_slot)
@@ -716,8 +710,6 @@ export class Calendar {
       this.slots = [];
       this.slots = this.convertEventsToSlots(evs);
       if (this.obj != "detail") {
-        this.slotsToSave = [];
-        this.slotsToSave = this.convertEventsToSlots(evs);
         this.resetSlotModal();
       } else {
         this.slots = [];
