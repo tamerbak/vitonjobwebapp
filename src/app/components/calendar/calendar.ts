@@ -16,6 +16,11 @@ declare var google: any;
 declare var moment: any;
 declare var require;
 
+/**
+ * Integration of fullCalendar JS
+ *
+ * Source: https://fullcalendar.io/docs/
+ */
 @Component({
   selector: '[voj-calendar]',
   template: require('./calendar.html'),
@@ -198,7 +203,15 @@ export class Calendar {
       if (slotToSave[0]) {
         let slot = new CalendarSlot();
         slot.date = new Date(slotToSave[0].date);
+        slot.date.setHours(12);
+        slot.date.setMinutes(0);
+        slot.date.setSeconds(0);
+
         slot.dateEnd = new Date(slotToSave[0].dateEnd);
+        slot.dateEnd.setHours(12);
+        slot.dateEnd.setMinutes(0);
+        slot.dateEnd.setSeconds(0);
+
         slot.endHour = slotToSave[0].endHour;
         slot.pause = slotToSave[0].pause;
         slot.startHour = slotToSave[0].startHour;
@@ -388,8 +401,8 @@ export class Calendar {
   watchFullTime(e) {
     this.isFulltime = e.target.checked;
     if (this.isFulltime) {
-      this.slot.startHour = new Date(new Date().setHours(0, 0, 0, 0)).getDate();
-      this.slot.endHour = new Date(new Date().setHours(23, 59, 0, 0)).getDate(); // TODO CHECK
+      this.slot.startHour = new Date(new Date().setHours(0, 0, 0, 0));
+      this.slot.endHour = new Date(new Date().setHours(23, 59, 0, 0));
       this.slot.pause = false;
       this.isPause = false;
     }
@@ -505,6 +518,7 @@ export class Calendar {
         if (date < today)
           jQuery(cell).addClass('disabled');
       },
+      timezone: 'local',
       lang: 'fr'
     };
   }

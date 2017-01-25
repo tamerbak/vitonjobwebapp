@@ -962,31 +962,6 @@ export class OfferEdit {
     return adr.trim();
   }
 
-  watchFullTime(e) {
-    this.isFulltime = e.target.checked;
-    if (this.isFulltime) {
-      this.slot.startHour = new Date(new Date().setHours(0, 0, 0, 0));
-      this.slot.endHour = new Date(new Date().setHours(23, 59, 0, 0));
-      this.slot.pause = false;
-      this.isPause = false;
-    }
-  }
-
-  watchPause(e) {
-    this.isPause = e.target.checked;
-    if (this.isPause) {
-      this.isFulltime = false;
-      this.slot.pause = true;
-    } else {
-      this.slot.pause = false;
-    }
-  }
-
-  watchPeriodicity(e) {
-    this.isPeriodic = e.target.checked;
-    this.slot.isPeriodic = e.target.checked;
-  }
-
   watchConditionEmp(e, item) {
     this.alertsConditionEmp = [];
     this.isConditionEmpValid = true;
