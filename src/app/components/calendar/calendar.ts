@@ -618,8 +618,8 @@ export class Calendar {
     let title = (!this.slot.pause ? "Créneau de " : "Pause de ");
     let evt = {
       title: title + DateUtils.formatHours(hs) + ":" + DateUtils.formatHours(ms) + " à " + DateUtils.formatHours(he) + ":" + DateUtils.formatHours(me),
-      start: start,
-      end: end,
+      start: start + 0, // HACK : implicite cast to timestamp
+      end: end + 0,
       //allDay is bugged, must be false
       allDay: false,
       //description: 'ici je peux mettre une description de l\'offre',
