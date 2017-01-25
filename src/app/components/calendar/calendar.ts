@@ -131,45 +131,51 @@ export class Calendar {
 
   }
 
+  /**
+   * Remove a slot
+   *
+   * @param event
+   */
   removeSlot(event) {
-    if (this.obj != "detail") {
-      //remove event from calendar
-      let ev = this.calendar.events.filter((e)=> {
-        return (new Date(e.start._d).getTime() == new Date(event.start._d).getTime() && new Date(e.end._d).getTime() == new Date(event.end._d).getTime());
-      });
-      let index = this.calendar.events.indexOf(ev[0]);
-      if (index != -1) {
-        this.calendar.events.splice(index, 1);
-        this.$calendar.fullCalendar('removeEvents', function (event) {
-          return new Date(event.start._d).getTime() == new Date(ev[0].start._d).getTime() && new Date(event.end._d).getTime() == new Date(ev[0].end._d).getTime();
-        });
-        this.slots.splice(index, 1);
-      }
-    } else {
-      if (this.slots.length == 1) {
-        this.addAlert("danger", "Une offre doit avoir au moins un créneau de disponibilité. Veuillez ajouter un autre créneau avant de pouvoir supprimer celui-ci.", "slot");
-        return;
-      }
-      //searching event in the calendar events
-      let ev = this.calendar.events.filter((e)=> {
-        return (e.start == event.start._d.getTime() && e.end == event.end._d.getTime());
-      });
-      let index = this.calendar.events.indexOf(ev[0]);
-      if (index != -1) {
-        //removing event from calendar
-        this.calendar.events.splice(index, 1);
-        //render the calendar with the event removed
-        this.$calendar.fullCalendar('removeEvents', function (event) {
-          return new Date(event.start._d).getTime() == ev[0].start && new Date(event.end._d).getTime() == ev[0].end;
-        });
-        //remove slot from local
-        this.slots.splice(index, 1);
-        this.slots.splice(index, 1);
-        //remove slot from remote
-        // this.offersService.updateOfferCalendar(this.offer, this.projectTarget).then(() => {
-        // });
-      }
+    let self = this;
+
+    if (this.slots.length == 1) {
+      this.addAlert(
+        "danger",
+        "Une offre doit avoir au moins un créneau de disponibilité. " +
+        "Veuillez ajouter un autre créneau avant de pouvoir supprimer celui-ci.",
+        "slot"
+      );
+      return;
     }
+
+    // Searching event in the calendar events
+    let ev = this.calendar.events.filter((e)=> {
+      if (self.obj != "detail") {
+        return (new Date(e.start._d).getTime() == new Date(event.start._d).getTime() && new Date(e.end._d).getTime() == new Date(event.end._d).getTime());
+      } else {
+        return (e.start == event.start._d.getTime() && e.end == event.end._d.getTime());
+      }
+    });
+
+    let index = this.calendar.events.indexOf(ev[0]);
+    if (index != -1) {
+      //Removing event from calendar
+      this.calendar.events.splice(index, 1);
+
+      // Render the calendar with the event removed
+      this.$calendar.fullCalendar('removeEvents', (e)=> {
+        if (self.obj != "detail") {
+          return new Date(e.start._d).getTime() == new Date(ev[0].start._d).getTime() && new Date(e.end._d).getTime() == new Date(ev[0].end._d).getTime();
+        } else {
+          return new Date(e.start._d).getTime() == ev[0].start && new Date(e.end._d).getTime() == ev[0].end;
+        }
+      });
+
+      // Remove slot from local
+      this.slots.splice(index, 1);
+    }
+
     this.closeDetailsModal();
   }
 
@@ -469,14 +475,14 @@ export class Calendar {
         this.untilDate = new Date(end._d.getTime() - (24 * 60 * 60 * 1000));
         this.endDate = end._d;
 
-        /* Add to calculate the plageDate */
-        let startTime = (start._d.getDate());
-        let endTime = (end._d.getDate() - 1);
+        // HACK: Calendar select automatically the day after you selection at midnight.
+        // Force 1 day before to stay on the expected day
+        this.endDate.setDate(this.endDate.getDate() - 1);
 
-        this.plageDate = (startTime == endTime) ? 'single' : 'multiple';
-
-
-        this.isPeriodic = true; // Périodique par défaut
+        // Set if single or multi day
+        this.plageDate = (this.startDate.getTime() == this.endDate.getTime()) ? 'single' : 'multiple';
+        // Set default periodicity
+        this.isPeriodic = true;
 
         this.createEvent = () => {
           this.addSlotInCalendar(start, end, allDay);
@@ -522,9 +528,8 @@ export class Calendar {
     /*
      NOW WE START THE REAL TREATMENT
      */
-    start._d.setHours(hs, ms, 0, 0);
-    end._d.setDate(end._d.getDate() - 1);
-    end._d.setHours(he, me, 0, 0);
+    this.startDate.setHours(hs, ms, 0, 0);
+    this.endDate.setHours(he, me, 0, 0);
 
     //slots should be coherent
     this.slot.date = start._d;
