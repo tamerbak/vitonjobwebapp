@@ -274,7 +274,7 @@ export class Profile{
         });
 
       } else {
-        this.scanTitle = " de votre extrait k-bis";
+        this.scanTitle = " de votre Kbis";
         this.loadAttachement(this.scanTitle);
         listService.loadConventions().then((response: any) => {
           this.conventions = response;
