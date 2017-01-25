@@ -142,7 +142,13 @@ export class SelectListCapitalyze {
       if (Utils.isEmpty(listTemp) == true) {
         return "Aucun résultat trouvé";
       }
-      return listTemp[0].libelle + (listTemp[0].dirty == 'Y' ? ' *' : '');
+
+      let label = listTemp[0].libelle;
+      // Add asterisk to dirty values
+      if (this.isDynamicList() === true && listTemp[0].dirty == 'Y') {
+         label += ' *';
+      }
+      return label;
     }
 
     if (this.isDynamicList() === false) {
