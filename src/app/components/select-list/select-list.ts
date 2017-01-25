@@ -13,13 +13,13 @@ import {AlertComponent} from "ng2-bootstrap";
 declare var jQuery, Messenger, md5: any;
 
 @Component({
-  selector: '[select-list-capitalyze]',
-  template: require('./select-list-capitalyze.html'),
-  styles: [require('./select-list-capitalyze.scss')],
+  selector: '[select-list]',
+  template: require('./select-list.html'),
+  styles: [require('./select-list.scss')],
   directives: [ROUTER_DIRECTIVES, AlertComponent],
   providers: [LoadListService],
 })
-export class SelectListCapitalyze {
+export class SelectList {
   @Input()
   selectedList: ListElem[] = [];
 

@@ -24,7 +24,7 @@ import {ConventionParameters} from "./convention-parameters/convention-parameter
 import {Offer} from "../../dto/offer";
 import {Job} from "../../dto/job";
 import {SelectLanguages} from "../components/select-languages/select-languages";
-import {SelectListCapitalyze} from "../components/select-list-capitalyze/select-list-capitalyze";
+import {SelectList} from "../components/select-list/select-list";
 import {Calendar} from "../components/calendar/calendar";
 
 declare var Messenger, jQuery: any;
@@ -45,7 +45,7 @@ declare var require;
     ModalOfferTempQuote,
     ConventionParameters,
     SelectLanguages,
-    SelectListCapitalyze,
+    SelectList,
     Calendar
   ],
   providers: [

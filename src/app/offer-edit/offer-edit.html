@@ -421,7 +421,7 @@
         <div
           *ngIf="projectTarget == 'employer'"
           class="form-group row"
-          select-list-capitalyze
+          select-list
           [(selectedList)]="offer.requirementData"
           [list]=""
           [src]="'prerquis'"
@@ -435,7 +435,7 @@
         <div
           *ngIf="projectTarget == 'employer'"
           class="form-group row"
-          select-list-capitalyze
+          select-list
           [(selectedList)]="offer.equipmentData"
           [list]=""
           [src]="'epi'"
@@ -461,7 +461,7 @@
         <!-- Qualities -->
         <div
           class="form-group row"
-          select-list-capitalyze
+          select-list
           [(selectedList)]="offer.qualityData"
           [list]="qualities"
           [src]=""
