@@ -2117,10 +2117,11 @@ export class Profile{
 
     // Call company name field watcher
     this.companyname = company.name.toUpperCase();
-    this.watchCompanyname({target: {value: company.name.toUpperCase()}});
+    this.watchCompanyname({target: {value: this.companyname}});
 
     this.siret = Utils.formatSIREN(company.siren);
     this.ape = company.naf;
+    this.watchApe({target: {value: this.ape}});
 
     this.IsCompanyExist(this.companyname, 'companyname');
   }
