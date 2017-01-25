@@ -1,0 +1,12 @@
+#entreprises-selector {
+  .selected {
+    background-color: #14baa6;
+    color: white;
+    font-weight: bold;
+  }
+
+  .available {
+    cursor: pointer;
+    font-weight: bold;
+  }
+}

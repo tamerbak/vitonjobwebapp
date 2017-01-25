@@ -1,4 +1,4 @@
-<section class="card entreprises">
+<section id="entreprises-selector" class="card entreprises">
   <header class="card-header">
     <div class="text-xs-center mb-sm">
       <button
@@ -12,12 +12,11 @@
   <div id="entreprises-list" class="list-group thin-scroll">
     <div
       *ngFor="let entreprise of entreprises; let i = index"
-      class="list-group-item"
+      class="list-group-item {{ currentEntreprise.id == entreprise.id ? 'selected' : 'available' }}"
       (click)="swapToEntreprise(i)"
-      style="cursor: pointer;"
     >
       <p class="no-margin overflow-hidden">
-        <b>{{ entreprise.nom }}</b>
+        {{ entreprise.nom }}
       </p>
     </div>
   </div>

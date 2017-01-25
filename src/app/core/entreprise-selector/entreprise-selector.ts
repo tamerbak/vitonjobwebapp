@@ -6,11 +6,13 @@ import {EntrepriseService} from "../../../providers/entreprise.service";
 @Component({
   selector: 'entreprise-selector',
   providers: [EntrepriseService],
-  template: require('./entreprise-selector.html')
+  template: require('./entreprise-selector.html'),
+  styles: [require('./entreprise-selector.scss')]
 })
 export class EntrepriseSelector implements OnInit {
 
   entreprises: any;
+  currentEntreprise: any;
 
   constructor(private router: Router,
               private sharedService: SharedService,
@@ -19,6 +21,7 @@ export class EntrepriseSelector implements OnInit {
     let currentUser = this.sharedService.getCurrentUser();
     if (currentUser && currentUser.estEmployeur) {
       this.entreprises = currentUser.employer.entreprises;
+      this.currentEntreprise = this.entreprises[0];
     }
   }
 
@@ -32,8 +35,8 @@ export class EntrepriseSelector implements OnInit {
     }
     let currentUser = this.sharedService.getCurrentUser();
     if (currentUser && currentUser.estEmployeur) {
-      this.entrepriseService.swapEntreprise(index);
-      this.entreprises = currentUser.employer.entreprises;
+      this.entreprises = this.entrepriseService.swapEntreprise(index);
+      this.currentEntreprise = this.entreprises[0];
     }
     this.router.navigate(['app/home']);
   }

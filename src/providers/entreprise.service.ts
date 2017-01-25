@@ -21,7 +21,7 @@ export class EntrepriseService {
    * @param user
    * @param id
    */
-  swapEntreprise(id) {
+  swapEntreprise(id): any[] {
     let user = this.sharedService.getCurrentUser();
 
     let entrepriseTmp = user.employer.entreprises[0];
@@ -37,6 +37,7 @@ export class EntrepriseService {
       showCloseButton: true
     });
 
+    return user.employer.entreprises;
   }
 
   createEntreprise(accountId, employerId, companyname, ape, conventionId) {
@@ -63,7 +64,7 @@ export class EntrepriseService {
         });
     })
   }
-  
+
   checkEntrepriseNameAvailable() {
     return true;
   }
