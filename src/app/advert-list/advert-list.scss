@@ -1,9 +1,9 @@
 .min-h {
-  min-height: 200px;
+  min-height: 170px;
 }
 
 .mr-left {
-  margin-left: 150px;
+  margin-left: 7em;
 }
 
 .clear-child {
@@ -33,4 +33,43 @@
 .clear-child-3 {
   color: white;
   border-radius: 0.2rem;
+}
+
+.actions-list {
+  text-align: right;
+}
+
+.adv-list-add {
+  margin-bottom: 10px;
+}
+
+.adv-list-date {
+  text-align: right;
+}
+
+.adv-list-picture-container {
+  text-align: center;
+}
+
+.adv-list-picture {
+  height: 100px;
+  width: 100px;
+  overflow: hidden;
+  margin: auto;
+  img {
+    max-height: 100px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .adv-list-action-button {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+  .adv-list-title {
+    text-align: center;
+  }
+  .adv-list-date {
+    text-align: center;
+  }
 }

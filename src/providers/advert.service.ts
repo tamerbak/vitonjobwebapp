@@ -209,21 +209,30 @@ export class AdvertService {
   }
 
   prepareContent(content : string){
-    if(!content || content.length == 0)
+    if (!content || content.length == 0)
       return "";
     let val = "";
-    try{
+    try {
       val = atob(content);
-    }catch(exc){
+    } catch (exc) {
       val = content;
     }
     return val;
   }
 
-  prepareBriefContent(content : string){
+  prepareBriefContent(content: string) {
     let cnt = this.prepareContent(content);
-    if(cnt.length>128)
-      return cnt.substr(0, 128)+'...';
+
+    // Remove html tags
+    if (Utils.isEmpty(cnt) === false) {
+      cnt = cnt.replace(/<(?:.|\n)*?>/gm, '');
+      cnt = cnt.replace(/&nbsp;/gm, ' ');
+    }
+
+    // Split the text if too long
+    if (cnt.length > 128) {
+      return cnt.substr(0, 128) + '...';
+    }
     return cnt;
   }
 
