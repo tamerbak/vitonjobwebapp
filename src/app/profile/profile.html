@@ -482,15 +482,22 @@
                 </div>
               </div>
 
-              <div class="form-group row">
-                <div *ngFor="let i of allImages; let idx = index" class="col-md-2 col-xs-12">
-                  <img style="max-height: 100px;margin:1px"  src="{{i.data}}" alt=""/>
+              <!-- DOCUMENTS LIST -->
+              <div class="form-group row profile-doc-list">
+                <div *ngFor="let i of allImages; let idx = index" class="col-md-2 col-xs-12 profile-doc-list-elem">
+                  <img
+                    class="img-thumbnail"
+                    style="max-height: 100px;margin:1px"
+                    [src]="i.data"
+                  />
                   <button class="btn danger" style="width: 100%;" (click)="deleteImage(idx)">
-                    <span class="glyphicon glyphicon-minus"></span>
+                    Supprimer
                   </button>
                 </div>
               </div>
+              <!-- !DOCUMENTS LIST -->
 
+              <!-- DOCUMENTS ADD -->
               <div class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Joindre une photo {{scanTitle}}
@@ -513,8 +520,8 @@
                     </div>
                   </alert>
                 </div>
-
               </div>
+              <!-- !DOCUMENTS ADD -->
 
               <div class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
