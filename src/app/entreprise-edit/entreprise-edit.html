@@ -3,128 +3,163 @@
   <li class="active"><a class="breadcrumb-link" href="#">Ajout d'une entreprise</a></li>
 </ol>
 <div class="row">
-  <div class="col-xs-12 pull-right mr-bot">
-    <a href="javascript:history.go(-1)"><button type="button" class="btn btn-secondary btn-sm" name="button"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Retour</button></a>
+  <div class="col-xs-12 pull-right mr-bot" style="margin-bottom: 1em;">
+    <a href="javascript:history.go(-1)">
+      <button type="button" class="btn btn-secondary btn-sm" name="button">
+        <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Retour
+      </button>
+    </a>
   </div>
 </div>
-<div class="container contenu">
+
+<div class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
 
   <div class="row">
-    <div class="col-xs-12">
-      <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
+    <section class="widget">
+      <header class="bb widget-header">
+        <h6><span class="fw-semi-bold">Création d'une entreprise</span></h6>
+      </header>
+      <div class="widget-body widget-body-profile">
         <fieldset>
+          <div class="row">
 
-          <div (onDismiss)="onDismissCorporamaModal($event)" modal-corporama-search></div>
+            <div class="container contenu">
 
-          <div class="form-group row">
-            <label for="companyname" class="col-md-4 col-xs-12 form-control-label text-md-right">
-              Raison Sociale
-              <span class="asterisk">*</span>
-            </label>
-            <div class="col-md-4 col-xs-12">
-              <input
-                type="text"
-                id="companyname"
-                class="form-control"
-                [(ngModel)]="companyname"
-                name="companyname"
-                placeholder="Raison Sociale"
-                (keyup)="watchCompanyname($event)"
-                (change)="IsCompanyExist($event, 'companyname')"
-              >
-            </div>
-            <div class="col-md-3 col-xs-12">
-              <button class="btn btn-default search-button" (click)="openCoporamaModal()">
-                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                Rechercher
-              </button>
-            </div>
-            <div class="col-md-offset-4 col-md-7 col-xs-12">
-              <span class="hint label label-danger">{{companynameHint}}</span>
-            </div>
-          </div>
+              <div class="row">
+                <div class="col-xs-12">
+                  <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
+                    <fieldset>
 
-          <div class="form-group row">
-            <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-              NAF
-              <span class="asterisk">*</span>
-            </label>
-            <div class="col-md-7 col-xs-12">
-              <input
-                id="ape"
-                type="text"
-                class="form-control"
-                [textMask]="{mask: maskApe}"
-                [(ngModel)]="ape"
-                name="ape"
-                placeholder="9999A"
-                (keyup)="watchApe($event)"
-              >
-            </div>
-            <div class="col-md-offset-4 col-md-7 col-xs-12">
-              <span class="hint label label-danger">{{apeHint}}</span>
-            </div>
-          </div>
+                      <div (onDismiss)="onDismissCorporamaModal($event)" modal-corporama-search></div>
 
-          <div class="form-group row">
-            <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-              Convention collective
-              <span class="asterisk">*</span>
-            </label>
-            <div class="col-md-7 col-xs-12">
-              <select
-                placeholder="Convention collective"
-                data-style="btn-secondary"
-                class="nationalitySelectPicker form-control"
-                id="convention-select"
-                [(ngModel)]="conventionId"
-                name="convention_slct"
-                style="height: 35px;"
-              >
-                <option *ngFor="let c of conventions" value="{{c.id}}">
-                  {{c.code}} - {{c.libelle}}
-                </option>
-              </select>
-            </div>
-          </div>
+                      <div class="form-group row">
+                        <label for="companyname" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                          Raison Sociale
+                          <span class="asterisk">*</span>
+                        </label>
+                        <div class="col-md-4 col-xs-12">
+                          <input
+                            type="text"
+                            id="companyname"
+                            class="form-control"
+                            [(ngModel)]="companyname"
+                            name="companyname"
+                            placeholder="Raison Sociale"
+                            (keyup)="watchCompanyname($event)"
+                            (change)="IsCompanyExist($event, 'companyname')"
+                          >
+                        </div>
+                        <div class="col-md-3 col-xs-12">
+                          <button class="btn btn-default search-button" (click)="openCoporamaModal()">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            Rechercher
+                          </button>
+                        </div>
+                        <div class="col-md-offset-4 col-md-7 col-xs-12">
+                          <span class="hint label label-danger">{{companynameHint}}</span>
+                        </div>
+                      </div>
 
-          <!--Alerts-->
-          <div *ngIf="isEmployer" class="form-group row">
-            <div class="col-md-12 col-xs-12 col-lg-12">
-              <alert *ngIf="!!companyAlert" [type]="'danger'+ ' alert-sm'" dismissible="false">
-                <div>
-                  <span class="fw-semi-bold">Attention:</span>
-                  {{companyAlert}}
-                  <div>
-                    <button class="btn btn-danger btn-xs pull-xs-right mr-xs" (click)="focus('companyname')"
-                    >
-                      changer la valeur
-                    </button>
-                    <button
-                      *ngIf="showCurrentCompanyBtn"
-                      class="btn btn-danger btn-xs pull-xs-right mr-xs"
-                      (click)="setDefaultValue('companyname')"
-                    >
-                      valeur par défault
-                    </button>
-                  </div>
+                      <div class="form-group row">
+                        <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                          NAF
+                          <span class="asterisk">*</span>
+                        </label>
+                        <div class="col-md-7 col-xs-12">
+                          <input
+                            id="ape"
+                            type="text"
+                            class="form-control"
+                            [textMask]="{mask: maskApe}"
+                            [(ngModel)]="ape"
+                            name="ape"
+                            placeholder="9999A"
+                            (keyup)="watchApe($event)"
+                          >
+                        </div>
+                        <div class="col-md-offset-4 col-md-7 col-xs-12">
+                          <span class="hint label label-danger">{{apeHint}}</span>
+                        </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                          Convention collective
+                          <span class="asterisk">*</span>
+                        </label>
+                        <div class="col-md-7 col-xs-12">
+                          <select
+                            placeholder="Convention collective"
+                            data-style="btn-secondary"
+                            class="nationalitySelectPicker form-control"
+                            id="convention-select"
+                            [(ngModel)]="conventionId"
+                            name="convention_slct"
+                            style="height: 35px;"
+                          >
+                            <option *ngFor="let c of conventions" value="{{c.id}}">
+                              {{c.code}} - {{c.libelle}}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <!--Alerts-->
+                      <div *ngIf="isEmployer" class="form-group row">
+                        <div class="col-md-12 col-xs-12 col-lg-12">
+                          <alert *ngIf="!!companyAlert" [type]="'danger'+ ' alert-sm'" dismissible="false">
+                            <div>
+                              <span class="fw-semi-bold">Attention:</span>
+                              {{companyAlert}}
+                              <div>
+                                <button class="btn btn-danger btn-xs pull-xs-right mr-xs" (click)="focus('companyname')"
+                                >
+                                  changer la valeur
+                                </button>
+                                <button
+                                  *ngIf="showCurrentCompanyBtn"
+                                  class="btn btn-danger btn-xs pull-xs-right mr-xs"
+                                  (click)="setDefaultValue('companyname')"
+                                >
+                                  valeur par défault
+                                </button>
+                              </div>
+                            </div>
+                          </alert>
+                        </div>
+                      </div>
+
+                    </fieldset>
+                  </form>
                 </div>
-              </alert>
+              </div>
             </div>
           </div>
-
         </fieldset>
-      </form>
-    </div>
-  </div>
+      </div>
+    </section>
 
-  <div class="row">
-    <button
-      class="btn btn-primary"
-      [disabled]="!isValidForm()"
-      (click)="updateEntreprise()"
-    >
-      Enregistrer
-    </button>
+    <section class="widget" widget>
+      <div class="widget-body widget-body-profile">
+        <form class="form-horizontal" role="form">
+          <div class="form-actions">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-xs-12">
+                  <button
+                    class="btn btn-success fwidth"
+                    [disabled]="!isValidForm()"
+                    (click)="updateEntreprise()"
+                  >
+                    Enregistrer
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
   </div>
 </div>

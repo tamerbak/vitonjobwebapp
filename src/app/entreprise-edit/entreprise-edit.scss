@@ -1,3 +1,21 @@
+@import "../../scss/variables";
+//@import "../../../node_modules/bootstrap/scss/_variables";
+//@import "../../../node_modules/bootstrap/scss/mixins";
+
 .asterisk {
   color: red;
+}
+
+.widget-header {
+  background-color: $navbar-dashboard-bg;
+  border-color: $navbar-dashboard-border;
+  border-radius: 4px 4px 0 0;
+  margin-bottom: 0px !important;
+  table-layout: fixed;
+  color: white;
+}
+
+.fwidth {
+  width: 100%;
+  margin-bottom: 10px;
 }
