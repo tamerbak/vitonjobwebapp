@@ -122,7 +122,11 @@ export class LoadListService {
   }
 
   loadConventions() {
-    let sql = "select pk_user_convention_collective as id, code, libelle from user_convention_collective";
+    let sql = "SELECT pk_user_convention_collective as id, code, libelle " +
+      "FROM user_convention_collective " +
+      "WHERE dirty = 'N' AND code != '9999' " +
+      "ORDER BY libelle ASC;"
+    ;
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
 
