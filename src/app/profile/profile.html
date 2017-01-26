@@ -743,7 +743,7 @@
   </div>
 
   <!-- PREREQUIS -->
-  <div *ngIf="jobs.length > 0" [hidden]="!showForm || isEmployer || isRecruiter" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
+  <div *ngIf="displayJobRequirements()" [hidden]="!showForm || isEmployer || isRecruiter" class="col-xl-offset-2 col-xl-8 col-lg-offset-1 col-lg-10 col-xs-12">
 
     <section class="widget">
       <header class="bb widget-profile-header">

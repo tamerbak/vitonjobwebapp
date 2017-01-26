@@ -2164,4 +2164,13 @@ export class Profile{
     this.selectedSoftware = "";
     this.expSoftware = -1;
   }
+
+  displayJobRequirements(): boolean {
+    for (let i = 0; i < this.jobs.length; ++i) {
+      if (Utils.isEmpty(this.jobs[i].requirements.length) === false) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
