@@ -4,7 +4,7 @@ import {FORM_PROVIDERS} from "@angular/common";
 import {Sidebar} from "./sidebar/sidebar";
 import {Navbar} from "./navbar/navbar";
 import {ConfigService} from "./config";
-import {AppSidebar} from './app-sidebar/app-sidebar';
+import {AppSidebar} from "./app-sidebar/app-sidebar";
 import {ModalConfirm} from "../modal-confirm/modal-confirm";
 import {RuntimeCompiler} from "@angular/compiler";
 import {SystemService} from "../../providers/system.service";
@@ -97,17 +97,15 @@ export class Core {
     // Check if we make an update.
     // __version__ = developemtn env
     // x.x.x = receipt and prod
-    if (this.version != '__version__') {
-      systemService.checkVersion(this.version).then((todate:boolean)=>{
-        if(todate){
-          console.log('SYSTEM UP TO DATE');
-        } else {
-          console.log('SYSTEM OUT OF DATE');
-          console.log('UPDATING .........');
-          this.refreshCache();
-        }
-      });
-    }
+    systemService.checkVersion(this.version).then((todate: boolean)=> {
+      if (todate) {
+        console.log('SYSTEM UP TO DATE');
+      } else {
+        console.log('SYSTEM OUT OF DATE');
+        console.log('UPDATING .........');
+        this.refreshCache();
+      }
+    });
   }
 
   toggleSidebarListener(state): void {
