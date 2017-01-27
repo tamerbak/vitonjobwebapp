@@ -142,10 +142,10 @@
                                         {{pause.pause_debut_temp}}
                                         </td>
                                         <td class="text-align-right" width="100">
-                                            <input type="time" [(ngModel)]="pause.pause_debut_pointe"
-                                                   [hidden]="contract.option_mission == '1.0'|| isNewMission"
-                                                   [style.backgroundColor]="upperCase(pause.is_pause_debut_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_debut_corrigee) == 'NON' ? 'green' : '')"
-                                                   disabled="true"/>
+                                          <span *ngIf="contract.option_mission != '1.0' && !isNewMission"
+                                                class="label label-{{ (upperCase(pause.is_pause_debut_corrigee) == 'OUI'
+                                              ? 'danger': (upperCase(pause.is_pause_debut_corrigee) == 'NON'? 'success': 'default'))
+                                          }}">{{(pause.pause_debut_pointe) ? pause.pause_debut_pointe : '--:--'}}</span>
                                         </td>
                                         <td class="text-align-right" width="100">
                                             <div class="btn-group"
@@ -153,15 +153,13 @@
                                                 <button
                                                         class="btn btn-gray btn-sm"
                                                         (click)="colorHour(i, j, false, true, true)"
-                                                        [disabled]="disableAllUI()"
-                                                >
+                                                        [disabled]="disableAllUI()">
                                                     <i class="glyphicon glyphicon-ok"></i> Accepter
                                                 </button>
                                                 <button
                                                         class="btn btn-gray btn-sm"
                                                         (click)="colorHour(i, j, false, true, false)"
-                                                        [disabled]="disableAllUI()"
-                                                >
+                                                        [disabled]="disableAllUI()">
                                                     <i class="glyphicon glyphicon-remove"></i> Refuser
                                                 </button>
                                             </div>
@@ -181,10 +179,10 @@
                                             {{pause.pause_fin_temp}}
                                         </td>
                                         <td class="text-align-right" width="100">
-                                            <input type="time" [(ngModel)]="pause.pause_fin_pointe"
-                                                   [hidden]="contract.option_mission == '1.0'|| isNewMission"
-                                                   [style.backgroundColor]="upperCase(pause.is_pause_fin_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_fin_corrigee) == 'NON' ? 'green' : '')"
-                                                   disabled="true"/>
+                                            <span *ngIf="contract.option_mission != '1.0' && !isNewMission"
+                                                class="label label-{{ (upperCase(pause.is_pause_fin_corrigee) == 'OUI'
+                                              ? 'danger': (upperCase(pause.is_pause_fin_corrigee) == 'NON'? 'success': 'default'))
+                                          }}">{{(pause.pause_fin_pointe) ? pause.pause_fin_pointe : '--:--'}}</span>
                                         </td>
                                         <td class="text-align-right" width="100">
                                             <div class="btn-group"
@@ -192,15 +190,13 @@
                                                 <button
                                                         class="btn btn-gray btn-sm"
                                                         (click)="colorHour(i, j, false, false, true)"
-                                                        [disabled]="disableAllUI()"
-                                                >
+                                                        [disabled]="disableAllUI()">
                                                     <i class="glyphicon glyphicon-ok"></i> Accepter
                                                 </button>
                                                 <button
                                                         class="btn btn-gray btn-sm"
                                                         (click)="colorHour(i, j, false, false, false)"
-                                                        [disabled]="disableAllUI()"
-                                                >
+                                                        [disabled]="disableAllUI()">
                                                     <i class="glyphicon glyphicon-remove"></i> Refuser
                                                 </button>
                                             </div>
