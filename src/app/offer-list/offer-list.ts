@@ -7,6 +7,7 @@ import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {SearchService} from "../../providers/search-service";
 import {Utils} from "../utils/utils";
 import {NotificationsService} from "../../providers/notifications.service";
+import {AdvertService} from "../../providers/advert.service";
 declare var jQuery,Messenger:any;
 
 @Component({
@@ -15,7 +16,7 @@ declare var jQuery,Messenger:any;
   encapsulation: ViewEncapsulation.None,
   styles: [require('./offer-list.scss')],
   directives: [ACCORDION_DIRECTIVES, ROUTER_DIRECTIVES, AlertComponent, BUTTON_DIRECTIVES],
-  providers: [OffersService, SearchService,ChangeDetectorRef]
+  providers: [OffersService, SearchService,ChangeDetectorRef, AdvertService]
 })
 export class OfferList {
   globalOfferList = [];
@@ -29,6 +30,7 @@ export class OfferList {
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
+              private advertService: AdvertService,
               private router: Router,
               private cdr:ChangeDetectorRef,
               private searchService: SearchService,
@@ -120,6 +122,7 @@ export class OfferList {
       if(offer.etat == 'en archive'){
         this.globalOfferList[2].list.push(offer);
         offer.correspondantsCount = -1;
+        offer.interestedCount = -1;
         continue;
       }
 
@@ -127,6 +130,7 @@ export class OfferList {
       if (offer.visible) {
         offer.color = 'black';
         offer.correspondantsCount = -1;
+        offer.interestedCount = -1;
 
         //verify if offer is obsolete
         let isOfferObsolete = this.isOfferObsolete(offer);
@@ -146,12 +150,16 @@ export class OfferList {
           this.searchService.advancedSearch(searchQuery).then((data:any)=>{
             offer.correspondantsCount = data.count;
           });
+          this.advertService.loadInterestsByOffre(offer.idOffer).then((data:any)=>{
+            offer.interestedCount = data.nbInterest;
+          });
 
         }
       } else {
         //private offers
         offer.color = 'grey';
         offer.correspondantsCount = -1;
+        offer.interestedCount = -1;
         this.globalOfferList[1].list.push(offer);
       }
     }
@@ -277,5 +285,11 @@ export class OfferList {
 
   addAlert(type, msg): void {
     this.alerts = [{type: type, msg: msg}];
+  }
+
+  goToJobyerInterestList(offer) {
+    this.sharedService.setCurrentAdv(null);
+    this.sharedService.setCurrentOffer(offer);
+    this.router.navigate(['offer/jobyer/list']);
   }
 }

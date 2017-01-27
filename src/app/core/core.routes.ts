@@ -61,6 +61,7 @@ export const CoreRoutes: RouterConfig = [
       // Offers management
       {path: 'offer/list', component: OfferList},
       {path: 'offer/edit', component: OfferEdit, canDeactivate: [ConfirmExitPage]},
+      {path: 'offer/jobyer/list', component: AdvertJobyerList},
 
       // Search management
       {path: 'search/results', component: SearchResults},

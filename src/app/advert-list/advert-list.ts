@@ -123,6 +123,7 @@ export class AdvertList {
 
   goToAdvJobyerInterestList(adv){
     this.sharedService.setCurrentAdv(adv);
+    this.sharedService.setCurrentOffer(null);
     this.router.navigate(['advert/jobyer/list']);
   }
 

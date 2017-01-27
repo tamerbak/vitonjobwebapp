@@ -297,12 +297,34 @@ export class AdvertService {
   getInterestedJobyers(advertId) {
     let sql = "SELECT " +
       "j.*, j.pk_user_jobyer as jobyerid, a.pk_user_account as accountid " +
-      //", encode(a.photo_de_profil::bytea, 'escape') as photo" +
       " FROM user_jobyer j, user_interet_jobyer_annonces uija, user_account as a " +
       " WHERE j.pk_user_jobyer = uija.fk_user_jobyer " +
       " and j.dirty='N' " +
       " and a.pk_user_account=j.fk_user_account " +
       " and uija.fk_user_annonce_entreprise=" + advertId + ";"
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  getInterestedJobyersOffer(offerId) {
+    let sql = "SELECT " +
+        "j.*" +
+        ", j.pk_user_jobyer as jobyerid" +
+        ", a.pk_user_account as accountid " +
+        " FROM user_jobyer j, user_candidatures_aux_offres c, user_account as a " +
+        "WHERE " +
+        "j.pk_user_jobyer = c.fk_user_jobyer " +
+        "AND j.dirty='N' " +
+        "AND a.pk_user_account=j.fk_user_account " +
+        "AND c.fk_user_offre_entreprise=" + offerId + ";"
+      ;
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -348,6 +370,25 @@ export class AdvertService {
         .map(res => res.json())
         .subscribe(data => {
           resolve(data);
+        });
+    });
+  }
+
+  loadInterestsByOffre(idOffre) {
+    let sql = "SELECT COUNT(c.fk_user_jobyer) as \"nbInterest\" " +
+      "FROM user_candidatures_aux_offres c " +
+      "WHERE fk_user_offre_entreprise=" + idOffre + ";"
+    ;
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any) => {
+          if (data && data.data) {
+            resolve(data.data[0]);
+          }
+          resolve(null);
         });
     });
   }

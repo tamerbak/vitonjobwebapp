@@ -18,6 +18,8 @@ export class AdvertJobyerList{
   currentUser: any;
   projectTarget: string;
   jobyerList = [];
+
+  offer: any;
   advert: any;
 
   constructor(private sharedService: SharedService,
@@ -36,12 +38,22 @@ export class AdvertJobyerList{
   }
 
   ngOnInit() {
+    this.offer = this.sharedService.getCurrentOffer();
     this.advert = this.sharedService.getCurrentAdv();
-    this.advertService.getInterestedJobyers(this.advert.id).then((data: any) => {
-      if (data && data.status == "success" && data.data) {
-        this.jobyerList = data.data
-      }
-    })
+
+    if (this.offer != null) {
+      this.advertService.getInterestedJobyersOffer(this.offer.idOffer).then((data: any) => {
+        if (data && data.status == "success" && data.data) {
+          this.jobyerList = data.data
+        }
+      })
+    } else {
+      this.advertService.getInterestedJobyers(this.advert.id).then((data: any) => {
+        if (data && data.status == "success" && data.data) {
+          this.jobyerList = data.data
+        }
+      })
+    }
   }
 
   goToJobyerProfile(jobyer) {

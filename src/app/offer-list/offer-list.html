@@ -96,6 +96,19 @@
                 {{ (item.correspondantsCount == 1) ? '1 résultat trouvé' : '' }}
                 {{ (item.correspondantsCount > 1) ? item.correspondantsCount + ' résultats trouvés' : '' }}
               </button>
+
+              <button
+                type="button"
+                class="btn btn-success btn-sm clear-child-3 adv-list-action-button"
+                *ngIf="!item.obsolete"
+                (click)="goToJobyerInterestList(item)"
+                [disabled]="item.interestedCount <= 0"
+              >
+                {{ (item.interestedCount == 0) ? 'Aucun jobyer intéressé' : '' }}
+                {{ (item.interestedCount == 1) ? '1 jobyer intéressé' : '' }}
+                {{ (item.interestedCount > 1) ? item.interestedCount + ' jobyers intéressés' : '' }}
+              </button>
+
             </div>
           </div>
           <div class="col-md-1 col-xs-2 pull-sm-right pull-md-right pull-lg-right pull-xl-right">
