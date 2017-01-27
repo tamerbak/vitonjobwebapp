@@ -67,15 +67,15 @@ export class SelectList {
   }
 
   ngOnInit() {
-
+    if (this.isDynamicList()) {
+      this.dinamycListIsLoading = true;
+    }
   }
 
   ngAfterViewInit() {
-
     if (this.isDynamicList()) {
       this.initializeDynamicSelect();
     }
-
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -130,7 +130,7 @@ export class SelectList {
 
   getLabel(id: string): string {
     if (this.isDynamicList() === true) {
-      if (this.dinamycListIsLoading === true && Utils.isEmpty(this.list) == true) {
+      if (this.dinamycListIsLoading === true) {
         return "Chargement...";
       }
     }
@@ -169,8 +169,6 @@ export class SelectList {
   }
 
   initializeDynamicSelect() {
-    this.dinamycListIsLoading = true;
-
     let self = this;
     let $selectList = jQuery('.' + this.selectClass);
 
