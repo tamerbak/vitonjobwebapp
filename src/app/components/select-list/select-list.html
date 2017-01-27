@@ -67,7 +67,7 @@
         class="btn btn-success mb-xs offer-add-button"
         role="button"
         (click)="addElement()"
-        [disabled]="!selectedElem || (hasLevel && !selectedLevel) || !canEdit"
+        [disabled]="!selectedElem || selectedElem == '0' || (hasLevel && !selectedLevel) || !canEdit"
       >
         Ajouter
       </button>
