@@ -64,7 +64,7 @@
               style="background-color: #40aea9; color: white; border-radius: 0.2rem;"
               (click)="gotoAdvertDetails(adv)"
             >
-              Détails
+              {{ isEmployer ? 'Aperçu' : 'Détails' }}
             </button>
             <button
               type="button"
