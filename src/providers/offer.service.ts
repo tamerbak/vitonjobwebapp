@@ -774,7 +774,7 @@ export class OffersService {
       "j.pk_user_job as id " +
       ", j.libelle " +
       ", fk_user_metier as idsector " +
-      ", m.libelle " +
+      ", m.libelle as libelleSector " +
       "FROM user_job j " +
       "LEFT JOIN user_metier m ON m.pk_user_metier = j.fk_user_metier " +
       "WHERE " +
