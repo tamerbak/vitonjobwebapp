@@ -1209,4 +1209,8 @@ export class OfferEdit {
   isEmpty(str) {
     return Utils.isEmpty(str);
   }
+
+  preventNull(str){
+    return Utils.preventNull(str);
+  }
 }
