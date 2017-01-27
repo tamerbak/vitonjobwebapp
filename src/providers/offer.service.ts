@@ -770,7 +770,19 @@ export class OffersService {
     if(idSector && idSector>0){
       constr = "fk_user_metier="+idSector+" AND ";
     }
-    let sql = "select pk_user_job as id, libelle, fk_user_metier as idsector from user_job where "+constr+" ( lower_unaccent(libelle) like lower_unaccent('%"+this.sqlfyText(kw)+"%') or lower_unaccent(libelle) % lower_unaccent('"+this.sqlfyText(kw)+"')) order by similarity(lower_unaccent(libelle),lower_unaccent('"+this.sqlfyText(kw)+"')) desc";
+    let sql = "SELECT " +
+      "j.pk_user_job as id " +
+      ", j.libelle " +
+      ", fk_user_metier as idsector " +
+      ", m.libelle " +
+      "FROM user_job j " +
+      "LEFT JOIN user_metier m ON m.pk_user_metier = j.fk_user_metier " +
+      "WHERE " +
+      "("+constr+" ( lower_unaccent(j.libelle) LIKE lower_unaccent('%"+this.sqlfyText(kw)+"%') " +
+      "OR lower_unaccent(j.libelle) % lower_unaccent('"+this.sqlfyText(kw)+"'))) " +
+      "AND j.dirty = 'N' AND m.dirty = 'N' " +
+      "ORDER BY similarity(lower_unaccent(j.libelle),lower_unaccent('"+this.sqlfyText(kw)+"')) DESC"
+    ;
     return sql;
   }
 
