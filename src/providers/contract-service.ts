@@ -752,7 +752,7 @@ export class ContractService {
         'idQuote': idQuote,
         'idDocument' : idQuote,
         'data': btoa(unescape(encodeURIComponent(JSON.stringify(jsonData)))),
-        'environnement':'DEV'
+        'environnement': Configs.env
       });
 
 
