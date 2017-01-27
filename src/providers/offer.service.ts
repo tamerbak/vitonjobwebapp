@@ -8,7 +8,7 @@ import {CCalloutArguments} from "../dto/generium/ccallout-arguments";
 import {CCallout} from "../dto/generium/ccallout";
 import {Utils} from "../app/utils/utils";
 
-const OFFER_CALLOUT_ID = 40018;
+const OFFER_CALLOUT_ID = 40020;
 
 @Injectable()
 export class OffersService {
