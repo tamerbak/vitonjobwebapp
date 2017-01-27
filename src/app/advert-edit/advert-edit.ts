@@ -74,6 +74,8 @@ export class AdvertEdit{
       isPartialTime: false
     };
 
+    console.log("** ",this.advert.titre);
+
     this.contractForm = {
       isInterim: false, isFormation: false, isCDD: false, isCDI: false
     }
@@ -93,7 +95,9 @@ export class AdvertEdit{
     });
 
     if (this.obj == "detail") {
-      this.advert = this.sharedService.getCurrentAdv();
+      this.advert = this.sharedService.getCurrentAdv();      
+      this.advert.link = Utils.isEmpty(this.advert.link) ? "" : this.advert.link;
+
       this.idAdvert = this.advert.id;
       this.prepareDataForDisplaying(this.advert.attachement.fileContent);
       this.prepareImageForDisplaying(this.advert.thumbnail, 'thumbnail');
@@ -125,6 +129,16 @@ export class AdvertEdit{
         self.coverData = null;
         self.deleteFile(self.advert.imgbg);
       });
+      
+      let titre = self.advert.titre;
+      if (self.obj == "detail") {
+        let advertTitleObj = {
+          id: "0",
+          libelle: titre,
+          idsector: "0"
+        };
+        jQuery(".job-select").select2('data', advertTitleObj);
+      }
     });
   }
 
@@ -201,10 +215,12 @@ export class AdvertEdit{
       },
       formatSelection: function (item) {
         let libelle = item.libelle;
-        if (item.id == 0) {
+        if (item.id == 0 && item.idsector != "0") {
           libelle = libelle + " (H/F)"
         }
-        self.advert.titre = libelle;
+        if(item.idsector != "0"){
+          self.advert.titre = libelle;
+        }
         return libelle;
       },
       dropdownCssClass: "bigdrop",
