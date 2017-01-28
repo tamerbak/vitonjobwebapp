@@ -32,6 +32,10 @@ export class Navbar implements OnInit {
   autoSearchOffers: any = [];
   offersNotifications: any =[];
   public loadOffers: Function;
+  notifCount: number = 0;
+
+  //offers of interested jobyers
+  interestedJobyersNotif: any =[];
 
   setImgClasses() {
     return {
@@ -62,7 +66,12 @@ export class Navbar implements OnInit {
   }
 
   UpdateOffers(obj) {
-      this.offersNotifications = this.notificationsService.autoSearchOffers;
+    this.offersNotifications = this.notificationsService.autoSearchOffers;
+    this.notifCount = this.offersNotifications.length;
+    //notifications for the interested jobyers
+    this.loadInterestedJobyersOffers().then((data: any) => {
+      this.notifCount = this.notifCount + this.interestedJobyersNotif.length;
+    });
   }
 
   refreshOffers(evt) {
@@ -146,5 +155,16 @@ export class Navbar implements OnInit {
       this.sharedService.setProjectTarget("employer");
     }
     this.router.navigate(['home']);
+  }
+
+  loadInterestedJobyersOffers(){
+    return new Promise(resolve => {
+      this.offerService.countInterestedJobyersByOffer(this.currentUser.employer.entreprises[0].id).then((data: any) => {
+        if(data && data.status == "success" && data.data){
+          this.interestedJobyersNotif = data.data;
+          resolve(this.interestedJobyersNotif);
+        }
+      });
+    });
   }
 }

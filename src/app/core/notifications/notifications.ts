@@ -22,6 +22,8 @@ export class Notifications implements OnInit {
 
   @Input() notifications: any;
   @Input() loadOffers: Function;
+  @Input() notifCount: number;
+  @Input() jobyerListNotif: any;
 
   constructor(el: ElementRef, config: ConfigService, private sharedService: SharedService,private searchService:SearchService,private offerService:OffersService,private router: Router) {
     this.currentUser = this.sharedService.getCurrentUser();
@@ -106,5 +108,16 @@ export class Notifications implements OnInit {
       let $input = jQuery($event.target).find('input');
       $input.trigger('change');
     });
+  }
+
+  goToJobyerInterestList(jobyerList){
+    this.sharedService.setCurrentAdv(null);
+    let offer = {idOffer: jobyerList.idOffer, title: jobyerList.title};
+    this.sharedService.setCurrentOffer(offer);
+    if(this.router.url === '/offer/jobyer/list'){
+      window.location.reload()
+    }else{
+      this.router.navigate(['offer/jobyer/list']);
+    }
   }
 }

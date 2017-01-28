@@ -1205,4 +1205,19 @@ export class OffersService {
         });
     });
   }
+
+  countInterestedJobyersByOffer(entrepriseId){
+    let sql = "select count(co.*) as \"interestedJobyers\", o.titre as title, o.pk_user_offre_entreprise as \"idOffer\" from " +
+      " user_candidatures_aux_offres as co, user_offre_entreprise as o where " +
+      " co.fk_user_offre_entreprise = o.pk_user_offre_entreprise and o.fk_user_entreprise = " + entrepriseId +
+      " group by o.titre, o.pk_user_offre_entreprise ";
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
 }

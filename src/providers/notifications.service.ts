@@ -4,6 +4,7 @@ import {EventEmitter,Injectable, Inject} from "@angular/core";
 @Injectable()
 export class NotificationsService {
   autoSearchOffers: any = [];
+  interestedJobyersOffers: any = [];
 
   offersUpdated;
   constructor() {
