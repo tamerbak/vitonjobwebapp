@@ -1,11 +1,20 @@
 <section class="card notifications">
   <header class="card-header">
     <div class="text-xs-center mb-sm">
-      <strong>Vous avez {{notifications.length}} notifications</strong>
+      <strong>Vous avez {{notifCount}} notifications</strong>
     </div>
   </header>
   <!-- notification list with .thin-scroll which styles scrollbar for webkit -->
   <div id="notifications-list" class="list-group thin-scroll">
+    <div *ngFor="let jobyerList of jobyerListNotif; let i = index"
+         class="list-group-item" (click)="goToJobyerInterestList(jobyerList)" style="cursor: pointer;">
+      <p class="no-margin overflow-hidden">
+        <b>{{jobyerList.interestedJobyers}}</b> Jobyers sont interéssé(s) par l'offre <b>{{jobyerList.title}}</b>
+      </p>
+      <time class="help-block no-margin">
+        <!-- &nbsp;&nbsp; -->
+      </time>
+    </div>
     <div *ngFor="let offer of notifications; let i = index"
          class="list-group-item" (click)="launchSearch(offer,false)" style="cursor: pointer;">
       <p class="no-margin overflow-hidden">

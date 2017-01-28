@@ -96,13 +96,13 @@
       <li *ngIf="sharedService.getCurrentUser()" class="nav-item dropdown">
         <a href class="nav-link dropdown-toggle" data-toggle="dropdown">
           <span class="circle bg-warning fw-bold ">
-						{{offersNotifications.length}}
+						{{notifCount}}
 					</span>
           <b class="caret"></b>
         </a>
         <!-- ready to use notifications dropdown-->
         <notifications
-          [notifications]="offersNotifications" [loadOffers]="loadOffers"
+          [notifCount]="notifCount" [notifications]="offersNotifications" [loadOffers]="loadOffers" [jobyerListNotif]="interestedJobyersNotif"
           class="dropdown-menu dropdown-menu-right animated animated-fast fadeInUp"
         ></notifications>
       </li>
