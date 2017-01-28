@@ -117,4 +117,18 @@ export class Utils {
     let s3 = siren.substr(6, 3);
     return s1 + " " + s2 + " " + s3 + " ";
   }
+
+  public static sameDay(date1:Date, date2:Date):boolean{
+    let day1 = date1.getDay();
+    let month1 = date1.getMonth();
+    let year1 = date1.getFullYear();
+
+    let day2 = date2.getDay();
+    let month2 = date2.getMonth();
+    let year2 = date2.getFullYear();
+
+    return day1==day2
+      && month1==month2
+      && year1==year2;
+  }
 }

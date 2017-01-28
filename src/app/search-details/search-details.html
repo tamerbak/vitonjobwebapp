@@ -89,6 +89,11 @@
           </div>
         </div>
 
+        <div class="col-md-12 col-sm-12 col-xs-12" [hidden]="projectTarget == 'employer' || !result.rate || result.rate<=0">
+          <b>Le taux horaire : </b>{{result.rate}} &euro; <br />
+          <b>Les gains estimés : </b>{{(!estimatedIncome && estimatedIncome==0)? 'Calcul en cours ...':estimatedIncome+" €"}}
+        </div>
+
         <div class="col-md-12 col-sm-12 col-xs-12">
           <b>Disponibilités</b>
           <ul>
