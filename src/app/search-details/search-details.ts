@@ -10,6 +10,7 @@ import {ModalProfile} from "../modal-profile/modal-profile";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {CandidatureService} from "../../providers/candidature-service";
 import {Utils} from "../utils/utils";
+import {Offer} from "../../dto/offer";
 
 
 declare var jQuery: any;
@@ -26,6 +27,7 @@ export class SearchDetails{
   currentUser: any;
   projectTarget: string;
   offer: any;
+  offerComplete: Offer;
   result: any;
   fullTitle: string = '';
   fullName: string = '';
@@ -64,6 +66,11 @@ export class SearchDetails{
     }
     this.result = this.sharedService.getSearchResult();
     this.offer = this.sharedService.getCurrentOffer();
+    this.offerComplete = new Offer();
+    let offerProjectTarget = (this.projectTarget == 'employer' ? 'jobyer' : 'employer');
+    this.offersService.getOfferById(this.result.idOffre, offerProjectTarget, this.offerComplete).then((data: any) => {
+      debugger;
+    });
     this.candidatureAllowed = (this.result.accepteCandidature || this.result.accepteCandidature == 'true' ? true : false);
   }
 
@@ -190,5 +197,27 @@ export class SearchDetails{
       return true;
     else
       return false;
+  }
+
+  /**
+   * @Description Converts a timeStamp to date string
+   * @param time : a timestamp date
+   */
+  toHourString(time: number) {
+    let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
+    let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
+    return hours + ":" + minutes;
+  }
+
+  /**
+   * @Description Converts a timeStamp to date string :
+   * @param date : a timestamp date
+   */
+  toDateString(date: number) {
+    var dateOptions = {
+      weekday: "long", month: "long", year: "numeric",
+      day: "numeric"//, hour: "2-digit", minute: "2-digit"
+    };
+    return new Date(date).toLocaleDateString('fr-FR', dateOptions);
   }
 }
