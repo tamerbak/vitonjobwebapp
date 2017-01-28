@@ -11,6 +11,7 @@ import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {CandidatureService} from "../../providers/candidature-service";
 import {Utils} from "../utils/utils";
 import {Offer} from "../../dto/offer";
+import {DateUtils} from "../utils/date-utils";
 
 
 declare var jQuery: any;
@@ -51,6 +52,8 @@ export class SearchDetails{
   youtubeLinkSafe: any;
   subject: string = "recruit";
 
+  estimatedIncome:number=0;
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private router: Router,
@@ -67,11 +70,28 @@ export class SearchDetails{
     this.result = this.sharedService.getSearchResult();
     this.offer = this.sharedService.getCurrentOffer();
     this.offerComplete = new Offer();
+
     let offerProjectTarget = (this.projectTarget == 'employer' ? 'jobyer' : 'employer');
     this.offersService.getOfferById(this.result.idOffre, offerProjectTarget, this.offerComplete).then((data: any) => {
-      debugger;
+      if(this.result.rate && this.result.rate>0)
+        this.calculateIncome();
     });
     this.candidatureAllowed = (this.result.accepteCandidature || this.result.accepteCandidature == 'true' ? true : false);
+  }
+
+  calculateIncome():void{
+    let nbMinWork = 0;
+    for(let i = 0 ; i < this.offerComplete.calendarData.length ; i++){
+      let slot = this.offerComplete.calendarData[i];
+      if(Utils.sameDay(slot.date, slot.dateEnd)){
+        nbMinWork+=slot.endHour-slot.startHour;
+      } else if(slot.endHour<slot.startHour) {
+        nbMinWork+= 1440-slot.startHour;
+        nbMinWork+= slot.endHour;
+      }
+
+    }
+    this.estimatedIncome = this.result.rate*nbMinWork/60;
   }
 
   ngOnInit(): void {
