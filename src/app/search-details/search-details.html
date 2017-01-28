@@ -34,19 +34,6 @@
     <div class="container-fluid mt-xs">
       <div class="row">
 
-        <div class="col-md-12 col-sm-12 col-xs-12">
-          <b>Disponibilités</b>
-          <ul>
-            <li *ngFor="let dispo of offerComplete.calendarData, let j = index" [hidden]="dispo.pause">
-
-              <div>
-                le <b>{{ toDateString(dispo.date) }} :</b> {{ toHourString(dispo.startHour) }} - {{ toHourString(dispo.endHour) }}
-              </div>
-
-            </li>
-          </ul>
-        </div>
-
         <div class="col-md-12 col-xs-12">
           <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
             <div [innerHTML]="alert.msg"></div>
@@ -101,6 +88,20 @@
             </iframe>
           </div>
         </div>
+
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <b>Disponibilités</b>
+          <ul>
+            <li *ngFor="let dispo of offerComplete.calendarData, let j = index" [hidden]="dispo.pause">
+
+              <div>
+                le <b>{{ toDateString(dispo.date) }} :</b> {{ toHourString(dispo.startHour) }} - {{ toHourString(dispo.endHour) }}
+              </div>
+
+            </li>
+          </ul>
+        </div>
+
         <div class="col-md-12 col-xs-12">
           <sebm-google-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" class="content-map">
             <sebm-google-map-marker [latitude]="lat" [longitude]="lng">
