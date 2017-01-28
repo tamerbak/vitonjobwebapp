@@ -58,7 +58,7 @@
             <legend><strong>Détail du profil</strong></legend>
             <div class="form-group row">
               <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="title">
-                Titre de civilité:
+                Titre de civilité :
               </label>
               <div class="col-md-7 col-xs-12">
                 <label id="title">{{jobyer.titre}}</label>
@@ -66,7 +66,7 @@
             </div>
             <div class="form-group row">
               <label for="lastname" class="col-md-4 col-xs-12 form-control-label text-md-right">
-                Nom:
+                Nom :
               </label>
               <div class="col-md-7 col-xs-12">
                 <label id="lastname">{{jobyer.nom}}</label>
@@ -75,160 +75,160 @@
 
             <div class="form-group row">
               <label for="firstname" class="col-md-4 col-xs-12 form-control-label text-md-right">
-                Prénom:
+                Prénom :
               </label>
               <div class="col-md-7 col-xs-12">
                 <label id="firstname">{{jobyer.prenom}}</label>
               </div>
             </div>
 
-              <div class="form-group row" *ngIf="!isEmpty(jobyer.dateNaissance)">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="birthDate">
-                  Date de naissance:
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <label id="birthDate">{{toDateString(jobyer.dateNaissance)}}</label>
-                </div>
-              </div>
+              <!--<div class="form-group row" *ngIf="!isEmpty(jobyer.dateNaissance)">-->
+                <!--<label class="col-md-4 col-xs-12 form-control-label text-md-right" for="birthDate">-->
+                  <!--Date de naissance:-->
+                <!--</label>-->
+                <!--<div class="col-md-7 col-xs-12">-->
+                  <!--<label id="birthDate">{{toDateString(jobyer.dateNaissance)}}</label>-->
+                <!--</div>-->
+              <!--</div>-->
 
-              <div class="form-group row" *ngIf="!isEmpty(jobyer.paysLibelle)">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Pays de naissance:
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <label>{{jobyer.paysLibelle}}</label>
-                </div>
-              </div>
+              <!--<div class="form-group row" *ngIf="!isEmpty(jobyer.paysLibelle)">-->
+                <!--<label class="col-md-4 col-xs-12 form-control-label text-md-right">-->
+                  <!--Pays de naissance:-->
+                <!--</label>-->
+                <!--<div class="col-md-7 col-xs-12">-->
+                  <!--<label>{{jobyer.paysLibelle}}</label>-->
+                <!--</div>-->
+              <!--</div>-->
 
-              <div *ngIf="!isFrench && !isEmpty(jobyer.paysIndex)" class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Code postal du lieu de naissance:
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <label id="combined-input" >99 {{jobyer.paysIndex}}</label>
-                </div>
-              </div>
+              <!--<div *ngIf="!isFrench && !isEmpty(jobyer.paysIndex)" class="form-group row">-->
+                <!--<label class="col-md-4 col-xs-12 form-control-label text-md-right">-->
+                  <!--Code postal du lieu de naissance:-->
+                <!--</label>-->
+                <!--<div class="col-md-7 col-xs-12">-->
+                  <!--<label id="combined-input" >99 {{jobyer.paysIndex}}</label>-->
+                <!--</div>-->
+              <!--</div>-->
 
-              <div *ngIf="isFrench && !isEmpty(jobyer.departmentNum)" class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Département de naissance:
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <label >{{jobyer.departmentNum}}</label>
-                </div>
-              </div>
+              <!--<div *ngIf="isFrench && !isEmpty(jobyer.departmentNum)" class="form-group row">-->
+                <!--<label class="col-md-4 col-xs-12 form-control-label text-md-right">-->
+                  <!--Département de naissance:-->
+                <!--</label>-->
+                <!--<div class="col-md-7 col-xs-12">-->
+                  <!--<label >{{jobyer.departmentNum}}</label>-->
+                <!--</div>-->
+              <!--</div>-->
 
-              <div *ngIf="isFrench && !isEmpty(jobyer.lieuNaissance)" class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Lieu de naissance:
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <label>{{jobyer.lieuNaissance}}</label>
-                </div>
-              </div>
+              <!--<div *ngIf="isFrench && !isEmpty(jobyer.lieuNaissance)" class="form-group row">-->
+                <!--<label class="col-md-4 col-xs-12 form-control-label text-md-right">-->
+                  <!--Lieu de naissance:-->
+                <!--</label>-->
+                <!--<div class="col-md-7 col-xs-12">-->
+                  <!--<label>{{jobyer.lieuNaissance}}</label>-->
+                <!--</div>-->
+              <!--</div>-->
 
-              <div class="form-group row" *ngIf="!isEmpty(jobyer.numSS)">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  N° de sécurité sociale:
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <label id="numSS">{{jobyer.numSS}}</label>
-                </div>
-              </div>
+              <!--<div class="form-group row" *ngIf="!isEmpty(jobyer.numSS)">-->
+                <!--<label class="col-md-4 col-xs-12 form-control-label text-md-right">-->
+                  <!--N° de sécurité sociale:-->
+                <!--</label>-->
+                <!--<div class="col-md-7 col-xs-12">-->
+                  <!--<label id="numSS">{{jobyer.numSS}}</label>-->
+                <!--</div>-->
+              <!--</div>-->
 
               <div class="form-group row" *ngIf="!isEmpty(jobyer.natLibelle)">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Nationalité:
+                  Nationalité :
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <label >{{jobyer.natLibelle}}</label>
                 </div>
               </div>
 
-              <div class="form-group row" *ngIf="!isEmpty(jobyer.stateLib)">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Identifiant de nationalité:
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <label >{{jobyer.stateLib}}</label>
-                </div>
-              </div>
+              <!--<div class="form-group row" *ngIf="!isEmpty(jobyer.stateLib)">-->
+                <!--<label class="col-md-4 col-xs-12 form-control-label text-md-right">-->
+                  <!--Identifiant de nationalité:-->
+                <!--</label>-->
+                <!--<div class="col-md-7 col-xs-12">-->
+                  <!--<label >{{jobyer.stateLib}}</label>-->
+                <!--</div>-->
+              <!--</div>-->
 
-              <div *ngIf="!isEuropean && !isEmpty(jobyer.numTS)" class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  {{!jobyer.estResident ? 'N° du titre de séjour' : 'N° de la carte résident'}}:
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <label>{{jobyer.numTS}}</label>
-                </div>
-              </div>
+              <!--<div *ngIf="!isEuropean && !isEmpty(jobyer.numTS)" class="form-group row">-->
+                <!--<label class="col-md-4 col-xs-12 form-control-label text-md-right">-->
+                  <!--{{!jobyer.estResident ? 'N° du titre de séjour' : 'N° de la carte résident'}}:-->
+                <!--</label>-->
+                <!--<div class="col-md-7 col-xs-12">-->
+                  <!--<label>{{jobyer.numTS}}</label>-->
+                <!--</div>-->
+              <!--</div>-->
 
-              <div *ngIf="isEuropean && isCIN && !isEmpty(jobyer.cni)" class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  N° de la CNI ou Passeport:
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <label id="cni">{{jobyer.cni}}</label>
-                </div>
-              </div>
+              <!--<div *ngIf="isEuropean && isCIN && !isEmpty(jobyer.cni)" class="form-group row">-->
+                <!--<label class="col-md-4 col-xs-12 form-control-label text-md-right">-->
+                  <!--N° de la CNI ou Passeport:-->
+                <!--</label>-->
+                <!--<div class="col-md-7 col-xs-12">-->
+                  <!--<label id="cni">{{jobyer.cni}}</label>-->
+                <!--</div>-->
+              <!--</div>-->
 
-              <div *ngIf="isEuropean && !isCIN && !isEmpty(jobyer.numTS)" class="form-group row">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  N° de la carte de ressortissant:
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <label>{{jobyer.numTS}}</label>
-                </div>
-              </div>
+              <!--<div *ngIf="isEuropean && !isCIN && !isEmpty(jobyer.numTS)" class="form-group row">-->
+                <!--<label class="col-md-4 col-xs-12 form-control-label text-md-right">-->
+                  <!--N° de la carte de ressortissant:-->
+                <!--</label>-->
+                <!--<div class="col-md-7 col-xs-12">-->
+                  <!--<label>{{jobyer.numTS}}</label>-->
+                <!--</div>-->
+              <!--</div>-->
 
-              <div class="form-group row" *ngIf="!isEmpty(jobyer.delivranceTS)">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Pièce d'identité délivrée le:
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <label id="dateStay">{{toDateString(jobyer.delivranceTS)}}</label>
-                </div>
-              </div>
+              <!--<div class="form-group row" *ngIf="!isEmpty(jobyer.delivranceTS)">-->
+                <!--<label class="col-md-4 col-xs-12 form-control-label text-md-right">-->
+                  <!--Pièce d'identité délivrée le:-->
+                <!--</label>-->
+                <!--<div class="col-md-7 col-xs-12">-->
+                  <!--<label id="dateStay">{{toDateString(jobyer.delivranceTS)}}</label>-->
+                <!--</div>-->
+              <!--</div>-->
 
-              <div class="form-group row" *ngIf="!isEmpty(jobyer.duTS)">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Pièce d'identité valable du:
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <label id="dateFromStay">{{toDateString(jobyer.duTS)}}</label>
-                </div>
-              </div>
+              <!--<div class="form-group row" *ngIf="!isEmpty(jobyer.duTS)">-->
+                <!--<label class="col-md-4 col-xs-12 form-control-label text-md-right">-->
+                  <!--Pièce d'identité valable du:-->
+                <!--</label>-->
+                <!--<div class="col-md-7 col-xs-12">-->
+                  <!--<label id="dateFromStay">{{toDateString(jobyer.duTS)}}</label>-->
+                <!--</div>-->
+              <!--</div>-->
 
-              <div class="form-group row" *ngIf="!isEmpty(jobyer.auTS)">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Pièce d'identité valable au:
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <label id="dateToStay">{{toDateString(jobyer.auTS)}}</label>
-                </div>
-              </div>
+              <!--<div class="form-group row" *ngIf="!isEmpty(jobyer.auTS)">-->
+                <!--<label class="col-md-4 col-xs-12 form-control-label text-md-right">-->
+                  <!--Pièce d'identité valable au:-->
+                <!--</label>-->
+                <!--<div class="col-md-7 col-xs-12">-->
+                  <!--<label id="dateToStay">{{toDateString(jobyer.auTS)}}</label>-->
+                <!--</div>-->
+              <!--</div>-->
 
-              <div [hidden]="isEuropean" class="form-group row" *ngIf="!isEmpty(jobyer.prefectureLibelle)">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Délivré par:
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <label>{{jobyer.prefectureLibelle}}</label>
-                </div>
-              </div>
+              <!--<div [hidden]="isEuropean" class="form-group row" *ngIf="!isEmpty(jobyer.prefectureLibelle)">-->
+                <!--<label class="col-md-4 col-xs-12 form-control-label text-md-right">-->
+                  <!--Délivré par:-->
+                <!--</label>-->
+                <!--<div class="col-md-7 col-xs-12">-->
+                  <!--<label>{{jobyer.prefectureLibelle}}</label>-->
+                <!--</div>-->
+              <!--</div>-->
 
-              <div class="form-group row" *ngIf="!isEmpty(jobyer.personnalAdress)">
-                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Adresse personnelle
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <label>{{jobyer.personnalAdress.fullAdress}}</label>
-                </div>
-              </div>
+              <!--<div class="form-group row" *ngIf="!isEmpty(jobyer.personnalAdress)">-->
+                <!--<label class="col-md-4 col-xs-12 form-control-label text-md-right">-->
+                  <!--Adresse personnelle-->
+                <!--</label>-->
+                <!--<div class="col-md-7 col-xs-12">-->
+                  <!--<label>{{jobyer.personnalAdress.fullAdress}}</label>-->
+                <!--</div>-->
+              <!--</div>-->
 
               <div class="form-group row" *ngIf="!isEmpty(jobyer.workAdress)">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Adresse de départ au travail
+                  Adresse de départ au travail :
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <label>{{jobyer.workAdress.fullAdress}}</label>
