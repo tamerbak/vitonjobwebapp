@@ -69,7 +69,7 @@
             <button
               type="submit"
               class="btn btn-secondary btn-sm top-element"
-              (click)="switchJobyerInterest()"
+              (click)="switchJobyerInterest()" [disabled]="isInterestBtnDisabled"
               *ngIf="projectTarget == 'jobyer' && currentUser"
               style="background-color: #40aea9; color: white; float: right;"
             >

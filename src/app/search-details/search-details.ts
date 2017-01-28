@@ -45,6 +45,7 @@ export class SearchDetails{
   alerts: Array<Object>;
   jobyerInterested: boolean;
   candidatureAllowed: boolean;
+  isInterestBtnDisabled: boolean = false;
 
   videoAvailable: boolean = false;
   youtubeLink: string;
@@ -167,8 +168,10 @@ export class SearchDetails{
   }
 
   switchJobyerInterest(){
+    this.isInterestBtnDisabled = true;
     if(this.jobyerInterested){
       this.candidatureService.deleteCandidatureOffre(this.result.idOffre, this.currentUser.jobyer.id).then((data: any) => {
+        this.isInterestBtnDisabled = false;
         if(!data || data.status != 'success'){
           this.addAlert("danger", "Erreur lors de la sauvegarde des données.");
         }else{
@@ -178,6 +181,7 @@ export class SearchDetails{
       });
     }else{
       this.candidatureService.setCandidatureOffre(this.result.idOffre, this.currentUser.jobyer.id).then((data: any) => {
+        this.isInterestBtnDisabled = false;
         if(!data || data.status != 'success'){
           this.addAlert("danger", "Erreur lors de la sauvegarde des données.");
         }else{
