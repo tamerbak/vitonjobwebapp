@@ -113,7 +113,7 @@ export class SearchDetails{
       }
     });
 
-    if(this.projectTarget == 'jobyer' && this.candidatureAllowed) {
+    if(this.projectTarget == 'jobyer') {
       this.setCandidatureButtonLabel();
     }
   }
@@ -124,7 +124,7 @@ export class SearchDetails{
 
         // Initialize video container
         let videolink = data.data[0].lien_video;
-        if (videolink && videolink.toUpperCase() == 'NULL') {
+        if (Utils.isEmpty(videolink)) {
           this.videoAvailable = false;
         } else {
           this.videoAvailable = true;

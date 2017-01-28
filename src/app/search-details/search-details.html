@@ -39,7 +39,7 @@
             <div [innerHTML]="alert.msg"></div>
           </alert>
 
-          <div *ngIf="projectTarget == 'employer' || result.accepteCandidature == 'true'">
+          <div *ngIf="candidatureAllowed">
             <legend><strong>Coordonnées :</strong></legend>
             <div><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;{{ result.email }}</div>
             <div><i class="fa fa-phone" aria-hidden="true"></i>&nbsp;{{ result.tel }}</div>
