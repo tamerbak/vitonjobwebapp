@@ -42,7 +42,7 @@ export class SearchDetails{
   isRecruteur: boolean = false;
 
   fromPage: string = "recruitment";
-  jobyerInterestLabel: string;
+  jobyerInterestLabel: string = "Cette offre m'intéresse";
   alerts: Array<Object>;
   jobyerInterested: boolean;
   candidatureAllowed: boolean;
