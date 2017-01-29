@@ -22,7 +22,7 @@
         <img class="img-circle" [src]="result.avatar">
       </span>
       <h6 class="mb-xs mt-xs"><span class="fw-semi-bold">{{ fullName }}</span></h6>
-      <p class="fs-mini text-muted">{{ projectTarget == 'employer' ? 'Offre de service: ' : 'Offre:' }} {{ fullTitle }}
+      <p class="fs-mini text-muted" *ngIf="!isEmpty(fullTitle) && fullTitle != fullName">{{ fullTitle }}
         <span class="label label-pill label-danger" style="margin-left: 5px">
           {{ (matching.toString().indexOf('.') < 0) ? matching : matching.toString().split('.')[0] }}%
         </span>
@@ -94,7 +94,7 @@
           <b>Les gains estimés : </b>{{(!estimatedIncome && estimatedIncome==0)? 'Calcul en cours ...':estimatedIncome+" €"}}
         </div>
 
-        <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="col-md-12 col-sm-12 col-xs-12" *ngIf="offerComplete.calendarData && offerComplete.calendarData.length > 0">
           <b>Disponibilités</b>
           <ul>
             <li *ngFor="let dispo of offerComplete.calendarData, let j = index" [hidden]="dispo.pause">

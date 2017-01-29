@@ -69,6 +69,9 @@ export class Navbar implements OnInit {
     this.offersNotifications = this.notificationsService.autoSearchOffers;
     this.notifCount = this.offersNotifications.length;
     //notifications for the interested jobyers
+    if(!this.currentUser || !this.currentUser.employer){
+      return;
+    }
     this.loadInterestedJobyersOffers().then((data: any) => {
       this.notifCount = this.notifCount + this.interestedJobyersNotif.length;
     });

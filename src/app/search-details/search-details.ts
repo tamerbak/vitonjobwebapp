@@ -104,7 +104,7 @@ export class SearchDetails{
     if (this.projectTarget != "employer")
       this.fullName = this.result.entreprise;
     else
-      this.fullName = this.result.titre + ' ' + this.result.prenom + ' ' + this.result.nom;
+      this.fullName = this.result.titre + ' ' + this.result.nom + ' ' + this.result.prenom;
 
     this.matching = this.result.matching + "%";
 
@@ -223,10 +223,7 @@ export class SearchDetails{
   }
 
   isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
+    return Utils.isEmpty(str);
   }
 
   /**
