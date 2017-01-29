@@ -179,6 +179,9 @@ export class SearchDetails{
   }
 
   setCandidatureButtonLabel(){
+    if (!this.currentUser) {
+      return;
+    }
     this.candidatureService.getCandidatureOffre(this.result.idOffre, this.currentUser.jobyer.id).then((data: any) => {
       if(data && data.data && data.data.length  == 1){
         this.jobyerInterested = true;
