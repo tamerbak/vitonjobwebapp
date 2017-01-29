@@ -179,7 +179,7 @@ export class SearchDetails{
   }
 
   setCandidatureButtonLabel(){
-    if (!this.currentUser) {
+    if (!this.currentUser || !this.currentUser.jobyer) {
       return;
     }
     this.candidatureService.getCandidatureOffre(this.result.idOffre, this.currentUser.jobyer.id).then((data: any) => {
