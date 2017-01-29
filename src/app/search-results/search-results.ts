@@ -32,6 +32,7 @@ export class SearchResults{
   lastScQuery: string;
   searchResults: any;
   hideResult: boolean =  false;
+  hideLoader: boolean =  true;
   alerts: Array<Object>;
 
   currentUser: any;
@@ -193,6 +194,7 @@ export class SearchResults{
     }
 
     this.hideResult = true;
+    this.hideLoader = false;
     this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((results: any) => {
 
       let data = [];
@@ -208,6 +210,7 @@ export class SearchResults{
       this.sharedService.setCurrentSearch(this.scQuery);
       this.hideResult = false;
       this.loadResult();
+      this.hideLoader = true;
     });
   }
 
