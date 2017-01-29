@@ -77,7 +77,10 @@ export class SearchDetails{
       if(this.result.rate && this.result.rate>0)
         this.calculateIncome();
     });
-    this.candidatureAllowed = (this.result.accepteCandidature || this.result.accepteCandidature == 'true' ? true : false);
+    if(this.projectTarget == 'jobyer')
+      this.candidatureAllowed = (this.result.accepteCandidature || this.result.accepteCandidature == 'true' ? true : false);
+    else
+      this.candidatureAllowed = true;
   }
 
   calculateIncome():void{
