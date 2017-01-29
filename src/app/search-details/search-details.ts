@@ -114,7 +114,7 @@ export class SearchDetails{
       }
     });
 
-    if(this.projectTarget == 'jobyer') {
+    if(this.projectTarget == 'jobyer' && this.currentUser) {
       this.setCandidatureButtonLabel();
     }
   }
