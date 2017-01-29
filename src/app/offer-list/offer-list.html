@@ -100,7 +100,7 @@
               <button
                 type="button"
                 class="btn btn-success btn-sm clear-child-3 adv-list-action-button"
-                *ngIf="!item.obsolete"
+                *ngIf="!item.obsolete && projectTarget == 'employer'"
                 (click)="goToJobyerInterestList(item)"
                 [disabled]="item.interestedCount <= 0"
               >
