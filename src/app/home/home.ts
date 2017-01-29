@@ -187,12 +187,6 @@ export class Home{
       else
         data = results.offerJobyers;
 
-      if (data.length == 0) {
-        this.addAlert("warning", "Aucun résultat trouvé pour votre recherche.");
-        return;
-      }
-
-
       this.sharedService.setLastIndexation({resultsIndex : results.indexation});
       this.sharedService.setLastResult(data);
 
