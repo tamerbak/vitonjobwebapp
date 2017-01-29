@@ -32,6 +32,7 @@ export class SearchResults{
   lastScQuery: string;
   searchResults: any;
   hideResult: boolean =  false;
+  hideLoader: boolean =  true;
   alerts: Array<Object>;
 
   currentUser: any;
@@ -148,27 +149,41 @@ export class SearchResults{
     this.showAppropriateModal(this.obj);
   }
 
-  getAvailabilityText(text){
-    var parts = text.split("et ");
-    var hours = parseInt(parts[0]);
-    var minutes = parseInt(parts[1]);
-    var hoursText = hours == 0 ? '':(hours + (hours == 1 ? " heure":" heures"));
-    var minutesText = minutes == 0 ? '':(minutes + (minutes == 1 ?  " minute":" minutes"));
-    var fullText = (hoursText == '' ? '': hoursText) + (minutesText == ''? '':(hoursText == ''? minutesText:(" et "+minutesText)));
+  getAvailabilityText(text) {
+    let parts: string[] = text.split("et ");
+
+    let hours: number = 0;
+    if (parts.length >= 1) {
+      hours = parseInt(parts[0]);
+    }
+    let minutes: number = 0;
+    if (parts.length >= 2) {
+      minutes = parseInt(parts[1]);
+    }
+
+    let hoursText = hours == 0 ? '' : (hours + (hours == 1 ? " heure" : " heures"));
+    let minutesText = minutes == 0 ? '' : (minutes + (minutes == 1 ? " minute" : " minutes"));
+    let fullText = (hoursText == '' ? '' : hoursText) + (minutesText == '' ? '' : (hoursText == '' ? minutesText : (" et " + minutesText)));
     return fullText;
   }
 
-  getAvailabilityMinutes(text){
-    var parts = text.split("et ");
-    var hours = parseInt(parts[0]);
-    var minutes = parseInt(parts[1]);
-    return hours*60 + minutes;
+  getAvailabilityMinutes(text) {
+    let parts = text.split("et ");
+    let hours: number = 0;
+    if (parts.length >= 1) {
+      hours = parseInt(parts[0]);
+    }
+    let minutes: number = 0;
+    if (parts.length >= 2) {
+      minutes = parseInt(parts[1]);
+    }
+    return hours * 60 + minutes;
   }
 
-  sortResults(){
+  sortResults() {
     this.searchResults.sort((a, b) => {
-     return a.availabiltyMinutes - b.availabiltyMinutes;
-     })
+      return a.availabiltyMinutes - b.availabiltyMinutes;
+    })
   }
 
   doSemanticSearch() {
@@ -179,6 +194,7 @@ export class SearchResults{
     }
 
     this.hideResult = true;
+    this.hideLoader = false;
     this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((results: any) => {
 
       let data = [];
@@ -189,24 +205,12 @@ export class SearchResults{
 
       this.indexationMode = true;
 
-      // TODO Passer la condition accepteCandidature == 'true' côté callout
-      // If jobyer research, count only offers that employer accept contact
-      let lastResult = [];
-      if (this.projectTarget == 'jobyer') {
-        for (let i = 0; i < data.length; i++) {
-          if (data[i].accepteCandidature == 'true') {
-            lastResult.push(data[i]);
-          }
-        }
-      } else {
-        lastResult = data;
-      }
-
       this.sharedService.setLastIndexation({resultsIndex : results.indexation});
-      this.sharedService.setLastResult(lastResult);
+      this.sharedService.setLastResult(data);
       this.sharedService.setCurrentSearch(this.scQuery);
       this.hideResult = false;
       this.loadResult();
+      this.hideLoader = true;
     });
   }
 

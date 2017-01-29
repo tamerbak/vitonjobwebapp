@@ -9,6 +9,8 @@ import {ModalConfirm} from "../modal-confirm/modal-confirm";
 import {RuntimeCompiler} from "@angular/compiler";
 import {SystemService} from "../../providers/system.service";
 
+import {Configs} from "../../configurations/configs";
+
 declare var Raphael: any;
 declare var jQuery: any;
 declare var Tether: any;
@@ -97,15 +99,17 @@ export class Core {
     // Check if we make an update.
     // __version__ = developemtn env
     // x.x.x = receipt and prod
-    // systemService.checkVersion(this.version).then((todate: boolean)=> {
-    //   if (todate) {
-    //     console.log('SYSTEM UP TO DATE');
-    //   } else {
-    //     console.log('SYSTEM OUT OF DATE');
-    //     console.log('UPDATING .........');
-    //     this.refreshCache();
-    //   }
-    // });
+    if (Configs.isOnline) {
+      systemService.checkVersion(this.version).then((todate: boolean)=> {
+        if (todate) {
+          console.log('SYSTEM UP TO DATE');
+        } else {
+          console.log('SYSTEM OUT OF DATE');
+          console.log('UPDATING .........');
+          this.refreshCache();
+        }
+      });
+    }
   }
 
   toggleSidebarListener(state): void {
