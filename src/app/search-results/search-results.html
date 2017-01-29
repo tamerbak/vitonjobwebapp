@@ -21,7 +21,7 @@
     </div>
     <div *ngIf="!hideLoader">Recherche en cours...</div>
   </div>
-  <div *ngIf="hideLoader" class="col-xs-12 hidden-sm-up nb-results nb-results-xs">
+  <div class="col-xs-12 hidden-sm-up nb-results nb-results-xs">
     <div *ngIf="hideLoader">
       {{ searchResults.length == 0 ? 'Aucun résultat' : ''}}
       {{ searchResults.length == 1 ? '1 résultat' : ''}}
