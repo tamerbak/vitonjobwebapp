@@ -203,21 +203,8 @@ export class SearchResults{
 
       this.indexationMode = true;
 
-      // TODO Passer la condition accepteCandidature == 'true' côté callout
-      // If jobyer research, count only offers that employer accept contact
-      let lastResult = [];
-      if (this.projectTarget == 'jobyer') {
-        for (let i = 0; i < data.length; i++) {
-          if (data[i].accepteCandidature == 'true') {
-            lastResult.push(data[i]);
-          }
-        }
-      } else {
-        lastResult = data;
-      }
-
       this.sharedService.setLastIndexation({resultsIndex : results.indexation});
-      this.sharedService.setLastResult(lastResult);
+      this.sharedService.setLastResult(data);
       this.sharedService.setCurrentSearch(this.scQuery);
       this.hideResult = false;
       this.loadResult();
