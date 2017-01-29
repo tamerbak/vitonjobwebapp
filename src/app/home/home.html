@@ -12,7 +12,7 @@
             <div class="search col-xs-6">
               <div class="total-large">
                 <input placeholder="Rechercher sur Vit-On-Job...." class="search__input" [(ngModel)]="scQuery"/>
-                <button class="fa fa-search search__button" (click)="doSemanticSearch()">
+                <button class="search__button" (click)="doSemanticSearch()">
                   <div *ngIf="!hideLoader" class="loader animated fadeIn handle">
                     <span class="spinner">
                       <i class="fa fa-spinner fa-spin white-spinner"></i>
@@ -25,13 +25,13 @@
             <div class="search col-xs-6">
               <div class="total-large">
                 <input placeholder="Rechercher les offres dans une ville...." class="search__input" [(ngModel)]="cityQuery"/>
-                <button class="fa fa-search search__button" (click)="doOffersByCitySearch()">
-                  <div *ngIf="!hideLoader" class="loader animated fadeIn handle">
+                <button class="search__button" (click)="doOffersByCitySearch()">
+                  <div *ngIf="!hideCityLoader" class="loader animated fadeIn handle">
                     <span class="spinner">
                       <i class="fa fa-spinner fa-spin white-spinner"></i>
                     </span>
                   </div>
-                  <i *ngIf="hideLoader" class="fa fa-search"></i>
+                  <i *ngIf="hideCityLoader" class="fa fa-search"></i>
                 </button>
               </div>
             </div>
@@ -66,18 +66,18 @@
   </div>
 
   <div class="col-xs-12 pad top centred-l text-center" style="padding: 0">
-     <div class="container-fluid list-home-container" [hidden]="upcomingOffers.length==0" style="margin: 0; padding: 0;background-color: #eee;">
+    <div class="container-fluid list-home-container" [hidden]="upcomingOffers.length==0" style="margin: 0; padding: 0;background-color: #eee;">
       <div class="row">
-         <div class="col-xs-12">
-           <home-list-component class="pad-top"></home-list-component>
-         </div>
-         <div class="col-xs-12 page-footer">
-           2016 &copy; Vit-On-Job est une marque de Manaona.
-         </div>
-       </div>
+        <div class="col-xs-12">
+          <home-list-component class="pad-top"></home-list-component>
+        </div>
+        <div class="col-xs-12 page-footer">
+          2016 &copy; Vit-On-Job est une marque de Manaona.
+        </div>
       </div>
     </div>
   </div>
+</div>
 
 <div
   modal-update-password
