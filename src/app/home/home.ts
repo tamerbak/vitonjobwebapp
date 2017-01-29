@@ -34,6 +34,7 @@ export class Home{
   scQuery: string;
   alerts: Array<Object>;
   hideLoader: boolean = true;
+  hideCityLoader: boolean = true;
   config: any;
   isTablet: boolean = false;
   /*
@@ -477,7 +478,9 @@ export class Home{
       return;
     }
 
+    this.hideCityLoader = false;
     this.searchService.searchOffersByCity(this.cityQuery, this.projectTarget).then((data: any) => {
+      this.hideCityLoader = true;
       if (data.length == 0) {
         this.addAlert("warning", "Aucun résultat trouvé pour votre recherche.");
         return;
