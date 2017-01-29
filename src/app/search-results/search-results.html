@@ -90,7 +90,10 @@
               <h5 class="name no-margin mb-xs col-md-8 col-xs-12">{{item.titreoffre}}</h5>
             </div>
             <div class="row" [hidden]="projectTarget != 'employer'">
-              <h6 class="name no-margin mb-xs col-md-8 col-xs-12"><b>Disponibilité: </b>{{item.availabilityText}}</h6>
+              <h6 class="name no-margin mb-xs col-md-8 col-xs-12">
+                <b>Disponibilité: </b>
+                {{ item.availabilityText != '' ? item.availabilityText : 'Non renseignées' }}
+              </h6>
             </div>
 
             <div class="row" [hidden]="projectTarget == 'employer' || !item.rate || item.rate<=0">

@@ -148,27 +148,41 @@ export class SearchResults{
     this.showAppropriateModal(this.obj);
   }
 
-  getAvailabilityText(text){
-    var parts = text.split("et ");
-    var hours = parseInt(parts[0]);
-    var minutes = parseInt(parts[1]);
-    var hoursText = hours == 0 ? '':(hours + (hours == 1 ? " heure":" heures"));
-    var minutesText = minutes == 0 ? '':(minutes + (minutes == 1 ?  " minute":" minutes"));
-    var fullText = (hoursText == '' ? '': hoursText) + (minutesText == ''? '':(hoursText == ''? minutesText:(" et "+minutesText)));
+  getAvailabilityText(text) {
+    let parts: string[] = text.split("et ");
+
+    let hours: number = 0;
+    if (parts.length >= 1) {
+      hours = parseInt(parts[0]);
+    }
+    let minutes: number = 0;
+    if (parts.length >= 2) {
+      minutes = parseInt(parts[1]);
+    }
+
+    let hoursText = hours == 0 ? '' : (hours + (hours == 1 ? " heure" : " heures"));
+    let minutesText = minutes == 0 ? '' : (minutes + (minutes == 1 ? " minute" : " minutes"));
+    let fullText = (hoursText == '' ? '' : hoursText) + (minutesText == '' ? '' : (hoursText == '' ? minutesText : (" et " + minutesText)));
     return fullText;
   }
 
-  getAvailabilityMinutes(text){
-    var parts = text.split("et ");
-    var hours = parseInt(parts[0]);
-    var minutes = parseInt(parts[1]);
-    return hours*60 + minutes;
+  getAvailabilityMinutes(text) {
+    let parts = text.split("et ");
+    let hours: number = 0;
+    if (parts.length >= 1) {
+      hours = parseInt(parts[0]);
+    }
+    let minutes: number = 0;
+    if (parts.length >= 2) {
+      minutes = parseInt(parts[1]);
+    }
+    return hours * 60 + minutes;
   }
 
-  sortResults(){
+  sortResults() {
     this.searchResults.sort((a, b) => {
-     return a.availabiltyMinutes - b.availabiltyMinutes;
-     })
+      return a.availabiltyMinutes - b.availabiltyMinutes;
+    })
   }
 
   doSemanticSearch() {
