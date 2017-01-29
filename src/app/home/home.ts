@@ -17,7 +17,6 @@ import {Utils} from "../utils/utils";
 
 declare var require: any;
 declare var jQuery: any;
-declare var Messenger: any;
 
 @Component({
   selector: 'home',
@@ -55,6 +54,9 @@ export class Home{
 
   currentJobyer: any;
 
+  //recherche des offres dans une ville
+  cityQuery: string;
+
   constructor(private router: Router,
               private searchService: SearchService,
               private homeService: HomeService,
@@ -67,6 +69,14 @@ export class Home{
     }
     this.currentUser = this.sharedService.getCurrentUser();
     this.scQuery = this.sharedService.getCurrentSearch();
+    let role = this.sharedService.getProjectTarget();
+    if (role == "employer") {
+      this.projectTarget = "employer";
+      this.sharedService.setProjectTarget("employer");
+    } else {
+      this.projectTarget = "jobyer";
+      this.sharedService.setProjectTarget("jobyer");
+    }
   }
 
   ngOnInit(): void {
@@ -203,22 +213,17 @@ export class Home{
         count = data.length;
       }
 
-      Messenger().post({
-        message: 'La recherche pour "' + this.scQuery + '" a donné ' + (count == 1 ? 'un seul résultat' : (count + ' résultats')),
-        type: 'success',
-        showCloseButton: true
-      });
       this.sharedService.setCurrentSearch(this.scQuery);
       this.router.navigate(['search/results',{searchType:'semantic'}]);
     });
   }
 
-  checkForEnterKey(e) {
+  /*checkForEnterKey(e) {
     if (e.code != "Enter")
       return;
 
     this.doSemanticSearch();
-  }
+  }*/
 
   addAlert(type, msg): void {
     this.alerts = [{type: type, msg: msg}];
@@ -463,6 +468,34 @@ export class Home{
         self.sharedService.logOut();
         location.reload();
       }
+    });
+  }
+
+  doOffersByCitySearch(){
+    if (Utils.isEmpty(this.cityQuery) || !this.cityQuery.match(/[a-z]/i)) {
+      this.addAlert("warning", "Veuillez saisir le nom d'une ville avant de lancer la recherche");
+      return;
+    }
+
+    this.searchService.searchOffersByCity(this.cityQuery, this.projectTarget).then((data: any) => {
+      if (data.length == 0) {
+        this.addAlert("warning", "Aucun résultat trouvé pour votre recherche.");
+        return;
+      }
+      this.sharedService.setLastResult(data);
+
+      let count = 0;
+      if (this.projectTarget == 'jobyer') {
+        for (let i = 0; i < data.length; i++) {
+          if (data[i].accepteCandidature == 'true') {
+            count++;
+          }
+        }
+      } else {
+        count = data.length;
+      }
+
+      this.router.navigate(['search/results']);
     });
   }
 }

@@ -162,4 +162,48 @@ export class SearchService {
         });
     });
   }
+
+  searchOffersByCity(textQuery, projectTarget){
+    let bean = {
+      "class": "com.vitonjob.recherche.model.SearchQuery",
+      "endDate": null,
+      "endHour": 0,
+      "firstName": null,
+      "idAccount": 0,
+      "idEnterprise": 0,
+      "idOffer": 0,
+      "job": -1,
+      "languages": [],
+      "lastName": null,
+      "level": 0,
+      "location": textQuery,
+      "qualities": [],
+      "queryType": "CRITERIA",
+      "resultsType": (projectTarget == 'jobyer' ? 'employer' : 'jobyer'),
+      "sector": 0,
+      "startDate": null,
+      "startHour": 0
+    };
+
+    let payload = {
+      'class': 'fr.protogen.masterdata.model.CCallout',
+      id: 10047,
+      args: [
+        {
+          class: 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'Requete de recherche',
+          value: btoa(JSON.stringify(bean))
+        }
+      ]
+    };
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
 }
