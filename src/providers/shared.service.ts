@@ -293,4 +293,12 @@ export class SharedService {
   setCurrentSearch(value) {
     this.setStorageVariable("currentSearch", value);
   }
+
+  getCurrentSearchCity() {
+    return this.getStorageVariable("currentSearchCity");
+  }
+
+  setCurrentSearchCity(value) {
+    this.setStorageVariable("currentSearchCity", value);
+  }
 }

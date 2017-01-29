@@ -28,6 +28,7 @@ export class SearchResults{
   /**
    * Search system
    */
+  cityQuery: string;
   scQuery: string;
   lastScQuery: string;
   searchResults: any;
@@ -77,10 +78,28 @@ export class SearchResults{
     this.loadResult();
   }
 
+  ngAfterViewInit() {
+    let self = this;
+    // Catch enter from search input to launch search
+    jQuery('.search-input').keydown( function(e) {
+      var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
+      if(key == 13) {
+        e.preventDefault();
+        self.doSearch();
+      }
+    });
+  }
+
   loadResult() {
     //  Retrieving last search
     this.scQuery = this.sharedService.getCurrentSearch();
-    this.lastScQuery = this.scQuery;
+    this.cityQuery = this.sharedService.getCurrentSearchCity();
+
+    if (this.scQuery) {
+      this.lastScQuery = this.scQuery;
+    } else {
+      this.lastScQuery = this.cityQuery;
+    }
 
     this.selected = this.sharedService.getMapView() !== false;
     if (this.selected) {
@@ -186,8 +205,17 @@ export class SearchResults{
     })
   }
 
-  doSemanticSearch() {
+  doSearch() {
+    if (Utils.isEmpty(this.scQuery) == false) {
+      this.scQuery = this.lastScQuery;
+      this.doSemanticSearch();
+    } else {
+      this.doOffersByCitySearch();
+      this.cityQuery = this.lastScQuery;
+    }
+  }
 
+  doSemanticSearch() {
     if (Utils.isEmpty(this.scQuery) || !this.scQuery.match(/[a-z]/i)) {
       this.addAlert("warning", "Veuillez saisir une requête avant de lancer la recherche");
       return;
@@ -196,20 +224,32 @@ export class SearchResults{
     this.hideResult = true;
     this.hideLoader = false;
     this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((results: any) => {
-
-      let data = [];
-      if(this.projectTarget == 'jobyer')
-        data = results.offerEnterprise;
-      else
-        data = results.offerJobyers;
-
-      this.indexationMode = true;
-
+      let data = (this.projectTarget == 'jobyer') ? results.offerEnterprise : results.offerJobyers;
       this.sharedService.setLastIndexation({resultsIndex : results.indexation});
       this.sharedService.setLastResult(data);
       this.sharedService.setCurrentSearch(this.scQuery);
-      this.hideResult = false;
+      this.sharedService.setCurrentSearchCity(null);
       this.loadResult();
+      this.hideResult = false;
+      this.indexationMode = true;
+      this.hideLoader = true;
+    });
+  }
+
+  doOffersByCitySearch() {
+    if (Utils.isEmpty(this.cityQuery) || !this.cityQuery.match(/[a-z]/i)) {
+      this.addAlert("warning", "Veuillez saisir le nom d'une ville avant de lancer la recherche");
+      return;
+    }
+
+    this.hideResult = true;
+    this.hideLoader = false;
+    this.searchService.searchOffersByCity(this.cityQuery, this.projectTarget).then((data: any) => {
+      this.sharedService.setLastResult(data);
+      this.sharedService.setCurrentSearch(null);
+      this.sharedService.setCurrentSearchCity(this.cityQuery);
+      this.loadResult();
+      this.hideResult = false;
       this.hideLoader = true;
     });
   }

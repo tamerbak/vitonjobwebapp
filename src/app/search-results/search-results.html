@@ -1,8 +1,16 @@
 
 <div class="row search-barr">
   <div class="col-lg-offset-2 col-lg-8 col-xs-12">
-    <input placeholder="Rechercher sur Vit-On-Job...." class="search-input" [(ngModel)]="scQuery"  (keyup)="checkForEnterKey($event)"/>
-    <button class="search-button" (click)="doSemanticSearch()">
+    <input
+      placeholder="Rechercher sur Vit-On-Job...."
+      class="search-input"
+      [(ngModel)]="lastScQuery"
+      (keyup)="checkForEnterKey($event)"
+    />
+    <button
+      class="search-button"
+      (click)="doSearch()"
+    >
       <div *ngIf="!hideLoader" class="loader animated fadeIn handle">
         <span class="spinner">
           <i class="fa fa-spinner fa-spin white-spinner"></i>
@@ -78,7 +86,7 @@
           <div class="row">
             <div class="col-md-1 col-xs-4">
               <span class="thumb-sm pull-xs-left mr" style="width: 100%;">
-                  <img class="img-circle" [src]="item.avatar">
+                  <img class="img-circle img-thumbnail" [src]="item.avatar">
               </span>
             </div>
             <div class="col-md-8 col-xs-12">
