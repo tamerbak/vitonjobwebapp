@@ -54,6 +54,12 @@ export class ModalNotificationContract{
 
   initState(params){
     this.initByModalOffers = params.init;
+    if(!this.currentUser){
+      this.showOfferNotif = false;
+      this.showContractNotif = false;
+      this.showAuthNotif = true;
+      return;
+    }
     let o = this.sharedService.getCurrentOffer();
     if (o != null || !Utils.isEmpty(this.offer)) {
       this.showOfferNotif = false;
