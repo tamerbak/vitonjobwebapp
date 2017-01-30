@@ -33,8 +33,8 @@ export class Home{
   projectTarget: string;
 
   // Research fields
-  cityQuery: string;
-  scQuery: string;
+  cityQuery: string = "";
+  scQuery: string = "";
 
   alerts: Array<Object>;
   hideLoader: boolean = true;
@@ -70,7 +70,6 @@ export class Home{
       this.sharedService.setProjectTarget('employer');
     }
     this.currentUser = this.sharedService.getCurrentUser();
-    this.scQuery = this.sharedService.getCurrentSearch();
     let role = this.sharedService.getProjectTarget();
     if (role == "employer") {
       this.projectTarget = "employer";
