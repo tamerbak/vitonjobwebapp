@@ -10,6 +10,7 @@ import {ModalNotificationContract} from "../modal-notification-contract/modal-no
 import {ModalProfile} from "../modal-profile/modal-profile";
 import {Utils} from "../utils/utils";
 import {AlertComponent} from "ng2-bootstrap";
+import {ModalSubscribe} from "../modal-subscribe/modal-subscribe";
 
 declare var jQuery: any;
 declare var Messenger: any;
@@ -19,7 +20,7 @@ declare var Messenger: any;
   template: require('./search-results.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./search-results.scss')],
-  directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, RecruitButton, GroupedRecruitButton, ModalNotificationContract, ModalProfile, AlertComponent],
+  directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, RecruitButton, GroupedRecruitButton, ModalNotificationContract, ModalProfile, ModalSubscribe, AlertComponent],
   providers: [SearchService, ProfileService]
 })
 export class SearchResults{
@@ -100,7 +101,8 @@ export class SearchResults{
         self.doSearch();
       }
     });
-  }
+    this.switchJobyerInterest();
+    }
 
   loadResult() {
 
@@ -328,6 +330,22 @@ export class SearchResults{
     //this.router.navigate(['search/details', {item, o}]);
   }
 
+  switchJobyerInterest() {
+    // if (this.currentUser) {
+    //   // Set interest
+    //   console.log('interest: connected');
+    // } else {
+      // Invite user to subscribe
+      console.log('interest: invite subscribe');
+      jQuery('#modal-subscribe').modal({
+        keyboard: false,
+        backdrop: 'static'
+      });
+      jQuery('#modal-subscribe').modal('show');
+
+    // }
+  }
+
   onRecruite(params) {
     this.currentJobyer = params.jobyer;
     this.sharedService.setCurrentJobyer(this.currentJobyer);
@@ -395,7 +413,7 @@ export class SearchResults{
   addAlert(type, msg): void {
     this.alerts = [{type: type, msg: msg}];
   }
-  
+
   isEmpty(str){
     return Utils.isEmpty(str);
   }

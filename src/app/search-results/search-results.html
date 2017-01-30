@@ -146,6 +146,16 @@
                   >
                     Détails
                   </button>
+                  <button
+                    type="submit"
+                    class="btn btn-secondary btn-sm top-element"
+                    *ngIf="projectTarget == 'jobyer'"
+                    (click)="switchJobyerInterest()"
+                    style="background-color: #40aea9; color: white; float: right;"
+                  >
+                    <!--[disabled]="isInterestBtnDisabled"-->
+                    Cette offre m'intéresse
+                  </button>
                 </div>
               </div>
             </div>
@@ -169,3 +179,7 @@
 </div>
 <div modal-notification-contract [jobyer]="currentJobyer" [subject]="subject"></div>
 <div modal-profile [fromPage]="fromPage" [jobyer]="currentJobyer" (onProfileUpdated)="onProfileUpdated($event)"></div>
+<div
+  modal-subscribe
+  *ngIf="projectTarget == 'jobyer' && !currentUser"
+></div>
