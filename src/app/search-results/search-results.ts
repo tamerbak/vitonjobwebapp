@@ -11,6 +11,7 @@ import {ModalProfile} from "../modal-profile/modal-profile";
 import {Utils} from "../utils/utils";
 import {AlertComponent} from "ng2-bootstrap";
 import {ModalSubscribe} from "../modal-subscribe/modal-subscribe";
+import {CandidatureService} from "../../providers/candidature-service";
 
 declare var jQuery: any;
 declare var Messenger: any;
@@ -21,7 +22,7 @@ declare var Messenger: any;
   encapsulation: ViewEncapsulation.None,
   styles: [require('./search-results.scss')],
   directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, RecruitButton, GroupedRecruitButton, ModalNotificationContract, ModalProfile, ModalSubscribe, AlertComponent],
-  providers: [SearchService, ProfileService]
+  providers: [SearchService, ProfileService, CandidatureService]
 })
 export class SearchResults{
   @ViewChildren('Map') map: any;
@@ -59,7 +60,8 @@ export class SearchResults{
               private router: Router,
               private searchService: SearchService,
               private profileService: ProfileService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private candidatureService: CandidatureService) {
 
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
@@ -88,7 +90,7 @@ export class SearchResults{
     this.lastScQuery = this.scQuery + "";
     this.currentQuery = this.scQuery + "";
     this.loadResult();
-    this.positionMap();
+    //this.positionMap();
   }
 
   ngAfterViewInit() {
@@ -101,8 +103,21 @@ export class SearchResults{
         self.doSearch();
       }
     });
-    this.switchJobyerInterest();
     }
+
+  setCandidatureButtonLabel(item: any){
+    if (!this.currentUser || !this.currentUser.jobyer) {
+      item.jobyerInterested = false;
+      return;
+    }
+    this.candidatureService.getCandidatureOffre(item.idOffre, this.currentUser.jobyer.id).then((data: any) => {
+      if(data && data.data && data.data.length  == 1){
+        item.jobyerInterested = true;
+      }else{
+        item.jobyerInterested = false;
+      }
+    });
+  }
 
   loadResult() {
 
@@ -124,6 +139,9 @@ export class SearchResults{
         if (r.idJobyer == 0) {
           continue;
         }
+
+        // Get if jobyer interested
+        this.setCandidatureButtonLabel(r);
 
         r.availabilityText = this.getAvailabilityText(r.availability.text);
         r.availabiltyMinutes = this.getAvailabilityMinutes(r.availability.text);
@@ -330,11 +348,35 @@ export class SearchResults{
     //this.router.navigate(['search/details', {item, o}]);
   }
 
-  switchJobyerInterest() {
-    // if (this.currentUser) {
-    //   // Set interest
-    //   console.log('interest: connected');
-    // } else {
+  jobyerInterest(item: any): void {
+    item.isInterestBtnDisabled = true;
+    if(item.jobyerInterested){
+      this.candidatureService.deleteCandidatureOffre(item.idOffre, this.currentUser.jobyer.id).then((data: any) => {
+        item.isInterestBtnDisabled = false;
+        if(!data || data.status != 'success'){
+          this.addAlert("danger", "Erreur lors de la sauvegarde des données.");
+        }else{
+          item.jobyerInterested = false;
+        }
+      });
+    }else{
+      this.candidatureService.setCandidatureOffre(item.idOffre, this.currentUser.jobyer.id).then((data: any) => {
+        item.isInterestBtnDisabled = false;
+        if(!data || data.status != 'success'){
+          this.addAlert("danger", "Erreur lors de la sauvegarde des données.");
+        }else{
+          item.jobyerInterested = true;
+        }
+      });
+    }
+  }
+
+  switchJobyerInterest(item: any): void {
+    if (this.currentUser) {
+      // Set interest
+      console.log(item);
+      this.jobyerInterest(item);
+    } else {
       // Invite user to subscribe
       console.log('interest: invite subscribe');
       jQuery('#modal-subscribe').modal({
@@ -342,8 +384,7 @@ export class SearchResults{
         backdrop: 'static'
       });
       jQuery('#modal-subscribe').modal('show');
-
-    // }
+    }
   }
 
   onRecruite(params) {

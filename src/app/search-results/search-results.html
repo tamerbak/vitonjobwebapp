@@ -98,7 +98,7 @@
               </div>
               <div class="row" [hidden]="projectTarget != 'employer'">
                 <h6 class="name no-margin mb-xs col-md-8 col-xs-12">
-                  <b>Disponibilité: </b>
+                  <b>{{ projectTarget == 'jobyer' ? 'Disponibilités' : 'Horaires de travail souhaités' }} : </b>
                   {{ item.availabilityText != '' ? item.availabilityText : 'Non renseignées' }}
                 </h6>
               </div>
@@ -150,11 +150,11 @@
                     type="submit"
                     class="btn btn-secondary btn-sm top-element"
                     *ngIf="projectTarget == 'jobyer'"
-                    (click)="switchJobyerInterest()"
+                    (click)="switchJobyerInterest(item)"
+                    [disabled]="item.isInterestBtnDisabled"
                     style="background-color: #40aea9; color: white; float: right;"
                   >
-                    <!--[disabled]="isInterestBtnDisabled"-->
-                    Cette offre m'intéresse
+                    {{ item.jobyerInterested ? "Cette offre ne m'intéresse plus" : "Cette offre m'intéresse" }}
                   </button>
                 </div>
               </div>
