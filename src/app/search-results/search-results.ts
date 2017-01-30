@@ -395,4 +395,8 @@ export class SearchResults{
   addAlert(type, msg): void {
     this.alerts = [{type: type, msg: msg}];
   }
+  
+  isEmpty(str){
+    return Utils.isEmpty(str);
+  }
 }
