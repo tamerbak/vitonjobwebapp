@@ -87,7 +87,7 @@ export class SearchResults{
     this.lastScQuery = this.scQuery + "";
     this.currentQuery = this.scQuery + "";
     this.loadResult();
-    this.positionMap();
+    //this.positionMap();
   }
 
   ngAfterViewInit() {
@@ -395,7 +395,7 @@ export class SearchResults{
   addAlert(type, msg): void {
     this.alerts = [{type: type, msg: msg}];
   }
-  
+
   isEmpty(str){
     return Utils.isEmpty(str);
   }
