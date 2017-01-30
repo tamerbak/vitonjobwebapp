@@ -105,7 +105,7 @@
 
               <div class="row" [hidden]="projectTarget == 'employer' || !item.rate || item.rate<=0">
                 <h6 class="hour-rate no-margin mb-xs col-md-8 col-xs-12">
-                  <b>Taux horaire : </b>{{item.rate}} &euro;
+                  <b>Taux horaire : </b>{{item.rate.toFixed(3)}} &euro;
                 </h6>
               </div>
 
