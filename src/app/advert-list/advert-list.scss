@@ -56,12 +56,56 @@
   width: 100px;
   overflow: hidden;
   margin: auto;
+  horiz-align: middle;
   img {
-    max-height: 100px;
+    max-height: 91px;
+    max-width: 91px;
   }
 }
 
-@media screen and (max-width: 767px) {
+///* TABLET */
+//@media screen and (max-width: 767px) {
+//  .adv-list-action-button {
+//    width: 100%;
+//    margin-bottom: 5px;
+//  }
+//  .adv-list-title {
+//    text-align: center;
+//  }
+//  .adv-list-date {
+//    text-align: center;
+//  }
+//  .actions-list {
+//    margin-top: 5px;
+//  }
+//}
+
+///* SMART */
+//@media screen and (max-width: 767px) {
+//  .adv-list-action-button {
+//    width: 100%;
+//    margin-bottom: 5px;
+//  }
+//  .adv-list-title {
+//    text-align: center;
+//  }
+//  .adv-list-date {
+//    text-align: center;
+//  }
+//  .actions-list {
+//    margin-top: 5px;
+//  }
+//}
+
+/* XS Extra Small devices (phones) */
+@media (max-width: 543px) {
+  .adv-list-picture-container {
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+  .actions-list {
+    margin-top: 1em;
+  }
   .adv-list-action-button {
     width: 100%;
     margin-bottom: 5px;
@@ -72,4 +116,63 @@
   .adv-list-date {
     text-align: center;
   }
+  .adv-list-description {
+    text-align: center;
+  }
+  .actions-list {
+    margin-top: 5px;
+  }
+}
+
+/* SM Small devices (phones) */
+@media (min-width: 544px) and (max-width: 767px) {
+  .adv-list-action-button {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+  .adv-list-title {
+    text-align: center;
+  }
+  .adv-list-date {
+    text-align: center;
+  }
+  .adv-list-description {
+    text-align: center;
+  }
+  .actions-list {
+    margin-top: 5px;
+  }
+}
+
+/* MD Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .adv-list-picture-container {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+  .adv-list-picture {
+    height: 90px;
+    width: 90px;
+    img {
+      max-height: 81px;
+      max-width: 91px;
+    }
+  }
+  .adv-list-action-button {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    margin-bottom: 5px;
+  }
+}
+
+/* LG Large devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199px) {
+
+}
+
+/* XL Extra Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+
 }
