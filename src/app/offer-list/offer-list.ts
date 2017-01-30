@@ -102,6 +102,9 @@ export class OfferList {
 
       //push slots into offer
       offer.slots =[];
+      offer.calendarData.sort((a, b) => {
+        return a.date - b.date
+      });
       for (let i = 0; i < offer.calendarData.length; i++) {
 
         let nb_days_diff = offer.calendarData[i].dateEnd - offer.calendarData[i].date;
