@@ -206,4 +206,28 @@ export class SearchService {
         });
     });
   }
+
+  getGeolocalisation(adress: string) {
+    // String adr = a.replaceAll(" null","");
+    // String adressQuery = URLEncoder.encode(adr.trim(), "UTF-8");
+    let query: string = "https://maps.googleapis.com/maps/api/geocode/json?address="+adress+"&language=fr-FR&key=AIzaSyDERhLtfKx_IsRzQpHxs-WNWnQqal94_Ig";
+
+    let payload = "";
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.get(query)
+        .map(res => res.json())
+        .subscribe((data: any) => {
+          console.log(data);
+          if (data.status == 'OK') {
+            if (data.results.length > 0) {
+              let location = data.results[0].geometry.location;
+              resolve(location);
+            }
+          }
+          resolve(null);
+        });
+    });
+
+  }
 }
