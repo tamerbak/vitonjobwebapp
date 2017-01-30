@@ -223,6 +223,10 @@ export class OffersService {
 
           // Change slot format from Timestamp to Date
           if (offer['calendarData'] && Utils.isEmpty(offer['calendarData']) === false) {
+            //order offer slots
+            offer['calendarData'].sort((a, b) => {
+              return a.date - b.date
+            });
             for (let i = 0; i < offer['calendarData'].length; ++i) {
               offer['calendarData'][i].date = new Date(offer['calendarData'][i].date);
               offer['calendarData'][i].dateEnd = new Date(offer['calendarData'][i].dateEnd);
