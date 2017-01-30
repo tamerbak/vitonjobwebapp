@@ -98,7 +98,7 @@
               </div>
               <div class="row" [hidden]="projectTarget != 'employer'">
                 <h6 class="name no-margin mb-xs col-md-8 col-xs-12">
-                  <b>Disponibilité: </b>
+                  <b>{{ projectTarget == 'jobyer' ? 'Disponibilités' : 'Horaires de travail souhaités' }} : </b>
                   {{ item.availabilityText != '' ? item.availabilityText : 'Non renseignées' }}
                 </h6>
               </div>

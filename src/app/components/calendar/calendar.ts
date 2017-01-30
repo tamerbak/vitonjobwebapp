@@ -147,7 +147,7 @@ export class Calendar {
     if (this.slots.length == 1) {
       this.addAlert(
         "danger",
-        "Une offre doit avoir au moins un créneau de disponibilité. " +
+        "Une offre doit avoir au moins un créneau de " + (this.projectTarget == 'jobyer' ? 'disponibilité.' : 'travail souhaité.') +
         "Veuillez ajouter un autre créneau avant de pouvoir supprimer celui-ci.",
         "slot"
       );
