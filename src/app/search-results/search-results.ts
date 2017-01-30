@@ -85,6 +85,7 @@ export class SearchResults{
       this.scQuery = this.cityQuery + "";
     }
     this.lastScQuery = this.scQuery + "";
+    this.currentQuery = this.scQuery + "";
     this.loadResult();
     this.positionMap();
   }
