@@ -1192,10 +1192,10 @@ export class Profile{
           cache: true
         },
         formatResult: function (item) {
-          return item.libelle;
+          return item.libelle + ' - Code URSSAF : ' +  + item.code_urssaf;
         },
         formatSelection: function (item) {
-          return item.libelle;
+          return item.libelle + ' - Code URSSAF : ' +  + item.code_urssaf;
         },
         dropdownCssClass: "bigdrop",
         escapeMarkup: function (markup) {
