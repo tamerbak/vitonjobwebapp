@@ -1,0 +1,240 @@
+<div class="modal fade modal-margin-top" id="modal-profile">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel1">{{msgWelcome1}}<br/>{{msgWelcome2}}</h4>
+        <p class="text-xs-center text-muted mt-sm" style="line-height: 2;">Saisie des Informations
+        </p>
+      </div>
+
+      <!--profile form-->
+      <div class="col-lg-6 col-xs-12">
+        <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
+          <fieldset>
+
+            <!--Common fields : Employer & Jobyer & Recruiter-->
+
+            <div [hidden]="!isProfileEmpty">
+              <div class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="title">
+                  Civilité
+                  <span class="asterisk">*</span>
+                </label>
+                <div class="col-md-7 col-xs-4">
+                  <select data-style="btn-secondary"
+                          class="form-control" style="height: 35px;"
+                          tabindex="-1" id="title" [(ngModel)]="title">
+                    <option value="Mme">Mme</option>
+                    <option value="Mlle">Mlle</option>
+                    <option value="M.">M.</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="lastname" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Identité
+                  <span class="asterisk">*</span>
+                </label>
+                <div class="col-md-3 col-xs-4">
+                  <input type="text" id="lastname" class="form-control" placeholder="Nom" [(ngModel)]="lastname" name="lastname" (keyup)="watchLastname($event)">
+                </div>
+                <div class="col-md-4 col-xs-4">
+                  <input type="text" id="firstname" class="form-control" [(ngModel)]="firstname" name="firstname" placeholder="Prénom" (keyup)="watchFirstname($event)">
+                </div>
+                <div class="col-md-offset-4 col-md-7 col-xs-12">
+                  <span class="hint label label-danger">{{lastnameHint}}</span>
+                </div>
+                <div class="col-md-offset-4 col-md-7 col-xs-12">
+                  <span class="hint label label-danger">{{firstnameHint}}</span>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="!isRecruiter">
+
+              <!-- Employer Fields-->
+
+              <div *ngIf="isEmployer">
+                <div *ngIf="isProfileEmpty">
+                  <div class="form-group row">
+                    <label for="companyname" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                      Raison Sociale
+                      <span class="asterisk">*</span>
+                    </label>
+                    <div class="col-md-4 col-xs-12">
+                      <input type="text" id="companyname" class="form-control" [(ngModel)]="companyname" name="companyname" placeholder="Raison Sociale" (keyup)="watchCompanyname($event)" (change)="IsCompanyExist($event, 'companyname')">
+                    </div>
+                    <div class="col-md-3 col-xs-12">
+                      <button class="btn btn-default search-button" (click)="openCoporamaModal()">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        Rechercher
+                      </button>
+                    </div>
+                    <div class="col-md-offset-4 col-md-7 col-xs-12">
+                      <span class="hint label label-danger">{{companynameHint}}</span>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                      NAF
+                      <span class="asterisk">*</span>
+                    </label>
+                    <div class="col-md-7 col-xs-12">
+                      <input id="ape" type="text" class="form-control" [textMask]="{mask: maskApe}"
+                             [(ngModel)]="ape" name="ape" placeholder="9999A" (keyup)="watchApe($event)">
+                    </div>
+                    <div class="col-md-offset-4 col-md-7 col-xs-12">
+                      <span class="hint label label-danger">{{apeHint}}</span>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                      Convention collective
+                      <span class="asterisk">*</span>
+                    </label>
+                    <div class="col-md-7 col-xs-12">
+                      <select placeholder="Convention collective" data-style="btn-secondary" class="nationalitySelectPicker form-control" id="convention-select" [(ngModel)]="conventionId" name="convention_slct" style="height: 35px;">
+                        <option *ngFor="let c of conventions" value="{{c.id}}">{{c.code}} - {{c.libelle}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div *ngIf="!isProfileEmpty && forRecruitment">
+                  <div class="form-group row">
+                    <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="siret">
+                      SIRET
+                      <!-- <span class="help-block">999 999 999 99999</span> -->
+                    </label>
+                    <div class="col-md-7 col-xs-12">
+                      <input id="siret" type="text" class="form-control" [textMask]="{mask: maskSiret}"
+                             [(ngModel)]="siret"
+                             name="siret" placeholder="999 999 999 99999" (keyup)="watchSiret($event)"
+                             (change)="IsCompanyExist($event, 'siret')">
+                    </div>
+                    <div class="col-md-offset-4 col-md-7 col-xs-12">
+                      <span class="hint label label-danger">{{siretHint}}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group row" *ngIf="isProfileEmpty || !isSpontaneousContactFilled">
+                  <label class="col-md-9 col-xs-12 form-control-label text-md-right">
+                    Acceptez-vous de recevoir des candidatures spontanées ?
+                    <span class="asterisk">*</span>
+                  </label>
+                  <div class="col-md-3 col-xs-12">
+                    <div class="abc-radio">
+                      <input type="radio" name="radio3" id="radio5" value="Oui" [checked]="isSpontaneaousContact" (click)="watchSpontaneousContact($event)">
+                      <label for="radio5">
+                        Oui
+                      </label>
+                    </div>
+                    <div class="abc-radio">
+                      <input type="radio" name="radio3" id="radio6" value="Non" [checked]="!isSpontaneaousContact" (click)="watchSpontaneousContact($event)">
+                      <label for="radio6">
+                        Non
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="!isProfileEmpty">
+                <div *ngIf="forRecruitment">
+                  <div class="form-group row">
+                    <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                      {{personalAddressLabel}}
+                    </label>
+                    <div class="col-md-7 col-xs-12">
+                      <input id="autocompletePersonal" type="text" class="form-control"
+                             placeholder="Rechercher une adresse" (keyup)="watchPersonalAddress($event)"
+                             [(ngModel)]="personalAddress" (input)="autocompletePersonalAddress()"/>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                      {{jobAddressLabel}}
+                    </label>
+                    <div class="col-md-7 col-xs-12">
+                      <input id="autocompleteJob" type="text" class="form-control"
+                             placeholder="Rechercher une adresse"
+                             (keyup)="watchJobAddress($event)"
+                             [(ngModel)]="jobAddress" (input)="autocompleteJobAddress()"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <!--Alerts-->
+          <div *ngIf="isEmployer" class="form-group row">
+            <div class="col-md-12 col-xs-12 col-lg-12">
+              <alert *ngIf="!!companyAlert" [type]="'danger'+ ' alert-sm'" dismissible="false">
+                <div>
+                  <span class="fw-semi-bold">Attention:</span>
+                  {{companyAlert}}
+                  <div>
+                    <button class="btn btn-danger btn-xs pull-xs-right mr-xs" (click)="focus('companyname')">changer
+                      la
+                      valeur
+                    </button>
+                    <button *ngIf="showCurrentCompanyBtn" class="btn btn-danger btn-xs pull-xs-right mr-xs"
+                            (click)="setDefaultValue('companyname')">valeur par défault
+                    </button>
+                  </div>
+                </div>
+              </alert>
+              <alert *ngIf="!!siretAlert" [type]="'danger'+ ' alert-sm'" dismissible="false">
+                <div>
+
+                  <span class="fw-semi-bold">Attention:</span>
+                  {{siretAlert}}
+                  <button class="btn btn-danger btn-xs pull-xs-right mr-xs" (click)="focus('siret')">changer la
+                    valeur
+                  </button>
+                  <button *ngIf="showCurrentSiretBtn" class="btn btn-danger btn-xs pull-xs-right mr-xs"
+                          (click)="setDefaultValue('siret')">valeur par défault
+                  </button>
+                </div>
+              </alert>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <div class="clearfix">
+          <div class="btn-toolbar pull-xs-right m-t-1">
+            <div class="widget-body btn loaderPosition" [hidden]="!validation">
+              <div class="loader animated fadeIn handle">
+  										<span class="spinner">
+  											<i class="fa fa-spinner fa-spin"></i>
+  										</span>
+              </div>
+            </div>
+            <button class="btn btn-primary" [disabled]="!isValidForm() || validation" (click)="updateCivility()" *ngIf="isProfileEmpty">
+              Valider
+            </button>
+
+            <button class="btn btn-primary" [disabled]="!isValidFormForRecruitment() || validation" (click)="updateCivilityForRecruitment()" *ngIf="forRecruitment">
+              Valider
+            </button>
+
+            <button class="btn btn-primary" (click)="updateSpontaneousContact()" *ngIf="!isProfileEmpty && !isSpontaneousContactFilled">
+              Valider
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div (onDismiss)="onDismissCorporamaModal($event)" modal-corporama-search></div>
