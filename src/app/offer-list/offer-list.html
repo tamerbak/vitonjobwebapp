@@ -71,7 +71,7 @@
                   le <b>{{dispo.date}} :</b> {{dispo.startHour}} - {{dispo.endHour}}
                 </div>
 
-                <div *ngIf="dispo.nbDays > 1">
+                <div *ngIf="dispo.nbDays >= 1">
                   du <b>{{dispo.date}} :</b> {{dispo.startHour}}<br>
                   au <b>{{dispo.dateEnd}} :</b> {{dispo.endHour}}
                 </div>
