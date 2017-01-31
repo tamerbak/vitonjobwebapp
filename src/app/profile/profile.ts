@@ -463,7 +463,6 @@ export class Profile{
         if (data) {
           this.savedSoftwares = data;
         }
-        console.log( this.savedSoftwares);
       });
     }
   }
