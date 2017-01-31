@@ -1,0 +1,25 @@
+<div class="total-large">
+  <input
+    [placeholder]="placeholder"
+    class="search-bar-input search-bar-input-{{ searchMethod }}"
+    [(ngModel)]="scQuery"
+  />
+  <button class="search__button" (click)="doSearch()">
+    <div *ngIf="!hideLoader" class="loader animated fadeIn handle">
+      <span class="spinner">
+        <i class="fa fa-spinner fa-spin white-spinner"></i>
+      </span>
+    </div>
+    <i *ngIf="hideLoader" class="fa fa-search"></i>
+  </button>
+</div>
+
+<div class="search-notification centred-l col-xs-6">
+  <alert
+    *ngFor="let alert of alerts"
+    [type]="alert.type + ' alert-sm'"
+    dismissible="true"
+  >
+    <div [innerHTML]="alert.msg"></div>
+  </alert>
+</div>
