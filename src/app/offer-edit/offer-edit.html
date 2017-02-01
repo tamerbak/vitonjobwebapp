@@ -469,7 +469,7 @@
           [label]="(projectTarget == 'employer') ? 'Langue(s) requise(s)' : 'Langue(s) privilégiée(s)'"
         ></div>
 
-        <div class="form-group row" *ngIf="projectTarget == 'employer'">
+        <div class="form-group row" *ngIf="projectTarget == 'employer' && environmentService.get('EMPLOYER_PHARMA') == 'true'">
           <label class="col-md-4 col-xs-12 form-control-label text-md-right">
             Logiciel(s) maitrisé(s)
           </label>
