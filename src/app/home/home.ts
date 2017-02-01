@@ -491,4 +491,10 @@ export class Home{
     });
   }
 
+  displayPartnerLogo(): boolean {
+    if (this.sharedService.getPartner()) {
+      return true;
+    }
+    return false;
+  }
 }
