@@ -63,6 +63,14 @@ export class SharedService {
     this.setStorageVariableRaw("projectTarget", value);
   }
 
+  getPartner() {
+    return this.getStorageVariableRaw("partner");
+  }
+
+  setPartner(value) {
+    this.setStorageVariableRaw("partner", value);
+  }
+
   getCurrentUser() {
     return this.getStorageVariable("currentUser");
   }

@@ -29,9 +29,9 @@ import {AdvertList} from "../advert-list/advert-list";
 import {AdvertEdit} from "../advert-edit/advert-edit";
 import {AdvertDetails} from "../advert-details/advert-details";
 import {AdvertJobyerList} from "../advert-jobyer-list/advert-jobyer-list";
-import {ExtraCalendar} from "../extra-calendar/extra-calendar"
 import {Iframe} from '../iframe/iframe';
 import {EntrepriseEdit} from '../entreprise-edit/entreprise-edit';
+import {Origine} from "../origine/origine";
 
 /**
  * VitOnJob modules
@@ -50,6 +50,10 @@ export const CoreRoutes: RouterConfig = [
       {path: 'home', component: Home},
       {path: 'jobyer', component: Home},
       {path: 'employeur', component: Home},
+
+      {path: 'origine', component: Origine, children: [
+        {path: '**'}
+      ]},
 
       // User parameters
       {path: 'profile', component: Profile, canDeactivate: [ConfirmExitPage]},
