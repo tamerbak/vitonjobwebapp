@@ -238,6 +238,31 @@ export class OffersService {
     });
   }
 
+  getOfferCalendarDataById(idOffer: number, projectTarget: string): any {
+
+    let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
+      new CCalloutArguments('Voir offre', {
+        'class': 'com.vitonjob.callouts.offer.model.OfferToken',
+        'idOffer': idOffer
+      }),
+      new CCalloutArguments('Configuration', {
+        'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
+        'mode': 'view',
+        'userType': (projectTarget === 'employer') ? 'employeur' : 'jobyer'
+      }),
+    ]);
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.calloutURL, payloadFinal.forge(), {headers: headers})
+        .subscribe((data: any) => {
+          data = JSON.parse(data._body);
+
+          resolve(data);
+        });
+    });
+  }
+
   /**
    * Create an offer
    *

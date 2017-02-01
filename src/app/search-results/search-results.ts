@@ -12,6 +12,7 @@ import {Utils} from "../utils/utils";
 import {AlertComponent} from "ng2-bootstrap";
 import {ModalSubscribe} from "../modal-subscribe/modal-subscribe";
 import {CandidatureService} from "../../providers/candidature-service";
+import {OffersService} from "../../providers/offer.service";
 
 declare let jQuery: any;
 declare let Messenger: any;
@@ -22,7 +23,7 @@ declare let Messenger: any;
   encapsulation: ViewEncapsulation.None,
   styles: [require('./search-results.scss')],
   directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, RecruitButton, GroupedRecruitButton, ModalNotificationContract, ModalProfile, ModalSubscribe, AlertComponent],
-  providers: [SearchService, ProfileService, CandidatureService]
+  providers: [OffersService,SearchService, ProfileService, CandidatureService]
 })
 export class SearchResults{
   @ViewChildren('Map') map: any;
@@ -60,6 +61,7 @@ export class SearchResults{
               private router: Router,
               private searchService: SearchService,
               private profileService: ProfileService,
+              private offersService: OffersService,
               private route: ActivatedRoute,
               private candidatureService: CandidatureService) {
 
@@ -120,6 +122,22 @@ export class SearchResults{
     });
   }
 
+
+
+  toHourString(time: number) {
+    let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
+    let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
+    return hours + ":" + minutes;
+  }
+
+  toDateString(date: number) {
+    var dateOptions = {
+      weekday: "long", month: "long", year: "numeric",
+      day: "numeric"//, hour: "2-digit", minute: "2-digit"
+    };
+    return new Date(date).toLocaleDateString('fr-FR', dateOptions);
+  }
+
   loadResult() {
 
     this.selected = this.sharedService.getMapView() !== false;
@@ -140,11 +158,40 @@ export class SearchResults{
         if (r.idJobyer == 0) {
           continue;
         }
+        r.slots =[];
+        // get disponibilities for jobyer
+        let offerProjectTarget = (this.projectTarget == 'employer' ? 'jobyer' : 'employer'); 
+        this.offersService.getOfferCalendarDataById(r.idOffre, offerProjectTarget).then((data: any) => {
+          r.dateSlots = [];
+          if (data['calendarData'] && Utils.isEmpty(data['calendarData']) === false) {
+            //order offer slots
+            data['calendarData'].sort((a, b) => {
+              return a.date - b.date
+            });
+            for (let i = 0; i < data['calendarData'].length; ++i) {
+              //data['calendarData'][i].date = new Date(data['calendarData'][i].date);
+              //data['calendarData'][i].dateEnd = new Date(data['calendarData'][i].dateEnd);
+              let nb_days_diff = data.calendarData[i].dateEnd - data.calendarData[i].date;
+              nb_days_diff = nb_days_diff / (60 * 60 * 24 * 1000);
+
+              let slotTemp = {
+                date: this.toDateString(data.calendarData[i].date),
+                dateEnd: this.toDateString(data.calendarData[i].dateEnd),
+                startHour: this.toHourString(data.calendarData[i].startHour),
+                endHour: this.toHourString(data.calendarData[i].endHour),
+                pause: data.calendarData[i].pause,
+                nbDays: nb_days_diff
+              };
+              r.slots.push(slotTemp);
+            }
+          }
+        });
 
         // Get if jobyer interested
         this.setCandidatureButtonLabel(r);
-
-        r.availabilityText = this.getAvailabilityText(r.availability.text);
+        
+        let availability = this.getAvailabilityText(r.availability.text);
+        r.availabilityText = availability == '' ? '' : ((this.projectTarget=="employer" ? "Ce jobyer se situe à ":"Vous êtes à " ) + availability + " du lieu de la mission");
         r.availabiltyMinutes = this.getAvailabilityMinutes(r.availability.text);
         r.matching = Number(r.matching).toFixed(2);
         r.index = i + 1;
@@ -220,7 +267,7 @@ export class SearchResults{
     let hoursText = hours == 0 ? '' : (hours + (hours == 1 ? " heure" : " heures"));
     let minutesText = minutes == 0 ? '' : (minutes + (minutes == 1 ? " minute" : " minutes"));
     let fullText = (hoursText == '' ? '' : hoursText) + (minutesText == '' ? '' : (hoursText == '' ? minutesText : (" et " + minutesText)));
-    return fullText== '' ? "Disponible":fullText;
+    return fullText;
   }
 
   getAvailabilityMinutes(text) {
@@ -375,7 +422,6 @@ export class SearchResults{
   switchJobyerInterest(item: any): void {
     if (this.currentUser) {
       // Set interest
-      console.log(item);
       this.jobyerInterest(item);
     } else {
       // Invite user to subscribe
