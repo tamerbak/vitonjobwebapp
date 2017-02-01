@@ -970,7 +970,7 @@
                   <table class="table table-condensed">
                     <tr>
                       <td>Nom</td>
-                      <td>Durée d'expérience</td>
+                      <td>Niveau</td>
                     </tr>
 
                     <tr *ngFor="let item of savedSoftwares">
@@ -978,13 +978,10 @@
                         <input class="form-control" value="{{ item.nom }}" disabled />
                       </td>
                       <td>
-                        <select class="form-control" [(ngModel)]="item.experience" disabled>
-                          <option value="-1" selected></option>
-                          <option value="0">Moins d'1 an</option>
-                          <option value="0.25">Entre 0 et 3 mois</option>
-                          <option value="0.5">Entre 3 et 6 mois</option>
-                          <option value="1">Entre 6 mois et 1 an</option>
-                          <option value="2">Plus d'1 an</option>
+                        <select class="form-control" [(ngModel)]="item.niveau" disabled>
+                          <!--<option value="-1" selected></option>-->
+                          <option value="1.0">Partiellement maîtrisé</option>
+                          <option value="2.0">Totalement maîtrisé</option>
                         </select>
                       </td>
                       <td>
@@ -1006,12 +1003,9 @@
                       </td>
                       <td>
                         <select class="form-control" [(ngModel)]="expSoftware">
-                          <option value="-1" selected disabled></option>
-                          <option value="0">Moins d'1 an</option>
-                          <option value="0.25">Entre 0 et 3 mois</option>
-                          <option value="0.5">Entre 3 et 6 mois</option>
-                          <option value="1">Entre 6 mois et 1 an</option>
-                          <option value="2">Plus d'1 an</option>
+                          <!--<option value="-1" selected disabled></option>-->
+                          <option value="1.0">Partiellement maîtrisé</option>
+                          <option value="2.0">Totalement maîtrisé</option>
                         </select>
                       </td>
                       <td>
