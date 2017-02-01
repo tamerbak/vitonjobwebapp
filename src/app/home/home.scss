@@ -93,6 +93,9 @@
 
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) and (max-width: 1199px) {
+  .home-search-bar-container {
+    margin-top: -60vh;
+  }
   .search {
     display: flex;
     width: 100%;
