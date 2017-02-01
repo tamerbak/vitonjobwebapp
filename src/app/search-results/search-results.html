@@ -98,8 +98,28 @@
               </div>
               <div class="row">
                 <h6 class="name no-margin mb-xs col-md-8 col-xs-12">
-                  <b>{{ projectTarget == 'jobyer' ? 'Horaires de travail souhaités' : 'Disponibilités' }} : </b>
-                  {{ item.availabilityText != '' ? item.availabilityText : (projectTarget == 'jobyer' ? 'Non renseignés' : 'Non renseignées') }}
+                  <b>{{ projectTarget == 'jobyer' ? 'Horaires de travail souhaités':'Disponibilités'}}</b>
+                   {{ !item.slots || item.slots.length == 0 ? 'Non renseignés' : '' }}
+                </h6>
+                <ul *ngIf="item.slots && item.slots.length > 0">
+                  <li *ngFor="let dispo of item.slots, let j = index" [hidden]="dispo.pause">
+
+                    <div *ngIf="dispo.nbDays < 1">
+                      le <b>{{dispo.date}} :</b> {{dispo.startHour}} - {{dispo.endHour}}
+                    </div>
+
+                    <div *ngIf="dispo.nbDays >= 1">
+                      du <b>{{dispo.date}} :</b> {{dispo.startHour}}<br>
+                      au <b>{{dispo.dateEnd}} :</b> {{dispo.endHour}}
+                    </div>
+
+                  </li>
+                </ul>
+              </div>
+
+              <div class="row">
+                <h6 class="name no-margin mb-xs col-md-8 col-xs-12">
+                  <b>{{ item.availabilityText != '' ? item.availabilityText : '' }} </b>
                 </h6>
               </div>
 
