@@ -7,6 +7,7 @@ import {SharedService} from "../../../providers/shared.service";
 import {OffersService} from "../../../providers/offer.service";
 import {NotificationsService} from "../../../providers/notifications.service";
 import {EntrepriseSelector} from "../entreprise-selector/entreprise-selector";
+import {Configs} from "../../../configurations/configs";
 declare var jQuery: any;
 declare var require: any;
 
@@ -24,6 +25,7 @@ export class Navbar implements OnInit {
   toggleAppEvent: EventEmitter<any> = new EventEmitter();
   $el: any;
   config: any;
+  screenSize: string;
   currentUser: any;
   isEmployer: boolean;
   projectTarget: string;
@@ -63,6 +65,9 @@ export class Navbar implements OnInit {
 
     this.$el = jQuery(el.nativeElement);
     this.config = config.getConfig();
+    if (Configs.isOnline === false) {
+      this.screenSize = config.getScreenSize();
+    }
   }
 
   UpdateOffers(obj) {
