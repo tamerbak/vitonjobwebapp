@@ -44,8 +44,8 @@ export class SearchResults{
   projectTarget: string;
   isRecruteur: boolean = false;
 
-  lat: number=48.856494;
-  lng: number=2.345503;
+  lat: number=46.75984;
+  lng: number=1.738281;
   searchResultPos: {lat: number,lng: number,info: string}[] = [];
   selected = true;
   mapDisplay = 'block';
@@ -62,6 +62,7 @@ export class SearchResults{
               private profileService: ProfileService,
               private route: ActivatedRoute,
               private candidatureService: CandidatureService) {
+
 
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
@@ -171,10 +172,10 @@ export class SearchResults{
           this.searchResultPos.push({lat: Number(r.latitude), lng: Number(r.longitude), info: info})
         }
       }
-      if (this.searchResultPos.length >= 1) {
-        this.lat = +this.searchResultPos[0].lat;
-        this.lng = +this.searchResultPos[0].lng;
-      }
+      // if (this.searchResultPos.length >= 1) {
+      //   this.lat = +this.searchResultPos[0].lat;
+      //   this.lng = +this.searchResultPos[0].lng;
+      // }
 
       //load profile pictures
       for (let i = 0; i < this.searchResults.length; i++) {
@@ -283,7 +284,7 @@ export class SearchResults{
     this.searchService.searchOffersByCity(this.currentQuery, this.projectTarget).then((data: any) => {
       this.sharedService.setLastResult(data);
       this.loadResult();
-      this.positionMap();
+      //this.positionMap();
       this.hideResult = false;
       this.hideLoader = true;
       this.lastScQuery = this.currentQuery + "";
@@ -301,17 +302,17 @@ export class SearchResults{
     setTimeout(function () {
       window.dispatchEvent(new Event("resize"));
     }, 1);
-    if (this.searchResultPos.length >= 1) {
-      this.lat = +this.searchResultPos[0].lat;
-      this.lng = +this.searchResultPos[0].lng;
-    }
+    // if (this.searchResultPos.length >= 1) {
+    //   this.lat = +this.searchResultPos[0].lat;
+    //   this.lng = +this.searchResultPos[0].lng;
+    // }
   }
 
   centerChange(event) {
-    if (this.searchResultPos.length >= 1) {
-      this.lat = +this.searchResultPos[0].lat;
-      this.lng = +this.searchResultPos[0].lng;
-    }
+    // if (this.searchResultPos.length >= 1) {
+    //   this.lat = +this.searchResultPos[0].lat;
+    //   this.lng = +this.searchResultPos[0].lng;
+    // }
   }
 
   contract(index) {
