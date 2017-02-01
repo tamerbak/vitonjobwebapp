@@ -5,7 +5,10 @@ import {AuthenticationService} from "../../providers/authentication.service";
 import {SharedService} from "../../providers/shared.service";
 import {Utils} from "../utils/utils";
 import {ProfileService} from "../../providers/profile.service";
-declare var md5, Messenger, jQuery: any;
+
+declare let jQuery: any;
+declare let Messenger: any;
+declare let md5: any;
 
 @Component({
   selector: '[settings]',

@@ -1,7 +1,8 @@
 import {Component, ViewEncapsulation} from "@angular/core";
 import {ROUTER_DIRECTIVES} from "@angular/router";
 
-declare var jQuery, require: any;
+declare let jQuery, require: any;
+
 @Component({
   selector: '[about]',
   template: require('./about.html'),

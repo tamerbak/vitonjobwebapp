@@ -5,6 +5,7 @@ import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {AdvertService} from '../../providers/advert.service';
 import {Utils} from "../utils/utils";
 
+
 @Component({
   selector: '[advert-jobyer-list]',
   template: require('./advert-jobyer-list.html'),

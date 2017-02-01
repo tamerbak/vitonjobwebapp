@@ -28,10 +28,10 @@ import {SelectList} from "../components/select-list/select-list";
 import {Calendar} from "../components/calendar/calendar";
 import {EnvironmentService} from "../../providers/environment.service";
 
-declare var Messenger, jQuery: any;
-declare var google: any;
-declare var moment: any;
-declare var require;
+declare let Messenger, jQuery: any;
+declare let google: any;
+declare let moment: any;
+declare let require;
 
 @Component({
   selector: '[offer-edit]',

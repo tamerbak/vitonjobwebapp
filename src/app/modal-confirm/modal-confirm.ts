@@ -6,7 +6,8 @@ import {Observable} from 'rxjs/Observable';
 import {RouteObservable} from '../../providers/observables.service'
 
 
-declare var jQuery, require, Messenger: any;
+declare let jQuery: any;
+declare let Messenger: any;
 
 @Component({
   selector: '[modal-confirm]',

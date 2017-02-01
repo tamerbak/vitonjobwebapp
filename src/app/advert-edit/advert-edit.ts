@@ -7,9 +7,8 @@ import {Utils} from "../utils/utils";
 import {OffersService} from "../../providers/offer.service";
 import {Configs} from "../../configurations/configs";
 
-declare var jQuery: any;
-declare var Messenger: any;
-
+declare let jQuery: any;
+declare let Messenger: any;
 
 @Component({
   selector: '[advert-edit]',
@@ -95,7 +94,7 @@ export class AdvertEdit{
     });
 
     if (this.obj == "detail") {
-      this.advert = this.sharedService.getCurrentAdv();      
+      this.advert = this.sharedService.getCurrentAdv();
       this.advert.link = Utils.isEmpty(this.advert.link) ? "" : this.advert.link;
 
       this.idAdvert = this.advert.id;
@@ -129,7 +128,7 @@ export class AdvertEdit{
         self.coverData = null;
         self.deleteFile(self.advert.imgbg);
       });
-      
+
       let titre = self.advert.titre;
       if (self.obj == "detail") {
         let advertTitleObj = {
@@ -355,7 +354,7 @@ export class AdvertEdit{
       return;
     }
 
-    
+
 
     this.alert("Prière de patienter, la sauvegarde peut prendre un moment à cause de la taille des fichiers", "info");
 

@@ -5,7 +5,9 @@ import {SearchService} from "../../../providers/search-service";
 import {Router} from "@angular/router";
 import {NotificationLoad} from "./notification-load";
 import {OffersService} from "../../../providers/offer.service";
-declare var jQuery, require,window: any;
+
+declare let jQuery: any;
+declare let window: any;
 
 @Component({
   selector: 'notifications',

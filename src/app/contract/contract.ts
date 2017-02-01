@@ -16,7 +16,7 @@ import {ConventionService} from "../../providers/convention.service";
 import {FinanceService} from "../../providers/finance.service";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {RecruitmentService} from "../../providers/recruitment-service";
-declare var Messenger,jQuery,moment: any;
+declare let Messenger,jQuery,moment: any;
 
 /**
  * @author daoudi amine

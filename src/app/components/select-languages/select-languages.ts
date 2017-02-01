@@ -8,9 +8,10 @@ import {SharedService} from "../../../providers/shared.service";
 import {Utils} from "../../utils/utils";
 import {LoadListService} from "../../../providers/load-list.service";
 import {Language} from "../../../dto/language";
-// import {ConventionFilter} from "./convention-filter/convention-filter";
 
-declare var jQuery, Messenger, md5: any;
+declare let jQuery: any;
+declare let Messenger: any;
+declare let md5: any;
 
 @Component({
   selector: '[select-languages]',

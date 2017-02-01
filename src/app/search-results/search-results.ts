@@ -13,8 +13,8 @@ import {AlertComponent} from "ng2-bootstrap";
 import {ModalSubscribe} from "../modal-subscribe/modal-subscribe";
 import {CandidatureService} from "../../providers/candidature-service";
 
-declare var jQuery: any;
-declare var Messenger: any;
+declare let jQuery: any;
+declare let Messenger: any;
 
 @Component({
   selector: '[search-results]',

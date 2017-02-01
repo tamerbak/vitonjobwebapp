@@ -23,8 +23,10 @@ import {OffersService} from "../../providers/offer.service";
 import {EnvironmentService} from "../../providers/environment.service";
 import {SelectLanguages} from "../components/select-languages/select-languages";
 
-declare var jQuery, require, Messenger, moment: any;
-declare var google: any;
+declare let jQuery: any;
+declare let Messenger: any;
+declare let moment: any;
+declare let google: any;
 
 @Component({
   selector: '[profile]',

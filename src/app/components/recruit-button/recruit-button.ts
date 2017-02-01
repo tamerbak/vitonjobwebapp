@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, Output} from "@angular/core";
 import {SharedService} from "../../../providers/shared.service";
 import {Utils} from "../../utils/utils";
 
-declare var jQuery: any;
+declare let jQuery: any;
 
 @Component({
   selector: 'recruit-button',

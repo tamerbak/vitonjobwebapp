@@ -15,9 +15,7 @@ import {HomeList} from "../components/home-list-component/home-list-component";
 import {Utils} from "../utils/utils";
 import {SearchBar} from "../components/search-bar/search-bar";
 
-
-declare var require: any;
-declare var jQuery: any;
+declare let jQuery: any;
 
 @Component({
   selector: 'home',

@@ -9,7 +9,9 @@ import {LoadListService} from "../../providers/load-list.service";
 import MaskedInput from "angular2-text-mask";
 import {ModalCorporamaSearch} from "../modal-corporama-search/modal-corporama-search";
 
-declare var jQuery, require, Messenger: any;
+declare let jQuery: any;
+declare let Messenger: any;
+
 @Component({
   selector: '[entreprise-edit]',
   template: require('./entreprise-edit.html'),

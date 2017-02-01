@@ -10,7 +10,9 @@ import {Configs} from "../../../configurations/configs";
 import {ListElem} from "../../../dto/generic/list-elem";
 import {AlertComponent} from "ng2-bootstrap";
 
-declare var jQuery, Messenger, md5: any;
+declare let jQuery: any;
+declare let Messenger: any;
+declare let md5: any;
 
 @Component({
   selector: '[select-list]',

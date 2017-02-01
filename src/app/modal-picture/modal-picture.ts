@@ -4,7 +4,8 @@ import {SharedService} from "../../providers/shared.service";
 import {ProfileService} from "../../providers/profile.service";
 
 
-declare var jQuery, require, Messenger: any;
+declare let jQuery: any;
+declare let Messenger: any;
 
 @Component({
   selector: '[modal-picture]',

@@ -5,7 +5,7 @@ import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap";
 
-declare var jQuery, require: any;
+declare let jQuery, require: any;
 
 @Component({
   selector: '[modal-corporama-search]',

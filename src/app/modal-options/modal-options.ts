@@ -6,7 +6,8 @@ import {MissionService} from "../../providers/mission-service";
 import {SmsService} from "../../providers/sms-service";
 import {AdvertService} from "../../providers/advert.service";
 
-declare var jQuery, require, Messenger: any;
+declare let jQuery: any;
+declare let Messenger: any;
 
 @Component({
   selector: 'modal-options',

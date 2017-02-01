@@ -9,7 +9,9 @@ import {SearchService} from "../../../providers/search-service";
 import {SharedService} from "../../../providers/shared.service";
 import {AlertComponent} from "ng2-bootstrap";
 
-declare var jQuery, Messenger, md5: any;
+declare let jQuery: any;
+declare let Messenger: any;
+declare let md5: any;
 
 @Component({
   selector: '[search-bar]',

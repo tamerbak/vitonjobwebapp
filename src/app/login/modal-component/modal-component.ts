@@ -2,8 +2,9 @@ import {Component, Input} from "@angular/core";
 import {AuthenticationService} from "../../../providers/authentication.service";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 
-declare function md5(value: string): string;
-declare var jQuery: any;
+declare let Messenger: any;
+declare let md5: any;
+declare let jQuery: any;
 
 @Component({
   selector: '[modal-component]',

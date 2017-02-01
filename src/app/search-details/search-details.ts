@@ -14,8 +14,7 @@ import {Offer} from "../../dto/offer";
 import {DateUtils} from "../utils/date-utils";
 import {ModalSubscribe} from "../modal-subscribe/modal-subscribe";
 
-
-declare var jQuery: any;
+declare let jQuery: any;
 
 @Component({
   selector: '[search-details]',

@@ -1,12 +1,13 @@
-import {Component, ViewEncapsulation, Type} from "@angular/core";
+import {Component, ViewEncapsulation} from "@angular/core";
 import {AdvertService} from "../../providers/advert.service";
 import {SharedService} from "../../providers/shared.service";
 import {Router, ROUTER_DIRECTIVES} from "@angular/router";
-import {ACCORDION_DIRECTIVES, AlertComponent} from "ng2-bootstrap";
+import {AlertComponent} from "ng2-bootstrap";
 import {ModalOptions} from "../modal-options/modal-options";
 import { InfiniteScroll } from 'angular2-infinite-scroll';
 
-declare var Messenger, jQuery: any;
+declare let jQuery: any;
+declare let Messenger: any;
 
 @Component({
   selector: '[advert-list]',
