@@ -144,6 +144,9 @@ export class Home{
     }
 
     this.sharedService.setCurrentOffer(null);
+    this.sharedService.setCurrentSearch(null);
+    this.sharedService.setCurrentSearchCity(null);
+    this.sharedService.setLastResult(null);
 
   }
 
