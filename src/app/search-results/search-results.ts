@@ -219,7 +219,7 @@ export class SearchResults{
     let hoursText = hours == 0 ? '' : (hours + (hours == 1 ? " heure" : " heures"));
     let minutesText = minutes == 0 ? '' : (minutes + (minutes == 1 ? " minute" : " minutes"));
     let fullText = (hoursText == '' ? '' : hoursText) + (minutesText == '' ? '' : (hoursText == '' ? minutesText : (" et " + minutesText)));
-    return fullText;
+    return fullText== '' ? "Disponible":fullText;
   }
 
   getAvailabilityMinutes(text) {
