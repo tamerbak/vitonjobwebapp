@@ -442,7 +442,6 @@ export class OffersService {
         .subscribe((data : any) => {
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
-          
           resolve(data.data);
         });
     });

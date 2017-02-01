@@ -79,7 +79,7 @@ export class SearchDetails{
       if(this.result.rate && this.result.rate>0)
         this.calculateIncome();
     });
-    this.offersService.loadOfferCity(this.result.idOffer, offerProjectTarget).then((data: any) => {
+    this.offersService.loadOfferCity(this.result.idOffre, offerProjectTarget).then((data: any) => {
       if(data && data[0]){
         this.city = data[0].nom;
         this.cp = data[0].code;
