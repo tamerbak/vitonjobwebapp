@@ -13,6 +13,7 @@ import {ModalGeneralCondition} from "../modal-general-condition/modal-general-co
 import {RecruitButton} from "../components/recruit-button/recruit-button";
 import {HomeList} from "../components/home-list-component/home-list-component";
 import {Utils} from "../utils/utils";
+import {SearchBar} from "../components/search-bar/search-bar";
 
 
 declare var require: any;
@@ -21,9 +22,22 @@ declare var jQuery: any;
 @Component({
   selector: 'home',
   template: require('./home.html'),
-  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalWelcome, ModalProfile,
-    ModalUpdatePassword, ModalNotificationContract, ModalGeneralCondition, RecruitButton, HomeList],
-  providers: [SearchService, HomeService],
+  directives: [
+    ROUTER_DIRECTIVES,
+    AlertComponent,
+    ModalWelcome,
+    ModalProfile,
+    ModalUpdatePassword,
+    ModalNotificationContract,
+    ModalGeneralCondition,
+    RecruitButton,
+    HomeList,
+    SearchBar
+  ],
+  providers: [
+    SearchService,
+    HomeService
+  ],
   styles: [require('./home.scss')],
   encapsulation: ViewEncapsulation.None
 })
@@ -119,7 +133,7 @@ export class Home{
     this.config = Configs.setConfigs(this.projectTarget);
 
     myContent.css({"padding": "0", "padding-right": "0"});
-    if  (screen.width <= 768) {
+    if  (screen.width <= 1199) {
       myContent.css({"background-size": "cover"});
       myNavBar.css({"background-color": "#14baa6", "border-color": "#14baa6"});
       this.isTablet = true;

@@ -1,10 +1,10 @@
-<div class="total-large">
+<div class="search-bar-container">
   <input
     [placeholder]="placeholder"
     class="search-bar-input search-bar-input-{{ searchMethod }}"
     [(ngModel)]="scQuery"
   />
-  <button class="search__button" (click)="doSearch()">
+  <button class="search-barr-button" (click)="doSearch()">
     <div *ngIf="!hideLoader" class="loader animated fadeIn handle">
       <span class="spinner">
         <i class="fa fa-spinner fa-spin white-spinner"></i>

@@ -16,3 +16,7 @@
 @import "global-transitions";
 @import "base";
 @import "utils";
+
+:host {
+  max-width: 100vw;
+}
