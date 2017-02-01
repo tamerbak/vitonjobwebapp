@@ -27,6 +27,7 @@
           {{ (matching.toString().indexOf('.') < 0) ? matching : matching.toString().split('.')[0] }}%
         </span>
       </p>
+      <p>{{city + (cp === '' ? '' :(' ('+cp+')'))}}</p>
     </div>
   </header>
 
@@ -70,7 +71,7 @@
               type="submit"
               class="btn btn-secondary btn-sm top-element"
               (click)="switchJobyerInterest()" [disabled]="isInterestBtnDisabled"
-              *ngIf="projectTarget == 'jobyer' && currentUser"
+              *ngIf="projectTarget == 'jobyer'"
               style="background-color: #40aea9; color: white; float: right;"
             >
               {{jobyerInterestLabel}}
@@ -180,3 +181,7 @@
 
 <div modal-notification-contract [jobyer]="result" [subject]="subject" *ngIf="projectTarget == 'employer' && !isRecruteur"></div>
 <div modal-profile [fromPage]="fromPage" [jobyer]="result" (onProfileUpdated)="onProfileUpdated($event)"></div>
+<div
+  modal-subscribe
+  *ngIf="projectTarget == 'jobyer' && !currentUser"
+></div>

@@ -420,6 +420,33 @@ export class OffersService {
     });
   }
 
+  loadOfferCity(idOffer, type){
+    let to = type =='jobyer'?'user_offre_jobyer':'user_offre_entreprise';
+    let table = type =='jobyer'?'user_adresse_jobyer':'user_adresse_entreprise';
+
+    let sql = "select uv.nom,uc.code from user_adresse as ua,user_ville as uv,user_code_postal as uc " +
+                  " where pk_user_adresse in (" +
+                  "select fk_user_adresse from "+table+" where pk_"+table+" in (" +
+                    "select fk_"+table+" from "+to+" where pk_"+to+"="+idOffer+"" +
+                  ")" +
+              ") and ua.fk_user_code_postal = uc.pk_user_code_postal and ua.fk_user_ville = uv.pk_user_ville";
+
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data : any) => {
+          // we've got back the raw data, now generate the core schedule data
+          // and save the data for later reference
+          resolve(data.data);
+        });
+    });
+  }
+
   updateOfferJob(offer, projectTarget) {
     this.configuration = Configs.setConfigs(projectTarget);
     if (projectTarget == 'jobyer') {

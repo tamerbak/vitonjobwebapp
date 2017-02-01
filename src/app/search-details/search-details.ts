@@ -12,6 +12,7 @@ import {CandidatureService} from "../../providers/candidature-service";
 import {Utils} from "../utils/utils";
 import {Offer} from "../../dto/offer";
 import {DateUtils} from "../utils/date-utils";
+import {ModalSubscribe} from "../modal-subscribe/modal-subscribe";
 
 
 declare var jQuery: any;
@@ -20,7 +21,7 @@ declare var jQuery: any;
   selector: '[search-details]',
   template: require('./search-details.html'),
   styles: [require('./search-details.scss')],
-  directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, RecruitButton, ModalNotificationContract, ModalProfile, AlertComponent],
+  directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, RecruitButton, ModalNotificationContract,ModalSubscribe,ModalProfile, AlertComponent],
   providers: [OffersService, CandidatureService]
 })
 
@@ -52,6 +53,8 @@ export class SearchDetails{
   youtubeLink: string;
   youtubeLinkSafe: any;
   subject: string = "recruit";
+  city:string = "";
+  cp:string = "";
 
   estimatedIncome:number=0;
 
@@ -76,6 +79,12 @@ export class SearchDetails{
     this.offersService.getOfferById(this.result.idOffre, offerProjectTarget, this.offerComplete).then((data: any) => {
       if(this.result.rate && this.result.rate>0)
         this.calculateIncome();
+    });
+    this.offersService.loadOfferCity(this.result.idOffre, offerProjectTarget).then((data: any) => {
+      if(data && data[0]){
+        this.city = data[0].nom;
+        this.cp = data[0].code;
+      }
     });
     if(this.projectTarget == 'jobyer')
       this.candidatureAllowed = (this.result.accepteCandidature || this.result.accepteCandidature == 'true' ? true : false);
@@ -194,27 +203,37 @@ export class SearchDetails{
   }
 
   switchJobyerInterest(){
-    this.isInterestBtnDisabled = true;
-    if(this.jobyerInterested){
-      this.candidatureService.deleteCandidatureOffre(this.result.idOffre, this.currentUser.jobyer.id).then((data: any) => {
-        this.isInterestBtnDisabled = false;
-        if(!data || data.status != 'success'){
-          this.addAlert("danger", "Erreur lors de la sauvegarde des données.");
-        }else{
-          this.jobyerInterestLabel = "Cette offre m'intéresse";
-          this.jobyerInterested = false;
-        }
+    if (this.currentUser) {
+      this.isInterestBtnDisabled = true;
+      if(this.jobyerInterested){
+        this.candidatureService.deleteCandidatureOffre(this.result.idOffre, this.currentUser.jobyer.id).then((data: any) => {
+          this.isInterestBtnDisabled = false;
+          if(!data || data.status != 'success'){
+            this.addAlert("danger", "Erreur lors de la sauvegarde des données.");
+          }else{
+            this.jobyerInterestLabel = "Cette offre m'intéresse";
+            this.jobyerInterested = false;
+          }
+        });
+      }else{
+        this.candidatureService.setCandidatureOffre(this.result.idOffre, this.currentUser.jobyer.id).then((data: any) => {
+          this.isInterestBtnDisabled = false;
+          if(!data || data.status != 'success'){
+            this.addAlert("danger", "Erreur lors de la sauvegarde des données.");
+          }else{
+            this.jobyerInterestLabel = "Cette offre ne m'intéresse plus";
+            this.jobyerInterested = true;
+          }
+        });
+      }
+    }else {
+      // Invite user to subscribe
+      console.log('interest: invite subscribe');
+      jQuery('#modal-subscribe').modal({
+        keyboard: false,
+        backdrop: 'static'
       });
-    }else{
-      this.candidatureService.setCandidatureOffre(this.result.idOffre, this.currentUser.jobyer.id).then((data: any) => {
-        this.isInterestBtnDisabled = false;
-        if(!data || data.status != 'success'){
-          this.addAlert("danger", "Erreur lors de la sauvegarde des données.");
-        }else{
-          this.jobyerInterestLabel = "Cette offre ne m'intéresse plus";
-          this.jobyerInterested = true;
-        }
-      });
+      jQuery('#modal-subscribe').modal('show');
     }
   }
 

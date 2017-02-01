@@ -226,7 +226,7 @@ export class Profile{
   savedSoftwares: any[] = [];
   selectedSoftware: any;
   softwares: any[];
-  expSoftware: number = -1;
+  expSoftware: number = 1;
 
   setImgClasses() {
     return {
@@ -2037,7 +2037,7 @@ export class Profile{
   saveSoftware(software) {
     let id = this.currentUser.jobyer.id;
     this.profileService.saveSoftware(software, id).then((expId: any) =>{
-      let savedSoft = {expId:expId, softId: software.id, experience: software.experience, nom: software.nom};
+      let savedSoft = {expId:expId, softId: software.id, niveau: software.niveau, nom: software.nom};
       this.savedSoftwares.push(savedSoft);
     })
   }
@@ -2143,15 +2143,15 @@ export class Profile{
     //if the selected software is already saved, do not re-add it
     for(let i = 0; i < this.savedSoftwares.length; i++) {
       if (this.savedSoftwares[i].softId == this.selectedSoftware) {
-        if (this.savedSoftwares[i].experience == this.expSoftware) {
+        if (this.savedSoftwares[i].niveau == this.expSoftware) {
           this.selectedSoftware = "";
-          this.expSoftware = -1;
+          this.expSoftware = 1;
           return;
         } else {
           this.profileService.updateSoftware(this.savedSoftwares[i].expId, this.expSoftware).then((data: any) => {
-            this.savedSoftwares[i].experience = this.expSoftware;
+            this.savedSoftwares[i].niveau = this.expSoftware;
             this.selectedSoftware = "";
-            this.expSoftware = -1;
+            this.expSoftware = 1;
           });
           return;
         }
@@ -2159,10 +2159,10 @@ export class Profile{
     }
 
     //if software is not yet addes
-    softwaresTemp[0].experience = this.expSoftware;
+    softwaresTemp[0].niveau = this.expSoftware;
     this.saveSoftware(softwaresTemp[0]);
     this.selectedSoftware = "";
-    this.expSoftware = -1;
+    this.expSoftware = 1;
   }
 
   displayJobRequirements(): boolean {
