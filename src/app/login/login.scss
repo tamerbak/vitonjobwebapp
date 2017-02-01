@@ -3,12 +3,30 @@
 @import "../../../node_modules/bootstrap/scss/mixins";
 
 .login-page {
-  background-color: $gray-semi-lighter;
+  background-image: url('../../assets/images/bg_jobyer.png');
+  background-size: cover;
+  background-position-y: 50%;
+}
+
+/* Small devices (phones) */
+@media (max-width: 767px) {
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199px) {
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
 }
 
 .login-page .page-footer {
   margin-bottom: 25px;
-  font-size: $font-size-mini;	
+  font-size: $font-size-mini;
   color: $text-muted;
   text-align: center;
   @media (min-height: 600px) {
@@ -36,6 +54,7 @@
 
 .widget-login {
   padding: 30px;
+  background-color: rgba(255, 255, 255, 0.9);
 
   > header {
     h1, h2, h3, h4, h5, h6 {
