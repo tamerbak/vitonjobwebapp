@@ -76,9 +76,9 @@ import {Configs} from "./configurations/configs";
 import {ConfirmExitPage,CanAccessPage} from "./providers/routes.service";
 import {RouteObservable} from "./providers/observables.service";
 import {NotificationsService} from "./providers/notifications.service";
+import {HttpRequestHandler} from "./http/http-request-handler";
 
-//
-//
+declare let process: any;
 
 const ENV_PROVIDERS = [];
 
@@ -88,6 +88,7 @@ if ('production' === process.env.ENV) {
 
 document.addEventListener('DOMContentLoaded', function main(): void {
   bootstrap(App, [
+    HttpRequestHandler,
     SharedService,
     ConfigService,
     NotificationsService,

@@ -5,6 +5,7 @@ import {AdvertService} from "../../providers/advert.service";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {Utils} from "../utils/utils";
 
+
 @Component({
   selector: '[advert-details]',
   template: require('./advert-details.html'),

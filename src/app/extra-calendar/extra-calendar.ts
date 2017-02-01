@@ -1,8 +1,8 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, Params} from '@angular/router';
-declare var jQuery: any;
-declare var moment: any;
-declare var require;
+declare let jQuery: any;
+declare let moment: any;
+declare let require;
 
 @Component({
   selector: '[extra-calendar]',

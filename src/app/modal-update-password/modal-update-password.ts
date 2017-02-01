@@ -9,7 +9,7 @@ import {AddressUtils} from "../utils/addressUtils";
 import {MapsAPILoader} from "angular2-google-maps/core";
 import MaskedInput from "angular2-text-mask";
 
-declare var jQuery, Messenger,md5: any;
+declare let jQuery, Messenger,md5: any;
 
 @Component({
   selector: '[modal-update-password]',

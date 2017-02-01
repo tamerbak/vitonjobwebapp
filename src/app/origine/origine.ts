@@ -27,10 +27,10 @@ import {SelectLanguages} from "../components/select-languages/select-languages";
 import {SelectList} from "../components/select-list/select-list";
 import {Calendar} from "../components/calendar/calendar";
 
-declare var Messenger, jQuery: any;
-declare var google: any;
-declare var moment: any;
-declare var require;
+declare let Messenger, jQuery: any;
+declare let google: any;
+declare let moment: any;
+declare let require;
 
 /**
  * This page is use to welcome new user from partner

@@ -4,6 +4,7 @@ import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {PaylineServices} from "../../providers/payline-services";
 
+
 @Component({
   selector: 'wallet-create',
   template: require('./wallet-create.html'),

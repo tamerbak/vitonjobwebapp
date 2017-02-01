@@ -5,8 +5,8 @@ import {ErrorPage} from './app/error/error';
 import {LoginPage} from './app/login/login';
 import {routes} from './app.routes';
 
-declare var jQuery,Messenger: any;
-declare var require;
+declare let jQuery: any;
+declare let Messenger: any;
 
 @Component({
   selector: 'body',

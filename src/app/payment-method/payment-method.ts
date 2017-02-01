@@ -5,6 +5,7 @@ import {WalletCreate} from "../wallet-create/wallet-create";
 import {SlimPayService} from "../../providers/slimpay-services";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 
+
 @Component({
   selector: '[payment-method]',
   template: require('./payment-method.html'),

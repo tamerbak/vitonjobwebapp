@@ -9,8 +9,9 @@ import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {ModalComponent} from "./modal-component/modal-component";
 import {Utils} from "../utils/utils";
 import {EnvironmentService} from "../../providers/environment.service";
-declare function md5(value: string): string;
-declare var Messenger;
+
+declare let Messenger: any;
+declare let md5: any;
 
 @Component({
   directives: [ROUTER_DIRECTIVES, AlertComponent, ModalComponent],
@@ -124,7 +125,7 @@ export class LoginPage{
         return;
       }
       this.authService.authenticate(this.email, indPhone, pwd, this.role, this.isRecruteur).then((data: any) => {
-        
+
         this.hideLoader = true;
         //case of authentication failure : server unavailable or connection probleme
         if (!data || data.length == 0 || (data.id == 0 && data.status == "failure")) {

@@ -8,9 +8,8 @@ import {Configs} from "../../../configurations/configs";
 import {RecruitButton} from "../../components/recruit-button/recruit-button";
 
 
-declare var require: any;
-declare var jQuery: any;
-declare var Swiper: any;
+declare let jQuery: any;
+declare let Swiper: any;
 
 @Component({
   selector: 'home-list-component',

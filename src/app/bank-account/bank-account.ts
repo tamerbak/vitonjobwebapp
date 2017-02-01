@@ -5,7 +5,10 @@ import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {BankService} from "../../providers/bank-service";
 import {SharedService} from "../../providers/shared.service";
 import {Utils} from "../utils/utils";
-declare var md5, Messenger, jQuery, require: any;
+
+declare let jQuery: any;
+declare let Messenger: any;
+declare let md5: any;
 
 @Component({
   selector: '[modal-bank-account]',

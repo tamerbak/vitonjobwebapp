@@ -2,10 +2,10 @@ import {Component} from "@angular/core";
 import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 
-declare var Messenger, jQuery: any;
-declare var google: any;
-declare var moment: any;
-declare var require;
+declare let jQuery: any;
+declare let Messenger: any;
+declare let google: any;
+declare let moment: any;
 
 @Component({
   selector: '[iframe]',

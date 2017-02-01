@@ -2,7 +2,7 @@ import {Component, ViewEncapsulation} from "@angular/core";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {SharedService} from "../../providers/shared.service";
 import {InProgressPage} from "../in-progress/in-progress";
-declare var jQuery, require: any;
+declare let jQuery: any;
 
 @Component({
   selector: '[recruit-list]',

@@ -8,7 +8,9 @@ import {SearchService} from "../../providers/search-service";
 import {Utils} from "../utils/utils";
 import {NotificationsService} from "../../providers/notifications.service";
 import {AdvertService} from "../../providers/advert.service";
-declare var jQuery,Messenger:any;
+
+declare let jQuery: any;
+declare let Messenger: any;
 
 @Component({
   selector: '[offer-list]',

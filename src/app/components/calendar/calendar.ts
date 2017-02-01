@@ -11,10 +11,10 @@ import {ModalSlots} from "./modal-slots/modal-slots";
 import {AdvertService} from "../../../providers/advert.service";
 import {CalendarSlot} from "../../../dto/calendar-slot";
 
-declare var Messenger, jQuery: any;
-declare var google: any;
-declare var moment: any;
-declare var require;
+declare let Messenger, jQuery: any;
+declare let google: any;
+declare let moment: any;
+declare let require;
 
 /**
  * Integration of fullCalendar JS

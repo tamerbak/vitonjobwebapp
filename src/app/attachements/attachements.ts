@@ -4,11 +4,12 @@ import {SharedService} from "../../providers/shared.service";
 import {AttachementsService} from "../../providers/attachements.service";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {Utils} from "../utils/utils";
-import {DomSanitizationService, SafeResourceUrl} from '@angular/platform-browser';
+import {DomSanitizationService} from '@angular/platform-browser';
 import {AttachementsDirectory} from "./attachements-directory/attachements-directory";
 
-declare var jQuery, require, Messenger: any;
-
+declare let jQuery: any;
+declare let Messenger: any;
+//
 type Folder = {name: string, folders: Folder[], files: any[]};
 
 @Component({
@@ -59,7 +60,7 @@ export class Attachements {
   ngAfterViewInit(): void {
     let self = this;
     jQuery('.input-file').each(function() {
-      var $input = $(this),
+      var $input = jQuery(this),
         $label = $input.next('.js-labelFile'),
         labelVal = $label.html();
       $input.on('change', function() {

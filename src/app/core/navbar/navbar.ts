@@ -8,8 +8,8 @@ import {OffersService} from "../../../providers/offer.service";
 import {NotificationsService} from "../../../providers/notifications.service";
 import {EntrepriseSelector} from "../entreprise-selector/entreprise-selector";
 import {Configs} from "../../../configurations/configs";
-declare var jQuery: any;
-declare var require: any;
+
+declare let jQuery: any;
 
 @Component({
   selector: '[navbar]',

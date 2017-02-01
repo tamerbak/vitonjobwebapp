@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 import {SharedService} from "../../providers/shared.service";
-declare var jQuery: any;
+declare let jQuery: any;
 
 @Component({
   selector: '[modal-welcome]',

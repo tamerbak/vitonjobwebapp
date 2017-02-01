@@ -10,7 +10,9 @@ import {ConventionService} from "../../../providers/convention.service";
 import {Utils} from "../../utils/utils";
 import {Offer} from "../../../dto/offer";
 
-declare var jQuery, Messenger, md5: any;
+declare let jQuery: any;
+declare let Messenger: any;
+declare let md5: any;
 
 class Filter {
   name: string;

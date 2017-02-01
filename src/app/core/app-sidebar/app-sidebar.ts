@@ -4,9 +4,8 @@ import {SearchPipe} from "./../pipes/pipe";
 import {SharedService} from "../../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 
-declare var jQuery: any;
-declare var Util: any;
-declare var require: any;
+declare let jQuery: any;
+declare let Util: any;
 
 @Component({
   selector: '[app-sidebar]',

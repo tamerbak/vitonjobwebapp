@@ -13,8 +13,7 @@ import {Utils} from "../utils/utils";
 import {Offer} from "../../dto/offer";
 import {DateUtils} from "../utils/date-utils";
 
-
-declare var jQuery: any;
+declare let jQuery: any;
 
 @Component({
   selector: '[search-details]',

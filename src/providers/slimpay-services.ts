@@ -2,6 +2,8 @@ import {Injectable} from "@angular/core";
 import {Http, Headers} from "@angular/http";
 import {Configs} from "../configurations/configs";
 
+// declare function Promise(): any;
+
 @Injectable()
 export class SlimPayService{
 

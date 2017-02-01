@@ -11,8 +11,8 @@ import {MapsAPILoader} from "angular2-google-maps/core";
 import MaskedInput from "angular2-text-mask";
 import {ModalCorporamaSearch} from "../modal-corporama-search/modal-corporama-search";
 
-declare var jQuery, Messenger: any;
-declare var google: any;
+declare let jQuery, Messenger: any;
+declare let google: any;
 
 @Component({
   selector: '[modal-profile]',

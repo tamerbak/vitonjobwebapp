@@ -4,6 +4,7 @@ import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {RecruiterService} from '../../providers/recruiter-service';
 import {Utils} from "../utils/utils";
 
+
 @Component({
   selector: '[recruiter-list]',
   template: require('./recruiter-list.html'),

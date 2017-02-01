@@ -4,7 +4,8 @@ import {Location} from "@angular/common";
 import {SlimScroll} from "ng2-slimscroll/ng2-slimscroll";
 import {ConfigService} from "../config";
 import {SharedService} from "../../../providers/shared.service";
-declare var jQuery: any;
+
+declare let jQuery: any;
 
 @Component({
   selector: '[sidebar]',

@@ -2,7 +2,8 @@ import {Component} from "@angular/core";
 import {ROUTER_DIRECTIVES} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 
-declare var jQuery, require, Messenger: any;
+declare let jQuery: any;
+declare let Messenger: any;
 
 @Component({
   selector: 'modal-offer-temp-quote',

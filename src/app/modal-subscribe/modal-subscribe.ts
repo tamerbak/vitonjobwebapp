@@ -1,8 +1,8 @@
 import {Component} from "@angular/core";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 
-declare var jQuery, Messenger: any;
-declare var google: any;
+declare let jQuery, Messenger: any;
+declare let google: any;
 
 @Component({
   selector: '[modal-subscribe]',

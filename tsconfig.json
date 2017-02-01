@@ -8,14 +8,14 @@
   },
   "exclude": [
     "node_modules",
-    "typings/index.d.ts",
-    "typings/index"
+//    "typings",
+    "**/*.spec.ts"
   ],
   "filesGlob": [
-    "./src/**/*.ts",
-    "./test/**/*.ts",
+//    "./src/**/*.ts",
+//    "./test/**/*.ts",
     "!./node_modules/**/*.ts",
-    "src/custom_typings.d.ts",
+//    "src/custom_typings.d.ts",
     "typings/index.d.ts"
   ],
   "compileOnSave": false,
@@ -23,68 +23,7 @@
   "atom": {
     "rewriteTsconfig": false
   },
-  "files": [
-    "typings/index.d.ts",
-    "./src/main.ts",
-    "./src/polyfills.ts",
-    "./src/app.routes.ts",
-    "./src/app.ts",
-    // Core
-    "./src/app/core/config.ts",
-    "./src/app/core/core.routes.ts",
-    "./src/app/core/core.ts",
-    // Configuration
-    "./src/configurations/globalConfigs.ts",
-    "./src/configurations/configs.ts",
-    // Modules
-    "./src/app/utils/utils.ts",
-    "./src/app/utils/addressUtils.ts",
-    "./src/app/error/error.ts",
-    "./src/app/wallet-create/wallet-create.ts",
-    "./src/app/settings/settings.ts",
-    "./src/app/search-details/search-details.ts",
-    "./src/app/search-criteria/search-criteria.ts",
-    "./src/app/recruit-list/recruit-list.ts",
-    "./src/app/pending-contracts/pending-contracts.ts",
-    "./src/app/offer-list/offer-list.ts",
-    "./src/app/modal-picture/modal-picture.ts",
-    "./src/app/mission-pointing/mission-pointing.ts",
-    "./src/app/in-progress/in-progress.ts",
-    "./src/app/home/home.ts",
-    "./src/app/attachements/attachements.ts",
-    "./src/app/yousign/yousign.ts",
-    "./src/app/mission-list/mission-list.ts",
-    "./src/app/mission-end-releve/mission-end-releve.ts",
-    "./src/app/mission-end-invoice/mission-end-invoice.ts",
-    "./src/app/mission-details/mission-details.ts",
-    "./src/app/contract/contract.ts",
-    "./src/app/profile/profile.ts",
-    "./src/app/search-results/search-results.ts",
-    "./src/app/offer-edit/offer-edit.ts",
-    "./src/app/login/login.ts",
-    "./src/app/modal-confirm/modal-confirm.ts",
-    "./src/app/modal-options/modal-options.ts",
-    "./src/app/modal-offer-temp-quote/modal-offer-temp-quote.ts",
-    "./src/app/bank-account/bank-account.ts",
-    // Providers
-    "./src/providers/validation-data.service.ts",
-    "./src/providers/load-list.service.ts",
-    "./src/providers/attachements.service.ts",
-    "./src/providers/shared.service.ts",
-    "./src/providers/offer.service.ts",
-    "./src/providers/parameters-service.ts",
-    "./src/providers/helpers.service.ts",
-    "./src/providers/finance.service.ts",
-    "./src/providers/contract-service.ts",
-    "./src/providers/profile.service.ts",
-    "./src/providers/payline-services.ts",
-    "./src/providers/mission-service.ts",
-    "./src/providers/medecine.service.ts",
-    "./src/providers/search-service.ts",
-    "./src/providers/authentication.service.ts",
-    "./src/providers/communes.service.ts",
-    "./src/providers/routes.service.ts",
-    "./src/providers/observables.service.ts",
-    "./src/providers/bank-service.ts"
+  "include": [
+    "src/**/*.ts"
   ]
 }

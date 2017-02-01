@@ -1,7 +1,8 @@
-import {Component, EventEmitter, Input} from "@angular/core";
+import {Component, Input} from "@angular/core";
 import {SharedService} from "../../../providers/shared.service";
 import {RecruitmentService} from "../../../providers/recruitment-service";
 import {Utils} from "../../utils/utils";
+
 
 @Component({
   selector: 'grouped-recruit-button',

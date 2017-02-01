@@ -11,6 +11,7 @@ import {MissionService} from "../../providers/mission-service";
 import {Utils} from "../utils/utils";
 import {OffersService} from "../../providers/offer.service";
 
+
 /**
  * @author daoudi amine
  * @description Generate contract informations and call yousign service
