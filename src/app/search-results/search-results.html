@@ -64,7 +64,7 @@
   <div class="col-lg-12 col-xs-12" *ngIf="selected && !hideResult">
     <section class="widget" widget *ngIf="searchResults.length != 0 || cityQuery">
       <div class="clearfix" *ngIf="selected" [ngStyle]="{'display':mapDisplay}">
-        <sebm-google-map #Map [latitude]="lat" [longitude]="lng" [zoom]="10"  class="content-map">
+        <sebm-google-map #Map [latitude]="lat" [longitude]="lng" [zoom]="5"  class="content-map">
           <sebm-google-map-marker *ngFor="let item of searchResultPos, let i=index" [latitude]="item.lat" [longitude]="item.lng">
             <sebm-google-map-info-window>
                 <div [innerHTML]="item.info"></div>
