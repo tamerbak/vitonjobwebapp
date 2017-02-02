@@ -186,7 +186,7 @@ export class OfferEdit {
     //obj = "add", "detail", or "recruit"
     this.route.params.forEach((params: Params) => {
       this.obj = params['obj'];
-      this.advertId = params['adv'];
+      //this.advertId = params['adv'];
     });
 
     if (this.obj == "detail") {
@@ -609,25 +609,54 @@ export class OfferEdit {
           showCloseButton: true
         });
         //redirection depending on the case
-        if (!Utils.isEmpty(this.advertId)) {
+        /*if (!Utils.isEmpty(this.advertId)) {
           this.advertService.updateAdvertWithOffer(this.advertId, offer.idOffer).then((data: any) => {
             this.router.navigate(['advert/edit', {obj: 'add'}]);
           });
           return;
-        }
+        }*/
         if (this.obj == "add") {
+          this.dataValidation = true;
+          this.modalParams.type = "offer.annonce";
+          this.modalParams.message = "Voulez-vous ajouter plus de détails à cette offre ?";
+          this.modalParams.btnTitle = "Oui";
+          this.modalParams.btnClasses = "btn btn-success";
+          this.modalParams.modalTitle = "Plus de détails";
+          this.modalParams.offer = offer;
+          jQuery("#modal-options").modal('show');
+
           //redirect to offer-list and display public offers
-          this.router.navigate(['offer/list', {typeOfferModel: '0'}]);
+          //this.router.navigate(['offer/list', {typeOfferModel: '0'}]);
         }
 
         if (this.obj == "recruit") {
-          this.sharedService.setCurrentOffer(offer);
-          this.router.navigate(['search/results', {obj: 'recruit'}]);
+          this.dataValidation = true;
+          this.modalParams.type = "offer.annonce";
+          this.modalParams.message = "Voulez-vous ajouter plus de détails à cette offre ?";
+          this.modalParams.btnTitle = "Oui";
+          this.modalParams.btnClasses = "btn btn-success";
+          this.modalParams.modalTitle = "Plus de détails";
+          this.modalParams.offer = offer;
+          this.modalParams.obj = 'recruit';
+          jQuery("#modal-options").modal('show');
+
+          //this.sharedService.setCurrentOffer(offer);
+          //this.router.navigate(['search/results', {obj: 'recruit'}]);
         }
 
         if (this.obj == "pendingContracts") {
-          this.sharedService.setCurrentOffer(offer);
-          this.router.navigate(['pendingContracts', {obj: this.obj}]);
+          this.dataValidation = true;
+          this.modalParams.type = "offer.annonce";
+          this.modalParams.message = "Voulez-vous ajouter plus de détails à cette offre ?";
+          this.modalParams.btnTitle = "Oui";
+          this.modalParams.btnClasses = "btn btn-success";
+          this.modalParams.modalTitle = "Plus de détails";
+          this.modalParams.offer = offer;
+          this.modalParams.obj = this.obj;
+          jQuery("#modal-options").modal('show');
+
+          //this.sharedService.setCurrentOffer(offer);
+          //this.router.navigate(['pendingContracts', {obj: this.obj}]);
         }
       });
     } else {
@@ -689,15 +718,35 @@ export class OfferEdit {
     }
 
     //redirection depending on the case
-    if (!Utils.isEmpty(this.advertId)) {
-      this.advertService.updateAdvertWithOffer(this.advertId, this.offer.idOffer);
-      this.router.navigate(['advert/list']);
-      return;
-    } else {
-      //redirect to offer-list and display public offers
-      var typeOffer = this.offer.visible ? 0 : 1;
-      this.router.navigate(['offer/list', {typeOfferModel: typeOffer}]);
-    }
+    this.advertService.getAdvertByOffer(this.offer.idOffer).then((advert: any) => {
+      if (!Utils.isEmpty(advert)) {
+        this.dataValidation = true;
+        this.modalParams.type = "offer.annonce";
+        this.modalParams.message = "Voulez-vous ajouter plus de détails à cette offre ?";
+        this.modalParams.btnTitle = "Oui";
+        this.modalParams.btnClasses = "btn btn-success";
+        this.modalParams.modalTitle = "Plus de détails";
+        this.modalParams.offer = this.offer;
+        this.modalParams.advert = advert;
+        jQuery("#modal-options").modal('show');
+        //this.advertService.updateAdvertWithOffer(this.advertId, this.offer.idOffer);
+        //this.router.navigate(['advert/list']);
+        //return;
+      } else {
+        this.dataValidation = true;
+        this.modalParams.type = "offer.annonce";
+        this.modalParams.message = "Voulez-vous ajouter plus de détails à cette offre ?";
+        this.modalParams.btnTitle = "Plus de détails";
+        this.modalParams.btnClasses = "btn btn-success";
+        this.modalParams.modalTitle = "Plus de détails";
+        this.modalParams.offer = this.offer;
+        jQuery("#modal-options").modal('show');
+
+        //redirect to offer-list and display public offers
+        //var typeOffer = this.offer.visible ? 0 : 1;
+        //this.router.navigate(['offer/list', {typeOfferModel: typeOffer}]);
+      }
+    });
   }
 
   /**

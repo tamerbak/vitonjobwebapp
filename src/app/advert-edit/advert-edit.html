@@ -1,7 +1,7 @@
 <ol class="breadcrumb">
   <li>VOUS ÊTES ICI</li>
   <li class="active"><a class="breadcrumb-link" [routerLink]="['/advert/list']">Mes annonces</a></li>
-  <li class="active"><a class="breadcrumb-link" [routerLink]="['/advert/edit']">{{obj == "add" ? 'Nouvelle annonce' :
+  <li class="active"><a class="breadcrumb-link" [routerLink]="['/advert/edit']">{{type == "add" ? 'Nouvelle annonce' :
     'Détails de l\'annonce'}}</a></li>
 </ol>
 
@@ -208,9 +208,9 @@
         <button type="button" class="btn btn-success fwidth" (click)="saveAdvert()">
           Enregistrer
         </button>
-        <button type="button" class="btn btn-success fwidth" (click)="saveAdvertWithOffer()">
+        <!--<button type="button" class="btn btn-success fwidth" (click)="saveAdvertWithOffer()">
           Enregistrer et détailler l'offre
-        </button>
+        </button>-->
       </div>
     </div>
   </div>
