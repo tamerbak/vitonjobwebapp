@@ -4,6 +4,8 @@ import {Configs} from "../configurations/configs";
 import {Utils} from "../app/utils/utils";
 import {DateUtils} from "../app/utils/date-utils";
 
+declare let escape;
+
 @Injectable()
 export class AdvertService {
   constructor(public http : Http){
@@ -234,7 +236,7 @@ export class AdvertService {
       return "";
     let val = "";
     try {
-      val = atob(content);
+      val = decodeURIComponent(escape(atob(content)));
     } catch (exc) {
       val = content;
     }

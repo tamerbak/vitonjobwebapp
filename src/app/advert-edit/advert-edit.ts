@@ -9,6 +9,7 @@ import {Configs} from "../../configurations/configs";
 
 declare let jQuery: any;
 declare let Messenger: any;
+declare let unescape;
 
 
 @Component({
@@ -281,7 +282,7 @@ export class AdvertEdit{
   }
 
   prepareDataForSaving(){
-    this.advert.description = btoa(this.ckExport());
+    this.advert.description = btoa(unescape(encodeURIComponent((this.ckExport()))));
     this.advert.contractForm = '';
     if (this.contractForm.isInterim) {
       this.advert.contractForm = this.advert.contractForm + ";Intérim";
