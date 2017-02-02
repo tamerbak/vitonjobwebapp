@@ -119,7 +119,7 @@
     "bootstrap_calendar": "https://github.com/xero/bootstrap_calendar.git#1.0.1",
     "jQuery-Mapael": "https://github.com/neveldo/jQuery-Mapael.git#0.7.1",
     "jquery-ui-touch-punch": "git://github.com/furf/jquery-ui-touch-punch.git#4bc009145202d9c7483ba85f3a236a8f3470354d",
-    "select2": "https://github.com/select2/select2.git#3.5.4",
+    "select2": "https://github.com/select2/select2.git#4.0.3",
     "jquery-animateNumber": "https://github.com/aishek/jquery-animateNumber.git#0a8e55dce8ef7879da6a40dc587640ccc447e215",
     "seiyria-bootstrap-slider": "https://github.com/seiyria/bootstrap-slider.git#v5.1.1"
   },

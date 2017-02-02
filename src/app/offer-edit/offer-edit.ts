@@ -617,12 +617,15 @@ export class OfferEdit {
         }*/
         if (this.obj == "add") {
           this.dataValidation = true;
+          this.sharedService.setCurrentOffer(offer);
+          this.keepCurrentOffer = true;
           this.modalParams.type = "offer.annonce";
           this.modalParams.message = "Voulez-vous ajouter plus de détails à cette offre ?";
           this.modalParams.btnTitle = "Oui";
+          this.modalParams.btnCancelTitle = "Plus tard";
           this.modalParams.btnClasses = "btn btn-success";
           this.modalParams.modalTitle = "Plus de détails";
-          this.modalParams.offer = offer;
+          //this.modalParams.offer = offer;
           jQuery("#modal-options").modal('show');
 
           //redirect to offer-list and display public offers
@@ -631,12 +634,15 @@ export class OfferEdit {
 
         if (this.obj == "recruit") {
           this.dataValidation = true;
+          this.sharedService.setCurrentOffer(offer);
+          this.keepCurrentOffer = true;
           this.modalParams.type = "offer.annonce";
           this.modalParams.message = "Voulez-vous ajouter plus de détails à cette offre ?";
           this.modalParams.btnTitle = "Oui";
+          this.modalParams.btnCancelTitle = "Plus tard";
           this.modalParams.btnClasses = "btn btn-success";
           this.modalParams.modalTitle = "Plus de détails";
-          this.modalParams.offer = offer;
+          //this.modalParams.offer = offer;
           this.modalParams.obj = 'recruit';
           jQuery("#modal-options").modal('show');
 
@@ -646,12 +652,15 @@ export class OfferEdit {
 
         if (this.obj == "pendingContracts") {
           this.dataValidation = true;
+          this.sharedService.setCurrentOffer(offer);
+          this.keepCurrentOffer = true;
           this.modalParams.type = "offer.annonce";
           this.modalParams.message = "Voulez-vous ajouter plus de détails à cette offre ?";
           this.modalParams.btnTitle = "Oui";
+          this.modalParams.btnCancelTitle = "Plus tard";
           this.modalParams.btnClasses = "btn btn-success";
           this.modalParams.modalTitle = "Plus de détails";
-          this.modalParams.offer = offer;
+          //this.modalParams.offer = offer;
           this.modalParams.obj = this.obj;
           jQuery("#modal-options").modal('show');
 
@@ -721,12 +730,15 @@ export class OfferEdit {
     this.advertService.getAdvertByOffer(this.offer.idOffer).then((advert: any) => {
       if (!Utils.isEmpty(advert)) {
         this.dataValidation = true;
+        this.sharedService.setCurrentOffer(this.offer);
+        this.keepCurrentOffer = true;
         this.modalParams.type = "offer.annonce";
         this.modalParams.message = "Voulez-vous ajouter plus de détails à cette offre ?";
         this.modalParams.btnTitle = "Oui";
+        this.modalParams.btnCancelTitle = "Plus tard";
         this.modalParams.btnClasses = "btn btn-success";
         this.modalParams.modalTitle = "Plus de détails";
-        this.modalParams.offer = this.offer;
+        //this.modalParams.offer = this.offer;
         this.modalParams.advert = advert;
         jQuery("#modal-options").modal('show');
         //this.advertService.updateAdvertWithOffer(this.advertId, this.offer.idOffer);
@@ -734,12 +746,15 @@ export class OfferEdit {
         //return;
       } else {
         this.dataValidation = true;
+        this.sharedService.setCurrentOffer(this.offer);
+        this.keepCurrentOffer = true;
         this.modalParams.type = "offer.annonce";
         this.modalParams.message = "Voulez-vous ajouter plus de détails à cette offre ?";
-        this.modalParams.btnTitle = "Plus de détails";
+        this.modalParams.btnTitle = "Oui";
+        this.modalParams.btnCancelTitle = "Plus tard";
         this.modalParams.btnClasses = "btn btn-success";
         this.modalParams.modalTitle = "Plus de détails";
-        this.modalParams.offer = this.offer;
+        //this.modalParams.offer = this.offer;
         jQuery("#modal-options").modal('show');
 
         //redirect to offer-list and display public offers
@@ -841,7 +856,7 @@ export class OfferEdit {
     this.modalParams.btnTitle = "Supprimer l'offre";
     this.modalParams.btnClasses = "btn btn-danger";
     this.modalParams.modalTitle = "Suppression de l'offre";
-    jQuery("#modal-options").modal('show')
+    jQuery("#modal-options").modal('show');
   }
 
   copyOffer() {
@@ -852,7 +867,7 @@ export class OfferEdit {
     this.modalParams.btnTitle = "Copier l'offre";
     this.modalParams.btnClasses = "btn btn-primary";
     this.modalParams.modalTitle = "Copie de l'offre";
-    jQuery("#modal-options").modal('show')
+    jQuery("#modal-options").modal('show');
   }
 
   changePrivacy() {
