@@ -70,13 +70,13 @@
       </a>
     </li>
 
-    <li *ngIf="currentUser">
+    <!--<li *ngIf="currentUser">
       <a [routerLink]=" ['/advert/list'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-globe"></i>
           </span>{{currentUser.estEmployeur ? 'Mes annonces' : 'Annonces'}}
       </a>
-    </li>
+    </li>-->
 
     <li *ngIf="currentUser && currentUser.estEmployeur">
       <a [routerLink]=" ['/pendingContracts'] ">
