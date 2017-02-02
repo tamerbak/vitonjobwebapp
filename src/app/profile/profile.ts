@@ -733,7 +733,7 @@ export class Profile{
         }
         this.medecineService.getMedecine(this.currentUser.employer.entreprises[0].id).then((res: any)=> {
           if (res && res != null) {
-            this.selectedMedecine = {id: res.id, libelle: res.libelle};
+            this.selectedMedecine = {id: res.id, libelle: res.libelle,code_urssaf: res.code_urssaf};
             jQuery(".medecine-select").select2('data', this.selectedMedecine);
           }
         });
