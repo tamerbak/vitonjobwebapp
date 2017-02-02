@@ -39,15 +39,19 @@
   height: 12vh;
 }
 
+.home-partner {
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
 .home-partner-logo {
-  height: 10vh;
+  height: 7vh;
 }
 
 .home-partner-slogan {
   text-align: center;
-  color: rgb(20, 186, 166);
-  font-size: larger;
-  font-weight: bolder;
+  color: rgba(123, 123, 123, 0.9);
+  font-size: smaller;
 }
 
 .search-link {

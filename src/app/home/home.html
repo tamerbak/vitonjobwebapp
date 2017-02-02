@@ -18,23 +18,17 @@
       <div class="container-fluid home-search-bar-container">
 
         <!-- PARTNER LOGO -->
-        <div *ngIf="displayPartnerLogo()" class="row">
-          <img
-            class="centred-l home-logo home-partner-logo"
-            src="../../assets/images/logo/partner/hubjob.png"
-          />
-        </div>
-        <!--<div *ngIf="displayPartnerLogo()" class="row">-->
-          <!--<img-->
-            <!--class="centred-l home-logo home-partner-logo"-->
-            <!--src="../../assets/images/logo/partner/hubjob-white.png"-->
-          <!--/>-->
-        <!--</div>-->
-        <div *ngIf="displayPartnerLogo()" class="row">
-          <div class="col-md-offset-3 col-md-6 col-sm-offset-2 col-sm-8 col-xs-12 home-partner-slogan">
-            Hubjob.fr, l'agence d'intérim virtuelle a confié son recrutement à Vit-On-Job
+        <section *ngIf="displayPartnerLogo()" class="row">
+          <div class="widget home-partner col-lg-offset-4 col-lg-4 col-lg-offset-2 col-lg-6 col-xs-12">
+            <img
+              class="centred-l home-partner-logo"
+              src="../../assets/images/logo/partner/hubjob.png"
+            />
+            <div class="home-partner-slogan">
+              Hubjob.fr, l'agence d'intérim virtuelle a confié son recrutement à Vit-On-Job
+            </div>
           </div>
-        </div>
+        </section>
 
         <!-- LOGO -->
         <div class="row">
