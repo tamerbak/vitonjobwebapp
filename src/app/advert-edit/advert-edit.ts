@@ -9,7 +9,7 @@ import {Configs} from "../../configurations/configs";
 
 declare let jQuery: any;
 declare let Messenger: any;
-declare let unescape;
+declare let unescape:any;
 
 
 @Component({

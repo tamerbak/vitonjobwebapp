@@ -4,7 +4,7 @@ import {Configs} from "../configurations/configs";
 import {Utils} from "../app/utils/utils";
 import {DateUtils} from "../app/utils/date-utils";
 
-declare let escape;
+declare let escape:any;
 
 @Injectable()
 export class AdvertService {
