@@ -87,7 +87,7 @@ export class SearchResults{
     this.cityQuery = this.sharedService.getCurrentSearchCity();
     if (Utils.isEmpty(this.scQueryCrit) == false) {
       this.scQuery = this.scQueryCrit + "";
-    } if (Utils.isEmpty(this.cityQuery) == false) {
+    } else if (Utils.isEmpty(this.cityQuery) == false) {
       this.scQuery = this.cityQuery + "";
     } else {
       this.scQuery = "";
