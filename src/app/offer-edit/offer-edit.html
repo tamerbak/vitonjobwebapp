@@ -81,7 +81,7 @@
             </div>
             <input required id="input-job-select" data-label="Choix du Job"
             type="hidden" class="select2 job-select form-control" name="job"
-                   placeholder="Recherchez votre job" [(ngModel)]="selectedJob"/>
+                   placeholder="Rechercher votre job" [(ngModel)]="selectedJob"/>
 
             <alert *ngIf="triedValidate && !offer.jobData.idJob" [type]="'danger alert-sm'">
               <div [innerHTML]="'* Veuillez renseigner le job'"></div>
