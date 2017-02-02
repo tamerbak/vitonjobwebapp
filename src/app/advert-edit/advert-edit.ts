@@ -24,7 +24,9 @@ export class AdvertEdit{
   currentUser: any;
   advert: any;
   idAdvert: any;
-  obj: string = 'add';
+  type: string = 'add';
+  obj: string;
+  offerId: number;
   thumbnailData: any;
   coverData: any;
   alerts: any = [];
@@ -74,8 +76,6 @@ export class AdvertEdit{
       isPartialTime: false
     };
 
-    console.log("** ",this.advert.titre);
-
     this.contractForm = {
       isInterim: false, isFormation: false, isCDD: false, isCDI: false
     }
@@ -89,13 +89,21 @@ export class AdvertEdit{
       "<p><strong>Etiam gravida sed risus id ultricies. Proin malesuada purus condimentum leo porta dapibus. Proin sollicitudin et tellus at lobortis. Mauris posuere malesuada sagittis. Suspendisse non lectus id diam viverra pellentesque sit amet semper lorem. Nullam a justo et libero placerat auctor sed eu justo. Proin eget erat id libero posuere condimentum. Sed facilisis gravida mauris, eget varius nibh suscipit in. Etiam vel quam eu tortor elementum commodo quis eget lectus. Pellentesque id pellentesque lacus, vitae pellentesque massa.</strong></p> " +
       "<p>&nbsp;</p>"
 
-    //obj = "add", "detail"
+    //type = "add", "detail"
     this.route.params.forEach((params: Params) => {
+      this.type = params['type'];
       this.obj = params['obj'];
     });
 
-    if (this.obj == "detail") {
-      this.advert = this.sharedService.getCurrentAdv();      
+    let offer = this.sharedService.getCurrentOffer();
+    if(!Utils.isEmpty(offer)){
+      this.offerId = offer.idOffer;
+    }else{
+      this.offerId = 0;
+    }
+
+    if (this.type == "detail") {
+      this.advert = this.sharedService.getCurrentAdv();
       this.advert.link = Utils.isEmpty(this.advert.link) ? "" : this.advert.link;
 
       this.idAdvert = this.advert.id;
@@ -129,9 +137,9 @@ export class AdvertEdit{
         self.coverData = null;
         self.deleteFile(self.advert.imgbg);
       });
-      
+
       let titre = self.advert.titre;
-      if (self.obj == "detail") {
+      if (self.type == "detail") {
         let advertTitleObj = {
           id: "0",
           libelle: titre,
@@ -302,6 +310,7 @@ export class AdvertEdit{
 
     this.alert("Prière de patienter, la sauvegarde peut prendre un moment à cause de la taille des fichiers", "info");
 
+    //dans le cas d'une modification d'une annonce deja créée
     if (this.idAdvert) {
       this.advertService.saveAdvert(this.advert).then((result: any) => {
         if(result && result.status == 'success'){
@@ -311,7 +320,16 @@ export class AdvertEdit{
             type: 'success',
             showCloseButton: true
           });
-          this.router.navigate(['advert/list']);
+          //this.router.navigate(['advert/list']);
+          if (this.obj == "recruit") {
+            this.router.navigate(['search/results', {obj: this.obj}]);
+            return;
+          }
+          if (this.obj == "pendingContracts") {
+            this.router.navigate(['pendingContracts', {obj: this.obj}]);
+            return;
+          }
+          this.router.navigate(['offer/list']);
         }else{
           Messenger().post({
             message: "Une erreur est survenue lors de l'enregistrement de l'annonce.",
@@ -322,7 +340,8 @@ export class AdvertEdit{
         }
       });
     } else {
-      this.advertService.saveNewAdvert(this.advert).then((result: any) => {
+      // dans le cas d'une création d'une nouvelle annonce
+      this.advertService.saveNewAdvert(this.advert, this.offerId).then((result: any) => {
         if(result.id != 0) {
           this.idAdvert = result.id;
           Messenger().post({
@@ -331,6 +350,16 @@ export class AdvertEdit{
             showCloseButton: true
           });
           this.resetForm();
+          if (this.obj == "recruit") {
+            this.router.navigate(['search/results', {obj: this.obj}]);
+            return;
+          }
+          if (this.obj == "pendingContracts") {
+            this.router.navigate(['pendingContracts', {obj: this.obj}]);
+            return;
+          }
+          this.router.navigate(['offer/list']);
+          //this.router.navigate(['offer/list']);
         }else{
           Messenger().post({
             message: "Une erreur est survenue lors de l'enregistrement de l'annonce.",
@@ -343,7 +372,7 @@ export class AdvertEdit{
     }
   }
 
-  saveAdvertWithOffer() {
+  /*saveAdvertWithOffer() {
     this.prepareDataForSaving();
 
     if(!this.isFormValid()){
@@ -355,7 +384,7 @@ export class AdvertEdit{
       return;
     }
 
-    
+
 
     this.alert("Prière de patienter, la sauvegarde peut prendre un moment à cause de la taille des fichiers", "info");
 
@@ -395,7 +424,7 @@ export class AdvertEdit{
         }
       });
     }
-  }
+  }*/
 
   resetForm(){
     this.alerts = [];
@@ -465,7 +494,7 @@ export class AdvertEdit{
     if(this.advert && !this.isEmpty(this.advert.titre)){
       if(!Utils.isEmpty(this.advert.link) && !Utils.isValidUrl(this.advert.link)){
         return false;
-      }else{
+      } else {
         return true;
       }
     } else {
