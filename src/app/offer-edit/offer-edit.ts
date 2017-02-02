@@ -537,16 +537,17 @@ export class OfferEdit {
 
   saveOffer() {
     this.triedValidate = true;
+
+    if (!this.isFormValid()) {
+      return;
+    }
+
     //values of condition de travail should not be null
     if (!this.isConditionEmpValid) {
       return;
     }
 
     if (this.obj != "detail") {
-
-      if (!this.isFormValid()) {
-        return;
-      }
 
       let level = (this.offer.jobData.level === 'senior') ? 'Expérimenté' : 'Débutant';
       this.offer.title = this.offer.jobData.job + " " + level;
@@ -700,10 +701,7 @@ export class OfferEdit {
     // --> Job state
     this.dataValidation = true;
     this.offer.title = this.offer.jobData.job + ' ' + ((this.offer.jobData.level != 'junior') ? 'Expérimenté' : 'Débutant');
-    if (!this.offer.jobData.job || !this.offer.jobData.sector || !this.offer.jobData.remuneration || !this.offer.calendarData || this.offer.calendarData.length == 0) {
-      this.addAlert("warning", "Veuillez saisir les détails du job, ainsi que les disponibilités pour pouvoir valider.", "general");
-      return;
-    }
+
     this.dataValidation = true;
     this.offersService.updateOfferJob(this.offer, this.projectTarget);
     this.setOfferInLocal();
