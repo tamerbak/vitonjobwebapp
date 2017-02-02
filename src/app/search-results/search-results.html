@@ -24,7 +24,7 @@
       {{ searchResults.length == 0 ? 'Aucun résultat ne correspond à votre recherche' : ''}}
       {{ searchResults.length == 1 ? '1 résultat correspond à votre recherche' : ''}}
       {{ searchResults.length > 1 ? searchResults.length + ' résultats correspondent à votre recherche' : ''}}
-      "{{ lastScQuery }}"
+      {{ lastScQuery ? '"' + lastScQuery + '"' : '' }}
     </div>
     <div *ngIf="!hideLoader">Recherche en cours...</div>
   </div>

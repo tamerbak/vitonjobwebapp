@@ -85,10 +85,12 @@ export class SearchResults{
   ngOnInit() {
     this.scQueryCrit = this.sharedService.getCurrentSearch();
     this.cityQuery = this.sharedService.getCurrentSearchCity();
-    if (this.scQueryCrit) {
+    if (Utils.isEmpty(this.scQueryCrit) == false) {
       this.scQuery = this.scQueryCrit + "";
-    } else {
+    } if (Utils.isEmpty(this.cityQuery) == false) {
       this.scQuery = this.cityQuery + "";
+    } else {
+      this.scQuery = "";
     }
     this.lastScQuery = this.scQuery + "";
     this.currentQuery = this.scQuery + "";
@@ -160,7 +162,7 @@ export class SearchResults{
         }
         r.slots =[];
         // get disponibilities for jobyer
-        let offerProjectTarget = (this.projectTarget == 'employer' ? 'jobyer' : 'employer'); 
+        let offerProjectTarget = (this.projectTarget == 'employer' ? 'jobyer' : 'employer');
         this.offersService.getOfferCalendarDataById(r.idOffre, offerProjectTarget).then((data: any) => {
           r.dateSlots = [];
           if (data['calendarData'] && Utils.isEmpty(data['calendarData']) === false) {
@@ -189,7 +191,7 @@ export class SearchResults{
 
         // Get if jobyer interested
         this.setCandidatureButtonLabel(r);
-        
+
         let availability = this.getAvailabilityText(r.availability.text);
         r.availabilityText = availability == '' ? '' : ((this.projectTarget=="employer" ? "Ce jobyer se situe à ":"Vous êtes à " ) + availability + " du lieu de la mission");
         r.availabiltyMinutes = this.getAvailabilityMinutes(r.availability.text);

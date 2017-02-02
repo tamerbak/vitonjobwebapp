@@ -131,6 +131,8 @@ export class SearchCriteria {
       idOffre: '0'
     };
     this.searchService.criteriaSearch(searchFields, this.projectTarget).then((data: any) => {
+      this.sharedService.setCurrentSearchCity(null);
+      this.sharedService.setCurrentSearch(null);
       this.sharedService.setLastResult(data);
       Messenger().post({
         message: "Votre recherche "+(data.length ==0 ?"n'":"")+"a donné " + (data.length == 0 ?"aucun résultat" : (data.length == 1 ? "un seul résultat":(data.length+' résultats'))),
