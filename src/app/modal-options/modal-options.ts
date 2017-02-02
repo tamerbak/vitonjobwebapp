@@ -5,6 +5,7 @@ import {OffersService} from "../../providers/offer.service";
 import {MissionService} from "../../providers/mission-service";
 import {SmsService} from "../../providers/sms-service";
 import {AdvertService} from "../../providers/advert.service";
+import {Utils} from "../utils/utils";
 
 declare let jQuery: any;
 declare let Messenger: any;
@@ -50,6 +51,14 @@ export class ModalOptions{
       this.deleteAdvert();
     } else if (this.params.type === 'mission.delete') {
       this.deleteMission();
+    } else if (this.params.type === 'offer.annonce') {
+      this.goToAdvertEdit();
+    }
+  }
+
+  cancelOperation(){
+    if (this.params.type === 'offer.annonce') {
+      this.router.navigate(['offer/list']);
     }
   }
 
@@ -103,7 +112,7 @@ export class ModalOptions{
       });
       this.sharedService.setCurrentOffer(null);
       this.processing = false;
-      jQuery("#modal-options").modal('hide')
+      jQuery("#modal-options").modal('hide');
       this.router.navigate(['offer/list']);
     });
   }
@@ -208,8 +217,24 @@ export class ModalOptions{
 
       this.sharedService.setCurrentMission(null);
       this.processing = false;
-      jQuery("#modal-options").modal('hide')
+      jQuery("#modal-options").modal('hide');
       this.router.navigate(['mission/list',{type:2}]);
     });
+  }
+
+  goToAdvertEdit(){
+    jQuery("#modal-options").modal('hide');
+    let offer = this.params.offer;
+    this.sharedService.setCurrentOffer(offer);
+    let advert = this.params.advert;
+    let obj = this.params.obj;
+    let type;
+    if(Utils.isEmpty(advert)){
+      type = 'add';
+    }else{
+      type = "detail";
+      this.sharedService.setCurrentAdv(advert);
+    }
+    this.router.navigate(['advert/edit', {type: type, obj: obj}]);
   }
 }

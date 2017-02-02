@@ -52,8 +52,7 @@ export class SearchDetails{
   youtubeLink: string;
   youtubeLinkSafe: any;
   subject: string = "recruit";
-  city:string = "";
-  cp:string = "";
+  address:string = "";
 
   estimatedIncome:number=0;
 
@@ -74,18 +73,24 @@ export class SearchDetails{
     this.offer = this.sharedService.getCurrentOffer();
     this.offerComplete = new Offer();
 
+    if(this.result.address){
+      this.address = this.result.address;
+    }else if(this.result.adresseOffre && this.result.adresseOffre.googleMapsAdresse){
+      this.address = this.result.adresseOffre.googleMapsAdresse;
+    }
+
     let offerProjectTarget = (this.projectTarget == 'employer' ? 'jobyer' : 'employer');
     this.offersService.getOfferById(this.result.idOffre, offerProjectTarget, this.offerComplete).then((data: any) => {
       if(this.result.rate && this.result.rate>0)
         this.calculateIncome();
         
     });
-    this.offersService.loadOfferCity(this.result.idOffre, offerProjectTarget).then((data: any) => {
-      if(data && data[0]){
-        this.city = data[0].nom;
-        this.cp = data[0].code;
-      }
-    });
+    // this.offersService.loadOfferCity(this.result.idOffre, offerProjectTarget).then((data: any) => {
+    //   if(data && data[0]){
+    //     this.city = data[0].nom;
+    //     this.cp = data[0].code;
+    //   }
+    // });
     if(this.projectTarget == 'jobyer')
       this.candidatureAllowed = (this.result.accepteCandidature || this.result.accepteCandidature == 'true' ? true : false);
     else

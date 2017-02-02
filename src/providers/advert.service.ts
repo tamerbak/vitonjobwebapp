@@ -130,30 +130,30 @@ export class AdvertService {
         .map(res => res.json())
         .subscribe(data => {
           if(data && data.data && data.data.length != 0){
-              let r = data.data[0];
-              advert.attachement = {
-                  'class':'com.vitonjob.annonces.Attachement',
-                  code : 0,
-                  status : '',
-                  fileContent : r.attachement,
-                  fileName : ''
-                };
-                advert.imgbg = {
-                  'class':'com.vitonjob.annonces.Attachement',
-                  code : 0,
-                  status : '',
-                  fileContent : this.prepareImage(r.imgbg),
-                  fileName: this.getImageName(r.imgbg)
-                };
-                advert.contractForm = r.forme_contrat;
-                advert.isPartialTime = (r.tempsPartiel.toUpperCase() == 'OUI');
-              }
+            let r = data.data[0];
+            advert.attachement = {
+                'class':'com.vitonjob.annonces.Attachement',
+                code : 0,
+                status : '',
+                fileContent : r.attachement,
+                fileName : ''
+              };
+              advert.imgbg = {
+                'class':'com.vitonjob.annonces.Attachement',
+                code : 0,
+                status : '',
+                fileContent : this.prepareImage(r.imgbg),
+                fileName: this.getImageName(r.imgbg)
+              };
+              advert.contractForm = r.forme_contrat;
+              advert.isPartialTime = (r.tempsPartiel.toUpperCase() == 'OUI');
+          }
           resolve(advert);
         });
     });
   }
 
-  saveNewAdvert(advert : any){
+  saveNewAdvert(advert : any, offerId){
     let sql = "insert into user_annonce_entreprise " +
       "(titre,lien, contenu, piece_jointe, forme_contrat, temps_partiel, thumbnail, image_principale, created, fk_user_entreprise) " +
       "values " +
@@ -168,6 +168,7 @@ export class AdvertService {
       new Date().toISOString()+"', " +
       advert.idEntreprise+")" +
       " returning pk_user_annonce_entreprise";
+
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -178,8 +179,28 @@ export class AdvertService {
           };
           if(data && data.data && data.data.length > 0){
             res.id = data.data[0].pk_user_annonce_entreprise;
+            if(!Utils.isEmpty(offerId) && offerId != 0){
+              this.updateOfferWithAdvert(res.id, offerId);
+            }
           }
           resolve(res);
+        });
+    });
+  }
+
+  updateOfferWithAdvert(advertId, offerId){
+    let sql = "update user_offre_entreprise " +
+        "SET " +
+        "fk_user_annonce_entreprise = '" + advertId + "' " +
+        "WHERE " +
+        "pk_user_offre_entreprise = " + offerId + ";"
+      ;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
         });
     });
   }
@@ -390,6 +411,73 @@ export class AdvertService {
           }
           resolve(null);
         });
+    });
+  }
+
+  getAdvertByOffer(offerId){
+    let sql = "select " +
+      " pk_user_annonce_entreprise as id" +
+      ", titre as titre" +
+      ", lien as link" +
+      ", contenu as content" +
+      ", thumbnail" +
+      ", created " +
+      ", temps_partiel as \"tempsPartiel\" " +
+      ", piece_jointe as attachement" +
+      ", image_principale as imgbg" +
+      ", temps_partiel as \"tempsPartiel\" " +
+      ", forme_contrat" +
+      " from user_annonce_entreprise " +
+      " where dirty='N' and pk_user_annonce_entreprise in (select fk_user_annonce_entreprise from user_offre_entreprise " +
+      " where pk_user_offre_entreprise = " + offerId + ");";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let advert: any;
+          if(data && data.data && data.data.length != 0){
+            let r = data.data[0];
+            advert = {
+              id : r.id,
+              'class' : 'com.vitonjob.annonces.Annonce',
+              titre : r.titre,
+              link: r.link,
+              description : this.prepareContent(r.content),
+              briefContent : this.prepareBriefContent(r.content),
+              thumbnail : {
+                'class':'com.vitonjob.annonces.Attachement',
+                code : 0,
+                status : '',
+                fileContent : this.prepareImage(r.thumbnail),
+                fileName: this.getImageName(r.thumbnail)
+              },
+              isThumbnail : r.thumbnail && r.thumbnail.length > 0,
+              rubriques : [],
+              created : this.parseDate(r.created),
+              offerId: r.offerId,
+              nbInterest: r.nbInterest,
+              isPartialTime: (r.tempsPartiel.toUpperCase() == 'OUI'),
+              attachement: {
+                'class':'com.vitonjob.annonces.Attachement',
+                code : 0,
+                status : '',
+                fileContent : r.attachement,
+                fileName : ''
+              },
+              imgbg: {
+              'class':'com.vitonjob.annonces.Attachement',
+              code : 0,
+              status : '',
+              fileContent : this.prepareImage(r.imgbg),
+              fileName: this.getImageName(r.imgbg)
+            },
+            contractForm: r.forme_contrat
+          };
+        }
+        resolve(advert);
+      });
     });
   }
 }
