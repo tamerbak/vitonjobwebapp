@@ -6,7 +6,7 @@ import { Profile } from '../app/profile/profile';
 import {Observable} from 'rxjs/Observable';
 import { EventEmitter} from 'angular2/core';
 
-declare var jQuery:any;
+declare let jQuery:any;
 
 @Injectable()
 export class ConfirmExitPage implements CanDeactivate<any> {

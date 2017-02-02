@@ -7,7 +7,7 @@ import {ValidationDataService} from "../../providers/validation-data.service";
 import {SharedService} from "../../providers/shared.service";
 import {Utils} from "../utils/utils";
 declare function md5(value: string): string;
-declare var Messenger;
+declare let Messenger;
 
 
 @Component({

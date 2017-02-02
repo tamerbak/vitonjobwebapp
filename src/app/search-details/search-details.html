@@ -27,6 +27,7 @@
           {{ (matching.toString().indexOf('.') < 0) ? matching : matching.toString().split('.')[0] }}%
         </span>
       </p>
+      <p>{{city + (cp === '' ? '' :(' ('+cp+')'))}}</p>
     </div>
   </header>
 
@@ -70,7 +71,7 @@
               type="submit"
               class="btn btn-secondary btn-sm top-element"
               (click)="switchJobyerInterest()" [disabled]="isInterestBtnDisabled"
-              *ngIf="projectTarget == 'jobyer' && currentUser"
+              *ngIf="projectTarget == 'jobyer'"
               style="background-color: #40aea9; color: white; float: right;"
             >
               {{jobyerInterestLabel}}
@@ -89,13 +90,13 @@
           </div>
         </div>
 
-        <div class="col-md-12 col-sm-12 col-xs-12" [hidden]="projectTarget == 'employer' || !result.rate || result.rate<=0">
+        <div class="col-md-12 col-sm-12 col-xs-12" *ngIf="projectTarget == 'jobyer' && result.rate && result.rate > 0">
           <b>Le taux horaire : </b>{{result.rate.toFixed(3)}} &euro; <br />
           <b>Les gains estimés : </b>{{(!estimatedIncome && estimatedIncome==0)? 'Calcul en cours ...':estimatedIncome.toFixed(2)+" €"}}
         </div>
 
         <div class="col-md-12 col-sm-12 col-xs-12" *ngIf="offerComplete.calendarData && offerComplete.calendarData.length > 0">
-          <b>Disponibilités</b>
+          <b>{{ projectTarget == 'jobyer' ? 'Horaires de travail souhaités' : 'Disponibilités' }}</b>
           <ul>
             <li *ngFor="let dispo of offerComplete.calendarData, let j = index" [hidden]="dispo.pause">
 
@@ -180,3 +181,7 @@
 
 <div modal-notification-contract [jobyer]="result" [subject]="subject" *ngIf="projectTarget == 'employer' && !isRecruteur"></div>
 <div modal-profile [fromPage]="fromPage" [jobyer]="result" (onProfileUpdated)="onProfileUpdated($event)"></div>
+<div
+  modal-subscribe
+  *ngIf="projectTarget == 'jobyer' && !currentUser"
+></div>

@@ -8,7 +8,9 @@ import {Configs} from "../../configurations/configs";
 import {CommunesService} from "../../providers/communes.service";
 import {SearchService} from "../../providers/search-service";
 import {Utils} from "../utils/utils";
-declare var jQuery,Messenger: any;
+
+declare let JQuery: any;
+declare let Messenger: any;
 
 @Component({
   selector: '[search-criteria]',
@@ -82,7 +84,9 @@ export class SearchCriteria {
   }
 
   sectorSelected(sector) {
-    jQuery('.job-select').select2("val", "");
+    let $jobSelect: any = jQuery('.job-select');
+    $jobSelect.select2("val", "");
+
     let sectorsTemp = this.sectors.filter((v)=> {
       return (v.id == sector);
     });
@@ -139,7 +143,9 @@ export class SearchCriteria {
 
   ngAfterViewInit() {
     //city select
-    jQuery('.city').select2({
+    let $citySelect: any = jQuery('.city');
+
+    $citySelect.select2({
       ajax: {
         url: Configs.sqlURL,
         type: 'POST',
@@ -167,7 +173,7 @@ export class SearchCriteria {
       },
       minimumInputLength: 3,
     });
-    jQuery('.city').on('change',
+    $citySelect.on('change',
       (e) => {
         this.city = e.added.nom;
       }
@@ -176,21 +182,23 @@ export class SearchCriteria {
     //sector and job select
     let self = this;
     // Initialize constraint between sector and job
-    let sector = jQuery('.sector-select').select2();
-    let job = jQuery('.job-select').select2();
+    let $sectorSelect: any = jQuery('.sector-select');
+    let $jobSelect: any = jQuery('.job-select');
 
-    sector
+    $sectorSelect.select2();
+    $sectorSelect
       .val(this.idSector).trigger("change")
-      .on("change", function (e) {
+      .on("change", ((e: any)=> {
           self.sectorSelected(e.val);
-        }
+        })
       );
 
-    job
+    $jobSelect.select2();
+    $jobSelect
       .val(this.idJob).trigger("change")
-      .on("change", function (e) {
+      .on("change", ((e: any)=> {
           self.jobSelected(e.val);
-        }
+        })
       );
   }
 

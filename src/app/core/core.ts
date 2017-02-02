@@ -11,10 +11,9 @@ import {SystemService} from "../../providers/system.service";
 
 import {Configs} from "../../configurations/configs";
 
-declare var Raphael: any;
-declare var jQuery: any;
-declare var Tether: any;
-declare var require: any;
+declare let Raphael: any;
+declare let jQuery: any;
+declare let Tether: any;
 
 export const REDIRECTTO: string = "/home";
 

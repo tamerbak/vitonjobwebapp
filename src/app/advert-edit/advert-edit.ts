@@ -7,8 +7,8 @@ import {Utils} from "../utils/utils";
 import {OffersService} from "../../providers/offer.service";
 import {Configs} from "../../configurations/configs";
 
-declare var jQuery: any;
-declare var Messenger: any;
+declare let jQuery: any;
+declare let Messenger: any;
 
 
 @Component({
@@ -373,58 +373,58 @@ export class AdvertEdit{
   }
 
   /*saveAdvertWithOffer() {
-    this.prepareDataForSaving();
+   this.prepareDataForSaving();
 
-    if(!this.isFormValid()){
-      if(!Utils.isEmpty(this.advert.link) && !Utils.isValidUrl(this.advert.link)){
-        this.alert("Le lien spécifié de l'annonce n'est pas valide", "warning");
-        return;
-      }
-      this.alert("Veuillez renseigner le titre de l'annonce avant d'enregistrer", "warning");
-      return;
-    }
+   if(!this.isFormValid()){
+   if(!Utils.isEmpty(this.advert.link) && !Utils.isValidUrl(this.advert.link)){
+   this.alert("Le lien spécifié de l'annonce n'est pas valide", "warning");
+   return;
+   }
+   this.alert("Veuillez renseigner le titre de l'annonce avant d'enregistrer", "warning");
+   return;
+   }
 
 
 
-    this.alert("Prière de patienter, la sauvegarde peut prendre un moment à cause de la taille des fichiers", "info");
+   this.alert("Prière de patienter, la sauvegarde peut prendre un moment à cause de la taille des fichiers", "info");
 
-    if (this.idAdvert) {
-      this.advertService.saveAdvert(this.advert).then((result: any) => {
-        if(result && result.status == 'success') {
-          this.alert("L'annonce a été enregistré avec succès", "info");
-          let offer = this.offerService.getOfferByIdFromLocal(this.currentUser, this.advert.offerId);
-          if (offer == null) {
-            this.router.navigate(['offer/edit', {obj: 'add', adv: this.idAdvert}]);
-          } else {
-            this.sharedService.setCurrentOffer(offer);
-            this.router.navigate(['offer/edit', {obj: 'detail', adv: this.idAdvert}]);
-          }
-        }else{
-          Messenger().post({
-            message: "Une erreur est survenue lors de l'enregistrement de l'annonce.",
-            type: 'error',
-            showCloseButton: true
-          });
-          this.alerts = [];
-        }
-      });
-    } else {
-      this.advertService.saveNewAdvert(this.advert).then((result: any) => {
-        if(result.id != 0) {
-          this.idAdvert = result.id;
-          this.alert("L'annonce a été sauvegardée avec succès", "info");
-          this.router.navigate(['offer/edit', {obj: 'add', adv: this.idAdvert}]);
-        }else{
-          Messenger().post({
-            message: "Une erreur est survenue lors de l'enregistrement de l'annonce.",
-            type: 'error',
-            showCloseButton: true
-          });
-          this.alerts = [];
-        }
-      });
-    }
-  }*/
+   if (this.idAdvert) {
+   this.advertService.saveAdvert(this.advert).then((result: any) => {
+   if(result && result.status == 'success') {
+   this.alert("L'annonce a été enregistré avec succès", "info");
+   let offer = this.offerService.getOfferByIdFromLocal(this.currentUser, this.advert.offerId);
+   if (offer == null) {
+   this.router.navigate(['offer/edit', {obj: 'add', adv: this.idAdvert}]);
+   } else {
+   this.sharedService.setCurrentOffer(offer);
+   this.router.navigate(['offer/edit', {obj: 'detail', adv: this.idAdvert}]);
+   }
+   }else{
+   Messenger().post({
+   message: "Une erreur est survenue lors de l'enregistrement de l'annonce.",
+   type: 'error',
+   showCloseButton: true
+   });
+   this.alerts = [];
+   }
+   });
+   } else {
+   this.advertService.saveNewAdvert(this.advert).then((result: any) => {
+   if(result.id != 0) {
+   this.idAdvert = result.id;
+   this.alert("L'annonce a été sauvegardée avec succès", "info");
+   this.router.navigate(['offer/edit', {obj: 'add', adv: this.idAdvert}]);
+   }else{
+   Messenger().post({
+   message: "Une erreur est survenue lors de l'enregistrement de l'annonce.",
+   type: 'error',
+   showCloseButton: true
+   });
+   this.alerts = [];
+   }
+   });
+   }
+   }*/
 
   resetForm(){
     this.alerts = [];

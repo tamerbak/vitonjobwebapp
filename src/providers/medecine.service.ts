@@ -11,10 +11,10 @@ export class MedecineService {
   constructor(private http: Http) {
     this.data = null;
   }
-  
+
   getMedecineByTerm(){
     return function(term, page){
-      return "select pk_user_medecine_de_travail as id, libelle from user_medecine_de_travail where lower_unaccent(libelle) % lower_unaccent('" + term + "') limit 5"; // search term
+      return "select pk_user_medecine_de_travail as id, libelle, code_urssaf from user_medecine_de_travail where dirty='N' and lower_unaccent(libelle) % lower_unaccent('" + term + "') limit 5"; // search term
     }
   }
 

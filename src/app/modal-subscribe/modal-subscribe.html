@@ -1,0 +1,43 @@
+<div class="modal fade modal-margin-top" id="modal-subscribe">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel1">
+          Pas encore inscrit(e) ?
+        </h4>
+        <p class="text-xs-center text-muted mt-sm" style="line-height: 2;">
+          Pour pouvoir vous intéresser à cette offre, vous devez posséder un compte.
+        </p>
+      </div>
+
+      <div class="col-xs-12">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6 col-xs-12">
+              <button
+                class="btn btn-success btn-sm modal-subscribe-button"
+                (click)="redirectToSignup()"
+              >
+                M'inscrire
+              </button>
+            </div>
+            <div class="col-md-6 col-xs-12">
+              <button
+                class="btn btn-secondary btn-sm modal-subscribe-button"
+                (click)="redirectToLogin()"
+              >
+                Me connecter
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div (onDismiss)="onDismissCorporamaModal($event)" modal-corporama-search></div>

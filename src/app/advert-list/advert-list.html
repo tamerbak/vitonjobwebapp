@@ -27,72 +27,77 @@
     [infiniteScrollThrottle]="500"
     (scrolled)="onScrollDown()"
   >
-    <section class="widget min-h" widget *ngFor="let adv of adverts">
+    <section class="widget" widget *ngFor="let adv of adverts">
+
       <div class="widget-body container-fluid">
 
         <div class="row">
-          <div class="col-xs-12 adv-list-title">
-            <h4><strong>{{ adv.titre }}</strong></h4>
-          </div>
-            </div>
-            <div class="row">
-          <div class="col-xs-12 adv-list-date">
-            <label class="title">
-              <strong>Créée le {{adv.created}} </strong>
-            </label>
-          </div>
-        </div>
 
-        <div class="row">
-          <div
-            *ngIf="adv.isThumbnail"
-            class="col-md-2 col-sm-3 col-xs-12 adv-list-picture-container"
-          >
-            <div class="img-circle adv-list-picture">
+          <!-- PICTURE -->
+          <div class="col-md-2 col-xs-12 adv-list-picture-container">
+            <div *ngIf="adv.thumbnail.fileContent" class="img-thumbnail adv-list-picture">
               <img [src]="adv.thumbnail.fileContent" alt="Vit-on-job">
             </div>
           </div>
-          <div class="col-md-10 col-sm-9 col-xs-12">
-            {{ adv.briefContent }}
+
+          <!-- DETAILS -->
+          <div class="col-md-10 adv-list-detail-container">
+
+            <!-- TITLE -->
+            <div class="row">
+              <div class="col-md-8 col-xs-12 adv-list-title">
+                <h4><strong>{{ adv.titre }}</strong></h4>
+              </div>
+              <div class="col-md-4 col-xs-12 adv-list-date">
+                <label class="title">
+                  <strong>Créée le {{adv.created}} </strong>
+                </label>
+              </div>
+            </div>
+
+            <div class="row">
+              <!-- DESCRIPTION -->
+              <div class="col-md-9 col-sm-12 col-xs-12 adv-list-description">
+                {{ adv.briefContent }}
+              </div>
+
+              <!-- ACTIONS -->
+              <div class="col-md-3 col-sm-12 col-xs-12 actions-list">
+                <button
+                  type="button" class="btn btn-primary btn-sm adv-list-action-button"
+                  style="background-color: #40aea9; color: white; border-radius: 0.2rem;"
+                  (click)="gotoAdvertDetails(adv)"
+                >
+                  {{ isEmployer ? 'Aperçu' : 'Détails' }}
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-warning btn-sm clear-child-3 adv-list-action-button"
+                  (click)="gotoEditAdvert(adv)"
+                  *ngIf="isEmployer"
+                >
+                  Modifier
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-danger btn-sm clear-child-3 adv-list-action-button"
+                  (click)="deleteAdv(adv)"
+                  *ngIf="isEmployer"
+                >
+                  Supprimer
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-success btn-sm clear-child-3 adv-list-action-button"
+                  (click)="goToAdvJobyerInterestList(adv)"
+                  *ngIf="isEmployer"
+                >
+                  {{adv.nbInterest}} jobyer(s) intéressé(s)
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-
-        <div class="row">
-          <div class="col-xs-12 actions-list">
-            <button
-              type="button" class="btn btn-primary btn-sm adv-list-action-button"
-              style="background-color: #40aea9; color: white; border-radius: 0.2rem;"
-              (click)="gotoAdvertDetails(adv)"
-            >
-              {{ isEmployer ? 'Aperçu' : 'Détails' }}
-            </button>
-            <button
-              type="button"
-              class="btn btn-warning btn-sm clear-child-3 adv-list-action-button"
-              (click)="gotoEditAdvert(adv)"
-              *ngIf="isEmployer"
-            >
-              Modifier
-            </button>
-            <button
-              type="button"
-              class="btn btn-danger btn-sm clear-child-3 adv-list-action-button"
-              (click)="deleteAdv(adv)"
-              *ngIf="isEmployer"
-            >
-              Supprimer
-            </button>
-            <button
-              type="button"
-              class="btn btn-success btn-sm clear-child-3 adv-list-action-button"
-              (click)="goToAdvJobyerInterestList(adv)"
-              *ngIf="isEmployer"
-            >
-              {{adv.nbInterest}} jobyer(s) intéressé(s)
-            </button>
-          </div>
-        </div>
-
       </div>
     </section>
   </div>

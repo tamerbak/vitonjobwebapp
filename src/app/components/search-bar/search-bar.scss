@@ -1,0 +1,59 @@
+
+:host {
+  width:100%;
+  text-align: center;
+}
+
+.search-bar-input {
+  opacity: .90;
+  border: 0;
+  outline: 0;
+  line-height: 50px;
+  font-size: 14px;
+  padding: 0 18px;
+  width: 70%;
+
+}
+
+.search-notification {
+  position: absolute;
+  //margin-top: -16%;
+  width: 40%;
+  left: -15px;
+  right: 0;
+}
+
+.search-barr-button {
+  color: #fff;
+  background-color: #14BAA6;
+  width: 50px;
+  line-height: 50px;
+  text-align: center;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  outline: 0;
+  -webkit-transition: box-shadow .3s ease-out;
+  transition: box-shadow .3s ease-out;
+  margin: -4px;
+  position: relative;
+  top: 1px;
+}
+
+/* Small devices (phones) */
+@media (max-width: 767px) {
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199px) {
+
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+
+}

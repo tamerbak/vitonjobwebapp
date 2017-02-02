@@ -10,7 +10,7 @@ import {SmsService} from "../../providers/sms-service";
 import {EmailService} from "../../providers/email-service";
 import {isEmpty} from "rxjs/operator/isEmpty";
 
-declare var Messenger: any;
+declare let Messenger: any;
 
 @Component({
   selector: '[recruiter-edit]',

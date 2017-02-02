@@ -63,7 +63,7 @@
           </div>
 
           <div class="col-md-12 col-sm-12 col-xs-12">
-            <b>Disponibilités</b>
+            <b>{{ projectTarget == 'jobyer' ? 'Disponibilités' : 'Horaires de travail souhaités' }}</b>
             <ul>
               <li *ngFor="let dispo of item.slots, let j = index" [hidden]="dispo.pause">
 
@@ -71,7 +71,7 @@
                   le <b>{{dispo.date}} :</b> {{dispo.startHour}} - {{dispo.endHour}}
                 </div>
 
-                <div *ngIf="dispo.nbDays > 1">
+                <div *ngIf="dispo.nbDays >= 1">
                   du <b>{{dispo.date}} :</b> {{dispo.startHour}}<br>
                   au <b>{{dispo.dateEnd}} :</b> {{dispo.endHour}}
                 </div>
@@ -117,7 +117,7 @@
           </div>
         </div>
         <div class="alert alert-warning alert-sm alertDispo" *ngIf="item.obsolete">
-          Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilité
+          Cette offre est obsolète. Veuillez mettre à jour les {{ projectTarget == 'jobyer' ? ' créneaux de disponibilités' : ' horaires de travail souhaités' }}
         </div>
       </section>
       <section class="widget" widget *ngFor="let item of globalList.list" [hidden]="item.visible || typeOfferModel != '1'">
@@ -134,7 +134,7 @@
           </div>
 
           <div class="col-md-12 col-sm-12 col-xs-12">
-            <b>Disponibilités</b>
+            <b>{{ projectTarget == 'jobyer' ? 'Disponibilités' : 'Horaires de travail souhaités' }}</b>
             <ul>
               <li *ngFor="let dispo of item.slots, let j = index"><b>{{dispo.date}} :</b> {{dispo.startHour}} - {{dispo.endHour}} </li>
             </ul>
@@ -148,7 +148,7 @@
           </div>
         </div>
         <div class="alert alert-warning alert-sm alertDispo" *ngIf="item.obsolete">
-          Cette offre est obsolète. Veuillez mettre à jour les créneaux de disponibilité
+          Cette offre est obsolète. Veuillez mettre à jour les {{ projectTarget == 'jobyer' ? ' créneaux de disponibilités' : ' horaires de travail souhaités' }}
         </div>
       </section>
       <section class="widget" widget *ngFor="let item of globalList.list" [hidden]="item.etat != 'en archive' || typeOfferModel != '2'">
@@ -165,7 +165,7 @@
           </div>
 
           <div class="col-md-12 col-sm-12 col-xs-12">
-            <b>Disponibilités</b>
+            <b>{{ projectTarget == 'jobyer' ? 'Disponibilités' : 'Horaires de travail souhaités' }}</b>
             <ul>
               <li *ngFor="let dispo of item.slots, let j = index"><b> {{dispo.date}} :</b> {{dispo.startHour}} - {{dispo.endHour}} </li>
             </ul>

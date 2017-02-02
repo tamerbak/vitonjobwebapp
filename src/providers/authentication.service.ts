@@ -1,6 +1,8 @@
 import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
 import {Configs} from "../configurations/configs";
+import {Utils} from "../app/utils/utils";
+import {SharedService} from "./shared.service";
 
 /**
  * @author Amal ROCHD
@@ -12,7 +14,7 @@ import {Configs} from "../configurations/configs";
 export class AuthenticationService {
   configuration;
 
-  constructor(private http: Http) {
+  constructor(private http: Http, private sharedService: SharedService) {
     this.http = http;
   }
 
@@ -108,6 +110,14 @@ export class AuthenticationService {
       this.http.post(Configs.calloutURL, body, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
+
+          let partnerCode: string = this.sharedService.getPartner();
+          // Check if new user
+          if (data && Utils.isEmpty(partnerCode) === false && Utils.isEmpty(data.titre) === true) {
+            // If new user and coming from partnership, add partner id into the account
+            this.setPartnerId(data.id, partnerCode);
+          }
+
           resolve(data);
         });
     })
@@ -225,6 +235,24 @@ export class AuthenticationService {
           resolve(data);
         });
     })
+  }
+
+  setPartnerId(accountId: number, partnerCode: string) {
+
+    var sql = "UPDATE user_account SET " +
+      "fk_user_partenaire = (SELECT pk_user_partenaire FROM user_partenaire WHERE code ILIKE '" + partnerCode + "') " +
+      "WHERE pk_user_account = '" + accountId + "';"
+    ;
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    })
+
   }
 
   isEmpty(str) {

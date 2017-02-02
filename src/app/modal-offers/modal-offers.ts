@@ -3,7 +3,9 @@ import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {OffersService} from "../../providers/offer.service";
 import {SharedService} from "../../providers/shared.service";
 
-declare var jQuery, Messenger,md5: any;
+declare let jQuery: any;
+declare let Messenger: any;
+declare let md5: any;
 
 @Component({
   selector: '[modal-offers]',

@@ -223,11 +223,40 @@ export class OffersService {
 
           // Change slot format from Timestamp to Date
           if (offer['calendarData'] && Utils.isEmpty(offer['calendarData']) === false) {
+            //order offer slots
+            offer['calendarData'].sort((a, b) => {
+              return a.date - b.date
+            });
             for (let i = 0; i < offer['calendarData'].length; ++i) {
               offer['calendarData'][i].date = new Date(offer['calendarData'][i].date);
               offer['calendarData'][i].dateEnd = new Date(offer['calendarData'][i].dateEnd);
             }
           }
+
+          resolve(data);
+        });
+    });
+  }
+
+  getOfferCalendarDataById(idOffer: number, projectTarget: string): any {
+
+    let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
+      new CCalloutArguments('Voir offre', {
+        'class': 'com.vitonjob.callouts.offer.model.OfferToken',
+        'idOffer': idOffer
+      }),
+      new CCalloutArguments('Configuration', {
+        'class': 'com.vitonjob.callouts.offer.model.CalloutConfiguration',
+        'mode': 'view',
+        'userType': (projectTarget === 'employer') ? 'employeur' : 'jobyer'
+      }),
+    ]);
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.calloutURL, payloadFinal.forge(), {headers: headers})
+        .subscribe((data: any) => {
+          data = JSON.parse(data._body);
 
           resolve(data);
         });
@@ -412,6 +441,33 @@ export class OffersService {
           if(data && data.data && data.data.length>0)
             adr = data.data[0].numero+" "+data.data[0].nom + " " + data.data[0].adresse_google_maps;
           resolve(adr.trim());
+        });
+    });
+  }
+
+  loadOfferCity(idOffer, type){
+    let to = type =='jobyer'?'user_offre_jobyer':'user_offre_entreprise';
+    let table = type =='jobyer'?'user_adresse_jobyer':'user_adresse_entreprise';
+
+    let sql = "select uv.nom,uc.code from user_adresse as ua,user_ville as uv,user_code_postal as uc " +
+                  " where pk_user_adresse in (" +
+                  "select fk_user_adresse from "+table+" where pk_"+table+" in (" +
+                    "select fk_"+table+" from "+to+" where pk_"+to+"="+idOffer+"" +
+                  ")" +
+              ") and ua.fk_user_code_postal = uc.pk_user_code_postal and ua.fk_user_ville = uv.pk_user_ville";
+
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data : any) => {
+          // we've got back the raw data, now generate the core schedule data
+          // and save the data for later reference
+          resolve(data.data);
         });
     });
   }

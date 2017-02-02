@@ -6,6 +6,7 @@ import {OffersService} from '../../providers/offer.service';
 import {Utils} from "../utils/utils";
 import {DateUtils} from "../utils/date-utils";
 
+
 @Component({
   selector: '[contract-list]',
   template: require('./contract-list.html'),

@@ -7,7 +7,8 @@ import {OffersService} from "../../providers/offer.service";
 import {DateUtils} from "../utils/date-utils";
 import {Utils} from "../utils/utils";
 import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
-declare var jQuery, require: any;
+
+declare let jQuery: any;
 
 @Component({
   selector: '[pending-contracts]',

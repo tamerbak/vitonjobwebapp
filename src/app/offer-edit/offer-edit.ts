@@ -26,11 +26,12 @@ import {Job} from "../../dto/job";
 import {SelectLanguages} from "../components/select-languages/select-languages";
 import {SelectList} from "../components/select-list/select-list";
 import {Calendar} from "../components/calendar/calendar";
+import {EnvironmentService} from "../../providers/environment.service";
 
-declare var Messenger, jQuery: any;
-declare var google: any;
-declare var moment: any;
-declare var require;
+declare let Messenger, jQuery: any;
+declare let google: any;
+declare let moment: any;
+declare let require;
 
 @Component({
   selector: '[offer-edit]',
@@ -57,7 +58,8 @@ declare var require;
     CandidatureService,
     SmsService,
     AdvertService,
-    MissionService
+    MissionService,
+    EnvironmentService
   ]
 })
 
@@ -171,6 +173,7 @@ export class OfferEdit {
               private conventionService: ConventionService,
               private candidatureService: CandidatureService,
               private smsService: SmsService,
+              private environmentService:EnvironmentService,
               private advertService: AdvertService) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
@@ -179,7 +182,7 @@ export class OfferEdit {
     }
 
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
-
+    this.environmentService.reload();
     //obj = "add", "detail", or "recruit"
     this.route.params.forEach((params: Params) => {
       this.obj = params['obj'];

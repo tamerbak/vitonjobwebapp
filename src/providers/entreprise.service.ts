@@ -7,7 +7,7 @@ import {SharedService} from "./shared.service";
 import {Configs} from "../configurations/configs";
 import {Http} from "@angular/http";
 
-declare var Messenger: any;
+declare let Messenger: any;
 
 @Injectable()
 export class EntrepriseService {

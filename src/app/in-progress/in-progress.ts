@@ -1,6 +1,7 @@
 import {Component, ViewEncapsulation} from "@angular/core";
 import {Router} from "@angular/router";
 
+
 @Component({
   selector: '[in-progress]',
   host: {

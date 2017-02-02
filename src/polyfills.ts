@@ -4,6 +4,8 @@ import "es6-promise";
 import "es7-reflect-metadata";
 import "zone.js/dist/zone";
 
+declare let process: any;
+
 if ('production' === process.env.ENV) {
   require('rxjs/add/operator/map');
   require('rxjs/add/operator/mergeMap');

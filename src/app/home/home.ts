@@ -13,17 +13,29 @@ import {ModalGeneralCondition} from "../modal-general-condition/modal-general-co
 import {RecruitButton} from "../components/recruit-button/recruit-button";
 import {HomeList} from "../components/home-list-component/home-list-component";
 import {Utils} from "../utils/utils";
+import {SearchBar} from "../components/search-bar/search-bar";
 
-
-declare var require: any;
-declare var jQuery: any;
+declare let jQuery: any;
 
 @Component({
   selector: 'home',
   template: require('./home.html'),
-  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalWelcome, ModalProfile,
-    ModalUpdatePassword, ModalNotificationContract, ModalGeneralCondition, RecruitButton, HomeList],
-  providers: [SearchService, HomeService],
+  directives: [
+    ROUTER_DIRECTIVES,
+    AlertComponent,
+    ModalWelcome,
+    ModalProfile,
+    ModalUpdatePassword,
+    ModalNotificationContract,
+    ModalGeneralCondition,
+    RecruitButton,
+    HomeList,
+    SearchBar
+  ],
+  providers: [
+    SearchService,
+    HomeService
+  ],
   styles: [require('./home.scss')],
   encapsulation: ViewEncapsulation.None
 })
@@ -33,8 +45,8 @@ export class Home{
   projectTarget: string;
 
   // Research fields
-  cityQuery: string;
-  scQuery: string;
+  cityQuery: string = "";
+  scQuery: string = "";
 
   alerts: Array<Object>;
   hideLoader: boolean = true;
@@ -70,7 +82,6 @@ export class Home{
       this.sharedService.setProjectTarget('employer');
     }
     this.currentUser = this.sharedService.getCurrentUser();
-    this.scQuery = this.sharedService.getCurrentSearch();
     let role = this.sharedService.getProjectTarget();
     if (role == "employer") {
       this.projectTarget = "employer";
@@ -120,7 +131,7 @@ export class Home{
     this.config = Configs.setConfigs(this.projectTarget);
 
     myContent.css({"padding": "0", "padding-right": "0"});
-    if  (screen.width <= 768) {
+    if  (screen.width <= 1199) {
       myContent.css({"background-size": "cover"});
       myNavBar.css({"background-color": "#14baa6", "border-color": "#14baa6"});
       this.isTablet = true;
@@ -131,6 +142,9 @@ export class Home{
     }
 
     this.sharedService.setCurrentOffer(null);
+    this.sharedService.setCurrentSearch(null);
+    this.sharedService.setCurrentSearchCity(null);
+    this.sharedService.setLastResult(null);
 
   }
 
@@ -477,4 +491,10 @@ export class Home{
     });
   }
 
+  displayPartnerLogo(): boolean {
+    if (this.sharedService.getPartner()) {
+      return true;
+    }
+    return false;
+  }
 }

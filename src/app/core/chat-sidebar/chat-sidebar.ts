@@ -1,8 +1,9 @@
 import {Component, OnInit, ElementRef} from "@angular/core";
 import {ChatMessage} from "./chat-message/chat-message";
 import {SearchPipe} from "./../pipes/pipe";
-declare var jQuery: any;
-declare var Util: any;
+
+declare let jQuery: any;
+declare let Util: any;
 
 @Component({
   selector: '[chat-sidebar]',

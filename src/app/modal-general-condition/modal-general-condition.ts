@@ -1,7 +1,8 @@
 import {Component, EventEmitter, Output} from "@angular/core";
 import {SharedService} from "../../providers/shared.service";
 import {UserService} from "../../providers/user-service";
-declare var jQuery: any;
+
+declare let jQuery: any;
 
 @Component({
   selector: '[modal-general-condition]',

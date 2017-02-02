@@ -3,6 +3,7 @@ import {SharedService} from "../../../providers/shared.service";
 import {Router} from "@angular/router";
 import {EntrepriseService} from "../../../providers/entreprise.service";
 
+
 @Component({
   selector: 'entreprise-selector',
   providers: [EntrepriseService],

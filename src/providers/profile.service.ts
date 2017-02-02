@@ -719,7 +719,7 @@ export class ProfileService{
   }
 
   getUserSoftwares(jobyerId){
-    let sql = "select exp.pk_user_experience_logiciel_pharmacien as \"expId\", exp.fk_user_logiciels_pharmaciens as \"softId\", exp.annees_experience as experience, log.nom from user_experience_logiciel_pharmacien as exp, user_logiciels_pharmaciens as log where exp.fk_user_logiciels_pharmaciens = log.pk_user_logiciels_pharmaciens and exp.fk_user_jobyer = '" + jobyerId + "'";
+    let sql = "select exp.pk_user_experience_logiciel_pharmacien as \"expId\", exp.fk_user_logiciels_pharmaciens as \"softId\", exp.niveau as niveau, log.nom from user_experience_logiciel_pharmacien as exp, user_logiciels_pharmaciens as log where exp.fk_user_logiciels_pharmaciens = log.pk_user_logiciels_pharmaciens and exp.fk_user_jobyer = '" + jobyerId + "'";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -751,7 +751,7 @@ export class ProfileService{
   }
 
   saveSoftware(software, id){
-    let sql = " insert into user_experience_logiciel_pharmacien (fk_user_jobyer, fk_user_logiciels_pharmaciens, annees_experience) values (" + id + ", " + software.id + ", " + software.experience + ") RETURNING pk_user_experience_logiciel_pharmacien; ";
+    let sql = " insert into user_experience_logiciel_pharmacien (fk_user_jobyer, fk_user_logiciels_pharmaciens, niveau) values (" + id + ", " + software.id + ", " + software.niveau + ") RETURNING pk_user_experience_logiciel_pharmacien; ";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -777,7 +777,7 @@ export class ProfileService{
   }
 
   updateSoftware(id, exp){
-    let sql = "update user_experience_logiciel_pharmacien set annees_experience = " + exp + " where pk_user_experience_logiciel_pharmacien =" + id;
+    let sql = "update user_experience_logiciel_pharmacien set niveau = " + exp + " where pk_user_experience_logiciel_pharmacien =" + id;
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})

@@ -1,7 +1,10 @@
-import {Injectable} from "@angular/core";
+import {Injectable, Component} from "@angular/core";
 import {Http, Headers} from "@angular/http";
 import "rxjs/add/operator/map";
 import {Configs} from "../configurations/configs";
+import {CCallout} from "../dto/generium/ccallout";
+import {CCalloutArguments} from "../dto/generium/ccallout-arguments";
+import {HttpRequestHandler} from "../http/http-request-handler";
 
 /**
  * @author jakjoud abdeslam
@@ -13,7 +16,7 @@ export class SearchService {
   data: any = null;
   configuration: any;
 
-  constructor(public http: Http) {
+  constructor(public http: Http, private httpRequest: HttpRequestHandler) {
   }
 
   /**
@@ -93,27 +96,17 @@ export class SearchService {
 
     let searchType = projectTarget == 'jobyer' ? 'employeur' : 'jobyer';
     let bean =  {
-      class :"com.vitonjob.callouts.recherche.model.RequeteRecherche",
+      'class' :"com.vitonjob.callouts.recherche.model.RequeteRecherche",
       sentence :textQuery,
       type :searchType
     };
 
-    let payload = {
-      'class': 'fr.protogen.masterdata.model.CCallout',
-      id: 10046,
-      args: [
-        {
-          class: 'fr.protogen.masterdata.model.CCalloutArguments',
-          label: 'Requete de recherche',
-          value: btoa(JSON.stringify(bean))
-        }
-      ]
-    };
+    let payload = new CCallout(10046, [
+      new CCalloutArguments('Requete de recherche', bean)
+    ]);
 
     return new Promise(resolve => {
-      let headers = Configs.getHttpJsonHeaders();
-      this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
-        .map(res => res.json())
+      this.httpRequest.sendCallOut(payload, this, false)
         .subscribe(data => {
           resolve(data);
         });

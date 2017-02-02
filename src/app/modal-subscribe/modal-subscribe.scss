@@ -1,0 +1,31 @@
+
+#modal-subscribe .modal-header	 {
+  border-bottom:none !important;
+}
+#modal-subscribe .modal-footer	 {
+  border-top:none !important;
+}
+
+.asterisk {
+  color: red;
+}
+
+.modal-subscribe-button {
+  width: 100%;
+}
+
+/* Small devices (phones) */
+@media (max-width: 767px) {
+  .modal-subscribe-button{
+    margin-top: 5px;
+  }
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199px) {}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {}

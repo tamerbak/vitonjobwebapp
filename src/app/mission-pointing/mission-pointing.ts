@@ -6,6 +6,7 @@ import {DateConverter} from "../../pipes/date-converter/date-converter";
 import {TimeConverter} from "../../pipes/time-converter/time-converter";
 import {Utils} from "../utils/utils";
 
+
 @Component({
   selector: '[mission-pointing]',
   template: require('./mission-pointing.html'),

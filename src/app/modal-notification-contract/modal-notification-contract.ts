@@ -4,7 +4,7 @@ import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {ModalOffers} from "../modal-offers/modal-offers";
 import {Utils} from "../utils/utils";
 
-declare var jQuery: any;
+declare let jQuery: any;
 
 @Component({
   selector: '[modal-notification-contract]',
@@ -54,6 +54,12 @@ export class ModalNotificationContract{
 
   initState(params){
     this.initByModalOffers = params.init;
+    if(!this.currentUser){
+      this.showOfferNotif = false;
+      this.showContractNotif = false;
+      this.showAuthNotif = true;
+      return;
+    }
     let o = this.sharedService.getCurrentOffer();
     if (o != null || !Utils.isEmpty(this.offer)) {
       this.showOfferNotif = false;

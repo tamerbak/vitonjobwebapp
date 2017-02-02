@@ -4,6 +4,7 @@ import {SharedService} from "../../providers/shared.service";
 import {FinanceService} from "../../providers/finance.service";
 import {Router} from "@angular/router";
 
+
 /**
  * This module manage the invoice signature from the employer
  */

@@ -2,12 +2,134 @@
 @import "../../../node_modules/bootstrap/scss/_variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
 
+.container-home {
+  height: 100vh;
+  background-size: cover;
+}
+
+.home-background-container {
+  height: 100vh;
+  overflow: hidden;
+  text-align: center;
+  position: relative;
+  z-index: 0;
+  background-image: url('../../assets/images/bg_jobyer.png');
+  background-size: cover;
+}
+
+.home-video {
+  /* Make video to at least 100% wide and tall */
+  min-width: 100%;
+  min-height: 100%;
+
+  /* Setting width & height to auto prevents the browser from stretching or squishing the video */
+  width: auto;
+  height: auto;
+
+  /* Center the video */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+
+.home-logo {
+  z-index: 2;
+  position: relative;
+  height: 12vh;
+}
+
+.home-partner {
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.home-partner-logo {
+  height: 7vh;
+}
+
+.home-partner-slogan {
+  text-align: center;
+  color: rgba(123, 123, 123, 0.9);
+  font-size: smaller;
+}
+
+.search-link {
+  margin-top: 15px;
+  font-size: larger;
+  text-align: center;
+}
+
+.home-search-bar-container {
+  margin-top: -40vh;
+  z-index: 1;
+}
+
+.search {
+  margin-top: 10px;
+}
+
+.adv-search {
+  color: #14BAA6;
+}
+
+/* Small devices (phones) */
+@media (max-width: 767px) {
+  .search {
+    display: flex;
+    width: 100%;
+  }
+  .home-logo {
+    height: 10vh;
+    margin-top: 0;
+  }
+  .home-search-bar-container {
+    margin-top: -92vh;
+  }
+  .search-link {
+    margin-top: 10px;
+  }
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .search {
+    display: flex;
+    width: 100%;
+  }
+  .home-logo {
+    height: 12vh;
+    margin-top: 0;
+  }
+  .home-search-bar-container {
+    margin-top: -85vh;
+  }
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .home-search-bar-container {
+    margin-top: -60vh;
+  }
+  .search {
+    display: flex;
+    width: 100%;
+  }
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  .home-search-bar-container {
+    margin-top: -65vh;
+  }
+}
+
+.home-copyrigth {
+  text-align: center;
+}
 /*
  * Bootstrap calendar
  */
-.total-large {
-width: 100%;
-}
 .text-center{
   text-align: center;
 }
@@ -69,7 +191,7 @@ width: 100%;
   padding:0;
 }
 @media screen and (max-width: 320px) {
-  .home-search-mb {
+  .home-search-bar-container-mb {
     margin-top: 18em !important;
   }
   .mb-img {
@@ -101,7 +223,7 @@ width: 100%;
   text-align: center;
 }
 @media screen and (min-width: 481px) and(max-width: 780px) {
-  .home-search-mb{
+  .home-search-bar-container-mb{
     margin-top: 40em!important;
   }
   .search__input {
@@ -127,26 +249,10 @@ width: 100%;
   width: 100%;
 
 }
-.search-link-mb{
-  font-size: larger;
-}
-.home-search-mb{
+.home-search-bar-container-mb{
 margin-top: 20em;
 }
-.search {
 
-  display: flex;
-  //position: absolute;
-  margin-top: -25%;
-  width: 100%;
-}
-.search-notification {
-  position: absolute;
-  margin-top: -16%;
-  width: 40%;
-  left: -15px;
-  right: 0;
-}
 .logo-mobile {
   margin-top: 10em;
 }
@@ -173,9 +279,7 @@ margin-top: 20em;
   margin-left: auto;
 }
 
-.home-logo {
-  width: 30%;
- }
+
 .search__button {
 
   color: #fff;
@@ -299,9 +403,7 @@ body {
   }
 }
 
-.container-home {
-  background-size: cover;
-}
+
 
 .modal {
   width: 100% !important;
@@ -334,25 +436,9 @@ body {
   display: flex;
 }
 
-.adv-search {
-  color: #14BAA6;
-
-}
-.search-link {
-  //position: absolute;
-  margin-top: -20%;
-  width: 130%;
-  font-size: larger;
-}
-
-
 .input-search {
   width: 90%;
   margin: auto;
-}
-.video{
-  /* Hauteur de l'écran*/
-  height:100vh;
 }
 .video video {
   min-width: 100%;
@@ -505,9 +591,12 @@ body {
 }
 
 .list-home-container{
-  margin:10px;
   width: 100%;
   background-color: rgba(250,250,250, 0.7);
+  margin: 0;
+  padding: 0;
+  background-color: #eee;
+  text-align: center;
 
   .list-home-element {
     margin-bottom: 15px;

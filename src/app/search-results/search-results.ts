@@ -10,17 +10,20 @@ import {ModalNotificationContract} from "../modal-notification-contract/modal-no
 import {ModalProfile} from "../modal-profile/modal-profile";
 import {Utils} from "../utils/utils";
 import {AlertComponent} from "ng2-bootstrap";
+import {ModalSubscribe} from "../modal-subscribe/modal-subscribe";
+import {CandidatureService} from "../../providers/candidature-service";
+import {OffersService} from "../../providers/offer.service";
 
-declare var jQuery: any;
-declare var Messenger: any;
+declare let jQuery: any;
+declare let Messenger: any;
 
 @Component({
   selector: '[search-results]',
   template: require('./search-results.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./search-results.scss')],
-  directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, RecruitButton, GroupedRecruitButton, ModalNotificationContract, ModalProfile, AlertComponent],
-  providers: [SearchService, ProfileService]
+  directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, RecruitButton, GroupedRecruitButton, ModalNotificationContract, ModalProfile, ModalSubscribe, AlertComponent],
+  providers: [OffersService,SearchService, ProfileService, CandidatureService]
 })
 export class SearchResults{
   @ViewChildren('Map') map: any;
@@ -42,8 +45,8 @@ export class SearchResults{
   projectTarget: string;
   isRecruteur: boolean = false;
 
-  lat: number=48.856494;
-  lng: number=2.345503;
+  lat: number=46.75984;
+  lng: number=1.738281;
   searchResultPos: {lat: number,lng: number,info: string}[] = [];
   selected = true;
   mapDisplay = 'block';
@@ -58,7 +61,10 @@ export class SearchResults{
               private router: Router,
               private searchService: SearchService,
               private profileService: ProfileService,
-              private route: ActivatedRoute) {
+              private offersService: OffersService,
+              private route: ActivatedRoute,
+              private candidatureService: CandidatureService) {
+
 
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
@@ -87,7 +93,7 @@ export class SearchResults{
     this.lastScQuery = this.scQuery + "";
     this.currentQuery = this.scQuery + "";
     this.loadResult();
-    this.positionMap();
+    //this.positionMap();
   }
 
   ngAfterViewInit() {
@@ -100,6 +106,36 @@ export class SearchResults{
         self.doSearch();
       }
     });
+    }
+
+  setCandidatureButtonLabel(item: any){
+    if (!this.currentUser || !this.currentUser.jobyer) {
+      item.jobyerInterested = false;
+      return;
+    }
+    this.candidatureService.getCandidatureOffre(item.idOffre, this.currentUser.jobyer.id).then((data: any) => {
+      if(data && data.data && data.data.length  == 1){
+        item.jobyerInterested = true;
+      }else{
+        item.jobyerInterested = false;
+      }
+    });
+  }
+
+
+
+  toHourString(time: number) {
+    let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
+    let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
+    return hours + ":" + minutes;
+  }
+
+  toDateString(date: number) {
+    var dateOptions = {
+      weekday: "long", month: "long", year: "numeric",
+      day: "numeric"//, hour: "2-digit", minute: "2-digit"
+    };
+    return new Date(date).toLocaleDateString('fr-FR', dateOptions);
   }
 
   loadResult() {
@@ -122,8 +158,40 @@ export class SearchResults{
         if (r.idJobyer == 0) {
           continue;
         }
+        r.slots =[];
+        // get disponibilities for jobyer
+        let offerProjectTarget = (this.projectTarget == 'employer' ? 'jobyer' : 'employer'); 
+        this.offersService.getOfferCalendarDataById(r.idOffre, offerProjectTarget).then((data: any) => {
+          r.dateSlots = [];
+          if (data['calendarData'] && Utils.isEmpty(data['calendarData']) === false) {
+            //order offer slots
+            data['calendarData'].sort((a, b) => {
+              return a.date - b.date
+            });
+            for (let i = 0; i < data['calendarData'].length; ++i) {
+              //data['calendarData'][i].date = new Date(data['calendarData'][i].date);
+              //data['calendarData'][i].dateEnd = new Date(data['calendarData'][i].dateEnd);
+              let nb_days_diff = data.calendarData[i].dateEnd - data.calendarData[i].date;
+              nb_days_diff = nb_days_diff / (60 * 60 * 24 * 1000);
 
-        r.availabilityText = this.getAvailabilityText(r.availability.text);
+              let slotTemp = {
+                date: this.toDateString(data.calendarData[i].date),
+                dateEnd: this.toDateString(data.calendarData[i].dateEnd),
+                startHour: this.toHourString(data.calendarData[i].startHour),
+                endHour: this.toHourString(data.calendarData[i].endHour),
+                pause: data.calendarData[i].pause,
+                nbDays: nb_days_diff
+              };
+              r.slots.push(slotTemp);
+            }
+          }
+        });
+
+        // Get if jobyer interested
+        this.setCandidatureButtonLabel(r);
+        
+        let availability = this.getAvailabilityText(r.availability.text);
+        r.availabilityText = availability == '' ? '' : ((this.projectTarget=="employer" ? "Ce jobyer se situe à ":"Vous êtes à " ) + availability + " du lieu de la mission");
         r.availabiltyMinutes = this.getAvailabilityMinutes(r.availability.text);
         r.matching = Number(r.matching).toFixed(2);
         r.index = i + 1;
@@ -151,10 +219,10 @@ export class SearchResults{
           this.searchResultPos.push({lat: Number(r.latitude), lng: Number(r.longitude), info: info})
         }
       }
-      if (this.searchResultPos.length >= 1) {
-        this.lat = +this.searchResultPos[0].lat;
-        this.lng = +this.searchResultPos[0].lng;
-      }
+      // if (this.searchResultPos.length >= 1) {
+      //   this.lat = +this.searchResultPos[0].lat;
+      //   this.lng = +this.searchResultPos[0].lng;
+      // }
 
       //load profile pictures
       for (let i = 0; i < this.searchResults.length; i++) {
@@ -263,7 +331,7 @@ export class SearchResults{
     this.searchService.searchOffersByCity(this.currentQuery, this.projectTarget).then((data: any) => {
       this.sharedService.setLastResult(data);
       this.loadResult();
-      this.positionMap();
+      //this.positionMap();
       this.hideResult = false;
       this.hideLoader = true;
       this.lastScQuery = this.currentQuery + "";
@@ -281,17 +349,17 @@ export class SearchResults{
     setTimeout(function () {
       window.dispatchEvent(new Event("resize"));
     }, 1);
-    if (this.searchResultPos.length >= 1) {
-      this.lat = +this.searchResultPos[0].lat;
-      this.lng = +this.searchResultPos[0].lng;
-    }
+    // if (this.searchResultPos.length >= 1) {
+    //   this.lat = +this.searchResultPos[0].lat;
+    //   this.lng = +this.searchResultPos[0].lng;
+    // }
   }
 
   centerChange(event) {
-    if (this.searchResultPos.length >= 1) {
-      this.lat = +this.searchResultPos[0].lat;
-      this.lng = +this.searchResultPos[0].lng;
-    }
+    // if (this.searchResultPos.length >= 1) {
+    //   this.lat = +this.searchResultPos[0].lat;
+    //   this.lng = +this.searchResultPos[0].lng;
+    // }
   }
 
   contract(index) {
@@ -326,6 +394,44 @@ export class SearchResults{
 
     }
     //this.router.navigate(['search/details', {item, o}]);
+  }
+
+  jobyerInterest(item: any): void {
+    item.isInterestBtnDisabled = true;
+    if(item.jobyerInterested){
+      this.candidatureService.deleteCandidatureOffre(item.idOffre, this.currentUser.jobyer.id).then((data: any) => {
+        item.isInterestBtnDisabled = false;
+        if(!data || data.status != 'success'){
+          this.addAlert("danger", "Erreur lors de la sauvegarde des données.");
+        }else{
+          item.jobyerInterested = false;
+        }
+      });
+    }else{
+      this.candidatureService.setCandidatureOffre(item.idOffre, this.currentUser.jobyer.id).then((data: any) => {
+        item.isInterestBtnDisabled = false;
+        if(!data || data.status != 'success'){
+          this.addAlert("danger", "Erreur lors de la sauvegarde des données.");
+        }else{
+          item.jobyerInterested = true;
+        }
+      });
+    }
+  }
+
+  switchJobyerInterest(item: any): void {
+    if (this.currentUser) {
+      // Set interest
+      this.jobyerInterest(item);
+    } else {
+      // Invite user to subscribe
+      console.log('interest: invite subscribe');
+      jQuery('#modal-subscribe').modal({
+        keyboard: false,
+        backdrop: 'static'
+      });
+      jQuery('#modal-subscribe').modal('show');
+    }
   }
 
   onRecruite(params) {
@@ -394,5 +500,9 @@ export class SearchResults{
 
   addAlert(type, msg): void {
     this.alerts = [{type: type, msg: msg}];
+  }
+
+  isEmpty(str){
+    return Utils.isEmpty(str);
   }
 }

@@ -17,8 +17,8 @@ import {ModalInfo} from "../modal-info/modal-info";
 import {Utils} from "../utils/utils";
 import {ModalOptions} from "../modal-options/modal-options";
 
-declare var Messenger: any;
-declare var jQuery: any;
+declare let jQuery: any;
+declare let Messenger: any;
 
 @Component({
   selector: '[mission-details]',

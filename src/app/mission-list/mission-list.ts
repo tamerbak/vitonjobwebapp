@@ -9,6 +9,7 @@ import {Helpers} from "../../providers/helpers.service";
 import {Utils} from "../utils/utils";
 import { InfiniteScroll } from 'angular2-infinite-scroll';
 
+
 @Component({
   selector: '[mission-list]',
   template: require('./mission-list.html'),
@@ -107,7 +108,7 @@ export class MissionList{
   }
 
   ngOnInit() {
-    
+
     this.route.params.subscribe(params => {
        if(params['type']){
          this.typeMissionModel = params['type'];
@@ -167,7 +168,7 @@ export class MissionList{
             for (let i = 0; i < this.contractList.length; i++) {
               let item = this.contractList[i];
               this.currentTypeList.push(item);
-              
+
               //retrieve mission hours of today
               this.getMissionHours(item);
               this.queryOffset = this.queryOffset + this.queryLimit;

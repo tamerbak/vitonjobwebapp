@@ -8,7 +8,9 @@ import {SearchService} from "../../providers/search-service";
 import {Utils} from "../utils/utils";
 import {NotificationsService} from "../../providers/notifications.service";
 import {AdvertService} from "../../providers/advert.service";
-declare var jQuery,Messenger:any;
+
+declare let jQuery: any;
+declare let Messenger: any;
 
 @Component({
   selector: '[offer-list]',
@@ -102,6 +104,9 @@ export class OfferList {
 
       //push slots into offer
       offer.slots =[];
+      offer.calendarData.sort((a, b) => {
+        return a.date - b.date
+      });
       for (let i = 0; i < offer.calendarData.length; i++) {
 
         let nb_days_diff = offer.calendarData[i].dateEnd - offer.calendarData[i].date;

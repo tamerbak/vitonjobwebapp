@@ -4,6 +4,7 @@ import {SharedService} from "../../providers/shared.service";
 import {FinanceService} from "../../providers/finance.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 
+
 /**
  * This module manage the hours record signature from the employer
  */
