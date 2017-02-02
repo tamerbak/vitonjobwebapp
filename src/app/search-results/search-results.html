@@ -96,11 +96,15 @@
               <div class="row">
                 <h5 class="name no-margin mb-xs col-md-8 col-xs-12">{{item.titreoffre}}</h5>
               </div>
+
               <div class="row">
                 <h6 class="name no-margin mb-xs col-md-8 col-xs-12">
                   <b>{{ projectTarget == 'jobyer' ? 'Horaires de travail souhaités':'Disponibilités'}}</b>
                    {{ !item.slots || item.slots.length == 0 ? 'Non renseignés' : '' }}
                 </h6>
+              </div>
+
+              <div class="row">
                 <ul *ngIf="item.slots && item.slots.length > 0">
                   <li *ngFor="let dispo of item.slots, let j = index" [hidden]="dispo.pause">
 
