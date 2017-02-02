@@ -153,21 +153,25 @@
         Forme du contrat
       </label>
 
-      <div class="col-md-8 col-xs-12">
-        <label>
-          <input type="checkbox" [(ngModel)]="contractForm.isInterim">
+      <div class="abc-radio">
+        <input type="radio" name="radio2" id="isInterim" value="0" (click)="watchFormContract($event)"
+               [checked]="contractForm.isInterim">
+        <label for="isInterim" class="labelRadio">
           Intérim
         </label>
-        <label>
-          <input type="checkbox" [(ngModel)]="contractForm.isFormation">
+        <input type="radio" name="radio2" id="isFormation" value="1" (click)="watchFormContract($event)"
+               [checked]="contractForm.isFormation">
+        <label for="isFormation" class="labelRadio">
           Formation
         </label>
-        <label>
-          <input type="checkbox" [(ngModel)]="contractForm.isCDD">
+        <input type="radio" name="radio2" id="isCDD" value="2" (click)="watchFormContract($event)"
+               [checked]="contractForm.isCDD">
+        <label for="isCDD" class="labelRadio">
           CDD
         </label>
-        <label>
-          <input type="checkbox" [(ngModel)]="contractForm.isCDI">
+        <input type="radio" name="radio2" id="isCDI" value="3" (click)="watchFormContract($event)"
+               [checked]="contractForm.isCDI">
+        <label for="isCDI" class="labelRadio">
           CDI
         </label>
       </div>
@@ -177,8 +181,6 @@
       <label class="col-md-4 col-xs-12 form-control-label">
         Durée du contrat
       </label>
-
-
 
       <div class="abc-radio">
         <input type="radio" name="radio1" id="partialTime" value="0" (click)="watchTimeForm($event)"

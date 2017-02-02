@@ -75,7 +75,7 @@ export class AdvertList {
   }
 
   goToNewAdvert(){
-    this.router.navigate(['advert/edit', {obj:'add'}]);
+    this.router.navigate(['advert/edit', {type:'add'}]);
   }
 
   gotoAdvertDetails(adv){
@@ -97,7 +97,7 @@ export class AdvertList {
     this.advertService.loadAdvert(adv).then((data: any) => {
       if(data) {
         this.sharedService.setCurrentAdv(data);
-        this.router.navigate(['advert/edit', {obj: 'detail'}]);
+        this.router.navigate(['advert/edit', {type: 'detail'}]);
       }else{
         Messenger().post({
           message: "Une erreur est survenue lors du chargement de l'annonce.",

@@ -82,7 +82,7 @@ export class AdvertEdit{
   }
 
   ngOnInit() {
-    window['CKEDITOR']['replace']('content_cke');
+   window['CKEDITOR']['replace']('content_cke');
     this.descriptionPlaceholder = "<p><span style='font-family:Trebuchet MS,Helvetica,sans-serif'><u><span style='font-size:22px'><strong>Description de l&#39;annonce</strong></span></u></span></p>" +
       "    <p><span style='font-size:36px'><strong>L</strong></span>orem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas id ex luctus, feugiat nisi in, elementum orci. Pellentesque et porta odio. Sed magna arcu, ullamcorper vitae lacinia eu, fringilla sit amet arcu. Vivamus porta massa a elit feugiat vehicula. Aliquam erat volutpat. Praesent volutpat a dolor ac bibendum. Aenean ultrices bibendum nisl, at tristique neque ornare placerat. Donec convallis rhoncus mauris ut commodo. Fusce pulvinar sagittis turpis ut rhoncus.</p> " +
       "<p><em>Sed dapibus porta enim, vitae fringilla tellus imperdiet id. Ut placerat imperdiet ante et pharetra. Etiam dapibus, diam eu convallis scelerisque, arcu nisl efficitur urna, et faucibus lorem nisl non odio. Nulla congue urna at mi luctus, sit amet congue metus dictum. Quisque mollis aliquet tellus, non aliquet diam accumsan ac. Pellentesque ac suscipit nibh. Nulla facilisi. Integer hendrerit ac felis eget sollicitudin. Etiam cursus quis lectus mollis tempor. Nam sapien dolor, ultricies sit amet eleifend non, aliquet eu tortor.</em></p> " +
@@ -489,6 +489,12 @@ export class AdvertEdit{
     this.advert.isPartialTime = (e.target.value == '0' ? true : false);
   }
 
+  watchFormContract(e){
+    this.contractForm.isInterim = (e.target.value == '0' ? true : false);
+    this.contractForm.isFormation = (e.target.value == '1' ? true : false);
+    this.contractForm.isCDD = (e.target.value == '2' ? true : false);
+    this.contractForm.isCDI = (e.target.value == '3' ? true : false);
+  }
 
   isFormValid(){
     if(this.advert && !this.isEmpty(this.advert.titre)){

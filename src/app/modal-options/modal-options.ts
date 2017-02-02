@@ -224,17 +224,20 @@ export class ModalOptions{
 
   goToAdvertEdit(){
     jQuery("#modal-options").modal('hide');
-    let offer = this.params.offer;
-    this.sharedService.setCurrentOffer(offer);
     let advert = this.params.advert;
-    let obj = this.params.obj;
     let type;
     if(Utils.isEmpty(advert)){
       type = 'add';
-    }else{
+    } else {
       type = "detail";
       this.sharedService.setCurrentAdv(advert);
     }
-    this.router.navigate(['advert/edit', {type: type, obj: obj}]);
+
+    let obj = this.params.obj;
+    if(!obj){
+      this.router.navigate(['advert/edit', {type: type}]);
+    }else{
+      this.router.navigate(['advert/edit', {type: type, obj: obj}]);
+    }
   }
 }
