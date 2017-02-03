@@ -164,6 +164,8 @@ export class LoginPage{
             data.changePassword = true;
           }
           this.sharedService.setCurrentUser(data);
+          let projectTarget = (data.estEmployeur ? 'employer' : 'jobyer');
+          this.sharedService.setProjectTarget(projectTarget);
           this.profileService.loadProfilePicture(data.id).then((pic: any) => {
             var userImageURL;
             if (!this.isEmpty(pic.data[0].encode)) {
