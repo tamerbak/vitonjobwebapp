@@ -109,13 +109,19 @@ export class AuthenticationService {
       let headers = Configs.getHttpJsonHeaders();
       this.http.post(Configs.calloutURL, body, {headers: headers})
         .map(res => res.json())
-        .subscribe(data => {
+        .subscribe((data: any) => {
 
           let partnerCode: string = this.sharedService.getPartner();
           // Check if new user
-          if (data && Utils.isEmpty(partnerCode) === false && Utils.isEmpty(data.titre) === true) {
+          if (data && Utils.isEmpty(data.titre) === true) {
+
+            // Set device token
+            this.setDeviceToken(data.id);
+
             // If new user and coming from partnership, add partner id into the account
-            this.setPartnerId(data.id, partnerCode);
+            if (Utils.isEmpty(partnerCode) === false) {
+              this.setPartnerId(data.id, partnerCode);
+            }
           }
 
           resolve(data);
@@ -241,6 +247,24 @@ export class AuthenticationService {
 
     var sql = "UPDATE user_account SET " +
       "fk_user_partenaire = (SELECT pk_user_partenaire FROM user_partenaire WHERE code ILIKE '" + partnerCode + "') " +
+      "WHERE pk_user_account = '" + accountId + "';"
+    ;
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    })
+
+  }
+
+  setDeviceToken(accountId: number) {
+
+    var sql = "UPDATE user_account SET " +
+      "device_token = 'WEB' " +
       "WHERE pk_user_account = '" + accountId + "';"
     ;
 
