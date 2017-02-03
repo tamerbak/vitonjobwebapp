@@ -70,6 +70,7 @@ export class Home{
   obj: string;
 
   currentJobyer: any;
+  
 
   constructor(private router: Router,
               private searchService: SearchService,
