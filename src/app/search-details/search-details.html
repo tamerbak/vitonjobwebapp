@@ -108,6 +108,45 @@
           </ul>
         </div>
 
+        <div *ngIf="projectTarget == 'jobyer' && result.idAnnonce != 0 && advert">
+          <legend><strong>Détails de l'annonce :</strong></legend>
+          <div class="row">
+            <div class="col-md-4 col-sm-12 col-xs-12">
+              <div class="post-user mt-n-xs">
+                <span class="thumb pull-left mr">
+                  <img class="img-circle" [src]="advert.thumbnail.fileContent">
+                </span>
+              </div>
+            </div>
+            <h5 class="mb-xs mt-xs"><span class="fw-semi-bold">{{advert.titre}}</span></h5>
+          </div>
+
+
+          <div class="row" *ngIf="!isEmpty(advert.attachement.fileContent)">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              {{ advert.attachement.fileName }}
+              <button type="button" class="btn btn-danger" (click)="downloadFile(advert.attachement)">
+                Télécharger la pièce jointe
+              </button>
+            </div>
+          </div>
+
+          <h6 class="mb-xs mt-xs">{{advert.link}}</h6>
+          <h6 class="mb-xs mt-xs">{{advert.contractForm}} - {{advert.isPartialTime ? 'Temps partiel' : 'Temps plein'}}</h6>
+
+          <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <img src="{{advert.imgbg.fileContent}}">
+            </div>
+          </div>
+
+          <div class="row" *ngIf="!isEmpty(advert.description)">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div [innerHTML]="advert.description"></div>
+            </div>
+          </div>
+        </div>
+
         <div class="col-md-12 col-xs-12">
           <sebm-google-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" class="content-map">
             <sebm-google-map-marker [latitude]="lat" [longitude]="lng">

@@ -65,6 +65,7 @@ export class ModalOffers{
         continue;
       }
 
+        offer.obsolete = false;
         //verify if offer is obsolete
         for (let j = 0; j < offer.calendarData.length; j++) {
           var slotDate = offer.calendarData[j].date;
@@ -74,10 +75,10 @@ export class ModalOffers{
           if (slotDate <= dateNow) {
             offer.obsolete = true;
             break;
-          } else {
-            offer.obsolete = false;
-            this.offerListToShow.push(offer);
-          }
+          } 
+        }
+        if(offer.obsolete == false ){
+          this.offerListToShow.push(offer);
         }
     }
   }

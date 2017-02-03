@@ -6,6 +6,8 @@ import {DateUtils} from "../app/utils/date-utils";
 
 declare let escape:any;
 
+const OFFER_ADVERT_INDEX_ID = 10049;
+
 @Injectable()
 export class AdvertService {
   constructor(public http : Http){
@@ -182,7 +184,8 @@ export class AdvertService {
           if(data && data.data && data.data.length > 0){
             res.id = data.data[0].pk_user_annonce_entreprise;
             if(!Utils.isEmpty(offerId) && offerId != 0){
-              this.updateOfferWithAdvert(res.id, offerId);
+              //this.updateOfferWithAdvert(res.id, offerId);
+              this.associateOfferToAdverts(offerId, res.id);
             }
           }
           resolve(res);
@@ -430,8 +433,7 @@ export class AdvertService {
       ", temps_partiel as \"tempsPartiel\" " +
       ", forme_contrat" +
       " from user_annonce_entreprise " +
-      " where dirty='N' and pk_user_annonce_entreprise in (select fk_user_annonce_entreprise from user_offre_entreprise " +
-      " where pk_user_offre_entreprise = " + offerId + ");";
+      " where dirty='N' and fk_user_offre_entreprise = " + offerId + ";";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -480,6 +482,98 @@ export class AdvertService {
         }
         resolve(advert);
       });
+    });
+  }
+
+  getAdvertById(advertId){
+    let sql = "select " +
+      " pk_user_annonce_entreprise as id" +
+      ", titre as titre" +
+      ", lien as link" +
+      ", contenu as content" +
+      ", thumbnail" +
+      ", created " +
+      ", temps_partiel as \"tempsPartiel\" " +
+      ", piece_jointe as attachement" +
+      ", image_principale as imgbg" +
+      ", forme_contrat" +
+      " from user_annonce_entreprise " +
+      " where dirty='N' and pk_user_annonce_entreprise = " + advertId + ";";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let advert: any;
+          if(data && data.data && data.data.length != 0){
+            let r = data.data[0];
+            advert = {
+              id : r.id,
+              'class' : 'com.vitonjob.annonces.Annonce',
+              titre : r.titre,
+              link: r.link,
+              description : this.prepareContent(r.content),
+              briefContent : this.prepareBriefContent(r.content),
+              thumbnail : {
+                'class':'com.vitonjob.annonces.Attachement',
+                code : 0,
+                status : '',
+                fileContent : this.prepareImage(r.thumbnail),
+                fileName: this.getImageName(r.thumbnail)
+              },
+              isThumbnail : r.thumbnail && r.thumbnail.length > 0,
+              rubriques : [],
+              created : this.parseDate(r.created),
+              isPartialTime: (r.tempsPartiel.toUpperCase() == 'OUI'),
+              attachement: {
+                'class':'com.vitonjob.annonces.Attachement',
+                code : 0,
+                status : '',
+                fileContent : r.attachement,
+                fileName : ''
+              },
+              imgbg: {
+                'class':'com.vitonjob.annonces.Attachement',
+                code : 0,
+                status : '',
+                fileContent : this.prepareImage(r.imgbg),
+                fileName: this.getImageName(r.imgbg)
+              },
+              contractForm: r.forme_contrat
+            };
+          }
+          resolve(advert);
+        });
+    });
+  }
+
+  associateOfferToAdverts(offerId, advertId){
+    let data = {
+      'idOffre': offerId,
+      'idAnnonce': advertId
+    };
+
+    let dataStr = JSON.stringify(data);
+    let encodedData = btoa(dataStr);
+    let jsonData = {
+      'class': 'fr.protogen.masterdata.model.CCallout',
+      'id': OFFER_ADVERT_INDEX_ID,
+      'args': [{
+        'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+        label: 'Indexation Offre Annonce',
+        value: encodedData
+      }]
+    };
+    var stringData = JSON.stringify(jsonData);
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.calloutURL, stringData, {headers: headers})
+        .map(res => res.json())
+        .subscribe((result: any) => {
+          resolve(result);
+        });
     });
   }
 }

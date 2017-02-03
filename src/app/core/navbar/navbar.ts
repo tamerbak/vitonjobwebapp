@@ -122,6 +122,10 @@ export class Navbar implements OnInit {
     this.router.navigate(['home']);
   }
 
+  gotoProfile() {
+    this.router.navigate(['profile']);
+  }
+
   toggleSidebar(state): void {
     this.toggleSidebarEvent.emit(state);
   }
