@@ -923,6 +923,8 @@ export class OfferEdit {
     this.searchService.advancedSearch(searchQuery).then((data: any)=> {
       this.sharedService.setLastResult(data);
       this.sharedService.setCurrentOffer(offer);
+      this.sharedService.setCurrentSearch(null);
+      this.sharedService.setCurrentSearchCity(null);
       this.keepCurrentOffer = true;
       this.router.navigate(['search/results']);
     });
