@@ -4,14 +4,14 @@
 
   <title><%= webpackConfig.metadata.title %></title>
 
+  <link rel="icon" href="assets/images/icon/favicon.ico" type="image/x-icon">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="<%= webpackConfig.metadata.title %>">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.4.0/css/swiper.css">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-        rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" @rel="stylesheet">
   <link href="css/croppie.css" rel="stylesheet">
   <link href="css/swiper.min.css" rel="stylesheet">
 
@@ -33,11 +33,6 @@
     })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
     ga('create', 'UA-91039209-3', 'auto');
   </script>
-  <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
-  <script type="text/javascript" src="scripts/swiper.jquery.min.js"></script>
-  <script type="text/javascript" src="scripts/swiper.min.js"></script>
-  <script type="text/javascript" src="scripts/jquery.smooth-scroll.js"></script>
-  <link rel="icon" href="assets/images/icon/favicon.ico" type="image/x-icon">
 </head>
 
 <body>
@@ -420,22 +415,20 @@
   </div>
 
 </body>
+
 <script data-pace-options='{ "target": ".content-wrap", "ghostTime": 1000 }'></script>
 <% if (webpackConfig.metadata.ENV === 'development') { %>
 <!-- Webpack Dev Server reload -->
 <script
   src="http://<%= webpackConfig.metadata.host %>:<%= webpackConfig.metadata.port %>/webpack-dev-server.js"></script>
 <% } %>
-<script src="scripts/md5.js"></script>
-<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-latest.js"></script>
 <script type="text/javascript" src="scripts/swiper.jquery.min.js"></script>
 <script type="text/javascript" src="scripts/swiper.min.js"></script>
-<script src="scripts/ckeditor/ckeditor.js"></script>
-<!-- <script src="scripts/bootstrap.js"></script>
-<script src="scripts/script.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js" integrity="sha384-THPy051/pYDQGanwU6poAc/hOdQxjnOEXzbT+OuUAFqNqFjL+4IGLBgCJC3ZOShY" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js" integrity="sha384-Plbmg8JY28KFelvJVai01l8WyZzrYWG825m+cZ0eDDS1f7d/js6ikvy1+X+guPIB" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script> -->
+<script type="text/javascript" src="scripts/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="scripts/jquery.smooth-scroll.js"></script>
+<script type="text/javascript" src="scripts/md5.js"></script>
 
 <script type="text/javascript">
   (function () {
