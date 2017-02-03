@@ -26,6 +26,13 @@
 
   <!-- base url -->
   <base href="<%= webpackConfig.metadata.baseUrl %>">
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-91039209-3', 'auto');
+  </script>
   <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
   <script type="text/javascript" src="scripts/swiper.jquery.min.js"></script>
   <script type="text/javascript" src="scripts/swiper.min.js"></script>
@@ -35,23 +42,6 @@
 
 <body>
 
-<!-- Google Analytics: change UA-71073175-1 to be your site's ID -->
-<script>
-  (function (i, s, o, g, r, a, m) {
-    i['GoogleAnalyticsObject'] = r;
-    i[r] = i[r] || function () {
-        (i[r].q = i[r].q || []).push(arguments)
-      }, i[r].l = 1 * new Date();
-    a = s.createElement(o),
-      m = s.getElementsByTagName(o)[0];
-    a.async = 1;
-    a.src = g;
-    m.parentNode.insertBefore(a, m)
-  })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-
-  ga('create', 'UA-71073175-1', 'auto');
-  ga('send', 'pageview');
-</script>
 <script data-pace-options='{ "target": ".content-wrap", "ghostTime": 1000 }'></script>
 <% if (webpackConfig.metadata.ENV === 'development') { %>
 <!-- Webpack Dev Server reload -->
@@ -79,13 +69,6 @@
     var x = document.getElementsByTagName('script')[0];
     x.parentNode.insertBefore(s, x);
   })();
-</script>
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-91039209-3', 'auto');
 </script>
 </body>
 </html>
