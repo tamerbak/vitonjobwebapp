@@ -42,6 +42,384 @@
 
 <body>
 
+  <style>
+    /*
+    ** PAGE
+    */
+
+    * {
+      margin: 0px;
+      padding: 0px;
+      font-weight: 200;
+      font-family: helvetica neue, helvetica, arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    *,
+    *:after,
+    *:before {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: rgba(20, 186, 166, .4);
+    //background: -webkit-linear-gradient(48deg, #00e56f, #0e6eff);
+      overflow: hidden;
+    }
+
+    a {
+      color: #000;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: #000;
+      text-decoration: none;
+    }
+
+    body {
+      background: #fafafa;
+    }
+
+    p {
+      float: left;
+      line-height: 50px;
+      font-size: 200%;
+      color: #888;
+    }
+
+    h2 {
+      font-family: 'Raleway', 'Lato', 'Open Sans';
+      font-size: 46px;
+      font-weight: 400;
+      text-align: center;
+      color: rgb(20, 186, 166);
+    }
+
+    h2 > small {
+      font-family: 'Open Sans';
+      font-size: 15px;
+      font-weight: 300;
+    }
+
+    canvas {
+      display: block;
+      vertical-align: bottom;
+    }
+
+    /*
+    ** SPLASH SCREEN
+    */
+
+    #splash-screen-content {
+      margin-top: 20vh;
+      position: absolute;
+      width: 100%;
+    //background-repeat: no-repeat;
+    //background-size: cover;
+    //background-position: 50% 50%;
+      top: 0;
+    }
+
+    /*
+    ** SPLASH SCREEN LOGO
+    */
+
+    @-webkit-keyframes rotate {
+      0% {
+        -webkit-transform: rotate(0deg) translate(-102px) rotate(0deg);
+        transform: rotate(0deg) translate(-102px) rotate(0deg);
+      }
+      100% {
+        -webkit-transform: rotate(360deg) translate(-102px) rotate(-360deg);
+        transform: rotate(360deg) translate(-102px) rotate(-360deg);
+      }
+    }
+
+    @-webkit-keyframes rotate2 {
+      0% {
+        -webkit-transform: rotate(0deg) translate(102px) rotate(0deg);
+        transform: rotate(0deg) translate(102px) rotate(0deg);
+      }
+      100% {
+        -webkit-transform: rotate(360deg) translate(102px) rotate(-360deg);
+        transform: rotate(360deg) translate(102px) rotate(-360deg);
+      }
+    }
+
+    @-webkit-keyframes pulse {
+      20% {
+        -webkit-transform: scale(0.9);
+        transform: scale(0.9);
+      }
+      50% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+      }
+      100% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+      }
+    }
+
+    .splash-screen-logo-container {
+      position: absolute;
+      width: 100vw;
+    }
+
+    .splash-screen-logo {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      border: 5px solid rgba(118, 118, 118, 0.87);
+      box-shadow: 0 0 0 5px rgb(20, 186, 166);
+      margin: 3vh auto;
+      position: relative;
+      text-align: center;
+      padding-top: 25px;
+    }
+
+    .splash-screen-logo > .ball {
+      display: block;
+      width: 15px;
+      height: 15px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+    }
+
+    .splash-screen-logo > .ball:nth-of-type(1) {
+      -webkit-animation: rotate 3s infinite linear;
+      bottom: 46%;
+      left: 46%;
+    }
+
+    .splash-screen-logo > .ball:nth-of-type(2) {
+      -webkit-animation: rotate2 3s infinite linear;
+      bottom: 46%;
+      right: 46%;
+    }
+
+    .splash-screen-logo > img {
+      -webkit-animation: pulse 3s infinite;
+    }
+
+    .splash-screen-background-container {
+      height: 100vh;
+      overflow: hidden;
+      text-align: center;
+      position: relative;
+      z-index: 0;
+      background-image: url('../../assets/images/bg_jobyer.png');
+      background-size: cover;
+      -webkit-filter: blur(5px);
+      -moz-filter: blur(5px);
+      -o-filter: blur(5px);
+      -ms-filter: blur(5px);
+      filter: blur(5px);
+    }
+    /*
+    ** SPLASH SCREEN TEXT
+    */
+
+    .splash-screen-message {
+      width: 100vw;
+      height: 50px;
+      text-align: center;
+    }
+
+    .scroller {
+      height: 50px;
+      line-height: 50px;
+    //float: left;
+      margin-left: 5px;
+      overflow: hidden;
+    }
+
+    .scroller span {
+      display: block;
+      font-size: 200%;
+      color: #000;
+    }
+
+    .scroller .inner {
+      -webkit-animation: scroll 10s 1 ease-out;
+      -moz-animation: scroll 10s 1 ease-out;
+      animation: scroll 10s 1 ease-out;
+      -webkit-animation-fill-mode: forwards;
+      -moz-animation-fill-mode: forwards;
+      animation-fill-mode: forwards;
+    }
+
+    .blue {
+      -webkit-animation: color 0.25s 1 linear;
+      -moz-animation: color 0.25s 1 linear;
+      animation: color 0.25s 1 linear;
+      -webkit-animation-delay: 8s;
+      -moz-animation-delay: 8s;
+      animation-delay: 8s;
+      -webkit-animation-fill-mode: forwards;
+      -moz-animation-fill-mode: forwards;
+      animation-fill-mode: forwards;
+    }
+
+    .blueb {
+      -webkit-animation: color 0.25s 1 linear;
+      -moz-animation: color 0.25s 1 linear;
+      animation: color 0.25s 1 linear;
+      -webkit-animation-delay: 8.25s;
+      -moz-animation-delay: 8.25s;
+      animation-delay: 8.25s;
+      -webkit-animation-fill-mode: forwards;
+      -moz-animation-fill-mode: forwards;
+      animation-fill-mode: forwards;
+    }
+
+    @-webkit-keyframes color {
+      0% {
+        color: #000;
+      }
+      100% {
+        color: #2c90c6;
+      }
+    }
+
+    @-moz-keyframes color {
+      0% {
+        color: #000;
+      }
+      100% {
+        color: #2c90c6;
+      }
+    }
+
+    @keyframes color {
+      0% {
+        color: #000;
+      }
+      100% {
+        color: #2c90c6;
+      }
+    }
+
+    @-webkit-keyframes scroll {
+      11% {
+        margin-top: 0px;
+      }
+      22% {
+        margin-top: 0px;
+      }
+      33% {
+        margin-top: -50px;
+      }
+      44% {
+        margin-top: -50px;
+      }
+      55% {
+        margin-top: -100px;
+      }
+      66% {
+        margin-top: -100px;
+      }
+      77% {
+        margin-top: -150px;
+      }
+      88% {
+        margin-top: -150px;
+      }
+      100% {
+        margin-top: -150px;
+      }
+    }
+
+    @-moz-keyframes scroll {
+      11% {
+        margin-top: 0px;
+      }
+      22% {
+        margin-top: 0px;
+      }
+      33% {
+        margin-top: -50px;
+      }
+      44% {
+        margin-top: -50px;
+      }
+      55% {
+        margin-top: -100px;
+      }
+      66% {
+        margin-top: -100px;
+      }
+      77% {
+        margin-top: -150px;
+      }
+      88% {
+        margin-top: -150px;
+      }
+      100% {
+        margin-top: -150px;
+      }
+    }
+
+    @keyframes scroll {
+      11% {
+        margin-top: 0px;
+      }
+      22% {
+        margin-top: 0px;
+      }
+      33% {
+        margin-top: -50px;
+      }
+      44% {
+        margin-top: -50px;
+      }
+      55% {
+        margin-top: -100px;
+      }
+      66% {
+        margin-top: -100px;
+      }
+      77% {
+        margin-top: -150px;
+      }
+      88% {
+        margin-top: -150px;
+      }
+      100% {
+        margin-top: -150px;
+      }
+    }
+
+  </style>
+  <div align="center" class="splash-screen-background-container"></div>
+
+  <div id="splash-screen-content">
+    <div class="splash-screen-logo-container">
+      <div class="splash-screen-logo">
+        <span class="ball"></span>
+        <span class="ball"></span>
+        <img
+          src="assets/images/voj_square_green_150.png"
+          alt=""
+          style="width: 65%;"
+        >
+      </div>
+      <div class="splash-screen-message">
+        <div class="scroller">
+          <div class="inner">
+            <span>I'm Adam Blum.</span>
+            <span>I play a lot of instruments.</span>
+            <span>I record them in my home studio.</span>
+            <span>But my real goal is to <a class="blue">make</a> <a class="blueb">music</a>.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
 <script data-pace-options='{ "target": ".content-wrap", "ghostTime": 1000 }'></script>
 <% if (webpackConfig.metadata.ENV === 'development') { %>
 <!-- Webpack Dev Server reload -->
@@ -70,5 +448,4 @@
     x.parentNode.insertBefore(s, x);
   })();
 </script>
-</body>
 </html>
