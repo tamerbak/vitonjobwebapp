@@ -267,7 +267,7 @@ export class Profile{
           this.nationalities = response.data;
           this.dataForNationalitySelectReady = true;
           if (this.isFrench || this.isEuropean == 0) {
-            this.scanTitle = " de votre CNI ou Passeport";
+            this.scanTitle = " de votre titre d'identité";
           }
           if (this.isEuropean == 1) {
             this.scanTitle = " de votre titre de séjour";
@@ -667,8 +667,12 @@ export class Profile{
         this.dateStay = data.date_de_delivrance;
         var dateStay = Utils.isEmpty(this.dateStay) ? "":moment(this.dateStay).format("DD/MM/YYYY");
         jQuery('#' + elements[1]).datepicker('update',dateStay );
-
-        this.dateFromStay = data.debut_validite;
+        if(Utils.isEmpty(data.debut_validite) && !Utils.isEmpty(data.date_de_delivrance)){
+          this.dateFromStay = data.date_de_delivrance;
+        }else{
+          this.dateFromStay = data.debut_validite;
+        }
+        
         var dateFromStay = Utils.isEmpty(this.dateFromStay) ? "":moment(this.dateFromStay).format("DD/MM/YYYY");
         jQuery('#' + elements[2]).datepicker('update',dateFromStay );
 
@@ -1827,7 +1831,7 @@ export class Profile{
       this.isEuropean = data.data[0].pk_user_identifiants_nationalite == "42" ? 1 : 0;
       this.regionId = data.data[0].pk_user_identifiants_nationalite;
       if (this.isEuropean == 0) {
-        this.scanTitle = " de votre CNI ou Passeport";
+        this.scanTitle = " de votre titre d'identité";
         this.loadAttachement(this.scanTitle);
       }
       if (this.isEuropean == 1) {

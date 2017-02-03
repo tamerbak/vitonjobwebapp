@@ -258,6 +258,7 @@
               <div *ngIf="!isEmployer" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Pays de naissance
+                  <span class="asterisk-blue">*</span>
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <select class="select2 form-control" [(ngModel)]="index" (change)="selectBirthCountry($event)">
@@ -284,6 +285,7 @@
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   <!--Code postal du lieu de naissance-->
                   Département de naissance
+                  <span class="asterisk-blue">*</span>
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <!--<input type="hidden" class="select2 cp-select form-control" name="birthcp"

@@ -76,7 +76,7 @@
     </form>
     <ul class="nav navbar-nav pull-xs-right" (click)="$event.preventDefault()">
       <li *ngIf="sharedService.getCurrentUser()" class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle"
+        <a class="nav-link dropdown-toggle" (click)="gotoProfile()"
            data-toggle="dropdown">
 					<span class="thumb-sm avatar pull-xs-left">
 						<img [ngClass]="setImgClasses()" src={{sharedService.getProfilImageUrl()}} alt="...">
