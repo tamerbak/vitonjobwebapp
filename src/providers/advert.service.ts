@@ -498,8 +498,7 @@ export class AdvertService {
       ", image_principale as imgbg" +
       ", forme_contrat" +
       " from user_annonce_entreprise " +
-      " where dirty='N' and pk_user_annonce_entreprise in (select fk_user_annonce_entreprise from user_offre_entreprise " +
-      " where pk_user_annonce_entreprise = " + advertId + ");";
+      " where dirty='N' and pk_user_annonce_entreprise = " + advertId + ";";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();

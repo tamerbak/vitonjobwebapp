@@ -13,6 +13,7 @@ import {Utils} from "../utils/utils";
 import {Offer} from "../../dto/offer";
 import {DateUtils} from "../utils/date-utils";
 import {ModalSubscribe} from "../modal-subscribe/modal-subscribe";
+import {AdvertService} from "../../providers/advert.service";
 
 declare let jQuery: any;
 
@@ -21,7 +22,7 @@ declare let jQuery: any;
   template: require('./search-details.html'),
   styles: [require('./search-details.scss')],
   directives: [ROUTER_DIRECTIVES, GOOGLE_MAPS_DIRECTIVES, RecruitButton, ModalNotificationContract,ModalSubscribe,ModalProfile, AlertComponent],
-  providers: [OffersService, CandidatureService]
+  providers: [OffersService, CandidatureService, AdvertService]
 })
 
 export class SearchDetails{
@@ -55,12 +56,14 @@ export class SearchDetails{
   address:string = "";
 
   estimatedIncome:number=0;
+  advert: any;
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private router: Router,
               private sanitizer: DomSanitizationService,
-              private candidatureService: CandidatureService) {
+              private candidatureService: CandidatureService,
+              private advertService: AdvertService) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (this.currentUser) {
       this.isRecruteur = this.currentUser.estRecruteur;
@@ -83,14 +86,23 @@ export class SearchDetails{
     this.offersService.getOfferById(this.result.idOffre, offerProjectTarget, this.offerComplete).then((data: any) => {
       if(this.result.rate && this.result.rate>0)
         this.calculateIncome();
-        
     });
+
+    if(this.projectTarget == "jobyer" && this.result.idAnnonce != 0){
+      this.advertService.getAdvertById(this.result.idAnnonce).then((data: any) => {
+        this.advert = data;
+        this.advert.contractForm = this.advert.contractForm.split(';')[1];
+        this.prepareDataForDisplaying(this.advert.attachement.fileContent);
+      });
+    }
+    
     // this.offersService.loadOfferCity(this.result.idOffre, offerProjectTarget).then((data: any) => {
     //   if(data && data[0]){
     //     this.city = data[0].nom;
     //     this.cp = data[0].code;
     //   }
     // });
+    
     if(this.projectTarget == 'jobyer')
       this.candidatureAllowed = (this.result.accepteCandidature || this.result.accepteCandidature == 'true' ? true : false);
     else
@@ -242,6 +254,12 @@ export class SearchDetails{
     }
   }
 
+  downloadFile(attach) {
+    let content = attach.fileContent.split(';')[1];
+    var url = "data:application/octet-stream;base64," + content;
+    window.open(url);
+  }
+
   addAlert(type, msg): void {
     this.alerts = [{type: type, msg: msg}];
   }
@@ -270,5 +288,14 @@ export class SearchDetails{
       day: "numeric"//, hour: "2-digit", minute: "2-digit"
     };
     return new Date(date).toLocaleDateString('fr-FR', dateOptions);
+  }
+
+  prepareDataForDisplaying(content) {
+    //attachement
+    if (!this.isEmpty(content)) {
+      let prefix = content.split(';')[0];
+      this.advert.attachement.fileContent = content;
+      this.advert.attachement.fileName = prefix;
+    }
   }
 }
