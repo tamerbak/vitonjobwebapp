@@ -19,7 +19,7 @@ export class MedecineService {
   }
 
   getMedecine(id) {
-    let sql = "select pk_user_medecine_de_travail as id, libelle, adresse, cp.code as code_postal from user_medecine_de_travail, user_code_postal cp where user_medecine_de_travail.fk_user_code_postal=cp.pk_user_code_postal and pk_user_medecine_de_travail in (select fk_user_medecine_de_travail from user_entreprise where pk_user_entreprise=" + id + ")";
+    let sql = "select pk_user_medecine_de_travail as id, libelle, adresse, cp.code as code_postal,code_urssaf from user_medecine_de_travail, user_code_postal cp where user_medecine_de_travail.fk_user_code_postal=cp.pk_user_code_postal and pk_user_medecine_de_travail in (select fk_user_medecine_de_travail from user_entreprise where pk_user_entreprise=" + id + ")";
 
     return new Promise(resolve => {
       let headers = new Headers();
