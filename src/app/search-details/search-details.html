@@ -27,7 +27,7 @@
           {{ (matching.toString().indexOf('.') < 0) ? matching : matching.toString().split('.')[0] }}%
         </span>
       </p>
-      <p>{{address}}</p>
+      <p>{{isEmpty(address) ? '' : address}}</p>
     </div>
   </header>
 
