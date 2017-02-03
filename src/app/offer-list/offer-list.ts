@@ -236,6 +236,8 @@ export class OfferList {
     };
     this.searchService.advancedSearch(searchQuery).then((data:any)=>{
       this.sharedService.setLastResult(data);
+      this.sharedService.setCurrentSearch(null);
+      this.sharedService.setCurrentSearchCity(null);
       this.sharedService.setCurrentOffer(offer);
       this.router.navigate(['search/results']);
     });
