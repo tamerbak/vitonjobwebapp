@@ -200,10 +200,10 @@ export class SearchService {
     });
   }
 
-  getGeolocalisation(adress: string) {
+  getGeolocalisation(address: string) {
     // String adr = a.replaceAll(" null","");
     // String adressQuery = URLEncoder.encode(adr.trim(), "UTF-8");
-    let query: string = "https://maps.googleapis.com/maps/api/geocode/json?address="+adress+"&language=fr-FR&key=AIzaSyDERhLtfKx_IsRzQpHxs-WNWnQqal94_Ig";
+    let query: string = "https://maps.googleapis.com/maps/api/geocode/json?address="+address+"&language=fr-FR&key=AIzaSyDERhLtfKx_IsRzQpHxs-WNWnQqal94_Ig";
 
     let payload = "";
     return new Promise(resolve => {

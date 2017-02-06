@@ -2,6 +2,7 @@ import {Job} from "./job";
 import {AbstractGCallout} from "./generium/abstract-gcallout";
 import {Equipment} from "./equipment";
 import {Requirement} from "./requirement";
+import {Address} from "./address";
 
 export class Offer extends AbstractGCallout {
   'class': string;
@@ -27,7 +28,7 @@ export class Offer extends AbstractGCallout {
   rechercheAutomatique: boolean;
   obsolete: boolean;
   identity: number;
-  adresse: string;
+  adresse: Address;
   jobyerId: number;
   entrepriseId: number;
 
@@ -35,7 +36,7 @@ export class Offer extends AbstractGCallout {
     super('com.vitonjob.callouts.offer.model.OfferData');
 
     this.idOffer = 0;
-    this.jobData = null;
+    this.jobData = new Job();
     this.parametrageConvention = 0;
     this.calendarData = [];
     this.qualityData = [];
@@ -53,9 +54,11 @@ export class Offer extends AbstractGCallout {
     this.rechercheAutomatique = false;
     this.obsolete = false;
     this.identity = 0;
-    this.adresse = "";
     this.jobyerId = 0;
     this.entrepriseId = 0;
+
+    this.adresse = new Address();
+    this.adresse.type = 'adresse_de_travail';
   }
 }
 ;

@@ -27,6 +27,8 @@ import {SelectLanguages} from "../components/select-languages/select-languages";
 import {SelectList} from "../components/select-list/select-list";
 import {Calendar} from "../components/calendar/calendar";
 import {EnvironmentService} from "../../providers/environment.service";
+import {Address} from "../../dto/address";
+import {AutocompleteAddress} from "../components/autocomplete-address/autocomplete-address";
 
 declare let Messenger, jQuery: any;
 declare let google: any;
@@ -47,7 +49,8 @@ declare let require;
     ConventionParameters,
     SelectLanguages,
     SelectList,
-    Calendar
+    Calendar,
+    AutocompleteAddress
   ],
   providers: [
     OffersService,
@@ -116,7 +119,7 @@ export class OfferEdit {
   isConditionEmpExist: boolean = true;
 
   /*
-   * Offer adress
+   * Offer address
    */
   autocompleteOA: any;
   offerAddress: string;
@@ -186,20 +189,17 @@ export class OfferEdit {
     //obj = "add", "detail", or "recruit"
     this.route.params.forEach((params: Params) => {
       this.obj = params['obj'];
-      //this.advertId = params['adv'];
     });
 
     if (this.obj == "detail") {
       this.offer = this.sharedService.getCurrentOffer();
-      // if (this.projectTarget == 'employer') {
       this.offersService.getOfferById(this.offer.idOffer, this.projectTarget, this.offer).then(()=> {
         this.refreshParametrage = true;
         this.fullLoad = true;
+        this.offer.adresse.type = "adresse_de_travail";
       });
-      // }
     } else {
       this.offer = new Offer();
-      this.offer.jobData = new Job();
     }
 
     this.loadLists();
@@ -288,25 +288,23 @@ export class OfferEdit {
       ;
       this.offer.contact = (this.currentUser.prenom + " " + this.currentUser.nom).trim();
 
+      let addr;
+
       if (this.projectTarget == 'employer') {
-        var siegeAddress = this.currentUser.employer.entreprises[0].siegeAdress;
-        this.offerAddress = siegeAddress.fullAdress;
-        this.nameOA = siegeAddress.name;
-        this.streetNumberOA = siegeAddress.streetNumber;
-        this.streetOA = siegeAddress.street;
-        this.zipCodeOA = siegeAddress.zipCode;
-        this.cityOA = siegeAddress.city;
-        this.countryOA = siegeAddress.country;
+        addr = this.currentUser.employer.entreprises[0].workAdress;
+        this.offer.adresse.type = "adresse_de_travail";
       } else {
-        var personalAdress = this.currentUser.jobyer.personnalAdress;
-        this.offerAddress = personalAdress.fullAdress;
-        this.nameOA = personalAdress.name;
-        this.streetNumberOA = personalAdress.streetNumber;
-        this.streetOA = personalAdress.street;
-        this.zipCodeOA = personalAdress.zipCode;
-        this.cityOA = personalAdress.city;
-        this.countryOA = personalAdress.country;
+        addr = this.currentUser.jobyer.personnalAdress;
+        this.offer.adresse.type = "depart_vers_le_travail";
       }
+
+      this.offer.adresse.streetNumber = addr.streetNumber;
+      this.offer.adresse.name = addr.name;
+      this.offer.adresse.fullAdress = "";
+      this.offer.adresse.street = addr.street;
+      this.offer.adresse.cp = addr.zipCode;
+      this.offer.adresse.ville = addr.city;
+      this.offer.adresse.pays = addr.country;
     }
 
     let self = this;
@@ -568,32 +566,8 @@ export class OfferEdit {
           //save values of condition de travail
           this.saveConditionEmp(offer);
 
-          if (this.offerAddress) {
-
-            this.offersService.saveOfferAdress(offer,
-              this.offerAddress, this.streetNumberOA,
-              this.streetOA, this.cityOA, this.zipCodeOA,
-              this.nameOA, this.countryOA,
-              this.currentUser.employer.entreprises[0].id,
-              "employeur").then(data => {
-
-              offer.adresse = this.offerAddress;
-            });
-          }
           this.currentUser.employer.entreprises[0].offers.push(offer);
         } else {
-
-
-          if (this.offerAddress && this.cityOA && this.cityOA.length > 0) {
-            this.offersService.saveOfferAdress(offer,
-              this.offerAddress, this.streetNumberOA,
-              this.streetOA, this.cityOA, this.zipCodeOA,
-              this.nameOA, this.countryOA,
-              this.currentUser.jobyer.id,
-              "jobyer").then(data => {
-              offer.adresse = this.offerAddress;
-            });
-          }
           this.currentUser.jobyer.offers.push(offer);
         }
 
@@ -684,28 +658,6 @@ export class OfferEdit {
       if (this.projectTarget == 'employer') {
         //save values of condition de travail
         this.saveConditionEmp(this.offer);
-
-        if (this.offerAddress && this.cityOA && this.cityOA.length > 0) {
-          this.offersService.saveOfferAdress(this.offer,
-            this.offerAddress, this.streetNumberOA,
-            this.streetOA, this.cityOA, this.zipCodeOA,
-            this.nameOA, this.countryOA,
-            this.currentUser.employer.entreprises[0].id,
-            "employer").then(data => {
-            this.offer.adresse = this.offerAddress;
-          });
-        }
-      } else {
-        if (this.offerAddress && this.cityOA && this.cityOA.length > 0) {
-          this.offersService.saveOfferAdress(this.offer,
-            this.offerAddress, this.streetNumberOA,
-            this.streetOA, this.cityOA, this.zipCodeOA,
-            this.nameOA, this.countryOA,
-            this.currentUser.jobyer.id,
-            "jobyer").then(data => {
-            this.offer.adresse = this.offerAddress;
-          });
-        }
       }
 
       this.validateJob();

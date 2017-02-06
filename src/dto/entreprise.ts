@@ -1,5 +1,5 @@
 import {AbstractGCallout} from "./generium/abstract-gcallout";
-import {Adress} from "./adress";
+import {Address} from "./address";
 
 export class Entreprise extends AbstractGCallout {
 
@@ -8,9 +8,9 @@ export class Entreprise extends AbstractGCallout {
   siret: string;
   naf: string;
   urssaf: string;
-  siegeAdress: Adress;
-  workAdress: Adress;
-  correspondanceAdress: Adress;
+  siegeAdress: Address;
+  workAdress: Address;
+  correspondanceAdress: Address;
   conventionCollective: number;
   // private List<OfferData> offers = new ArrayList<OfferData>();
 
@@ -22,8 +22,8 @@ export class Entreprise extends AbstractGCallout {
     this.siret = "";
     this.naf = "";
     this.urssaf = "";
-    this.siegeAdress = new Adress();
-    this.workAdress = new Adress();
-    this.correspondanceAdress = new Adress();
+    this.siegeAdress = new Address();
+    this.workAdress = new Address();
+    this.correspondanceAdress = new Address();
   }
 }

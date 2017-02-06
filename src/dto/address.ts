@@ -1,27 +1,29 @@
 
 import {AbstractGCallout} from "./generium/abstract-gcallout";
 
-export class Adress extends AbstractGCallout {
+export class Address extends AbstractGCallout {
 
   id: number;
   streetNumber: string;
   name: string;
   fullAdress: string;
   street: string;
-  zipCode: string;
-  city: string;
-  country: string;
+  cp: string;
+  ville: string;
+  pays: string;
+  type: string;
 
   constructor() {
-    super('com.vitonjob.callouts.auth.model.Adress');
+    super('com.vitonjob.callouts.offer.model.AdressData');
 
     this.id = 0;
     this.streetNumber = "";
     this.name = "";
     this.fullAdress = "";
     this.street = "";
-    this.zipCode = "";
-    this.city = "";
-    this.country = "France";
+    this.cp = "";
+    this.ville = "";
+    this.pays = "France";
+    this.type = "";
   }
 }
