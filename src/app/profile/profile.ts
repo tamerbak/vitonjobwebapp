@@ -893,13 +893,9 @@ export class Profile{
 
     }
 
-    this.profileService.getPrefecture(this.whoDeliverStay).then((data: any) => {
-      if (data && data.status == "success" && data.data && data.data.length != 0)
-        jQuery(".whoDeliver-select").select2('data', {id: data.data[0].id, nom: this.whoDeliverStay});
-    });
-
 
     if (!this.isEmployer && !this.isRecruiter) {
+      this.loadCurrentPerfecture();
       this.selectedJobLevel = '1';
       let self = this;
       let job = jQuery('.job-select').select2({
@@ -1006,6 +1002,14 @@ export class Profile{
       }
     }
   }
+
+  loadCurrentPerfecture(){
+    this.profileService.getPrefecture(this.whoDeliverStay).then((data: any) => {
+      if (data && data.status == "success" && data.data && data.data.length != 0)
+        jQuery(".whoDeliver-select").select2('data', {id: data.data[0].id, nom: this.whoDeliverStay});
+    });
+  }
+  
 
   deleteImage(index) {
     this.allImages.splice(index, 1);
