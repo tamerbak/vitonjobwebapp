@@ -118,22 +118,6 @@ export class OfferEdit {
   isConditionEmpValid = true;
   isConditionEmpExist: boolean = true;
 
-  /*
-   * Offer address
-   */
-  autocompleteOA: any;
-  offerAddress: string;
-  nameOA: string;
-  streetNumberOA: string;
-  streetOA: string;
-  zipCodeOA: string;
-  cityOA: string;
-  countryOA: string;
-
-  addressOptions = {
-    componentRestrictions: {country: "fr"}
-  };
-
   //Full time
   isFulltime: boolean = false;
   isPause: boolean = false;
@@ -275,10 +259,6 @@ export class OfferEdit {
         //display calendar slots of the current offer
       }
 
-      this.offersService.loadOfferAdress(this.offer.idOffer, this.projectTarget).then((data: any) => {
-        this.offerAddress = data;
-      });
-
     } else {
 
       /**
@@ -370,9 +350,6 @@ export class OfferEdit {
 
   ngAfterViewInit() {
     let self = this;
-    this._loader.load().then(() => {
-      this.autocompleteOA = new google.maps.places.Autocomplete(document.getElementById("autocompleteOfferAdress"), this.addressOptions);
-    });
 
     //get timepickers elements
     var elements = [];
@@ -922,73 +899,6 @@ export class OfferEdit {
 
       });
     }
-  }
-
-  watchOfferAddress(e) {
-
-    let _address = e.target.value;
-    let _hint: string = "";
-
-    this.nameOA = _address;
-    this.streetNumberOA = "";
-    this.streetOA = "";
-    this.zipCodeOA = "";
-    this.cityOA = "";
-    this.countryOA = "";
-
-    this.offerAddress = _address;
-  }
-
-  autocompleteOfferAddress() {
-
-    this._loader.load().then(() => {
-
-      //let autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocompletePersonal"), {});
-      google.maps.event.addListener(this.autocompleteOA, 'place_changed', () => {
-
-        let place = this.autocompleteOA.getPlace();
-        var addressObj = AddressUtils.decorticateGeolocAddress(place);
-
-        this.zone.run(() => {
-          this.nameOA = !addressObj.name ? '' : addressObj.name.replace("&#39;", "'");
-          this.streetNumberOA = addressObj.streetNumber.replace("&#39;", "'");
-          this.streetOA = addressObj.street.replace("&#39;", "'");
-          this.zipCodeOA = addressObj.zipCode;
-          this.cityOA = addressObj.city.replace("&#39;", "'");
-          this.countryOA = (addressObj.country.replace("&#39;", "'") == "" ? 'France' : addressObj.country.replace("&#39;", "'"));
-          this.offerAddress = this.constructAdress();
-        });
-      });
-    });
-  }
-
-  constructAdress() {
-    let adr = "";
-    if (this.nameOA && this.nameOA.length > 0) {
-      adr = adr + this.nameOA + ", ";
-    }
-
-    if (this.streetNumberOA && this.streetNumberOA.length > 0) {
-      adr = adr + this.streetNumberOA + ", ";
-    }
-
-    if (this.streetOA && this.streetOA.length > 0) {
-      adr = adr + this.streetOA + ", ";
-    }
-
-    if (this.cityOA && this.cityOA.length > 0) {
-      adr = adr + this.cityOA + ", ";
-    }
-
-    if (this.zipCodeOA && this.zipCodeOA.length > 0) {
-      adr = adr + this.zipCodeOA + ", ";
-    }
-
-    if (this.countryOA && this.countryOA.length > 0) {
-      adr = adr + this.countryOA;
-    }
-
-    return adr.trim();
   }
 
   watchConditionEmp(e, item) {
