@@ -123,7 +123,7 @@ export class SearchCriteria {
       class: 'com.vitonjob.callouts.recherche.SearchQuery',
       job: this.job,
       metier: (ignoreSector) ? '' : this.sector,
-      lieu: this.city,
+      lieu: this.city.trim(),
       nom: this.filters[2].value,
       entreprise: this.projectTarget == 'jobyer' ? this.filters[5].value : '',
       date: date,
