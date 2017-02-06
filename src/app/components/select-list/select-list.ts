@@ -101,10 +101,17 @@ export class SelectList {
     }
 
     // Get the list element
-    let listTemp = this.list.filter((v)=> {
+    let listTemp: ListElem[] = this.list.filter((v)=> {
       return (v.id == this.selectedElem);
     });
-    if (this.selectedList.indexOf(listTemp[0]) != -1) {
+    if (listTemp.length <= 0) {
+      console.warn('Missing list element');
+    }
+
+    let existTemp: ListElem[] = this.selectedList.filter((v)=> {
+      return (v.id == listTemp[0].id);
+    });
+    if (existTemp.length > 0) {
       return;
     }
 
@@ -118,6 +125,10 @@ export class SelectList {
     this.onAdd.emit(this.selectedElem);
 
     this.selectedElem = "0";
+
+    if (this.isDynamicList()) {
+      this.initializeDynamicSelect();
+    }
 
   }
 
