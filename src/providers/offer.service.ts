@@ -8,7 +8,7 @@ import {CCalloutArguments} from "../dto/generium/ccallout-arguments";
 import {CCallout} from "../dto/generium/ccallout";
 import {Utils} from "../app/utils/utils";
 
-const OFFER_CALLOUT_ID = 40020;
+const OFFER_CALLOUT_ID = 40021;
 
 @Injectable()
 export class OffersService {
@@ -363,7 +363,7 @@ export class OffersService {
       'streetNumber': streetNumberOA,
       'role': type,
       'id': ""+idTiers,
-      'type': 'travaille'
+      'type': 'adresse_de_travail'
     };
 
     let addressDataStr = JSON.stringify(addressData);

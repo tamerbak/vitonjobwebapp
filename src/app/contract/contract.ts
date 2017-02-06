@@ -170,8 +170,8 @@ export class Contract {
         }
 
         this.contractData.numeroTitreTravail =this.natureTitre + this.jobyer.titreTravail;
-        this.contractService.getJobyerAdress(this.jobyer.id).then((adress : string)=>{
-          this.jobyer.address = adress;
+        this.contractService.getJobyerAdress(this.jobyer.id).then((address : string)=>{
+          this.jobyer.address = address;
         });
 
 

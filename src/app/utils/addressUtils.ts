@@ -1,10 +1,24 @@
 import {Injectable} from "@angular/core";
 import {Utils} from "../utils/utils";
+import {Address} from "../../dto/address";
 
 @Injectable()
 export class AddressUtils {
 
   constructor() {
+  }
+
+  public static decorticateGeolocAddressObj(address: Address, geolocAddress): void {
+    let result = this.decorticateGeolocAddress(geolocAddress);
+
+    address.id = 0;
+    address.streetNumber = result.streetNumber;
+    address.name = result.name;
+    address.fullAdress = "";
+    address.street = result.street;
+    address.cp = result.zipCode;
+    address.ville = result.city;
+    address.pays = result.country;
   }
 
   public static decorticateGeolocAddress(geolocAddress) {

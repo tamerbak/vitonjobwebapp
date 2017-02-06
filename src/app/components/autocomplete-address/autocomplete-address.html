@@ -1,0 +1,11 @@
+<input
+  id="autocompleteAddress"
+  type="text"
+  class="form-control"
+  [(ngModel)]="offerAddress"
+  placeholder="{{ placeholder }}"
+  (input)="autocompleteAddress()"
+  required
+/>
+<!--data-label="{{ inputLabel }}"-->
+<!--(keyup)="watchOfferAddress($event)"-->
