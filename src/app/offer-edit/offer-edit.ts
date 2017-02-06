@@ -162,6 +162,8 @@ export class OfferEdit {
   softwares: any[];
   expSoftware: number = 1;
 
+  isValidAddress: boolean = true;
+
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -1086,6 +1088,10 @@ export class OfferEdit {
     });
   }
 
+  onAddressValidation(e): void {
+    this.isValidAddress = e.isValidAddress;
+  }
+
   /**
    * Form validation process
    *
@@ -1099,6 +1105,15 @@ export class OfferEdit {
       errors.push({
         type: 'required',
         label: this.projectTarget == 'jobyer' ? "Choix des disponibilités" : "Choix des horaires de travail"
+      })
+    }
+
+    if (!this.isValidAddress) {
+      errors.push({
+        type: 'required',
+        label: this.projectTarget == "employer"
+          ? "Saisissez  l'adresse de la mission"
+          : "Saisissez  l'adresse de départ vers le lieu de travail"
       })
     }
 

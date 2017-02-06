@@ -387,6 +387,7 @@
               [(address)]="offer.adresse"
               [inputLabel]="'Adresse de la mission'"
               [placeholder]="projectTarget == 'employer' ? 'Saisissez  l\'adresse de la mission' : 'Saisissez  l\'adresse de départ vers le lieu de travail'"
+              (validation)="onAddressValidation($event)"
             >
             </div>
           </div>

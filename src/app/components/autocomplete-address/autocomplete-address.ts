@@ -34,6 +34,9 @@ export class AutocompleteAddress {
   @Output()
   onChange = new EventEmitter<any>();
 
+  @Output()
+  validation = new EventEmitter<any>();
+
   autocomplete: any;
 
   addressOptions = {
@@ -73,7 +76,19 @@ export class AutocompleteAddress {
       google.maps.event.addListener(this.autocomplete, 'place_changed', () => {
 
         let place = this.autocomplete.getPlace();
-        AddressUtils.decorticateGeolocAddressObj(self.address, place);
+        let result: number = AddressUtils.decorticateGeolocAddressObj(self.address, place);
+        if (result == -1) {
+          // Incorrect val
+          jQuery('#autocompleteAddress').addClass('warning-empty');
+          self.validation.emit({
+            isValidAddress: false
+          });
+        } else {
+          jQuery('#autocompleteAddress').removeClass('warning-empty');
+          self.validation.emit({
+            isValidAddress: true
+          });
+        }
 
         // this.zone.run(() => {
           //

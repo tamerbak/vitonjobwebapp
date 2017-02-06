@@ -8,8 +8,12 @@ export class AddressUtils {
   constructor() {
   }
 
-  public static decorticateGeolocAddressObj(address: Address, geolocAddress): void {
+  public static decorticateGeolocAddressObj(address: Address, geolocAddress): number {
     let result = this.decorticateGeolocAddress(geolocAddress);
+
+    if (!result) {
+      return -1;
+    }
 
     address.id = 0;
     address.streetNumber = result.streetNumber;
@@ -19,12 +23,16 @@ export class AddressUtils {
     address.cp = result.zipCode;
     address.ville = result.city;
     address.pays = result.country;
+
+    return 0;
   }
 
   public static decorticateGeolocAddress(geolocAddress) {
     var adrObj = {name, streetNumber: '', street: '', zipCode: '', city: '', country: ''};
 
-
+    if (!geolocAddress.address_components) {
+      return;
+    }
     for (var i = 0; i < geolocAddress.address_components.length; i++) {
       if (geolocAddress.address_components[i].types[0] == "street_number") {
         adrObj.streetNumber = geolocAddress.address_components[i].long_name;
