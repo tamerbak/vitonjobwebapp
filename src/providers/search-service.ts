@@ -113,6 +113,23 @@ export class SearchService {
     });
   }
 
+  tagSearch(textQuery){
+    let bean =  {
+      sentence :textQuery
+    };
+
+    let payload = new CCallout(10051, [
+      new CCalloutArguments('Requete de recherche', bean)
+    ]);
+
+    return new Promise(resolve => {
+      this.httpRequest.sendCallOut(payload, this, false)
+          .subscribe(data => {
+            resolve(data);
+          });
+    });
+  }
+
   /**
    * @description Correct bias parameter of job probability
    * @param index search request identifier

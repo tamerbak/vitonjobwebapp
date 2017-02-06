@@ -14,6 +14,13 @@
   </button>
 </div>
 
+<div *ngIf="searchMethod == 'semantic' && projectTarget == 'jobyer'">
+  <label>
+    <input type="checkbox" name="isTagSearch" [(ngModel)]="isTagSearch">
+    Recherche approfondie
+  </label>
+</div>
+
 <div class="search-notification centred-l col-xs-6">
   <alert
     *ngFor="let alert of alerts"

@@ -36,6 +36,7 @@ export class SearchBar {
   alerts: Array<Object>;
 
   projectTarget: string;
+  isTagSearch: boolean = false;
 
   constructor(private searchService: SearchService, private sharedService: SharedService, private router: Router) {
 
@@ -91,17 +92,30 @@ export class SearchBar {
     }
 
     this.hideLoader = false;
-    this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((results: any) => {
-      this.hideLoader = true;
-      let data = (this.projectTarget == 'jobyer') ? results.offerEnterprise : results.offerJobyers;
-      this.sharedService.setLastIndexation({resultsIndex : results.indexation});
-      this.sharedService.setLastResult(data);
-      this.sharedService.setCurrentSearch(this.scQuery);
-      this.sharedService.setCurrentSearchCity(null);
-      this.router.navigate(['search/results', {
-        searchType:'semantic'
-      }]);
-    });
+    if(this.isTagSearch && this.projectTarget == 'jobyer'){
+      this.searchService.tagSearch(this.scQuery).then((results: any) => {
+        this.hideLoader = true;
+        this.sharedService.setLastIndexation({resultsIndex : results.indexation});
+        this.sharedService.setLastResult(results);
+        this.sharedService.setCurrentSearch(this.scQuery);
+        this.sharedService.setCurrentSearchCity(null);
+        this.router.navigate(['search/results', {
+          searchType:'semantic'
+        }]);
+      })
+    }else{
+      this.searchService.semanticSearch(this.scQuery, 0, this.projectTarget).then((results: any) => {
+        this.hideLoader = true;
+        let data = (this.projectTarget == 'jobyer') ? results.offerEnterprise : results.offerJobyers;
+        this.sharedService.setLastIndexation({resultsIndex : results.indexation});
+        this.sharedService.setLastResult(data);
+        this.sharedService.setCurrentSearch(this.scQuery);
+        this.sharedService.setCurrentSearchCity(null);
+        this.router.navigate(['search/results', {
+          searchType:'semantic'
+        }]);
+      });
+    }
   }
 
   doOffersByCitySearch() {
