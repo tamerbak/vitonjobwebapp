@@ -656,6 +656,8 @@ export class Profile{
       elements.push(this.id);
     });
 
+    
+
      if (!this.isEmployer && !this.isNewUser)
       this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
         data = data.data[0];
@@ -663,6 +665,8 @@ export class Profile{
           this.index = this.profileService.getCountryById(data.fk_user_pays, this.pays).indicatif_telephonique;
         }
         this.regionId = data.fk_user_identifiants_nationalite;
+        this.whoDeliverStay = data.instance_delivrance;
+        this.loadCurrentPerfecture();
 
         this.dateStay = data.date_de_delivrance;
         var dateStay = Utils.isEmpty(this.dateStay) ? "":moment(this.dateStay).format("DD/MM/YYYY");
@@ -893,11 +897,6 @@ export class Profile{
 
     }
 
-    this.profileService.getPrefecture(this.whoDeliverStay).then((data: any) => {
-      if (data && data.status == "success" && data.data && data.data.length != 0)
-        jQuery(".whoDeliver-select").select2('data', {id: data.data[0].id, nom: this.whoDeliverStay});
-    });
-
 
     if (!this.isEmployer && !this.isRecruiter) {
       this.selectedJobLevel = '1';
@@ -1006,6 +1005,15 @@ export class Profile{
       }
     }
   }
+
+  loadCurrentPerfecture(){
+    this.profileService.getPrefecture(this.whoDeliverStay).then((data: any) => {
+      if (data && data.status == "success" && data.data && data.data.length != 0){
+        jQuery(".whoDeliver-select").select2('data', {id: data.data[0].id, nom: this.whoDeliverStay});
+      }
+    });
+  }
+  
 
   deleteImage(index) {
     this.allImages.splice(index, 1);
