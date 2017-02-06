@@ -106,6 +106,13 @@ export class ModalNotificationContract{
     this.router.navigate(['login', {obj:'recruit'}]);
   }
 
+  gotoSignUp() {
+    jQuery('#modal-notification-contract').modal('hide');
+    this.router.navigate(['signup', {
+      obj: 'recruit'
+    }]);
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     this.initState({});
   }
