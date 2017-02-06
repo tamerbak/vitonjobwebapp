@@ -439,7 +439,7 @@ export class OffersService {
           // and save the data for later reference
           let adr = '';
           if(data && data.data && data.data.length>0)
-            adr = data.data[0].numero+" "+data.data[0].nom + " " + data.data[0].adresse_google_maps;
+            adr = data.data[0].nom + " " + data.data[0].adresse_google_maps;
           resolve(adr.trim());
         });
     });
