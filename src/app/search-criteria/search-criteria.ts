@@ -9,7 +9,7 @@ import {CommunesService} from "../../providers/communes.service";
 import {SearchService} from "../../providers/search-service";
 import {Utils} from "../utils/utils";
 
-declare let JQuery: any;
+declare let jQuery: any;
 declare let Messenger: any;
 
 @Component({
@@ -146,7 +146,7 @@ export class SearchCriteria {
   ngAfterViewInit() {
     //city select
     let $citySelect: any = jQuery('.city');
-
+    let self = this;
     $citySelect.select2({
       ajax: {
         url: Configs.sqlURL,
@@ -177,12 +177,11 @@ export class SearchCriteria {
     });
     $citySelect.on('change',
       (e) => {
-        this.city = e.added.nom;
+        self.city = e.added.nom;
       }
     );
 
     //sector and job select
-    let self = this;
     // Initialize constraint between sector and job
     let $sectorSelect: any = jQuery('.sector-select');
     let $jobSelect: any = jQuery('.job-select');
