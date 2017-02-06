@@ -24,9 +24,21 @@
                 </span>
               </div>
             </div>
-            <button type="button" class="btn btn-gray" data-dismiss="modal" (click)="cancelOperation()">{{params ? params.btnCancelTitle:'Annuler'}}</button>
-            <button class="{{params? params.btnClasses:''}}" [disabled]="processing" (click)="launchOperation()">
-              {{params ? params.btnTitle:''}}
+            <button
+              type="button"
+              class="btn btn-gray"
+              data-dismiss="modal"
+              (click)="cancelOperation()"
+            >
+              {{ params && params.btnCancelTitle ? params.btnCancelTitle : 'Annuler' }}
+            </button>
+            <button
+              type="button"
+              class="{{params && params.btnClasses ? params.btnClasses : '' }}"
+              [disabled]="processing"
+              (click)="launchOperation()"
+            >
+              {{params && params.btnTitle ? params.btnTitle : 'Accepter' }}
             </button>
           </div>
         </div>
