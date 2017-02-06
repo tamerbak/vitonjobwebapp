@@ -291,7 +291,7 @@ export class OfferEdit {
       let addr;
 
       if (this.projectTarget == 'employer') {
-        addr = this.currentUser.employer.entreprises[0].siegeAdress;
+        addr = this.currentUser.employer.entreprises[0].workAdress;
         this.offer.adresse.type = "adresse_de_travail";
       } else {
         addr = this.currentUser.jobyer.personnalAdress;
