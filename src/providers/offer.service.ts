@@ -220,19 +220,7 @@ export class OffersService {
           Object.keys(remoteOffer).forEach((key) => {
             offer[key] = remoteOffer[key];
           });
-
-          // Change slot format from Timestamp to Date
-          if (offer['calendarData'] && Utils.isEmpty(offer['calendarData']) === false) {
-            //order offer slots
-            offer['calendarData'].sort((a, b) => {
-              return a.date - b.date
-            });
-            for (let i = 0; i < offer['calendarData'].length; ++i) {
-              offer['calendarData'][i].date = new Date(offer['calendarData'][i].date);
-              offer['calendarData'][i].dateEnd = new Date(offer['calendarData'][i].dateEnd);
-            }
-          }
-
+          this.deserializeOffer(offer);
           resolve(data);
         });
     });
@@ -315,13 +303,7 @@ export class OffersService {
 
     delete offer['slots'];
 
-    // Change slot format from Date to Timestamp
-    if (offer['calendarData'] && Utils.isEmpty(offer['calendarData']) === false) {
-      for (let i = 0; i < offer['calendarData'].length; ++i) {
-        offer['calendarData'][i].date = new Date(offer['calendarData'][i].date).getTime();
-        offer['calendarData'][i].dateEnd = new Date(offer['calendarData'][i].dateEnd).getTime();
-      }
-    }
+    this.serializeOffer(offer);
 
     // TODO HACK force jobData type
     offer.jobData.class = 'com.vitonjob.callouts.offer.model.JobData';
@@ -348,6 +330,42 @@ export class OffersService {
           resolve(data);
         });
     });
+  }
+
+  /**
+   * Prepare offer to storage
+   * @param offer
+   * @returns {Offer}
+   */
+  public serializeOffer(offer: Offer): Offer {
+    // Change slot format from Date to Timestamp
+    if (offer['calendarData'] && Utils.isEmpty(offer['calendarData']) === false) {
+      for (let i = 0; i < offer['calendarData'].length; ++i) {
+        offer['calendarData'][i].date = new Date(offer['calendarData'][i].date).getTime();
+        offer['calendarData'][i].dateEnd = new Date(offer['calendarData'][i].dateEnd).getTime();
+      }
+    }
+    return offer;
+  }
+
+  /**
+   * Prepare offer to display
+   * @param offer
+   * @returns {Offer}
+   */
+  public deserializeOffer(offer: Offer): Offer {
+    // Change slot format from Timestamp to Date
+    if (offer['calendarData'] && Utils.isEmpty(offer['calendarData']) === false) {
+      //order offer slots
+      offer['calendarData'].sort((a, b) => {
+        return a.date - b.date
+      });
+      for (let i = 0; i < offer['calendarData'].length; ++i) {
+        offer['calendarData'][i].date = new Date(offer['calendarData'][i].date);
+        offer['calendarData'][i].dateEnd = new Date(offer['calendarData'][i].dateEnd);
+      }
+    }
+    return offer;
   }
 
   saveOfferAdress(offer, offerAddress, streetNumberOA, streetOA,

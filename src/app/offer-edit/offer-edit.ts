@@ -818,7 +818,7 @@ export class OfferEdit {
   }
 
   copyOffer() {
-    this.sharedService.setCurrentOffer(this.offer);
+    this.sharedService.setCurrentOffer(this.offersService.serializeOffer(this.offer));
     this.dataValidation = true;
     this.modalParams.type = "offer.copy";
     this.modalParams.message = "Voulez-vous ajouter une nouvelle offre à partir de celle-ci ?";
