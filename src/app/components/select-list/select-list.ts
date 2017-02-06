@@ -232,6 +232,7 @@ export class SelectList {
       },
       formatSelection: function (item) {
         self.selectedElem = item.id;
+        self.dinamycListIsLoading = false;
         return item.libelle;
       },
       dropdownCssClass: "bigdrop",
