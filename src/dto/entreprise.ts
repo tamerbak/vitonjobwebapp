@@ -1,5 +1,7 @@
 import {AbstractGCallout} from "./generium/abstract-gcallout";
 import {Address} from "./address";
+import {Offer} from "./offer";
+import {ConventionCollective} from "./convention-collective";
 
 export class Entreprise extends AbstractGCallout {
 
@@ -11,8 +13,8 @@ export class Entreprise extends AbstractGCallout {
   siegeAdress: Address;
   workAdress: Address;
   correspondanceAdress: Address;
-  conventionCollective: number;
-  // private List<OfferData> offers = new ArrayList<OfferData>();
+  conventionCollective: ConventionCollective;
+  offers: Offer[];
 
   constructor() {
     super('com.vitonjob.callouts.auth.model.Entreprise');
@@ -22,8 +24,13 @@ export class Entreprise extends AbstractGCallout {
     this.siret = "";
     this.naf = "";
     this.urssaf = "";
+
+    // Addresses
     this.siegeAdress = new Address();
     this.workAdress = new Address();
     this.correspondanceAdress = new Address();
+
+    this.conventionCollective = new ConventionCollective();
+    this.offers = [];
   }
 }

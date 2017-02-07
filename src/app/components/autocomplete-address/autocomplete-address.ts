@@ -8,6 +8,7 @@ import {AddressUtils} from "../../utils/addressUtils";
 import {MapsAPILoader} from "angular2-google-maps/core";
 import {Address} from "../../../dto/address";
 import {Utils} from "../../utils/utils";
+import {AddressService} from "../../../providers/address.service";
 
 declare let jQuery: any;
 declare let google: any;
@@ -45,7 +46,8 @@ export class AutocompleteAddress {
 
   offerAddress: string;
 
-  constructor(private mapsAPILoader: MapsAPILoader) {
+  constructor(private mapsAPILoader: MapsAPILoader,
+              private addressService: AddressService) {
   }
 
   ngOnInit(): void {
@@ -64,7 +66,7 @@ export class AutocompleteAddress {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['address'] && changes['address'].previousValue != changes['address'].currentValue) {
       if (Utils.isEmpty(changes['address'].currentValue) == false) {
-        this.offerAddress = this.constructAdress(changes['address'].currentValue);
+        this.offerAddress = this.addressService.constructAdress(changes['address'].currentValue);
       }
     }
   }
@@ -104,40 +106,5 @@ export class AutocompleteAddress {
     });
   }
 
-  constructAdress(address: Address) {
 
-    let adr = "";
-    if (address.name && address.name.length > 0) {
-      adr = adr + address.name + ", ";
-    }
-
-    if (address.streetNumber && address.streetNumber.length > 0) {
-      adr = adr + address.streetNumber + " ";
-    }
-
-    if (address.street && address.street.length > 0) {
-      adr = adr + address.street + ", ";
-    }
-
-    if (address.cp && address.cp.length > 0) {
-      adr = adr + address.cp + " ";
-    }
-
-    if (address.ville && address.ville.length > 0) {
-      adr = adr + address.ville + ", ";
-    }
-
-    if (address.pays && address.pays.length > 0) {
-      adr = adr + address.pays;
-    } else {
-      adr = adr + 'France';
-    }
-
-    console.log('Convert address from:');
-    console.log(address);
-    console.log('To:');
-    console.log(adr.trim());
-
-    return adr.trim();
-  }
 }
