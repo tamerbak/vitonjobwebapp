@@ -17,7 +17,7 @@ declare let google: any;
   selector: '[autocomplete-address]',
   template: require('./autocomplete-address.html'),
   directives: [ROUTER_DIRECTIVES],
-  providers: [],
+  providers: [AddressService],
   styles: [ require('./autocomplete-address.scss')]
 })
 

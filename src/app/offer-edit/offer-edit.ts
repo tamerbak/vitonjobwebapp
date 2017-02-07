@@ -29,6 +29,7 @@ import {Calendar} from "../components/calendar/calendar";
 import {EnvironmentService} from "../../providers/environment.service";
 import {Address} from "../../dto/address";
 import {AutocompleteAddress} from "../components/autocomplete-address/autocomplete-address";
+import {ProfileService} from "../../providers/profile.service";
 
 declare let Messenger, jQuery: any;
 declare let google: any;
@@ -62,7 +63,8 @@ declare let require;
     SmsService,
     AdvertService,
     MissionService,
-    EnvironmentService
+    EnvironmentService,
+    ProfileService
   ]
 })
 
