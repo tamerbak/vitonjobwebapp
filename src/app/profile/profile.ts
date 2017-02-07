@@ -656,7 +656,7 @@ export class Profile{
       elements.push(this.id);
     });
 
-    
+
 
      if (!this.isEmployer && !this.isNewUser)
       this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
@@ -676,7 +676,7 @@ export class Profile{
         }else{
           this.dateFromStay = data.debut_validite;
         }
-        
+
         var dateFromStay = Utils.isEmpty(this.dateFromStay) ? "":moment(this.dateFromStay).format("DD/MM/YYYY");
         jQuery('#' + elements[2]).datepicker('update',dateFromStay );
 
@@ -728,7 +728,7 @@ export class Profile{
         this.ape = this.currentUser.employer.entreprises[0].naf;
 
         this.conventionService.loadConventionData(this.currentUser.employer.id).then((data: any)=>{
-          if (data.length > 0) {
+          if (data.length > 0 && Number(data[0].duree_collective_travail_hebdo) > 0) {
             this.collective_heure_hebdo = Number(data[0].duree_collective_travail_hebdo);
           } else {
             this.collective_heure_hebdo = 35;
@@ -1013,7 +1013,7 @@ export class Profile{
       }
     });
   }
-  
+
 
   deleteImage(index) {
     this.allImages.splice(index, 1);
