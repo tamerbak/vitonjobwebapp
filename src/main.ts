@@ -77,6 +77,7 @@ import {ConfirmExitPage,CanAccessPage} from "./providers/routes.service";
 import {RouteObservable} from "./providers/observables.service";
 import {NotificationsService} from "./providers/notifications.service";
 import {HttpRequestHandler} from "./http/http-request-handler";
+import {LoaderService} from "./providers/loader.service";
 
 declare let process: any;
 
@@ -97,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function main(): void {
     CanAccessPage,
     NgControl,
     GOOGLE_MAPS_PROVIDERS,
+    LoaderService,
     provideLazyMapsAPILoaderConfig({
       libraries: ['places'],
       apiKey: Configs.googleMapApiKey

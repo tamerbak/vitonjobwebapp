@@ -10,6 +10,7 @@ import {RuntimeCompiler} from "@angular/compiler";
 import {SystemService} from "../../providers/system.service";
 
 import {Configs} from "../../configurations/configs";
+import {Loader} from "../loader/loader";
 
 declare let Raphael: any;
 declare let jQuery: any;
@@ -26,7 +27,7 @@ export const REDIRECTTO: string = "/home";
     id: 'app'
   },
   providers: [FORM_PROVIDERS, SystemService],
-  directives: [Sidebar, Navbar, AppSidebar, ROUTER_DIRECTIVES,ModalConfirm],
+  directives: [Sidebar, Navbar, AppSidebar, ROUTER_DIRECTIVES,ModalConfirm, Loader],
   template: require('./core.html')
 })
 export class Core {

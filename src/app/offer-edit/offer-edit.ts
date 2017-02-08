@@ -30,6 +30,8 @@ import {EnvironmentService} from "../../providers/environment.service";
 import {Address} from "../../dto/address";
 import {AutocompleteAddress} from "../components/autocomplete-address/autocomplete-address";
 import {ProfileService} from "../../providers/profile.service";
+import {Loader} from "../loader/loader";
+import {LoaderService} from "../../providers/loader.service";
 
 declare let Messenger, jQuery: any;
 declare let google: any;
@@ -51,7 +53,8 @@ declare let require;
     SelectLanguages,
     SelectList,
     Calendar,
-    AutocompleteAddress
+    AutocompleteAddress,
+    Loader
   ],
   providers: [
     OffersService,
@@ -165,7 +168,8 @@ export class OfferEdit {
               private candidatureService: CandidatureService,
               private smsService: SmsService,
               private environmentService:EnvironmentService,
-              private advertService: AdvertService) {
+              private advertService: AdvertService,
+              private loader: LoaderService) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['home']);
@@ -180,11 +184,15 @@ export class OfferEdit {
     });
 
     if (this.obj == "detail") {
+
+      this.loader.display();
+
       this.offer = this.sharedService.getCurrentOffer();
       this.offersService.getOfferById(this.offer.idOffer, this.projectTarget, this.offer).then(()=> {
         this.refreshParametrage = true;
         this.fullLoad = true;
         this.offer.adresse.type = "adresse_de_travail";
+        this.loader.hide();
       });
     } else {
       this.offer = new Offer();
