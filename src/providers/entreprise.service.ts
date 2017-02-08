@@ -40,19 +40,21 @@ export class EntrepriseService {
     return user.employer.entreprises;
   }
 
-  createEntreprise(accountId, employerId, companyname, ape, conventionId) {
+  createEntreprise(accountId, employerId, companyname, ape, conventionId, siret) {
     let sql = "insert into user_entreprise (" +
       "fk_user_account," +
       "fk_user_employeur," +
       "nom_ou_raison_sociale," +
       "ape_ou_naf," +
-      "fk_user_convention_collective" +
+      "fk_user_convention_collective," +
+      "siret" +
       ") VALUES (" +
       "'" + accountId + "'," +
       "'" + employerId + "'," +
       "'" + companyname + "'," +
       "'" + ape + "'," +
-      "" + conventionId + "" +
+      "" + conventionId + "," +
+      "'" + siret + "'" +
       ") returning pk_user_entreprise";
 
     return new Promise(resolve => {

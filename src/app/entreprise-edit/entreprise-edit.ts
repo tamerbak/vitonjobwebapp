@@ -140,7 +140,8 @@ export class EntrepriseEdit {
         this.currentUser.employer.id,
         this.entreprise.nom,
         this.entreprise.naf,
-        this.entreprise.conventionCollective.id
+        this.entreprise.conventionCollective.id,
+        this.entreprise.siret
       ).then((result: any) => {
         if(result.status == 'success') {
 
