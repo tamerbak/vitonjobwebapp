@@ -123,7 +123,9 @@ export class Navbar implements OnInit {
   }
 
   gotoProfile() {
-    this.router.navigate(['profile']);
+    if (this.sharedService.getCurrentUser().estEmployeur == false) {
+      this.router.navigate(['profile']);
+    }
   }
 
   toggleSidebar(state): void {
