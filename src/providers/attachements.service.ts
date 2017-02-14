@@ -63,7 +63,7 @@ export class AttachementsService {
     let sql = "update user_pieces_justificatives set dirty='Y' where " +
       "fk_user_account="+userId+" " +
       (entreprise ? "and fk_user_entreprise=" + entreprise.id + " " : "") +
-      "and nom_fichier='"+fileName+"' ; "; // remove previous version
+      "and nom_fichier='"+Utils.sqlfyText(fileName)+"' ; "; // remove previous version
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
       // then on the response it'll map the JSON data to a parsed JS object.
@@ -96,8 +96,8 @@ export class AttachementsService {
       (entreprise ? ",fk_user_entreprise" : "") +
       ") values (" +
       userId +
-      ",'" + fileName +
-      "','" + fileFolder +
+      ",'" + Utils.sqlfyText(fileName) +
+      "','" + Utils.sqlfyText(fileFolder) +
       "','" + this.sqlfyDate(d) +
       (entreprise ? "','" + entreprise.id : "") +
       "') returning pk_user_pieces_justificatives";
@@ -167,7 +167,7 @@ export class AttachementsService {
       "id_user," +
       "text_content" +
       ") values (" +
-      "'"+fileName+"'," +
+      "'"+Utils.sqlfyText(fileName)+"'," +
       "'"+Utils.sqlfyText(fileFolder)+"'," +
       "'jpg'," +
       "'"+today+"'," +
@@ -196,7 +196,7 @@ export class AttachementsService {
       "id_user," +
       "text_content" +
       ") values (" +
-      "'"+fileName+"'," +
+      "'"+Utils.sqlfyText(fileName)+"'," +
       "'"+Utils.sqlfyText(fileFolder)+"'," +
       "'jpg'," +
       "'"+today+"'," +
