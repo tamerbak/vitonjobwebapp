@@ -209,13 +209,14 @@ export class SelectList {
         data: function (term, page) {
 
           let sql = "SELECT " +
-            "pk_user_" + self.src +  " as id" +
-            ", libelle " +
+            "pk_user_" + self.src +  " AS id" +
+            ", REGEXP_REPLACE(libelle, E'[\\n\\r]+', ' ', 'g' ) AS libelle " +
             "FROM user_" + self.src +  " " +
             "WHERE " +
             "(lower_unaccent(libelle) like lower_unaccent('%" + term + "%') " +
             "OR lower_unaccent(libelle) % lower_unaccent('" + term + "'))" +
-            " AND dirty = 'N'"
+            " AND dirty = 'N' " +
+            "LIMIT 10"
           ;
           // TODO Retirer les éléments déjà selectionnés
           console.log('initializeDynamicSelect('+self.src+').data(+term+)');
