@@ -16,6 +16,42 @@ declare let google: any;
 declare let moment: any;
 declare let require;
 
+class CalendarEvent {
+  title: string;
+  start: number;
+  end: number;
+
+  // The displayed slot used the end date to finish the slot, so we need to add 24h to correct slot display
+  displayEnd: number;
+  allDay: boolean;
+  description: string;
+  backgroundColor: string;
+  textColor: string;
+  pause: boolean;
+
+  constructor() {
+
+    this.title = '';
+    this.start = 0;
+    this.end = 0;
+    this.displayEnd = 0;
+    this.allDay = false;
+    this.description = '';
+    this.backgroundColor = '';
+    this.textColor = '';
+    this.pause = false;
+  }
+
+  setStartHour(hour: number): void {
+    this.start = hour;
+  }
+
+  setEndHour(hour: number): void {
+    this.end = hour;
+    this.displayEnd = hour;
+  }
+}
+
 /**
  * Integration of fullCalendar JS
  *
@@ -615,51 +651,52 @@ export class Calendar {
 
       jQuery('#create-event-modal').modal('hide');
       return true;
-    }
+    } else {
 
-    if (this.checkHour(this.slots, this.slot) == false) {
+      if (this.checkHour(this.slots, this.slot) == false) {
+        end._d.setDate(end._d.getDate() + 1);
+        return;
+      }
+
       end._d.setDate(end._d.getDate() + 1);
-      return;
+
+      //render slot in the calendar
+      let title = (!this.slot.pause ? "Créneau de " : "Pause de ");
+      let evt = {
+        title: title + DateUtils.formatHours(hs) + ":" + DateUtils.formatHours(ms) + " à " + DateUtils.formatHours(he) + ":" + DateUtils.formatHours(me),
+        start: start + 0, // HACK : implicite cast to timestamp
+        end: end + 0,
+        displayEnd: end - 3600000,
+        //allDay is bugged, must be false
+        allDay: false,
+        //description: 'ici je peux mettre une description de l\'offre',
+        backgroundColor: '#64bd63',
+        textColor: '#fff',
+        pause: this.slot.pause
+      };
+
+      console.log(start + 0);
+      console.log(end + 0);
+      console.log(this.toDateString(evt.start));
+      console.log(this.toDateString(evt.end));
+      console.log(this.toHourString(evt.start));
+      console.log(this.toHourString(evt.end));
+
+      if (title) {
+        this.$calendar.fullCalendar('renderEvent',
+          evt,
+          true // make the event "stick"
+        );
+        this.addEvent(evt);
+
+        end._d.setDate(end._d.getDate() - 1);
+
+        this.addSlot('');
+      }
+      this.$calendar.fullCalendar('unselect');
+      jQuery('#create-event-modal').modal('hide');
+      this.resetSlotModal();
     }
-
-    end._d.setDate(end._d.getDate() + 1);
-
-    //render slot in the calendar
-    let title = (!this.slot.pause ? "Créneau de " : "Pause de ");
-    let evt = {
-      title: title + DateUtils.formatHours(hs) + ":" + DateUtils.formatHours(ms) + " à " + DateUtils.formatHours(he) + ":" + DateUtils.formatHours(me),
-      start: start + 0, // HACK : implicite cast to timestamp
-      end: end + 0,
-      displayEnd: end - 3600000,
-      //allDay is bugged, must be false
-      allDay: false,
-      //description: 'ici je peux mettre une description de l\'offre',
-      backgroundColor: '#64bd63',
-      textColor: '#fff',
-      pause: this.slot.pause
-    };
-
-    console.log(start + 0);
-    console.log(end + 0);
-    console.log(this.toDateString(evt.start));
-    console.log(this.toDateString(evt.end));
-    console.log(this.toHourString(evt.start));
-    console.log(this.toHourString(evt.end));
-
-    if (title) {
-      this.$calendar.fullCalendar('renderEvent',
-        evt,
-        true // make the event "stick"
-      );
-      this.addEvent(evt);
-
-      end._d.setDate(end._d.getDate() - 1);
-
-      this.addSlot('');
-    }
-    this.$calendar.fullCalendar('unselect');
-    jQuery('#create-event-modal').modal('hide');
-    this.resetSlotModal();
   }
 
   pushSlotInCalendar(slot) {
