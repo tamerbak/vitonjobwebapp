@@ -197,16 +197,7 @@ export class Calendar {
 
     // Searching event in the calendar events
     let ev = this.calendar.events.filter((e)=> {
-      if (self.obj != "detail") {
-        return (new Date(e.start._d).getTime() == new Date(event.start._d).getTime() && new Date(e.end._d).getTime() == new Date(event.end._d).getTime());
-      } else {
-        console.log('-');
-        console.log(e.start);
-        console.log(event.start._d.getTime());
-        console.log(e.end);
-        console.log(event.end._d.getTime());
         return (e.start == event.start._d.getTime() && e.end == event.end._d.getTime());
-      }
     });
 
     let index = this.calendar.events.indexOf(ev[0]);
@@ -216,11 +207,7 @@ export class Calendar {
 
       // Render the calendar with the event removed
       this.$calendar.fullCalendar('removeEvents', (e)=> {
-        if (self.obj != "detail") {
-          return new Date(e.start._d).getTime() == new Date(ev[0].start._d).getTime() && new Date(e.end._d).getTime() == new Date(ev[0].end._d).getTime();
-        } else {
-          return new Date(e.start._d).getTime() == ev[0].start && new Date(e.end._d).getTime() == ev[0].end;
-        }
+        return (e.start == event.start._d.getTime() && e.end == event.end._d.getTime());
       });
 
       // Remove slot from local
@@ -283,7 +270,7 @@ export class Calendar {
         endDate.setHours(+endHour.split(":")[0], +endHour.split(":")[1], 0, 0);
         displayEndDate.setHours(+endHour.split(":")[0], +endHour.split(":")[1], 0, 0);
 
-        let newCalendarEvt = new CalendarEvent(true);
+        let newCalendarEvt = new CalendarEvent();
         newCalendarEvt.title =
           (!isPause ? "Créneau de " : "Pause de ")
           + startHour + " à " + endHour
@@ -317,6 +304,13 @@ export class Calendar {
     return eventsConverted;
   }
 
+  /**
+   * Control a new slot with current slots
+   *
+   * @param slots
+   * @param slot
+   * @returns {boolean}
+   */
   checkHour(slots, slot) {
     this.alertsSlot = [];
 
@@ -351,7 +345,7 @@ export class Calendar {
 
       if (this.projectTarget == 'employer') {
         //total hours of one day should be lower than 10h
-        /*let isDailyDurationRespected = this.offersService.isDailySlotsDurationRespected(slots, slot);
+        let isDailyDurationRespected = this.offersService.isDailySlotsDurationRespected(slots, slot);
         if (!isDailyDurationRespected) {
           this.addAlert("danger", "Le total des heures de travail de chaque journée ne doit pas dépasser les 10 heures. Veuillez réduire la durée de ce créneau", "slot");
           return false;
@@ -360,7 +354,7 @@ export class Calendar {
         if (!this.offersService.isSlotRespectsBreaktime(slots, slot)) {
           this.addAlert("danger", "Veuillez mettre un délai de 11h entre deux créneaux situés sur deux jours calendaires différents.", "slot");
           return false;
-        }*/
+        }
       }
       for (let i = 0; i < slots.length; i++) {
         if ((slot.date >= slots[i].date && slot.dateEnd <= slots[i].dateEnd) || (slot.date >= slots[i].date && slot.date < slots[i].dateEnd) || (slot.dateEnd > slots[i].date && slot.dateEnd <= slots[i].dateEnd)) {
@@ -648,8 +642,8 @@ export class Calendar {
         + DateUtils.formatHours(hs) + ":" + DateUtils.formatHours(ms)
         + " à " + DateUtils.formatHours(he) + ":" + DateUtils.formatHours(me)
       ;
-      newCalendarEvt.setStartHour(start.getTime());
-      newCalendarEvt.setEndHour(end.getTime());
+      newCalendarEvt.setStartHour(new Date(start).getTime());
+      newCalendarEvt.setEndHour(new Date(end).getTime());
       newCalendarEvt.pause = this.slot.pause;
 
       newEvents.push(newCalendarEvt);
@@ -657,8 +651,8 @@ export class Calendar {
     }
 
     let failed = false;
-    for (let i = 0; i < newEvents.length; ++i) {
-      if (this.checkHour(this.slots, newEvents[i]) == false) {
+    for (let i = 0; i < newSlots.length; ++i) {
+      if (this.checkHour(this.slots, newSlots[i]) == false) {
         console.log('Slot NOK');
         this.addAlert("warning", " Certains créneaux que vous avez sélectionnés ne sont pas valides", "general");
         failed = true;
