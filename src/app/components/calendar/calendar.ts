@@ -53,8 +53,6 @@ class CalendarEvent {
 
   setEndHour(hour: number): void {
     this.end = hour + 3600000;
-
-
     this.displayEnd = hour;
   }
 }
@@ -156,7 +154,7 @@ export class Calendar {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['slots']) {
       if (this.calendar && this.calendar.events) {
-        this.calendar.events = this.convertDetailSlotsForCalendar(true);
+        this.calendar.events = this.convertDetailSlotsForCalendar();
         this.$calendar = jQuery('#calendar');
         this.$calendar.fullCalendar(this.calendar);
       }
@@ -236,8 +234,9 @@ export class Calendar {
    * Forge well formatted calendar slot and add it the the slots list
    *
    * @param ev
+   * @param newSlot
    */
-  addSlot(ev) {
+  addSlot(ev, newSlot) {
 
     if (this.slot.startHour == 0 || this.slot.endHour == 0) {
       return;
@@ -245,7 +244,7 @@ export class Calendar {
 
     if (this.obj != "detail" || ev != 'drop') {
 
-      let slotClone = this.offersService.cloneSlot(this.slot);
+      let slotClone = this.offersService.cloneSlot(newSlot);
       let slotToSave = this.offersService.convertSlotsForSaving([slotClone]);
 
       if (slotToSave[0]) {
@@ -268,7 +267,7 @@ export class Calendar {
     }
   }
 
-  convertDetailSlotsForCalendar(refreshDisplay: boolean) {
+  convertDetailSlotsForCalendar() {
     let events = [];
     if (this.slots) {
       for (let i = 0; i < this.slots.length; i++) {
@@ -279,25 +278,25 @@ export class Calendar {
         let startDate = new Date(this.slots[i].date);
         let endDate = new Date(this.slots[i].dateEnd);
         let displayEndDate = new Date(this.slots[i].dateEnd);
-        endDate.setDate(endDate.getDate() + 1);
 
-        let title = (isPause ? "Pause de " : "Créneau de ");
-        let slotTemp = {
-          id: this.slots[i].idCalendar,
-          title: title + startHour + " à " + endHour,
-          start: startDate.setHours(+startHour.split(":")[0], +startHour.split(":")[1], 0, 0),
-          end: endDate.setHours(+endHour.split(":")[0], +endHour.split(":")[1], 0, 0),
-          displayEnd: displayEndDate.setHours(+endHour.split(":")[0], +endHour.split(":")[1], 0, 0),
-          pause: isPause
-        };
+        startDate.setHours(+startHour.split(":")[0], +startHour.split(":")[1], 0, 0);
+        endDate.setHours(+endHour.split(":")[0], +endHour.split(":")[1], 0, 0);
+        displayEndDate.setHours(+endHour.split(":")[0], +endHour.split(":")[1], 0, 0);
 
-        if (refreshDisplay && title) {
-          this.$calendar.fullCalendar('renderEvent',
-            slotTemp,
-            true // make the event "stick"
-          );
-        }
-        events.push(slotTemp);
+        let newCalendarEvt = new CalendarEvent(true);
+        newCalendarEvt.title =
+          (!isPause ? "Créneau de " : "Pause de ")
+          + startHour + " à " + endHour
+        ;
+        newCalendarEvt.setStartHour(startDate.getTime());
+        newCalendarEvt.setEndHour(endDate.getTime());
+        newCalendarEvt.pause = isPause;
+
+        this.$calendar.fullCalendar('renderEvent',
+          newCalendarEvt,
+          true // make the event "stick"
+        );
+        events.push(newCalendarEvt);
       }
     }
     return events;
@@ -322,11 +321,11 @@ export class Calendar {
     this.alertsSlot = [];
 
     // Compute Minutes format start and end hour of the new slot
-    let startHourH = slot.startHour.getHours();
-    let startHourM = slot.startHour.getMinutes();
+    let startHourH = new Date(slot.startHour).getHours();
+    let startHourM = new Date(slot.startHour).getMinutes();
     let startHourTotMinutes = this.offersService.convertHoursToMinutes(startHourH + ':' + startHourM);
-    let endHourH = slot.endHour.getHours();
-    let endHourM = slot.endHour.getMinutes();
+    let endHourH = new Date(slot.endHour).getHours();
+    let endHourM = new Date(slot.endHour).getMinutes();
     let endHourTotMinutes = this.offersService.convertHoursToMinutes(endHourH + ':' + endHourM);
 
     // If end hour is 0:00, force 23:59 such as midnight minute
@@ -342,7 +341,7 @@ export class Calendar {
     }
 
     // Check that end hour is over than begin hour
-    if (slot.date.getTime() >= slot.dateEnd.getTime()) {
+    if (slot.date >= slot.dateEnd) {
       this.addAlert("danger", "L'heure de début doit être inférieure à l'heure de fin", "slot");
       return false;
     }
@@ -352,7 +351,7 @@ export class Calendar {
 
       if (this.projectTarget == 'employer') {
         //total hours of one day should be lower than 10h
-        let isDailyDurationRespected = this.offersService.isDailySlotsDurationRespected(slots, slot);
+        /*let isDailyDurationRespected = this.offersService.isDailySlotsDurationRespected(slots, slot);
         if (!isDailyDurationRespected) {
           this.addAlert("danger", "Le total des heures de travail de chaque journée ne doit pas dépasser les 10 heures. Veuillez réduire la durée de ce créneau", "slot");
           return false;
@@ -361,7 +360,7 @@ export class Calendar {
         if (!this.offersService.isSlotRespectsBreaktime(slots, slot)) {
           this.addAlert("danger", "Veuillez mettre un délai de 11h entre deux créneaux situés sur deux jours calendaires différents.", "slot");
           return false;
-        }
+        }*/
       }
       for (let i = 0; i < slots.length; i++) {
         if ((slot.date >= slots[i].date && slot.dateEnd <= slots[i].dateEnd) || (slot.date >= slots[i].date && slot.date < slots[i].dateEnd) || (slot.dateEnd > slots[i].date && slot.dateEnd <= slots[i].dateEnd)) {
@@ -576,6 +575,9 @@ export class Calendar {
 
   addSlotInCalendar(start, end, allDay): void {
 
+    let newEvents: CalendarEvent[] = [];
+    let newSlots = [];
+
     // Get hours from input when date come from calendar
     let hs = this.slot.startHour.getHours();
     let ms = this.slot.startHour.getMinutes();
@@ -608,107 +610,75 @@ export class Calendar {
       // Boucle de splittage slots with fix for special dates
       for (let n = 0; n < (nbDays > 1 ? nbDays : nbDays + 1); n++) {
 
-        let date_debut = new Date(this.startDate.getFullYear(),
-          this.startDate.getMonth(),
-          this.startDate.getDate() + n,
-          this.startDate.getHours(),
-          this.startDate.getMinutes()
-        );
+        // Compute day slot
+        let slotStart = new Date(start);
+        slotStart.setDate(slotStart.getDate() + n);
+        let slotEnd = new Date(start);
+        slotEnd.setDate(slotStart.getDate());
+        slotEnd.setHours(he);
+        slotEnd.setMinutes(me);
 
-        let date_arret = new Date(this.startDate.getFullYear(),
-          this.startDate.getMonth(),
-          this.startDate.getDate() + (nbDays > 1 ? n : n + 1),
-          this.endDate.getHours(),
-          this.endDate.getMinutes()
-        );
-
-        // Récupération du slot splitté
-        let splitted_slot = {from: date_debut.getTime(), to: date_arret.getTime()};
-
-        // Normalisation du slot généré par le split / day
-        let normalized_slot = {
-          date: date_debut,
-          dateEnd: date_arret,
-          startHour: date_debut,
-          endHour: date_arret,
+        newSlots.push({
+          date: slotStart,
+          dateEnd: slotEnd,
+          startHour: hs * 60 + ms,
+          endHour: he * 60 + me,
           pause: false,
           allDay: false
-        };
+        });
 
-        // + Vérification des slots
-        if (this.checkHour(this.slots, normalized_slot)) {
+        let newCalendarEvt = new CalendarEvent(true);
+        newCalendarEvt.title =
+          (!this.slot.pause ? "Créneau de " : "Pause de ")
+          + DateUtils.formatHours(hs) + ":" + DateUtils.formatHours(ms)
+          + " à " + DateUtils.formatHours(he) + ":" + DateUtils.formatHours(me)
+        ;
+        newCalendarEvt.setStartHour(slotStart.getTime());
+        newCalendarEvt.setEndHour(slotEnd.getTime());
+        newCalendarEvt.pause = this.slot.pause;
 
-          // Sauvegarde des slots splittés
-          this.slots.push({
-            date: date_debut,
-            dateEnd: date_arret,
-            startHour: hs * 60 + ms,
-            endHour: he * 60 + me,
-            pause: false,
-            allDay: false
-          });
-
-          // Actualisation du rendu graphique
-          this.pushSlotInCalendar(splitted_slot)
-        } else {
-          let infos = "";//"<br>" + "- Le "+splitted_slot.from.toLocaleDateString() + '.'; // Can't do multi alerts - fix
-          this.addAlert("warning", " Certains créneaux que vous avez sélectionnés ne sont pas valides" + infos, "general");
-        }
+        newEvents.push(newCalendarEvt);
       }
 
     } else {
 
-      if (this.checkHour(this.slots, this.slot) == false) {
-        end._d.setDate(end._d.getDate() + 1);
-        return;
-      }
-
-      //render slot in the calendar
-      let title = (!this.slot.pause ? "Créneau de " : "Pause de ");
-
       let newCalendarEvt = new CalendarEvent(true);
       newCalendarEvt.title =
-        title + DateUtils.formatHours(hs) + ":" + DateUtils.formatHours(ms)
+        (!this.slot.pause ? "Créneau de " : "Pause de ")
+        + DateUtils.formatHours(hs) + ":" + DateUtils.formatHours(ms)
         + " à " + DateUtils.formatHours(he) + ":" + DateUtils.formatHours(me)
       ;
-      newCalendarEvt.setStartHour(start + 0); // HACK : implicite cast to timestam;
-      newCalendarEvt.setEndHour(end + 0);
+      newCalendarEvt.setStartHour(start.getTime());
+      newCalendarEvt.setEndHour(end.getTime());
       newCalendarEvt.pause = this.slot.pause;
 
-      this.$calendar.fullCalendar('renderEvent',
-        newCalendarEvt,
-        true // make the event "stick"
-      );
-
-      this.addEvent(newCalendarEvt);
-      this.addSlot('');
-
+      newEvents.push(newCalendarEvt);
+      newSlots.push(this.slot);
     }
 
-    this.$calendar.fullCalendar('unselect');
-    jQuery('#create-event-modal').modal('hide');
-    this.resetSlotModal();
+    let failed = false;
+    for (let i = 0; i < newEvents.length; ++i) {
+      if (this.checkHour(this.slots, newEvents[i]) == false) {
+        console.log('Slot NOK');
+        this.addAlert("warning", " Certains créneaux que vous avez sélectionnés ne sont pas valides", "general");
+        failed = true;
+        break;
+      }
+    }
 
-  }
-
-  pushSlotInCalendar(slot) {
-
-    let newCalendarEvt = new CalendarEvent(true);
-    newCalendarEvt.title = "Créneau Périodique";
-    newCalendarEvt.setStartHour(slot.from); // HACK : implicite cast to timestam;
-    newCalendarEvt.setEndHour(slot.to);
-    newCalendarEvt.pause = this.slot.pause;
-
-    this.$calendar.fullCalendar('renderEvent',
-      newCalendarEvt,
-      true // make the event "stick"
-    );
-
-    this.addEvent(newCalendarEvt);
-    this.$calendar.fullCalendar('unselect');
-    this.resetSlotModal();
-
-    return true;
+    if (failed === false) {
+      for (let i = 0; i < newEvents.length; ++i) {
+        this.$calendar.fullCalendar('renderEvent',
+          newEvents[i],
+          true // make the event "stick"
+        );
+        this.addEvent(newEvents[i]);
+        this.addSlot('', newSlots[i]);
+      }
+      this.$calendar.fullCalendar('unselect');
+      jQuery('#create-event-modal').modal('hide');
+      this.resetSlotModal();
+    }
   }
 
   dragSlot(event, revertFunc) {
@@ -732,7 +702,7 @@ export class Calendar {
       } else {
         this.slots = [];
         this.slots = this.offersService.convertSlotsForSaving(this.slots);
-        this.addSlot("drop");
+        this.addSlot("drop", this.slot);
       }
     } else {
       this.resetSlotModal();
