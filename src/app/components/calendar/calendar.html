@@ -69,15 +69,6 @@
             <label class="col-md-5 col-xs-6 form-control-label">Heure de début</label>
             <label class="col-md-5 col-xs-6 form-control-label">Heure de fin</label>
           </div>
-          <div class="hidden-lg-up">
-            <alert *ngFor="let alert of alertsSlot; let i = index" [type]="alert.type + ' alert-sm'"
-                   dismissible="false">
-              <div [innerHTML]="alert.msg"></div>
-            </alert>
-            <alert *ngIf="triedValidate && slots.length == 0" [type]="'danger alert-sm'">
-              <div [innerHTML]="'* Veuillez renseigner au moins un créneau'"></div>
-            </alert>
-          </div>
 
           <div class="form-group row required">
             <div class="col-md-5 col-sm-3 col-xs-6 offer-hour-new">
@@ -111,8 +102,8 @@
                 readonly
               />
             </div>
-            <div class="row container boxes">
 
+            <div class="row container boxes">
               <div class="col-xs-12 col-sm-4 col-md-4" *ngIf="projectTarget != 'jobyer'">
                 <input
                   type="checkbox"
@@ -134,7 +125,6 @@
               >
                 <label for="box-1">Jour entier</label>
               </div>
-
               <div class="col-xs-12 col-sm-4 col-md-4" *ngIf="plageDate != 'single'">
                 <input
                   type="checkbox"
@@ -145,9 +135,20 @@
                 />
                 <label for="box-3"> Périodique</label>
               </div>
-
             </div>
+
           </div>
+
+          <div class="hidden-lg-up">
+            <alert *ngFor="let alert of alertsSlot; let i = index" [type]="alert.type + ' alert-sm'"
+                   dismissible="false">
+              <div [innerHTML]="alert.msg"></div>
+            </alert>
+            <alert *ngIf="triedValidate && slots.length == 0" [type]="'danger alert-sm'">
+              <div [innerHTML]="'* Veuillez renseigner au moins un créneau'"></div>
+            </alert>
+          </div>
+
         </div>
       </section>
 
