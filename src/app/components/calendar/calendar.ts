@@ -29,7 +29,7 @@ class CalendarEvent {
   textColor: string;
   pause: boolean;
 
-  constructor() {
+  constructor(isNew?: boolean) {
 
     this.title = '';
     this.start = 0;
@@ -40,6 +40,11 @@ class CalendarEvent {
     this.backgroundColor = '';
     this.textColor = '';
     this.pause = false;
+
+    if (isNew === true) {
+      this.backgroundColor = '#64bd63';
+      this.textColor = '#fff';
+    }
   }
 
   setStartHour(hour: number): void {
@@ -47,7 +52,9 @@ class CalendarEvent {
   }
 
   setEndHour(hour: number): void {
-    this.end = hour;
+    this.end = hour + 3600000;
+
+
     this.displayEnd = hour;
   }
 }
@@ -567,7 +574,7 @@ export class Calendar {
     };
   }
 
-  addSlotInCalendar(start, end, allDay) {
+  addSlotInCalendar(start, end, allDay): void {
 
     // Get hours from input when date come from calendar
     let hs = this.slot.startHour.getHours();
@@ -649,8 +656,6 @@ export class Calendar {
         }
       }
 
-      jQuery('#create-event-modal').modal('hide');
-      return true;
     } else {
 
       if (this.checkHour(this.slots, this.slot) == false) {
@@ -658,64 +663,48 @@ export class Calendar {
         return;
       }
 
-      end._d.setDate(end._d.getDate() + 1);
-
       //render slot in the calendar
       let title = (!this.slot.pause ? "Créneau de " : "Pause de ");
-      let evt = {
-        title: title + DateUtils.formatHours(hs) + ":" + DateUtils.formatHours(ms) + " à " + DateUtils.formatHours(he) + ":" + DateUtils.formatHours(me),
-        start: start + 0, // HACK : implicite cast to timestamp
-        end: end + 0,
-        displayEnd: end - 3600000,
-        //allDay is bugged, must be false
-        allDay: false,
-        //description: 'ici je peux mettre une description de l\'offre',
-        backgroundColor: '#64bd63',
-        textColor: '#fff',
-        pause: this.slot.pause
-      };
 
-      console.log(start + 0);
-      console.log(end + 0);
-      console.log(this.toDateString(evt.start));
-      console.log(this.toDateString(evt.end));
-      console.log(this.toHourString(evt.start));
-      console.log(this.toHourString(evt.end));
+      let newCalendarEvt = new CalendarEvent(true);
+      newCalendarEvt.title =
+        title + DateUtils.formatHours(hs) + ":" + DateUtils.formatHours(ms)
+        + " à " + DateUtils.formatHours(he) + ":" + DateUtils.formatHours(me)
+      ;
+      newCalendarEvt.setStartHour(start + 0); // HACK : implicite cast to timestam;
+      newCalendarEvt.setEndHour(end + 0);
+      newCalendarEvt.pause = this.slot.pause;
 
-      if (title) {
-        this.$calendar.fullCalendar('renderEvent',
-          evt,
-          true // make the event "stick"
-        );
-        this.addEvent(evt);
+      this.$calendar.fullCalendar('renderEvent',
+        newCalendarEvt,
+        true // make the event "stick"
+      );
 
-        end._d.setDate(end._d.getDate() - 1);
+      this.addEvent(newCalendarEvt);
+      this.addSlot('');
 
-        this.addSlot('');
-      }
-      this.$calendar.fullCalendar('unselect');
-      jQuery('#create-event-modal').modal('hide');
-      this.resetSlotModal();
     }
+
+    this.$calendar.fullCalendar('unselect');
+    jQuery('#create-event-modal').modal('hide');
+    this.resetSlotModal();
+
   }
 
   pushSlotInCalendar(slot) {
 
-    let evt = {
-      title: "Créneau Périodique",
-      start: slot.from,
-      end: slot.to,
-      allDay: false,
-      // description: 'ici je peux mettre une description de l\'offre',
-      backgroundColor: '#64bd63',
-      textColor: '#fff'
-    };
+    let newCalendarEvt = new CalendarEvent(true);
+    newCalendarEvt.title = "Créneau Périodique";
+    newCalendarEvt.setStartHour(slot.from); // HACK : implicite cast to timestam;
+    newCalendarEvt.setEndHour(slot.to);
+    newCalendarEvt.pause = this.slot.pause;
 
     this.$calendar.fullCalendar('renderEvent',
-      evt, true // make the event "stick"
+      newCalendarEvt,
+      true // make the event "stick"
     );
 
-    this.addEvent(evt);
+    this.addEvent(newCalendarEvt);
     this.$calendar.fullCalendar('unselect');
     this.resetSlotModal();
 
