@@ -159,6 +159,11 @@ export class Calendar {
       if (self.obj != "detail") {
         return (new Date(e.start._d).getTime() == new Date(event.start._d).getTime() && new Date(e.end._d).getTime() == new Date(event.end._d).getTime());
       } else {
+        console.log('-');
+        console.log(e.start);
+        console.log(event.start._d.getTime());
+        console.log(e.end);
+        console.log(event.end._d.getTime());
         return (e.start == event.start._d.getTime() && e.end == event.end._d.getTime());
       }
     });
@@ -230,6 +235,8 @@ export class Calendar {
         let endHour = this.toHourString(this.slots[i].endHour);
         let startDate = new Date(this.slots[i].date);
         let endDate = new Date(this.slots[i].dateEnd);
+        let displayEndDate = new Date(this.slots[i].dateEnd);
+        endDate.setDate(endDate.getDate() + 1);
 
         let title = (isPause ? "Pause de " : "Créneau de ");
         let slotTemp = {
@@ -237,6 +244,7 @@ export class Calendar {
           title: title + startHour + " à " + endHour,
           start: startDate.setHours(+startHour.split(":")[0], +startHour.split(":")[1], 0, 0),
           end: endDate.setHours(+endHour.split(":")[0], +endHour.split(":")[1], 0, 0),
+          displayEnd: displayEndDate.setHours(+endHour.split(":")[0], +endHour.split(":")[1], 0, 0),
           pause: isPause
         };
 
@@ -572,7 +580,7 @@ export class Calendar {
         );
 
         // Récupération du slot splitté
-        let splitted_slot = {from: date_debut, to: date_arret};
+        let splitted_slot = {from: date_debut.getTime(), to: date_arret.getTime()};
 
         // Normalisation du slot généré par le split / day
         let normalized_slot = {
@@ -614,12 +622,15 @@ export class Calendar {
       return;
     }
 
+    end._d.setDate(end._d.getDate() + 1);
+
     //render slot in the calendar
     let title = (!this.slot.pause ? "Créneau de " : "Pause de ");
     let evt = {
       title: title + DateUtils.formatHours(hs) + ":" + DateUtils.formatHours(ms) + " à " + DateUtils.formatHours(he) + ":" + DateUtils.formatHours(me),
       start: start + 0, // HACK : implicite cast to timestamp
       end: end + 0,
+      displayEnd: end - 3600000,
       //allDay is bugged, must be false
       allDay: false,
       //description: 'ici je peux mettre une description de l\'offre',
@@ -627,12 +638,23 @@ export class Calendar {
       textColor: '#fff',
       pause: this.slot.pause
     };
+
+    console.log(start + 0);
+    console.log(end + 0);
+    console.log(this.toDateString(evt.start));
+    console.log(this.toDateString(evt.end));
+    console.log(this.toHourString(evt.start));
+    console.log(this.toHourString(evt.end));
+
     if (title) {
       this.$calendar.fullCalendar('renderEvent',
         evt,
         true // make the event "stick"
       );
       this.addEvent(evt);
+
+      end._d.setDate(end._d.getDate() - 1);
+
       this.addSlot('');
     }
     this.$calendar.fullCalendar('unselect');

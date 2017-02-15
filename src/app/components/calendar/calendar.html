@@ -38,6 +38,8 @@
           {{getHourFromDate(event.start)}}</p>
         <p><i class="fa fa-calendar text-muted fs-sm"></i> &nbsp; Au: {{ toDateString(event.end)}} à
           {{getHourFromDate(event.end)}}</p>
+        <p><i class="fa fa-calendar text-muted fs-sm"></i> &nbsp; Au: {{ toDateString(event.displayEnd)}} à
+          {{getHourFromDate(event.displayEnd)}} (fixed)</p>
       </div>
       <div class="modal-footer no-border">
         <button type="button" class="btn btn-default" (click)="closeDetailsModal()">Annuler</button>
