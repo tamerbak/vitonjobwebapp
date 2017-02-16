@@ -96,7 +96,7 @@
                       <span class="asterisk">*</span>
                     </label>
                     <div class="col-md-7 col-xs-12">
-                      <select placeholder="Convention collective" data-style="btn-secondary" class="nationalitySelectPicker form-control" id="convention-select" [(ngModel)]="conventionId" name="convention_slct" style="height: 35px;">
+                      <select placeholder="choisissez une convention" data-style="btn-secondary" class="nationalitySelectPicker form-control" id="convention-select" [(ngModel)]="conventionId" name="convention_slct" style="height: 35px;">
                         <option *ngFor="let c of conventions" value="{{c.id}}">{{c.code}} - {{c.libelle}}
                         </option>
                       </select>
