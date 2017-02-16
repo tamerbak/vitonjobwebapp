@@ -127,7 +127,7 @@
         <!-- Taux horaire -->
         <div class="form-group row required">
           <label class="col-xs-12 form-control-label">
-            Taux horaire brut en €
+            {{projectTarget == 'employer' ? "Taux horaire brut en € ":"Taux horaire souhaité (brut en €) " }}
           </label>
           <div class="col-xs-6">
             <input
