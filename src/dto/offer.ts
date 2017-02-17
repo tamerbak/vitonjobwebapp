@@ -6,6 +6,7 @@ import {Address} from "./address";
 
 export class Offer extends AbstractGCallout {
   'class': string;
+  idParentOffer: number;
   idOffer: number;
   title: string;
 
@@ -35,6 +36,7 @@ export class Offer extends AbstractGCallout {
   constructor() {
     super('com.vitonjob.callouts.offer.model.OfferData');
 
+    this.idParentOffer = 0;
     this.idOffer = 0;
     this.jobData = new Job();
     this.parametrageConvention = 0;
