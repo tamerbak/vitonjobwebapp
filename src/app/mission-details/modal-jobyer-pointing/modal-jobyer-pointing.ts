@@ -28,7 +28,10 @@ export class ModalJobyerPointing{
   @Input()
   missionPauses;
 
+  @Input() refreshMissionData: Function;
+
   indexArray = [];
+  indexDateArray = [];
 
 
   alerts: Array<Object>;
@@ -64,7 +67,7 @@ export class ModalJobyerPointing{
     }
   }
 
-  watchInput(i, j, isStartMission, isStartPause) {
+  watchInput0(i, j, isStartMission, isStartPause) {
     
     var indexObj = {missionHourIndex: i, pauseIndex: j, isStartMission: isStartMission, isStartPause: isStartPause};
     console.log(indexObj);
@@ -84,50 +87,128 @@ export class ModalJobyerPointing{
     }
   }
 
-  modifyPointingHour() {
+  watchInput(isDate,i, j, isStartMission, isStartPause) {
+
+    var indexObj = {isDate:isDate,missionIndex: i, pauseIndex: j, isStartMission: isStartMission, isStartPause: isStartPause};
+    console.log(indexObj);
+    if (this.indexArray.length == 0) {
+      this.indexArray.push(indexObj);
+      return;
+    }
+    let isFound = false;
     for (let k = 0; k < this.indexArray.length; k++) {
-      let i = this.indexArray[k].missionHourIndex;
+      let indexObjTemp = this.indexArray[k];
+      if (indexObjTemp.isDate == indexObj.isDate && indexObjTemp.missionIndex == indexObj.missionIndex && indexObjTemp.pauseIndex == indexObj.pauseIndex && indexObjTemp.isStartMission == indexObj.isStartMission && indexObjTemp.isStartPause == indexObj.isStartPause) {
+        isFound = true;
+      }
+    }
+    if (!isFound) {
+      this.indexArray.push(indexObj);
+    }
+  }
+
+  modifyPointing(){
+    for (let k = 0; k < this.indexArray.length; k++) {
+      let isDate = this.indexArray[k].isDate;
+      let i = this.indexArray[k].missionIndex;
       let j = this.indexArray[k].pauseIndex;
       let isStartMission = this.indexArray[k].isStartMission;
       let isStartPause = this.indexArray[k].isStartPause;
 
+      let isPause = false;
+      let isStart = false;
+
       let h: number;
       let m: number;
       let id;
-      if (isStartPause) {
-        //this.missionPauses[i][j].pause_debut_new = this.missionPauses[i][j].pause_debut_temp;
-        h = +this.missionPauses[i][j].pause_debut_pointe.split(':')[0] * 60;
-        m = +this.missionPauses[i][j].pause_debut_pointe.split(':')[1];
-        id = this.missionPauses[i][j].id;
-      } else {
-        if (j >= 0) {
-          //this.missionPauses[i][j].pause_fin_new = this.missionPauses[i][j].pause_fin_temp;
-          h = +this.missionPauses[i][j].pause_fin_pointe.split(':')[0] * 60;
-          m = +this.missionPauses[i][j].pause_fin_pointe.split(':')[1];
-          id = this.missionPauses[i][j].id;
-        }
-      }
-      if (isStartMission) {
-        //this.missionHours[i].heure_debut_new = this.missionHours[i].heure_debut_temp;
-        h = +this.missionHours[i].heure_debut_pointe.split(':')[0] * 60;
-        m = +this.missionHours[i].heure_debut_pointe.split(':')[1];
-        id = this.missionHours[i].id;
-      } else {
-        if (!j && j != 0) {
-          //this.missionHours[i].heure_fin_new = this.missionHours[i].heure_fin_temp;
-          h = +this.missionHours[i].heure_fin_pointe.split(':')[0] * 60;
-          m = +this.missionHours[i].heure_fin_pointe.split(':')[1];
-          id = this.missionHours[i].id;
-        }
-      }
-      let newHour = h + m;
+      let date;
 
-      let day = {id:id,pointe:newHour}
-      console.log(day);
-      this.missionService.savePointing(day, isStartMission, isStartPause).then((data: any) => {
-        jQuery('#modal-jobyer-pointing').modal('hide');
-        return;
-      });
+      
+
+
+      if(isDate){
+        if (isStartPause) {
+          isPause = true;
+          isStart = true;
+          date=this.missionPauses[i][j].date_pause_debut_pointe;
+          id = this.missionPauses[i][j].id;
+        } else {
+          if (j >= 0) {
+            isPause = true;
+            isStart = false;
+            date=this.missionPauses[i][j].date_pause_fin_pointe;
+            id = this.missionPauses[i][j].id;
+          }
+        }
+        if (isStartMission) {
+          isPause = false;
+          isStart = true;
+          
+          date=this.missionHours[i].date_debut_pointe;
+          id = this.missionHours[i].id;
+        } else {
+          if (!j && j != 0) {
+            isPause = false;
+            isStart = false;
+            date=this.missionHours[i].date_fin_pointe;
+            id = this.missionHours[i].id;
+          }
+        }
+
+        let day = {id:id,pointe:date}
+        console.log(day);
+        this.missionService.savePointingDate(day, isStart, isPause).then((data: any) => {
+          //jQuery('#modal-jobyer-pointing').modal('hide');
+          this.refreshMissionData();
+          return;
+        });
+      }
+      else
+      {
+        if (isStartPause) {
+          isPause = true;
+          isStart = true;
+          //this.missionPauses[i][j].pause_debut_new = this.missionPauses[i][j].pause_debut_temp;
+          h = +this.missionPauses[i][j].pause_debut_pointe.split(':')[0] * 60;
+          m = +this.missionPauses[i][j].pause_debut_pointe.split(':')[1];
+          id = this.missionPauses[i][j].id;
+        } else {
+          if (j >= 0) {
+            isPause = true;
+            isStart = false;
+            //this.missionPauses[i][j].pause_fin_new = this.missionPauses[i][j].pause_fin_temp;
+            h = +this.missionPauses[i][j].pause_fin_pointe.split(':')[0] * 60;
+            m = +this.missionPauses[i][j].pause_fin_pointe.split(':')[1];
+            id = this.missionPauses[i][j].id;
+          }
+        }
+        if (isStartMission) {
+          isPause = false;
+          isStart = true;
+          //this.missionHours[i].heure_debut_new = this.missionHours[i].heure_debut_temp;
+          h = +this.missionHours[i].heure_debut_pointe.split(':')[0] * 60;
+          m = +this.missionHours[i].heure_debut_pointe.split(':')[1];
+          id = this.missionHours[i].id;
+        } else {
+          if (!j && j != 0) {
+            isPause = false;
+            isStart = false;
+            //this.missionHours[i].heure_fin_new = this.missionHours[i].heure_fin_temp;
+            h = +this.missionHours[i].heure_fin_pointe.split(':')[0] * 60;
+            m = +this.missionHours[i].heure_fin_pointe.split(':')[1];
+            id = this.missionHours[i].id;
+          }
+        }
+        let newHour = h + m;
+
+        let day = {id:id,pointe:newHour}
+        console.log(day);
+        this.missionService.savePointing(day, isStart, isPause).then((data: any) => {
+          //jQuery('#modal-jobyer-pointing').modal('hide');
+          this.refreshMissionData();
+          return;
+        });
+      }
     }
     jQuery('#modal-jobyer-pointing').modal('hide');
   }
@@ -150,7 +231,7 @@ export class ModalJobyerPointing{
   }
 
   close(): void {
-    this.initHours();
+    this.refreshMissionData();
     jQuery('#modal-jobyer-pointing').modal('hide');
   }
 }

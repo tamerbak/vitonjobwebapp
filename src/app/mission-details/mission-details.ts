@@ -71,6 +71,7 @@ export class MissionDetails{
 
   modalParams: any = {type: '', message: ''};
   hasJobyerSigned: boolean;
+  public refreshMissionData: Function;
 
   constructor(private sharedService: SharedService,
               private missionService: MissionService,
@@ -160,6 +161,31 @@ export class MissionDetails{
           }
         });
     }
+  }
+
+  initMissionData(){
+      this.missionService.listMissionHours(this.contract, true, true).then(
+        (data: any) => {
+        if (data.data) {
+          console.log(data.data)
+          this.initialMissionHours = data.data;
+          //initiate pauses array
+          var array = this.missionService.constructMissionHoursArray(this.initialMissionHours);
+          console.log(array);
+          this.missionHours = array[0];
+          console.log("***1");
+          console.log(this.missionHours);
+          this.missionPauses = array[1];
+          console.log("***2");
+          console.log(this.missionPauses);
+          //prepare the mission pauses array to display
+          this.prepareMissionHoursArray()
+        }
+      });
+  }
+
+  ngOnInit(): void {
+    this.refreshMissionData = this.initMissionData.bind(this);
   }
 
   addPause(dayIndex) {

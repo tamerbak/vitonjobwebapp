@@ -83,7 +83,7 @@
                             <td class="text-align-right" width="100" [style.color]="!isEmpty(day.heure_debut_new) ? 'orange' : 'gray'">{{ day.heure_debut_temp }}
                             </td>
                             <td class="text-align-center" width="100">
-                <span class="label label-{{ (
+                <span *ngIf="contract.option_mission != '2.0'" class="label label-{{ (
                     upperCase(day.is_heure_debut_corrigee) == 'NON'
                       ? 'success'
                       : (upperCase(day.is_heure_debut_corrigee) == 'OUI'
@@ -93,6 +93,12 @@
                   }}"
                 >
                   {{ (day.heure_debut_pointe) ? day.heure_debut_pointe : '--:--' }}
+                </span>
+                <span *ngIf="contract.option_mission == '2.0'" class="label label-default">
+                  {{ !isEmpty(day.date_debut_pointe) ? day.date_debut_pointe : '--/--/----' }}
+                </span>
+                <span *ngIf="contract.option_mission == '2.0'" class="label label-default">
+                  {{ !isEmpty(day.heure_debut_pointe) ? day.heure_debut_pointe : '--:--' }}
                 </span>
                             </td>
                             <td class="text-align-center"
@@ -145,9 +151,16 @@
                                         </td>
                                         <td class="text-align-right" width="100">
                                             <input type="time" [(ngModel)]="pause.pause_debut_pointe"
-                                                   [hidden]="contract.option_mission == '1.0'|| isNewMission"
+                                                   *ngIf="contract.option_mission == '3.0' && !isNewMission"
                                                    [style.backgroundColor]="upperCase(pause.is_pause_debut_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_debut_corrigee) == 'NON' ? 'green' : '')"
                                                    disabled="true"/>
+                                            <span *ngIf="contract.option_mission == '2.0'" class="label label-default">
+                                            {{ !isEmpty(pause.date_pause_debut_pointe) ? pause.date_pause_debut_pointe : '--/--/----' }}
+                                            </span>
+                                            <span *ngIf="contract.option_mission == '2.0'" class="label label-default">
+                                            {{ !isEmpty(pause.pause_debut_pointe) ? pause.pause_debut_pointe : '--:--' }}
+                                            </span>
+                                                   
                                         </td>
                                         <td class="text-align-right" width="100">
                                             <div class="btn-group"
@@ -184,9 +197,15 @@
                                         </td>
                                         <td class="text-align-right" width="100">
                                             <input type="time" [(ngModel)]="pause.pause_fin_pointe"
-                                                   [hidden]="contract.option_mission == '1.0'|| isNewMission"
+                                                   *ngIf="contract.option_mission == '3.0' && !isNewMission"
                                                    [style.backgroundColor]="upperCase(pause.is_pause_fin_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_fin_corrigee) == 'NON' ? 'green' : '')"
                                                    disabled="true"/>
+                                            <span *ngIf="contract.option_mission == '2.0'" class="label label-default">
+                                            {{ !isEmpty(pause.date_pause_fin_pointe) ? pause.date_pause_fin_pointe : '--/--/----' }}
+                                            </span>
+                                            <span *ngIf="contract.option_mission == '2.0'" class="label label-default">
+                                            {{ !isEmpty(pause.pause_fin_pointe) ? pause.pause_fin_pointe : '--:--' }}
+                                            </span>
                                         </td>
                                         <td class="text-align-right" width="100">
                                             <div class="btn-group"
@@ -222,7 +241,7 @@
                             <td class="text-align-right" width="100">Fin</td>
                             <td class="text-align-right" width="100" [style.color]="!isEmpty(day.heure_fin_new) ? 'orange' : 'gray'">{{ day.heure_fin_temp }}</td>
                             <td class="text-align-center" width="100">
-                <span
+                <span *ngIf="contract.option_mission != '2.0'"
                         class="label label-{{ (
                     upperCase(day.is_heure_fin_corrigee) == 'NON'
                       ? 'success'
@@ -232,6 +251,12 @@
                     ))
                   }}">
                   {{ (day.heure_fin_pointe) ? day.heure_fin_pointe : '--:--' }}
+                </span>
+                <span *ngIf="contract.option_mission == '2.0'" class="label label-default">
+                  {{ !isEmpty(day.date_fin_pointe) ? day.date_fin_pointe : '--/--/----' }}
+                </span>
+                <span *ngIf="contract.option_mission == '2.0'" class="label label-default">
+                  {{ !isEmpty(day.heure_fin_pointe) ? day.heure_fin_pointe : '--:--' }}
                 </span>
                             </td>
                             <td
@@ -339,7 +364,7 @@
                         Réinitialiser
                     </button>-->
                  <button
-                                        type="button" class="btn btn-primary btn-sm" *ngIf="!isEmployer && contract.option_mission == '2.0'"
+                                        type="button" class="btn btn-primary btn-sm" *ngIf="!isEmployer && contract.option_mission == '2.0' && hasJobyerSigned && upperCase(contract.releve_employeur) == 'NON'"
                                         (click)="openJobyerPointingModal()">
                                     Pointer Manuellement
                   </button>
@@ -381,7 +406,7 @@
 <div modal-modify-schedule [missionHours] = "missionHours" [missionPauses] = "missionPauses"
      *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && upperCase(contract.vu) == 'OUI'"></div>
 
-<div modal-jobyer-pointing [missionHours] = "missionHours" [missionPauses] = "missionPauses" 
+<div modal-jobyer-pointing [missionHours] = "missionHours" [missionPauses] = "missionPauses" [refreshMissionData]="refreshMissionData"
      *ngIf="!isEmployer && contract.option_mission == '2.0'"></div>
 
 <div modal-info [msg] = "endMissionMsg" *ngIf="isEmployer && !isNewMission && upperCase(contract.approuve) == 'OUI' && !(upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '4.0')"></div>

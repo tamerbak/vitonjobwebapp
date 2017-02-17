@@ -36,7 +36,9 @@
                     <!--<input type="time" [(ngModel)]="day.heure_debut_temp" (change)="watchInput(i, j, true, false)" [style.backgroundColor]="!isEmpty(day.heure_debut_new) ? 'orange' : 'gray'" [disabled]="!isEmpty(day.heure_debut_pointe)"/>-->
                   </td>
                   <td class="text-align-right" width="100">
-                    <input type="time" [(ngModel)]="day.heure_debut_pointe" (change)="watchInput(i, j, true, false)" [style.backgroundColor]="!isEmpty(day.heure_debut_new) ? 'orange' : 'gray'"/>
+                    <input type="date" [(ngModel)]="day.date_debut_pointe" (change)="watchInput(true,i, j, true, false)" [style.backgroundColor]="!isEmpty(day.heure_debut_new) ? 'orange' : 'gray'"/>
+
+                    <input type="time" [(ngModel)]="day.heure_debut_pointe" (change)="watchInput(false,i, j, true, false)" [style.backgroundColor]="!isEmpty(day.heure_debut_new) ? 'orange' : 'gray'"/>
                   </td>
                   <!--<td class="text-align-center" width="100">
                 <span
@@ -66,7 +68,9 @@
                           {{pause.pause_debut_temp}}
                         </td>
                         <td class="text-align-right" width="100">
-                          <input type="time" [(ngModel)]="pause.pause_debut_pointe" [style.backgroundColor]="upperCase(pause.is_pause_debut_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_debut_corrigee) == 'NON' ? 'green' : '')" />
+                          <input type="date" [(ngModel)]="pause.date_pause_debut_pointe" (change)="watchInput(true,i, j, false, true)" [style.backgroundColor]="upperCase(pause.is_pause_debut_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_debut_corrigee) == 'NON' ? 'green' : '')" />
+
+                          <input type="time" [(ngModel)]="pause.pause_debut_pointe" (change)="watchInput(false,i, j, false, true)" [style.backgroundColor]="upperCase(pause.is_pause_debut_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_debut_corrigee) == 'NON' ? 'green' : '')" />
                         </td>
                       </tr>
                       <tr>
@@ -74,7 +78,9 @@
                         <td class="text-align-right" width="100">{{pause.pause_fin_temp}}
                         </td>
                         <td class="text-align-right" width="100">
-                          <input type="time" [(ngModel)]="pause.pause_fin_pointe"  [style.backgroundColor]="upperCase(pause.is_pause_fin_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_fin_corrigee) == 'NON' ? 'green' : '')" />
+                          <input type="date" [(ngModel)]="pause.date_pause_fin_pointe" (change)="watchInput(true,i, j, false, false)"  [style.backgroundColor]="upperCase(pause.is_pause_fin_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_fin_corrigee) == 'NON' ? 'green' : '')" />
+
+                          <input type="time" [(ngModel)]="pause.pause_fin_pointe" (change)="watchInput(false,i, j, false, false)" [style.backgroundColor]="upperCase(pause.is_pause_fin_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_fin_corrigee) == 'NON' ? 'green' : '')" />
                         </td>
                       </tr>
                       </tbody>
@@ -87,7 +93,10 @@
                   <td class="text-align-right" width="100">{{day.heure_fin_temp}}
                     </td>
                     <td class="text-align-right" width="100">
-                    <input type="time" [(ngModel)]="day.heure_fin_pointe" (change)="watchInput(i, j, false, false)" [style.backgroundColor]="!isEmpty(day.heure_fin_new) ? 'orange' : 'gray'" />
+
+                      <input type="date" [(ngModel)]="day.date_fin_pointe" (change)="watchInput(true,i, j, false, false)" [style.backgroundColor]="!isEmpty(day.heure_fin_new) ? 'orange' : 'gray'" />
+
+                      <input type="time" [(ngModel)]="day.heure_fin_pointe" (change)="watchInput(false,i, j, false, false)" [style.backgroundColor]="!isEmpty(day.heure_fin_new) ? 'orange' : 'gray'" />
                     </td>
                   <!--<td class="text-align-center" width="100">
 
@@ -112,7 +121,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" (click)="modifyPointingHour()">Valider</button>
+        <button type="button" class="btn btn-success" (click)="modifyPointing()">Valider</button>
         <button type="button" class="btn btn-gray" (click)="close()">Annuler</button>
       </div>
     </div>
