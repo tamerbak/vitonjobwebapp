@@ -8,6 +8,7 @@ import {Attachements} from "../attachements/attachements";
 import {PendingContracts} from "../pending-contracts/pending-contracts";
 import {OfferList} from "../offer-list/offer-list";
 import {OfferEdit} from "../offer-edit/offer-edit";
+import {OfferRecruit} from "../offer-recruit/offer-recruit";
 //import {OfferWizard} from "../offer-wizard/offer-wizard";
 import {SearchResults} from "../search-results/search-results";
 import {SearchDetails} from "../search-details/search-details";
@@ -66,6 +67,7 @@ export const CoreRoutes: RouterConfig = [
       // Offers management
       {path: 'offer/list', component: OfferList},
       {path: 'offer/edit', component: OfferEdit, canDeactivate: [ConfirmExitPage]},
+      {path: 'offer/recruit', component: OfferRecruit, canDeactivate: [ConfirmExitPage]},
       //{path: 'offer/wizard', component: OfferWizard},
       {path: 'offer/jobyer/list', component: AdvertJobyerList},
 

@@ -43,6 +43,25 @@ export class ProfileService{
     });
   }
 
+  loadProfilesPictures(accounts, tels?, role?) {
+
+    let sql;
+    if (!this.isEmpty(accounts)) {
+      sql = "select pk_user_account, encode(photo_de_profil::bytea, 'escape') from user_account where pk_user_account IN ('" + accounts.join("', '") + "');";
+    } else {
+      sql = "select telephone, encode(photo_de_profil::bytea, 'escape') from user_account where telephone IN ('" + tels.join("', '") + "') and role = '" + role + "';";
+    }
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
   uploadProfilePictureInServer(imgUri, accountId) {
     let sql = "update user_account set photo_de_profil ='" + imgUri + "' where pk_user_account = '" + accountId + "';";
     return new Promise(resolve => {
