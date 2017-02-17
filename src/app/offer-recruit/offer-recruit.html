@@ -70,8 +70,61 @@
         </span></h6>
       </header>
       <!--<div-->
-        <!--voj-calendar-dispatch-->
+      <!--voj-calendar-dispatch-->
       <!--&gt;</div>-->
+
+      <div class="table-responsive offer-recruit-slots-container">
+        <table class="table table-hover">
+          <thead>
+          <tr>
+            <th>#</th>
+            <!--<th>First Name</th>-->
+            <!--<th>Last Name</th>-->
+            <!--<th>Email</th>-->
+            <!--<th>Status</th>-->
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let slot of slotsPerDay; let d = index;">
+            <td>
+              Jour {{ d }} : {{ toDateString(slot.date) }}
+            </td>
+            <td *ngFor="let quartId of quartPerDay;" class="offer-recruit-slots-quart">
+              <div *ngIf="isQuart(slot, quartId)" class="offer-recruit-slots-quart-fill">|</div>
+            </td>
+          </tr>
+          <!--<tr>-->
+            <!--<td>1</td>-->
+            <!--<td>Mark</td>-->
+            <!--<td>Otto</td>-->
+            <!--<td><a href="#">ottoto@example.com</a></td>-->
+            <!--<td><span class="badge bg-gray-lighter text-gray">Pending</span></td>-->
+          <!--</tr>-->
+          <!--<tr>-->
+            <!--<td>2</td>-->
+            <!--<td>Jacob</td>-->
+            <!--<td>Thornton</td>-->
+            <!--<td><a href="#">fat.thor@example.com</a></td>-->
+            <!--<td><span class="badge bg-gray-lighter text-gray-light">Unconfirmed</span></td>-->
+          <!--</tr>-->
+          <!--<tr>-->
+            <!--<td>3</td>-->
+            <!--<td>Larry</td>-->
+            <!--<td>the Bird</td>-->
+            <!--<td><a href="#">larry@example.com</a></td>-->
+            <!--<td><span class="badge bg-gray-lighter text-gray">New</span></td>-->
+          <!--</tr>-->
+          <!--<tr>-->
+            <!--<td>4</td>-->
+            <!--<td>Peter</td>-->
+            <!--<td>Horadnia</td>-->
+            <!--<td><a href="#">peter@example.com</a></td>-->
+            <!--<td><span class="badge bg-gray-lighter text-gray-light">Active</span></td>-->
+          <!--</tr>-->
+          </tbody>
+        </table>
+      </div>
+
     </section>
 
   </div>

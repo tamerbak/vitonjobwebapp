@@ -10,7 +10,6 @@ import {OffersService} from "../../providers/offer.service";
 import {LoaderService} from "../../providers/loader.service";
 import {SearchService} from "../../providers/search-service";
 import {SharedService} from "../../providers/shared.service";
-import {Utils} from "../utils/utils";
 import {ProfileService} from "../../providers/profile.service";
 
 declare let Messenger, jQuery: any;
@@ -46,6 +45,15 @@ export class OfferRecruit {
   // Contains the list of available jobyers
   jobyers: any[] = [];
 
+  // Nb slot per day
+  // 4 quart per hour * 24
+  nbBlockPerDay = 4 * 24;
+  quartPerDay: any[] = [];
+
+  // Contains the list of slots
+  slots: any[] = [];
+  slotsPerDay: any[] = [];
+
   // Container the matrix of slots per jobyer
   slotsPerJobyer: {
     jobyer: any,
@@ -68,6 +76,9 @@ export class OfferRecruit {
     this.offersService.getOfferById(2162, 'employer', this.offer).then(()=> {
       this.loader.hide();
 
+      console.log('Chargement des slots');
+      this.loadSlots();
+      console.log('Recherche des jobyers');
       this.launchSearch();
 
     });
@@ -75,14 +86,70 @@ export class OfferRecruit {
   }
 
   ngOnInit(): void {
+    for (let i = 0; i < this.nbBlockPerDay; ++i) {
+      this.quartPerDay.push(i + 1);
+    }
+  }
+
+  ngAfterViewInit(): void {
 
   }
 
-  ngAfterViewInit() {
-
+  getDateKey(date: Date): string {
+    let stringDate: string = date.getFullYear()
+      + '-' + date.getMonth()
+      + '-' + date.getDay()
+    ;
+    return stringDate;
   }
 
-  launchSearch() {
+  pushQuart(slotsPerDay, newQuart: Date): void {
+    let dateKey: string = this.getDateKey(newQuart);
+
+    let slot;
+    let slots = slotsPerDay.filter((s) => {
+      return (s.date == dateKey);
+    });
+
+    if (slots.length > 0) {
+      slot = slots[0];
+      slot.quarts.push(newQuart);
+    } else {
+      slot = {
+        date: dateKey,
+        quarts: [newQuart]
+      };
+      slotsPerDay.push(slot);
+    }
+  }
+
+  loadSlots(): void {
+    this.slotsPerJobyer = [];
+    this.slots = this.offer.calendarData;
+
+    this.slotsPerDay = [];
+    for (let i: number = 0; i < this.slots.length; ++i) {
+
+      let quart = new Date(this.slots[i].date);
+      quart.setHours(this.slots[i].startHour / 60);
+      quart.setMinutes(this.slots[i].startHour % 60);
+
+      let quartEnd = new Date(this.slots[i].dateEnd);
+      quartEnd.setHours(this.slots[i].endHour / 60);
+      quartEnd.setMinutes(this.slots[i].endHour % 60);
+
+      do {
+        console.log(quart);
+        this.pushQuart(this.slotsPerDay, quart);
+        quart = new Date(quart.getTime() + 15 * 60 * 1000);
+      } while (quart <= quartEnd)
+      console.log('Slots per day');
+    }
+    console.log('Slots per day all');
+    console.log(this.slotsPerDay);
+  }
+
+  launchSearch(): void {
     var offer = this.offer;
 
     let searchQuery = {
@@ -111,7 +178,7 @@ export class OfferRecruit {
 
   }
 
-  loadResult() {
+  loadResult(): void {
 
     // this.selected = this.sharedService.getMapView() !== false;
     // if (this.selected) {
@@ -133,8 +200,6 @@ export class OfferRecruit {
         }
 
         r.avatar = '';
-
-        console.log(r);
 
         /*
         r.slots = [];
@@ -242,6 +307,13 @@ export class OfferRecruit {
     let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
     let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
     return hours + ":" + minutes;
+  }
+
+  isQuart(slot, quartId) {
+    let quart = slot.quarts.filter((q) => {
+      return (q.getHours() * 60 + q.getMinutes()) / 15 == quartId;
+    });
+    return quart.length > 0;
   }
 
 }
