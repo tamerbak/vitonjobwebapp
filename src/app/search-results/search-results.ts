@@ -304,7 +304,7 @@ export class SearchResults{
 
   doSemanticSearch() {
     if (Utils.isEmpty(this.currentQuery) || !this.currentQuery.match(/[a-z]/i)) {
-      this.addAlert("warning", "Veuillez saisir une requête avant de lancer la recherche");
+     // this.addAlert("warning", "Veuillez saisir une requête avant de lancer la recherche");
       return;
     }
 
@@ -324,7 +324,7 @@ export class SearchResults{
 
   doOffersByCitySearch() {
     if (Utils.isEmpty(this.currentQuery) || !this.currentQuery.match(/[a-z]/i)) {
-      this.addAlert("warning", "Veuillez saisir le nom d'une ville avant de lancer la recherche");
+    //  this.addAlert("warning", "Veuillez saisir le nom d'une ville avant de lancer la recherche");
       return;
     }
 
