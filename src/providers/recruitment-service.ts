@@ -13,7 +13,7 @@ export class RecruitmentService {
   constructor(public http: Http) {
   }
 
-    insertGroupedRecruitment(accountId, jobyerId, jobId, offerId){
+  insertGroupedRecruitment(accountId, jobyerId, jobId, offerId) {
     let sql = "insert into user_recrutement_groupe (created, fk_user_account, fk_user_jobyer, fk_user_job, fk_user_offre_entreprise, en_contrat) values (" +
       "'" + new Date().toISOString() + "', " +
       "" + accountId + ", " +
@@ -32,7 +32,7 @@ export class RecruitmentService {
     });
   }
 
-  getGroupedRecruitment(accountId, jobyerId, jobId, offerId){
+  getGroupedRecruitment(accountId, jobyerId, jobId, offerId) {
     let sql = "select * from user_recrutement_groupe where fk_user_account = " + accountId + " and " +
       " fk_user_jobyer = " + jobyerId + " and " +
       " fk_user_job = " + jobId + " and " +
@@ -49,7 +49,7 @@ export class RecruitmentService {
     });
   }
 
-  deleteGroupedRecruitment(accountId, jobyerId, jobId){
+  deleteGroupedRecruitment(accountId, jobyerId, jobId) {
     let sql = "delete from user_recrutement_groupe where fk_user_account = " + accountId + " and fk_user_jobyer = " + jobyerId + " and fk_user_job = " + jobId + " and upper(en_contrat) = 'NON'";
 
     return new Promise(resolve => {
@@ -62,7 +62,7 @@ export class RecruitmentService {
     });
   }
 
-  getNonSignedGroupedRecruitments(accountId){
+  getNonSignedGroupedRecruitments(accountId) {
     let sql = "select rg.pk_user_recrutement_groupe as \"rgId\", rg.created, j.pk_user_jobyer as id, j.nom, j.prenom, o.titre, o.pk_user_offre_entreprise as \"offerId\" from user_jobyer as j, user_recrutement_groupe as rg " +
       " LEFT JOIN user_offre_entreprise as o  ON " +
       " rg.fk_user_offre_entreprise = o.pk_user_offre_entreprise " +
@@ -81,7 +81,7 @@ export class RecruitmentService {
     });
   }
 
-  updateRecrutementGroupeState(rgId){
+  updateRecrutementGroupeState(rgId) {
     let sql = "update user_recrutement_groupe set en_contrat = 'Oui' where " +
       " pk_user_recrutement_groupe = " + rgId;
     return new Promise(resolve => {
@@ -95,7 +95,7 @@ export class RecruitmentService {
   }
 
   /**
-   * Translate slots into quarts
+   * Translate slots into quarters
    */
   loadSlots(slots: CalendarSlot[]): CalendarQuarterPerDay {
 
@@ -129,8 +129,61 @@ export class RecruitmentService {
     return slotsPerDay;
   }
 
-  assignAsMuchQuartAsPossibleToThisJobyer(quartPerDay: CalendarQuarterPerDay, jobyer: any): CalendarQuarterPerDay {
-    let jobyerCalendarQuarter = this.loadSlots(jobyer.disponibilites);
-    return jobyerCalendarQuarter;
+  isJobyerAvailable(date, availabilities, quarterId): boolean {
+    // Retrieve the day
+    let jobyersQuarters = availabilities.slotsPerDay.filter((d) => {
+      return d.date == date;
+    });
+    // If the jobye is available that day
+    if (jobyersQuarters.length > 0) {
+      // Check if the jobyer is available at the employer's requirements
+      if (jobyersQuarters[0].quarters[quarterId] !== null) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
+  }
+
+  isJobyerCanWorkThisQuarter(): boolean {
+    return true;
+  }
+
+  assignThisQuarterTo(day, date, quarterId, jobyerSelected): void {
+    // let day = quartPerDay.get(date);
+    let quarters = day.quarters;
+    let quarter = quarters[quarterId] = jobyerSelected;
+  }
+
+  assignAsMuchQuarterAsPossibleToThisJobyer(slotsPerDay: CalendarQuarterPerDay,
+                                          jobyersAvailabilities, jobyerSelected): void {
+
+    let availabilities = jobyersAvailabilities.get(jobyerSelected);
+
+    for (let i = 0; i < slotsPerDay.slotsPerDay.length; ++i) {
+      let day = slotsPerDay.slotsPerDay[i];
+      let date = day.date;
+
+      for (let quarterId = 0; quarterId < 24 * 4; ++quarterId) {
+        // Check that this quarter is required or is not assigned yet
+        if (day.quarters[quarterId] === null || day.quarters[quarterId] > 0) {
+          continue;
+        }
+
+        // If the quarter is not assigned, check if the jobyer is available
+        let jobyerAvailable = this.isJobyerAvailable(
+          date, availabilities, quarterId
+        );
+
+        // If the jobyer is available, check if the jobyer cans legally work
+        if (jobyerAvailable && this.isJobyerCanWorkThisQuarter() === true) {
+          this.assignThisQuarterTo(day, date, quarterId, jobyerSelected);
+        }
+      }
+    }
+
+    // let jobyerCalendarQuarter = this.loadSlots(jobyer.disponibilites);
+    // return jobyerCalendarQuarter;
   }
 }

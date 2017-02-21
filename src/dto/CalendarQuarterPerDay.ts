@@ -7,7 +7,7 @@ export class CalendarQuarterPerDay {
 
   public slotsPerDay : {
     date: string,
-    quarts: CalendarQuarter[]
+    quarters: number[]
   }[];
 
   constructor() {
@@ -43,20 +43,20 @@ export class CalendarQuarterPerDay {
 
     if (slots.length > 0) {
       slot = slots[0];
-      slot.quarts[index] = 0;
+      slot.quarters[index] = 0;
     } else {
 
       // Generate a full day of quarters
-      let quarts = [];
+      let quarters = [];
       for (let i = 0; i < 24 * 4; ++i) {
-        quarts.push(null);
+        quarters.push(null);
       }
       // Retrieve the quarter id of the new quarter
-      quarts[index] = 0;
+      quarters[index] = 0;
 
       slot = {
         date: dateKey,
-        quarts: quarts
+        quarters: quarters
       };
       this.slotsPerDay.push(slot);
     }

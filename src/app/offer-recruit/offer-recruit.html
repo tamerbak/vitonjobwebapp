@@ -38,6 +38,7 @@
             class="offer-recruit-jobyer-available"
             (mouseover)="previewJobyer(jobyer)"
             (mouseleave)="cancelPreviewJobyer()"
+            (click)="assignQuartersToSelectedJobyer()"
           >
             <span class="thumb-xs avatar pull-left mr-sm">
               <img class="img-circle" src="assets/images/avatar.png" alt="..." />
@@ -94,8 +95,8 @@
             <td class="offer-recruit-slots-day">
               {{ toDateString(day.date) }}
             </td>
-            <td *ngFor="let quartId of quartPerDay;" class="offer-recruit-slots-quart">
-              <div class="offer-recruit-slots-quart-fill {{ getQuartColor(day, quartId) }}">
+            <td *ngFor="let quarterId of quartPerDay;" class="offer-recruit-slots-quart">
+              <div class="offer-recruit-slots-quarter-fill {{ getQuarterColor(day, quarterId) }}">
                 &nbsp;
               </div>
             </td>
@@ -104,8 +105,8 @@
             <!--<td>-->
               <!--Jour {{ d }} : {{ toDateString(slot.date) }}-->
             <!--</td>-->
-            <!--<td *ngFor="let quartId of quartPerDay; let q = index;" class="offer-recruit-slots-quart">-->
-              <!--<div *ngIf="isQuart(slot, quartId)" class="offer-recruit-slots-quart-fill">|</div>-->
+            <!--<td *ngFor="let quarterId of quartPerDay; let q = index;" class="offer-recruit-slots-quart">-->
+              <!--<div *ngIf="isQuart(slot, quarterId)" class="offer-recruit-slots-quarter-fill">|</div>-->
             <!--</td>-->
           <!--</tr>-->
 

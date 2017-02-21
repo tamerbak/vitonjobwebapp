@@ -116,7 +116,7 @@ export class OfferRecruit {
 
 
   /**
-   * Translate slots into quarts
+   * Translate slots into quarters
    *
    loadSlots(): void {
     this.slotsPerJobyer = [];
@@ -230,7 +230,7 @@ export class OfferRecruit {
     return hours + ":" + minutes;
   }
 
-  getQuartColor(day, quartId): string {
+  getQuarterColor(day, quarterId): string {
     let date = day.date;
 
     // Retrieve if a selected jobyer is available
@@ -241,40 +241,33 @@ export class OfferRecruit {
     if (this.jobyerHover > 0) {
       // Get the jobyer availabilities
       let availabilities = this.jobyersAvailabilities.get(this.jobyerHover);
-      // Retrieve the day
-      jobyersQuarters = availabilities.slotsPerDay.filter((d) => {
-        return d.date == date;
-      });
-      // If the jobye is available that day
-      if (jobyersQuarters.length > 0) {
-        // Check if the jobyer is available at the employer's requirements
-        if (jobyersQuarters[0].quarts[quartId] !== null) {
-          jobyerAvailable = true;
-        } else {
-          jobyerAvailable = false;
-        }
-      }
+      jobyerAvailable = this.recruitmentService.isJobyerAvailable(
+        date, availabilities, quarterId
+      );
     }
 
     let quarterClass: string = '';
-    if (day.quarts[quartId] !== null) {
+    if (day.quarters[quarterId] > 0) {
+      quarterClass = 'offer-recruit-slots-quarter-assigned';
+    }
+    else if (day.quarters[quarterId] !== null) {
       if (jobyerAvailable === false) {
-        quarterClass = 'offer-recruit-slots-quart-required';
+        quarterClass = 'offer-recruit-slots-quarter-required';
       }
       else {
-        quarterClass = 'offer-recruit-slots-quart-match';
+        quarterClass = 'offer-recruit-slots-quarter-match';
       }
     }
     else {
       if (jobyerAvailable === true) {
-        quarterClass = 'offer-recruit-slots-quart-available';
+        quarterClass = 'offer-recruit-slots-quarter-available';
       }
     }
 
-    if (quartId == 0 || (day.quarts[quartId - 1] === null && (jobyersQuarters == null || jobyersQuarters.length == 0 || jobyersQuarters[0].quarts[quartId - 1] === null))) {
+    if (quarterId == 0 || (day.quarters[quarterId - 1] === null && (jobyersQuarters == null || jobyersQuarters.length == 0 || jobyersQuarters[0].quarters[quarterId - 1] === null))) {
       quarterClass += '-left';
     }
-    else if (quartId == (24 * 15 - 1) || (day.quarts[quartId + 1] === null && (jobyersQuarters == null || jobyersQuarters.length == 0 || jobyersQuarters[0].quarts[quartId + 1] === null))) {
+    else if (quarterId == (24 * 15 - 1) || (day.quarters[quarterId + 1] === null && (jobyersQuarters == null || jobyersQuarters.length == 0 || jobyersQuarters[0].quarters[quarterId + 1] === null))) {
       quarterClass += '-right';
     }
 
@@ -291,8 +284,8 @@ export class OfferRecruit {
     let availabilities = this.jobyersAvailabilities.get(this.jobyerHover);
     if (Utils.isEmpty(availabilities) == true) {
       console.log(jobyer);
-      availabilities = this.recruitmentService.assignAsMuchQuartAsPossibleToThisJobyer(
-        this.slotsPerDay, jobyer
+      availabilities = this.recruitmentService.loadSlots(
+        jobyer.disponibilites
       );
       this.jobyersAvailabilities.set(this.jobyerHover, availabilities);
     }
@@ -300,5 +293,13 @@ export class OfferRecruit {
 
   cancelPreviewJobyer() {
     this.jobyerHover = 0;
+  }
+
+  assignQuartersToSelectedJobyer(): void {
+    this.recruitmentService.assignAsMuchQuarterAsPossibleToThisJobyer(
+      this.slotsPerDay,
+      this.jobyersAvailabilities,
+      this.jobyerHover
+    );
   }
 }
