@@ -2,6 +2,9 @@ import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
 import {Configs} from "../configurations/configs";
 import {Utils} from "../app/utils/utils";
+import {CalendarQuarter} from "../dto/calendar-quarter";
+import {CalendarQuarterPerDay} from "../dto/CalendarQuarterPerDay";
+import {CalendarSlot} from "../dto/calendar-slot";
 
 @Injectable()
 export class RecruitmentService {
@@ -89,5 +92,42 @@ export class RecruitmentService {
           resolve(data);
         });
     });
+  }
+
+  /**
+   * Translate slots into quarts
+   */
+  loadSlots(slots: CalendarSlot[]): CalendarQuarterPerDay {
+    let slotsPerJobyer = [];
+    // slots = this.offer.calendarData;
+
+    let slotsPerDay = new CalendarQuarterPerDay();
+    for (let i: number = 0; i < slots.length; ++i) {
+
+      let quart: CalendarQuarter = new CalendarQuarter(slots[i].date);
+      quart.setHours(slots[i].startHour / 60);
+      quart.setMinutes(slots[i].startHour % 60);
+
+      let quartEnd = new Date(slots[i].dateEnd);
+      quartEnd.setHours(slots[i].endHour / 60);
+      quartEnd.setMinutes(slots[i].endHour % 60);
+
+      do {
+        // console.log(quart);
+
+        slotsPerDay.pushQuart(quart);
+        quart = new CalendarQuarter(quart.getTime() + 15 * 60 * 1000);
+      } while (quart.getTime() <= quartEnd.getTime());
+      console.log('Slots per day');
+    }
+    console.log('Slots per day all');
+    console.log(slotsPerDay);
+
+    return slotsPerDay;
+  }
+
+  assignAsMuchQuartAsPossibleToThisJobyer(quartPerDay: CalendarQuarterPerDay, jobyer: any): CalendarQuarterPerDay {
+    let jobyerCalendarQuarter = this.loadSlots(jobyer.disponibilites);
+    return jobyerCalendarQuarter;
   }
 }

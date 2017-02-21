@@ -33,7 +33,11 @@
         </ul>
         <ul class="post-comments mt mb-0">
 
-          <li *ngFor="let jobyer of jobyers">
+          <li
+            *ngFor="let jobyer of jobyers"
+            class="offer-recruit-jobyer-available"
+            (click)="assignToThisJobyer(jobyer)"
+          >
             <span class="thumb-xs avatar pull-left mr-sm">
               <img class="img-circle" src="assets/images/avatar.png" alt="..." />
             </span>
@@ -78,49 +82,32 @@
           <thead>
           <tr>
             <th>#</th>
-            <!--<th>First Name</th>-->
-            <!--<th>Last Name</th>-->
-            <!--<th>Email</th>-->
-            <!--<th>Status</th>-->
+            <th colspan="4"></th>
+            <th *ngFor="let h of displayedHour" colspan="8" class="offer-recruit-slots-headers">
+              {{ h }}:00
+            </th>
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let slot of slotsPerDay; let d = index;">
-            <td>
-              Jour {{ d }} : {{ toDateString(slot.date) }}
+          <tr *ngFor="let day of slotsPerDay.slotsPerDay; let d = index;">
+            <td class="offer-recruit-slots-day">
+              {{ toDateString(day.date) }}
             </td>
             <td *ngFor="let quartId of quartPerDay;" class="offer-recruit-slots-quart">
-              <div *ngIf="isQuart(slot, quartId)" class="offer-recruit-slots-quart-fill">|</div>
+              <div class="offer-recruit-slots-quart-fill {{ getQuartColor(day, quartId) }}">
+                &nbsp;
+              </div>
             </td>
           </tr>
-          <!--<tr>-->
-            <!--<td>1</td>-->
-            <!--<td>Mark</td>-->
-            <!--<td>Otto</td>-->
-            <!--<td><a href="#">ottoto@example.com</a></td>-->
-            <!--<td><span class="badge bg-gray-lighter text-gray">Pending</span></td>-->
+          <!--<tr *ngFor="let slot of slotsPerDay2.slotsPerDay; let d = index;">-->
+            <!--<td>-->
+              <!--Jour {{ d }} : {{ toDateString(slot.date) }}-->
+            <!--</td>-->
+            <!--<td *ngFor="let quartId of quartPerDay; let q = index;" class="offer-recruit-slots-quart">-->
+              <!--<div *ngIf="isQuart(slot, quartId)" class="offer-recruit-slots-quart-fill">|</div>-->
+            <!--</td>-->
           <!--</tr>-->
-          <!--<tr>-->
-            <!--<td>2</td>-->
-            <!--<td>Jacob</td>-->
-            <!--<td>Thornton</td>-->
-            <!--<td><a href="#">fat.thor@example.com</a></td>-->
-            <!--<td><span class="badge bg-gray-lighter text-gray-light">Unconfirmed</span></td>-->
-          <!--</tr>-->
-          <!--<tr>-->
-            <!--<td>3</td>-->
-            <!--<td>Larry</td>-->
-            <!--<td>the Bird</td>-->
-            <!--<td><a href="#">larry@example.com</a></td>-->
-            <!--<td><span class="badge bg-gray-lighter text-gray">New</span></td>-->
-          <!--</tr>-->
-          <!--<tr>-->
-            <!--<td>4</td>-->
-            <!--<td>Peter</td>-->
-            <!--<td>Horadnia</td>-->
-            <!--<td><a href="#">peter@example.com</a></td>-->
-            <!--<td><span class="badge bg-gray-lighter text-gray-light">Active</span></td>-->
-          <!--</tr>-->
+
           </tbody>
         </table>
       </div>
