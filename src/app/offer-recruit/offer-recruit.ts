@@ -235,13 +235,14 @@ export class OfferRecruit {
 
     // Retrieve if a selected jobyer is available
     let jobyerAvailable: boolean = false;
+    let jobyersQuarters = null;
 
     // If on jobyer is mouseover
     if (this.jobyerHover > 0) {
       // Get the jobyer availabilities
       let availabilities = this.jobyersAvailabilities.get(this.jobyerHover);
       // Retrieve the day
-      let jobyersQuarters = availabilities.slotsPerDay.filter((d) => {
+      jobyersQuarters = availabilities.slotsPerDay.filter((d) => {
         return d.date == date;
       });
       // If the jobye is available that day
@@ -263,17 +264,18 @@ export class OfferRecruit {
       else {
         quarterClass = 'offer-recruit-slots-quart-match';
       }
-      if (quartId == 0 || day.quarts[quartId - 1] === null) {
-        quarterClass += '-left';
-      }
-      if (quartId == (24 * 15 - 1) || day.quarts[quartId + 1] === null) {
-        quarterClass += '-right';
-      }
     }
     else {
-      if (null && jobyerAvailable === true) {
+      if (jobyerAvailable === true) {
         quarterClass = 'offer-recruit-slots-quart-available';
       }
+    }
+
+    if (quartId == 0 || (day.quarts[quartId - 1] === null && (jobyersQuarters == null || jobyersQuarters.length == 0 || jobyersQuarters[0].quarts[quartId - 1] === null))) {
+      quarterClass += '-left';
+    }
+    else if (quartId == (24 * 15 - 1) || (day.quarts[quartId + 1] === null && (jobyersQuarters == null || jobyersQuarters.length == 0 || jobyersQuarters[0].quarts[quartId + 1] === null))) {
+      quarterClass += '-right';
     }
 
     return quarterClass;
@@ -285,12 +287,10 @@ export class OfferRecruit {
    * @param jobyer
    */
   previewJobyer(jobyer: any): void {
-    console.log(jobyer);
-
     this.jobyerHover = jobyer.id;
-
     let availabilities = this.jobyersAvailabilities.get(this.jobyerHover);
     if (Utils.isEmpty(availabilities) == true) {
+      console.log(jobyer);
       availabilities = this.recruitmentService.assignAsMuchQuartAsPossibleToThisJobyer(
         this.slotsPerDay, jobyer
       );
