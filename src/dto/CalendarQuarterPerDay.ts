@@ -16,8 +16,8 @@ export class CalendarQuarterPerDay {
 
   getDateKey(date: CalendarQuarter): string {
     let stringDate: string = date.getFullYear()
-        + '-' + date.getMonth()
-        + '-' + date.getDay()
+        + '-' + (date.getMonth() + 1)
+        + '-' + date.getDate()
       ;
     return stringDate;
   }

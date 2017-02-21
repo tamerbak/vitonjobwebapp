@@ -36,7 +36,8 @@
           <li
             *ngFor="let jobyer of jobyers"
             class="offer-recruit-jobyer-available"
-            (click)="assignToThisJobyer(jobyer)"
+            (mouseover)="previewJobyer(jobyer)"
+            (mouseleave)="cancelPreviewJobyer()"
           >
             <span class="thumb-xs avatar pull-left mr-sm">
               <img class="img-circle" src="assets/images/avatar.png" alt="..." />

@@ -35,8 +35,8 @@ export class CalendarQuarter {
   getMonth(): number {
     return this.hour.getMonth();
   }
-  getDay(): number {
-    return this.hour.getDay();
+  getDate(): number {
+    return this.hour.getDate();
   }
 
   assignTo(jobyerId) {

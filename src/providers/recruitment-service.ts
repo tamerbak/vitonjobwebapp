@@ -98,6 +98,9 @@ export class RecruitmentService {
    * Translate slots into quarts
    */
   loadSlots(slots: CalendarSlot[]): CalendarQuarterPerDay {
+
+    console.log(slots);
+
     let slotsPerJobyer = [];
     // slots = this.offer.calendarData;
 
@@ -117,7 +120,7 @@ export class RecruitmentService {
 
         slotsPerDay.pushQuart(quart);
         quart = new CalendarQuarter(quart.getTime() + 15 * 60 * 1000);
-      } while (quart.getTime() <= quartEnd.getTime());
+      } while (quart.getTime() < quartEnd.getTime());
       console.log('Slots per day');
     }
     console.log('Slots per day all');
