@@ -470,14 +470,25 @@
   text-align: center;
 }
 
-$requiredBackground: #e74c3c;
-$requiredBorder: #c0392b;
+$requiredBackground: #95a5a6;
+$requiredBorder: #7f8c8d;
 $matchingBackground: #95a5a6;
 $matchingBorder: #7f8c8d;
 $availableBackground: #ecf0f1;
 $availableBorder: #bdc3c7;
 $assignedBackground: #2ecc71;
 $assignedBorder: #27ae60;
+
+$assigned1Background: #2ecc71;
+$assigned1Border: #27ae60;
+$assigned2Background: #3498db;
+$assigned2Border: #2980b9;
+$assigned3Background: #9b59b6;
+$assigned3Border: #8e44ad;
+$assigned4Background: #f1c40f;
+$assigned4Border: #f39c12;
+$assigned5Background: #e67e22;
+$assigned5Border: #d35400;
 
 .offer-recruit-slots-container {
   margin-top: 2em;
@@ -573,7 +584,7 @@ $assignedBorder: #27ae60;
       border-bottom: 1px $availableBorder solid;
     }
 
-    .offer-recruit-slots-quarter-assigned {
+    /*.offer-recruit-slots-quarter-assigned {
       background-color: $assignedBackground;
       color: $assignedBackground;
       border-top: 1px $assignedBorder solid;
@@ -585,7 +596,7 @@ $assignedBorder: #27ae60;
       color: $assignedBackground;
       border-left: 1px $assignedBorder solid;
       border-top: 1px $assignedBorder solid;
-      border-bottom: 1px $availableBorder solid;
+      border-bottom: 1px $assignedBorder solid;
     }
     .offer-recruit-slots-quarter-assigned-right {
       border-radius: 0 20% 20% 0;
@@ -594,7 +605,128 @@ $assignedBorder: #27ae60;
       border-right: 1px $assignedBorder solid;
       border-top: 1px $assignedBorder solid;
       border-bottom: 1px $assignedBorder solid;
+    }*/
+
+    /**
+     * ASSIGNED
+     */
+
+    .assigned-1 {
+      background-color: $assigned1Background;
+      color: $assigned1Background;
+      border-top: 1px $assigned1Border solid;
+      border-bottom: 1px $assigned1Border solid;
     }
+    .assigned-1-left {
+      border-radius: 20% 0 0 20%;
+      background-color: $assigned1Background;
+      color: $assigned1Background;
+      border-left: 1px $assigned1Border solid;
+      border-top: 1px $assigned1Border solid;
+      border-bottom: 1px $assigned1Border solid;
+    }
+    .assigned-1-right {
+      border-radius: 0 20% 20% 0;
+      background-color: $assigned1Background;
+      color: $assigned1Background;
+      border-right: 1px $assigned1Border solid;
+      border-top: 1px $assigned1Border solid;
+      border-bottom: 1px $assigned1Border solid;
+    }
+
+    .assigned-2 {
+      background-color: $assigned2Background;
+      color: $assigned2Background;
+      border-top: 1px $assigned2Border solid;
+      border-bottom: 1px $assigned2Border solid;
+    }
+    .assigned-2-left {
+      border-radius: 20% 0 0 20%;
+      background-color: $assigned2Background;
+      color: $assigned2Background;
+      border-left: 1px $assigned2Border solid;
+      border-top: 1px $assigned2Border solid;
+      border-bottom: 1px $assigned2Border solid;
+    }
+    .assigned-2-right {
+      border-radius: 0 20% 20% 0;
+      background-color: $assigned2Background;
+      color: $assigned2Background;
+      border-right: 1px $assigned2Border solid;
+      border-top: 1px $assigned2Border solid;
+      border-bottom: 1px $assigned2Border solid;
+    }
+
+    .assigned-3 {
+      background-color: $assigned3Background;
+      color: $assigned3Background;
+      border-top: 1px $assigned3Border solid;
+      border-bottom: 1px $assigned3Border solid;
+    }
+    .assigned-3-left {
+      border-radius: 20% 0 0 20%;
+      background-color: $assigned3Background;
+      color: $assigned3Background;
+      border-left: 1px $assigned3Border solid;
+      border-top: 1px $assigned3Border solid;
+      border-bottom: 1px $assigned3Border solid;
+    }
+    .assigned-3-right {
+      border-radius: 0 20% 20% 0;
+      background-color: $assigned3Background;
+      color: $assigned3Background;
+      border-right: 1px $assigned3Border solid;
+      border-top: 1px $assigned3Border solid;
+      border-bottom: 1px $assigned3Border solid;
+    }
+
+    .assigned-4 {
+      background-color: $assigned4Background;
+      color: $assigned4Background;
+      border-top: 1px $assigned4Border solid;
+      border-bottom: 1px $assigned4Border solid;
+    }
+    .assigned-4-left {
+      border-radius: 20% 0 0 20%;
+      background-color: $assigned4Background;
+      color: $assigned4Background;
+      border-left: 1px $assigned4Border solid;
+      border-top: 1px $assigned4Border solid;
+      border-bottom: 1px $assigned4Border solid;
+    }
+    .assigned-4-right {
+      border-radius: 0 20% 20% 0;
+      background-color: $assigned4Background;
+      color: $assigned4Background;
+      border-right: 1px $assigned4Border solid;
+      border-top: 1px $assigned4Border solid;
+      border-bottom: 1px $assigned4Border solid;
+    }
+
+    .assigned-5 {
+      background-color: $assigned5Background;
+      color: $assigned5Background;
+      border-top: 1px $assigned5Border solid;
+      border-bottom: 1px $assigned5Border solid;
+    }
+    .assigned-5-left {
+      border-radius: 20% 0 0 20%;
+      background-color: $assigned5Background;
+      color: $assigned5Background;
+      border-left: 1px $assigned5Border solid;
+      border-top: 1px $assigned5Border solid;
+      border-bottom: 1px $assigned5Border solid;
+    }
+    .assigned-5-right {
+      border-radius: 0 20% 20% 0;
+      background-color: $assigned5Background;
+      color: $assigned5Background;
+      border-right: 1px $assigned5Border solid;
+      border-top: 1px $assigned5Border solid;
+      border-bottom: 1px $assigned5Border solid;
+    }
+
+
   }
   .offer-recruit-slots-quart:nth-child(4n + 1) {
     border-right: 1px #e7e7e7 solid;

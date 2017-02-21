@@ -63,6 +63,9 @@ export class OfferRecruit {
   jobyersAvailabilities: Map<number, CalendarQuarterPerDay>;
   jobyerHover: number;
 
+  assignements: number[];
+  assignementNb: number = 1;
+
   // Container the matrix of slots per jobyer
   slotsPerJobyer: {
     jobyer: any,
@@ -230,6 +233,18 @@ export class OfferRecruit {
     return hours + ":" + minutes;
   }
 
+  getJobyerColor(jobyerId) {
+    let nbColors = 5;
+
+    if (Utils.isEmpty(this.assignements) === true) {
+      this.assignements = [];
+    }
+    if (Utils.isEmpty(this.assignements[jobyerId]) === true) {
+      this.assignements[jobyerId] = this.assignementNb++;
+    }
+    return this.assignements[jobyerId];
+  }
+
   getQuarterColor(day, quarterId): string {
     let date = day.date;
 
@@ -249,6 +264,7 @@ export class OfferRecruit {
     let quarterClass: string = '';
     if (day.quarters[quarterId] > 0) {
       quarterClass = 'offer-recruit-slots-quarter-assigned';
+      quarterClass += ' assigned-' + this.getJobyerColor(day.quarters[quarterId]);
     }
     else if (day.quarters[quarterId] !== null) {
       if (jobyerAvailable === false) {
