@@ -138,12 +138,12 @@ export class RecruitmentService {
     if (jobyersQuarters.length > 0) {
       // Check if the jobyer is available at the employer's requirements
       if (jobyersQuarters[0].quarters[quarterId] !== null) {
-        return true;
+        return jobyersQuarters[0].quarters;
       } else {
-        return false;
+        return null;
       }
     }
-    return false;
+    return null;
   }
 
   isJobyerCanWorkThisQuarter(): boolean {

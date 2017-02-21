@@ -249,15 +249,13 @@ export class OfferRecruit {
     let date = day.date;
 
     // Retrieve if a selected jobyer is available
-    let jobyerAvailable: boolean = false;
     let jobyersQuarters = null;
 
     // If on jobyer is mouseover
     if (this.jobyerHover > 0) {
       // Get the jobyer availabilities
-      let availabilities = this.jobyersAvailabilities.get(this.jobyerHover);
-      jobyerAvailable = this.recruitmentService.isJobyerAvailable(
-        date, availabilities, quarterId
+      jobyersQuarters = this.recruitmentService.isJobyerAvailable(
+        date, this.jobyersAvailabilities.get(this.jobyerHover), quarterId
       );
     }
 
@@ -267,7 +265,7 @@ export class OfferRecruit {
       quarterClass += ' assigned-' + this.getJobyerColor(day.quarters[quarterId]);
     }
     else if (day.quarters[quarterId] !== null) {
-      if (jobyerAvailable === false) {
+      if (Utils.isEmpty(jobyersQuarters) === true) {
         quarterClass = 'offer-recruit-slots-quarter-required';
       }
       else {
@@ -275,15 +273,15 @@ export class OfferRecruit {
       }
     }
     else {
-      if (jobyerAvailable === true) {
+      if (Utils.isEmpty(jobyersQuarters) === false) {
         quarterClass = 'offer-recruit-slots-quarter-available';
       }
     }
 
-    if (quarterId == 0 || (day.quarters[quarterId - 1] === null && (jobyersQuarters == null || jobyersQuarters.length == 0 || jobyersQuarters[0].quarters[quarterId - 1] === null))) {
+    if (quarterId == 0 || (day.quarters[quarterId - 1] === null && (jobyersQuarters == null || jobyersQuarters.length == 0 || jobyersQuarters[quarterId - 1] === null))) {
       quarterClass += '-left';
     }
-    else if (quarterId == (24 * 15 - 1) || (day.quarters[quarterId + 1] === null && (jobyersQuarters == null || jobyersQuarters.length == 0 || jobyersQuarters[0].quarters[quarterId + 1] === null))) {
+    else if (quarterId == (24 * 15 - 1) || (day.quarters[quarterId + 1] === null && (jobyersQuarters == null || jobyersQuarters.length == 0 || jobyersQuarters[quarterId + 1] === null))) {
       quarterClass += '-right';
     }
 
