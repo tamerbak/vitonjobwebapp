@@ -7,7 +7,7 @@ import {HomeService} from "../../providers/home.service";
 import {Configs} from "../../configurations/configs";
 import {ModalWelcome} from "../modal-welcome/modal-welcome";
 import {ModalProfile} from "../modal-profile/modal-profile";
-import {ModalUpdatePassword} from "../modal-update-password/modal-update-password";
+import {ModalPassword} from "../modal-password/modal-password";
 import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
 import {ModalGeneralCondition} from "../modal-general-condition/modal-general-condition";
 import {RecruitButton} from "../components/recruit-button/recruit-button";
@@ -26,7 +26,7 @@ declare let require: any;
     AlertComponent,
     ModalWelcome,
     ModalProfile,
-    ModalUpdatePassword,
+    ModalPassword,
     ModalNotificationContract,
     ModalGeneralCondition,
     RecruitButton,
@@ -106,11 +106,11 @@ export class Home{
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
       if (this.currentUser.mot_de_passe_reinitialise == "Oui") {
-        jQuery('#modal-update-password').modal({
+        jQuery('#modal-password').modal({
           keyboard: false,
           backdrop: 'static'
         });
-        jQuery('#modal-update-password').modal('show');
+        jQuery('#modal-password').modal('show');
       }
 
       if (this.isEmpty(this.currentUser.titre)) {

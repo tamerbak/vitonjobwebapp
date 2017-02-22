@@ -575,7 +575,7 @@ export class ModalProfile{
             if(this.currentUser.changePassword){
                 jQuery('#modal-profile').modal('hide');
                 jQuery('#modal-profile').one('hidden.bs.modal', function (e) {
-                  jQuery('#modal-update-password').modal('show');
+                  jQuery('#modal-password').modal('show');
                 })
             }
 
