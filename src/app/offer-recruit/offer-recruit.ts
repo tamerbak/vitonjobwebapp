@@ -14,6 +14,7 @@ import {ProfileService} from "../../providers/profile.service";
 import {CalendarQuarterPerDay} from "../../dto/CalendarQuarterPerDay";
 import {RecruitmentService} from "../../providers/recruitment-service";
 import {Utils} from "../utils/utils";
+import {ModalTeam} from "./modal-team/modal-team";
 
 declare let Messenger, jQuery: any;
 declare let google: any;
@@ -30,7 +31,8 @@ declare let require;
     AlertComponent,
     NKDatetime,
     Calendar,
-    Loader
+    Loader,
+    ModalTeam
   ],
   providers: [
     OffersService,
@@ -74,6 +76,10 @@ export class OfferRecruit {
 
   // Result of the research
   searchResults: any[];
+
+  // Modal interaction
+  modalDay: any;
+  modalQuarterId: number;
 
   constructor(private offersService: OffersService,
               private sharedService: SharedService,
@@ -295,25 +301,47 @@ export class OfferRecruit {
    */
   previewJobyer(jobyer: any): void {
     this.jobyerHover = jobyer.id;
-    let availabilities = this.jobyersAvailabilities.get(this.jobyerHover);
-    if (Utils.isEmpty(availabilities) == true) {
-      console.log(jobyer);
-      availabilities = this.recruitmentService.loadSlots(
-        jobyer.disponibilites
-      );
-      this.jobyersAvailabilities.set(this.jobyerHover, availabilities);
-    }
+    this.recruitmentService.loadJobyerAvailabilities(
+      this.jobyersAvailabilities,
+      jobyer
+    );
   }
 
   cancelPreviewJobyer() {
     this.jobyerHover = 0;
   }
 
-  assignQuartersToSelectedJobyer(): void {
-    this.recruitmentService.assignAsMuchQuarterAsPossibleToThisJobyer(
-      this.slotsPerDay,
+  assignQuartersToSelectedJobyer(jobyer): void {
+    // If a quarter is selected, assign this quarter to this jobyer
+    if (this.modalDay != null) {
+      this. modalJobyerSelected(jobyer);
+    } else {
+      // Neither assign as much quarters as possible to this jobyer
+      this.recruitmentService.assignAsMuchQuarterAsPossibleToThisJobyer(
+        this.slotsPerDay,
+        this.jobyersAvailabilities,
+        jobyer.id
+      );
+    }
+  }
+
+  slotClicked(day, quarterId): void {
+    this.modalDay = day;
+    this.modalQuarterId = quarterId;
+  }
+
+  modalJobyerSelected(jobyer: any): void {
+    if (jobyer === null) {
+      return;
+    }
+    this.recruitmentService.loadJobyerAvailabilities(
       this.jobyersAvailabilities,
-      this.jobyerHover
+      jobyer
     );
+    this.recruitmentService.assignSlotToThisJobyer(
+      this.modalDay,
+      this.jobyersAvailabilities,
+      jobyer.id
+    )
   }
 }

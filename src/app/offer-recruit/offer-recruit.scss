@@ -508,6 +508,7 @@ $assigned5Border: #d35400;
   }
   .offer-recruit-slots-quart {
     min-width: 9px;
+    cursor: default;
 
     .offer-recruit-slots-quarter-fill {
       min-width: 9px;
@@ -516,12 +517,14 @@ $assigned5Border: #d35400;
     }
 
     .offer-recruit-slots-quarter-required {
+      cursor: pointer;
       background-color: $requiredBackground;
       color: $requiredBackground;
       border-top: 1px $requiredBorder solid;
       border-bottom: 1px $requiredBorder solid;
     }
     .offer-recruit-slots-quarter-required-left {
+      cursor: pointer;
       border-radius: 20% 0 0 20%;
       background-color: $requiredBackground;
       color: $requiredBackground;
@@ -530,6 +533,7 @@ $assigned5Border: #d35400;
       border-left: 1px $requiredBorder solid;
     }
     .offer-recruit-slots-quarter-required-right {
+      cursor: pointer;
       border-radius: 0 20% 20% 0;
       background-color: $requiredBackground;
       color: $requiredBackground;

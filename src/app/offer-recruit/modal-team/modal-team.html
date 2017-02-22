@@ -1,0 +1,63 @@
+<div class="modal fade modal-margin-top" id="modal-team">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content offer-recruit-modal">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel18">
+          A qui assigner ce créneau ?
+        </h4>
+      </div>
+      <div class="modal-body bg-gray-lighter">
+        <form class="modal-picture-form form-horizontal" role="form">
+
+          <div class="row">
+            <div
+              *ngFor="let jobyer of jobyers"
+              class="col-sm-3 col-md-2"
+            >
+              <section class="widget">
+                <img
+                  class="offer-recruit-modal-picture img-circle"
+                  src="assets/images/people/a4.jpg"
+                  alt="..."
+                >
+                <div class="caption">
+                  <h3>{{ jobyer.prenom }} {{ jobyer.nom }}</h3>
+                  <p>...</p>
+                  <p>
+                    <button
+                      [disabled]="!isJobyerAvailableForThisSlot(jobyer)"
+                      (click)="assignJobyerToThisSlot(jobyer)"
+                      class="btn btn-primary"
+                    >
+                      Assigner
+                    </button>
+                  </p>
+                </div>
+              </section>
+            </div>
+
+            <div class="col-sm-3 col-md-2">
+              <section class="widget">
+                +
+              </section>
+            </div>
+
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="clearfix">
+          <button type="button" class="btn btn-gray">
+            Action
+          </button>
+          <!--<button type="button" class="btn btn-gray" (click)="close()">Revenir au formulaire</button>-->
+          <!--<button class="btn btn-primary" (click)="goToSelectedPage()">-->
+          <!--Continuer sans enregistrer-->
+          <!--</button>-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

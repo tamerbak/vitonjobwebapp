@@ -156,8 +156,19 @@ export class RecruitmentService {
     let quarter = quarters[quarterId] = jobyerSelected;
   }
 
+  loadJobyerAvailabilities(jobyersAvailabilities, jobyer) {
+    let availabilities = jobyersAvailabilities.get(jobyer.id);
+    if (Utils.isEmpty(availabilities) == true) {
+      availabilities = this.loadSlots(
+        jobyer.disponibilites
+      );
+      jobyersAvailabilities.set(jobyer.id, availabilities);
+    }
+  }
+
   assignAsMuchQuarterAsPossibleToThisJobyer(slotsPerDay: CalendarQuarterPerDay,
-                                          jobyersAvailabilities, jobyerSelected): void {
+                                            jobyersAvailabilities,
+                                            jobyerSelected): void {
 
     let availabilities = jobyersAvailabilities.get(jobyerSelected);
 
@@ -185,5 +196,30 @@ export class RecruitmentService {
 
     // let jobyerCalendarQuarter = this.loadSlots(jobyer.disponibilites);
     // return jobyerCalendarQuarter;
+  }
+
+  assignSlotToThisJobyer(day: any,
+                         jobyersAvailabilities,
+                         jobyerSelected) {
+    let availabilities = jobyersAvailabilities.get(jobyerSelected);
+
+    let date = day.date;
+
+    for (let quarterId = 0; quarterId < 24 * 4; ++quarterId) {
+      // Check that this quarter is required or is not assigned yet
+      if (day.quarters[quarterId] === null || day.quarters[quarterId] > 0) {
+        continue;
+      }
+
+      // If the quarter is not assigned, check if the jobyer is available
+      let jobyerAvailable = this.isJobyerAvailable(
+        date, availabilities, quarterId
+      );
+
+      // If the jobyer is available, check if the jobyer cans legally work
+      if (jobyerAvailable && this.isJobyerCanWorkThisQuarter() === true) {
+        this.assignThisQuarterTo(day, date, quarterId, jobyerSelected);
+      }
+    }
   }
 }
