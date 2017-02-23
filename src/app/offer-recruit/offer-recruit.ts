@@ -11,10 +11,11 @@ import {LoaderService} from "../../providers/loader.service";
 import {SearchService} from "../../providers/search-service";
 import {SharedService} from "../../providers/shared.service";
 import {ProfileService} from "../../providers/profile.service";
-import {CalendarQuarterPerDay} from "../../dto/CalendarQuarterPerDay";
+import {CalendarQuarterPerDay} from "../../dto/calendar-quarter-per-day";
 import {RecruitmentService} from "../../providers/recruitment-service";
 import {Utils} from "../utils/utils";
 import {ModalTeam} from "./modal-team/modal-team";
+import {DateUtils} from "../utils/date-utils";
 
 declare let Messenger, jQuery: any;
 declare let google: any;
@@ -42,7 +43,6 @@ declare let require;
     RecruitmentService
   ]
 })
-
 export class OfferRecruit {
 
   // The current offer
@@ -56,23 +56,17 @@ export class OfferRecruit {
   // Nb slot per day
   // 4 quart per hour * 24
   nbBlockPerDay = 4 * 24;
-  quartPerDay: any[] = [];
+  quartersPerDay: any[] = [];
 
   // Contains the list of slots
   slots: any[] = [];
-  slotsPerDay: CalendarQuarterPerDay;
-  slotsPerDayHover: CalendarQuarterPerDay;
+  employerPlanning: CalendarQuarterPerDay;
   jobyersAvailabilities: Map<number, CalendarQuarterPerDay>;
   jobyerHover: number;
 
-  assignements: number[];
-  assignementNb: number = 1;
-
-  // Container the matrix of slots per jobyer
-  slotsPerJobyer: {
-    jobyer: any,
-    slot: CalendarSlot[]
-  }[] = [];
+  // Jobyer colors management
+  jobyerColors: number[];
+  jobyerColorNb: number = 1;
 
   // Result of the research
   searchResults: any[];
@@ -83,41 +77,42 @@ export class OfferRecruit {
   selectedQuarterIdStart: number = null;
   selectedQuarterIdEnd: number = null;
 
+  getFrenchDateString: ((date: number)=> string);
+
   constructor(private offersService: OffersService,
               private sharedService: SharedService,
               private searchService: SearchService,
-              private profileService: ProfileService,
               private recruitmentService: RecruitmentService,
               private loader: LoaderService) {
 
+    // Pointer definition
+    this.getFrenchDateString = DateUtils.toFrenchDateString;
+
     this.offer = new Offer();
 
-    // Retrieve offer data
     this.loader.display();
 
-    this.displayedHour = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22];
+    // Temporary initialized value to not let the UI broken
+    // This value will be overwrite with bellow "loadSlots" call
+    this.employerPlanning = new CalendarQuarterPerDay();
 
-    this.slotsPerDay = new CalendarQuarterPerDay();
-    this.slotsPerDayHover = new CalendarQuarterPerDay();
-
-    this.jobyersAvailabilities = new Map<number, CalendarQuarterPerDay>();
     this.jobyerHover = 0;
+    this.jobyersAvailabilities = new Map<number, CalendarQuarterPerDay>();
 
+    // Retrieve offer data
     this.offersService.getOfferById(2163, 'employer', this.offer).then(()=> {
+      this.employerPlanning = this.recruitmentService.loadSlots(this.offer.calendarData);
+      this.getJobyerList();
+
       this.loader.hide();
-
-      console.log('Chargement des slots');
-      this.slotsPerDay = this.recruitmentService.loadSlots(this.offer.calendarData);
-      console.log('Recherche des jobyers');
-      this.launchSearch();
-
     });
 
   }
 
   ngOnInit(): void {
+    this.displayedHour = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22];
     for (let i = 0; i < this.nbBlockPerDay; ++i) {
-      this.quartPerDay.push(i);
+      this.quartersPerDay.push(i);
     }
   }
 
@@ -125,42 +120,11 @@ export class OfferRecruit {
 
   }
 
-
-  /**
-   * Translate slots into quarters
-   *
-   loadSlots(): void {
-    this.slotsPerJobyer = [];
-    this.slots = this.offer.calendarData;
-
-    this.slotsPerDay = new CalendarQuarterPerDay();
-    for (let i: number = 0; i < this.slots.length; ++i) {
-
-      let quart: CalendarQuarter = new CalendarQuarter(this.slots[i].date);
-      quart.setHours(this.slots[i].startHour / 60);
-      quart.setMinutes(this.slots[i].startHour % 60);
-
-      let quartEnd = new Date(this.slots[i].dateEnd);
-      quartEnd.setHours(this.slots[i].endHour / 60);
-      quartEnd.setMinutes(this.slots[i].endHour % 60);
-
-      do {
-        console.log(quart);
-
-        this.slotsPerDay.pushQuart(this.slotsPerDay, quart);
-        quart = new CalendarQuarter(quart.getTime() + 15 * 60 * 1000);
-      } while (quart.getTime() <= quartEnd.getTime());
-      console.log('Slots per day');
-    }
-    console.log('Slots per day all');
-    console.log(this.slotsPerDay);
-  }*/
-
   /**
    * Get the list of available jobyer matching with offer's criteria
    */
-  launchSearch(): void {
-    var offer = this.offer;
+  getJobyerList(): void {
+    let offer = this.offer;
 
     let searchQuery = {
       'class': 'com.vitonjob.recherche.model.SearchQuery',
@@ -178,7 +142,7 @@ export class OfferRecruit {
       console.log('Jobyers trouvés');
       console.log(this.searchResults);
 
-      // TODO : To remove, temporary assignement
+      // TODO : To remove, temporary jobyerColor
       for (let i = 0; i < this.searchResults.length; i++) {
 
         if (this.searchResults[i].idJobyer <= 0) {
@@ -199,6 +163,7 @@ export class OfferRecruit {
         }
         this.jobyers.push({
           id: this.searchResults[i].idJobyer,
+          titre: this.searchResults[i].titre,
           nom: this.searchResults[i].nom,
           prenom: this.searchResults[i].prenom,
           avatar: this.searchResults[i].avatar,
@@ -227,32 +192,29 @@ export class OfferRecruit {
     }
   }
 
-  toDateString(date: number) {
-    var dateOptions = {
-      weekday: "long", month: "long", year: "numeric",
-      day: "numeric"//, hour: "2-digit", minute: "2-digit"
-    };
-    return new Date(date).toLocaleDateString('fr-FR', dateOptions);
-  }
-
-  toHourString(time: number) {
-    let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
-    let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
-    return hours + ":" + minutes;
-  }
-
+  /**
+   * Return the jobyer color number in order to generate CSS class name
+   *
+   * @param jobyerId
+   * @returns {number}
+   */
   getJobyerColor(jobyerId) {
-    let nbColors = 5;
-
-    if (Utils.isEmpty(this.assignements) === true) {
-      this.assignements = [];
+    if (Utils.isEmpty(this.jobyerColors) === true) {
+      this.jobyerColors = [];
     }
-    if (Utils.isEmpty(this.assignements[jobyerId]) === true) {
-      this.assignements[jobyerId] = this.assignementNb++;
+    if (Utils.isEmpty(this.jobyerColors[jobyerId]) === true) {
+      this.jobyerColors[jobyerId] = this.jobyerColorNb++;
     }
-    return this.assignements[jobyerId];
+    return this.jobyerColors[jobyerId];
   }
 
+  /**
+   * Compute the Quarter CSS effect : color, border size, background color, etc.
+   *
+   * @param day
+   * @param quarterId
+   * @returns {string}
+   */
   getQuarterColor(day, quarterId): string {
     let date = day.date;
 
@@ -300,11 +262,11 @@ export class OfferRecruit {
   }
 
   /**
-   * Assign as much slot as possible to a jobyer
+   * Display the jobyer availabilities into the employer planning
    *
    * @param jobyer
    */
-  previewJobyer(jobyer: any): void {
+  previewJobyerAvailabilities(jobyer: any): void {
     this.jobyerHover = jobyer.id;
     this.recruitmentService.loadJobyerAvailabilities(
       this.jobyersAvailabilities,
@@ -312,25 +274,19 @@ export class OfferRecruit {
     );
   }
 
-  cancelPreviewJobyer() {
+  /**
+   * Stop to display the jobyer availabilities into the employer planning
+   */
+  cancelPreviewJobyerAvailabilities() {
     this.jobyerHover = 0;
   }
 
-  assignQuartersToSelectedJobyer(jobyer): void {
-    // If a quarter is selected, assign this quarter to this jobyer
-    if (this.selectedDay != null) {
-      this.assignSelectedSlotToThisJobyer(jobyer);
-      this.unselectedSlot();
-    } else {
-      // Neither assign as much quarters as possible to this jobyer
-      this.recruitmentService.assignAsMuchQuarterAsPossibleToThisJobyer(
-        this.slotsPerDay,
-        this.jobyersAvailabilities,
-        jobyer.id
-      );
-    }
-  }
-
+  /**
+   * Select a slot on the planning
+   *
+   * @param day
+   * @param quarterId
+   */
   selectedSlot(day, quarterId): void {
     if (day.quarters[quarterId] == null) {
       this.unselectedSlot();
@@ -342,6 +298,9 @@ export class OfferRecruit {
     this.selectedQuarterIdEnd = this.recruitmentService.getLastQuarterOfSlot(day, quarterId);
   }
 
+  /**
+   * Unselect slot
+   */
   unselectedSlot(): void {
     this.selectedDay = null;
     this.selectedQuarterId = null;
@@ -349,12 +308,37 @@ export class OfferRecruit {
     this.selectedQuarterIdEnd = null;
   }
 
+  /**
+   * Assign the to this jobyer :
+   * - If no slot selected, assign as much slot as possible
+   * - If selected slot, assign only that slot
+   *
+   * @param jobyer
+   */
+  assignToSelectedJobyer(jobyer): void {
+    // If a quarter is selected, assign this quarter to this jobyer
+    if (this.selectedDay != null) {
+      this.assignSelectedSlotToThisJobyer(jobyer);
+      this.unselectedSlot();
+    } else {
+      // Neither assign as much quarters as possible to this jobyer
+      this.recruitmentService.assignAsMuchQuarterAsPossibleToThisJobyer(
+        this.employerPlanning,
+        this.jobyersAvailabilities,
+        jobyer.id
+      );
+    }
+  }
+
+  /**
+   * Unassign the selected slot of any jobyers
+   */
   unassignSlot(): void {
     this.recruitmentService.assignSlotToThisJobyer(
       this.selectedDay,
       this.jobyersAvailabilities,
       0
-    )
+    );
   }
 
   assignSelectedSlotToThisJobyer(jobyer: any): void {
@@ -365,6 +349,7 @@ export class OfferRecruit {
       this.jobyersAvailabilities,
       jobyer
     );
+    // TODO: to improve because assign temporary all the day
     this.recruitmentService.assignSlotToThisJobyer(
       this.selectedDay,
       this.jobyersAvailabilities,
@@ -372,10 +357,35 @@ export class OfferRecruit {
     )
   }
 
+  /**
+   * Control the selection detail status
+   *
+   * @returns {string}
+   */
   getDetailStatusClass() {
     if (this.selectedDay !== null) {
       return 'offer-recruit-detail-open';
     }
     return 'offer-recruit-detail-close';
   }
+
+  /**
+   * Format date
+   *
+   * @param date
+   * @returns {string}
+   *
+   toFrenchDateString(date: number): string {
+    return DateUtils.toFrenchDateString(date);
+  }
+
+   /**
+   * Hour format
+   *
+   * @param time
+   * @returns {string}
+   *
+   toHourString(time: number): string {
+    return DateUtils.toHourString(time);
+  }*/
 }

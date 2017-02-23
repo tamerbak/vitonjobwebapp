@@ -35,6 +35,14 @@ export class DateUtils {
     return str;
   }
 
+  public static toFrenchDateString(date: number) {
+    let dateOptions = {
+      weekday: "long", month: "long", year: "numeric",
+      day: "numeric"//, hour: "2-digit", minute: "2-digit"
+    };
+    return new Date(date).toLocaleDateString('fr-FR', dateOptions);
+  }
+
   /**
    * @Description Converts a timeStamp to date string
    * @param time : a timestamp date

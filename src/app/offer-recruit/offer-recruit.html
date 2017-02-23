@@ -42,16 +42,16 @@
           <li
             *ngFor="let jobyer of jobyers"
             class="offer-recruit-jobyer-available offer-recruit-jobyer-{{ getJobyerColor(jobyer.id) }}"
-            (mouseover)="previewJobyer(jobyer)"
-            (mouseleave)="cancelPreviewJobyer()"
-            (click)="assignQuartersToSelectedJobyer(jobyer)"
+            (mouseover)="previewJobyerAvailabilities(jobyer)"
+            (mouseleave)="cancelPreviewJobyerAvailabilities()"
+            (click)="assignToSelectedJobyer(jobyer)"
           >
             <span class="thumb-xs avatar pull-left mr-sm">
               <img class="img-circle" src="assets/images/avatar.png" alt="..." />
             </span>
             <div class="comment-body">
               <h6 class="author fs-sm fw-semi-bold">
-                {{ jobyer.prenom }} {{ jobyer.nom }}
+                {{ jobyer.titre }} {{ jobyer.prenom }} {{ jobyer.nom }}
                 {{ jobyer.avatar }}
               </h6>
               <p class="fs-mini">-</p>
@@ -93,11 +93,11 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let day of slotsPerDay.slotsPerDay; let d = index;">
+          <tr *ngFor="let day of employerPlanning.quartersPerDay; let d = index;">
             <td class="offer-recruit-slots-day">
-              {{ toDateString(day.date) }}
+              {{ getFrenchDateString(day.date) }}
             </td>
-            <td *ngFor="let quarterId of quartPerDay;" class="offer-recruit-slots-quart">
+            <td *ngFor="let quarterId of quartersPerDay;" class="offer-recruit-slots-quart">
               <div
                 class="offer-recruit-slots-quarter-fill {{ getQuarterColor(day, quarterId) }}"
                 (click)="selectedSlot(day, quarterId)"
