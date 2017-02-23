@@ -222,4 +222,24 @@ export class RecruitmentService {
       }
     }
   }
+
+  getFirstQuarterOfSlot(day, quarterId) {
+    let i;
+    for (i = quarterId; i > 0; --i) {
+      if (day.quarters[i] != day.quarters[i - 1]) {
+        break;
+      }
+    }
+    return i;
+  }
+
+  getLastQuarterOfSlot(day, quarterId) {
+    let i;
+    for (i = quarterId; i < (24 * 4 - 1); ++i) {
+      if (day.quarters[i] != day.quarters[i + 1]) {
+        break;
+      }
+    }
+    return i;
+  }
 }

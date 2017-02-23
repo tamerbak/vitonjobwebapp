@@ -481,14 +481,20 @@ $assignedBorder: #27ae60;
 
 $assigned1Background: #2ecc71;
 $assigned1Border: #27ae60;
-$assigned2Background: #3498db;
-$assigned2Border: #2980b9;
-$assigned3Background: #9b59b6;
-$assigned3Border: #8e44ad;
-$assigned4Background: #f1c40f;
-$assigned4Border: #f39c12;
+$assigned2Background: #f1c40f;
+$assigned2Border: #f39c12;
+$assigned3Background: #3498db;
+$assigned3Border: #2980b9;
+$assigned4Background: #9b59b6;
+$assigned4Border: #8e44ad;
 $assigned5Background: #e67e22;
 $assigned5Border: #d35400;
+
+$slotBorderRadius: 25%;
+$jobyerBookmarkSize: 5px;
+
+$boxShadowShift: 7px;
+$boxShadowColor: #4183C4;
 
 .offer-recruit-slots-container {
   margin-top: 2em;
@@ -525,7 +531,7 @@ $assigned5Border: #d35400;
     }
     .offer-recruit-slots-quarter-required-left {
       cursor: pointer;
-      border-radius: 20% 0 0 20%;
+      border-radius: $slotBorderRadius 0 0 $slotBorderRadius;
       background-color: $requiredBackground;
       color: $requiredBackground;
       border-top: 1px $requiredBorder solid;
@@ -534,7 +540,7 @@ $assigned5Border: #d35400;
     }
     .offer-recruit-slots-quarter-required-right {
       cursor: pointer;
-      border-radius: 0 20% 20% 0;
+      border-radius: 0 $slotBorderRadius $slotBorderRadius 0;
       background-color: $requiredBackground;
       color: $requiredBackground;
       border-top: 1px $requiredBorder solid;
@@ -543,7 +549,7 @@ $assigned5Border: #d35400;
     }
 
     .offer-recruit-slots-quarter-match-left {
-      border-radius: 20% 0 0 20%;
+      border-radius: $slotBorderRadius 0 0 $slotBorderRadius;
       background-color: $matchingBackground;
       color: $matchingBackground;
       border-left: 1px $matchingBorder solid;
@@ -551,7 +557,7 @@ $assigned5Border: #d35400;
       border-bottom: 1px $matchingBorder solid;
     }
     .offer-recruit-slots-quarter-match-right {
-      border-radius: 0 20% 20% 0;
+      border-radius: 0 $slotBorderRadius $slotBorderRadius 0;
       background-color: $matchingBackground;
       color: $matchingBackground;
       border-right: 1px $matchingBorder solid;
@@ -572,7 +578,7 @@ $assigned5Border: #d35400;
       border-bottom: 1px $availableBorder solid;
     }
     .offer-recruit-slots-quarter-available-left {
-      border-radius: 20% 0 0 20%;
+      border-radius: $slotBorderRadius 0 0 $slotBorderRadius;
       background-color: $availableBackground;
       color: $availableBackground;
       border-left: 1px $availableBorder solid;
@@ -580,36 +586,13 @@ $assigned5Border: #d35400;
       border-bottom: 1px $availableBorder solid;
     }
     .offer-recruit-slots-quarter-available-right {
-      border-radius: 0 20% 20% 0;
+      border-radius: 0 $slotBorderRadius $slotBorderRadius 0;
       background-color: $availableBackground;
       color: $availableBackground;
       border-right: 1px $availableBorder solid;
       border-top: 1px $availableBorder solid;
       border-bottom: 1px $availableBorder solid;
     }
-
-    /*.offer-recruit-slots-quarter-assigned {
-      background-color: $assignedBackground;
-      color: $assignedBackground;
-      border-top: 1px $assignedBorder solid;
-      border-bottom: 1px $assignedBorder solid;
-    }
-    .offer-recruit-slots-quarter-assigned-left {
-      border-radius: 20% 0 0 20%;
-      background-color: $assignedBackground;
-      color: $assignedBackground;
-      border-left: 1px $assignedBorder solid;
-      border-top: 1px $assignedBorder solid;
-      border-bottom: 1px $assignedBorder solid;
-    }
-    .offer-recruit-slots-quarter-assigned-right {
-      border-radius: 0 20% 20% 0;
-      background-color: $assignedBackground;
-      color: $assignedBackground;
-      border-right: 1px $assignedBorder solid;
-      border-top: 1px $assignedBorder solid;
-      border-bottom: 1px $assignedBorder solid;
-    }*/
 
     /**
      * ASSIGNED
@@ -622,7 +605,7 @@ $assigned5Border: #d35400;
       border-bottom: 1px $assigned1Border solid;
     }
     .assigned-1-left {
-      border-radius: 20% 0 0 20%;
+      border-radius: $slotBorderRadius 0 0 $slotBorderRadius;
       background-color: $assigned1Background;
       color: $assigned1Background;
       border-left: 1px $assigned1Border solid;
@@ -630,7 +613,7 @@ $assigned5Border: #d35400;
       border-bottom: 1px $assigned1Border solid;
     }
     .assigned-1-right {
-      border-radius: 0 20% 20% 0;
+      border-radius: 0 $slotBorderRadius $slotBorderRadius 0;
       background-color: $assigned1Background;
       color: $assigned1Background;
       border-right: 1px $assigned1Border solid;
@@ -645,7 +628,7 @@ $assigned5Border: #d35400;
       border-bottom: 1px $assigned2Border solid;
     }
     .assigned-2-left {
-      border-radius: 20% 0 0 20%;
+      border-radius: $slotBorderRadius 0 0 $slotBorderRadius;
       background-color: $assigned2Background;
       color: $assigned2Background;
       border-left: 1px $assigned2Border solid;
@@ -653,7 +636,7 @@ $assigned5Border: #d35400;
       border-bottom: 1px $assigned2Border solid;
     }
     .assigned-2-right {
-      border-radius: 0 20% 20% 0;
+      border-radius: 0 $slotBorderRadius $slotBorderRadius 0;
       background-color: $assigned2Background;
       color: $assigned2Background;
       border-right: 1px $assigned2Border solid;
@@ -668,7 +651,7 @@ $assigned5Border: #d35400;
       border-bottom: 1px $assigned3Border solid;
     }
     .assigned-3-left {
-      border-radius: 20% 0 0 20%;
+      border-radius: $slotBorderRadius 0 0 $slotBorderRadius;
       background-color: $assigned3Background;
       color: $assigned3Background;
       border-left: 1px $assigned3Border solid;
@@ -676,7 +659,7 @@ $assigned5Border: #d35400;
       border-bottom: 1px $assigned3Border solid;
     }
     .assigned-3-right {
-      border-radius: 0 20% 20% 0;
+      border-radius: 0 $slotBorderRadius $slotBorderRadius 0;
       background-color: $assigned3Background;
       color: $assigned3Background;
       border-right: 1px $assigned3Border solid;
@@ -691,7 +674,7 @@ $assigned5Border: #d35400;
       border-bottom: 1px $assigned4Border solid;
     }
     .assigned-4-left {
-      border-radius: 20% 0 0 20%;
+      border-radius: $slotBorderRadius 0 0 $slotBorderRadius;
       background-color: $assigned4Background;
       color: $assigned4Background;
       border-left: 1px $assigned4Border solid;
@@ -699,7 +682,7 @@ $assigned5Border: #d35400;
       border-bottom: 1px $assigned4Border solid;
     }
     .assigned-4-right {
-      border-radius: 0 20% 20% 0;
+      border-radius: 0 $slotBorderRadius $slotBorderRadius 0;
       background-color: $assigned4Background;
       color: $assigned4Background;
       border-right: 1px $assigned4Border solid;
@@ -714,7 +697,7 @@ $assigned5Border: #d35400;
       border-bottom: 1px $assigned5Border solid;
     }
     .assigned-5-left {
-      border-radius: 20% 0 0 20%;
+      border-radius: $slotBorderRadius 0 0 $slotBorderRadius;
       background-color: $assigned5Background;
       color: $assigned5Background;
       border-left: 1px $assigned5Border solid;
@@ -722,7 +705,7 @@ $assigned5Border: #d35400;
       border-bottom: 1px $assigned5Border solid;
     }
     .assigned-5-right {
-      border-radius: 0 20% 20% 0;
+      border-radius: 0 $slotBorderRadius $slotBorderRadius 0;
       background-color: $assigned5Background;
       color: $assigned5Background;
       border-right: 1px $assigned5Border solid;
@@ -742,8 +725,63 @@ $assigned5Border: #d35400;
 
 }
 
+.offer-recruit-jobyer-1 {
+  border-left: $jobyerBookmarkSize $assigned1Background solid;
+}
+
+.offer-recruit-jobyer-2 {
+  border-left: $jobyerBookmarkSize $assigned2Background solid;
+}
+
+.offer-recruit-jobyer-3 {
+  border-left: $jobyerBookmarkSize $assigned3Background solid;
+}
+
+.offer-recruit-jobyer-4 {
+  border-left: $jobyerBookmarkSize $assigned4Background solid;
+}
+
+.offer-recruit-jobyer-5 {
+  border-left: $jobyerBookmarkSize $assigned5Background solid;
+}
+
 // Effect when mouse over a jobyer
 .offer-recruit-jobyer-available:hover {
   background-color: aliceblue;
   cursor: pointer;
+}
+
+.slot-selected {
+  box-shadow: $boxShadowShift 0px 12px $boxShadowColor;
+  -webkit-animation-name: clignote; //on affecte l'animation clignote à notre bouton
+  -webkit-animation-duration: 1s; //on définit la durée de l'animation à 1s
+  -webkit-animation-iteration-count:infinite; //on dit que l'animation se répétera à l'infini.
+}
+
+@-webkit-keyframes clignote {
+  0% { box-shadow: $boxShadowShift 0px 12px $boxShadowColor; }
+  50% { box-shadow: $boxShadowShift 0px 7px $boxShadowColor; }
+  100% { box-shadow: $boxShadowShift 0px 12px $boxShadowColor; }
+}
+
+$detailHeight: 200px;
+$detailAnimationDuration: 0.5s;
+
+.offer-recruit-detail-open {
+  min-height: $detailHeight;
+  -webkit-animation-name: detail-open; //on affecte l'animation clignote à notre bouton
+  -webkit-animation-duration: $detailAnimationDuration; //on définit la durée de l'animation à 1s
+}
+@-webkit-keyframes detail-open {
+  0% { min-height: 0; }
+  100% { min-height: $detailHeight; }
+}
+.offer-recruit-detail-close {
+  min-height: 0;
+  -webkit-animation-name: detail-close; //on affecte l'animation clignote à notre bouton
+  -webkit-animation-duration: $detailAnimationDuration; //on définit la durée de l'animation à 1s
+}
+@-webkit-keyframes detail-close {
+  0% { min-height: $detailHeight; }
+  100% { min-height: 0; }
 }

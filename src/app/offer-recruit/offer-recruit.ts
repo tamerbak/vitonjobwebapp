@@ -78,8 +78,10 @@ export class OfferRecruit {
   searchResults: any[];
 
   // Modal interaction
-  modalDay: any;
-  modalQuarterId: number;
+  selectedDay: any = null;
+  selectedQuarterId: number = null;
+  selectedQuarterIdStart: number = null;
+  selectedQuarterIdEnd: number = null;
 
   constructor(private offersService: OffersService,
               private sharedService: SharedService,
@@ -267,20 +269,23 @@ export class OfferRecruit {
 
     let quarterClass: string = '';
     if (day.quarters[quarterId] > 0) {
-      quarterClass = 'offer-recruit-slots-quarter-assigned';
+      quarterClass += ' offer-recruit-slots-quarter-assigned';
       quarterClass += ' assigned-' + this.getJobyerColor(day.quarters[quarterId]);
     }
     else if (day.quarters[quarterId] !== null) {
       if (Utils.isEmpty(jobyersQuarters) === true) {
-        quarterClass = 'offer-recruit-slots-quarter-required';
+        if (this.selectedDay == day && quarterId >= this.selectedQuarterIdStart && quarterId <= this.selectedQuarterIdEnd) {
+          quarterClass += ' slot-selected';
+        }
+        quarterClass += ' offer-recruit-slots-quarter-required';
       }
       else {
-        quarterClass = 'offer-recruit-slots-quarter-match';
+        quarterClass += ' offer-recruit-slots-quarter-match';
       }
     }
     else {
       if (Utils.isEmpty(jobyersQuarters) === false) {
-        quarterClass = 'offer-recruit-slots-quarter-available';
+        quarterClass += ' offer-recruit-slots-quarter-available';
       }
     }
 
@@ -313,8 +318,9 @@ export class OfferRecruit {
 
   assignQuartersToSelectedJobyer(jobyer): void {
     // If a quarter is selected, assign this quarter to this jobyer
-    if (this.modalDay != null) {
-      this. modalJobyerSelected(jobyer);
+    if (this.selectedDay != null) {
+      this.assignSelectedSlotToThisJobyer(jobyer);
+      this.unselectedSlot();
     } else {
       // Neither assign as much quarters as possible to this jobyer
       this.recruitmentService.assignAsMuchQuarterAsPossibleToThisJobyer(
@@ -325,12 +331,33 @@ export class OfferRecruit {
     }
   }
 
-  slotClicked(day, quarterId): void {
-    this.modalDay = day;
-    this.modalQuarterId = quarterId;
+  selectedSlot(day, quarterId): void {
+    if (day.quarters[quarterId] == null) {
+      this.unselectedSlot();
+      return;
+    }
+    this.selectedDay = day;
+    this.selectedQuarterId = quarterId;
+    this.selectedQuarterIdStart = this.recruitmentService.getFirstQuarterOfSlot(day, quarterId);
+    this.selectedQuarterIdEnd = this.recruitmentService.getLastQuarterOfSlot(day, quarterId);
   }
 
-  modalJobyerSelected(jobyer: any): void {
+  unselectedSlot(): void {
+    this.selectedDay = null;
+    this.selectedQuarterId = null;
+    this.selectedQuarterIdStart = null;
+    this.selectedQuarterIdEnd = null;
+  }
+
+  unassignSlot(): void {
+    this.recruitmentService.assignSlotToThisJobyer(
+      this.selectedDay,
+      this.jobyersAvailabilities,
+      0
+    )
+  }
+
+  assignSelectedSlotToThisJobyer(jobyer: any): void {
     if (jobyer === null) {
       return;
     }
@@ -339,9 +366,16 @@ export class OfferRecruit {
       jobyer
     );
     this.recruitmentService.assignSlotToThisJobyer(
-      this.modalDay,
+      this.selectedDay,
       this.jobyersAvailabilities,
       jobyer.id
     )
+  }
+
+  getDetailStatusClass() {
+    if (this.selectedDay !== null) {
+      return 'offer-recruit-detail-open';
+    }
+    return 'offer-recruit-detail-close';
   }
 }
