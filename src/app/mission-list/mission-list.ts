@@ -171,8 +171,8 @@ export class MissionList{
 
               //retrieve mission hours of today
               this.getMissionHours(item);
-              this.queryOffset = this.queryOffset + this.queryLimit;
             }
+            this.queryOffset = this.queryOffset + this.queryLimit;
 
             this.currentTypeList = this.currentTypeList.sort((a, b) => {
               return this.dayDifference(b.date_de_debut, a.date_de_debut)

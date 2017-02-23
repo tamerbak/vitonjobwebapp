@@ -1,25 +1,18 @@
-import {Component, NgZone, ViewEncapsulation, ViewChild, EventEmitter, Input, Output} from "@angular/core";
-import {ROUTER_DIRECTIVES, Router} from "@angular/router";
-import {NKDatetime} from "ng2-datetime/ng2-datetime";
-import {AlertComponent} from "ng2-bootstrap/components/alert";
+import {Component, EventEmitter, Output} from "@angular/core";
 import {AuthenticationService} from "../../providers/authentication.service";
 import {SharedService} from "../../providers/shared.service";
 import {Utils} from "../utils/utils";
-import {AddressUtils} from "../utils/addressUtils";
-import {MapsAPILoader} from "angular2-google-maps/core";
-import MaskedInput from "angular2-text-mask";
 
-declare let jQuery, Messenger,md5: any;
+declare let md5,require,Messenger,jQuery: any;
 
 @Component({
-  selector: '[modal-update-password]',
-  template: require('./modal-update-password.html'),
-  directives: [ROUTER_DIRECTIVES, AlertComponent, MaskedInput],
+  selector: '[modal-password]',
+  template: require('./modal-password.html'),
   providers: [Utils, AuthenticationService],
-  styles: [require('./modal-update-password.scss')]
+  styles: [require('./modal-password.scss')]
 })
 
-export class ModalUpdatePassword{
+export class ModalPassword{
   msgWelcome1:string;
   msgWelcome2:string;
   pwd1: string;
@@ -46,10 +39,8 @@ export class ModalUpdatePassword{
   validation: boolean = false;
 
   constructor(private authService: AuthenticationService,
-              private sharedService: SharedService,
-              private zone: NgZone,
-              private router: Router,
-              private _loader: MapsAPILoader) {
+              private sharedService: SharedService
+            ) {
 
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
@@ -208,12 +199,8 @@ export class ModalUpdatePassword{
     }
   }
 
-  focus(field) {
-    jQuery('#password1').focus();
-  }
-
   closeModal(): void {
-    jQuery('#modal-update-password').modal('hide');
+    jQuery('#modal-password').modal('hide');
   }
 
 }

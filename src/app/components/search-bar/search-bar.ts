@@ -12,6 +12,7 @@ import {AlertComponent} from "ng2-bootstrap";
 declare let jQuery: any;
 declare let Messenger: any;
 declare let md5: any;
+declare let require: any;
 
 @Component({
   selector: '[search-bar]',
@@ -86,7 +87,7 @@ export class SearchBar {
 
   doSemanticSearch() {
     if (Utils.isEmpty(this.scQuery) || !this.scQuery.match(/[a-z]/i)) {
-      this.addAlert("warning", "Veuillez saisir une requête avant de lancer la recherche");
+      // this.addAlert("warning", "Veuillez saisir une requête avant de lancer la recherche");
       return;
     }
 
@@ -106,7 +107,7 @@ export class SearchBar {
 
   doOffersByCitySearch() {
     if (Utils.isEmpty(this.scQuery) || !this.scQuery.match(/[a-z]/i)) {
-      this.addAlert("warning", "Veuillez saisir le nom d'une ville avant de lancer la recherche");
+     // this.addAlert("warning", "Veuillez saisir le nom d'une ville avant de lancer la recherche");
       return;
     }
 

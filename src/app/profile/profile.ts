@@ -230,6 +230,10 @@ export class Profile{
   softwares: any[];
   expSoftware: number = 1;
 
+  //pharma params;
+  pharmaNAF:string = '4773Z';
+  pharmaConventionId:number = 71;
+
   setImgClasses() {
     return {
       'img-circle': true,//TODO:this.currentUser && this.currentUser.estEmployeur,
@@ -1422,6 +1426,12 @@ export class Profile{
           var medecineId = this.selectedMedecine.id === "0" ? 0 : parseInt(this.selectedMedecine.id);
           var entrepriseId = this.currentUser.employer.entreprises[0].id;
 
+                    
+          //pharma NAF 
+          if(ape === this.pharmaNAF){
+            this.conventionId = this.pharmaConventionId;
+          }
+
           this.profileService.updateEmployerCivility(title, lastname, firstname, companyname, siret, ape, userRoleId, entrepriseId, medecineId, this.conventionId, this.collective_heure_hebdo, false)
             .then((res: any) => {
 
@@ -1899,6 +1909,9 @@ export class Profile{
     let apeChecked = AccountConstraints.checkApe(e);
     this.isValidApe = apeChecked.isValid;
     this.apeHint = apeChecked.hint;
+    if(this.isValidApe && Utils.getRawValueFromMask(e) === this.pharmaNAF){
+      this.conventionId = this.pharmaConventionId;
+    }
     this.isValidForm();
   }
 

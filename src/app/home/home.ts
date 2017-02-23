@@ -7,7 +7,7 @@ import {HomeService} from "../../providers/home.service";
 import {Configs} from "../../configurations/configs";
 import {ModalWelcome} from "../modal-welcome/modal-welcome";
 import {ModalProfile} from "../modal-profile/modal-profile";
-import {ModalUpdatePassword} from "../modal-update-password/modal-update-password";
+import {ModalPassword} from "../modal-password/modal-password";
 import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
 import {ModalGeneralCondition} from "../modal-general-condition/modal-general-condition";
 import {RecruitButton} from "../components/recruit-button/recruit-button";
@@ -16,6 +16,7 @@ import {Utils} from "../utils/utils";
 import {SearchBar} from "../components/search-bar/search-bar";
 
 declare let jQuery: any;
+declare let require: any;
 
 @Component({
   selector: 'home',
@@ -25,7 +26,7 @@ declare let jQuery: any;
     AlertComponent,
     ModalWelcome,
     ModalProfile,
-    ModalUpdatePassword,
+    ModalPassword,
     ModalNotificationContract,
     ModalGeneralCondition,
     RecruitButton,
@@ -105,11 +106,11 @@ export class Home{
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
       if (this.currentUser.mot_de_passe_reinitialise == "Oui") {
-        jQuery('#modal-update-password').modal({
+        jQuery('#modal-password').modal({
           keyboard: false,
           backdrop: 'static'
         });
-        jQuery('#modal-update-password').modal('show');
+        jQuery('#modal-password').modal('show');
       }
 
       if (this.isEmpty(this.currentUser.titre)) {
@@ -151,7 +152,7 @@ export class Home{
   ngAfterViewInit(): void {
     let self = this;
     // Catch enter from search inputs to launch search
-    jQuery('.search-input-semantique').keydown( function(e) {
+    /*jQuery('.search-input-semantique').keydown( function(e) {
       var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
       if(key == 13) {
         e.preventDefault();
@@ -164,7 +165,7 @@ export class Home{
         e.preventDefault();
         self.doOffersByCitySearch();
       }
-    });
+    });*/
   }
 
   initHomeList() {
@@ -213,7 +214,7 @@ export class Home{
 
   doSemanticSearch() {
     if (Utils.isEmpty(this.scQuery) || !this.scQuery.match(/[a-z]/i)) {
-      this.addAlert("warning", "Veuillez saisir une requête avant de lancer la recherche");
+     // this.addAlert("warning", "Veuillez saisir une requête avant de lancer la recherche");
       return;
     }
 
@@ -230,8 +231,8 @@ export class Home{
   }
 
   doOffersByCitySearch() {
-    if (Utils.isEmpty(this.cityQuery) || !this.cityQuery.match(/[a-z]/i)) {
-      this.addAlert("warning", "Veuillez saisir le nom d'une ville avant de lancer la recherche");
+   if (Utils.isEmpty(this.cityQuery) || !this.cityQuery.match(/[a-z]/i)) {
+   //   this.addAlert("warning", "Veuillez saisir le nom d'une ville avant de lancer la recherche");
       return;
     }
 
@@ -243,7 +244,7 @@ export class Home{
       this.sharedService.setCurrentSearchCity(this.cityQuery);
       this.router.navigate(['search/results']);
     });
-  }
+  } 
 
   addAlert(type, msg): void {
     this.alerts = [{type: type, msg: msg}];
@@ -470,14 +471,14 @@ export class Home{
 
   onGCRefused(gcRefused: boolean){
     var self = this;
-    $('#modal-general-condition').on('hidden.bs.modal', function (e) {
+    jQuery('#modal-general-condition').on('hidden.bs.modal', function (e) {
       if(!gcRefused) {
         jQuery('#modal-welcome').modal({
           keyboard: false,
           backdrop: 'static'
         });
         jQuery('#modal-welcome').modal('show');
-        $('#modal-welcome').on('hidden.bs.modal', function (e) {
+        jQuery('#modal-welcome').on('hidden.bs.modal', function (e) {
           jQuery('#modal-profile').modal({
             keyboard: false,
             backdrop: 'static'

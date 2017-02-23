@@ -117,6 +117,10 @@ export class ModalProfile{
   isSpontaneaousContact: boolean = false;
   isSpontaneousContactFilled: boolean = false;
 
+  //pharma params;
+  pharmaNAF:string = '4773Z';
+  pharmaConventionId:number = 71;
+
   constructor(private listService: LoadListService,
               private profileService: ProfileService,
               private sharedService: SharedService,
@@ -424,6 +428,9 @@ export class ModalProfile{
       _hint = "";
     }
     this.isValidApe = _isValid;
+    if(_isValid && _value === this.pharmaNAF){
+      this.conventionId = this.pharmaConventionId;
+    }
     this.apeHint = _hint;
     this.isValidForm();
   }
@@ -568,7 +575,7 @@ export class ModalProfile{
             if(this.currentUser.changePassword){
                 jQuery('#modal-profile').modal('hide');
                 jQuery('#modal-profile').one('hidden.bs.modal', function (e) {
-                  jQuery('#modal-update-password').modal('show');
+                  jQuery('#modal-password').modal('show');
                 })
             }
 
@@ -591,7 +598,11 @@ export class ModalProfile{
           var siret = this.siret ? this.siret.substring(0, 17) : "";
           var ape = this.ape ? this.ape.substring(0, 5).toUpperCase() : "";
           var entrepriseId = this.currentUser.employer.entreprises[0].id;
-
+          
+          //pharma NAF 
+          if(ape === this.pharmaNAF){
+            this.conventionId = this.pharmaConventionId;
+          }
           this.profileService.updateEmployerCivilityFirstTime(title, lastname, firstname, companyname, siret, ape, userRoleId, entrepriseId, this.conventionId).then((res: any) => {
             //case of update failure : server unavailable or connection problem
             if (!res || res.status == "failure") {
