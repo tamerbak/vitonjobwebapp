@@ -27,7 +27,7 @@
           {{ (matching.toString().indexOf('.') < 0) ? matching : matching.toString().split('.')[0] }}%
         </span>
       </p>
-      <p>{{ address ? address : 'Adresse non renseignée...' }}</p>
+      <p *ngIf="isEmpty(address)">{{ address }}</p>
     </div>
   </header>
 
