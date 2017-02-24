@@ -214,6 +214,38 @@ export class OfferRecruit {
    * @returns {string}
    */
   getQuarterColor(day, quarterId): string {
+
+    let quarterClass: string = '';
+
+    if (day.quarters[quarterId] !== null) {
+      if (this.selectedDay == day && quarterId >= this.selectedQuarterIdStart && quarterId <= this.selectedQuarterIdEnd) {
+        quarterClass += ' slot-selected';
+      }
+      if (day.quarters[quarterId] > 0) {
+        quarterClass += ' offer-recruit-slots-quarter-assigned';
+        quarterClass += ' assigned-' + this.getJobyerColor(day.quarters[quarterId]);
+      }
+      quarterClass += ' offer-recruit-slots-quarter-required';
+      if (quarterId == 0 || day.quarters[quarterId - 1] === null) {
+        quarterClass += '-left';
+      }
+      else if (quarterId == (24 * 15 - 1) || day.quarters[quarterId + 1] === null) {
+        quarterClass += '-right';
+      }
+    }
+
+    return quarterClass;
+  }
+
+
+  /**
+   * Compute the Quarter CSS effect : color, border size, background color, etc.
+   *
+   * @param day
+   * @param quarterId
+   * @returns {string}
+   */
+  getQuarterColorHover(day, quarterId): string {
     let date = day.date;
 
     // Retrieve if a selected jobyer is available
@@ -228,18 +260,8 @@ export class OfferRecruit {
     }
 
     let quarterClass: string = '';
-    if (day.quarters[quarterId] > 0) {
-      quarterClass += ' offer-recruit-slots-quarter-assigned';
-      quarterClass += ' assigned-' + this.getJobyerColor(day.quarters[quarterId]);
-    }
-    else if (day.quarters[quarterId] !== null) {
-      if (Utils.isEmpty(jobyersQuarters) === true) {
-        if (this.selectedDay == day && quarterId >= this.selectedQuarterIdStart && quarterId <= this.selectedQuarterIdEnd) {
-          quarterClass += ' slot-selected';
-        }
-        quarterClass += ' offer-recruit-slots-quarter-required';
-      }
-      else {
+    if (day.quarters[quarterId] !== null) {
+      if (Utils.isEmpty(jobyersQuarters) === false) {
         quarterClass += ' offer-recruit-slots-quarter-match';
       }
     }
@@ -249,10 +271,10 @@ export class OfferRecruit {
       }
     }
 
-    if (quarterId == 0 || (day.quarters[quarterId - 1] === null && (jobyersQuarters == null || jobyersQuarters.length == 0 || jobyersQuarters[quarterId - 1] === null))) {
+    if (quarterId == 0 || (jobyersQuarters == null || jobyersQuarters.length == 0 || jobyersQuarters[quarterId - 1] === null)) {
       quarterClass += '-left';
     }
-    else if (quarterId == (24 * 15 - 1) || (day.quarters[quarterId + 1] === null && (jobyersQuarters == null || jobyersQuarters.length == 0 || jobyersQuarters[quarterId + 1] === null))) {
+    else if (quarterId == (24 * 15 - 1) || (jobyersQuarters == null || jobyersQuarters.length == 0 || jobyersQuarters[quarterId + 1] === null)) {
       quarterClass += '-right';
     }
 

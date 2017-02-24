@@ -472,12 +472,14 @@
 
 $requiredBackground: #e74c3c;
 $requiredBorder: #c0392b;
-$matchingBackground: #95a5a6;
-$matchingBorder: #7f8c8d;
-$availableBackground: #ecf0f1;
-$availableBorder: #bdc3c7;
 $assignedBackground: #2ecc71;
 $assignedBorder: #27ae60;
+
+$availableOpacity: 0.8;
+$matchingBackground: rgba(149, 165, 166, $availableOpacity);
+$matchingBorder: rgba(127, 140, 141, $availableOpacity);
+$availableBackground: rgba(236, 240, 241, $availableOpacity);
+$availableBorder: rgba(189, 195, 199, $availableOpacity);
 
 $assigned1Background: #2ecc71;
 $assigned1Border: #27ae60;
@@ -491,7 +493,7 @@ $assigned5Background: #e67e22;
 $assigned5Border: #d35400;
 
 $slotBorderRadius: 25%;
-$jobyerBookmarkSize: 5px;
+$jobyerBookmarkSize: 10px;
 
 $boxShadowShift: 7px;
 $boxShadowColor: #4183C4;
@@ -516,10 +518,23 @@ $boxShadowColor: #4183C4;
     min-width: 9px;
     cursor: default;
 
-    .offer-recruit-slots-quarter-fill {
+    .offer-recruit-slots-quarter-fill-container {
       min-width: 9px;
       width: 100%;
       height: 100%;
+      padding: 1px 0 1px 0;
+      position: relative;
+      left: 0;
+      top: 0;
+      float: left;
+    }
+    .offer-recruit-slots-quarter-fill {
+      min-width: 9px;
+      width: 100%;
+      height: 25px;
+      position: relative;
+      left: 0;
+      top: 0;
     }
 
     .offer-recruit-slots-quarter-required {

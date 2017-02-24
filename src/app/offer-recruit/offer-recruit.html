@@ -99,7 +99,12 @@
             </td>
             <td *ngFor="let quarterId of quartersPerDay;" class="offer-recruit-slots-quart">
               <div
-                class="offer-recruit-slots-quarter-fill {{ getQuarterColor(day, quarterId) }}"
+                class="offer-recruit-slots-quarter-fill-container {{ getQuarterColor(day, quarterId) }}"
+              >
+                &nbsp;
+              </div>
+              <div
+                class="offer-recruit-slots-quarter-fill {{ getQuarterColorHover(day, quarterId) }}"
                 (click)="selectedSlot(day, quarterId)"
               >
                 &nbsp;
