@@ -1,5 +1,5 @@
 import {Component, ViewEncapsulation} from "@angular/core";
-import {ROUTER_DIRECTIVES} from "@angular/router";
+import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {NKDatetime} from "ng2-datetime/ng2-datetime";
 import {Offer} from "../../dto/offer";
@@ -45,6 +45,8 @@ declare let require;
 })
 export class OfferRecruit {
 
+  recruitmentFinished: boolean = false;
+
   // The current offer
   offer: Offer;
 
@@ -83,29 +85,25 @@ export class OfferRecruit {
               private sharedService: SharedService,
               private searchService: SearchService,
               private recruitmentService: RecruitmentService,
+              private router: Router,
               private loader: LoaderService) {
 
     // Pointer definition
     this.getFrenchDateString = DateUtils.toFrenchDateString;
 
-    this.offer = new Offer();
-
-    this.loader.display();
-
-    // Temporary initialized value to not let the UI broken
-    // This value will be overwrite with bellow "loadSlots" call
-    this.employerPlanning = new CalendarQuarterPerDay();
-
     this.jobyerHover = 0;
     this.jobyersAvailabilities = new Map<number, CalendarQuarterPerDay>();
 
-    // Retrieve offer data
-    this.offersService.getOfferById(2163, 'employer', this.offer).then(()=> {
-      this.employerPlanning = this.recruitmentService.loadSlots(this.offer.calendarData);
-      this.getJobyerList();
+    this.offer = this.sharedService.getCurrentOffer();
 
-      this.loader.hide();
-    });
+    if (this.offer == null) {
+      this.router.navigate(['offer/list']);
+      return;
+    }
+
+    // Retrieve offer data
+    this.employerPlanning = this.recruitmentService.loadSlots(this.offer.calendarData);
+    this.getJobyerList();
 
   }
 
@@ -369,23 +367,11 @@ export class OfferRecruit {
     return 'offer-recruit-detail-close';
   }
 
-  /**
-   * Format date
-   *
-   * @param date
-   * @returns {string}
-   *
-   toFrenchDateString(date: number): string {
-    return DateUtils.toFrenchDateString(date);
+  formHasChanges() {
+    if (this.recruitmentFinished === false) {
+      return false;
+    }
+    return true;
   }
 
-   /**
-   * Hour format
-   *
-   * @param time
-   * @returns {string}
-   *
-   toHourString(time: number): string {
-    return DateUtils.toHourString(time);
-  }*/
 }
