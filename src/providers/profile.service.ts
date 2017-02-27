@@ -607,8 +607,19 @@ export class ProfileService{
     });
   }
 
+  secureDisponibilite(disponibilite: Date): void {
+    disponibilite.setHours(12);
+    disponibilite.setMinutes(0);
+    disponibilite.setSeconds(0);
+    disponibilite.setMilliseconds(0);
+  }
+
   saveDisponibilite(jobyerId, disponibilite){
     let interval = (disponibilite.startDate == disponibilite.endDate)?'non':'oui';
+
+    // Prevent GMT shift
+    this.secureDisponibilite(disponibilite.startDate);
+    this.secureDisponibilite(disponibilite.endDate);
 
     let sql = "insert into user_disponibilite_du_jobyer (" +
       "fk_user_jobyer, " +

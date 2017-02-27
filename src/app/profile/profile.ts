@@ -1426,8 +1426,8 @@ export class Profile{
           var medecineId = this.selectedMedecine.id === "0" ? 0 : parseInt(this.selectedMedecine.id);
           var entrepriseId = this.currentUser.employer.entreprises[0].id;
 
-                    
-          //pharma NAF 
+
+          //pharma NAF
           if(ape === this.pharmaNAF){
             this.conventionId = this.pharmaConventionId;
           }
@@ -1942,9 +1942,7 @@ export class Profile{
   }
 
 
-
   initDisponibilites(){
-
     this.profileService.loadDisponibilites(this.currentUser.jobyer.id).then((data : any)=>{
       this.disponibilites = data;
     });
