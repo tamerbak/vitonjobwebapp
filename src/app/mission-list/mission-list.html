@@ -3,13 +3,6 @@
   <li class="active"><a class="breadcrumb-link" [routerLink]="['/mission/list']">Suivi des missions</a></li>
 </ol>
 <div class="row">
-  <div class="col-xs-12 pull-right" style="margin-bottom: 1em;">
-    <a href="javascript:history.go(-1)"><button type="button" class="btn btn-secondary btn-sm" name="button"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Retour</button></a>
-  </div>
-</div>
-<div class="row">
-
-
       <label class="btn btn-gray active label-btn col-xs-12 col-md-12 col-lg-3" btnRadio="0" [(ngModel)]="typeMissionModel" (click)=loadList(0)>
         Missions en cours ({{ missionNowCount}})
       </label>
@@ -29,7 +22,7 @@
 <div class="row">
   <div class="col-xs-12">
     <div style="margin-bottom: 10px;" infinite-scroll
-           [infiniteScrollDistance]="2"            
+           [infiniteScrollDistance]="2"
            [infiniteScrollThrottle]="500"
            (scrolled)="onScrollDown()">
 

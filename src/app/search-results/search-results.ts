@@ -156,13 +156,15 @@ export class SearchResults{
       for (let i = 0; i < this.searchResults.length; i++) {
         let r = this.searchResults[i];
 
-        // Security for removed account
-        if (r.idJobyer == 0) {
-          continue;
-        }
         r.slots =[];
         // get disponibilities for jobyer
         let offerProjectTarget = (this.projectTarget == 'employer' ? 'jobyer' : 'employer');
+
+        // Security for removed account
+        if (offerProjectTarget == 'jobyer' && r.idJobyer == 0) {
+          continue;
+        }
+
         this.offersService.getOfferCalendarDataById(r.idOffre, offerProjectTarget).then((data: any) => {
           r.dateSlots = [];
           if (data['calendarData'] && Utils.isEmpty(data['calendarData']) === false) {
