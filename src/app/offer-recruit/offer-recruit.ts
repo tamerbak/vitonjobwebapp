@@ -421,11 +421,12 @@ export class OfferRecruit {
   }
 
   onRecruite() {
-    this.sharedService.setCurrentJobyer(this.currentJobyer);
-    jQuery('#modal-notification-contract').modal({
-      keyboard: false,
-      backdrop: 'static'
-    });
-    jQuery('#modal-notification-contract').modal('show');
+    this.recruitmentService.generateContractFromEmployerPlanning(this.employerPlanning, this.jobyers);
+    // this.sharedService.setCurrentJobyer(this.currentJobyer);
+    // jQuery('#modal-notification-contract').modal({
+    //   keyboard: false,
+    //   backdrop: 'static'
+    // });
+    // jQuery('#modal-notification-contract').modal('show');
   }
 }

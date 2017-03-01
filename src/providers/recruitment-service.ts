@@ -353,4 +353,33 @@ export class RecruitmentService {
         });
     });
   }
+
+  translateFromQuartersPerJobyerToSlotsPerJobyer(employerPlanning: CalendarQuarterPerDay, jobyers: any[]): {jobyer: any; slots: any[]}[] {
+    let tmpValues: {jobyer: any; slots: any[]}[] = [];
+
+    for (let i = 0; i < jobyers.length; ++i) {
+      let tmpValue = {
+        jobyer: jobyers[i].id,
+        slots: [
+          JSON.parse('{class: "com.vitonjob.recherche.model.Slot", endDate: 1486483410465, endHour: 1380, id: null, pause:false, startDate:1486483410465, startHour:885}'),
+          JSON.parse('{class: "com.vitonjob.recherche.model.Slot", endDate: 1486483420465, endHour: 380, id: null, pause:false, startDate:1486483420465, startHour:185}'),
+          JSON.parse('{class: "com.vitonjob.recherche.model.Slot", endDate: 1486483430465, endHour: 180, id: null, pause:false, startDate:1486483430465, startHour:85}')
+        ]
+      };
+      tmpValues.push(tmpValue);
+    }
+
+    return tmpValues;
+  }
+
+  generateContractFromEmployerPlanning(employerPlanning: CalendarQuarterPerDay, jobyers: any[]) {
+    // Format slots
+    let slotsPerJobyer: {jobyer: any; slots: any[]}[] = this.translateFromQuartersPerJobyerToSlotsPerJobyer(
+      employerPlanning, jobyers
+    );
+
+    // Format offer(s)
+
+    // Execute contract process
+  }
 }
