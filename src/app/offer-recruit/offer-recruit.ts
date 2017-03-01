@@ -69,6 +69,7 @@ export class OfferRecruit {
   employerPlanning: CalendarQuarterPerDay;
   jobyersAvailabilities: Map<number, CalendarQuarterPerDay>;
   jobyerHover: number;
+  jobyerHoverAlwaysAvailable: boolean = false;
 
   // Jobyer colors management
   jobyerColors: number[];
@@ -174,10 +175,12 @@ export class OfferRecruit {
           nom: this.searchResults[i].nom,
           prenom: this.searchResults[i].prenom,
           avatar: this.searchResults[i].avatar,
+          toujours_disponible: false,// this.searchResults[i].toujours_disponible,
           disponibilites: slots,
         })
       }
 
+      this.recruitmentService.retreiveJobyersAlwaysAvailable(this.jobyers);
     });
 
   }
@@ -262,10 +265,15 @@ export class OfferRecruit {
 
     // If on jobyer is mouseover
     if (this.jobyerHover > 0) {
-      // Get the jobyer availabilities
-      jobyersQuarters = this.recruitmentService.isJobyerAvailable(
-        date, this.jobyersAvailabilities.get(this.jobyerHover), quarterId
-      );
+      if (this.jobyerHoverAlwaysAvailable == true) {
+        jobyersQuarters = [];
+        jobyersQuarters[quarterId] = this.jobyerHover;
+      } else {
+        // Get the jobyer availabilities
+        jobyersQuarters = this.recruitmentService.isJobyerAvailable(
+          date, this.jobyersAvailabilities.get(this.jobyerHover), quarterId
+        );
+      }
     }
 
     let quarterClass: string = '';
@@ -297,6 +305,7 @@ export class OfferRecruit {
    */
   previewJobyerAvailabilities(jobyer: any): void {
     this.jobyerHover = jobyer.id;
+    this.jobyerHoverAlwaysAvailable = (jobyer.toujours_disponible == "Oui" ? true : false);
     this.recruitmentService.loadJobyerAvailabilities(
       this.jobyersAvailabilities,
       jobyer

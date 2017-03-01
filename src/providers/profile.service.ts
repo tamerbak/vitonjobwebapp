@@ -288,7 +288,7 @@ export class ProfileService{
    * @description update jobyer information
    * @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
    */
-  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, isStay, prefecture, isFrench, isEuropean, regionId, cv, nbWorkHours, studyHoursBigValue) {
+  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, isStay, prefecture, isFrench, isEuropean, regionId, cv, nbWorkHours, studyHoursBigValue, alwaysAvailable) {
     title = Utils.sqlfyText(title);
     lastname = Utils.sqlfyText(lastname);
     firstname = Utils.sqlfyText(firstname);
@@ -318,7 +318,9 @@ export class ProfileService{
       (!this.isEmpty(birthdepId) ? ("fk_user_departement ='" + birthdepId + "', ") : ("fk_user_departement = " + null + ", " )) +
       (!this.isEmpty(nbWorkHours) ? ("nb_heures_de_travail ='" + nbWorkHours + "', ") : ("nb_heures_de_travail = " + 0 + ", " )) +
       (!this.isEmpty(studyHoursBigValue) ? ("plus_de_350_heures_d_etude ='" + studyHoursBigValue + "', ") : ("plus_de_350_heures_d_etude = " + null + ", " )) +
-      (!this.isEmpty(cv) ? (" cv='" + Utils.sqlfyText(cv) + "' ") : ("cv='' ")) +
+      (!this.isEmpty(cv) ? (" cv='" + Utils.sqlfyText(cv) + "', ") : ("cv='', ")) +
+
+      "toujours_disponible='" + (alwaysAvailable ? 'Oui' : 'Non') + "' " +
 
       " where pk_user_jobyer ='" + roleId + "';";
     return new Promise(resolve => {

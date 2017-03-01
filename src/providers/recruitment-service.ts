@@ -321,4 +321,36 @@ export class RecruitmentService {
     }
     return i;
   }
+
+  retreiveJobyersAlwaysAvailable(jobyers: any[]) {
+
+    let ids: number[] = [];
+
+    for (let i = 0; i < jobyers.length; ++i) {
+      ids.push(jobyers[i].id);
+    }
+
+    let sql = "SELECT pk_user_jobyer, toujours_disponible FROM user_jobyer WHERE pk_user_jobyer IN (" + ids.join(',') + ")";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+
+          if (data.status == "success") {
+            for (let i = 0; i < data.data.length; ++i) {
+              let jobyer = jobyers.filter((j: any) => {
+                return (j.id == data.data[i].pk_user_jobyer);
+              });
+              if (jobyer.length > 0) {
+                jobyer[0].toujours_disponible = data.data[i].toujours_disponible;
+              }
+            }
+          }
+
+          resolve(data);
+        });
+    });
+  }
 }

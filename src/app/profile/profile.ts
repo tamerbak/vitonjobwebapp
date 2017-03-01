@@ -234,6 +234,8 @@ export class Profile{
   pharmaNAF:string = '4773Z';
   pharmaConventionId:number = 71;
 
+  alwaysAvailable: boolean;
+
   setImgClasses() {
     return {
       'img-circle': true,//TODO:this.currentUser && this.currentUser.estEmployeur,
@@ -722,6 +724,7 @@ export class Profile{
             }
           });
         }
+        this.alwaysAvailable = (data.toujours_disponible != 'Non');
       });
 
 
@@ -1426,8 +1429,8 @@ export class Profile{
           var medecineId = this.selectedMedecine.id === "0" ? 0 : parseInt(this.selectedMedecine.id);
           var entrepriseId = this.currentUser.employer.entreprises[0].id;
 
-                    
-          //pharma NAF 
+
+          //pharma NAF
           if(ape === this.pharmaNAF){
             this.conventionId = this.pharmaConventionId;
           }
@@ -1567,7 +1570,7 @@ export class Profile{
         let studyHoursBigValue = (this.isNbStudyHoursBig ? "OUI" : "NON");
 
         this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthdepId, birthplace, birthCountryId, numStay,
-          dateStay, dateFromStay, dateToStay, isResident, prefecture, this.isFrench, this.isEuropean, regionId, this.cv, this.nbWorkHours, studyHoursBigValue)
+          dateStay, dateFromStay, dateToStay, isResident, prefecture, this.isFrench, this.isEuropean, regionId, this.cv, this.nbWorkHours, studyHoursBigValue, this.alwaysAvailable)
           .then((res: any) => {
 
             //case of authentication failure : server unavailable or connection problem
@@ -2199,5 +2202,22 @@ export class Profile{
       }
     }
     return false;
+  }
+
+  switchJobyerAlwaysAvailable(): void {
+    if (this.isEmployer == false) {
+      if (this.alwaysAvailable == true) {
+        // this.profileService.updateSpontaneousContact('NON', this.currentUser.id);
+        // this.spontaneousContact = 'NON';
+        this.alwaysAvailable = false;
+        jQuery('.always-available').prop('checked', false);
+      } else {
+        // this.profileService.updateSpontaneousContact('OUI', this.currentUser.id);
+        // this.spontaneousContact = 'OUI';
+        this.alwaysAvailable = true;
+        jQuery('.always-available').prop('checked', true);
+      }
+    }
+
   }
 }
