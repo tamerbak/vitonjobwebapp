@@ -16,6 +16,7 @@ import {RecruitmentService} from "../../providers/recruitment-service";
 import {Utils} from "../utils/utils";
 import {ModalTeam} from "./modal-team/modal-team";
 import {DateUtils} from "../utils/date-utils";
+import {ModalNotificationContract} from "../modal-notification-contract/modal-notification-contract";
 
 declare let Messenger, jQuery: any;
 declare let google: any;
@@ -33,7 +34,8 @@ declare let require;
     NKDatetime,
     Calendar,
     Loader,
-    ModalTeam
+    ModalTeam,
+    ModalNotificationContract
   ],
   providers: [
     OffersService,
@@ -52,6 +54,8 @@ export class OfferRecruit {
 
   // Contains the list of available jobyers
   jobyers: any[] = [];
+  currentJobyer: any = null;
+  subject: string = "recruit";
 
   displayedHour = [];
 
@@ -97,6 +101,7 @@ export class OfferRecruit {
     this.offer = this.sharedService.getCurrentOffer();
 
     if (this.offer == null) {
+      this.employerPlanning = new CalendarQuarterPerDay();
       this.router.navigate(['offer/list']);
       return;
     }
@@ -145,6 +150,10 @@ export class OfferRecruit {
 
         if (this.searchResults[i].idJobyer <= 0) {
           continue;
+        }
+
+        if (this.currentJobyer == null) {
+          this.currentJobyer = this.searchResults[i];
         }
 
         let slots: CalendarSlot[] = [];
@@ -354,11 +363,11 @@ export class OfferRecruit {
    * Unassign the selected slot of any jobyers
    */
   unassignSlot(): void {
-    this.recruitmentService.assignSlotToThisJobyer(
-      this.selectedDay,
-      this.jobyersAvailabilities,
-      0
-    );
+    // this.recruitmentService.assignSlotToThisJobyer(
+    //   this.selectedDay,
+    //   this.jobyersAvailabilities,
+    //   0
+    // );
   }
 
   assignSelectedSlotToThisJobyer(jobyer: any): void {
@@ -369,11 +378,17 @@ export class OfferRecruit {
       this.jobyersAvailabilities,
       jobyer
     );
+
+    let from = this.selectedQuarterIdStart;
+    let to = this.selectedQuarterIdEnd;
+
     // TODO: to improve because assign temporary all the day
     this.recruitmentService.assignSlotToThisJobyer(
       this.selectedDay,
       this.jobyersAvailabilities,
-      jobyer.id
+      jobyer.id,
+      from,
+      to
     )
   }
 
@@ -396,4 +411,12 @@ export class OfferRecruit {
     return true;
   }
 
+  onRecruite() {
+    this.sharedService.setCurrentJobyer(this.currentJobyer);
+    jQuery('#modal-notification-contract').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+    jQuery('#modal-notification-contract').modal('show');
+  }
 }

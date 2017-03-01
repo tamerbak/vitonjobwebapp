@@ -125,3 +125,11 @@
   [(jobyers)]="jobyers"
   (jobyerSelected)="modalJobyerSelected($event)"
 ></div>
+
+<div
+  modal-notification-contract
+  [jobyer]="currentJobyer"
+  [subject]="subject"
+></div>
+
+<button (click)="onRecruite()"></button>

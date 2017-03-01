@@ -255,10 +255,14 @@ export class RecruitmentService {
    * @param day
    * @param jobyersAvailabilities
    * @param jobyerSelected
+   * @param from
+   * @param to
    */
   assignSlotToThisJobyer(day: any,
                          jobyersAvailabilities,
-                         jobyerSelected) {
+                         jobyerSelected,
+                          from: number,
+                          to: number) {
     let availabilities = jobyersAvailabilities.get(jobyerSelected);
 
     // TODO : In order to get all the slot quarter,
@@ -266,7 +270,7 @@ export class RecruitmentService {
 
     // TODO replace O by the firstQuarterOfTheSlot
     // TODO replace 24 * 4 by the lastQuarterOfTheSlot
-    for (let quarterId = 0; quarterId < 24 * 4; ++quarterId) {
+    for (let quarterId = from; quarterId <= to; ++quarterId) {
       // Check that this quarter is required or is not assigned yet
       if (day.quarters[quarterId] === null || day.quarters[quarterId] > 0) {
         continue;
