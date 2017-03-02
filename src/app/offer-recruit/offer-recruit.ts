@@ -87,7 +87,7 @@ export class OfferRecruit {
   getFrenchDateString: ((date: number)=> string);
 
   constructor(private offersService: OffersService,
-              private sharedService: SharedService,
+              public sharedService: SharedService,
               private searchService: SearchService,
               private recruitmentService: RecruitmentService,
               private router: Router,
