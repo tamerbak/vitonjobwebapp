@@ -167,13 +167,17 @@ export class RecruitmentService {
       // Check that the jobyer is not busy by an other slot the same day
       let busy: boolean = false;
       for (let j = 0; j < similarDays.length; ++j) {
-        if (similarDays[j].quarters[quarterId] == jobyerSelected) {
+        if (similarDays[j].quarters[quarterId] == jobyerSelected.id) {
           busy = true;
         }
       }
       if (busy) {
         return null;
       }
+    }
+
+    if (jobyerSelected.toujours_disponible) {
+      return true;
     }
 
     // Retrieve the day
@@ -243,7 +247,7 @@ export class RecruitmentService {
                                             jobyerSelected): void {
 
     // Get tje jobyer availabilities from the team
-    let availabilities = jobyersAvailabilities.get(jobyerSelected);
+    let availabilities = jobyersAvailabilities.get(jobyerSelected.id);
 
     // Then for each day of the calendar
     for (let i = 0; i < employerPlanning.quartersPerDay.length; ++i) {
@@ -264,7 +268,7 @@ export class RecruitmentService {
 
         // If the jobyer is available, check if the jobyer cans legally work
         if (jobyerAvailable && this.isJobyerCanWorkThisQuarter() === true) {
-          this.assignThisQuarterTo(day, quarterId, jobyerSelected);
+          this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
         }
       }
     }
@@ -286,7 +290,7 @@ export class RecruitmentService {
                          from: number,
                          to: number,
                          employerPlanning: CalendarQuarterPerDay) {
-    let availabilities = jobyersAvailabilities.get(jobyerSelected);
+    let availabilities = jobyersAvailabilities.get(jobyerSelected.id);
 
     // TODO : In order to get all the slot quarter,
     // retrieve the first quarter of the slot and the last and assign all of then
@@ -306,7 +310,7 @@ export class RecruitmentService {
 
       // If the jobyer is available, check if the jobyer cans legally work
       if (jobyerAvailable && this.isJobyerCanWorkThisQuarter() === true) {
-        this.assignThisQuarterTo(day, quarterId, jobyerSelected);
+        this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
       }
     }
   }

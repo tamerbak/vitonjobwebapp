@@ -363,7 +363,7 @@ export class OfferRecruit {
       this.recruitmentService.assignAsMuchQuarterAsPossibleToThisJobyer(
         this.employerPlanning,
         this.jobyersAvailabilities,
-        jobyer.id
+        jobyer
       );
     }
   }
@@ -395,7 +395,7 @@ export class OfferRecruit {
     this.recruitmentService.assignSlotToThisJobyer(
       this.selectedDay,
       this.jobyersAvailabilities,
-      jobyer.id,
+      jobyer,
       from,
       to,
       this.employerPlanning
