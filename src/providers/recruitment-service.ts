@@ -355,21 +355,73 @@ export class RecruitmentService {
   }
 
   translateFromQuartersPerJobyerToSlotsPerJobyer(employerPlanning: CalendarQuarterPerDay, jobyers: any[]): {jobyer: any; slots: any[]}[] {
-    let tmpValues: {jobyer: any; slots: any[]}[] = [];
+    let slotsPerJobyer: {jobyer: any; slots: any[]}[] = [];
 
-    for (let i = 0; i < jobyers.length; ++i) {
-      let tmpValue = {
-        jobyer: jobyers[i].id,
-        slots: [
-          JSON.parse('{class: "com.vitonjob.recherche.model.Slot", endDate: 1486483410465, endHour: 1380, id: null, pause:false, startDate:1486483410465, startHour:885}'),
-          JSON.parse('{class: "com.vitonjob.recherche.model.Slot", endDate: 1486483420465, endHour: 380, id: null, pause:false, startDate:1486483420465, startHour:185}'),
-          JSON.parse('{class: "com.vitonjob.recherche.model.Slot", endDate: 1486483430465, endHour: 180, id: null, pause:false, startDate:1486483430465, startHour:85}')
-        ]
-      };
-      tmpValues.push(tmpValue);
+
+    let startQuarterId = null;
+    let startQuarterDate = null;
+    let endQuarterId = null;
+    let endQuarterDate = null;
+    let jobyerId = null;
+
+    for (let i = 0; i < employerPlanning.quartersPerDay.length; ++i) {
+      let date = employerPlanning.quartersPerDay[i].date;
+      let quarters = employerPlanning.quartersPerDay[i].quarters;
+      for (let j = 0; j < quarters.length; ++j) {
+
+        if (quarters[j] === 0) {
+          quarters[j] = null;
+        }
+
+        if (jobyerId != quarters[j]) {
+
+          if (jobyerId == null) {
+            // Init data
+            jobyerId = quarters[j];
+            startQuarterId = j;
+            startQuarterDate = date + "";
+
+          } else {
+            // Complete slot
+            endQuarterId = j;
+            endQuarterDate = date + "";
+
+            // Generate new slot
+            let slot = new CalendarSlot();
+            slot.date = new Date(startQuarterDate);
+            slot.startHour = startQuarterId * 15;
+            slot.dateEnd = new Date(endQuarterDate);
+            slot.endHour = endQuarterId * 15;
+
+            // Assign the slot to the jobyer
+            let slotsLine = slotsPerJobyer.filter((spj)=> {
+              return (spj.jobyer == jobyerId);
+            });
+            if (slotsLine.length == 0) {
+              let slots = [slot];
+              slotsPerJobyer.push({
+                jobyer: jobyerId,
+                slots: slots
+              })
+            } else {
+              slotsLine[0].slots.push(slot);
+            }
+
+            jobyerId = quarters[j];
+            if (jobyerId != null) {
+              // Init data
+              jobyerId = quarters[j];
+              startQuarterId = j;
+              startQuarterDate = date + "";
+            }
+          }
+
+        }
+
+      }
     }
 
-    return tmpValues;
+    return slotsPerJobyer;
   }
 
   generateContractFromEmployerPlanning(employerPlanning: CalendarQuarterPerDay, jobyers: any[]) {
