@@ -141,6 +141,7 @@ export class RecruitmentService {
 
         // Check that we arrived to the last quarter, if not, continue the process
       } while (quart.getTime() < quartEnd.getTime());
+      planning.nextSlot();
     }
 
     return planning;
@@ -152,9 +153,29 @@ export class RecruitmentService {
    * @param date
    * @param availabilities
    * @param quarterId
+   * @param employerPlanning
+   * @param jobyerSelected
    * @returns {any}
    */
-  isJobyerAvailable(date, availabilities, quarterId): boolean {
+  isJobyerAvailable(date, availabilities, quarterId, employerPlanning?, jobyerSelected?): boolean {
+
+    // Then for each day of the calendar
+    if (employerPlanning) {
+      let similarDays = employerPlanning.quartersPerDay.filter((e)=> {
+        return e.date == date;
+      });
+      // Check that the jobyer is not busy by an other slot the same day
+      let busy: boolean = false;
+      for (let j = 0; j < similarDays.length; ++j) {
+        if (similarDays[j].quarters[quarterId] == jobyerSelected) {
+          busy = true;
+        }
+      }
+      if (busy) {
+        return null;
+      }
+    }
+
     // Retrieve the day
     let jobyersQuarters = availabilities.quartersPerDay.filter((d) => {
       return d.date == date;
@@ -238,7 +259,7 @@ export class RecruitmentService {
 
         // If the quarter is not assigned, check if the jobyer is available
         let jobyerAvailable = this.isJobyerAvailable(
-          day.date, availabilities, quarterId
+          day.date, availabilities, quarterId, employerPlanning, jobyerSelected
         );
 
         // If the jobyer is available, check if the jobyer cans legally work
@@ -257,12 +278,14 @@ export class RecruitmentService {
    * @param jobyerSelected
    * @param from
    * @param to
+   * @param employerPlanning
    */
   assignSlotToThisJobyer(day: any,
                          jobyersAvailabilities,
                          jobyerSelected,
-                          from: number,
-                          to: number) {
+                         from: number,
+                         to: number,
+                         employerPlanning: CalendarQuarterPerDay) {
     let availabilities = jobyersAvailabilities.get(jobyerSelected);
 
     // TODO : In order to get all the slot quarter,
@@ -278,7 +301,7 @@ export class RecruitmentService {
 
       // If the quarter is not assigned, check if the jobyer is available
       let jobyerAvailable = this.isJobyerAvailable(
-        day.date, availabilities, quarterId
+        day.date, availabilities, quarterId, employerPlanning, jobyerSelected
       );
 
       // If the jobyer is available, check if the jobyer cans legally work

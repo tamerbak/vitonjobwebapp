@@ -397,7 +397,8 @@ export class OfferRecruit {
       this.jobyersAvailabilities,
       jobyer.id,
       from,
-      to
+      to,
+      this.employerPlanning
     )
   }
 
