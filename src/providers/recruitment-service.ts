@@ -121,6 +121,13 @@ export class RecruitmentService {
     // Generate a new CalendarQuarterPerDay
     let planning = new CalendarQuarterPerDay();
 
+    // Order slots per date
+    slots.sort((n1, n2)=> {
+      let ts1 = new Date(n1.date).getTime() + n1.startHour;
+      let ts2 = new Date(n2.date).getTime() + n2.startHour;
+      return ts1 - ts2;
+    });
+
     for (let i: number = 0; i < slots.length; ++i) {
 
       // If with one slot all the limits are reach, stop here and prevent it.
