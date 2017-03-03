@@ -7,6 +7,10 @@ import {CalendarQuarterPerDay} from "../dto/calendar-quarter-per-day";
 import {CalendarSlot} from "../dto/calendar-slot";
 import {Offer} from "../dto/offer";
 
+import {OffersService} from "./offer.service";
+import {ContractService} from "./contract-service";
+import {Router} from "@angular/router";
+
 /**
  * Contains all the recruitment logic
  */
@@ -15,7 +19,10 @@ export class RecruitmentService {
 
   configuration: any;
 
-  constructor(public http: Http) {
+  constructor(public http: Http,
+              public router: Router,
+              public offersService: OffersService,
+              public contractService: ContractService) {
   }
 
   insertGroupedRecruitment(accountId, jobyerId, jobId, offerId) {
@@ -480,15 +487,72 @@ export class RecruitmentService {
     return slotsPerJobyer;
   }
 
-  generateContractFromEmployerPlanning(employerPlanning: CalendarQuarterPerDay, jobyers: any[]) {
+  /**
+   * Generate contract from assigned slots
+   *
+   * @param offer
+   * @param employerPlanning
+   * @param jobyers
+   * @param projectTarget
+   */
+  generateContractFromEmployerPlanning(offer: Offer, employerPlanning: CalendarQuarterPerDay, jobyers: any[], projectTarget) {
     // Format slots
     let slotsPerJobyer: {jobyer: any; slots: any[]}[] = this.translateFromQuartersPerJobyerToSlotsPerJobyer(
       employerPlanning, jobyers
     );
 
-    // Format offer(s)
+    //générer des offres avec les slots de chaque jobyer à partir de l'offre mère: on aura une offre par jobyer
+    for (let i = 0; i < slotsPerJobyer.length; i++) {
+      let offerCopy: Offer = JSON.parse((JSON.stringify(offer)));
+      offerCopy.calendarData = [];
+      offerCopy.calendarData = slotsPerJobyer[i].slots;
+      offerCopy.entrepriseId = offer.entrepriseId;
+      /*for(let j = 0; j < offerCopy.languageData.length; j++){
+       offerCopy.languageData[j].level = (offerCopy.languageData[j].level == "junior" ? 1 : 2);
+       }*/
+      offerCopy.languageData = [];
+      offerCopy.qualityData = [];
+      for(let j = 0; j < offerCopy.calendarData.length; j++){
+        offerCopy.calendarData[j].class = "com.vitonjob.callouts.offer.model.CalendarData";
+      }
+      offerCopy.class = "com.vitonjob.callouts.offer.model.OfferData";
 
-    // Execute contract process
+      this.offersService.copyOffer(offerCopy, projectTarget, "en archive").then((data: any) => {
+        if(data && !Utils.isEmpty(data._body)) {
+          let savedOffer = JSON.parse(data._body);
+          this.saveRecruitmentConfiguration(slotsPerJobyer[i].jobyer, savedOffer).then((data: any) => {
+            //get next num contract
+            this.contractService.getNumContract(projectTarget).then((data: any) => {
+              let contractNum;
+              if (data && data.length > 0) {
+                contractNum = this.contractService.formatNumContrat(data[0].numct);
+              } else {
+                return;
+              }
+
+              // TODO: il faut retourner l'id du jobyer dans le flux de la recherche
+              // slotsPerJobyer[i].jobyer.id = 28317;
+              //save contrct data
+              this.contractService.saveInitialContract(
+                contractNum,
+                slotsPerJobyer[i].jobyer.id,
+                offer.entrepriseId,
+                savedOffer.idOffer,
+                projectTarget
+              ).then((data: any) => {
+                if (i == slotsPerJobyer.length - 1) {
+                  //aller à la page liste des contrats
+                  this.router.navigate(['contract/list']);
+                }
+              });
+            });
+          });
+        }else{
+          console.log("error");
+          return;
+        }
+      });
+    }
   }
 
   saveRecruitmentConfiguration(jobyer, offer: Offer){
