@@ -4,6 +4,8 @@ import {Http, Headers} from "@angular/http";
 import {DateUtils} from "../app/utils/date-utils";
 import {GlobalConfigs} from "../configurations/globalConfigs";
 import {Utils} from "../app/utils/utils";
+import {Offer} from "../dto/offer";
+import {Contract} from "../dto/contract";
 
 // HACK: To fix: error TS2307: Cannot find module 'node'.
 declare function unescape(s: string): string;
@@ -22,7 +24,8 @@ export class ContractService {
 
   }
 
-  getNumContract() {
+  getNumContract(projectTarget) {
+    this.configuration = Configs.setConfigs(projectTarget);
     let sql = "select nextval('sequence_num_contrat') as numct";
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -921,6 +924,53 @@ export class ContractService {
         .map(res => res.json())
         .subscribe(data => {
           resolve(data);
+        });
+    });
+  }
+
+  formatNumContrat(num) {
+    let snum = num + "";
+    let zeros = 10 - snum.length;
+    if (zeros < 0)
+      return snum;
+
+    for (let i = 0; i < zeros; i++)
+      snum = "0" + snum;
+
+    return snum;
+  }
+
+  saveInitialContract(contractNum: number, jobyerId: Number, employerEntrepriseId: Number, idOffer: Number, projectTarget: string) {
+    //  Init project parameters
+    this.configuration = Configs.setConfigs(projectTarget);
+    let sql = "INSERT INTO user_contrat (" +
+      " created," +
+      " numero," +
+      " fk_user_entreprise," +
+      " fk_user_jobyer," +
+      " signature_employeur," +
+      " signature_jobyer," +
+      " fk_user_offre_entreprise" +
+      ")" +
+      " VALUES ("
+      + "'" + new Date().toISOString() + "',"
+      + "'" + Utils.sqlfyText(contractNum) + "',"
+      + "'" + employerEntrepriseId + "',"
+      + "'" + jobyerId + "',"
+      + "'NON',"
+      + "'NON',"
+      + "'" + idOffer + "'"
+      + ")"
+      + " RETURNING pk_user_contrat";
+
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          this.data = data;
+          resolve(this.data);
         });
     });
   }

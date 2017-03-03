@@ -725,7 +725,7 @@ export class Contract {
     this.inProgress = true;
 
     //get next num contract
-    this.contractService.getNumContract().then((data: any) => {
+    this.contractService.getNumContract(this.projectTarget).then((data: any) => {
       this.dataValidation = true;
 
       if (data && data.length > 0) {

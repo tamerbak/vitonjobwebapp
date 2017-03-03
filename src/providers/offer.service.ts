@@ -8,7 +8,7 @@ import {CCalloutArguments} from "../dto/generium/ccallout-arguments";
 import {CCallout} from "../dto/generium/ccallout";
 import {Utils} from "../app/utils/utils";
 
-const OFFER_CALLOUT_ID = 40023;
+const OFFER_CALLOUT_ID = 20052;
 
 @Injectable()
 export class OffersService {
@@ -270,9 +270,9 @@ export class OffersService {
    * @param projectTarget
    * @returns {Promise<T>}
    */
-  copyOffer(offer: Offer, projectTarget: string) {
+  copyOffer(offer: Offer, projectTarget: string, etat: string) {
     offer.idOffer = 0;
-    offer.etat = '';
+    offer.etat = etat;
     return this._uploadOffer(offer, projectTarget);
   }
 
