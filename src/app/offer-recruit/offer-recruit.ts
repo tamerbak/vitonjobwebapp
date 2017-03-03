@@ -92,7 +92,7 @@ export class OfferRecruit {
   getFrenchDateString: ((date: number)=> string);
 
   constructor(private offersService: OffersService,
-              private sharedService: SharedService,
+              public sharedService: SharedService,
               private searchService: SearchService,
               private recruitmentService: RecruitmentService,
               private router: Router,
@@ -315,9 +315,18 @@ export class OfferRecruit {
   previewJobyerAvailabilities(jobyer: any): void {
     this.jobyerHover = jobyer.id;
     this.jobyerHoverAlwaysAvailable = (jobyer.toujours_disponible == "Oui" ? true : false);
+
+    let dateLimitStart = new Date(this.employerPlanning.quartersPerDay[0].date);
+    let dateLimitEnd = new Date(this.employerPlanning.quartersPerDay[
+      this.employerPlanning.quartersPerDay.length - 1
+      ].date
+    );
+
     this.recruitmentService.loadJobyerAvailabilities(
       this.jobyersAvailabilities,
-      jobyer
+      jobyer,
+      dateLimitStart,
+      dateLimitEnd
     );
   }
 
@@ -372,7 +381,7 @@ export class OfferRecruit {
       this.recruitmentService.assignAsMuchQuarterAsPossibleToThisJobyer(
         this.employerPlanning,
         this.jobyersAvailabilities,
-        jobyer.id
+        jobyer
       );
     }
   }
@@ -381,11 +390,14 @@ export class OfferRecruit {
    * Unassign the selected slot of any jobyers
    */
   unassignSlot(): void {
-    // this.recruitmentService.assignSlotToThisJobyer(
-    //   this.selectedDay,
-    //   this.jobyersAvailabilities,
-    //   0
-    // );
+    this.recruitmentService.assignSlotToThisJobyer(
+      this.selectedDay,
+      null,
+      null,
+      this.selectedQuarterIdStart,
+      this.selectedQuarterIdEnd,
+      this.employerPlanning
+    )
   }
 
   assignSelectedSlotToThisJobyer(jobyer: any): void {
@@ -397,16 +409,13 @@ export class OfferRecruit {
       jobyer
     );
 
-    let from = this.selectedQuarterIdStart;
-    let to = this.selectedQuarterIdEnd;
-
-    // TODO: to improve because assign temporary all the day
     this.recruitmentService.assignSlotToThisJobyer(
       this.selectedDay,
       this.jobyersAvailabilities,
-      jobyer.id,
-      from,
-      to
+      jobyer,
+      this.selectedQuarterIdStart,
+      this.selectedQuarterIdEnd,
+      this.employerPlanning
     )
   }
 

@@ -22,6 +22,10 @@ export class CalendarQuarterPerDay {
     quarters: number[]
   }[];
 
+  next: boolean = false;
+
+  private fullAvailable: boolean = false;
+
   /**
    * Constructor
    */
@@ -65,8 +69,8 @@ export class CalendarQuarterPerDay {
       ;
 
     // If the line (day) already exists, just initialize the quarter as 0
-    if (slots.length > 0) {
-      slot = slots[0];
+    if (this.next == false && slots.length > 0) {
+      slot = slots[slots.length - 1];
       slot.quarters[index] = 0;
     } else {
 
@@ -84,6 +88,19 @@ export class CalendarQuarterPerDay {
         quarters: quarters
       };
       this.quartersPerDay.push(slot);
+      this.next = false;
     }
+  }
+
+  nextSlot() {
+    this.next = true;
+  }
+
+  setFullAvailable(): void {
+    this.fullAvailable = true;
+  }
+
+  isFullAvailable(): boolean {
+    return this.fullAvailable;
   }
 }

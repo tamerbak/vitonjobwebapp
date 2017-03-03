@@ -117,12 +117,20 @@ export class RecruitmentService {
   /**
    * Convert an array of calendar slots into a CalendarQuarterPerDay
    */
-  loadSlots(slots: CalendarSlot[]): CalendarQuarterPerDay {
+  loadSlots(slots: CalendarSlot[], dateLimitStart?, dateLimitEnd?): CalendarQuarterPerDay {
 
     // Generate a new CalendarQuarterPerDay
     let planning = new CalendarQuarterPerDay();
 
     for (let i: number = 0; i < slots.length; ++i) {
+
+      // If with one slot all the limits are reach, stop here and prevent it.
+      let dateStart = new Date(slots[i].date);
+      let dateEnd = new Date(slots[i].dateEnd);
+      if (dateLimitStart && dateLimitEnd && dateStart < dateLimitStart && dateEnd > dateLimitEnd) {
+        planning.setFullAvailable();
+        return planning;
+      }
 
       // Retrieve the first Quarter of this slot, the first 15 min
       let quart: CalendarQuarter = new CalendarQuarter(slots[i].date);
@@ -142,6 +150,7 @@ export class RecruitmentService {
 
         // Check that we arrived to the last quarter, if not, continue the process
       } while (quart.getTime() < quartEnd.getTime());
+      planning.nextSlot();
     }
 
     return planning;
@@ -153,9 +162,32 @@ export class RecruitmentService {
    * @param date
    * @param availabilities
    * @param quarterId
+   * @param employerPlanning
+   * @param jobyerSelected
    * @returns {any}
    */
-  isJobyerAvailable(date, availabilities, quarterId): boolean {
+  isJobyerAvailable(date, availabilities, quarterId, employerPlanning?, jobyerSelected?): boolean {
+
+    // Then for each day of the calendar
+    if (employerPlanning) {
+      let similarDays = employerPlanning.quartersPerDay.filter((e)=> {
+        return e.date == date;
+      });
+      // Check that the jobyer is not busy by an other slot the same day
+      let busy: boolean = false;
+      for (let j = 0; j < similarDays.length; ++j) {
+        if (similarDays[j].quarters[quarterId] == jobyerSelected.id) {
+          busy = true;
+        }
+      }
+      if (busy) {
+        return null;
+      }
+      if (jobyerSelected.toujours_disponible) {
+        return true;
+      }
+    }
+
     // Retrieve the day
     let jobyersQuarters = availabilities.quartersPerDay.filter((d) => {
       return d.date == date;
@@ -200,12 +232,15 @@ export class RecruitmentService {
    * @param jobyersAvailabilities
    * @param jobyer
    */
-  loadJobyerAvailabilities(jobyersAvailabilities, jobyer) {
+  loadJobyerAvailabilities(jobyersAvailabilities, jobyer, dateLimitStart?, dateLimitEnd?) {
     let availabilities = jobyersAvailabilities.get(jobyer.id);
     if (Utils.isEmpty(availabilities) == true) {
       availabilities = this.loadSlots(
-        jobyer.disponibilites
+        jobyer.disponibilites, dateLimitStart, dateLimitEnd
       );
+      if (availabilities.isFullAvailable() == true) {
+        jobyer.toujours_disponible = true;
+      }
       jobyersAvailabilities.set(jobyer.id, availabilities);
     }
   }
@@ -223,7 +258,7 @@ export class RecruitmentService {
                                             jobyerSelected): void {
 
     // Get tje jobyer availabilities from the team
-    let availabilities = jobyersAvailabilities.get(jobyerSelected);
+    let availabilities = jobyersAvailabilities.get(jobyerSelected.id);
 
     // Then for each day of the calendar
     for (let i = 0; i < employerPlanning.quartersPerDay.length; ++i) {
@@ -239,12 +274,12 @@ export class RecruitmentService {
 
         // If the quarter is not assigned, check if the jobyer is available
         let jobyerAvailable = this.isJobyerAvailable(
-          day.date, availabilities, quarterId
+          day.date, availabilities, quarterId, employerPlanning, jobyerSelected
         );
 
         // If the jobyer is available, check if the jobyer cans legally work
         if (jobyerAvailable && this.isJobyerCanWorkThisQuarter() === true) {
-          this.assignThisQuarterTo(day, quarterId, jobyerSelected);
+          this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
         }
       }
     }
@@ -258,13 +293,18 @@ export class RecruitmentService {
    * @param jobyerSelected
    * @param from
    * @param to
+   * @param employerPlanning
    */
   assignSlotToThisJobyer(day: any,
                          jobyersAvailabilities,
                          jobyerSelected,
-                          from: number,
-                          to: number) {
-    let availabilities = jobyersAvailabilities.get(jobyerSelected);
+                         from: number,
+                         to: number,
+                         employerPlanning: CalendarQuarterPerDay) {
+    let availabilities = [];
+    if (jobyerSelected !== null) {
+      availabilities = jobyersAvailabilities.get(jobyerSelected.id);
+    }
 
     // TODO : In order to get all the slot quarter,
     // retrieve the first quarter of the slot and the last and assign all of then
@@ -272,6 +312,13 @@ export class RecruitmentService {
     // TODO replace O by the firstQuarterOfTheSlot
     // TODO replace 24 * 4 by the lastQuarterOfTheSlot
     for (let quarterId = from; quarterId <= to; ++quarterId) {
+
+      // If no jobyer given, this is unassignment process
+      if (jobyerSelected == null) {
+        day.quarters[quarterId] = 0;
+        continue;
+      }
+
       // Check that this quarter is required or is not assigned yet
       if (day.quarters[quarterId] === null || day.quarters[quarterId] > 0) {
         continue;
@@ -279,12 +326,12 @@ export class RecruitmentService {
 
       // If the quarter is not assigned, check if the jobyer is available
       let jobyerAvailable = this.isJobyerAvailable(
-        day.date, availabilities, quarterId
+        day.date, availabilities, quarterId, employerPlanning, jobyerSelected
       );
 
       // If the jobyer is available, check if the jobyer cans legally work
       if (jobyerAvailable && this.isJobyerCanWorkThisQuarter() === true) {
-        this.assignThisQuarterTo(day, quarterId, jobyerSelected);
+        this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
       }
     }
   }
@@ -345,7 +392,7 @@ export class RecruitmentService {
                 return (j.id == data.data[i].pk_user_jobyer);
               });
               if (jobyer.length > 0) {
-                jobyer[0].toujours_disponible = data.data[i].toujours_disponible;
+                jobyer[0].toujours_disponible = (data.data[i].toujours_disponible == 'Oui');
               }
             }
           }
