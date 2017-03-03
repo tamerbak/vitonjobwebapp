@@ -300,7 +300,10 @@ export class RecruitmentService {
                          from: number,
                          to: number,
                          employerPlanning: CalendarQuarterPerDay) {
-    let availabilities = jobyersAvailabilities.get(jobyerSelected.id);
+    let availabilities = [];
+    if (jobyerSelected !== null) {
+      availabilities = jobyersAvailabilities.get(jobyerSelected.id);
+    }
 
     // TODO : In order to get all the slot quarter,
     // retrieve the first quarter of the slot and the last and assign all of then
@@ -308,6 +311,13 @@ export class RecruitmentService {
     // TODO replace O by the firstQuarterOfTheSlot
     // TODO replace 24 * 4 by the lastQuarterOfTheSlot
     for (let quarterId = from; quarterId <= to; ++quarterId) {
+
+      // If no jobyer given, this is unassignment process
+      if (jobyerSelected == null) {
+        day.quarters[quarterId] = 0;
+        continue;
+      }
+
       // Check that this quarter is required or is not assigned yet
       if (day.quarters[quarterId] === null || day.quarters[quarterId] > 0) {
         continue;

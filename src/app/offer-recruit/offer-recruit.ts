@@ -381,11 +381,14 @@ export class OfferRecruit {
    * Unassign the selected slot of any jobyers
    */
   unassignSlot(): void {
-    // this.recruitmentService.assignSlotToThisJobyer(
-    //   this.selectedDay,
-    //   this.jobyersAvailabilities,
-    //   0
-    // );
+    this.recruitmentService.assignSlotToThisJobyer(
+      this.selectedDay,
+      null,
+      null,
+      this.selectedQuarterIdStart,
+      this.selectedQuarterIdEnd,
+      this.employerPlanning
+    )
   }
 
   assignSelectedSlotToThisJobyer(jobyer: any): void {
@@ -397,16 +400,12 @@ export class OfferRecruit {
       jobyer
     );
 
-    let from = this.selectedQuarterIdStart;
-    let to = this.selectedQuarterIdEnd;
-
-    // TODO: to improve because assign temporary all the day
     this.recruitmentService.assignSlotToThisJobyer(
       this.selectedDay,
       this.jobyersAvailabilities,
       jobyer,
-      from,
-      to,
+      this.selectedQuarterIdStart,
+      this.selectedQuarterIdEnd,
       this.employerPlanning
     )
   }

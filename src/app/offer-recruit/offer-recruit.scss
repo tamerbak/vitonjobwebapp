@@ -779,7 +779,7 @@ $boxShadowColor: #4183C4;
   100% { box-shadow: $boxShadowShift 0px 12px $boxShadowColor; }
 }
 
-$detailHeight: 200px;
+$detailHeight: 130px;
 $detailAnimationDuration: 0.5s;
 
 .offer-recruit-detail-open {
@@ -799,4 +799,16 @@ $detailAnimationDuration: 0.5s;
 @-webkit-keyframes detail-close {
   0% { min-height: $detailHeight; }
   100% { min-height: 0; }
+}
+
+.slot-description-actions {
+  padding-top: 2rem;
+}
+
+.offer-recruit-description {
+  margin-top: 4em;
+}
+
+.slot-description-unassign {
+  width: 100%;
 }
