@@ -116,12 +116,20 @@ export class RecruitmentService {
   /**
    * Convert an array of calendar slots into a CalendarQuarterPerDay
    */
-  loadSlots(slots: CalendarSlot[]): CalendarQuarterPerDay {
+  loadSlots(slots: CalendarSlot[], dateLimitStart?, dateLimitEnd?): CalendarQuarterPerDay {
 
     // Generate a new CalendarQuarterPerDay
     let planning = new CalendarQuarterPerDay();
 
     for (let i: number = 0; i < slots.length; ++i) {
+
+      // If with one slot all the limits are reach, stop here and prevent it.
+      let dateStart = new Date(slots[i].date);
+      let dateEnd = new Date(slots[i].dateEnd);
+      if (dateLimitStart && dateLimitEnd && dateStart < dateLimitStart && dateEnd > dateLimitEnd) {
+        planning.setFullAvailable();
+        return planning;
+      }
 
       // Retrieve the first Quarter of this slot, the first 15 min
       let quart: CalendarQuarter = new CalendarQuarter(slots[i].date);
@@ -174,10 +182,9 @@ export class RecruitmentService {
       if (busy) {
         return null;
       }
-    }
-
-    if (jobyerSelected.toujours_disponible) {
-      return true;
+      if (jobyerSelected.toujours_disponible) {
+        return true;
+      }
     }
 
     // Retrieve the day
@@ -224,12 +231,15 @@ export class RecruitmentService {
    * @param jobyersAvailabilities
    * @param jobyer
    */
-  loadJobyerAvailabilities(jobyersAvailabilities, jobyer) {
+  loadJobyerAvailabilities(jobyersAvailabilities, jobyer, dateLimitStart?, dateLimitEnd?) {
     let availabilities = jobyersAvailabilities.get(jobyer.id);
     if (Utils.isEmpty(availabilities) == true) {
       availabilities = this.loadSlots(
-        jobyer.disponibilites
+        jobyer.disponibilites, dateLimitStart, dateLimitEnd
       );
+      if (availabilities.isFullAvailable() == true) {
+        jobyer.toujours_disponible = true;
+      }
       jobyersAvailabilities.set(jobyer.id, availabilities);
     }
   }
@@ -371,7 +381,7 @@ export class RecruitmentService {
                 return (j.id == data.data[i].pk_user_jobyer);
               });
               if (jobyer.length > 0) {
-                jobyer[0].toujours_disponible = data.data[i].toujours_disponible;
+                jobyer[0].toujours_disponible = (data.data[i].toujours_disponible == 'Oui');
               }
             }
           }

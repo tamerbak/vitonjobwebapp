@@ -306,9 +306,18 @@ export class OfferRecruit {
   previewJobyerAvailabilities(jobyer: any): void {
     this.jobyerHover = jobyer.id;
     this.jobyerHoverAlwaysAvailable = (jobyer.toujours_disponible == "Oui" ? true : false);
+
+    let dateLimitStart = new Date(this.employerPlanning.quartersPerDay[0].date);
+    let dateLimitEnd = new Date(this.employerPlanning.quartersPerDay[
+      this.employerPlanning.quartersPerDay.length - 1
+      ].date
+    );
+
     this.recruitmentService.loadJobyerAvailabilities(
       this.jobyersAvailabilities,
-      jobyer
+      jobyer,
+      dateLimitStart,
+      dateLimitEnd
     );
   }
 

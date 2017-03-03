@@ -24,6 +24,8 @@ export class CalendarQuarterPerDay {
 
   next: boolean = false;
 
+  private fullAvailable: boolean = false;
+
   /**
    * Constructor
    */
@@ -92,5 +94,13 @@ export class CalendarQuarterPerDay {
 
   nextSlot() {
     this.next = true;
+  }
+
+  setFullAvailable(): void {
+    this.fullAvailable = true;
+  }
+
+  isFullAvailable(): boolean {
+    return this.fullAvailable;
   }
 }
