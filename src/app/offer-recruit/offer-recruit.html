@@ -74,7 +74,15 @@
                 {{ jobyer.titre }} {{ jobyer.prenom }} {{ jobyer.nom }}
                 {{ jobyer.avatar }}
               </h6>
-              <p class="fs-mini">Toujours disponible: {{ jobyer.toujours_disponible ? 'Oui' : 'Non' }}</p>
+              <p class="fs-mini" *ngIf="jobyer.toujours_disponible">
+                Toujours disponible
+              </p>
+              <p class="fs-mini" *ngIf="!jobyer.toujours_disponible && jobyer.disponibilites.length == 0">
+                Indisponible
+              </p>
+              <p class="fs-mini" *ngIf="!jobyer.toujours_disponible && jobyer.disponibilites.length > 0">
+                Partiellement disponible
+              </p>
             </div>
           </li>
 

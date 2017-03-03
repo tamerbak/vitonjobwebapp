@@ -86,6 +86,9 @@ export class OfferRecruit {
 
   getFrenchDateString: ((date: number)=> string);
 
+  firstPlanningDay: number = null;
+  lastPlanningDay: number = null;
+
   constructor(private offersService: OffersService,
               public sharedService: SharedService,
               private searchService: SearchService,
@@ -109,6 +112,9 @@ export class OfferRecruit {
 
     // Retrieve offer data
     this.employerPlanning = this.recruitmentService.loadSlots(this.offer.calendarData);
+
+    this.retrieveLimits();
+
     this.getJobyerList();
 
   }
@@ -122,6 +128,18 @@ export class OfferRecruit {
 
   ngAfterViewInit(): void {
 
+  }
+
+  retrieveLimits() {
+    for (let i = 0; i < this.employerPlanning.quartersPerDay.length; ++i) {
+      let date = new Date(this.employerPlanning.quartersPerDay[i].date).getTime();
+      if (!this.firstPlanningDay || date < this.firstPlanningDay) {
+        this.firstPlanningDay = date;
+      }
+      if (!this.lastPlanningDay || date > this.lastPlanningDay) {
+        this.lastPlanningDay = date;
+      }
+    }
   }
 
   /**
@@ -157,7 +175,9 @@ export class OfferRecruit {
           this.currentJobyer = this.searchResults[i];
         }
 
+        let alwaysAvailable = false;
         let slots: CalendarSlot[] = [];
+
         for (let j = 0; j < this.searchResults[i].disponibilites.length; ++j) {
           let slot = new CalendarSlot();
           slot.date = this.searchResults[i].disponibilites[j].startDate;
@@ -167,7 +187,21 @@ export class OfferRecruit {
           if (!slot.dateEnd) {
             slot.dateEnd = slot.date;
           }
-          slots.push(slot);
+
+          let date = new Date(slot.date).getTime();
+          let dateEnd = new Date(slot.dateEnd).getTime();
+          if ((date >= this.firstPlanningDay && date <= this.lastPlanningDay)
+            || (dateEnd >= this.firstPlanningDay && dateEnd <= this.lastPlanningDay)) {
+            slots.push(slot);
+          }
+
+          // If a slots cover all the planning, activate alwaysAvailable;
+          if (date <= this.firstPlanningDay && dateEnd >= this.lastPlanningDay) {
+            alwaysAvailable = true;
+            slots = [];
+            break;
+          }
+
         }
         this.jobyers.push({
           id: this.searchResults[i].idJobyer,
@@ -175,9 +209,9 @@ export class OfferRecruit {
           nom: this.searchResults[i].nom,
           prenom: this.searchResults[i].prenom,
           avatar: this.searchResults[i].avatar,
-          toujours_disponible: false,// this.searchResults[i].toujours_disponible,
+          toujours_disponible: alwaysAvailable,
           disponibilites: slots,
-        })
+        });
       }
 
       this.recruitmentService.retreiveJobyersAlwaysAvailable(this.jobyers);
@@ -305,7 +339,7 @@ export class OfferRecruit {
    */
   previewJobyerAvailabilities(jobyer: any): void {
     this.jobyerHover = jobyer.id;
-    this.jobyerHoverAlwaysAvailable = (jobyer.toujours_disponible == "Oui" ? true : false);
+    // this.jobyerHoverAlwaysAvailable = jobyer.toujours_disponible;
 
     let dateLimitStart = new Date(this.employerPlanning.quartersPerDay[0].date);
     let dateLimitEnd = new Date(this.employerPlanning.quartersPerDay[
@@ -319,6 +353,7 @@ export class OfferRecruit {
       dateLimitStart,
       dateLimitEnd
     );
+    this.jobyerHoverAlwaysAvailable = jobyer.toujours_disponible;
   }
 
   /**

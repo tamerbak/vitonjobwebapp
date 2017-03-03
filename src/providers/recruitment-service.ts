@@ -391,7 +391,8 @@ export class RecruitmentService {
                 return (j.id == data.data[i].pk_user_jobyer);
               });
               if (jobyer.length > 0) {
-                jobyer[0].toujours_disponible = (data.data[i].toujours_disponible == 'Oui');
+                jobyer[0].toujours_disponible = jobyer[0].toujours_disponible || (data.data[i].toujours_disponible == 'Oui');
+
               }
             }
           }
