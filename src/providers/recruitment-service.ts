@@ -5,6 +5,7 @@ import {Utils} from "../app/utils/utils";
 import {CalendarQuarter} from "../dto/calendar-quarter";
 import {CalendarQuarterPerDay} from "../dto/calendar-quarter-per-day";
 import {CalendarSlot} from "../dto/calendar-slot";
+import {Offer} from "../dto/offer";
 
 /**
  * Contains all the recruitment logic
@@ -434,4 +435,22 @@ export class RecruitmentService {
 
     // Execute contract process
   }
+
+  saveRecruitmentConfiguration(jobyer, offer: Offer){
+    let sql = "insert into user_configuration_recrutement (fk_user_jobyer, fk_user_offre_entreprise) values ";
+    let values = " (" + jobyer.id + "," + offer.idOffer + ") ";
+    sql = sql + values;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          if (data.status == "success") {
+            resolve(data);
+          }
+        });
+    });
+  }
+
+
 }

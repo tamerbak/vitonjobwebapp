@@ -226,7 +226,7 @@ export class OfferList {
    * @Description : Launch search from current offer-list
    */
   launchSearch(offer) {
-    if (!offer)
+    /*if (!offer)
       return;
     let searchQuery = {
       class: 'com.vitonjob.recherche.model.SearchQuery',
@@ -240,7 +240,10 @@ export class OfferList {
       this.sharedService.setCurrentSearchCity(null);
       this.sharedService.setCurrentOffer(offer);
       this.router.navigate(['search/results']);
-    });
+    });*/
+
+    this.sharedService.setCurrentOffer(offer);
+    this.router.navigate(['offer/recruit']);
 
   }
 
