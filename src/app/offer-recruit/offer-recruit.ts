@@ -473,59 +473,15 @@ export class OfferRecruit {
     return true;
   }
 
+  /**
+   * Validate and save the slots attribution
+   */
   saveRepartition() {
-    // Format slots
-    //let slotsPerJobyer: {jobyer: any; slots: CalendarSlot[]}[] = this.recruitmentService.translateFromQuartersPerJobyerToSlotsPerJobyer(     this.employerPlanning, this.jobyers);
-    //Temp: mock en attendant de corriger la methode translateFromQuartersPerJobyerToSlotsPerJobyer
-    let jobyer: any = this.jobyers[0];
-    let slots: CalendarSlot[] = JSON.parse(JSON.stringify(this.offer.calendarData));
-    let slotsPerJobyer = [{jobyer, slots}];
-
-    //générer des offres avec les slots de chaque jobyer à partir de l'offre mère: on aura une offre par jobyer
-    for (let i = 0; i < slotsPerJobyer.length; i++) {
-      let offerCopy: Offer = JSON.parse((JSON.stringify(this.offer)));
-      offerCopy.calendarData = [];
-      offerCopy.calendarData = slotsPerJobyer[i].slots;
-      offerCopy.entrepriseId = this.currentUser.employer.entreprises[0].id;
-      /*for(let j = 0; j < offerCopy.languageData.length; j++){
-        offerCopy.languageData[j].level = (offerCopy.languageData[j].level == "junior" ? 1 : 2);
-      }*/
-      offerCopy.languageData = [];
-      offerCopy.qualityData = [];
-      for(let j = 0; j < offerCopy.calendarData.length; j++){
-       offerCopy.calendarData[j].class = "com.vitonjob.callouts.offer.model.CalendarData";
-       }
-       offerCopy.class = "com.vitonjob.callouts.offer.model.OfferData";
-
-      this.offersService.copyOffer(offerCopy, this.projectTarget, "en archive").then((data: any) => {
-        if(data && !Utils.isEmpty(data._body)) {
-          let savedOffer = JSON.parse(data._body);
-          this.recruitmentService.saveRecruitmentConfiguration(slotsPerJobyer[i].jobyer, savedOffer).then((data: any) => {
-            //get next num contract
-            this.contractService.getNumContract(this.projectTarget).then((data: any) => {
-              let contractNum;
-              if (data && data.length > 0) {
-                contractNum = this.contractService.formatNumContrat(data[0].numct);
-              } else {
-                return;
-              }
-
-              //TODO: il faut retourner l'id du jobyer dans le flux de la recherche
-              slotsPerJobyer[i].jobyer.id = 28317;
-              //save contrct data
-              this.contractService.saveInitialContract(contractNum, slotsPerJobyer[i].jobyer.id, this.currentUser.employer.entreprises[0].id, savedOffer.idOffer, this.projectTarget).then((data: any) => {
-                if (i == slotsPerJobyer.length - 1) {
-                  //aller à la page liste des contrats
-                  this.router.navigate(['contract/list']);
-                }
-              });
-            });
-          });
-        }else{
-          console.log("error");
-          return;
-        }
-      });
-    }
+    this.recruitmentService.generateContractFromEmployerPlanning(
+      this.offer,
+      this.employerPlanning,
+      this.jobyers,
+      this.projectTarget
+    );
   }
 }
