@@ -5,7 +5,7 @@ import {ContractService} from '../../providers/contract-service';
 import {OffersService} from '../../providers/offer.service';
 import {Utils} from "../utils/utils";
 import {DateUtils} from "../utils/date-utils";
-
+import {Offer} from "../../dto/offer";
 
 @Component({
   selector: '[contract-list]',
@@ -113,6 +113,17 @@ export class ContractList{
           this.router.navigate(['contract/recruitment']);
         });
       });
+    });
+  }
+
+  goToContractForm(item){
+    let jobyer = {prenom: item.prenom, nom: item.nom, dateNaissance: item.jobyerBirthDate, email: item.email, tel: item.tel}
+    //set variables in local storage and navigate to docusign page
+    this.sharedService.setCurrentJobyer(jobyer);
+    let offer: any = new Offer();
+    this.offerService.getOfferById(item.idOffer, this.projectTarget, offer).then(data => {
+      this.sharedService.setCurrentOffer(offer);
+      this.router.navigate(['contract/recruitment-form']);
     });
   }
 
