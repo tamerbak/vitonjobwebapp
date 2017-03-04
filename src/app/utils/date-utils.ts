@@ -133,6 +133,13 @@ export class DateUtils {
   public static formatHours(hours){
     return (hours < 10 ? ('0' + hours) : hours);
   }
+
+  public static simpleDateFormat(d:Date){
+    let m = d.getMonth() + 1;
+    let da = d.getDate();
+    let sd = (da < 10 ? '0' : '')+da+'/' + (m < 10 ? '0' : '') + m + "/" +d.getFullYear() ;
+    return sd
+  }
 }
 
   interface Dictionary {

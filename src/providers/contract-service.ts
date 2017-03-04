@@ -5,7 +5,7 @@ import {DateUtils} from "../app/utils/date-utils";
 import {GlobalConfigs} from "../configurations/globalConfigs";
 import {Utils} from "../app/utils/utils";
 import {Offer} from "../dto/offer";
-import {Contract} from "../dto/contract";
+import {ContractData} from "../dto/contract";
 
 // HACK: To fix: error TS2307: Cannot find module 'node'.
 declare function unescape(s: string): string;
@@ -973,6 +973,39 @@ export class ContractService {
           this.data = data;
           resolve(this.data);
         });
+    });
+  }
+
+  prepareRecruitement(entrepriseId, email, tel, idOffer, jobyerId, projectTarget){
+    let bean = {
+      class: "com.vitonjob.gcr.model.Query",
+      entrepriseId : entrepriseId,
+      email : email,
+      tel : tel,
+      idOffer : idOffer,
+      jobyerId: jobyerId
+    };
+
+    let body = {
+      'class': 'fr.protogen.masterdata.model.CCallout',
+      id: 20050,
+      args: [
+        {
+          class: 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'Préparation du recrutement',
+          value: btoa(JSON.stringify(bean))
+        }
+      ]
+    };
+
+    this.configuration = Configs.setConfigs(projectTarget);
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(this.configuration.calloutURL, body, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any) => {
+        resolve(data);
+      });
     });
   }
 }

@@ -1,4 +1,4 @@
-export class Contract {
+export class ContractData {
 
   id: number;
   num: String;
@@ -74,6 +74,8 @@ export class Contract {
   enveloppeEmployeur: String;
   enveloppeJobyer: String;
 
+  epiList: any[];
+
 
   constructor(){
     this.id = 0;
@@ -81,8 +83,8 @@ export class Contract {
     this.numero = "";
     this.centreMedecineEntreprise = "";
     this.adresseCentreMedecineEntreprise = "";
-    this.centreMedecineETT = "181 - CMIE";
-    this.adresseCentreMedecineETT = "80 RUE DE CLICHY 75009 PARIS";
+    this.centreMedecineETT = "CMIE";
+    this.adresseCentreMedecineETT = "4 rue de La Haye – 95731 ROISSY EN FRANCE";
     this.contact = "";
     this.indemniteFinMission = "10.00 %";
     this.indemniteCongesPayes = "10.00 %";
@@ -133,7 +135,7 @@ export class Contract {
     this.zonesTitre = "";
     this.risques = "";
     this.elementsCotisation = 0.0;
-    this.elementsNonCotisation = 10.0;
+    this.elementsNonCotisation = 1.0;
     this.titre = "";
     this.periodicite = "";
 
@@ -147,5 +149,7 @@ export class Contract {
 
     this.offerContact = "";
     this.contactPhone = "";
+
+    this.epiList = [];
   }
 }

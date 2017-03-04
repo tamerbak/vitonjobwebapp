@@ -417,8 +417,8 @@ export class RecruitmentService {
     });
   }
 
-  translateFromQuartersPerJobyerToSlotsPerJobyer(employerPlanning: CalendarQuarterPerDay, jobyers: any[]): {jobyer: any; slots: any[]}[] {
-    let slotsPerJobyer: {jobyer: any; slots: any[]}[] = [];
+  translateFromQuartersPerJobyerToSlotsPerJobyer(employerPlanning: CalendarQuarterPerDay, jobyers: any[]): {jobyerId: number; slots: any[]}[] {
+    let slotsPerJobyer: {jobyerId: number; slots: any[]}[] = [];
 
 
     let startQuarterId = null;
@@ -451,19 +451,19 @@ export class RecruitmentService {
 
             // Generate new slot
             let slot = new CalendarSlot();
-            slot.date = new Date(startQuarterDate);
+            slot.date = new Date(startQuarterDate).getTime();
             slot.startHour = startQuarterId * 15;
-            slot.dateEnd = new Date(endQuarterDate);
+            slot.dateEnd = new Date(endQuarterDate).getTime();
             slot.endHour = endQuarterId * 15;
 
             // Assign the slot to the jobyer
             let slotsLine = slotsPerJobyer.filter((spj)=> {
-              return (spj.jobyer == jobyerId);
+              return (spj.jobyerId == jobyerId);
             });
             if (slotsLine.length == 0) {
               let slots = [slot];
               slotsPerJobyer.push({
-                jobyer: jobyerId,
+                jobyerId: jobyerId,
                 slots: slots
               })
             } else {
@@ -495,9 +495,9 @@ export class RecruitmentService {
    * @param jobyers
    * @param projectTarget
    */
-  generateContractFromEmployerPlanning(offer: Offer, employerPlanning: CalendarQuarterPerDay, jobyers: any[], projectTarget) {
+  generateContractFromEmployerPlanning(offer: Offer, employerPlanning: CalendarQuarterPerDay, jobyers: any[], projectTarget: string, entrepriseId: number) {
     // Format slots
-    let slotsPerJobyer: {jobyer: any; slots: any[]}[] = this.translateFromQuartersPerJobyerToSlotsPerJobyer(
+    let slotsPerJobyer: {jobyerId: number; slots: any[]}[] = this.translateFromQuartersPerJobyerToSlotsPerJobyer(
       employerPlanning, jobyers
     );
 
@@ -506,7 +506,7 @@ export class RecruitmentService {
       let offerCopy: Offer = JSON.parse((JSON.stringify(offer)));
       offerCopy.calendarData = [];
       offerCopy.calendarData = slotsPerJobyer[i].slots;
-      offerCopy.entrepriseId = offer.entrepriseId;
+      offerCopy.entrepriseId = entrepriseId;
       /*for(let j = 0; j < offerCopy.languageData.length; j++){
        offerCopy.languageData[j].level = (offerCopy.languageData[j].level == "junior" ? 1 : 2);
        }*/
@@ -520,7 +520,7 @@ export class RecruitmentService {
       this.offersService.copyOffer(offerCopy, projectTarget, "en archive").then((data: any) => {
         if(data && !Utils.isEmpty(data._body)) {
           let savedOffer = JSON.parse(data._body);
-          this.saveRecruitmentConfiguration(slotsPerJobyer[i].jobyer, savedOffer).then((data: any) => {
+          this.saveRecruitmentConfiguration(slotsPerJobyer[i].jobyerId, savedOffer.idOffer).then((data: any) => {
             //get next num contract
             this.contractService.getNumContract(projectTarget).then((data: any) => {
               let contractNum;
@@ -535,8 +535,8 @@ export class RecruitmentService {
               //save contrct data
               this.contractService.saveInitialContract(
                 contractNum,
-                slotsPerJobyer[i].jobyer.id,
-                offer.entrepriseId,
+                slotsPerJobyer[i].jobyerId,
+                entrepriseId,
                 savedOffer.idOffer,
                 projectTarget
               ).then((data: any) => {
@@ -555,9 +555,9 @@ export class RecruitmentService {
     }
   }
 
-  saveRecruitmentConfiguration(jobyer, offer: Offer){
+  saveRecruitmentConfiguration(jobyerId, offerId){
     let sql = "insert into user_configuration_recrutement (fk_user_jobyer, fk_user_offre_entreprise) values ";
-    let values = " (" + jobyer.id + "," + offer.idOffer + ") ";
+    let values = " (" + jobyerId + "," + offerId + ") ";
     sql = sql + values;
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();

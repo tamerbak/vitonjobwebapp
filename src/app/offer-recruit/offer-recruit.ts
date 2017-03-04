@@ -481,7 +481,8 @@ export class OfferRecruit {
       this.offer,
       this.employerPlanning,
       this.jobyers,
-      this.projectTarget
+      this.projectTarget,
+      this.currentUser.employer.entreprises[0].id
     );
   }
 }
