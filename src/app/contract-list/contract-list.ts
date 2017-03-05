@@ -6,6 +6,7 @@ import {OffersService} from '../../providers/offer.service';
 import {Utils} from "../utils/utils";
 import {DateUtils} from "../utils/date-utils";
 import {Offer} from "../../dto/offer";
+import {ContractData} from "../../dto/contract";
 
 @Component({
   selector: '[contract-list]',
@@ -117,14 +118,25 @@ export class ContractList{
   }
 
   goToContractForm(item){
-    let jobyer = {prenom: item.prenom, nom: item.nom, dateNaissance: item.jobyerBirthDate, email: item.email, tel: item.tel}
-    //set variables in local storage and navigate to docusign page
-    this.sharedService.setCurrentJobyer(jobyer);
     let offer: any = new Offer();
-    this.offerService.getOfferById(item.idOffer, this.projectTarget, offer).then(data => {
-      this.sharedService.setCurrentOffer(offer);
-      this.router.navigate(['contract/recruitment-form']);
-    });
+    //si le partnerEmployerLink est vide, c'est que les infos du contrat n'ont pas encore été saisies
+    if(Utils.isEmpty(item.partnerEmployerLink)){
+      let jobyer = {id: item.jobyerId, prenom: item.prenom, nom: item.nom, dateNaissance: item.jobyerBirthDate, lieuNaissance: item.lieuNaissance, email: item.email, tel: item.tel};
+      //set variables in local storage and navigate to docusign page
+      this.sharedService.setCurrentJobyer(jobyer);
+      this.offerService.getOfferById(item.idOffer, this.projectTarget, offer).then(data => {
+        this.sharedService.setCurrentOffer(offer);
+        this.router.navigate(['contract/recruitment-form']);
+      });
+    }else{
+      this.contractService.getContractDataInfos(item.id).then((data: ContractData) => {
+        this.sharedService.setContractData(data);
+        this.offerService.getOfferById(item.idOffer, this.projectTarget, offer).then(data => {
+          this.sharedService.setCurrentOffer(offer);
+          this.router.navigate(['contract/recruitment-form']);
+        });
+      })
+    }
   }
 
   isEmpty(str) {

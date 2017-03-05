@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {Router} from "@angular/router";
+import {Router, ActivatedRoute, Params} from "@angular/router";
 import {Helpers} from "../../providers/helpers.service";
 import {SharedService} from "../../providers/shared.service";
 import {ContractService} from "../../providers/contract-service";
@@ -17,7 +17,6 @@ import {FinanceService} from "../../providers/finance.service";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {RecruitmentService} from "../../providers/recruitment-service";
 import {ContractData} from "../../dto/contract";
-import {isUndefined} from "es7-reflect-metadata/dist/dist/helper/is-undefined";
 import {Offer} from "../../dto/offer";
 import {DateUtils} from "../utils/date-utils";
 declare let Messenger,jQuery,moment: any;
@@ -40,15 +39,11 @@ export class Contract {
   isEmployer: boolean;
 
   employer: any;
-  jobyer: any;
-  companyName: string;
+  jobyer: any = {};
   currentUser: any;
-  employerFullName: string;
   contractData: ContractData = new ContractData();
   currentOffer: Offer;
   workAdress: string;
-  jobyerBirthDate: string;
-  hqAdress: string;
   rate: number = 0.0;
   recours: any;
   motifsGrouped : any;
@@ -104,31 +99,23 @@ export class Contract {
               private smsService: SmsService,
               private router: Router,
               private financeService: FinanceService,
-              private recruitmentSrvice: RecruitmentService) {
+              private recruitmentService: RecruitmentService,
+              private route: ActivatedRoute) {
 
     this.currentUser = this.sharedService.getCurrentUser();
-    if (!this.currentUser) {
-      this.router.navigate(['home']);
-      return;
-    }
-    // Get target to determine configs
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     this.isEmployer = (this.projectTarget == 'employer');
-
-    // Retrieve jobyer
-
-    this.jobyer = this.sharedService.getCurrentJobyer();
-
     //  check if there is a current offer
     this.currentOffer = this.sharedService.getCurrentOffer();
 
-    // initialize contract data
-    this.initContractData();
+    //go to home if access is not authorized
+    let accessValid = this.isAccessAutorised(this.currentUser, this.isEmployer, this.currentOffer);
+    if(!accessValid){
+      this.router.navigate(['home']);
+      return;
+      //TODO: est ce qu'après le return le ngOninit n'est pas exécuté
+    }
 
-    //initialize recruitment data
-    this.initRecruitmentData();
-
-    //transportMeans
     this.transportMeans = [
       "Véhicule",
       "Transport en commun Zone 1 à 2",
@@ -140,6 +127,70 @@ export class Contract {
       "Transport en commun Zone 4 à 5",
       "Transport en commun toutes zones"
     ];
+  }
+
+  ngOnInit(){
+    //TODO: voir commnet empecher l'acces au ngOninit après l'execution du constructeur
+    //go to home if access is not authorized
+    let accessValid = this.isAccessAutorised(this.currentUser, this.isEmployer, this.currentOffer);
+    if(!accessValid){
+      this.router.navigate(['home']);
+      return;
+    }
+
+    this.employer = this.currentUser.employer;
+
+    let contract = this.sharedService.getContractData();
+    if(Utils.isEmpty(contract)){
+      // Retrieve jobyer
+      this.jobyer = this.sharedService.getCurrentJobyer();
+
+      this.contractData = new ContractData();
+      // initialize contract data
+      this.initContractData();
+      //init employer data
+      this.initEmployerData();
+      //initialize recruitment data
+      this.initRecruitmentData();
+    }else{
+      this.contractData = contract;
+      console.log("contractData raw");
+      console.log(this.contractData);
+
+
+      this.jobyer.id = this.contractData.jobyerId;
+      this.jobyer.email = this.contractData.email;
+      this.jobyer.tel = this.contractData.tel;
+      this.contractData.jobyerBirthDate = DateUtils.simpleDateFormat(new Date(this.contractData.jobyerBirthDate));
+      this.contractData.jobyerDebutTitreTravail = DateUtils.simpleDateFormat(new Date(this.contractData.jobyerDebutTitreTravail));
+      this.contractData.jobyerFinTitreTravail = DateUtils.simpleDateFormat(new Date(this.contractData.jobyerFinTitreTravail));
+
+      let titreTravailArray = this.contractData.numeroTitreTravail.split(' ');
+      this.contractData.jobyerTitreTravail = titreTravailArray[titreTravailArray.length - 1];
+      this.labelTitreIdentite = titreTravailArray.slice(0, titreTravailArray.length -1).join(" ");
+
+      this.contractData.missionStartDate = DateUtils.simpleDateFormat(new Date(this.contractData.missionStartDate));
+      this.contractData.missionEndDate = DateUtils.simpleDateFormat(new Date(this.contractData.missionEndDate));
+      this.contractData.termStartDate = DateUtils.dateFormat(new Date(this.contractData.termStartDate));
+      this.contractData.termEndDate = DateUtils.dateFormat(new Date(this.contractData.termEndDate));
+
+      this.contractData.trialPeriod = parseInt(this.contractData.trialPeriod.toString());
+
+      this.contractData.companyName = Utils.preventNull(this.employer.entreprises[0].nom);
+      this.contractData.isScheduleFixed = (this.contractData.isScheduleFixed.toUpperCase() == "OUI" ? 'true' :'false');
+
+      console.log("contractData after affectation");
+      console.log(this.contractData);
+
+      //  Load recours list
+      this.contractService.loadJustificationsList(this.projectTarget).then(data=> {
+        this.recours = data;
+      });
+
+      this.contractService.loadPeriodicites(this.projectTarget).then(data=>{
+        this.periodicites = data;
+      });
+    }
 
     //TODO à ajouter dans le callout prepareRecruitment
     this.offersService.loadEPI().then((data:any)=>{
@@ -151,7 +202,6 @@ export class Contract {
       else
         this.contractData.epiList = [];
     });
-
   }
 
   initContractData(){
@@ -160,57 +210,44 @@ export class Contract {
     this.contractData.termStartDate = this.getXmlEndDate();
     this.contractData.termEndDate = this.getXmlEndDate();
 
-    if(this.currentOffer){
-      this.contractData.qualification = this.currentOffer.title;
-      this.contractData.baseSalary = +Utils.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2);
-      this.contractData.salaryNHours = Utils.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2) + " € B/H";
-      this.contractData.sector = this.currentOffer.jobData.sector;
-      this.contractData.titre = this.currentOffer.title;
+    //initialiser le contrat avec les infos de l'offre
+    this.contractData.qualification = this.currentOffer.title;
+    this.contractData.baseSalary = +Utils.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2);
+    //TODO: cette info est obsolete, elle n'est utilisée nul part, à revérifier avec Jakjoud
+    this.contractData.salaryNHours = Utils.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2) + " € B/H";
 
-      this.contractData.workTimeHours = + this.calculateOfferHours();
-      this.contractData.trialPeriod = this.initTrialPeriod(this.currentOffer);
+    this.contractData.sector = this.currentOffer.jobData.sector;
+    this.contractData.titre = this.currentOffer.title;
 
-      //this.offersService.getOfferInfo(this.currentOffer.idOffer).then((data: any) =>{
-        this.contractData.contactPhone = Utils.preventNull(this.currentOffer.telephone);
-        this.contractData.offerContact = Utils.preventNull(this.currentOffer.contact);
-        this.contractData.sector = Utils.preventNull(this.currentOffer.jobData.sector);
-      //});
-    }
+    this.contractData.workTimeHours = + this.calculateOfferHours();
+    this.contractData.trialPeriod = this.initTrialPeriod(this.currentOffer);
+
+    this.contractData.contactPhone = Utils.preventNull(this.currentOffer.telephone);
+    this.contractData.offerContact = Utils.preventNull(this.currentOffer.contact);
+    this.contractData.sector = Utils.preventNull(this.currentOffer.jobData.sector);
+  }
+
+  initEmployerData(){
+    //init employer data
+    this.contractData.companyName = Utils.preventNull(this.employer.entreprises[0].nom);
+    this.contractData.headOffice = Utils.preventNull(this.employer.entreprises[0].siegeAdress.fullAdress);
+
+    let employerFullName = Utils.preventNull(this.currentUser.titre)+ " " + Utils.preventNull(this.currentUser.nom) + " " + Utils.preventNull(this.currentUser.prenom);
+    this.contractData.contact = Utils.preventNull(employerFullName);
   }
 
   initRecruitmentData(){
-    // get the currentEmployer
-    if (this.currentUser) {
-      this.employer = this.currentUser.employer;
-
-      //init employer data
-      this.companyName = this.employer.entreprises[0].nom;
-      this.contractData.companyName = this.companyName;
-
-      this.hqAdress = this.employer.entreprises[0].siegeAdress.fullAdress;
-      this.contractData.headOffice = this.hqAdress;
-
-      let civility = this.currentUser.titre;
-      this.employerFullName = civility + " " + this.currentUser.nom + " " + this.currentUser.prenom;
-      this.contractData.contact = this.employerFullName;
-
-      //init jobyer data
-      this.initJobyerData();
-    }
-  }
-
-  initJobyerData(){
     //initialize jobyer data
-    this.jobyer.numSS = '';
-    this.jobyer.nationaliteLibelle = '';
-
+    this.contractData.jobyerNom = Utils.preventNull(this.jobyer.nom);
+    this.contractData.jobyerPrenom = Utils.preventNull(this.jobyer.prenom);
+    this.contractData.jobyerLieuNaissance = Utils.preventNull(this.jobyer.lieuNaissance);
     if(!Utils.isEmpty(this.jobyer.dateNaissance)) {
       let bd = new Date(this.jobyer.dateNaissance);
-      this.jobyerBirthDate = DateUtils.dateFormat(bd);
-      this.contractData.jobyerBirthDate = this.jobyerBirthDate;
+      this.contractData.jobyerBirthDate = DateUtils.simpleDateFormat(bd);
     }else{
-        this.jobyerBirthDate = '';
-      }
+        this.contractData.jobyerBirthDate = '';
+    }
+
 
     let email = this.jobyer.email;
     let tel = this.jobyer.tel;
@@ -220,11 +257,10 @@ export class Contract {
     this.contractService.prepareRecruitement(entrepriseId, email, tel, offerId, jobyerId, this.projectTarget).then((resp:any)=>{
       let datum = resp.jobyer;
 
-      this.jobyer.id = datum.id;
-      this.jobyer.numSS = datum.numss;
-      this.jobyer.nationaliteLibelle = Utils.preventNull(datum.nationalite);
+      this.contractData.jobyerNumSS = Utils.preventNull(datum.numss);
+      this.contractData.jobyerNationaliteLibelle = Utils.preventNull(datum.nationalite);
 
-      this.jobyer.titreTravail = '';
+      this.contractData.jobyerTitreTravail = '';
       //specify if jobyer isFrench or european or a foreigner
       this.isFrench = (datum.pays_index == 33 ? true : false);
       this.isEuropean = (datum.identifiant_nationalite == 42 ? false : true);
@@ -233,10 +269,10 @@ export class Contract {
       if(this.isEuropean){
         if(this.isCIN){
           this.labelTitreIdentite = "CNI ou Passeport";
-          this.jobyer.titreTravail = datum.cni;
+          this.contractData.jobyerTitreTravail = datum.cni;
         }else{
           this.labelTitreIdentite = "Carte de ressortissant";
-          this.jobyer.titreTravail = datum.numero_titre_sejour;
+          this.contractData.jobyerTitreTravail = datum.numero_titre_sejour;
         }
       }else{
         if(estResident){
@@ -244,23 +280,21 @@ export class Contract {
         }else{
           this.labelTitreIdentite = "Titre de séjour";
         }
-        this.jobyer.titreTravail = datum.numero_titre_sejour;
+        this.contractData.jobyerTitreTravail = datum.numero_titre_sejour;
       }
-      this.contractData.numeroTitreTravail = this.labelTitreIdentite + " " + this.jobyer.titreTravail;
+      this.contractData.numeroTitreTravail = this.labelTitreIdentite + " " + this.contractData.jobyerTitreTravail;
 
       if (!Utils.isEmpty(datum.debut_validite)) {
         let sdate = datum.debut_validite.split(' ')[0];
 
-        let d = new Date(sdate);
-        this.jobyer.debutTitreTravail = d;
-        this.contractData.debutTitreTravail = Utils.preventNull(DateUtils.simpleDateFormat(this.jobyer.debutTitreTravail));
+        let d: Date = new Date(sdate);
+        this.contractData.jobyerDebutTitreTravail = Utils.preventNull(DateUtils.simpleDateFormat(d));
       }
 
       if (!Utils.isEmpty(datum.fin_validite)) {
         let sdate = datum.fin_validite.split(' ')[0];
-        let d = new Date(sdate);
-        this.jobyer.finTitreTravail = d;
-        this.contractData.finTitreTravail = Utils.preventNull(DateUtils.simpleDateFormat(this.jobyer.finTitreTravail));
+        let d: Date = new Date(sdate);
+        this.contractData.jobyerFinTitreTravail = Utils.preventNull(DateUtils.simpleDateFormat(d));
       }
 
       this.recours = resp.recours;
@@ -448,8 +482,12 @@ export class Contract {
       }
 
       this.contractData.adresseInterim= this.workAdress;
+      this.contractData.jobyerTitreTravail = Utils.removeAllSpaces(this.contractData.jobyerTitreTravail);
 
-      //save contrct data
+      console.log("contractData before saving");
+      console.log(this.contractData);
+
+      //save contract data
      this.contractService.saveContract(
         this.contractData,
         this.jobyer.id,
@@ -470,11 +508,13 @@ export class Contract {
                 this.checkOfferState(this.currentOffer);
                 //generate hour mission based on the offer slots
                 this.contractService.generateMission(this.contractData.id, this.currentOffer);
-                //update recrutement groupé state
-                this.recruitmentSrvice.updateRecrutementGroupeState(this.jobyer.rgId);
+                if(!Utils.isEmpty(this.jobyer.rgId)) {
+                  //update recrutement groupé state
+                  this.recruitmentService.updateRecrutementGroupeState(this.jobyer.rgId);
+                }
                 //generate docusign envelop
                 this.saveDocusignInfo();
-              }else {
+              } else {
                 this.addAlert("danger", "Une erreur est survenue lors de la sauvegarde des données. Veuillez rééssayer l'opération.");
                 this.inProgress = false;
                 return;
@@ -613,12 +653,12 @@ export class Contract {
   }
 
   notifyJobyerNewContract() {
-    var message = "Une proposition de recrutement vous a été adressée.";
+    let message = "Une proposition de recrutement vous a été adressée.";
     let jobyer = this.jobyer;
     let contractData = this.contractData;
-    let jobyerBirthDate = this.jobyerBirthDate;
+    let jobyerBirthDate = this.contractData.jobyerBirthDate;
     if (
-      !jobyer.nom || !jobyer.prenom || !jobyer.numSS || !jobyerBirthDate || !jobyer.lieuNaissance || !jobyer.nationaliteLibelle || !contractData.numeroTitreTravail || !contractData.debutTitreTravail || !contractData.finTitreTravail || !contractData.qualification
+      !jobyer.nom || !jobyer.prenom || !jobyer.numSS || !jobyerBirthDate || !jobyer.lieuNaissance || !jobyer.nationaliteLibelle || !contractData.numeroTitreTravail || !contractData.jobyerDebutTitreTravail || !contractData.jobyerFinTitreTravail || !contractData.qualification
     ) {
       message = message + " Certaines informations de votre compte sont manquantes, veuillez les renseigner : -";
       message = message + ((!jobyer.nom)? " Nom -" : "");
@@ -629,8 +669,8 @@ export class Contract {
       message = message + ((!jobyer.lieuNaissance)? " Lieu de naissance -" : "");
       message = message + ((!jobyer.nationaliteLibelle)? " Nationalité -" : "");
       message = message + ((!jobyer.numeroTitreTravail)? " CNI ou passeport -" : "");
-      message = message + ((!contractData.debutTitreTravail)? " Valable du -" : "");
-      message = message + ((!contractData.finTitreTravail)? " Valable au -" : "");
+      message = message + ((!contractData.jobyerDebutTitreTravail)? " Valable du -" : "");
+      message = message + ((!contractData.jobyerFinTitreTravail)? " Valable au -" : "");
       message = message + ((!contractData.qualification)? " Qualification -" : "");
 
       message = message.slice(0, -1);
@@ -696,15 +736,15 @@ export class Contract {
 
   missingJobyerData() {
     return (
-      !this.jobyer.nom
-      || !this.jobyer.prenom
-      || !this.jobyer.numSS
-      || !this.jobyerBirthDate
-      || !this.jobyer.lieuNaissance
-      || !this.jobyer.nationaliteLibelle
+      !this.contractData.jobyerNom
+      || !this.contractData.jobyerPrenom
+      || !this.contractData.jobyerNumSS
+      || !this.contractData.jobyerBirthDate
+      || !this.contractData.jobyerLieuNaissance
+      || !this.contractData.jobyerNationaliteLibelle
       || !this.contractData.numeroTitreTravail
-      || !this.contractData.debutTitreTravail
-      || !this.contractData.finTitreTravail
+      || !this.contractData.jobyerDebutTitreTravail
+      || !this.contractData.jobyerFinTitreTravail
       || !this.contractData.qualification
     );
   }
@@ -800,6 +840,16 @@ export class Contract {
     return trial;
   }
 
+  isAccessAutorised(currentUser, isEmployer, currentOffer){
+    //on ne peut accéder qu'en mode connecté
+    // accès autorisé aux employeurs et aux recruteurs
+    if(Utils.isEmpty(currentUser) || Utils.isEmpty(currentOffer) || !isEmployer){
+      return false;
+    }else{
+      return true;
+    }
+  }
+
   /*watchTransportTitle(e){
    this.contractData.titreTransport = e.target.value;
    }*/
@@ -821,5 +871,11 @@ export class Contract {
 
   addAlert(type, msg): void {
     this.alerts = [{type: type, msg: msg}];
+  }
+
+  ngOnDestroy(): void {
+    this.sharedService.setContractData(null);
+    this.sharedService.setCurrentJobyer(null);
+    this.sharedService.setCurrentOffer(null);
   }
 }

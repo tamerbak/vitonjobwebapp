@@ -135,6 +135,9 @@ export class DateUtils {
   }
 
   public static simpleDateFormat(d:Date){
+    if(Utils.isEmpty(d)){
+      return '';
+    }
     let m = d.getMonth() + 1;
     let da = d.getDate();
     let sd = (da < 10 ? '0' : '')+da+'/' + (m < 10 ? '0' : '') + m + "/" +d.getFullYear() ;
