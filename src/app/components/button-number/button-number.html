@@ -1,0 +1,23 @@
+<div class="button-number-container">
+  <div class="button-number-button">
+    <button
+      type="button"
+      class="btn btn-secondary btn-sm"
+      (click)="onButtonClick()"
+      [disabled]="number < 0"
+      style="margin-bottom: -1px"
+    >
+      {{ label }}
+    </button>
+  </div>
+  <div class="button-number-number" title="{{ tooltip }}">
+    <div *ngIf="number >= 0" >
+      {{ number }}
+    </div>
+    <div *ngIf="number < 0" class="loader animated fadeIn handle" style="top: 5px; right: 20px;">
+      <span class="spinner">
+        <i class="fa fa-spinner fa-spin white-spinner"></i>
+      </span>
+    </div>
+  </div>
+</div>

@@ -111,21 +111,25 @@ export class OfferRecruit {
     this.jobyerHover = 0;
     this.jobyersAvailabilities = new Map<number, CalendarQuarterPerDay>();
 
+    this.employerPlanning = new CalendarQuarterPerDay();
     this.offer = this.sharedService.getCurrentOffer();
 
-    if (this.offer == null) {
-      this.employerPlanning = new CalendarQuarterPerDay();
-      this.router.navigate(['offer/list']);
-      return;
-    }
+    this.offersService.getOfferById(this.offer.idOffer, "employer", this.offer).then(()=> {
 
-    // Retrieve offer data
-    this.employerPlanning = this.recruitmentService.loadSlots(this.offer.calendarData);
+      if (this.offer == null) {
+        this.employerPlanning = new CalendarQuarterPerDay();
+        this.router.navigate(['offer/list']);
+        return;
+      }
 
-    this.retrieveLimits();
+      // Retrieve offer data
+      this.employerPlanning = this.recruitmentService.loadSlots(this.offer.calendarData);
 
-    this.getJobyerList();
+      this.retrieveLimits();
 
+      this.getJobyerList();
+
+    });
   }
 
   ngOnInit(): void {
