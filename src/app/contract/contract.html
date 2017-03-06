@@ -33,7 +33,7 @@
       <div class="col-md-6 col-xs-12">
         <div class="form-group">
           <label>Lieu de la mission&nbsp;<span  class="color-font" >*</span></label>
-          <input type="text" name="workAddress" class="form-control" [(ngModel)]="workAdress" aria-describedby="lieu-de-la-mission" required>
+          <input type="text" name="workAddress" class="form-control" [(ngModel)]="contractData.workAdress" aria-describedby="lieu-de-la-mission" required>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
@@ -316,11 +316,11 @@
         <div class="form-group">
           <label>Surveillance médicale renforcée</label>
           <div class="abc-radio">
-            <input type="radio" name="radio1" value="OUI" id="medicalRadio1" (click)="watchMedicalSupervision($event)">
+            <input type="radio" name="radio1" [checked]="contractData.medicalSurv == 'OUI'" value="OUI" id="medicalRadio1" (click)="watchMedicalSupervision($event)">
             <label for="medicalRadio1" class="labelRadio">
               Oui &nbsp;&nbsp;
             </label>
-            <input type="radio" name="radio1" value="NON" id="medicalRadio2" (click)="watchMedicalSupervision($event)">
+            <input type="radio" name="radio1" [checked]="contractData.medicalSurv == 'NON'" value="NON" id="medicalRadio2" (click)="watchMedicalSupervision($event)">
             <label for="medicalRadio2" class="labelRadio">
               Non
             </label>

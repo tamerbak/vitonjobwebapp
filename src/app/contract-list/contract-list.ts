@@ -129,7 +129,7 @@ export class ContractList{
         this.router.navigate(['contract/recruitment-form']);
       });
     }else{
-      this.contractService.getContractDataInfos(item.id).then((data: ContractData) => {
+      this.contractService.getContractDataInfos(item.id, this.projectTarget).then((data: ContractData) => {
         this.sharedService.setContractData(data);
         this.offerService.getOfferById(item.idOffer, this.projectTarget, offer).then(data => {
           this.sharedService.setCurrentOffer(offer);

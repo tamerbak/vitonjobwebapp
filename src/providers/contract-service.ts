@@ -366,6 +366,7 @@ export class ContractService {
       " centre_de_medecine_entreprise," +
       " adresse_centre_de_medecine_entreprise," +
       " risques," +
+      " lieu_de_mission," +
       " fk_user_offre_entreprise" +
       ")" +
       " VALUES ("
@@ -378,7 +379,7 @@ export class ContractService {
       + "'" + DateUtils.getMinutesFromDate(contract.workStartHour) + "',"
       + "'" + DateUtils.getMinutesFromDate(contract.workEndHour) + "',"
       + "'" + Utils.sqlfyText(contract.justification) + "',"
-      + "'" + Utils.sqlfyText(contract.numero) + "',"
+      + "'" + Utils.sqlfyText(contract.num) + "',"
       + "'" + contract.trialPeriod + "',"
       + "'" + contract.baseSalary + "',"
       + "'" + isScheduleFixed + "',"
@@ -421,6 +422,7 @@ export class ContractService {
       + "'" + Utils.sqlfyText(contract.centreMedecineEntreprise) + "',"
       + "'" + Utils.sqlfyText(contract.adresseCentreMedecineEntreprise) + "',"
       + "'" + Utils.sqlfyText(contract.postRisks) + "',"
+      + "'" + Utils.sqlfyText(contract.workAdress) + "',"
       + "'" + idOffer + "'"
       + ")"
       + " RETURNING pk_user_contrat";
@@ -431,11 +433,94 @@ export class ContractService {
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
-      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
           this.data = data;
           resolve(this.data);
+        });
+    });
+  }
+
+  updateContractData(contract: any, jobyerId: Number, employerEntrepriseId: Number, projectTarget: string, accountId, idOffer) {
+    //  Init project parameters
+    this.configuration = Configs.setConfigs(projectTarget);
+    let dt = new Date();
+    let epi = (contract.epi?'OUI':'NON');
+    let isScheduleFixed = (contract.isScheduleFixed == 'true' ? 'OUI' : 'NON');
+    let listeEPI = "";
+    if(contract.epiList && contract.epiList.length != 0) {
+      for (let i = 0; i < contract.epiList.length; i++) {
+        listeEPI = listeEPI + ";" + contract.epiList[i].libelle;
+      }
+    }
+
+    let sql = "UPDATE user_contrat SET " +
+      "created = '" + new Date().toISOString() + "', " +
+      "date_de_debut = " + DateUtils.displayableDateToSQL(contract.missionStartDate) + ", " +
+      "date_de_fin = " + DateUtils.displayableDateToSQL(contract.missionEndDate) + ", " +
+      "date_debut_terme = " + (contract.termStartDate?"'"+contract.termStartDate+"'":"null") + ", " +
+      "date_fin_terme = " + (contract.termEndDate?"'"+contract.termEndDate+"'":"null") + ", " +
+      "date_signature = '" + DateUtils.dateToSqlTimestamp(new Date()) + "', " +
+      "heure_debut = '" + DateUtils.getMinutesFromDate(contract.workStartHour) + "', " +
+      "heure_fin = '" + DateUtils.getMinutesFromDate(contract.workEndHour) + "', " +
+      "motif_de_recours = '" + Utils.sqlfyText(contract.justification) + "', " +
+      "numero = '" + Utils.sqlfyText(contract.num) + "', " +
+      "periode_essai = '" + contract.trialPeriod + "', " +
+      "tarif_heure = '" + contract.baseSalary + "', " +
+      "horaires_fixes = '" + isScheduleFixed + "'," +
+      "fk_user_entreprise = '" + employerEntrepriseId + "'," +
+      "fk_user_jobyer = '" + jobyerId + "', " +
+      "signature_employeur = 'NON', " +
+      "signature_jobyer = 'NON', " +
+      "taux_indemnite_fin_de_mission = 10, " +
+      "taux_conges_payes = 10, " +
+      "titre_transport = '" + Utils.sqlfyText(contract.titreTransport) + "', " +
+      "zones_transport = '" + Utils.sqlfyText(contract.zonesTitre) + "', " +
+      "surveillance_medicale_renforcee = '" + Utils.sqlfyText(contract.medicalSurv) + "', " +
+      "debut_souplesse = " + (!Utils.isEmpty(contract.debutSouplesse)?"'"+contract.debutSouplesse+"'":null) + ", " +
+      "fin_souplesse = " + (!Utils.isEmpty(contract.finSouplesse)?"'"+contract.finSouplesse+"'":null) + ", " +
+      "organisation_particuliere = '" + Utils.sqlfyText(contract.usualWorkTimeHours) + "', " +
+      "elements_soumis_a_des_cotisations = '" + contract.elementsCotisation + "', " +
+      "elements_non_soumis_a_des_cotisations = '" + contract.elementsNonCotisation + "', " +
+      "recours = '" + Utils.sqlfyText(contract.motif) + "', " +
+      "titre = '" + Utils.sqlfyText(contract.titre) + "', " +
+      "option_mission = (select option_mission :: numeric from user_account where pk_user_account = '" + accountId + "'), " +
+      "equipements_fournis_par_l_ai = '" + epi + "', " +
+      "fk_user_periodicite_des_paiements = '" + contract.periodicite + "', " +
+      "embauche_autorise = 'OUI', " +
+      "epi = '" + Utils.sqlfyText(contract.epiProvidedBy) + "', " +
+      "rapatriement_a_la_charge_de_l_ai = 'OUI', " +
+      "liste_epi = '" + Utils.sqlfyText(listeEPI) + "'," +
+      "moyen_d_acces = '" + Utils.sqlfyText(contract.moyenAcces) + "', " +
+      "contact_sur_place = '" + Utils.sqlfyText(contract.offerContact) + "', " +
+      "telephone_contact = '" + Utils.sqlfyText(contract.contactPhone) + "', " +
+      "caracteristiques_du_poste = '" + Utils.sqlfyText(contract.characteristics) + "', " +
+      "duree_moyenne_mensuelle = '" + contract.MonthlyAverageDuration + "', " +
+      "siege_social = '" + Utils.sqlfyText(contract.headOffice) + "', " +
+      "statut = '" + Utils.sqlfyText(contract.category) + "', " +
+      "filiere = '" + Utils.sqlfyText(contract.sector) + "', " +
+      "contact = '" + Utils.sqlfyText(contract.contact) + "', " +
+      "indemnite_fin_de_mission = '" + contract.indemniteFinMission + "', " +
+      "n_titre_travail = '" + Utils.sqlfyText(contract.numeroTitreTravail) + "', " +
+      "periodes_non_travaillees = '" + Utils.sqlfyText(contract.periodesNonTravaillees) + "', " +
+      "centre_de_medecine_entreprise = '" + Utils.sqlfyText(contract.centreMedecineEntreprise) + "', " +
+      "adresse_centre_de_medecine_entreprise = '" + Utils.sqlfyText(contract.adresseCentreMedecineEntreprise) + "', " +
+      "risques = '" + Utils.sqlfyText(contract.postRisks) + "', " +
+      "lieu_de_mission = '" + Utils.sqlfyText(contract.workAdress) + "', " +
+      "fk_user_offre_entreprise = '" + idOffer + "' " +
+      "WHERE pk_user_contrat = '" + contract.id + "'";
+
+    console.log("save contract request");
+    console.log(sql);
+
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
         });
     });
   }
@@ -931,8 +1016,8 @@ export class ContractService {
     });
   }
 
-  getContractDataInfos(contractId){
-    let sql = 'select c.pk_user_contrat as id, c.numero as num, c.fk_user_offre_entreprise as \"idOffer\", c.created, c.tarif_heure as \"baseSalary\", c.horaires_fixes as \"isScheduleFixed\", c.heure_debut as \"workStartHour\", c.heure_fin as \"workEndHour\", c.date_de_debut as \"missionStartDate\", c.date_de_fin as \"missionEndDate\", c.date_debut_terme as \"termStartDate\", c.date_fin_terme as \"termEndDate\", c.periode_essai as \"trialPeriod\", c.motif_de_recours as motif, c.recours as justification, c.surveillance_medicale_renforcee as \"medicalSurv\", c.equipements_fournis_par_l_ai as epi, c.elements_non_soumis_a_des_cotisations as \"elementsNonCotisation\", c.elements_soumis_a_des_cotisations as \"elementsCotisation\", c.zones_transport as \"zonesTitre\", c.titre_transport as \"titreTransport\", c.debut_souplesse as \"debutSouplesse\", c.fin_souplesse as \"finSouplesse\", c.liste_epi as \"epiString\", c.moyen_d_acces as \"moyenAcces\", c.contact_sur_place as \"offerContact\", c.telephone_contact as \"contactPhone\", c.caracteristiques_du_poste as characteristics, c.duree_moyenne_mensuelle as \"MonthlyAverageDuration\", c.siege_social as \"headOffice\", c.statut as category, c.filiere as sector, c.contact, c.indemnite_fin_de_mission as \"indemniteFinMission\", c.n_titre_travail as \"numeroTitreTravail\", c.periodes_non_travaillees as \"periodesNonTravaillees\", c.centre_de_medecine_entreprise as \"centreMedecineEntreprise\", c.adresse_centre_de_medecine_entreprise as \"adresseCentreMedecineEntreprise\", c.risques as \"postRisks\", c.lien_employeur as \"partnerEmployerLink\", c.epi as \"epiProvidedBy\", c.fk_user_periodicite_des_paiements as periodicite, ' +
+  getContractDataInfos(contractId, projectTarget){
+    let sql = 'select c.pk_user_contrat as id, c.numero as num, c.fk_user_offre_entreprise as \"idOffer\", c.created, c.tarif_heure as \"baseSalary\", c.horaires_fixes as \"isScheduleFixed\", c.heure_debut as \"workStartHour\", c.heure_fin as \"workEndHour\", c.date_de_debut as \"missionStartDate\", c.date_de_fin as \"missionEndDate\", c.date_debut_terme as \"termStartDate\", c.date_fin_terme as \"termEndDate\", c.periode_essai as \"trialPeriod\", c.motif_de_recours as motif, c.recours as justification, c.surveillance_medicale_renforcee as \"medicalSurv\", c.equipements_fournis_par_l_ai as epi, c.elements_non_soumis_a_des_cotisations as \"elementsNonCotisation\", c.elements_soumis_a_des_cotisations as \"elementsCotisation\", c.zones_transport as \"zonesTitre\", c.titre_transport as \"titreTransport\", c.debut_souplesse as \"debutSouplesse\", c.fin_souplesse as \"finSouplesse\", c.liste_epi as \"epiString\", c.moyen_d_acces as \"moyenAcces\", c.contact_sur_place as \"offerContact\", c.telephone_contact as \"contactPhone\", c.caracteristiques_du_poste as characteristics, c.duree_moyenne_mensuelle as \"MonthlyAverageDuration\", c.siege_social as \"headOffice\", c.lieu_de_mission as \"workAdress\", c.statut as category, c.filiere as sector, c.contact, c.indemnite_fin_de_mission as \"indemniteFinMission\", c.n_titre_travail as \"numeroTitreTravail\", c.periodes_non_travaillees as \"periodesNonTravaillees\", c.centre_de_medecine_entreprise as \"centreMedecineEntreprise\", c.adresse_centre_de_medecine_entreprise as \"adresseCentreMedecineEntreprise\", c.risques as \"postRisks\", c.lien_employeur as \"partnerEmployerLink\", c.epi as \"epiProvidedBy\", c.fk_user_periodicite_des_paiements as periodicite, ' +
 
       ' j.nom as \"jobyerNom\", j.prenom as \"jobyerPrenom\", j.numero_securite_sociale as \"jobyerNumSS\", j.lieu_de_naissance as \"jobyerLieuNaissance\",j.date_de_naissance as \"jobyerBirthDate\", j.pk_user_jobyer as \"jobyerId\", j.debut_validite as \"jobyerDebutTitreTravail\", j.fin_validite as \"jobyerFinTitreTravail\", ' +
       ' n.libelle as \"jobyerNationaliteLibelle\", ' +
@@ -942,9 +1027,10 @@ export class ContractService {
       " where c.pk_user_contrat = '" + contractId+ "' and upper(c.signature_employeur) = 'NON' " +
       " and c.fk_user_jobyer = j.pk_user_jobyer and j.fk_user_nationalite = n.pk_user_nationalite and a.pk_user_account = j.fk_user_account and o.pk_user_offre_entreprise = c.fk_user_offre_entreprise ";
 
+    this.configuration = Configs.setConfigs(projectTarget);
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
-      this.http.post(Configs.sqlURL, sql, {headers: headers})
+      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe((data: any)=> {
           if(data && data.status == "success" && data.data && data.data.length > 0){
@@ -990,7 +1076,7 @@ export class ContractService {
       + "'NON',"
       + "'" + idOffer + "'"
       + ")"
-      + " RETURNING pk_user_contrat";
+      + " RETURNING pk_user_contrat as contractId";
 
     return new Promise(resolve => {
       let headers = new Headers();
@@ -998,8 +1084,9 @@ export class ContractService {
       this.http.post(this.configuration.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe(data => {
-          this.data = data;
-          resolve(this.data);
+          if(data && data.status == "success" && data.data && data.data.length > 0){
+            resolve(data.data[0]);
+          }
         });
     });
   }

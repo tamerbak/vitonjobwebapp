@@ -2,7 +2,6 @@ export class ContractData {
 
   id: number;
   num: string;
-  numero: string;
   centreMedecineEntreprise: string;
   adresseCentreMedecineEntreprise: string;
   centreMedecineETT: string;
@@ -98,7 +97,6 @@ export class ContractData {
 
     this.id = 0;
     this.num = "";
-    this.numero = "";
     this.centreMedecineEntreprise = "";
     this.adresseCentreMedecineEntreprise = "";
     this.contact = "";

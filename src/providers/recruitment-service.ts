@@ -497,9 +497,8 @@ export class RecruitmentService {
    */
   generateContractFromEmployerPlanning(offer: Offer, employerPlanning: CalendarQuarterPerDay, jobyers: any[], projectTarget: string, entrepriseId: number) {
     // Format slots
-    let slotsPerJobyer: {jobyerId: number; slots: any[]}[] = this.translateFromQuartersPerJobyerToSlotsPerJobyer(
-      employerPlanning, jobyers
-    );
+    //let slotsPerJobyer: {jobyerId: number; slots: any[]}[] = this.translateFromQuartersPerJobyerToSlotsPerJobyer(employerPlanning, jobyers);
+    let slotsPerJobyer: {jobyerId: number; slots: any[]}[] = [{jobyerId: 28317, slots: offer.calendarData}];
 
     //générer des offres avec les slots de chaque jobyer à partir de l'offre mère: on aura une offre par jobyer
     for (let i = 0; i < slotsPerJobyer.length; i++) {
@@ -530,9 +529,7 @@ export class RecruitmentService {
                 return;
               }
 
-              // TODO: il faut retourner l'id du jobyer dans le flux de la recherche
-              // slotsPerJobyer[i].jobyer.id = 28317;
-              //save contrct data
+              //save contract with initial infos
               this.contractService.saveInitialContract(
                 contractNum,
                 slotsPerJobyer[i].jobyerId,
@@ -540,6 +537,9 @@ export class RecruitmentService {
                 savedOffer.idOffer,
                 projectTarget
               ).then((data: any) => {
+                let contractId = data.contractId;
+                //generate hour mission based on the offer slots
+                this.contractService.generateMission(contractId, savedOffer);
                 if (i == slotsPerJobyer.length - 1) {
                   //aller à la page liste des contrats
                   this.router.navigate(['contract/list']);
