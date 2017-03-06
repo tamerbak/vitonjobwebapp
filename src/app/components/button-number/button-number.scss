@@ -1,0 +1,30 @@
+.button-number-container {
+  background-color: #999999;
+  border-radius: 3px;
+}
+$numberWidth : 30px;
+.button-number-button {
+  padding-right: $numberWidth;
+}
+.button-number-number {
+  width: $numberWidth;
+  position: relative;
+  color: white;
+  text-align: center;
+  font-size: 1rem;
+  top: -1.8em;
+  /* right: 0; */
+  font-weight: bolder;
+  float: right;
+}
+.button-number-container button {
+  width: 100%;
+  background-color: #40aea9;
+  color: white;
+}
+.button-number-container button :hover {
+  background-color: #346964;
+}
+.button-number-container button :active {
+  background-color: #346964;
+}
