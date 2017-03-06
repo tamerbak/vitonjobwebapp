@@ -411,6 +411,18 @@ export class OfferRecruit {
   }
 
   /**
+   * Return true if the slot is assigned, otherwise false
+   */
+  isAssignedSlot(): boolean {
+    if (this.selectedDay != null && this.selectedQuarterId != null) {
+      if (this.selectedDay.quarters[this.selectedQuarterId] > 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
    * Assign the to this jobyer :
    * - If no slot selected, assign as much slot as possible
    * - If selected slot, assign only that slot

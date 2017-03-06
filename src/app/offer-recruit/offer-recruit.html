@@ -54,6 +54,7 @@
               <div class="col-xs-12">
                 <button
                   (click)="unassignSlot()"
+                  [disabled]="!isAssignedSlot()"
                   class="btn slot-description-unassign"
                 >
                   Désassigner ce créneau
