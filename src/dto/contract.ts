@@ -1,101 +1,115 @@
-export class Contract {
+export class ContractData {
 
   id: number;
-  num: String;
-  numero: String;
-  centreMedecineEntreprise: String;
-  adresseCentreMedecineEntreprise: String;
-  centreMedecineETT: String;
-  adresseCentreMedecineETT: String;
-  contact: String;
-  indemniteFinMission: String;
-  indemniteCongesPayes: String;
-  moyenAcces: String;
-  numeroTitreTravail: String;
-  debutTitreTravail: String;
-  finTitreTravail: String;
-  periodesNonTravaillees: String;
-  debutSouplesse: String;
-  finSouplesse: String;
-  equipements: String;
+  num: string;
+  numero: string;
+  centreMedecineEntreprise: string;
+  adresseCentreMedecineEntreprise: string;
+  centreMedecineETT: string;
+  adresseCentreMedecineETT: string;
+  contact: string;
+  indemniteFinMission: string;
+  indemniteCongesPayes: string;
+  moyenAcces: string;
+  periodesNonTravaillees: string;
+  debutSouplesse: string;
+  finSouplesse: string;
+  equipements: string;
 
-  interim: String;
-  missionStartDate: String;
-  missionEndDate: String;
+  interim: string;
+  missionStartDate: string;
+  missionEndDate: string;
   trialPeriod: number;
-  termStartDate: String;
-  termEndDate: String;
-  motif: String;
-  justification: String;
-  qualification: String;
-  characteristics: String;
+  termStartDate: string;
+  termEndDate: string;
+  motif: string;
+  justification: string;
+  qualification: string;
+  characteristics: string;
   workTimeHours: number;
   workTimeVariable: number;
-  usualWorkTimeHours: String;
-  workHourVariable: String;
-  postRisks: String;
-  medicalSurv: String;
+  usualWorkTimeHours: string;
+  workHourVariable: string;
+  postRisks: string;
+  medicalSurv: string;
   epi: boolean;
   baseSalary: number;
-  MonthlyAverageDuration: String;
-  salaryNHours: String;
-  salarySH35: String;
-  salarySH43: String;
-  restRight: String;
-  interimAddress: String;
-  customer: String;
+  MonthlyAverageDuration: string;
+  salaryNHours: string;
+  salarySH35: string;
+  salarySH43: string;
+  restRight: string;
+  interimAddress: string;
+  customer: string;
   primes: number;
-  headOffice: String;
-  missionContent: String;
-  category: String;
-  sector: String;
-  companyName: String;
-  titreTransport: String;
-  zonesTitre: String;
-  risques: String;
+  headOffice: string;
+  missionContent: string;
+  category: string;
+  sector: string;
+  companyName: string;
+  titreTransport: string;
+  zonesTitre: string;
+  risques: string;
   elementsCotisation: number;
   elementsNonCotisation: number;
-  titre: String;
-  periodicite: String;
-  epiProvidedBy : String;
-  isScheduleFixed: String;
+  titre: string;
+  periodicite: string;
+  epiProvidedBy : string;
+  isScheduleFixed: string;
   workStartHour: any;
   workEndHour: any;
-  workAdress: String;
-  jobyerBirthDate: String;
-  adresseInterim: String;
-  offerContact: String;
-  contactPhone: String;
+  workAdress: string;
+  adresseInterim: string;
+  offerContact: string;
+  contactPhone: string;
 
-  partnerEmployerLink: String;
-  partnerJobyerLink: String;
-  demandeJobyer: String;
-  demandeEmployer: String;
-  enveloppeEmployeur: String;
-  enveloppeJobyer: String;
+  //docusign infos
+  partnerEmployerLink: string;
+  partnerJobyerLink: string;
+  demandeJobyer: string;
+  demandeEmployer: string;
+  enveloppeEmployeur: string;
+  enveloppeJobyer: string;
 
+  epiList: any[];
+
+  //jobyer infos
+  jobyerId: number;
+  jobyerNom: string;
+  jobyerPrenom: string;
+  jobyerNumSS: string;
+  jobyerBirthDate: string;
+  jobyerLieuNaissance: string;
+  jobyerNationaliteLibelle: string;
+  jobyerTitreTravail: string;
+  jobyerDebutTitreTravail: string;
+  jobyerFinTitreTravail: string;
+  numeroTitreTravail: string;
+  email: string;
+  tel: string;
 
   constructor(){
+    //default values
+    this.interim = "HubJob.com";
+    this.indemniteCongesPayes = "10.00 %";
+    this.centreMedecineETT = "CMIE";
+    this.adresseCentreMedecineETT = "4 rue de La Haye – 95731 ROISSY EN FRANCE";
+    this.usualWorkTimeHours = "8H00/17H00 variables";
+
     this.id = 0;
     this.num = "";
     this.numero = "";
     this.centreMedecineEntreprise = "";
     this.adresseCentreMedecineEntreprise = "";
-    this.centreMedecineETT = "181 - CMIE";
-    this.adresseCentreMedecineETT = "80 RUE DE CLICHY 75009 PARIS";
     this.contact = "";
     this.indemniteFinMission = "10.00 %";
-    this.indemniteCongesPayes = "10.00 %";
     this.moyenAcces = "";
     this.numeroTitreTravail = "";
-    this.debutTitreTravail = "";
-    this.finTitreTravail = "";
     this.periodesNonTravaillees = "";
     this.debutSouplesse = "";
     this.finSouplesse = "";
     this.equipements = "";
 
-    this.interim = "HubJob.com";
     this.missionStartDate = "";
     this.missionEndDate = "";
     this.trialPeriod = 5;
@@ -107,7 +121,6 @@ export class Contract {
     this.characteristics = "";
     this.isScheduleFixed = "true";
     this.workTimeVariable = 0;
-    this.usualWorkTimeHours = "8H00/17H00 variables";
     this.workStartHour = null;
     this.workEndHour = null;
     this.workHourVariable = "";
@@ -133,7 +146,7 @@ export class Contract {
     this.zonesTitre = "";
     this.risques = "";
     this.elementsCotisation = 0.0;
-    this.elementsNonCotisation = 10.0;
+    this.elementsNonCotisation = 1.0;
     this.titre = "";
     this.periodicite = "";
 
@@ -141,11 +154,26 @@ export class Contract {
 
     this.workAdress = "";
 
-    this.jobyerBirthDate = "";
 
     this.adresseInterim = "";
 
     this.offerContact = "";
     this.contactPhone = "";
+
+    this.epiList = [];
+
+    //jobyerInfo
+    this.jobyerId = 0;
+    this.jobyerNom = "";
+    this.jobyerPrenom = "";
+    this.jobyerNumSS = "";
+    this.jobyerBirthDate = "";
+    this.jobyerLieuNaissance = "";
+    this.jobyerNationaliteLibelle = "";
+    this.jobyerTitreTravail = "";
+    this.jobyerDebutTitreTravail = "";
+    this.jobyerFinTitreTravail = "";
+    this.email = "";
+    this.tel = "";
   }
 }

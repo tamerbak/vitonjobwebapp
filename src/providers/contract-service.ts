@@ -5,7 +5,7 @@ import {DateUtils} from "../app/utils/date-utils";
 import {GlobalConfigs} from "../configurations/globalConfigs";
 import {Utils} from "../app/utils/utils";
 import {Offer} from "../dto/offer";
-import {Contract} from "../dto/contract";
+import {ContractData} from "../dto/contract";
 
 // HACK: To fix: error TS2307: Cannot find module 'node'.
 declare function unescape(s: string): string;
@@ -391,8 +391,9 @@ export class ContractService {
       + "'" + Utils.sqlfyText(contract.titreTransport) + "',"
       + "'" + Utils.sqlfyText(contract.zonesTitre) + "',"
       + "'" + Utils.sqlfyText(contract.medicalSurv) + "',"
-      + "" + this.checkNull(contract.debutSouplesse) + ","
-      + "" + this.checkNull(contract.finSouplesse) + ","
+      + "" + (!Utils.isEmpty(contract.debutSouplesse)?"'"+contract.debutSouplesse+"'":null) + ","
+      + "" + (!Utils.isEmpty(contract.finSouplesse)?"'"+contract.finSouplesse+"'":null) + ","
+      //+ "" + this.checkNull(contract.finSouplesse) + ","
       + "'" + Utils.sqlfyText(contract.usualWorkTimeHours) + "',"
       + "'" + contract.elementsCotisation + "',"
       + "'" + contract.elementsNonCotisation + "',"
@@ -423,6 +424,9 @@ export class ContractService {
       + "'" + idOffer + "'"
       + ")"
       + " RETURNING pk_user_contrat";
+
+    console.log("save contract request");
+    console.log(sql);
 
     return new Promise(resolve => {
       let headers = new Headers();
@@ -462,7 +466,7 @@ export class ContractService {
 
   checkNull(date) {
     if (!date || date.length == '')
-      return 'null';
+      return null;
     return "'" + date + "'";
   }
 
@@ -500,11 +504,11 @@ export class ContractService {
     });
   }
 
-  loadPeriodicites(){
+  loadPeriodicites(projectTarget){
     let sql = "select pk_user_periodicite_des_paiements as id, libelle from user_periodicite_des_paiements";
     //console.log(sql);
 
-
+    this.configuration = Configs.setConfigs(projectTarget);
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(this.configuration.sqlURL, sql, {headers: headers})
@@ -520,11 +524,11 @@ export class ContractService {
    * Loading justification list
    * @param idRecours identifier of recours
    */
-  loadJustificationsList() {
+  loadJustificationsList(projectTarget) {
     let sql = "select pk_user_justificatifs_de_recours as id, libelle from user_justificatifs_de_recours where dirty = 'N'";
     //console.log(sql);
 
-
+    this.configuration = Configs.setConfigs(projectTarget);
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(this.configuration.sqlURL, sql, {headers: headers})
@@ -663,13 +667,13 @@ export class ContractService {
       "nom": employer.nom,
       "entreprise": contract.companyName,
       "adresseEntreprise": contract.workAdress,
-      "jobyerPrenom": jobyer.prenom,
-      "jobyerNom": jobyer.nom,
-      "nss": jobyer.numSS,
+      "jobyerPrenom": contract.jobyerPrenom,
+      "jobyerNom": contract.jobyerNom,
+      "nss": contract.jobyerNumSS,
       "dateNaissance": DateUtils.toDateString(contract.jobyerBirthDate),
-      "lieuNaissance": jobyer.lieuNaissance,
-      "nationalite": jobyer.nationaliteLibelle,
-      "adresseDomicile": jobyer.address,
+      "lieuNaissance": contract.jobyerLieuNaissance,
+      "nationalite": contract.jobyerNationaliteLibelle,
+      "adresseDomicile": contract.jobyerAddress,
       "dateDebutMission": contract.missionStartDate,
       "dateFinMission": contract.missionEndDate,
       "periodeEssai": contract.trialPeriod == null ? "" : ( contract.trialPeriod == 1 ? "1 jour" : (contract.trialPeriod + " jours")),
@@ -748,8 +752,8 @@ export class ContractService {
         'employerLastName': user.nom,
         'employerEmail': user.email,
         'employerPhone': user.tel,
-        'jobyerFirstName': jobyer.prenom,
-        'jobyerLastName': jobyer.nom,
+        'jobyerFirstName': contract.jobyerPrenom,
+        'jobyerLastName': contract.jobyerNom,
         'jobyerEmail': jobyer.email,
         'jobyerPhone': jobyer.tel,
         'idQuote': idQuote,
@@ -908,15 +912,13 @@ export class ContractService {
   }
 
   getNonSignedContracts(entrepriseId){
-    let sql = 'select c.pk_user_contrat as id, c.numero as num, c.fk_user_offre_entreprise as \"idOffer\", c.created, c.tarif_heure as \"baseSalary\", c.horaires_fixes as \"isScheduleFixed\", c.heure_debut as \"workStartHour\", c.heure_fin as \"workEndHour\", c.date_de_debut as \"missionStartDate\", c.date_de_fin as \"missionEndDate\", c.date_debut_terme as \"termStartDate\", c.date_fin_terme as \"termEndDate\", c.periode_essai as \"trialPeriod\", c.motif_de_recours as motif, c.recours as justification, c.surveillance_medicale_renforcee as \"medicalSurv\", c.equipements_fournis_par_l_ai as epi, c.elements_non_soumis_a_des_cotisations as \"elementsNonCotisation\", c.elements_soumis_a_des_cotisations as \"elementsCotisation\", c.zones_transport as \"zonesTitre\", c.titre_transport as \"titreTransport\", c.debut_souplesse as \"debutSouplesse\", c.fin_souplesse as \"finSouplesse\", c.liste_epi as \"epiString\", c.moyen_d_acces as \"moyenAcces\", c.contact_sur_place as \"offerContact\", c.telephone_contact as \"contactPhone\", c.caracteristiques_du_poste as characteristics, c.duree_moyenne_mensuelle as \"MonthlyAverageDuration\", c.siege_social as \"headOffice\", c.statut as category, c.filiere as sector, c.contact, c.indemnite_fin_de_mission as \"indemniteFinMission\", c.n_titre_travail as \"numeroTitreTravail\", c.periodes_non_travaillees as \"periodesNonTravaillees\", c.centre_de_medecine_entreprise as \"centreMedecineEntreprise\", c.adresse_centre_de_medecine_entreprise as \"adresseCentreMedecineEntreprise\", c.risques as \"postRisks\", c.lien_employeur as \"partnerEmployerLink\", ' +
+    let sql = 'select c.pk_user_contrat as id, c.numero as num, c.fk_user_offre_entreprise as \"idOffer\", c.created, c.lien_employeur as \"partnerEmployerLink\", ' +
 
-      ' j.nom, j.prenom, j.numero_securite_sociale as \"numSS\", j.lieu_de_naissance as \"lieuNaissance\",j.date_de_naissance as \"jobyerBirthDate\", j.pk_user_jobyer as \"jobyerId\", j.debut_validite as \"debutTitreTravail\", j.fin_validite as \"finTitreTravail\", ' +
-      ' n.libelle as \"nationaliteLibelle\", ' +
-      ' a.email, a.telephone as tel, ' +
-      ' o.titre as qualification ' +
-      ' from user_contrat as c, user_jobyer as j, user_nationalite as n, user_account as a, user_offre_entreprise as o ' +
+      ' j.nom, j.prenom, j.lieu_de_naissance as \"lieuNaissance\", j.date_de_naissance as \"jobyerBirthDate\", j.pk_user_jobyer as \"jobyerId\", ' +
+      ' a.email, a.telephone as tel ' +
+      ' from user_contrat as c, user_jobyer as j, user_account as a ' +
       ' where c.fk_user_entreprise=' + entrepriseId + " and upper(c.signature_employeur) = 'NON' " +
-      " and c.fk_user_jobyer = j.pk_user_jobyer and j.fk_user_nationalite = n.pk_user_nationalite and a.pk_user_account = j.fk_user_account and o.pk_user_offre_entreprise = c.fk_user_offre_entreprise " +
+      " and c.fk_user_jobyer = j.pk_user_jobyer and a.pk_user_account = j.fk_user_account " +
       " order by c.created desc";
 
     return new Promise(resolve => {
@@ -925,6 +927,32 @@ export class ContractService {
         .map(res => res.json())
         .subscribe(data => {
           resolve(data);
+        });
+    });
+  }
+
+  getContractDataInfos(contractId){
+    let sql = 'select c.pk_user_contrat as id, c.numero as num, c.fk_user_offre_entreprise as \"idOffer\", c.created, c.tarif_heure as \"baseSalary\", c.horaires_fixes as \"isScheduleFixed\", c.heure_debut as \"workStartHour\", c.heure_fin as \"workEndHour\", c.date_de_debut as \"missionStartDate\", c.date_de_fin as \"missionEndDate\", c.date_debut_terme as \"termStartDate\", c.date_fin_terme as \"termEndDate\", c.periode_essai as \"trialPeriod\", c.motif_de_recours as motif, c.recours as justification, c.surveillance_medicale_renforcee as \"medicalSurv\", c.equipements_fournis_par_l_ai as epi, c.elements_non_soumis_a_des_cotisations as \"elementsNonCotisation\", c.elements_soumis_a_des_cotisations as \"elementsCotisation\", c.zones_transport as \"zonesTitre\", c.titre_transport as \"titreTransport\", c.debut_souplesse as \"debutSouplesse\", c.fin_souplesse as \"finSouplesse\", c.liste_epi as \"epiString\", c.moyen_d_acces as \"moyenAcces\", c.contact_sur_place as \"offerContact\", c.telephone_contact as \"contactPhone\", c.caracteristiques_du_poste as characteristics, c.duree_moyenne_mensuelle as \"MonthlyAverageDuration\", c.siege_social as \"headOffice\", c.statut as category, c.filiere as sector, c.contact, c.indemnite_fin_de_mission as \"indemniteFinMission\", c.n_titre_travail as \"numeroTitreTravail\", c.periodes_non_travaillees as \"periodesNonTravaillees\", c.centre_de_medecine_entreprise as \"centreMedecineEntreprise\", c.adresse_centre_de_medecine_entreprise as \"adresseCentreMedecineEntreprise\", c.risques as \"postRisks\", c.lien_employeur as \"partnerEmployerLink\", c.epi as \"epiProvidedBy\", c.fk_user_periodicite_des_paiements as periodicite, ' +
+
+      ' j.nom as \"jobyerNom\", j.prenom as \"jobyerPrenom\", j.numero_securite_sociale as \"jobyerNumSS\", j.lieu_de_naissance as \"jobyerLieuNaissance\",j.date_de_naissance as \"jobyerBirthDate\", j.pk_user_jobyer as \"jobyerId\", j.debut_validite as \"jobyerDebutTitreTravail\", j.fin_validite as \"jobyerFinTitreTravail\", ' +
+      ' n.libelle as \"jobyerNationaliteLibelle\", ' +
+      ' a.email, a.telephone as tel, ' +
+      ' o.titre as qualification ' +
+      ' from user_contrat as c, user_jobyer as j, user_nationalite as n, user_account as a, user_offre_entreprise as o ' +
+      " where c.pk_user_contrat = '" + contractId+ "' and upper(c.signature_employeur) = 'NON' " +
+      " and c.fk_user_jobyer = j.pk_user_jobyer and j.fk_user_nationalite = n.pk_user_nationalite and a.pk_user_account = j.fk_user_account and o.pk_user_offre_entreprise = c.fk_user_offre_entreprise ";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any)=> {
+          if(data && data.status == "success" && data.data && data.data.length > 0){
+            let contractData: ContractData = new ContractData();
+            let res = data.data[0];
+            Utils.copyKeyValues(res, contractData);
+            resolve(contractData);
+          }
         });
     });
   }
@@ -973,6 +1001,39 @@ export class ContractService {
           this.data = data;
           resolve(this.data);
         });
+    });
+  }
+
+  prepareRecruitement(entrepriseId, email, tel, idOffer, jobyerId, projectTarget){
+    let bean = {
+      class: "com.vitonjob.gcr.model.Query",
+      entrepriseId : entrepriseId,
+      email : email,
+      tel : tel,
+      idOffer : idOffer,
+      jobyerId: jobyerId
+    };
+
+    let body = {
+      'class': 'fr.protogen.masterdata.model.CCallout',
+      id: 20050,
+      args: [
+        {
+          class: 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'Préparation du recrutement',
+          value: btoa(JSON.stringify(bean))
+        }
+      ]
+    };
+
+    this.configuration = Configs.setConfigs(projectTarget);
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(this.configuration.calloutURL, body, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any) => {
+        resolve(data);
+      });
     });
   }
 }
