@@ -119,15 +119,10 @@ export class ContractList{
 
   goToContractForm(item){
     let offer: any = new Offer();
-    //si le partnerEmployerLink est vide, c'est que les infos du contrat n'ont pas encore été saisies
-    if(Utils.isEmpty(item.partnerEmployerLink)){
-      let jobyer = {id: item.jobyerId, prenom: item.prenom, nom: item.nom, dateNaissance: item.jobyerBirthDate, lieuNaissance: item.lieuNaissance, email: item.email, tel: item.tel};
-      //set variables in local storage and navigate to docusign page
-      this.sharedService.setCurrentJobyer(jobyer);
-      this.offerService.getOfferById(item.idOffer, this.projectTarget, offer).then(data => {
-        this.sharedService.setCurrentOffer(offer);
-        this.router.navigate(['contract/recruitment-form']);
-      });
+    //si le numero du contrat est vide, c'est que les infos du contrat n'ont pas encore été saisies
+    if(Utils.isEmpty(item.num)){
+      console.log("erreur: contrat corrompu");
+      return;
     }else{
       this.contractService.getContractDataInfos(item.id, this.projectTarget).then((data: ContractData) => {
         this.sharedService.setContractData(data);
@@ -135,7 +130,7 @@ export class ContractList{
           this.sharedService.setCurrentOffer(offer);
           this.router.navigate(['contract/recruitment-form']);
         });
-      })
+      });
     }
   }
 
