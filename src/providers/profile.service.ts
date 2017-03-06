@@ -90,6 +90,7 @@ export class ProfileService{
       'type': (role == "jobyer" ? 'personnelle' : 'siege_social')
     };
     let addressDataStr = JSON.stringify(addressData);
+    addressDataStr = addressDataStr.replace("'", "''");
     let encodedAddress = btoa(addressDataStr);
     let data = {
       'class': 'fr.protogen.masterdata.model.CCallout',
@@ -130,6 +131,7 @@ export class ProfileService{
 
     };
     let addressDataStr = JSON.stringify(addressData);
+    addressDataStr = addressDataStr.replace("'", "''");
     let encodedAddress = btoa(addressDataStr);
     let data = {
       'class': 'fr.protogen.masterdata.model.CCallout',
@@ -166,6 +168,7 @@ export class ProfileService{
       'type': 'correspondance'
     };
     let addressDataStr = JSON.stringify(addressData);
+    addressDataStr = addressDataStr.replace("'", "''");
     let encodedAddress = btoa(addressDataStr);
     let data = {
       'class': 'fr.protogen.masterdata.model.CCallout',

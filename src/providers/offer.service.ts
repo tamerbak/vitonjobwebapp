@@ -313,6 +313,10 @@ export class OffersService {
       console.error('Missing jobyer id');
     }
 
+    if (offer.adresse && Utils.isEmpty(offer.adresse.street) == false) {
+      offer.adresse.street = offer.adresse.street.replace("'", "''");
+    }
+
     let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
       new CCalloutArguments('Création/Edition offre', offer),
       new CCalloutArguments('Configuration', {
