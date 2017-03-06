@@ -43,7 +43,6 @@ export class Contract {
   currentUser: any;
   contractData: ContractData = new ContractData();
   currentOffer: Offer;
-  workAdress: string;
   rate: number = 0.0;
   recours: any;
   motifsGrouped : any;
@@ -153,43 +152,10 @@ export class Contract {
       //initialize recruitment data
       this.initRecruitmentData();
     }else{
-      this.contractData = contract;
       console.log("contractData raw");
       console.log(this.contractData);
-
-
-      this.jobyer.id = this.contractData.jobyerId;
-      this.jobyer.email = this.contractData.email;
-      this.jobyer.tel = this.contractData.tel;
-      this.contractData.jobyerBirthDate = DateUtils.simpleDateFormat(new Date(this.contractData.jobyerBirthDate));
-      this.contractData.jobyerDebutTitreTravail = DateUtils.simpleDateFormat(new Date(this.contractData.jobyerDebutTitreTravail));
-      this.contractData.jobyerFinTitreTravail = DateUtils.simpleDateFormat(new Date(this.contractData.jobyerFinTitreTravail));
-
-      let titreTravailArray = this.contractData.numeroTitreTravail.split(' ');
-      this.contractData.jobyerTitreTravail = titreTravailArray[titreTravailArray.length - 1];
-      this.labelTitreIdentite = titreTravailArray.slice(0, titreTravailArray.length -1).join(" ");
-
-      this.contractData.missionStartDate = DateUtils.simpleDateFormat(new Date(this.contractData.missionStartDate));
-      this.contractData.missionEndDate = DateUtils.simpleDateFormat(new Date(this.contractData.missionEndDate));
-      this.contractData.termStartDate = DateUtils.dateFormat(new Date(this.contractData.termStartDate));
-      this.contractData.termEndDate = DateUtils.dateFormat(new Date(this.contractData.termEndDate));
-
-      this.contractData.trialPeriod = parseInt(this.contractData.trialPeriod.toString());
-
-      this.contractData.companyName = Utils.preventNull(this.employer.entreprises[0].nom);
-      this.contractData.isScheduleFixed = (this.contractData.isScheduleFixed.toUpperCase() == "OUI" ? 'true' :'false');
-
-      console.log("contractData after affectation");
-      console.log(this.contractData);
-
-      //  Load recours list
-      this.contractService.loadJustificationsList(this.projectTarget).then(data=> {
-        this.recours = data;
-      });
-
-      this.contractService.loadPeriodicites(this.projectTarget).then(data=>{
-        this.periodicites = data;
-      });
+      this.contractData = contract;
+      this.initSavedContract();
     }
 
     //TODO à ajouter dans le callout prepareRecruitment
@@ -201,6 +167,46 @@ export class Contract {
         this.contractData.epiList = data;
       else
         this.contractData.epiList = [];
+    });
+  }
+
+  initSavedContract(){
+    this.jobyer.id = this.contractData.jobyerId;
+    this.jobyer.email = this.contractData.email;
+    this.jobyer.tel = this.contractData.tel;
+
+    this.contractData.jobyerBirthDate = DateUtils.simpleDateFormat(new Date(this.contractData.jobyerBirthDate));
+    this.contractData.jobyerDebutTitreTravail = DateUtils.simpleDateFormat(new Date(this.contractData.jobyerDebutTitreTravail));
+    this.contractData.jobyerFinTitreTravail = DateUtils.simpleDateFormat(new Date(this.contractData.jobyerFinTitreTravail));
+
+    let titreTravailArray = this.contractData.numeroTitreTravail.split(' ');
+    this.contractData.jobyerTitreTravail = titreTravailArray[titreTravailArray.length - 1];
+    this.labelTitreIdentite = titreTravailArray.slice(0, titreTravailArray.length -1).join(" ");
+
+    this.contractData.missionStartDate = DateUtils.simpleDateFormat(new Date(this.contractData.missionStartDate));
+    this.contractData.missionEndDate = DateUtils.simpleDateFormat(new Date(this.contractData.missionEndDate));
+
+    this.contractData.termStartDate = DateUtils.dateFormat(new Date(this.contractData.termStartDate));
+    this.contractData.termEndDate = DateUtils.dateFormat(new Date(this.contractData.termEndDate));
+
+    this.contractData.isScheduleFixed = (this.contractData.isScheduleFixed.toUpperCase() == "OUI" ? 'true' :'false');
+    this.contractData.workStartHour = DateUtils.setMinutesToDate(new Date(), this.contractData.workStartHour);
+    this.contractData.workEndHour = DateUtils.setMinutesToDate(new Date(), this.contractData.workEndHour);
+
+    this.contractData.trialPeriod = parseInt(this.contractData.trialPeriod.toString());
+
+    this.contractData.companyName = Utils.preventNull(this.employer.entreprises[0].nom);
+
+    console.log("contractData after affectation");
+    console.log(this.contractData);
+
+    //  Load recours list
+    this.contractService.loadJustificationsList(this.projectTarget).then(data=> {
+      this.recours = data;
+    });
+
+    this.contractService.loadPeriodicites(this.projectTarget).then(data=>{
+      this.periodicites = data;
     });
   }
 
@@ -311,9 +317,8 @@ export class Contract {
         }
       }
 
-      this.workAdress = resp.adress.adresse_google_maps;
-      this.contractData.workAdress = this.workAdress;
-      this.contractData.interimAddress = this.workAdress;
+      this.contractData.workAdress = resp.adress.adresse_google_maps;
+      this.contractData.interimAddress = resp.adress.adresse_google_maps;
 
       if (resp.duree_collective != 'null') {
         this.contractData.MonthlyAverageDuration = resp.duree_collective;
@@ -468,70 +473,107 @@ export class Contract {
     }
     this.inProgress = true;
 
-    //get next num contract
-    this.contractService.getNumContract(this.projectTarget).then((data: any) => {
-      this.dataValidation = true;
-
-      if (data && data.length > 0) {
-        this.contractData.numero = this.contractService.formatNumContrat(data[0].numct);
-        this.contractData.num = this.contractService.formatNumContrat(data[0].numct);
-      }else{
-        this.addAlert("danger", "Une erreur est survenue lors de la sauvegarde des données. Veuillez rééssayer l'opération.");
-        this.inProgress = false;
-        return;
-      }
-
-      this.contractData.adresseInterim= this.workAdress;
-      this.contractData.jobyerTitreTravail = Utils.removeAllSpaces(this.contractData.jobyerTitreTravail);
+    this.contractData.jobyerTitreTravail = Utils.removeAllSpaces(this.contractData.jobyerTitreTravail);
 
       console.log("contractData before saving");
       console.log(this.contractData);
 
-      //save contract data
-     this.contractService.saveContract(
-        this.contractData,
-        this.jobyer.id,
-        this.employer.entreprises[0].id,
-        this.projectTarget,
-        this.currentUser.id,
-        this.currentOffer.idOffer).then((data: any) => {
-          if (data && data.status == "success" && data.data && data.data.length > 0) {
-            //contract data saved
-            this.contractData.id = data.data[0].pk_user_contrat;
-            //make the offer state to "en contrat"
-            this.offersService.updateOfferState(this.currentOffer.idOffer, "en contrat").then((data: any) => {
-              if (data && data.status == "success") {
-                this.currentOffer.etat = "en contrat";
-                this.offersService.spliceOfferInLocal(this.currentUser, this.currentOffer, this.projectTarget);
-                this.sharedService.setCurrentUser(this.currentUser);
-                //place offer in archive if nb contract of the selected offer is equal to its nb poste
-                this.checkOfferState(this.currentOffer);
-                //generate hour mission based on the offer slots
-                this.contractService.generateMission(this.contractData.id, this.currentOffer);
-                if(!Utils.isEmpty(this.jobyer.rgId)) {
-                  //update recrutement groupé state
-                  this.recruitmentService.updateRecrutementGroupeState(this.jobyer.rgId);
-                }
-                //generate docusign envelop
-                this.saveDocusignInfo();
-              } else {
-                this.addAlert("danger", "Une erreur est survenue lors de la sauvegarde des données. Veuillez rééssayer l'opération.");
-                this.inProgress = false;
-                return;
-              }
-            })
+      // traitement pour les nouveaux contrats
+      if(this.contractData.id == 0 || Utils.isEmpty(this.contractData.id)){
+        this.contractService.getNumContract(this.projectTarget).then((data: any) => {
+          let contractNum;
+          if (data && data.length > 0) {
+            this.contractData.num = this.contractService.formatNumContrat(data[0].numct);
           } else {
             this.addAlert("danger", "Une erreur est survenue lors de la sauvegarde des données. Veuillez rééssayer l'opération.");
             this.inProgress = false;
             return;
           }
+          //save contrct data
+          this.contractService.saveContract(
+            this.contractData,
+            this.jobyer.id,
+            this.employer.entreprises[0].id,
+            this.projectTarget,
+            this.currentUser.id,
+            this.currentOffer.idOffer).then((data: any) => {
+              if (data && data.status == "success" && data.data && data.data.length > 0) {
+                //contract data saved
+                this.contractData.id = data.data[0].pk_user_contrat;
+                //make the offer state to "en contrat"
+                this.offersService.updateOfferState(this.currentOffer.idOffer, "en contrat").then((data: any) => {
+                  if (data && data.status == "success") {
+                    this.currentOffer.etat = "en contrat";
+                    this.offersService.spliceOfferInLocal(this.currentUser, this.currentOffer, this.projectTarget);
+                    this.sharedService.setCurrentUser(this.currentUser);
+                    //place offer in archive if nb contract of the selected offer is equal to its nb poste
+                    this.checkOfferState(this.currentOffer);
+                    //generate hour mission based on the offer slots
+                    this.contractService.generateMission(this.contractData.id, this.currentOffer);
+                    if (!Utils.isEmpty(this.jobyer.rgId)) {
+                      //update recrutement groupé state
+                      this.recruitmentService.updateRecrutementGroupeState(this.jobyer.rgId);
+                    }
+                    //go to contract list page
+                    this.router.navigate(['contract/list']);
+                  } else {
+                    this.addAlert("danger", "Une erreur est survenue lors de la sauvegarde des données. Veuillez rééssayer l'opération.");
+                    this.inProgress = false;
+                    return;
+                  }
+                });
+              } else {
+                this.addAlert("danger", "Une erreur est survenue lors de la sauvegarde des données. Veuillez rééssayer l'opération.");
+                this.inProgress = false;
+                return;
+              }
+            },
+            (err) => {
+              this.addAlert("danger", "Une erreur est survenue lors de la sauvegarde des données. Veuillez rééssayer l'opération.");
+              this.inProgress = false;
+              return;
+            });
         },
-        (err) => {
-          this.addAlert("danger", "Une erreur est survenue lors de la sauvegarde des données. Veuillez rééssayer l'opération.");
-          this.inProgress = false;
-          return;
-        })
-      });
+          (err) => {
+            this.addAlert("danger", "Une erreur est survenue lors de la sauvegarde des données. Veuillez rééssayer l'opération.");
+            this.inProgress = false;
+            return;
+          });
+      }else{
+        //save contract data
+        this.contractService.updateContractData(
+          this.contractData,
+          this.jobyer.id,
+          this.employer.entreprises[0].id,
+          this.projectTarget,
+          this.currentUser.id,
+          this.currentOffer.idOffer).then((data: any) => {
+          if (data && data.status == "success") {
+            //make the offer state to "en contrat"
+            if(this.currentOffer.etat != "en archive") {
+              this.offersService.updateOfferState(this.currentOffer.idOffer, "en contrat").then((data: any) => {
+                if (data && data.status == "success") {
+                  this.currentOffer.etat = "en contrat";
+                  this.offersService.spliceOfferInLocal(this.currentUser, this.currentOffer, this.projectTarget);
+                  this.sharedService.setCurrentUser(this.currentUser);
+                  //place offer in archive if nb contract of the selected offer is equal to its nb poste
+                  this.checkOfferState(this.currentOffer);
+                }
+              });
+            }
+            if(!Utils.isEmpty(this.jobyer.rgId)) {
+              //update recrutement groupé state
+              this.recruitmentService.updateRecrutementGroupeState(this.jobyer.rgId);
+            }
+            //go to contract list page
+            this.router.navigate(['contract/list']);
+          } else {
+            this.addAlert("danger", "Une erreur est survenue lors de la sauvegarde des données. Veuillez rééssayer l'opération.");
+            this.inProgress = false;
+            return;
+          }
+        });
+      }
     }
 
   saveDocusignInfo() {

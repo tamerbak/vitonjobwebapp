@@ -146,7 +146,7 @@ export class Utils {
   public static copyKeyValues(srcObj, targetObj){
     // Copy every properties from src obj to target obj
     Object.keys(srcObj).forEach((key) => {
-      targetObj[key] = srcObj[key];
+      targetObj[key] = this.preventNull(srcObj[key]);
     });
     return targetObj;
   }
