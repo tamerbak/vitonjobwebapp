@@ -227,7 +227,14 @@ export class OfferRecruit {
         });
       }
 
-      this.recruitmentService.retreiveJobyersAlwaysAvailable(this.jobyers);
+      this.recruitmentService.retreiveJobyersAlwaysAvailable(this.jobyers).then((data: any)=> {
+        // Order by : Always available, Partial available, Never available
+        this.jobyers.sort((a, b)=> {
+          let aWeight = (a.toujours_disponible ? 2 : (a.disponibilites.length > 0 ? 1 : 0));
+          let bWeight = (b.toujours_disponible ? 2 : (b.disponibilites.length > 0 ? 1 : 0));
+          return bWeight - aWeight;
+        })
+      });
     });
 
   }
@@ -401,6 +408,18 @@ export class OfferRecruit {
     this.selectedQuarterId = null;
     this.selectedQuarterIdStart = null;
     this.selectedQuarterIdEnd = null;
+  }
+
+  /**
+   * Return true if the slot is assigned, otherwise false
+   */
+  isAssignedSlot(): boolean {
+    if (this.selectedDay != null && this.selectedQuarterId != null) {
+      if (this.selectedDay.quarters[this.selectedQuarterId] > 0) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
