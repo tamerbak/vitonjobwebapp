@@ -4,6 +4,8 @@ import {Core} from './app/core/core';
 import {ErrorPage} from './app/error/error';
 import {LoginPage} from './app/login/login';
 import {routes} from './app.routes';
+import {OffersService} from "./providers/offer.service";
+import {ContractService} from "./providers/contract-service";
 
 declare let jQuery: any;
 declare let Messenger: any;
@@ -14,7 +16,8 @@ declare let ga: Function;
   directives: [ROUTER_DIRECTIVES],
   template: require('./app.html'),
   styles: [require('./scss/application.scss')],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [OffersService, ContractService]
 })
 export class App {
   redirectTo : string;

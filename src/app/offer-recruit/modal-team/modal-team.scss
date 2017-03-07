@@ -1,0 +1,19 @@
+@import "../../../../node_modules/messenger/build/css/messenger";
+@import "../../../../node_modules/messenger/build/css/messenger-theme-air";
+@import "../../../scss/variables";
+@import "../../../../node_modules/bootstrap/scss/_variables";
+@import "../../../../node_modules/bootstrap/scss/mixins";
+@import "../../../../node_modules/bootstrap-select/dist/css/bootstrap-select";
+@import "../../../../node_modules/select2-bootstrap-css/select2-bootstrap";
+@import "../../../../node_modules/ng2-datetime/src/vendor/bootstrap-datepicker/bootstrap-datepicker3.min";
+@import "../../../../node_modules/ng2-datetime/src/vendor/bootstrap-timepicker/bootstrap-timepicker.min";
+@import "../../../../node_modules/jasny-bootstrap/dist/css/jasny-bootstrap";
+
+.offer-recruit-modal {
+  .offer-recruit-modal-picture {
+    max-width: 80px;
+  }
+  button {
+    width: 100%;
+  }
+}

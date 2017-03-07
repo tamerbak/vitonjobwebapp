@@ -78,6 +78,7 @@ import {RouteObservable} from "./providers/observables.service";
 import {NotificationsService} from "./providers/notifications.service";
 import {HttpRequestHandler} from "./http/http-request-handler";
 import {LoaderService} from "./providers/loader.service";
+import {ContractService} from "./providers/contract-service";
 
 declare let process: any;
 
@@ -99,6 +100,7 @@ document.addEventListener('DOMContentLoaded', function main(): void {
     NgControl,
     GOOGLE_MAPS_PROVIDERS,
     LoaderService,
+    ContractService,
     provideLazyMapsAPILoaderConfig({
       libraries: ['places'],
       apiKey: Configs.googleMapApiKey

@@ -852,7 +852,14 @@ export class OfferEdit {
   }
 
   launchSearch() {
-    this.dataValidation = true;
+    if (this.projectTarget == 'employer') {
+      this.dataValidation = true;
+      this.keepCurrentOffer = true;
+      this.sharedService.setCurrentOffer(this.offer);
+      this.saveOffer();
+      this.router.navigate(['offer/recruit']);
+      return;
+    }
     var offer = this.offer;
 
     let searchQuery = {

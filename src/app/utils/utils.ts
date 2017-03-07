@@ -102,6 +102,17 @@ export class Utils {
     return txt.replace(/'/g, "''");
   }
 
+  /*
+  remove all spaces from a string
+  ex: input = "tikchbila tiwliwla atikawa"
+      output = "tikchbilatiwliwlaatikawa"
+   */
+  public static removeAllSpaces(str){
+    if (this.isEmpty(str))
+      return "";
+    return str.replace(/\s+/g, '');
+  }
+
   public static parseNumber(str) {
     try {
       return parseFloat(str);
@@ -130,5 +141,13 @@ export class Utils {
     return day1==day2
       && month1==month2
       && year1==year2;
+  }
+
+  public static copyKeyValues(srcObj, targetObj){
+    // Copy every properties from src obj to target obj
+    Object.keys(srcObj).forEach((key) => {
+      targetObj[key] = this.preventNull(srcObj[key]);
+    });
+    return targetObj;
   }
 }

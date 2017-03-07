@@ -8,7 +8,7 @@ import {CCalloutArguments} from "../dto/generium/ccallout-arguments";
 import {CCallout} from "../dto/generium/ccallout";
 import {Utils} from "../app/utils/utils";
 
-const OFFER_CALLOUT_ID = 40022;
+const OFFER_CALLOUT_ID = 20052;
 
 @Injectable()
 export class OffersService {
@@ -270,9 +270,9 @@ export class OffersService {
    * @param projectTarget
    * @returns {Promise<T>}
    */
-  copyOffer(offer: Offer, projectTarget: string) {
+  copyOffer(offer: Offer, projectTarget: string, etat: string) {
     offer.idOffer = 0;
-    offer.etat = '';
+    offer.etat = etat;
     return this._uploadOffer(offer, projectTarget);
   }
 
@@ -311,6 +311,10 @@ export class OffersService {
       console.error('Missing entreprise id');
     } else if ((projectTarget !== 'employer') && offer.jobyerId == 0) {
       console.error('Missing jobyer id');
+    }
+
+    if (offer.adresse && Utils.isEmpty(offer.adresse.street) == false) {
+      offer.adresse.street = offer.adresse.street.replace("'", "''");
     }
 
     let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [

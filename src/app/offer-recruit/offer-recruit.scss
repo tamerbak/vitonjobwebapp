@@ -1,0 +1,814 @@
+@import "../../../node_modules/metrojs/release/MetroJs.Full/MetroJs";
+@import "../../scss/variables";
+@import "../../../node_modules/bootstrap/scss/_variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+
+/**
+ * Mapael
+ */
+
+.mapTooltip {
+  position : fixed;
+  padding : 2px;
+  z-index: 1000;
+  max-width: 200px;
+  display: none;
+  background-color : #fff;
+  border: 1px solid #ccc;
+  border-radius: $border-radius;
+  font-size: $font-size-sm;
+  color: $text-color;
+}
+
+.zoomIn, .zoomOut {
+  position: absolute;
+  bottom: 10px;
+  left : 10px;
+  width: 20px;
+  height: 20px;
+
+  box-sizing: content-box;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: $text-color;
+  line-height: 20px;
+  text-align: center;
+  border-radius: $border-radius;
+  cursor: pointer;
+  font-weight: $font-weight-bold;
+
+  user-select: none;
+}
+
+.zoomOut {
+  left: 36px;
+
+}
+
+.mapael{
+  position: relative;
+  margin: (-$widget-padding-vertical) (-$widget-padding-horizontal) 0;
+  .map {
+    position:relative;
+  }
+  .stats{
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    margin: 5% 10%;
+  }
+}
+
+/***********************/
+/*      Live Tiles     */
+/***********************/
+
+.live-tile,
+.list-tile,
+.copy-tile,
+.tile-strip .flip-list > li{
+  height: auto;
+  width: 100%;
+  margin: 0;
+  color: inherit;
+
+  &.fade{
+    opacity: 1;
+  }
+}
+
+.live-tile p,
+.list-tile p,
+.copy-tile p {
+  padding: 0;
+}
+
+.live-tile p,
+.list-tile p,
+.copy-tile p,
+.live-tile .face,
+.list-tile .face,
+.copy-tile .face{
+  /* let .h* classes work! */
+  &.h1 { font-size: $font-size-h1; }
+  &.h2 { font-size: $font-size-h2; }
+  &.h3 { font-size: $font-size-h3; }
+  &.h4 { font-size: $font-size-h4; }
+  &.h5 { font-size: $font-size-h5; }
+  &.h6 { font-size: $font-size-h6; }
+
+  $font-sizes: $font-size-h1, $font-size-h2, $font-size-h3, $font-size-h4, $font-size-h5, $font-size-h6;
+  $i: 1;
+  @each $font-size in $font-sizes{
+    &.value#{$i}{ font-size: $font-size; }
+    $i: $i + 1;
+  }
+}
+
+/***********************/
+/*     Chart Simple    */
+/***********************/
+
+.widget-chart-simple{
+
+  .widget-body{
+    padding-top: 10px;
+  }
+  .chart-value{
+    font-size: 24px;
+  }
+
+  .chart{
+    margin-top: 20px;
+  }
+}
+
+.jqstooltip{
+  box-sizing: content-box;
+}
+
+/***********************/
+/*    Chart Changes    */
+/***********************/
+
+.widget-chart-changes{
+  .chart{
+    margin: -$widget-padding-vertical (-$widget-padding-horizontal) 0;
+    padding: $widget-padding-vertical 0 0;
+  }
+
+  .chart-title{
+    margin: 20px 0 0;
+  }
+
+  .chart-value, .chart-value-change{
+    padding: 0 $widget-padding-horizontal;
+  }
+
+  .chart-value{
+    margin-bottom: 0;
+    font-weight: $font-weight-bold;
+    font-size: 21px;
+    line-height: 1;
+    color: $white;
+  }
+
+  .chart-value-change{
+    color: rgba($white, .7);
+    font-size: $font-size-smaller;
+    margin-bottom: $chart-spacer-y;
+  }
+}
+
+/***********************/
+/*  Chart Stats Simple */
+/***********************/
+
+.widget-chart-stats-simple{
+  > header{
+    h1,h2,h3,h4,h5,h6{
+      margin-bottom: $line-height-computed/4;
+    }
+  }
+
+  .chart{
+    height: 200px;
+    margin: $line-height-computed/2 (-$widget-padding-horizontal) (-$widget-padding-vertical);
+    > .chart-inner{
+      height: 100%;
+    }
+  }
+}
+
+/***********************/
+/*      Big Chart      */
+/***********************/
+
+.widget-big-chart{
+  .chart{
+    height: 200px;
+  }
+}
+
+/***********************/
+/*  Part:Chart Stats   */
+/***********************/
+
+.chart-stats{
+  border-top: 1px solid $gray-lighter;
+}
+
+/***********************/
+/*  Part:Map Controls  */
+/***********************/
+
+.map-controls{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-top: 1px solid #bbb;
+  background-color: $gray-semi-lighter;
+  border-bottom-left-radius: $border-radius;
+  border-bottom-right-radius: $border-radius;
+
+  > .nav-item > .nav-link{
+    border-radius: 0;
+    padding: 0.7143rem 0 0.7143rem 0;
+
+    color: $gray;
+    &:hover{
+      background-color: $gray-lighter;
+      color: $gray
+    }
+  }
+
+  > .nav-item.active > .nav-link{
+    &, &:hover{
+      background-color: $white;
+      color: $gray;
+      font-weight: $font-weight-bold;
+    }
+  }
+
+  > .nav-item:first-child > a{
+    border-bottom-left-radius: $border-radius;
+  }
+
+  > .nav-item:last-child > a{
+    border-bottom-right-radius: $border-radius;
+  }
+}
+
+.map svg {
+  height: 100%;
+  width: 100%;
+}
+
+/***********************************/
+/**          Post Links           **/
+/***********************************/
+
+.post-links{
+  margin-bottom: 0;
+  font-size: $font-size-sm;
+  padding-left: 0;
+  @include clearfix();
+  > li{
+    float: left;
+    list-style: none;
+
+    + li{
+      &:before{
+        color: #999;
+        content: "\25cf";
+        padding: 0 8px;
+      }
+    }
+    > a{
+      text-decoration: none;
+      color: $text-muted;
+      &:hover{
+        color: $text-muted;
+      }
+    }
+  }
+
+  &.no-separator > li + li{
+    margin-left: 12px;
+    &:before{
+      content: normal;
+    }
+  }
+}
+
+/***********************************/
+/**          Post Comments           **/
+/***********************************/
+
+.post-comments{
+  font-size: $font-size-sm;
+  padding-left: 0;
+  @include clearfix();
+
+  .post-links + &{
+    margin-top: $line-height-computed / 2;
+  }
+
+  > li {
+    padding: 10px;
+    border-top: 1px solid #e7e7e7;
+    list-style: none;
+    @include clearfix();
+
+    &:last-child{
+      padding-bottom: 0;
+    }
+  }
+
+  p:last-child{
+    margin-bottom: 0;
+  }
+
+  .avatar{
+    margin-top: 1px;
+  }
+
+  .author{
+    margin-top: 0;
+    margin-bottom: 2px;
+    color: #7ca9dd;
+  }
+
+  .comment-body{
+    overflow: auto;
+  }
+
+  h6.author > small{
+    font-size: 11px;
+  }
+
+  .widget > footer &{
+    margin-left: -$widget-padding-horizontal;
+    margin-right: -$widget-padding-horizontal;
+  }
+}
+
+/***********************************/
+/**           Post User           **/
+/***********************************/
+
+.post-user{
+  position: relative;
+  @include clearfix();
+
+  img{
+    border: 3px solid white;
+  }
+}
+
+/***********************************/
+/**             Tags              **/
+/***********************************/
+
+.tags{
+  padding-left: 0;
+  list-style: none;
+  @include clearfix();
+
+  > li{
+    float: left;
+
+    > a{
+      padding: 2px 8px;
+      font-size: $font-size-mini;
+      border-radius: 6px;
+      border: 1px solid white;
+      color: inherit;
+
+      text-decoration: none;
+
+      &:hover{
+        background-color: rgba(0,0,0,.1);
+
+      }
+
+      .fa{
+        font-size: 8px;
+        vertical-align: 2px;
+        margin-right: 3px;
+        opacity: .8;
+      }
+    }
+
+    + li > a{
+      margin-left: 6px;
+    }
+  }
+
+  .widget-top-overflow > img + &{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 20px;
+  }
+}
+
+/***********************************/
+/**       Chat List Group         **/
+/***********************************/
+
+.widget-chat-list-group{
+  padding-top: $line-height-computed/2;
+  .list-group-item{
+    margin-left: $widget-padding-horizontal;
+    margin-right: $widget-padding-horizontal;
+    padding: 0;
+    border: 0;
+
+    & + .list-group-item{
+      margin-top: 30px;
+    }
+
+    .thumb,
+    .thumb-sm{
+      float: left;
+      margin-right: 15px;
+    }
+
+    .time{
+      float: right;
+      font-size: $font-size-sm;
+      color: $link-color;
+    }
+
+    .sender{
+      margin-top: 5px;
+      margin-bottom: 5px;
+      font-size: $font-size-mini;
+      font-weight: $font-weight-normal;
+    }
+
+    .body{
+      font-size: $font-size-mini;
+      color: $text-muted;
+    }
+
+    &.on-right{
+      .thumb,
+      .thumb-sm{
+        float: right;
+        margin-left: 15px;
+        margin-right: 0;
+      }
+
+      .time{
+        float: left;
+      }
+
+      .sender{
+        text-align: right;
+      }
+    }
+  }
+}
+
+/***********************************/
+/**           Weather             **/
+/***********************************/
+
+
+.widget-image .forecast{
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin-bottom: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  text-align: center;
+}
+
+$requiredBackground: #e74c3c;
+$requiredBorder: #c0392b;
+$assignedBackground: #2ecc71;
+$assignedBorder: #27ae60;
+
+$availableOpacity: 0.8;
+$matchingBackground: rgba(149, 165, 166, $availableOpacity);
+$matchingBorder: rgba(127, 140, 141, $availableOpacity);
+$availableBackground: rgba(236, 240, 241, $availableOpacity);
+$availableBorder: rgba(189, 195, 199, $availableOpacity);
+
+$assigned1Background: #2ecc71;
+$assigned1Border: #27ae60;
+$assigned2Background: #f1c40f;
+$assigned2Border: #f39c12;
+$assigned3Background: #3498db;
+$assigned3Border: #2980b9;
+$assigned4Background: #9b59b6;
+$assigned4Border: #8e44ad;
+$assigned5Background: #e67e22;
+$assigned5Border: #d35400;
+
+$slotBorderRadius: 25%;
+$jobyerBookmarkSize: 10px;
+
+$boxShadowShift: 7px;
+$boxShadowColor: #4183C4;
+
+.offer-recruit-slots-container {
+  margin-top: 2em;
+
+  th {
+    padding: 0;
+  }
+  td {
+    padding: 3px 0 3px 0;
+  }
+
+  .offer-recruit-slots-headers {
+    text-align: center;
+  }
+  .offer-recruit-slots-day {
+    border-right: 1px black solid;
+  }
+  .offer-recruit-slots-quart {
+    min-width: 9px;
+    cursor: default;
+
+    .offer-recruit-slots-quarter-fill-container {
+      min-width: 9px;
+      width: 100%;
+      height: 100%;
+      padding: 1px 0 1px 0;
+      position: relative;
+      left: 0;
+      top: 0;
+      float: left;
+    }
+    .offer-recruit-slots-quarter-fill {
+      min-width: 9px;
+      width: 100%;
+      height: 25px;
+      position: relative;
+      left: 0;
+      top: 0;
+    }
+
+    .offer-recruit-slots-quarter-required {
+      cursor: pointer;
+      background-color: $requiredBackground;
+      color: $requiredBackground;
+      border-top: 1px $requiredBorder solid;
+      border-bottom: 1px $requiredBorder solid;
+    }
+    .offer-recruit-slots-quarter-required-left {
+      cursor: pointer;
+      border-radius: $slotBorderRadius 0 0 $slotBorderRadius;
+      background-color: $requiredBackground;
+      color: $requiredBackground;
+      border-top: 1px $requiredBorder solid;
+      border-bottom: 1px $requiredBorder solid;
+      border-left: 1px $requiredBorder solid;
+    }
+    .offer-recruit-slots-quarter-required-right {
+      cursor: pointer;
+      border-radius: 0 $slotBorderRadius $slotBorderRadius 0;
+      background-color: $requiredBackground;
+      color: $requiredBackground;
+      border-top: 1px $requiredBorder solid;
+      border-bottom: 1px $requiredBorder solid;
+      border-right: 1px $requiredBorder solid;
+    }
+
+    .offer-recruit-slots-quarter-match-left {
+      border-radius: $slotBorderRadius 0 0 $slotBorderRadius;
+      background-color: $matchingBackground;
+      color: $matchingBackground;
+      border-left: 1px $matchingBorder solid;
+      border-top: 1px $matchingBorder solid;
+      border-bottom: 1px $matchingBorder solid;
+    }
+    .offer-recruit-slots-quarter-match-right {
+      border-radius: 0 $slotBorderRadius $slotBorderRadius 0;
+      background-color: $matchingBackground;
+      color: $matchingBackground;
+      border-right: 1px $matchingBorder solid;
+      border-top: 1px $matchingBorder solid;
+      border-bottom: 1px $matchingBorder solid;
+    }
+    .offer-recruit-slots-quarter-match {
+      background-color: $matchingBackground;
+      color: $matchingBackground;
+      border-top: 1px $matchingBorder solid;
+      border-bottom: 1px $matchingBorder solid;
+    }
+
+    .offer-recruit-slots-quarter-available {
+      background-color: $availableBackground;
+      color: $availableBackground;
+      border-top: 1px $availableBorder solid;
+      border-bottom: 1px $availableBorder solid;
+    }
+    .offer-recruit-slots-quarter-available-left {
+      border-radius: $slotBorderRadius 0 0 $slotBorderRadius;
+      background-color: $availableBackground;
+      color: $availableBackground;
+      border-left: 1px $availableBorder solid;
+      border-top: 1px $availableBorder solid;
+      border-bottom: 1px $availableBorder solid;
+    }
+    .offer-recruit-slots-quarter-available-right {
+      border-radius: 0 $slotBorderRadius $slotBorderRadius 0;
+      background-color: $availableBackground;
+      color: $availableBackground;
+      border-right: 1px $availableBorder solid;
+      border-top: 1px $availableBorder solid;
+      border-bottom: 1px $availableBorder solid;
+    }
+
+    /**
+     * ASSIGNED
+     */
+
+    .assigned-1 {
+      background-color: $assigned1Background;
+      color: $assigned1Background;
+      border-top: 1px $assigned1Border solid;
+      border-bottom: 1px $assigned1Border solid;
+    }
+    .assigned-1-left {
+      border-radius: $slotBorderRadius 0 0 $slotBorderRadius;
+      background-color: $assigned1Background;
+      color: $assigned1Background;
+      border-left: 1px $assigned1Border solid;
+      border-top: 1px $assigned1Border solid;
+      border-bottom: 1px $assigned1Border solid;
+    }
+    .assigned-1-right {
+      border-radius: 0 $slotBorderRadius $slotBorderRadius 0;
+      background-color: $assigned1Background;
+      color: $assigned1Background;
+      border-right: 1px $assigned1Border solid;
+      border-top: 1px $assigned1Border solid;
+      border-bottom: 1px $assigned1Border solid;
+    }
+
+    .assigned-2 {
+      background-color: $assigned2Background;
+      color: $assigned2Background;
+      border-top: 1px $assigned2Border solid;
+      border-bottom: 1px $assigned2Border solid;
+    }
+    .assigned-2-left {
+      border-radius: $slotBorderRadius 0 0 $slotBorderRadius;
+      background-color: $assigned2Background;
+      color: $assigned2Background;
+      border-left: 1px $assigned2Border solid;
+      border-top: 1px $assigned2Border solid;
+      border-bottom: 1px $assigned2Border solid;
+    }
+    .assigned-2-right {
+      border-radius: 0 $slotBorderRadius $slotBorderRadius 0;
+      background-color: $assigned2Background;
+      color: $assigned2Background;
+      border-right: 1px $assigned2Border solid;
+      border-top: 1px $assigned2Border solid;
+      border-bottom: 1px $assigned2Border solid;
+    }
+
+    .assigned-3 {
+      background-color: $assigned3Background;
+      color: $assigned3Background;
+      border-top: 1px $assigned3Border solid;
+      border-bottom: 1px $assigned3Border solid;
+    }
+    .assigned-3-left {
+      border-radius: $slotBorderRadius 0 0 $slotBorderRadius;
+      background-color: $assigned3Background;
+      color: $assigned3Background;
+      border-left: 1px $assigned3Border solid;
+      border-top: 1px $assigned3Border solid;
+      border-bottom: 1px $assigned3Border solid;
+    }
+    .assigned-3-right {
+      border-radius: 0 $slotBorderRadius $slotBorderRadius 0;
+      background-color: $assigned3Background;
+      color: $assigned3Background;
+      border-right: 1px $assigned3Border solid;
+      border-top: 1px $assigned3Border solid;
+      border-bottom: 1px $assigned3Border solid;
+    }
+
+    .assigned-4 {
+      background-color: $assigned4Background;
+      color: $assigned4Background;
+      border-top: 1px $assigned4Border solid;
+      border-bottom: 1px $assigned4Border solid;
+    }
+    .assigned-4-left {
+      border-radius: $slotBorderRadius 0 0 $slotBorderRadius;
+      background-color: $assigned4Background;
+      color: $assigned4Background;
+      border-left: 1px $assigned4Border solid;
+      border-top: 1px $assigned4Border solid;
+      border-bottom: 1px $assigned4Border solid;
+    }
+    .assigned-4-right {
+      border-radius: 0 $slotBorderRadius $slotBorderRadius 0;
+      background-color: $assigned4Background;
+      color: $assigned4Background;
+      border-right: 1px $assigned4Border solid;
+      border-top: 1px $assigned4Border solid;
+      border-bottom: 1px $assigned4Border solid;
+    }
+
+    .assigned-5 {
+      background-color: $assigned5Background;
+      color: $assigned5Background;
+      border-top: 1px $assigned5Border solid;
+      border-bottom: 1px $assigned5Border solid;
+    }
+    .assigned-5-left {
+      border-radius: $slotBorderRadius 0 0 $slotBorderRadius;
+      background-color: $assigned5Background;
+      color: $assigned5Background;
+      border-left: 1px $assigned5Border solid;
+      border-top: 1px $assigned5Border solid;
+      border-bottom: 1px $assigned5Border solid;
+    }
+    .assigned-5-right {
+      border-radius: 0 $slotBorderRadius $slotBorderRadius 0;
+      background-color: $assigned5Background;
+      color: $assigned5Background;
+      border-right: 1px $assigned5Border solid;
+      border-top: 1px $assigned5Border solid;
+      border-bottom: 1px $assigned5Border solid;
+    }
+
+
+  }
+  .offer-recruit-slots-quart:nth-child(4n + 1) {
+    border-right: 1px #e7e7e7 solid;
+  }
+
+}
+
+.offer-recruit-jobyer-available {
+
+}
+
+.offer-recruit-jobyer-1 {
+  border-left: $jobyerBookmarkSize $assigned1Background solid;
+}
+
+.offer-recruit-jobyer-2 {
+  border-left: $jobyerBookmarkSize $assigned2Background solid;
+}
+
+.offer-recruit-jobyer-3 {
+  border-left: $jobyerBookmarkSize $assigned3Background solid;
+}
+
+.offer-recruit-jobyer-4 {
+  border-left: $jobyerBookmarkSize $assigned4Background solid;
+}
+
+.offer-recruit-jobyer-5 {
+  border-left: $jobyerBookmarkSize $assigned5Background solid;
+}
+
+// Effect when mouse over a jobyer
+.offer-recruit-jobyer-available:hover {
+  background-color: aliceblue;
+  cursor: pointer;
+}
+
+.slot-selected {
+  box-shadow: $boxShadowShift 0px 12px $boxShadowColor;
+  -webkit-animation-name: clignote; //on affecte l'animation clignote à notre bouton
+  -webkit-animation-duration: 1s; //on définit la durée de l'animation à 1s
+  -webkit-animation-iteration-count:infinite; //on dit que l'animation se répétera à l'infini.
+}
+
+@-webkit-keyframes clignote {
+  0% { box-shadow: $boxShadowShift 0px 12px $boxShadowColor; }
+  50% { box-shadow: $boxShadowShift 0px 7px $boxShadowColor; }
+  100% { box-shadow: $boxShadowShift 0px 12px $boxShadowColor; }
+}
+
+$detailHeight: 130px;
+$detailAnimationDuration: 0.5s;
+
+.offer-recruit-detail-open {
+  min-height: $detailHeight;
+  -webkit-animation-name: detail-open; //on affecte l'animation clignote à notre bouton
+  -webkit-animation-duration: $detailAnimationDuration; //on définit la durée de l'animation à 1s
+}
+@-webkit-keyframes detail-open {
+  0% { min-height: 0; }
+  100% { min-height: $detailHeight; }
+}
+.offer-recruit-detail-close {
+  min-height: 0;
+  -webkit-animation-name: detail-close; //on affecte l'animation clignote à notre bouton
+  -webkit-animation-duration: $detailAnimationDuration; //on définit la durée de l'animation à 1s
+}
+@-webkit-keyframes detail-close {
+  0% { min-height: $detailHeight; }
+  100% { min-height: 0; }
+}
+
+.slot-description-actions {
+  padding-top: 2rem;
+}
+
+.offer-recruit-description {
+  margin-top: 4em;
+}
+
+.slot-description-unassign {
+  width: 100%;
+}

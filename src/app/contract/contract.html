@@ -21,7 +21,7 @@
       <div class="col-md-6 col-xs-12">
         <div class="form-group">
           <label>Société utilisatrice&nbsp;<span  class="color-font">*</span></label>
-          <input type="text" name="companyName" class="form-control" [(ngModel)]="companyName" aria-describedby="societe-utilisatrice" required>
+          <input type="text" name="companyName" class="form-control" [(ngModel)]="contractData.companyName" aria-describedby="societe-utilisatrice" required readonly>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
@@ -33,7 +33,7 @@
       <div class="col-md-6 col-xs-12">
         <div class="form-group">
           <label>Lieu de la mission&nbsp;<span  class="color-font" >*</span></label>
-          <input type="text" name="workAddress" class="form-control" [(ngModel)]="workAdress" aria-describedby="lieu-de-la-mission" required>
+          <input type="text" name="workAddress" class="form-control" [(ngModel)]="contractData.workAdress" aria-describedby="lieu-de-la-mission" required>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
@@ -68,31 +68,31 @@
         <div class="form-group">
           <label>Nom</label>
           <span class="asterisk">*</span>
-          <input type="text" name="lastname" class="form-control" [(ngModel)]="jobyer.nom" aria-describedby="nom" readonly>
+          <input type="text" name="lastname" class="form-control" [(ngModel)]="contractData.jobyerNom" aria-describedby="nom" readonly>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label>Prénom</label>
           <span class="asterisk">*</span>
-          <input type="text" name="firstname" class="form-control" [(ngModel)]="jobyer.prenom" aria-describedby="prenom" readonly/>
+          <input type="text" name="firstname" class="form-control" [(ngModel)]="contractData.jobyerPrenom" aria-describedby="prenom" readonly/>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label>N° de sécurité sociale</label>
           <span class="asterisk">*</span>
-          <input type="text" name="numss" class="form-control" [(ngModel)]="jobyer.numSS" aria-describedby="nss" readonly/>
+          <input type="text" name="numss" class="form-control" [(ngModel)]="contractData.jobyerNumSS" aria-describedby="nss" readonly/>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label>Date de naissance</label>
           <span class="asterisk">*</span>
-          <input type="date" name="birthdate" class="form-control" [(ngModel)]="jobyerBirthDate" aria-describedby="date-de-naissance" readonly/>
+          <input type="text" name="birthdate" class="form-control" [(ngModel)]="contractData.jobyerBirthDate" aria-describedby="date-de-naissance" readonly/>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label>Lieu de naissance</label>
           <span class="asterisk">*</span>
-          <input type="text" name="birthplace" class="form-control" [(ngModel)]="jobyer.lieuNaissance" aria-describedby="lieu" readonly/>
+          <input type="text" name="birthplace" class="form-control" [(ngModel)]="contractData.jobyerLieuNaissance" aria-describedby="lieu" readonly/>
           <small class="form-text text-muted"></small>
         </div>
       </div>
@@ -100,7 +100,7 @@
         <div class="form-group">
           <label>Nationalité</label>
           <span class="asterisk">*</span>
-          <input type="text" name="nationality" class="form-control" [(ngModel)]="jobyer.nationaliteLibelle" aria-describedby="nat" readonly/>
+          <input type="text" name="nationality" class="form-control" [(ngModel)]="contractData.jobyerNationaliteLibelle" aria-describedby="nat" readonly/>
           <small class="form-text text-muted"></small>
         </div>
         <!--<div class="form-group" *ngIf="jobyer.nationaliteLibelle !== '' && isEuropean==1 && isCIN">-->
@@ -114,10 +114,10 @@
         <!--<small class="form-text text-muted"></small>-->
         <!--</div>-->
 
-        <div [hidden]="isEuropean == 1 || !isCIN" class="form-group">
-          <label>CNI ou Passeport</label>
+        <div class="form-group">
+          <label>{{labelTitreIdentite}}</label>
           <span class="asterisk">*</span>
-          <input type="text" name="cni" class="form-control" [(ngModel)]="cni" readonly/>
+          <input type="text" name="cni" class="form-control" [(ngModel)]="contractData.jobyerTitreTravail" readonly/>
           <small class="form-text text-muted"></small>
         </div>
 
@@ -127,7 +127,7 @@
         <!--<small class="form-text text-muted"></small>-->
         <!--</div>-->
 
-        <div [hidden]="isEuropean == 1 || isCIN" class="form-group">
+        <!--<div [hidden]="isEuropean == 1 || isCIN" class="form-group">
           <label>N° de la carte de ressortissant</label>
           <span class="asterisk">*</span>
           <input class="form-control" type="text" [(ngModel)]="numStay" readonly>
@@ -139,7 +139,7 @@
           <span class="asterisk">*</span>
           <input class="form-control" type="text" [(ngModel)]="numStay" readonly>
           <small class="form-text text-muted"></small>
-        </div>
+        </div>-->
 
         <!--<div class="form-group" *ngIf="jobyer.nationaliteLibelle == ''">-->
         <!--<label>Num. Titre de travail</label>-->
@@ -151,13 +151,13 @@
         <div class="form-group">
           <label>Valable du</label>
           <span class="asterisk">*</span>
-          <input type="text" name="debutTitreTravail" class="form-control" [(ngModel)]="contractData.debutTitreTravail" aria-describedby="val" readonly/>
+          <input type="text" name="debutTitreTravail" class="form-control" [(ngModel)]="contractData.jobyerDebutTitreTravail" aria-describedby="val" readonly/>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
           <label>Au</label>
           <span class="asterisk">*</span>
-          <input type="text" name="finTitreTravail" class="form-control" [(ngModel)]="contractData.finTitreTravail" readonly/>
+          <input type="text" name="finTitreTravail" class="form-control" [(ngModel)]="contractData.jobyerFinTitreTravail" readonly/>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
@@ -265,7 +265,7 @@
       <div class="col-md-6 col-xs-12">
         <div class="form-group">
           <label>Qualification&nbsp;<span  class="color-font" >*</span></label>
-          <input type="text" name="qualification" class="form-control" [(ngModel)]="contractData.qualification" aria-describedby="qual" required/>
+          <input type="text" name="qualification" class="form-control" [(ngModel)]="contractData.qualification" aria-describedby="qual" required readonly/>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
@@ -282,13 +282,13 @@
                 <option *ngFor="let e of epiList" value="{{e.libelle}}">{{e.libelle}}</option>
               </select>
 
-              <button class="btn btn-primary btn-sm col-xs-1" (click)="addEPI()">
+              <button class="btn btn-primary btn-sm col-xs-1" type="button" (click)="addEPI()">
                 <span class="glyphicon glyphicon-plus"></span>
               </button>
             </div>
             <div class="row">&nbsp;</div>
             <div class="row contract-control-row" *ngFor="let e of contractData.epiList">
-              <button class="btn btn-primary btn-sm col-xs-1" (click)="removeEPI(e)">
+              <button class="btn btn-primary btn-sm col-xs-1" type="button" (click)="removeEPI(e)">
                 <span class="glyphicon glyphicon-minus"></span>
               </button>
               <label class="col-xs-11">{{e.libelle}}</label>
@@ -316,11 +316,11 @@
         <div class="form-group">
           <label>Surveillance médicale renforcée</label>
           <div class="abc-radio">
-            <input type="radio" name="radio1" value="OUI" id="medicalRadio1" (click)="watchMedicalSupervision($event)">
+            <input type="radio" name="radio1" [checked]="contractData.medicalSurv == 'OUI'" value="OUI" id="medicalRadio1" (click)="watchMedicalSupervision($event)">
             <label for="medicalRadio1" class="labelRadio">
               Oui &nbsp;&nbsp;
             </label>
-            <input type="radio" name="radio1" value="NON" id="medicalRadio2" (click)="watchMedicalSupervision($event)">
+            <input type="radio" name="radio1" [checked]="contractData.medicalSurv == 'NON'" value="NON" id="medicalRadio2" (click)="watchMedicalSupervision($event)">
             <label for="medicalRadio2" class="labelRadio">
               Non
             </label>

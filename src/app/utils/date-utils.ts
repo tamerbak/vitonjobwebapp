@@ -1,5 +1,5 @@
 import {Utils} from "./utils";
-export class DateUtils {
+export class DateUtils{
 
   constructor() {
   }
@@ -11,11 +11,24 @@ export class DateUtils {
     return age;
   }
 
-  public static rfcFormat(strDate){
-    let monthsDico: Dictionary = {"janvier": "Jan",  "février": "Feb", "mars": "Mar", "avril": "Apr", "mai": "May", "juin": "Jun", "juillet": "Jul", "aout": "Aug", "septembre": "Sep", "octobre": "Oct", "novembre": "Nov", "décembre": "Dec"};
-    for(let i = 0; i < Object.keys(monthsDico).length; i++){
+  public static rfcFormat(strDate) {
+    let monthsDico: Dictionary = {
+      "janvier": "Jan",
+      "février": "Feb",
+      "mars": "Mar",
+      "avril": "Apr",
+      "mai": "May",
+      "juin": "Jun",
+      "juillet": "Jul",
+      "aout": "Aug",
+      "septembre": "Sep",
+      "octobre": "Oct",
+      "novembre": "Nov",
+      "décembre": "Dec"
+    };
+    for (let i = 0; i < Object.keys(monthsDico).length; i++) {
       let key = Object.keys(monthsDico)[i];
-      if(strDate.indexOf(key) != -1){
+      if (strDate.indexOf(key) != -1) {
         strDate = strDate.replace(key, monthsDico[key]);
         return strDate;
       }
@@ -27,12 +40,20 @@ export class DateUtils {
   }
 
   public static toDateString(date) {
-    if(Utils.isEmpty(date)){
+    if (Utils.isEmpty(date)) {
       return "";
     }
     let d = new Date(date);
-    let str = d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+    let str = d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
     return str;
+  }
+
+  public static toFrenchDateString(date: number) {
+    let dateOptions = {
+      weekday: "long", month: "long", year: "numeric",
+      day: "numeric"//, hour: "2-digit", minute: "2-digit"
+    };
+    return new Date(date).toLocaleDateString('fr-FR', dateOptions);
   }
 
   /**
@@ -52,7 +73,7 @@ export class DateUtils {
   }
 
   public static dateToSqlTimestamp(date: Date) {
-    if(!date){
+    if (!date) {
       date = new Date();
     }
     var sqlTimestamp = date.getUTCFullYear() + '-' +
@@ -64,8 +85,8 @@ export class DateUtils {
     return sqlTimestamp;
   }
 
-  public static displayableDateToSQL(sdate : string){
-    if(!sdate || sdate.length == 0){
+  public static displayableDateToSQL(sdate: string) {
+    if (!sdate || sdate.length == 0) {
       return 'null';
     }
 
@@ -73,9 +94,8 @@ export class DateUtils {
     let month = sdate.split('/')[1];
     let year = sdate.split('/')[2];
 
-    return "'"+year+"-"+month+"-"+day+" 00:00:00+00'";
+    return "'" + year + "-" + month + "-" + day + " 00:00:00+00'";
   }
-
 
 
   /**
@@ -95,7 +115,7 @@ export class DateUtils {
   }
 
   public static dateFormat(d) {
-    if(!d || typeof d === 'undefined')
+    if (!d || typeof d === 'undefined')
       return '';
     let m = d.getMonth() + 1;
     let da = d.getDate();
@@ -103,8 +123,8 @@ export class DateUtils {
     return sd;
   }
 
-  public static getMinutesFromDate(d){
-    if(Utils.isEmpty(d)){
+  public static getMinutesFromDate(d) {
+    if (Utils.isEmpty(d) || typeof(d) != "object") {
       return 0;
     }
     let h = d.getHours() * 60;
@@ -112,8 +132,8 @@ export class DateUtils {
     return h + m;
   }
 
-  public static getFormattedHourFromDate(d){
-    if(Utils.isEmpty(d)){
+  public static getFormattedHourFromDate(d) {
+    if (Utils.isEmpty(d)) {
       return "--:--";
     }
     let date = new Date(d);
@@ -122,11 +142,33 @@ export class DateUtils {
     return h + ":" + (m < 10 ? ('0' + m) : m);
   }
 
-  public static formatHours(hours){
+  public static formatHours(hours) {
     return (hours < 10 ? ('0' + hours) : hours);
+  }
+
+  public static simpleDateFormat(d: Date) {
+    if (Utils.isEmpty(d)) {
+      return '';
+    }
+    let m = d.getMonth() + 1;
+    let da = d.getDate();
+    let sd = (da < 10 ? '0' : '') + da + '/' + (m < 10 ? '0' : '') + m + "/" + d.getFullYear();
+    return sd
+  }
+
+  public static setMinutesToDate(d: Date, min: number) {
+    if (Utils.isEmpty(d)) {
+      return null;
+    }
+
+    let minutes = min % 60;
+    let hours = Math.trunc(min / 60);
+
+    d.setHours(hours, minutes);
+    return d;
   }
 }
 
-  interface Dictionary {
-  [ key: string ]: string
+interface Dictionary {
+   [ key: string ]: string
 }

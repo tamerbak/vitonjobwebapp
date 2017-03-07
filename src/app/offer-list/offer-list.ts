@@ -8,6 +8,7 @@ import {SearchService} from "../../providers/search-service";
 import {Utils} from "../utils/utils";
 import {NotificationsService} from "../../providers/notifications.service";
 import {AdvertService} from "../../providers/advert.service";
+import {ButtonNumber} from "../components/button-number/button-number";
 
 declare let jQuery: any;
 declare let Messenger: any;
@@ -17,7 +18,7 @@ declare let Messenger: any;
   template: require('./offer-list.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./offer-list.scss')],
-  directives: [ACCORDION_DIRECTIVES, ROUTER_DIRECTIVES, AlertComponent, BUTTON_DIRECTIVES],
+  directives: [ACCORDION_DIRECTIVES, ROUTER_DIRECTIVES, AlertComponent, BUTTON_DIRECTIVES, ButtonNumber],
   providers: [OffersService, SearchService,ChangeDetectorRef, AdvertService]
 })
 export class OfferList {
@@ -226,7 +227,7 @@ export class OfferList {
    * @Description : Launch search from current offer-list
    */
   launchSearch(offer) {
-    if (!offer)
+    /*if (!offer)
       return;
     let searchQuery = {
       class: 'com.vitonjob.recherche.model.SearchQuery',
@@ -240,7 +241,10 @@ export class OfferList {
       this.sharedService.setCurrentSearchCity(null);
       this.sharedService.setCurrentOffer(offer);
       this.router.navigate(['search/results']);
-    });
+    });*/
+
+    this.sharedService.setCurrentOffer(offer);
+    this.router.navigate(['offer/recruit']);
 
   }
 
