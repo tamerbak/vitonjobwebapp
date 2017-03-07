@@ -90,6 +90,9 @@ export class ContractData {
   //general contract infos
   isDraft: string;
 
+  //offer infos
+  prerequis: any[];
+
   constructor(){
     //default values
     this.interim = "HubJob.com";
@@ -178,5 +181,7 @@ export class ContractData {
     this.tel = "";
 
     this.isDraft = "OUI";
+
+    this.prerequis = [];
   }
 }

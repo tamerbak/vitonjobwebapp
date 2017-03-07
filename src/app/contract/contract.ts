@@ -575,7 +575,7 @@ export class Contract {
       }
     }
 
-  saveDocusignInfo() {
+  /*saveDocusignInfo() {
     this.inProgress = true;
 
     this.financeService.loadQuote(
@@ -634,9 +634,9 @@ export class Contract {
         });
       });
     });
-  }
+  }*/
 
-  setDocusignData(data){
+  /*setDocusignData(data){
     let partner = GlobalConfigs.global['electronic-signature'];
 
     let dataValue = null;
@@ -669,7 +669,7 @@ export class Contract {
       this.contractData.enveloppeEmployeur = partnerData.Employeur.folderURL;
       this.contractData.enveloppeJobyer = partnerData.Jobyer.folderURL;
     }
-  }
+  }*/
 
   checkOfferState(offer){
     this.contractService.getContractsByOffer(offer.idOffer).then((data: any) => {
