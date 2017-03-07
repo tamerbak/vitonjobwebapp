@@ -34,7 +34,6 @@ declare let Messenger,jQuery,moment: any;
 })
 export class Contract {
 
-  numContrat: string = '';
   projectTarget: string;
   isEmployer: boolean;
 
@@ -45,30 +44,15 @@ export class Contract {
   currentOffer: Offer;
   rate: number = 0.0;
   recours: any;
-  motifsGrouped : any;
-  justificatifs: any;
-  nationalities: any;
 
   dataValidation :boolean = false;
 
-  embaucheAutorise : boolean=false;
-  rapatriement : boolean=false;
   periodicites : any = [];
 
-  datepickerOpts: any;
   //jobyer Data
   index:any;
   isFrench:any;
   isEuropean:any;
-  regionId:any;
-  birthdepId:any;
-  isResident:any;
-  dateStay:any;
-  dateFromStay:any;
-  dateToStay:any;
-  whoDeliverStay:any;
-  numStay:any;
-  nationalityId:any;
   isCIN:any;
   cni:any;
   isMissionDateValid: boolean = true;
@@ -80,30 +64,23 @@ export class Contract {
   //  EPI
   epiList : any =[];
   selectedEPI : string;
-  offerEpi : any = [];
   alerts = [];
   inProgress: boolean = false;
 
   //info jobyer
   labelTitreIdentite: string;
 
-  constructor(private medecineService: MedecineService,
-              private service: ParametersService,
-              private contractService: ContractService,
-              private conventionService: ConventionService,
+  constructor(private contractService: ContractService,
               private sharedService: SharedService,
-              private profileService: ProfileService,
-              private listService: LoadListService,
               private offersService : OffersService,
               private smsService: SmsService,
               private router: Router,
-              private financeService: FinanceService,
-              private recruitmentService: RecruitmentService,
-              private route: ActivatedRoute) {
+              private recruitmentService: RecruitmentService) {
 
     this.currentUser = this.sharedService.getCurrentUser();
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     this.isEmployer = (this.projectTarget == 'employer');
+
     //  check if there is a current offer
     this.currentOffer = this.sharedService.getCurrentOffer();
 
@@ -141,13 +118,15 @@ export class Contract {
 
     let contract = this.sharedService.getContractData();
 
-    //l'objet contrat est vide seulement dans le cas ou l'on passe par une recherche directement
+    //l'objet contrat est vide seulement dans le cas ou l'on passe par une recherche directement (sémantique, par ville, ...)
     if(Utils.isEmpty(contract)) {
       this.contractData = new ContractData();
     }else{
       this.contractData = contract;
     }
 
+    //draft == 'oui', dans le cas des contrats généré à partir d'une offres mère (mais juste lors de la première initialisation est sauvegarde du contrat)
+    //ou dans le cas des contrat initialisé à partir d'une recherche
     if(Utils.isEmpty(contract) || this.contractData.isDraft.toUpperCase() == 'OUI') {
       // Retrieve jobyer
       this.jobyer = this.sharedService.getCurrentJobyer();
@@ -833,29 +812,38 @@ export class Contract {
     })
   }*/
 
-  addEPI(){
+  addEPI() {
+
+    //si aucun epi n'a été choisi, ne rien faire
+    if (Utils.isEmpty(this.selectedEPI)) {
+      return;
+    }
 
     let found = false;
 
-    for(let i = 0 ; i < this.contractData.epiList.length ; i++)
-      if(this.contractData.epiList[i].libelle == this.selectedEPI){
+    //vérifier si l'epi selectionné dans la liste a été déja choisi
+    for (let i = 0; i < this.contractData.epiList.length; i++) {
+      if (this.contractData.epiList[i].libelle == this.selectedEPI) {
         found = true;
         break;
       }
-
+    }
+    //si l'epi est dejé choisi, ne rien faire
     if(found)
       return;
 
+    //si l'epi selectionné dans la liste n'a jamais été choisi, l'ajouter dans la liste des epis choisis
     this.contractData.epiList.push({libelle : this.selectedEPI});
   }
 
   removeEPI(e){
     let index = -1;
-    for(let i = 0 ; i < this.contractData.epiList.length ; i++)
-      if(this.contractData.epiList[i].libelle == e.libelle){
+    for(let i = 0 ; i < this.contractData.epiList.length ; i++) {
+      if (this.contractData.epiList[i].libelle == e.libelle) {
         index = i;
         break;
       }
+    }
     if(index>=0){
       this.contractData.epiList.splice(index,1);
     }

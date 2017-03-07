@@ -282,13 +282,13 @@
                 <option *ngFor="let e of epiList" value="{{e.libelle}}">{{e.libelle}}</option>
               </select>
 
-              <button class="btn btn-primary btn-sm col-xs-1" (click)="addEPI()" disabled>
+              <button class="btn btn-primary btn-sm col-xs-1" type="button" (click)="addEPI()">
                 <span class="glyphicon glyphicon-plus"></span>
               </button>
             </div>
             <div class="row">&nbsp;</div>
             <div class="row contract-control-row" *ngFor="let e of contractData.epiList">
-              <button class="btn btn-primary btn-sm col-xs-1" (click)="removeEPI(e)">
+              <button class="btn btn-primary btn-sm col-xs-1" type="button" (click)="removeEPI(e)">
                 <span class="glyphicon glyphicon-minus"></span>
               </button>
               <label class="col-xs-11">{{e.libelle}}</label>
