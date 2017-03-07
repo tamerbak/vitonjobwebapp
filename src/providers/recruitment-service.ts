@@ -499,8 +499,8 @@ export class RecruitmentService {
     let stateMsg = "";
     return new Promise(resolve => {
       // Format slots
-      //let slotsPerJobyer: {jobyerId: number; slots: any[]}[] = this.translateFromQuartersPerJobyerToSlotsPerJobyer(employerPlanning, jobyers);
-      let slotsPerJobyer: {jobyerId: number; slots: any[]}[] = [{jobyerId: 28317, slots: offer.calendarData}];
+      let slotsPerJobyer: {jobyerId: number; slots: any[]}[] = this.translateFromQuartersPerJobyerToSlotsPerJobyer(employerPlanning, jobyers);
+      //let slotsPerJobyer: {jobyerId: number; slots: any[]}[] = [{jobyerId: 28317, slots: offer.calendarData}];
 
       //vérifier si la répartition a été bien effectuée
       if(!slotsPerJobyer || slotsPerJobyer.length == 0){

@@ -282,7 +282,7 @@
                 <option *ngFor="let e of epiList" value="{{e.libelle}}">{{e.libelle}}</option>
               </select>
 
-              <button class="btn btn-primary btn-sm col-xs-1" (click)="addEPI()">
+              <button class="btn btn-primary btn-sm col-xs-1" (click)="addEPI()" disabled>
                 <span class="glyphicon glyphicon-plus"></span>
               </button>
             </div>
