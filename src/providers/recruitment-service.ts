@@ -496,64 +496,86 @@ export class RecruitmentService {
    * @param projectTarget
    */
   generateContractFromEmployerPlanning(offer: Offer, employerPlanning: CalendarQuarterPerDay, jobyers: any[], projectTarget: string, entrepriseId: number) {
-    // Format slots
-    //let slotsPerJobyer: {jobyerId: number; slots: any[]}[] = this.translateFromQuartersPerJobyerToSlotsPerJobyer(employerPlanning, jobyers);
-    let slotsPerJobyer: {jobyerId: number; slots: any[]}[] = [{jobyerId: 28317, slots: offer.calendarData}];
+    let stateMsg = "";
+    return new Promise(resolve => {
+      // Format slots
+      //let slotsPerJobyer: {jobyerId: number; slots: any[]}[] = this.translateFromQuartersPerJobyerToSlotsPerJobyer(employerPlanning, jobyers);
+      let slotsPerJobyer: {jobyerId: number; slots: any[]}[] = [{jobyerId: 28317, slots: offer.calendarData}];
 
-    //générer des offres avec les slots de chaque jobyer à partir de l'offre mère: on aura une offre par jobyer
-    for (let i = 0; i < slotsPerJobyer.length; i++) {
-      let offerCopy: Offer = JSON.parse((JSON.stringify(offer)));
-      offerCopy.calendarData = [];
-      offerCopy.calendarData = slotsPerJobyer[i].slots;
-      offerCopy.entrepriseId = entrepriseId;
-      /*for(let j = 0; j < offerCopy.languageData.length; j++){
-       offerCopy.languageData[j].level = (offerCopy.languageData[j].level == "junior" ? 1 : 2);
-       }*/
-      offerCopy.languageData = [];
-      offerCopy.qualityData = [];
-      for(let j = 0; j < offerCopy.calendarData.length; j++){
-        offerCopy.calendarData[j].class = "com.vitonjob.callouts.offer.model.CalendarData";
+      //vérifier si la répartition a été bien effectuée
+      if(!slotsPerJobyer || slotsPerJobyer.length == 0){
+        stateMsg = "Aucun créneau n'a été affecté. Veuillez vérifier votre répartition ou contacter l'administrateur";
+      }else{
+        for (let i = 0; i < slotsPerJobyer.length; i++) {
+          let jobyerId = slotsPerJobyer[i].jobyerId;
+          let slots = JSON.parse((JSON.stringify(slotsPerJobyer[i].slots)));
+          if(Utils.isEmpty(jobyerId) || jobyerId == 0 || Utils.isEmpty(slots) || slots.length == 0){
+            stateMsg = "La répartition est incohérente. Veuillez la vérifier ou contacter l'administrateur";
+          }
+        }
       }
-      offerCopy.class = "com.vitonjob.callouts.offer.model.OfferData";
-      offerCopy.adresse.type = "adresse_de_travail";
+      if(!Utils.isEmpty(stateMsg)){
+        resolve(stateMsg);
+        return;
+      }
 
-      this.offersService.copyOffer(offerCopy, projectTarget, "en archive").then((data: any) => {
-        if(data && !Utils.isEmpty(data._body)) {
-          let savedOffer = JSON.parse(data._body);
-          this.saveRecruitmentConfiguration(slotsPerJobyer[i].jobyerId, savedOffer.idOffer).then((data: any) => {
-            //get next num contract
-            this.contractService.getNumContract(projectTarget).then((data: any) => {
-              let contractNum;
-              if (data && data.length > 0) {
-                contractNum = this.contractService.formatNumContrat(data[0].numct);
-              } else {
-                return;
-              }
+      //si la répartition est cohérente, continuer : générer des offres avec les slots de chaque jobyer à partir de l'offre mère: on aura une offre par jobyer
+      for (let i = 0; i < slotsPerJobyer.length; i++) {
+        let offerCopy: Offer = JSON.parse((JSON.stringify(offer)));
+        offerCopy.calendarData = [];
+        offerCopy.calendarData = slotsPerJobyer[i].slots;
+        offerCopy.entrepriseId = entrepriseId;
+        /*for(let j = 0; j < offerCopy.languageData.length; j++){
+         offerCopy.languageData[j].level = (offerCopy.languageData[j].level == "junior" ? 1 : 2);
+         }*/
+        offerCopy.languageData = [];
+        offerCopy.qualityData = [];
+        for(let j = 0; j < offerCopy.calendarData.length; j++){
+          offerCopy.calendarData[j].class = "com.vitonjob.callouts.offer.model.CalendarData";
+        }
+        offerCopy.class = "com.vitonjob.callouts.offer.model.OfferData";
+        offerCopy.adresse.type = "adresse_de_travail";
 
-              //save contract with initial infos
-              this.contractService.saveInitialContract(
-                contractNum,
-                slotsPerJobyer[i].jobyerId,
-                entrepriseId,
-                savedOffer.idOffer,
-                projectTarget
-              ).then((data: any) => {
-                let contractId = data.contractId;
-                //generate hour mission based on the offer slots
-                this.contractService.generateMission(contractId, savedOffer);
-                if (i == slotsPerJobyer.length - 1) {
-                  //aller à la page liste des contrats
-                  this.router.navigate(['contract/list']);
+        this.offersService.copyOffer(offerCopy, projectTarget, "en archive").then((data: any) => {
+          if(data && !Utils.isEmpty(data._body)) {
+            let savedOffer = JSON.parse(data._body);
+            this.saveRecruitmentConfiguration(slotsPerJobyer[i].jobyerId, savedOffer.idOffer).then((data: any) => {
+              //get next num contract
+              this.contractService.getNumContract(projectTarget).then((data: any) => {
+                let contractNum;
+                if (data && data.length > 0) {
+                  contractNum = this.contractService.formatNumContrat(data[0].numct);
+                } else {
+                  stateMsg = "Une erreur est survenue lors de la génération du contrat. Veuillez contacter votre administrateur.";
+                  resolve(stateMsg);
+                  return;
                 }
+
+                //save contract with initial infos
+                this.contractService.saveInitialContract(
+                  contractNum,
+                  slotsPerJobyer[i].jobyerId,
+                  entrepriseId,
+                  savedOffer.idOffer,
+                  projectTarget
+                ).then((data: any) => {
+                  let contractId = data.contractId;
+                  //generate hour mission based on the offer slots
+                  this.contractService.generateMission(contractId, savedOffer);
+                  if (i == slotsPerJobyer.length - 1) {
+                    stateMsg = "";
+                    resolve(stateMsg);
+                  }
+                });
               });
             });
-          });
-        }else{
-          console.log("error");
-          return;
-        }
-      });
-    }
+          } else {
+            stateMsg = "Une erreur est survenue lors de la génération des offres. Veuillez contacter votre administrateur";
+            resolve(stateMsg);
+          }
+        });
+      }
+    });
   }
 
   saveRecruitmentConfiguration(jobyerId, offerId){

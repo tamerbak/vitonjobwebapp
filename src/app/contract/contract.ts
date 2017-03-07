@@ -140,21 +140,28 @@ export class Contract {
     this.employer = this.currentUser.employer;
 
     let contract = this.sharedService.getContractData();
-    if(Utils.isEmpty(contract) || contract.isDraft.toUpperCase() == 'OUI'){
+
+    //l'objet contrat est vide seulement dans le cas ou l'on passe par une recherche directement
+    if(Utils.isEmpty(contract)) {
+      this.contractData = new ContractData();
+    }else{
+      this.contractData = contract;
+    }
+
+    if(Utils.isEmpty(contract) || this.contractData.isDraft.toUpperCase() == 'OUI') {
       // Retrieve jobyer
       this.jobyer = this.sharedService.getCurrentJobyer();
 
-      this.contractData = new ContractData();
       // initialize contract data
       this.initContractData();
       //init employer data
       this.initEmployerData();
       //initialize recruitment data
       this.initRecruitmentData();
-    }else{
+
+    } else {
       console.log("contractData raw");
       console.log(this.contractData);
-      this.contractData = contract;
       this.initSavedContract();
     }
 
@@ -473,6 +480,7 @@ export class Contract {
     this.inProgress = true;
 
     this.contractData.jobyerTitreTravail = Utils.removeAllSpaces(this.contractData.jobyerTitreTravail);
+    this.contractData.elementsNonCotisation = 1.0;
 
       console.log("contractData before saving");
       console.log(this.contractData);

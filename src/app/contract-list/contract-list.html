@@ -10,6 +10,10 @@
 <h1 class="page-title"><span
   class="fw-semi-bold">Contrats en attente de signature</span></h1>
 
+<alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
+  <div [innerHTML]="alert.msg"></div>
+</alert>
+
 <div class="row">
   <div class="col-lg-12 col-xs-12">
     <table class="table table-striped table-condensed" width="400">

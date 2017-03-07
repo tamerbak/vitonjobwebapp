@@ -94,13 +94,14 @@ export class OfferRecruit {
   firstPlanningDay: number = null;
   lastPlanningDay: number = null;
 
+  alerts: any[] = [];
+
   constructor(private offersService: OffersService,
               public sharedService: SharedService,
               private searchService: SearchService,
               private recruitmentService: RecruitmentService,
               private router: Router,
-              private loader: LoaderService,
-              private contractService: ContractService) {
+              private loader: LoaderService) {
 
     this.currentUser = this.sharedService.getCurrentUser();
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
@@ -500,12 +501,25 @@ export class OfferRecruit {
    * Validate and save the slots attribution
    */
   saveRepartition() {
+    this.loader.display();
     this.recruitmentService.generateContractFromEmployerPlanning(
       this.offer,
       this.employerPlanning,
       this.jobyers,
       this.projectTarget,
       this.currentUser.employer.entreprises[0].id
-    );
+    ).then((stateMsg) => {
+      this.loader.hide();
+      if(Utils.isEmpty(stateMsg)){
+        //aller à la page liste des contrats
+        this.router.navigate(['contract/list']);
+      }else{
+        this.addAlert("danger", stateMsg);
+      }
+    })
+  }
+
+  addAlert(type, msg): void {
+    this.alerts = [{type: type, msg: msg}];
   }
 }

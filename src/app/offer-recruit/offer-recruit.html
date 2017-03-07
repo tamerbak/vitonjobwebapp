@@ -173,4 +173,8 @@
   [subject]="subject"
 ></div>
 
+<alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
+  <div [innerHTML]="alert.msg"></div>
+</alert>
+
 <button (click)="saveRepartition()">Valider la répartition</button>

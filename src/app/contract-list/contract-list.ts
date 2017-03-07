@@ -10,13 +10,15 @@ import {ContractData} from "../../dto/contract";
 import {FinanceService} from "../../providers/finance.service";
 import {AlertComponent} from "ng2-bootstrap";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
+import {Loader} from "../loader/loader";
+import {LoaderService} from "../../providers/loader.service";
 
 @Component({
   selector: '[contract-list]',
   template: require('./contract-list.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./contract-list.scss')],
-  directives: [ROUTER_DIRECTIVES, AlertComponent],
+  directives: [ROUTER_DIRECTIVES, AlertComponent, Loader],
   providers: [ContractService, OffersService, FinanceService]
 })
 
@@ -31,7 +33,9 @@ export class ContractList{
               private router: Router,
               private contractService: ContractService,
               private offerService: OffersService,
-              private financeService: FinanceService) {
+              private financeService: FinanceService,
+              private loader: LoaderService) {
+
     this.currentUser = this.sharedService.getCurrentUser();
     //only employers and recruiters can access to the contract list page
     if (!this.currentUser || (!this.currentUser.estEmployeur && !this.currentUser.estRecruteur)) {
@@ -53,6 +57,8 @@ export class ContractList{
   }
 
   goToDocusignPage(contractInfo) {
+    this.loader.display();
+
     this.inProgress = true;
 
     this.contractService.getContractDataInfos(contractInfo.id, this.projectTarget).then((contract: ContractData) => {
@@ -105,6 +111,7 @@ export class ContractList{
           if(!data || Utils.isEmpty(data._body) || data.status != "200"){
             this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
             this.inProgress = false;
+            this.loader.hide();
             return;
           }
           offer = JSON.parse(data._body);
@@ -127,6 +134,7 @@ export class ContractList{
                 if (!data || Utils.isEmpty(data.quoteId) || data.quoteId == 0) {
                   this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
                   this.inProgress = false;
+                  this.loader.hide();
                   return;
                 }
 
@@ -136,6 +144,7 @@ export class ContractList{
                   if (!results || !results.lignes || results.lignes.length == 0) {
                     this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
                     this.inProgress = false;
+                    this.loader.hide();
                     return;
                   }
 
@@ -143,6 +152,7 @@ export class ContractList{
                   if (!data || data == null || Utils.isEmpty(data.Employeur) || Utils.isEmpty(data.Jobyer) || Utils.isEmpty(data.Employeur.idContrat) || Utils.isEmpty(data.Jobyer.idContrat) || !Utils.isValidUrl(data.Employeur.url) || !Utils.isValidUrl(data.Jobyer.url)) {
                     this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
                     this.inProgress = false;
+                    this.loader.hide();
                     return;
                   }
 
@@ -153,6 +163,7 @@ export class ContractList{
                     if (!data || data.status != "success") {
                       this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
                       this.inProgress = false;
+                      this.loader.hide();
                       return;
                     }
 
@@ -161,6 +172,7 @@ export class ContractList{
                     this.sharedService.setCurrentOffer(offer);
                     this.sharedService.setContractData(contract);
 
+                    this.loader.hide();
                     this.router.navigate(['contract/recruitment']);
                   });
                 });
@@ -174,6 +186,7 @@ export class ContractList{
               this.sharedService.setCurrentOffer(offer);
               this.sharedService.setContractData(contract);
 
+              this.loader.hide();
               this.router.navigate(['contract/recruitment']);
             }
            });
@@ -218,10 +231,13 @@ export class ContractList{
   }
 
   goToContractForm(item){
+    this.loader.display();
+
     let offer: any = new Offer();
     //si le numero du contrat est vide, c'est que les infos du contrat n'ont pas encore été saisies
     if(Utils.isEmpty(item.num)){
       console.log("erreur: contrat corrompu");
+      this.loader.hide();
       return;
     }else{
       this.contractService.getContractDataInfos(item.id, this.projectTarget).then((data: ContractData) => {
@@ -230,6 +246,7 @@ export class ContractList{
         this.sharedService.setCurrentJobyer(jobyer);
         this.offerService.getOfferById(item.idOffer, this.projectTarget, offer).then(data => {
           this.sharedService.setCurrentOffer(offer);
+          this.loader.hide();
           this.router.navigate(['contract/recruitment-form']);
         });
       });
