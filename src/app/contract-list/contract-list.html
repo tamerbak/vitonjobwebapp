@@ -39,7 +39,7 @@
             <td class="text-align-right" width="100">{{toDateString(item.created)}}</td>
             <td class="text-align-right" width="100"><button class="btn btn-secondary mb-xs" (click)="goToContractForm(item)"><i class="glyphicon glyphicon-pencil text-success"></i></button></td>
 
-            <td class="text-align-right" width="100"><button class="btn btn-secondary mb-xs" (click)="goToDocusignPage(item)" [disabled]="!currentUser.estEmployeur || isEmpty(item.num)"><i class="glyphicon glyphicon-search text-success"></i></button></td>
+            <td class="text-align-right" width="100"><button class="btn btn-secondary mb-xs" (click)="goToDocusignPage(item)" [disabled]="!currentUser.estEmployeur || item.isDraft.toUpperCase() == 'OUI'"><i class="glyphicon glyphicon-search text-success"></i></button></td>
           </tr>
         </tbody>
       </table>

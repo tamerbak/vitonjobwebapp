@@ -140,7 +140,7 @@ export class Contract {
     this.employer = this.currentUser.employer;
 
     let contract = this.sharedService.getContractData();
-    if(Utils.isEmpty(contract)){
+    if(Utils.isEmpty(contract) || contract.isDraft.toUpperCase() == 'OUI'){
       // Retrieve jobyer
       this.jobyer = this.sharedService.getCurrentJobyer();
 
@@ -244,17 +244,6 @@ export class Contract {
 
   initRecruitmentData(){
     //initialize jobyer data
-    this.contractData.jobyerNom = Utils.preventNull(this.jobyer.nom);
-    this.contractData.jobyerPrenom = Utils.preventNull(this.jobyer.prenom);
-    this.contractData.jobyerLieuNaissance = Utils.preventNull(this.jobyer.lieuNaissance);
-    if(!Utils.isEmpty(this.jobyer.dateNaissance)) {
-      let bd = new Date(this.jobyer.dateNaissance);
-      this.contractData.jobyerBirthDate = DateUtils.simpleDateFormat(bd);
-    }else{
-        this.contractData.jobyerBirthDate = '';
-    }
-
-
     let email = this.jobyer.email;
     let tel = this.jobyer.tel;
     let jobyerId = this.jobyer.id;
@@ -262,6 +251,16 @@ export class Contract {
     let offerId = this.currentOffer.idOffer;
     this.contractService.prepareRecruitement(entrepriseId, email, tel, offerId, jobyerId, this.projectTarget).then((resp:any)=>{
       let datum = resp.jobyer;
+
+      this.contractData.jobyerNom = Utils.preventNull(datum.nom);
+      this.contractData.jobyerPrenom = Utils.preventNull(datum.prenom);
+      this.contractData.jobyerLieuNaissance = Utils.preventNull(datum.lieuNaissance);
+      if (!Utils.isEmpty(datum.dateNaissance)) {
+        let bd = new Date(datum.dateNaissance);
+        this.contractData.jobyerBirthDate = DateUtils.simpleDateFormat(bd);
+      } else {
+        this.contractData.jobyerBirthDate = '';
+      }
 
       this.contractData.jobyerNumSS = Utils.preventNull(datum.numss);
       this.contractData.jobyerNationaliteLibelle = Utils.preventNull(datum.nationalite);

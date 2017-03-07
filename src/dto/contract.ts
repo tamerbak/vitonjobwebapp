@@ -87,6 +87,9 @@ export class ContractData {
   email: string;
   tel: string;
 
+  //general contract infos
+  isDraft: string;
+
   constructor(){
     //default values
     this.interim = "HubJob.com";
@@ -173,5 +176,7 @@ export class ContractData {
     this.jobyerFinTitreTravail = "";
     this.email = "";
     this.tel = "";
+
+    this.isDraft = "OUI";
   }
 }
