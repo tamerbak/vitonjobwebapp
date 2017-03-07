@@ -407,7 +407,7 @@ export class ContractService {
       + "'OUI',"
       + "'" + Utils.sqlfyText(contract.epiProvidedBy) + "',"
       + "'OUI',"
-      + "'" +Utils.sqlfyText(listeEPI) + "',"
+      + "'" + Utils.sqlfyText(listeEPI) + "',"
       + "'" + Utils.sqlfyText(contract.moyenAcces) + "',"
       + "'" + Utils.sqlfyText(contract.offerContact) + "',"
       + "'" + Utils.sqlfyText(contract.contactPhone) + "',"
@@ -696,7 +696,7 @@ export class ContractService {
       html = html + "<br><p><b>Equipements de protection individuels</b></p><ul>";
       for (let i = 0; i < epis.length; i++) {
         let p = epis[i];
-        html = html + "<li>"+ p.libelle + "</li>";
+        html = html + "<li>"+ p + "</li>";
       }
       html = html + "</ul>";
     }
@@ -743,7 +743,7 @@ export class ContractService {
       //contract.equipements = "Voir annexe";
       let listeEPI = "";
       for (let i = 0; i < contract.epiList.length; i++) {
-        listeEPI = listeEPI + contract.epiList[i].libelle + " fourni par " + contract.epiProvidedBy + "<br>";
+        listeEPI = listeEPI + contract.epiList[i] + " fourni par " + contract.epiProvidedBy + "<br>";
       }
       contract.equipements = listeEPI;
     }
