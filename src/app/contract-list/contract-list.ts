@@ -86,7 +86,7 @@ export class ContractList{
           for(let j = 0 ; j < data.length ; j++){
             offer.jobData.prerequisObligatoires.push(data[j].libelle);
           }
-          contract.prerequis = offer.jobData.prerequisObligatoires;
+          contract.prerequisObligatoires = offer.jobData.prerequisObligatoires;
 
           contract.adresseInterim = contract.workAdress;
 
