@@ -86,6 +86,7 @@ export class OfferEdit {
   qualities = [];
   langs = [];
   projectTarget: string;
+  isEmployer: boolean;
   currentUser: any;
   slot: any;
   slots = [];
@@ -177,6 +178,8 @@ export class OfferEdit {
     }
 
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
+    this.isEmployer = (this.projectTarget == 'employer');
+
     this.environmentService.reload();
     //obj = "add", "detail", or "recruit"
     this.route.params.forEach((params: Params) => {
@@ -859,24 +862,24 @@ export class OfferEdit {
       this.saveOffer();
       this.router.navigate(['offer/recruit']);
       return;
+    }else{
+      let offer = this.offer;
+
+      let searchQuery = {
+        class: 'com.vitonjob.recherche.model.SearchQuery',
+        queryType: 'OFFER',
+        idOffer: offer.idOffer,
+        resultsType: this.projectTarget == 'jobyer' ? 'employer' : 'jobyer'
+      };
+      this.searchService.advancedSearch(searchQuery).then((data: any)=> {
+        this.sharedService.setLastResult(data);
+        this.sharedService.setCurrentOffer(offer);
+        this.sharedService.setCurrentSearch(null);
+        this.sharedService.setCurrentSearchCity(null);
+        this.keepCurrentOffer = true;
+        this.router.navigate(['search/results']);
+      });
     }
-    var offer = this.offer;
-
-    let searchQuery = {
-      class: 'com.vitonjob.recherche.model.SearchQuery',
-      queryType: 'OFFER',
-      idOffer: offer.idOffer,
-      resultsType: this.projectTarget == 'jobyer' ? 'employer' : 'jobyer'
-    };
-    this.searchService.advancedSearch(searchQuery).then((data: any)=> {
-      this.sharedService.setLastResult(data);
-      this.sharedService.setCurrentOffer(offer);
-      this.sharedService.setCurrentSearch(null);
-      this.sharedService.setCurrentSearchCity(null);
-      this.keepCurrentOffer = true;
-      this.router.navigate(['search/results']);
-    });
-
   }
 
   autoSearchMode() {

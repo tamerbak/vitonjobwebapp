@@ -27,6 +27,7 @@ export class OfferList {
 
   currentUser: any;
   projectTarget: string;
+  isEmployer: boolean;
 
   alerts: Array<Object>;
   typeOfferModel: string = '0';
@@ -57,6 +58,7 @@ export class OfferList {
 
     this.currentUser = this.sharedService.getCurrentUser();
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
+    this.isEmployer = (this.projectTarget == 'employer');
 
     this.loadOffers();
 
@@ -227,25 +229,26 @@ export class OfferList {
    * @Description : Launch search from current offer-list
    */
   launchSearch(offer) {
-    /*if (!offer)
-      return;
-    let searchQuery = {
-      class: 'com.vitonjob.recherche.model.SearchQuery',
-      queryType: 'OFFER',
-      idOffer: offer.idOffer,
-      resultsType: this.projectTarget=='jobyer'?'employer':'jobyer'
-    };
-    this.searchService.advancedSearch(searchQuery).then((data:any)=>{
-      this.sharedService.setLastResult(data);
-      this.sharedService.setCurrentSearch(null);
-      this.sharedService.setCurrentSearchCity(null);
+    if(this.isEmployer){
       this.sharedService.setCurrentOffer(offer);
-      this.router.navigate(['search/results']);
-    });*/
-
-    this.sharedService.setCurrentOffer(offer);
-    this.router.navigate(['offer/recruit']);
-
+      this.router.navigate(['offer/recruit']);
+    }else{
+      if (!offer)
+       return;
+     let searchQuery = {
+     class: 'com.vitonjob.recherche.model.SearchQuery',
+     queryType: 'OFFER',
+     idOffer: offer.idOffer,
+     resultsType: this.projectTarget=='jobyer'?'employer':'jobyer'
+     };
+     this.searchService.advancedSearch(searchQuery).then((data:any)=>{
+     this.sharedService.setLastResult(data);
+     this.sharedService.setCurrentSearch(null);
+     this.sharedService.setCurrentSearchCity(null);
+     this.sharedService.setCurrentOffer(offer);
+     this.router.navigate(['search/results']);
+     });
+    }
   }
 
   /**
