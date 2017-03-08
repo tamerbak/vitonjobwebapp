@@ -725,6 +725,8 @@ export class Profile{
           });
         }
         this.alwaysAvailable = (data.toujours_disponible != 'Non');
+        jQuery('.always-available').prop('checked', this.alwaysAvailable);
+
       });
 
 
