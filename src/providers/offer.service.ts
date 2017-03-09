@@ -261,6 +261,7 @@ export class OffersService {
    */
   createOffer(offer: Offer, projectTarget: string) {
     offer.idOffer = 0;
+    offer.adresse.id = 0;
     return this._uploadOffer(offer, projectTarget);
   }
 
@@ -273,6 +274,7 @@ export class OffersService {
    */
   copyOffer(offer: Offer, projectTarget: string, etat: string) {
     offer.idOffer = 0;
+    offer.adresse.id = 0;
     offer.etat = etat;
     return this._uploadOffer(offer, projectTarget);
   }
