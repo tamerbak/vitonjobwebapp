@@ -9,7 +9,7 @@ import {CCallout} from "../dto/generium/ccallout";
 import {Utils} from "../app/utils/utils";
 import {AddressUtils} from "../app/utils/addressUtils";
 
-const OFFER_CALLOUT_ID = 20054;
+const OFFER_CALLOUT_ID = 20055;
 
 @Injectable()
 export class OffersService {
