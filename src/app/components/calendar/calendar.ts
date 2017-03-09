@@ -82,6 +82,7 @@ export class Calendar {
   projectTarget: string;
   currentUser: any;
   slot: CalendarSlot;
+  nbPoste: number = 1;
 
   alerts: Array<Object>;
   alertsSlot: Array<Object>;
@@ -612,14 +613,14 @@ export class Calendar {
         slotEnd.setHours(he);
         slotEnd.setMinutes(me);
 
-        newSlots.push({
+        let slot: any = {
           date: slotStart,
           dateEnd: slotEnd,
           startHour: hs * 60 + ms,
           endHour: he * 60 + me,
           pause: false,
           allDay: false
-        });
+        };
 
         let newCalendarEvt = new CalendarEvent(true);
         newCalendarEvt.title =
@@ -631,7 +632,10 @@ export class Calendar {
         newCalendarEvt.setEndHour(slotEnd.getTime());
         newCalendarEvt.pause = this.slot.pause;
 
-        newEvents.push(newCalendarEvt);
+        for (let i = this.nbPoste; i > 0; --i) {
+          newEvents.push(newCalendarEvt);
+          newSlots.push(slot);
+        }
       }
 
     } else {
@@ -646,8 +650,10 @@ export class Calendar {
       newCalendarEvt.setEndHour(new Date(end).getTime());
       newCalendarEvt.pause = this.slot.pause;
 
-      newEvents.push(newCalendarEvt);
-      newSlots.push(this.slot);
+      for (let i = this.nbPoste; i > 0; --i) {
+        newEvents.push(newCalendarEvt);
+        newSlots.push(this.slot);
+      }
     }
 
     let failed = false;
@@ -712,6 +718,7 @@ export class Calendar {
     this.alertsSlot = [];
     this.isFulltime = false;
     this.isPause = false;
+    this.nbPoste = 1;
   }
 
   closeModal() {
