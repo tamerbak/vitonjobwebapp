@@ -295,7 +295,7 @@ export class OfferEdit {
 
       this.offer.adresse.streetNumber = addr.streetNumber;
       this.offer.adresse.name = addr.name;
-      this.offer.adresse.fullAdress = "";
+      this.offer.adresse.fullAdress = AddressUtils.constructFullAddress(addr.name, addr.streetNumber, addr.street, addr.zipCode, addr.city, addr.country);
       this.offer.adresse.street = addr.street;
       this.offer.adresse.cp = addr.zipCode;
       this.offer.adresse.ville = addr.city;

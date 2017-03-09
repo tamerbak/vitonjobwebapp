@@ -7,8 +7,9 @@ import {Offer} from "../dto/offer";
 import {CCalloutArguments} from "../dto/generium/ccallout-arguments";
 import {CCallout} from "../dto/generium/ccallout";
 import {Utils} from "../app/utils/utils";
+import {AddressUtils} from "../app/utils/addressUtils";
 
-const OFFER_CALLOUT_ID = 20052;
+const OFFER_CALLOUT_ID = 20054;
 
 @Injectable()
 export class OffersService {
@@ -316,6 +317,7 @@ export class OffersService {
     if (offer.adresse && Utils.isEmpty(offer.adresse.street) == false) {
       offer.adresse.street = offer.adresse.street.replace("'", "''");
     }
+    offer.adresse.fullAdress = AddressUtils.constructFullAddress(offer.adresse.name, offer.adresse.streetNumber, offer.adresse.street, offer.adresse.cp, offer.adresse.ville, offer.adresse.pays);
 
     let payloadFinal = new CCallout(OFFER_CALLOUT_ID, [
       new CCalloutArguments('Création/Edition offre', offer),
