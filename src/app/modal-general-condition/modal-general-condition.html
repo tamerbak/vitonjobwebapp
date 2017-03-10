@@ -4,35 +4,37 @@
       <div class="modal-header"  *ngIf="currentUser && !hasRefused">
         <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel1">{{gConditions.title}}</h4>
 
-        <h5 class="modal-title fw-bold mt">{{gConditions.legalInformation.title}}</h5>
-        <p class="text-xs-center text-muted mt-sm" style="line-height: 2;">
-          {{gConditions.legalInformation.content}}
-        </p>
+        <div class="container-fluid" style="border: 2px solid #e5e5e5; text-align: justify; margin-top: 2em">
 
-        <h5 class="modal-title fw-bold mt">{{gConditions.preamble.title}}</h5>
-        <p class="text-xs-center text-muted mt-sm" style="line-height: 2;">
-          {{gConditions.preamble.content}}
-        </p>
+          <h5 class="modal-title fw-bold mt">{{gConditions.legalInformation.title}}</h5>
+          <p>
+            {{gConditions.legalInformation.content}}
+          </p>
 
-        <h5 class="modal-title fw-bold mt">{{gConditions.object.title}}</h5>
-        <p class="text-xs-center text-muted mt-sm" style="line-height: 2;">
-          {{gConditions.object.content}}
-        </p>
+          <h5 class="modal-title fw-bold mt">{{gConditions.preamble.title}}</h5>
+          <p>
+            {{gConditions.preamble.content}}
+          </p>
 
-        <div *ngFor="let article of gConditions.articles">
-          <h5 class="modal-title fw-bold mt">
-            Article {{article.code}}: {{article.title}}</h5>
-          <div *ngFor="let subArticle of article.content">
-            <h5 class="modal-title fw-bold mt" *ngIf="subArticle.subTitle">
-              Article {{article.code}}.{{subArticle.subCode}}: {{subArticle.subTitle}}</h5>
-            <p>
-              {{subArticle.subContent}}
-            </p>
+          <h5 class="modal-title fw-bold mt">{{gConditions.object.title}}</h5>
+          <p>
+            {{gConditions.object.content}}
+          </p>
+
+          <div *ngFor="let article of gConditions.articles">
+            <h5 class="modal-title fw-bold mt">
+              Article {{article.code}}: {{article.title}}</h5>
+            <div *ngFor="let subArticle of article.content">
+              <h5 class="modal-title fw-bold mt" *ngIf="subArticle.subTitle">
+                Article {{article.code}}.{{subArticle.subCode}}: {{subArticle.subTitle}}</h5>
+              <p>
+                {{subArticle.subContent}}
+              </p>
+            </div>
           </div>
+
+          <h6 class="modal-title text-xs-center fw-bold mt">{{gConditions.footer}}</h6>
         </div>
-
-        <h6 class="modal-title text-xs-center fw-bold mt">{{gConditions.footer}}</h6>
-
       </div>
 
       <div class="modal-header"  *ngIf="currentUser && hasRefused">
