@@ -98,11 +98,12 @@
               <!--</button>-->
 
               <div
+                *ngIf="item.obsolete == false"
                 button-number
                 [label]="'Lancer la plannification'"
                 [number]="item.correspondantsCount"
                 [tooltip]="'Jobyers disponibles'"
-                (click)="launchSearch(item)"
+                (buttonClick)="launchSearch(item)"
               ></div>
 
               <button
