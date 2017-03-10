@@ -74,14 +74,15 @@ export class ContractList{
 
       //convert epiString to epi list and attach it to the contract object
       contract.epiList = [];
-      /*if(contract.epiString && contract.epiString.split(';').length != 0){
-       let epiArray = contract.epiString.split(';');
-       for(let i = 0; i < epiArray.length; i++){
-       if(!this.isEmpty(epiArray[i])){
-       contract.epiList.push(epiArray[i]);
+      if(!Utils.isEmpty(contract.epiString) && contract.epiString.split(';') && contract.epiString.split(';').length != 0){
+        let epiArray = contract.epiString.split(';');
+        for(let i = 0; i < epiArray.length; i++){
+          if(!this.isEmpty(epiArray[i])){
+            contract.epiList.push(epiArray[i]);
+          }
+        }
        }
-       }
-       }*/
+
       contract.adresseInterim = contract.workAdress;
 
       contract.jobyerDebutTitreTravail = DateUtils.simpleDateFormat(new Date(contract.jobyerDebutTitreTravail));

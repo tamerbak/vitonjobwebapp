@@ -86,6 +86,7 @@ export class OfferEdit {
   qualities = [];
   langs = [];
   projectTarget: string;
+  isEmployer: boolean;
   currentUser: any;
   slot: any;
   slots = [];
@@ -177,6 +178,8 @@ export class OfferEdit {
     }
 
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
+    this.isEmployer = (this.projectTarget == 'employer');
+
     this.environmentService.reload();
     //obj = "add", "detail", or "recruit"
     this.route.params.forEach((params: Params) => {
@@ -292,7 +295,7 @@ export class OfferEdit {
 
       this.offer.adresse.streetNumber = addr.streetNumber;
       this.offer.adresse.name = addr.name;
-      this.offer.adresse.fullAdress = "";
+      this.offer.adresse.fullAdress = AddressUtils.constructFullAddress(addr.name, addr.streetNumber, addr.street, addr.zipCode, addr.city, addr.country);
       this.offer.adresse.street = addr.street;
       this.offer.adresse.cp = addr.zipCode;
       this.offer.adresse.ville = addr.city;
@@ -859,24 +862,24 @@ export class OfferEdit {
       this.saveOffer();
       this.router.navigate(['offer/recruit']);
       return;
+    }else{
+      let offer = this.offer;
+
+      let searchQuery = {
+        class: 'com.vitonjob.recherche.model.SearchQuery',
+        queryType: 'OFFER',
+        idOffer: offer.idOffer,
+        resultsType: this.projectTarget == 'jobyer' ? 'employer' : 'jobyer'
+      };
+      this.searchService.advancedSearch(searchQuery).then((data: any)=> {
+        this.sharedService.setLastResult(data);
+        this.sharedService.setCurrentOffer(offer);
+        this.sharedService.setCurrentSearch(null);
+        this.sharedService.setCurrentSearchCity(null);
+        this.keepCurrentOffer = true;
+        this.router.navigate(['search/results']);
+      });
     }
-    var offer = this.offer;
-
-    let searchQuery = {
-      class: 'com.vitonjob.recherche.model.SearchQuery',
-      queryType: 'OFFER',
-      idOffer: offer.idOffer,
-      resultsType: this.projectTarget == 'jobyer' ? 'employer' : 'jobyer'
-    };
-    this.searchService.advancedSearch(searchQuery).then((data: any)=> {
-      this.sharedService.setLastResult(data);
-      this.sharedService.setCurrentOffer(offer);
-      this.sharedService.setCurrentSearch(null);
-      this.sharedService.setCurrentSearchCity(null);
-      this.keepCurrentOffer = true;
-      this.router.navigate(['search/results']);
-    });
-
   }
 
   autoSearchMode() {

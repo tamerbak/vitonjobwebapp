@@ -62,7 +62,7 @@ export class Contract {
   natureTitre="";
 
   //  EPI
-  epiList : any =[];
+  epiList : {libelle: string}[] =[];
   selectedEPI : string;
   alerts = [];
   inProgress: boolean = false;
@@ -148,12 +148,6 @@ export class Contract {
     this.offersService.loadEPI().then((data:any)=>{
       this.epiList = data;
     });
-    this.offersService.loadOfferEPI(this.currentOffer.idOffer, "employer").then((data: any)=>{
-      if(data)
-        this.contractData.epiList = data;
-      else
-        this.contractData.epiList = [];
-    });
   }
 
   initSavedContract(){
@@ -182,6 +176,15 @@ export class Contract {
     this.contractData.trialPeriod = parseInt(this.contractData.trialPeriod.toString());
 
     this.contractData.companyName = Utils.preventNull(this.employer.entreprises[0].nom);
+
+    let epiArray = this.contractData.epiString.split(";");
+    for(let i = 0; i < epiArray.length; i++){
+      let epi = {libelle: epiArray[i]};
+      if(Utils.isEmpty(epi.libelle)){
+        continue;
+      }
+      this.contractData.epiList.push(epi);
+    }
 
     console.log("contractData after affectation");
     console.log(this.contractData);
@@ -217,6 +220,14 @@ export class Contract {
     this.contractData.contactPhone = Utils.preventNull(this.currentOffer.telephone);
     this.contractData.offerContact = Utils.preventNull(this.currentOffer.contact);
     this.contractData.sector = Utils.preventNull(this.currentOffer.jobData.sector);
+
+    //initialiser contract.epiList avec les epi de l'offre
+    this.offersService.loadOfferEPI(this.currentOffer.idOffer, "employer").then((data: any)=>{
+      if(data)
+        this.contractData.epiList = data;
+      else
+        this.contractData.epiList = [];
+    });
   }
 
   initEmployerData(){

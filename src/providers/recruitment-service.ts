@@ -535,6 +535,7 @@ export class RecruitmentService {
         }
         offerCopy.class = "com.vitonjob.callouts.offer.model.OfferData";
         offerCopy.adresse.type = "adresse_de_travail";
+        offerCopy.idParentOffer = offerCopy.idOffer;
 
         this.offersService.copyOffer(offerCopy, projectTarget, "en archive").then((data: any) => {
           if(data && !Utils.isEmpty(data._body)) {

@@ -71,6 +71,7 @@ export class ContractData {
   enveloppeJobyer: string;
 
   epiList: any[];
+  epiString: string;
   prerequisObligatoires: any[];
 
   //jobyer infos
@@ -166,6 +167,7 @@ export class ContractData {
     this.contactPhone = "";
 
     this.epiList = [];
+    this.epiString = "";
     this.prerequisObligatoires = [];
 
     //jobyerInfo

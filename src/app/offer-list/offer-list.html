@@ -83,27 +83,25 @@
 
         <div class="clearfix">
           <div class="col-md-1 pull-sm-right pull-md-right pull-lg-right pull-xl-right">
-            <!--<div class="input-group-btn grp-search">-->
-              <!--<button-->
-                <!--type="button"-->
-                <!--class="btn btn-secondary btn-sm btn-search"-->
-                <!--style="background-color: #40aea9; color: white; border-radius: 0.2rem;"-->
-                <!--(buttonClick)="launchSearch(item)"-->
-                <!--*ngIf="!item.obsolete"-->
-                <!--[disabled]="item.correspondantsCount <= 0"-->
-              <!--&gt;-->
-                <!--{{ (item.correspondantsCount == 0) ? 'Aucun résultat trouvé' : '' }}-->
-                <!--{{ (item.correspondantsCount == 1) ? '1 résultat trouvé' : '' }}-->
-                <!--{{ (item.correspondantsCount > 1) ? item.correspondantsCount + ' résultats trouvés' : '' }}-->
-              <!--</button>-->
+            <div class="input-group-btn grp-search">
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm btn-search"
+                style="background-color: #40aea9; color: white; border-radius: 0.2rem;"
+                (click)="launchSearch(item)"
+                *ngIf="!item.obsolete && !isEmployer"
+                [disabled]="item.correspondantsCount <= 0">
+                {{ (item.correspondantsCount == 0) ? 'Aucun résultat trouvé' : '' }}
+                {{ (item.correspondantsCount == 1) ? '1 résultat trouvé' : '' }}
+                {{ (item.correspondantsCount > 1) ? item.correspondantsCount + ' résultats trouvés' : '' }}
+              </button>
 
               <div
-                *ngIf="item.obsolete == false"
                 button-number
                 [label]="'Lancer la plannification'"
                 [number]="item.correspondantsCount"
                 [tooltip]="'Jobyers disponibles'"
-                (buttonClick)="launchSearch(item)"
+                *ngIf="!item.obsolete && isEmployer"
               ></div>
 
               <button
@@ -118,7 +116,7 @@
                 {{ (item.interestedCount > 1) ? item.interestedCount + ' jobyers intéressés' : '' }}
               </button>
 
-            <!--</div>-->
+            </div>
           </div>
           <div class="col-md-1 col-xs-2 pull-sm-right pull-md-right pull-lg-right pull-xl-right">
             <button type="button" class="btn btn-secondary btn-sm btn-detail-offre" (click)="goToDetailOffer(item)">Détails de l'offre
