@@ -1000,14 +1000,34 @@ export class ContractService {
   }
 
   getNonSignedContracts(entrepriseId){
-    let sql = 'select c.pk_user_contrat as id, c.numero as num, c.en_brouillon as \"isDraft\", c.fk_user_offre_entreprise as \"idOffer\", c.created, c.lien_employeur as \"partnerEmployerLink\", ' +
-
-      ' j.nom, j.prenom, j.lieu_de_naissance as \"lieuNaissance\", j.date_de_naissance as \"jobyerBirthDate\", j.numero_securite_sociale as \"numSS\", j.pk_user_jobyer as \"jobyerId\", ' +
-      ' a.email, a.telephone as tel ' +
-      ' from user_contrat as c, user_jobyer as j, user_account as a ' +
-      ' where c.fk_user_entreprise=' + entrepriseId + " and upper(c.signature_employeur) = 'NON' " +
-      " and c.fk_user_jobyer = j.pk_user_jobyer and a.pk_user_account = j.fk_user_account " +
-      " order by c.created desc";
+    let sql = 'SELECT '
+    + 'c.pk_user_contrat as id '
+      + ', c.numero as num '
+      + ', c.en_brouillon as "isDraft" '
+      + ', c.fk_user_offre_entreprise as "idOffer" '
+      + ', uoe.fk_user_offre_entreprise as "idOfferType" '
+      + ', c.created, c.lien_employeur as "partnerEmployerLink" '
+      + ', j.nom, j.prenom, j.lieu_de_naissance as "lieuNaissance" '
+      + ', j.date_de_naissance as "jobyerBirthDate" '
+      + ', j.numero_securite_sociale as "numSS" '
+      + ', j.pk_user_jobyer as "jobyerId" '
+      + ', a.email '
+      + ', a.telephone as tel '
+      + ', (SELECT count(*) FROM user_offre_entreprise uoe2 WHERE uoe2.fk_user_offre_entreprise = uoe.fk_user_offre_entreprise) AS "nbChildren" '
+    + 'FROM '
+      + 'user_contrat as c, '
+      + 'user_jobyer as j, '
+      + 'user_account as a, '
+      + 'user_offre_entreprise as uoe '
+    + 'WHERE '
+    + "c.dirty='N' "
+    + 'AND c.fk_user_entreprise=' + entrepriseId + ' '
+    + "AND upper(c.signature_employeur) = 'NON' "
+    + 'AND c.fk_user_jobyer = j.pk_user_jobyer '
+    + 'AND a.pk_user_account = j.fk_user_account '
+    + 'AND uoe.pk_user_offre_entreprise = c.fk_user_offre_entreprise '
+    + 'ORDER BY c.created DESC '
+  ;
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
@@ -1127,5 +1147,56 @@ export class ContractService {
         resolve(data);
       });
     });
+  }
+
+  /**
+   *
+   * @param contractList
+   * @param contract
+   * @returns {boolean}
+   */
+  canCancelContract(contractList, contract): boolean {
+
+    let children = contractList.filter((e)=> {
+      return e.idOfferType == contract.idOfferType;
+    });
+    return (children.length > 0);
+  }
+
+  /**
+   *
+   * @param offerId
+   * @returns {Promise<T>}
+   */
+  cancelContractFromOfferId(offerId: number) {
+
+    if (offerId == null) {
+      return;
+    }
+    let sql = "UPDATE user_contrat SET dirty='Y' WHERE fk_user_offre_entreprise = " + offerId;
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any)=> {
+          resolve(data);
+        });
+    });
+  }
+
+  /**
+   *
+   * @param contractList
+   * @param contract
+   * @returns {undefined|Promise<T>}
+   */
+  cancelContract(contractList, contract) {
+    // Retrieve offerType and offerType children
+    console.log('cancelContract');
+    console.log(contractList);
+    console.log(contract);
+
+    // this.cancelOfferFromOfferId(contract.idOffer);
+    return this.cancelContractFromOfferId(contract.idOffer);
   }
 }

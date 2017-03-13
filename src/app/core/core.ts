@@ -5,7 +5,7 @@ import {Sidebar} from "./sidebar/sidebar";
 import {Navbar} from "./navbar/navbar";
 import {ConfigService} from "./config";
 import {AppSidebar} from "./app-sidebar/app-sidebar";
-import {ModalConfirm} from "../modal-confirm/modal-confirm";
+import {ModalConfirmExit} from "../modal-confirm-exit/modal-confirm-exit";
 import {RuntimeCompiler} from "@angular/compiler";
 import {SystemService} from "../../providers/system.service";
 
@@ -27,7 +27,7 @@ export const REDIRECTTO: string = "/home";
     id: 'app'
   },
   providers: [FORM_PROVIDERS, SystemService],
-  directives: [Sidebar, Navbar, AppSidebar, ROUTER_DIRECTIVES,ModalConfirm, Loader],
+  directives: [Sidebar, Navbar, AppSidebar, ROUTER_DIRECTIVES, ModalConfirmExit, Loader],
   template: require('./core.html')
 })
 export class Core {

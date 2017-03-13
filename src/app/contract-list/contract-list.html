@@ -29,23 +29,55 @@
           Date de création
         </th>
         <th>
-          Compléter le contrat
-        </th>
-        <th>
-          Signer le contrat
+          Actions possibles
         </th>
       </tr>
       </thead>
         <tbody>
           <tr *ngFor="let item of contractList, let i=index">
-            <td class="text-align-right" width="100">{{item.num}}</td>
-            <td class="text-align-right" width="100">{{item.nom}} {{item.prenom}}</td>
-            <td class="text-align-right" width="100">{{toDateString(item.created)}}</td>
-            <td class="text-align-right" width="100"><button class="btn btn-secondary mb-xs" (click)="goToContractForm(item)" [disabled]="!isEmpty(item.partnerEmployerLink)"><i class="glyphicon glyphicon-pencil text-success"></i></button></td>
+            <td class="text-align-right">{{item.num}}</td>
+            <td class="text-align-right">{{item.nom}} {{item.prenom}}</td>
+            <td class="text-align-right">{{toDateString(item.created)}}</td>
 
-            <td class="text-align-right" width="100"><button class="btn btn-secondary mb-xs" (click)="goToDocusignPage(item)" [disabled]="!currentUser.estEmployeur || item.isDraft.toUpperCase() == 'OUI' || inProgress"><i class="glyphicon glyphicon-search text-success"></i></button></td>
+            <!-- ACTIONS -->
+            <td class="text-align-right">
+              <button
+                class="btn btn-secondary mb-xs"
+                (click)="goToContractForm(item)"
+              >
+                <i class="glyphicon glyphicon-pencil text-success"></i>&nbsp;Compléter
+              </button>
+              <button
+                class="btn btn-secondary mb-xs"
+                (click)="reassignContract(item)"
+              >
+                <i class="fa fa-exchange" aria-hidden="true"></i>&nbsp;Réassigner
+              </button>
+              <button
+                class="btn btn-secondary mb-xs"
+                (click)="cancelContract(item)"
+              >
+                <i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;Annuler
+              </button>
+              <button
+                class="btn btn-secondary mb-xs"
+                (click)="goToDocusignPage(item)"
+                [disabled]="!currentUser.estEmployeur || item.isDraft.toUpperCase() == 'OUI' || inProgress"
+              >
+                <i class="fa fa-paper-plane-o" aria-hidden="true"></i>&nbsp;Signer
+              </button>
+            </td>
+
           </tr>
         </tbody>
       </table>
   </div>
 </div>
+<div
+  modal-confirm
+  [message]="'Êtes-vous sûr de bien vouloir annuler ce contrat ?'"
+  [messageCantConfirm]=""
+  [canConfirm]="true"
+  (confirmed)="actionConfirm()"
+  (aborted)="actionAborted()"
+></div>

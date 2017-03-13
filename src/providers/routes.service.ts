@@ -17,7 +17,7 @@ export class ConfirmExitPage implements CanDeactivate<any> {
   canDeactivate(target: any, route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | boolean {
     if(this.sharedService.getCurrentUser()){
       if(target.formHasChanges()){
-          jQuery("#modal-confirm").modal('show');
+          jQuery("#modal-confirm-exit").modal('show');
           this.routeObs.init();
           return this.routeObs.getObservable();
       }

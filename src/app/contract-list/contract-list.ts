@@ -12,13 +12,17 @@ import {AlertComponent} from "ng2-bootstrap";
 import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {Loader} from "../loader/loader";
 import {LoaderService} from "../../providers/loader.service";
+import {ModalConfirm} from "../modal-confirm/modal-confirm";
+
+declare let jQuery: any;
+declare let Messenger: any;
 
 @Component({
   selector: '[contract-list]',
   template: require('./contract-list.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./contract-list.scss')],
-  directives: [ROUTER_DIRECTIVES, AlertComponent, Loader],
+  directives: [ROUTER_DIRECTIVES, AlertComponent, Loader, ModalConfirm],
   providers: [ContractService, OffersService, FinanceService]
 })
 
@@ -28,6 +32,8 @@ export class ContractList{
   contractList = [];
   inProgress: boolean = false;
   alerts = [];
+
+  selectedItem: number = 0;
 
   constructor(private sharedService: SharedService,
               private router: Router,
@@ -252,6 +258,54 @@ export class ContractList{
         });
       });
     }
+  }
+
+  reassignContract(item) {
+
+  }
+
+  canCancelContract(item): boolean {
+    return this.contractService.canCancelContract(this.contractList, item);
+  }
+
+  cancelContract(item) {
+    jQuery('#modal-confirm').modal('show');
+    this.selectedItem = item;
+  }
+
+  validateCancelContract(item) {
+    let offerId = item.idOffer;
+    if (this.canCancelContract(item) == true) {
+      this.loader.display();
+      this.contractService.cancelContract(this.contractList, item).then(() => {
+
+        // Display message
+        Messenger().post({
+          message: 'Le contrat a été annulé avec succès',
+          type: 'success',
+          showCloseButton: true
+        });
+
+        this.contractList.splice(this.contractList.indexOf(item), 1);
+
+        // Set offer id
+        let offer = new Offer();
+        offer.idOffer = offerId;
+        this.sharedService.setCurrentOffer(offer);
+
+        this.router.navigate(['offer/edit', {
+          obj: 'detail'
+        }]);
+      });
+    }
+  }
+
+  actionConfirm() {
+    this.validateCancelContract(this.selectedItem);
+  }
+
+  actionAborted() {
+
   }
 
   isEmpty(str) {

@@ -1,0 +1,27 @@
+<div class="modal fade modal-margin-top" id="modal-confirm-exit">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel18">Attention ! Modification non enregistrée</h4>
+      </div>
+      <div class="modal-body bg-gray-lighter">
+        <form class="modal-picture-form form-horizontal" role="form">
+          <div class="row">
+            <div class="col-lg-12 col-xs-12">
+              <p>Si vous cliquez sur <b>" Continuer sans enregistrer "</b>, les informations non enregistrées seront perdues. Si vous cliquez sur <b>" Revenir au formulaire "</b>, vous retournerez sur le formulaire sans perdre vos modifications.
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="clearfix">
+            <button type="button" class="btn btn-gray" (click)="close()">Revenir au formulaire</button>
+            <button class="btn btn-primary" (click)="goToSelectedPage()">
+              Continuer sans enregistrer
+            </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -10,6 +10,8 @@ import {Offer} from "../dto/offer";
 import {OffersService} from "./offer.service";
 import {ContractService} from "./contract-service";
 import {Router} from "@angular/router";
+import {SharedService} from "./shared.service";
+import {Entreprise} from "../dto/entreprise";
 
 /**
  * Contains all the recruitment logic
@@ -22,6 +24,7 @@ export class RecruitmentService {
   constructor(public http: Http,
               public router: Router,
               public offersService: OffersService,
+              public sharedService: SharedService,
               public contractService: ContractService) {
   }
 
@@ -536,6 +539,12 @@ export class RecruitmentService {
         offerCopy.class = "com.vitonjob.callouts.offer.model.OfferData";
         offerCopy.adresse.type = "adresse_de_travail";
         offerCopy.idParentOffer = offerCopy.idOffer;
+
+        // Add the offer to the current user's offers
+        let currentUser = this.sharedService.getCurrentUser();
+        let currentUserEntreprise: Entreprise = currentUser.employer.entreprises[0];
+        currentUserEntreprise.offers.push(offerCopy);
+        this.sharedService.setCurrentUser(currentUser);
 
         this.offersService.copyOffer(offerCopy, projectTarget, "en archive").then((data: any) => {
           if(data && !Utils.isEmpty(data._body)) {

@@ -1,43 +1,47 @@
-import {Component, NgZone} from "@angular/core";
-import {ROUTER_DIRECTIVES, Router} from "@angular/router";
-import {SharedService} from "../../providers/shared.service";
-import {ProfileService} from "../../providers/profile.service";
-import {Observable} from 'rxjs/Observable';
-import {RouteObservable} from '../../providers/observables.service'
-
+import {Component, Input, Output, EventEmitter} from "@angular/core";
+import {ROUTER_DIRECTIVES} from "@angular/router";
 
 declare let jQuery: any;
 declare let Messenger: any;
 
+/**
+ * Simple modal requesting confirmation
+ */
 @Component({
   selector: '[modal-confirm]',
   directives: [ROUTER_DIRECTIVES],
-  providers: [ProfileService],
+  providers: [],
   template: require('./modal-confirm.html'),
   styles: [require('./modal-confirm.scss')]
 })
 export class ModalConfirm {
 
-  destinationRoute: string = null;
-  currentUser: any;
+  @Input()
+  message: string = "";
 
+  @Input()
+  messageCantConfirm: string = "";
 
+  @Input()
+  canConfirm: boolean = true;
 
-  constructor(private sharedService: SharedService,
-              private routeObs:RouteObservable,
-              private profileService: ProfileService,
-              private zone: NgZone,
-              private router: Router) {
+  @Output()
+  confirmed = new EventEmitter<any>();
+
+  @Output()
+  aborted = new EventEmitter<any>();
+
+  constructor() {
   }
 
-  goToSelectedPage(){
+  confirm(){
     jQuery("#modal-confirm").modal('hide');
-    this.routeObs.setTrueAndComplete()
+    this.confirmed.emit([]);
   }
 
   close(){
     jQuery("#modal-confirm").modal('hide');
-    this.routeObs.setFalseAndComplete()
+    this.aborted.emit([]);
   }
 
 }
