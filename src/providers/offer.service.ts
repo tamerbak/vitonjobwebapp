@@ -702,39 +702,43 @@ export class OffersService {
    */
   getConventionFilters(idConvention) {
 
-    let sql = `
-      SELECT 'niv' as type, pk_user_niveau_convention_collective AS id, code, libelle, 'false' as disabled
-      FROM user_niveau_convention_collective
-      WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
-      UNION SELECT 'coe' as type, pk_user_coefficient_convention AS id, code, libelle, 'false' as disabled
-      FROM user_coefficient_convention
-      WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
-      UNION SELECT 'ech' as type, pk_user_echelon_convention AS id, code, libelle, 'false' as disabled
-      FROM user_echelon_convention
-      WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
-      UNION SELECT 'cat' as type, pk_user_categorie_convention AS id, code, libelle, 'false' as disabled
-      FROM user_categorie_convention
-      WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
-      UNION SELECT 'zon' as type, pk_user_zone_geo_convention AS id, code, libelle, 'false' as disabled
-      FROM user_zone_geo_convention
-      WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
-      UNION SELECT 'ind' as type, pk_user_indice_convention AS id, code, libelle, 'false' as disabled
-      FROM user_indice_convention
-      WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
-      UNION SELECT 'cla' as type, pk_user_classe_convention AS id, code, libelle, 'false' as disabled
-      FROM user_classe_convention
-      WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
-      UNION SELECT 'sta' as type, pk_user_statut_convention AS id, code, libelle, 'false' as disabled
-      FROM user_statut_convention
-      WHERE dirty='N'
-      UNION SELECT 'pos' as type, pk_user_position_convention AS id, code, libelle, 'false' as disabled
-      FROM user_position_convention
-      WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
-      UNION SELECT 'anc' as type, pk_user_anciennete_convention AS id, code, libelle, 'false' as disabled
-      FROM user_anciennete_convention
-      WHERE fk_user_convention_collective = ` + idConvention + ` and dirty='N'
-      ORDER BY libelle
-    `;
+    let cats = [
+      {key: 'niv', table: 'user_niveau_convention_collective'},
+      {key: 'coe', table: 'user_coefficient_convention'},
+      {key: 'ech', table: 'user_echelon_convention'},
+      {key: 'cat', table: 'user_categorie_convention'},
+      {key: 'zon', table: 'user_zone_geo_convention'},
+      {key: 'ind', table: 'user_indice_convention'},
+      {key: 'cla', table: 'user_classe_convention'},
+      {key: 'sta', table: 'user_statut_convention'},
+      {key: 'deg', table: 'user_degre_convention'},
+      {key: 'pos', table: 'user_position_convention'},
+      {key: 'anc', table: 'user_anciennete_convention'}
+    ];
+
+    let sql = '';
+    for (let i = 0; i < cats.length; ++i) {
+      sql += `
+        SELECT
+          '` +  cats[i].key + `' as type
+          , MAX(pk_` +  cats[i].table + `) AS id
+          , code
+          , libelle
+          , 'false' as disabled
+        FROM ` +  cats[i].table + ` ` +  cats[i].key + `
+        LEFT JOIN user_parametrage_convention pc ON pc.fk_` +  cats[i].table + ` = ` +  cats[i].key + `.pk_` +  cats[i].table + `
+        WHERE
+          pc.fk_user_convention_collective = ` + idConvention + `
+          AND pc.dirty = 'N'
+          AND (pc.du IS NOT NULL AND pc.du < NOW())
+          AND (pc.au > NOW() OR au IS NULL)
+        GROUP BY code, libelle
+      `;
+      if (i < cats.length - 1) {
+        sql += ' UNION ';
+      }
+    }
+    sql += ' ORDER BY libelle;';
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
