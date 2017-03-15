@@ -76,6 +76,9 @@ export class OfferRecruit {
   jobyerHover: number;
   jobyerHoverAlwaysAvailable: boolean = false;
 
+  planningColor: string[][] = [];
+  planningColorHover: string[][] = [];
+
   // Jobyer colors management
   jobyerColors: number[];
   jobyerColorNb: number = 1;
@@ -113,8 +116,9 @@ export class OfferRecruit {
     this.jobyersAvailabilities = new Map<number, CalendarQuarterPerDay>();
 
     this.employerPlanning = new CalendarQuarterPerDay();
-    this.offer = this.sharedService.getCurrentOffer();
+    this.updateView();
 
+    this.offer = this.sharedService.getCurrentOffer();
     this.offersService.getOfferById(this.offer.idOffer, "employer", this.offer).then(()=> {
 
       if (this.offer == null) {
@@ -129,6 +133,8 @@ export class OfferRecruit {
       this.retrieveLimits();
 
       this.getJobyerList();
+
+      this.updateView();
 
     });
   }
@@ -354,6 +360,29 @@ export class OfferRecruit {
   }
 
   /**
+   * Compute all the HTML classes and stock them into an array that the view will parse
+   */
+  updateView() {
+    for (let i = 0; i < this.employerPlanning.quartersPerDay.length; ++i) {
+      let day = this.employerPlanning.quartersPerDay[i];
+      for (let quarterId = 0; quarterId < 96; ++quarterId) {
+
+        // Get slot shape
+        if (Utils.isEmpty(this.planningColor[i]) == true) {
+          this.planningColor[i] = [];
+        }
+        this.planningColor[i][quarterId] = this.getQuarterColor(day, quarterId);
+
+        // Get slots hover
+        if (Utils.isEmpty(this.planningColorHover[i]) == true) {
+          this.planningColorHover[i] = [];
+        }
+        this.planningColorHover[i][quarterId] = this.getQuarterColorHover(day, quarterId);
+      }
+    }
+  }
+
+  /**
    * Display the jobyer availabilities into the employer planning
    *
    * @param jobyer
@@ -375,6 +404,8 @@ export class OfferRecruit {
       dateLimitEnd
     );
     this.jobyerHoverAlwaysAvailable = jobyer.toujours_disponible;
+
+    this.updateView();
   }
 
   /**

@@ -140,12 +140,12 @@
             </td>
             <td *ngFor="let quarterId of quartersPerDay;" class="offer-recruit-slots-quart">
               <div
-                class="offer-recruit-slots-quarter-fill-container {{ getQuarterColor(day, quarterId) }}"
+                class="offer-recruit-slots-quarter-fill-container {{ planningColor[d] && planningColor[d][quarterId] }}"
               >
                 &nbsp;
               </div>
               <div
-                class="offer-recruit-slots-quarter-fill {{ getQuarterColorHover(day, quarterId) }}"
+                class="offer-recruit-slots-quarter-fill {{ planningColorHover[d] && planningColorHover[d][quarterId] }}"
                 (click)="selectedSlot(day, quarterId)"
               >
                 &nbsp;
