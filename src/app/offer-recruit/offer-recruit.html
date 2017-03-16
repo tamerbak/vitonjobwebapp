@@ -74,7 +74,11 @@
 
           <li
             *ngFor="let jobyer of jobyers"
-            class="offer-recruit-jobyer-available offer-recruit-jobyer-{{ getJobyerColor(jobyer.id) }}"
+            class="offer-recruit-jobyer-available offer-recruit-jobyer-{{ (
+              (jobyer.toujours_disponible)
+                ? '1'
+                : ((!jobyer.toujours_disponible && jobyer.disponibilites.length > 0) ? '2' : '5')
+              ) }}"
             (click)="selectJobyer(jobyer)"
           >
             <!--(mouseover)="previewJobyerAvailabilities(jobyer)"-->
