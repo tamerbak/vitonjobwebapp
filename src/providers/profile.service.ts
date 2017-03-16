@@ -291,16 +291,18 @@ export class ProfileService{
    * @description update jobyer information
    * @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
    */
-  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, isStay, prefecture, isFrench, isEuropean, regionId, cv, nbWorkHours, studyHoursBigValue, alwaysAvailable) {
+  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, isStay, prefecture, isFrench, isEuropean, regionId, cv, nbWorkHours, studyHoursBigValue, alwaysAvailable, birthname) {
     title = Utils.sqlfyText(title);
     lastname = Utils.sqlfyText(lastname);
     firstname = Utils.sqlfyText(firstname);
+    birthname = Utils.sqlfyText(birthname);
     let sql = "";
     //building the sql request
     sql = "update user_jobyer set  " +
       "titre='" + title + "', " +
       "nom='" + lastname + "', " +
       "prenom='" + firstname + "', " +
+      "nom_de_jeune_fille='" + birthname + "', " +
 
       (!this.isEmpty(numSS) ? ("numero_securite_sociale ='" + numSS + "', ") : ("numero_securite_sociale ='', ")) +
       (!this.isEmpty(cni) ? ("cni ='" + cni + "', ") : ("cni ='', ")) +

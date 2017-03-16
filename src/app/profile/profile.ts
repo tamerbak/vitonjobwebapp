@@ -46,6 +46,7 @@ export class Profile{
   title: string = "M.";
   lastname: string;
   firstname: string;
+  birthname: string;
   companyname: string;
   siret: string;
   ape: string;
@@ -82,6 +83,7 @@ export class Profile{
   isValidBirthdate: boolean = true;
   isValidCni: boolean = true;
   isValidNumSS: boolean = true;
+  isValidBirthname: boolean = true;
 
   lastnameHint: string = "";
   firstnameHint: string = "";
@@ -91,6 +93,8 @@ export class Profile{
   birthdateHint: string = "";
   cniHint: string = "";
   numSSHint: string = "";
+  birthnameHint: string = "";
+
   selectedCommune: any = {id: '0', nom: '', code_insee: ''}
   dataForNationalitySelectReady = false;
   scanData: string = "";
@@ -667,6 +671,7 @@ export class Profile{
      if (!this.isEmployer && !this.isNewUser)
       this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
         data = data.data[0];
+        this.birthname = Utils.preventNull(data.nom_de_jeune_fille);
         if (!Utils.isEmpty(data.fk_user_pays)) {
           this.index = this.profileService.getCountryById(data.fk_user_pays, this.pays).indicatif_telephonique;
         }
@@ -1300,6 +1305,14 @@ export class Profile{
       } else {
         _isFormValid = false;
       }
+      //vérifier la validité du nom de naissance pour les dames
+      if(this.title == "Mme"){
+       if(this.isValidBirthname && !this.isEmpty(this.birthname)){
+         _isFormValid = true;
+       } else {
+         _isFormValid = false;
+       }
+      }
     }
     return _isFormValid;
   }
@@ -1572,7 +1585,7 @@ export class Profile{
         let studyHoursBigValue = (this.isNbStudyHoursBig ? "OUI" : "NON");
 
         this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthdepId, birthplace, birthCountryId, numStay,
-          dateStay, dateFromStay, dateToStay, isResident, prefecture, this.isFrench, this.isEuropean, regionId, this.cv, this.nbWorkHours, studyHoursBigValue, this.alwaysAvailable)
+          dateStay, dateFromStay, dateToStay, isResident, prefecture, this.isFrench, this.isEuropean, regionId, this.cv, this.nbWorkHours, studyHoursBigValue, this.alwaysAvailable, this.birthname)
           .then((res: any) => {
 
             //case of authentication failure : server unavailable or connection problem
@@ -1883,6 +1896,7 @@ export class Profile{
   //<editor-fold desc="Watching input functions">
 
   watchLastname(e) {
+    e.target.value = e.target.value.toUpperCase();
     let nameChecked = AccountConstraints.checkName(e, "lastname");
     this.isValidLastname = nameChecked.isValid;
     this.lastnameHint = nameChecked.hint;
@@ -1896,7 +1910,15 @@ export class Profile{
     this.isValidForm();
   }
 
+  watchBirthname(e) {
+    let nameChecked = AccountConstraints.checkName(e, "birthname");
+    this.isValidBirthname = nameChecked.isValid;
+    this.birthnameHint = nameChecked.hint;
+    this.isValidForm();
+  }
+
   watchCompanyname(e) {
+    e.target.value = e.target.value.toUpperCase();
     let companynameChecked = AccountConstraints.checkCompanyName(e);
     this.isValidCompanyname = companynameChecked.isValid;
     this.companynameHint = companynameChecked.hint;
@@ -1945,8 +1967,6 @@ export class Profile{
       this.birthdateHint = birthdateChecked.hint;
       this.isValidForm();
   }
-
-
 
   initDisponibilites(){
 
@@ -2025,6 +2045,7 @@ export class Profile{
     let sd = (da < 10 ? '0' : '')+da+'/' + (m < 10 ? '0' : '') + m + "/" +d.getFullYear() ;
     return sd
   }
+
   simpleHourFormat(h : number){
     let s = '';
     s=s+(h/60).toFixed(0);
