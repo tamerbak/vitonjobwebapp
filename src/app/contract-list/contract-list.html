@@ -29,6 +29,9 @@
           Date de création
         </th>
         <th>
+          Début de la mission
+        </th>
+        <th>
           Actions possibles
         </th>
       </tr>
@@ -38,6 +41,10 @@
             <td class="text-align-right">{{item.num}}</td>
             <td class="text-align-right">{{item.nom}} {{item.prenom}}</td>
             <td class="text-align-right">{{toDateString(item.created)}}</td>
+            <td class="text-align-right">
+              {{ toDateString(item.jour) }}
+              à {{ toHourString(item.heure_debut) }}
+            </td>
 
             <!-- ACTIONS -->
             <td class="text-align-right">

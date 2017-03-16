@@ -316,7 +316,11 @@ export class ContractList{
     return DateUtils.toDateString(d);
   }
 
-    addAlert(type, msg): void {
+  toHourString(d){
+    return DateUtils.toHourString(d);
+  }
+
+  addAlert(type, msg): void {
       this.alerts = [{type: type, msg: msg}];
   }
 }
