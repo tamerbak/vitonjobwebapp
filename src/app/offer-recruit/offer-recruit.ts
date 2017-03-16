@@ -78,6 +78,7 @@ export class OfferRecruit {
 
   planningColor: string[][] = [];
   planningColorHover: string[][] = [];
+  planningJobyer: string[] = [];
 
   // Jobyer colors management
   jobyerColors: number[];
@@ -278,7 +279,8 @@ export class OfferRecruit {
     if (Utils.isEmpty(this.jobyerColors[jobyerId]) === true) {
       this.jobyerColors[jobyerId] = this.jobyerColorNb++;
     }
-    return this.jobyerColors[jobyerId];
+    // return this.jobyerColors[jobyerId];
+    return 1;
   }
 
   /**
@@ -298,7 +300,7 @@ export class OfferRecruit {
       }
       if (day.quarters[quarterId] > 0) {
         quarterClass += ' offer-recruit-slots-quarter-assigned';
-        quarterClass += ' assigned-' + this.getJobyerColor(day.quarters[quarterId]);
+        quarterClass += ' assigned-'  + this.getJobyerColor(day.quarters[quarterId]);
       }
       quarterClass += ' offer-recruit-slots-quarter-required';
       if (quarterId == 0 || day.quarters[quarterId - 1] === null) {
@@ -367,6 +369,7 @@ export class OfferRecruit {
   updateView() {
     for (let i = 0; i < this.employerPlanning.quartersPerDay.length; ++i) {
       let day = this.employerPlanning.quartersPerDay[i];
+      let jobyerId = 0;
       for (let quarterId = 0; quarterId < 96; ++quarterId) {
 
         // Get slot shape
@@ -380,7 +383,18 @@ export class OfferRecruit {
           this.planningColorHover[i] = [];
         }
         this.planningColorHover[i][quarterId] = this.getQuarterColorHover(day, quarterId);
+
+        if (day.quarters[quarterId] != null) {
+          jobyerId = day.quarters[quarterId];
+        }
       }
+      let jobyer = this.jobyers.filter((e)=> {
+        return (e.id == jobyerId);
+      })
+      this.planningJobyer[i] = (jobyer.length > 0)
+        ? ((jobyer[0].prenom ? jobyer[0].prenom.substring(0, 1) + '.' : '') + ' ' + jobyer[0].nom)
+        : ''
+      ;
     }
   }
 

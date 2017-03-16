@@ -12,7 +12,7 @@
       </ul>
     </section>
   </div>
-  <div class="col-lg-3 col-xs-12">
+  <div class="col-lg-2 col-xs-12">
     <section widget class="widget">
       <div class="widget-controls">
         <!--<a href="#"><i class="fa fa-refresh"></i></a>-->
@@ -114,7 +114,7 @@
     </section>
   </div>
 
-  <div class="col-lg-9 col-xs-12">
+  <div class="col-lg-10 col-xs-12">
     <section class="widget widget-calendar widget-offer">
 
       <header class="bb widget-offer-header">
@@ -137,6 +137,8 @@
             <th *ngFor="let h of displayedHour" colspan="8" class="offer-recruit-slots-headers">
               {{ h }}:00
             </th>
+            <th colspan="4"></th>
+            <th>Jobyer</th>
           </tr>
           </thead>
           <tbody>
@@ -158,6 +160,7 @@
                 &nbsp;
               </div>
             </td>
+            <td class="offer-recruit-assigned-to">{{ planningJobyer[d] }}</td>
           </tr>
           </tbody>
         </table>
