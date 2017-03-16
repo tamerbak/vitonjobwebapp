@@ -19,16 +19,6 @@
           <div class="height-250 overflow-hidden">
             <img class="img-fluid" src="assets/images/pictures/19.jpg">
           </div>
-          <div class="btn-tool">
-            <button
-              [disabled]="showForm" [hidden]="isRecruiter" class="btn btn-outline btn-sm pull-right" data-toggle="modal"
-              data-target="#modal-bank-account"
-            >
-              <i class="fa fa-credit-card mr-xs"></i>
-              Modifier les coordonnées bancaires
-            </button>
-
-          </div>
         </div>
         <div class="row">
           <div class="col-lg-4 col-md-5 col-xs-12 text-xs-center">
@@ -58,9 +48,17 @@
               <p *ngIf="environmentService.get('EMPLOYER_PHARMA') == 'true'">(PHARMACIE)</p>
               <p *ngIf="environmentService.get('JOBYER_PHARMA') == 'true'">(PHARMACIE)</p>
               <p *ngIf="environmentService.get('IS_LAURA') == 'true'">(COUCOU Laura)</p>
+
               <button [disabled]="showForm" class="btn btn-primary btn-sm mt" (click)="initForm()">
                 <i class="fa fa-pencil-square-o ml-xs"></i>&nbsp;
                 Mes informations
+              </button>
+
+              <button
+                      [disabled]="showForm" [hidden]="isRecruiter" class="btn btn-primary btn-sm mt" data-toggle="modal"
+                      data-target="#modal-bank-account">
+                <i class="fa fa-credit-card mr-xs"></i>
+                Mes coordonnées bancaires
               </button>
 
               <ul class="contacts">
