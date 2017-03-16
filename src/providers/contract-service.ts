@@ -83,6 +83,7 @@ export class ContractService {
       "user_rue.pk_user_rue = user_adresse.fk_user_rue AND   " +
       "user_ville.pk_user_ville = user_adresse.fk_user_ville AND   " +
       "lower_unaccent(user_adresse_jobyer.personnelle)='oui' AND   " +
+      "user_adresse_jobyer.dirty ='N' AND   " +
       "user_adresse_jobyer.fk_user_jobyer= "+ id;
 
     return new Promise(resolve => {
