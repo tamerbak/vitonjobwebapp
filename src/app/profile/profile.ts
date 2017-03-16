@@ -1896,6 +1896,7 @@ export class Profile{
   //<editor-fold desc="Watching input functions">
 
   watchLastname(e) {
+    e.target.value = e.target.value.toUpperCase();
     let nameChecked = AccountConstraints.checkName(e, "lastname");
     this.isValidLastname = nameChecked.isValid;
     this.lastnameHint = nameChecked.hint;
@@ -1917,6 +1918,7 @@ export class Profile{
   }
 
   watchCompanyname(e) {
+    e.target.value = e.target.value.toUpperCase();
     let companynameChecked = AccountConstraints.checkCompanyName(e);
     this.isValidCompanyname = companynameChecked.isValid;
     this.companynameHint = companynameChecked.hint;
