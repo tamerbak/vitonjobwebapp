@@ -16,7 +16,7 @@ export class AccountConstraints{
     let _hint: string = "";
 
     if (!Utils.isValidName(_name)) {
-      _hint = (obj == "lastname" ? "Saisissez un nom valide" : "Saisissez un prénom valide");
+      _hint = (obj == "lastname" ? "Saisissez un nom valide" : (obj == "firstname" ? "Saisissez un prénom valide" :"Saisissez un nom de naissance valide"));
       _isValid = false;
     } else {
       _hint = "";
