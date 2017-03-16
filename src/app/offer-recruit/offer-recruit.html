@@ -5,18 +5,18 @@
       <h3>
         Gestion de la planification des jobyers sur une offre multi-créneaux
       </h3>
-      <p>Deux modes sont possibles :</p>
+      <p>Vous sélectionnez le jobyer, puis deux modes sont possibles :</p>
       <ul>
-        <li><b>1er mode :</b> vous cliquez sur le créneau à planifier puis sur le jobyer choisi et/ ou</li>
-        <li><b>2ème mode :</b> Vous sélectionnez le jobyer et le système utilise au mieux ses disponibilités sur le maximum de créneaux horaires.</li>
+        <li><b>1er mode :</b> vous cliquez sur le créneau à planifier et/ ou</li>
+        <li><b>2ème mode :</b> vous cliquez sur "Assigner automatiquement" et le système utilise au mieux ses disponibilités sur le maximum de créneaux horaires.</li>
       </ul>
     </section>
   </div>
   <div class="col-lg-3 col-xs-12">
     <section widget class="widget">
       <div class="widget-controls">
-        <a href="#"><i class="fa fa-refresh"></i></a>
-        <a href="#" data-widgster="close"><i class="glyphicon glyphicon-remove"></i></a>
+        <!--<a href="#"><i class="fa fa-refresh"></i></a>-->
+        <!--<a data-widgster="close"><i class="glyphicon glyphicon-remove"></i></a>-->
       </div>
       <div class="widget-body">
         <div class="widget-top-overflow windget-padding-md clearfix bg-warning text-white">
@@ -42,27 +42,27 @@
           >
 
             <div class="widget-controls slot-description-actions">
-              <a href="#">
-                <i class="fa fa-refresh"></i>
-              </a>
-              <a href="#" data-widgster="close">
+              <!--<a href="#">-->
+                <!--<i class="fa fa-refresh"></i>-->
+              <!--</a>-->
+              <a (click)="unselectAll()" data-widgster="close">
                 <i class="glyphicon glyphicon-remove"></i>
               </a>
             </div>
 
             <div class="row">
-              <div class="col-xs-12">
+              <div class="col-xs-12" *ngIf="jobyerHover !== null">
                 <button
-                  (click)="unassignSlot()"
-                  [disabled]="!isAssignedSlot()"
-                  class="btn slot-description-unassign"
+                  (click)="assignToSelectedJobyer()"
+                  class="btn slot-description-assign"
                 >
-                  Désassigner ce créneau
+                  Assigner automatiquement
                 </button>
               </div>
             </div>
           </div>
         </div>
+
       </div>
       <footer class="bg-body-light">
         <ul class="post-links">
@@ -75,10 +75,11 @@
           <li
             *ngFor="let jobyer of jobyers"
             class="offer-recruit-jobyer-available offer-recruit-jobyer-{{ getJobyerColor(jobyer.id) }}"
-            (mouseover)="previewJobyerAvailabilities(jobyer)"
-            (mouseleave)="cancelPreviewJobyerAvailabilities()"
-            (click)="assignToSelectedJobyer(jobyer)"
+            (click)="selectJobyer(jobyer)"
           >
+            <!--(mouseover)="previewJobyerAvailabilities(jobyer)"-->
+            <!--(mouseleave)="cancelPreviewJobyerAvailabilities()"-->
+            <!--(click)="assignToSelectedJobyer(jobyer)"-->
             <span class="thumb-xs avatar pull-left mr-sm">
               <img class="img-circle" src="assets/images/avatar.png" alt="..." />
             </span>
@@ -120,6 +121,11 @@
         <h6><span class="fw-semi-bold widget-offer-header-title">
           Horaires de travail souhaités à répartir
         </span></h6>
+        <div class="widget-controls">
+          <a (click)="unassignMode()" data-widgster="close">
+            <i class="glyphicon glyphicon-remove"></i> Désassigner créneaux
+          </a>
+        </div>
       </header>
 
       <div class="table-responsive offer-recruit-slots-container">
@@ -146,7 +152,8 @@
               </div>
               <div
                 class="offer-recruit-slots-quarter-fill {{ planningColorHover[d] && planningColorHover[d][quarterId] }}"
-                (click)="selectedSlot(day, quarterId)"
+                (click)="selectSlot(day, quarterId)"
+                style="{{ (mode == 'unassign') ? 'cursor: crosshair;' : '' }}"
               >
                 &nbsp;
               </div>

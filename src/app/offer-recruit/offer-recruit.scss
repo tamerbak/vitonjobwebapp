@@ -475,7 +475,7 @@ $requiredBorder: #c0392b;
 $assignedBackground: #2ecc71;
 $assignedBorder: #27ae60;
 
-$availableOpacity: 0.8;
+$availableOpacity: 0.2;
 $matchingBackground: rgba(149, 165, 166, $availableOpacity);
 $matchingBorder: rgba(127, 140, 141, $availableOpacity);
 $availableBackground: rgba(236, 240, 241, $availableOpacity);
@@ -810,5 +810,9 @@ $detailAnimationDuration: 0.5s;
 }
 
 .slot-description-unassign {
+  width: 100%;
+}
+
+.slot-description-assign {
   width: 100%;
 }

@@ -73,7 +73,7 @@ export class OfferRecruit {
   slots: any[] = [];
   employerPlanning: CalendarQuarterPerDay;
   jobyersAvailabilities: Map<number, CalendarQuarterPerDay>;
-  jobyerHover: number;
+  jobyerHover: any;
   jobyerHoverAlwaysAvailable: boolean = false;
 
   planningColor: string[][] = [];
@@ -99,6 +99,8 @@ export class OfferRecruit {
 
   alerts: any[] = [];
 
+  mode: string = '';
+
   constructor(private offersService: OffersService,
               public sharedService: SharedService,
               private searchService: SearchService,
@@ -112,7 +114,7 @@ export class OfferRecruit {
     // Pointer definition
     this.getFrenchDateString = DateUtils.toFrenchDateString;
 
-    this.jobyerHover = 0;
+    this.jobyerHover = null;
     this.jobyersAvailabilities = new Map<number, CalendarQuarterPerDay>();
 
     this.employerPlanning = new CalendarQuarterPerDay();
@@ -325,14 +327,14 @@ export class OfferRecruit {
     let jobyersQuarters = null;
 
     // If on jobyer is mouseover
-    if (this.jobyerHover > 0) {
+    if (this.jobyerHover !== null) {
       if (this.jobyerHoverAlwaysAvailable == true) {
         jobyersQuarters = [];
-        jobyersQuarters[quarterId] = this.jobyerHover;
+        jobyersQuarters[quarterId] = this.jobyerHover.id;
       } else {
         // Get the jobyer availabilities
         jobyersQuarters = this.recruitmentService.isJobyerAvailable(
-          date, this.jobyersAvailabilities.get(this.jobyerHover), quarterId
+          date, this.jobyersAvailabilities.get(this.jobyerHover.id), quarterId
         );
       }
     }
@@ -382,13 +384,22 @@ export class OfferRecruit {
     }
   }
 
+  unselectJobyer(): void {
+    this.jobyerHover = null;
+  }
+
+  selectJobyer(jobyer: any): void {
+    this.unselectSlot();
+    this.jobyerHover = jobyer;
+    this.previewJobyerAvailabilities(jobyer);
+  }
+
   /**
    * Display the jobyer availabilities into the employer planning
    *
    * @param jobyer
    */
   previewJobyerAvailabilities(jobyer: any): void {
-    this.jobyerHover = jobyer.id;
     // this.jobyerHoverAlwaysAvailable = jobyer.toujours_disponible;
 
     let dateLimitStart = new Date(this.employerPlanning.quartersPerDay[0].date);
@@ -408,11 +419,9 @@ export class OfferRecruit {
     this.updateView();
   }
 
-  /**
-   * Stop to display the jobyer availabilities into the employer planning
-   */
-  cancelPreviewJobyerAvailabilities() {
-    this.jobyerHover = 0;
+  unassignMode() {
+    this.unselectAll();
+    this.mode = 'unassign';
   }
 
   /**
@@ -421,59 +430,60 @@ export class OfferRecruit {
    * @param day
    * @param quarterId
    */
-  selectedSlot(day, quarterId): void {
+  selectSlot(day, quarterId): void {
     if (day.quarters[quarterId] == null) {
-      this.unselectedSlot();
       return;
     }
+
     this.selectedDay = day;
     this.selectedQuarterId = quarterId;
     this.selectedQuarterIdStart = this.recruitmentService.getFirstQuarterOfSlot(day, quarterId);
     this.selectedQuarterIdEnd = this.recruitmentService.getLastQuarterOfSlot(day, quarterId);
+
+    if (this.mode == 'unassign') {
+      this.unassignSlot();
+    } else {
+      this.assignToSelectedJobyer();
+    }
+    this.updateView();
   }
 
   /**
    * Unselect slot
    */
-  unselectedSlot(): void {
+  unselectSlot(): void {
     this.selectedDay = null;
     this.selectedQuarterId = null;
     this.selectedQuarterIdStart = null;
     this.selectedQuarterIdEnd = null;
-  }
+    this.updateView();
 
-  /**
-   * Return true if the slot is assigned, otherwise false
-   */
-  isAssignedSlot(): boolean {
-    if (this.selectedDay != null && this.selectedQuarterId != null) {
-      if (this.selectedDay.quarters[this.selectedQuarterId] > 0) {
-        return true;
-      }
-    }
-    return false;
   }
 
   /**
    * Assign the to this jobyer :
    * - If no slot selected, assign as much slot as possible
    * - If selected slot, assign only that slot
-   *
-   * @param jobyer
    */
-  assignToSelectedJobyer(jobyer): void {
+  assignToSelectedJobyer(): void {
+
+    if (this.jobyerHover == null) {
+      return;
+    }
+
     // If a quarter is selected, assign this quarter to this jobyer
     if (this.selectedDay != null) {
-      this.assignSelectedSlotToThisJobyer(jobyer);
-      this.unselectedSlot();
+      this.assignselectSlotToThisJobyer(this.jobyerHover);
+      this.unselectSlot();
     } else {
       // Neither assign as much quarters as possible to this jobyer
       this.recruitmentService.assignAsMuchQuarterAsPossibleToThisJobyer(
         this.employerPlanning,
         this.jobyersAvailabilities,
-        jobyer
+        this.jobyerHover
       );
     }
+    this.updateView();
   }
 
   /**
@@ -490,7 +500,7 @@ export class OfferRecruit {
     )
   }
 
-  assignSelectedSlotToThisJobyer(jobyer: any): void {
+  assignselectSlotToThisJobyer(jobyer: any): void {
     if (jobyer === null) {
       return;
     }
@@ -506,7 +516,7 @@ export class OfferRecruit {
       this.selectedQuarterIdStart,
       this.selectedQuarterIdEnd,
       this.employerPlanning
-    )
+    );
   }
 
   /**
@@ -515,7 +525,7 @@ export class OfferRecruit {
    * @returns {string}
    */
   getDetailStatusClass() {
-    if (this.selectedDay !== null) {
+    if (this.jobyerHover !== null) {
       return 'offer-recruit-detail-open';
     }
     return 'offer-recruit-detail-close';
@@ -552,5 +562,12 @@ export class OfferRecruit {
 
   addAlert(type, msg): void {
     this.alerts = [{type: type, msg: msg}];
+  }
+
+  unselectAll(): void {
+    this.mode = '';
+    this.unselectSlot();
+    this.unselectJobyer();
+    this.updateView();
   }
 }
