@@ -8,7 +8,6 @@ import {ModalOptions} from "../../modal-options/modal-options";
 import {Utils} from "../../utils/utils";
 import {DateUtils} from "../../utils/date-utils";
 import {ModalSlots} from "./modal-slots/modal-slots";
-import {AdvertService} from "../../../providers/advert.service";
 import {CalendarSlot} from "../../../dto/calendar-slot";
 
 declare let Messenger, jQuery: any;
@@ -73,7 +72,7 @@ class CalendarEvent {
     ModalSlots,
     Calendar
   ],
-  providers: [OffersService, AdvertService]
+  providers: [OffersService]
 })
 export class Calendar {
   @Input()
@@ -114,8 +113,7 @@ export class Calendar {
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private router: Router,
-              private route: ActivatedRoute,
-              private advertService: AdvertService) {
+              private route: ActivatedRoute) {
 
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
