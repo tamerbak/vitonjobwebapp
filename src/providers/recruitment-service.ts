@@ -156,8 +156,8 @@ export class RecruitmentService {
 
       // Retrieve the last Quarter of this slot, the last 15 min
       let quartEnd = new Date(slots[i].dateEnd);
-      quartEnd.setHours(slots[i].endHour / 60);
-      quartEnd.setMinutes(slots[i].endHour % 60);
+      quartEnd.setHours((slots[i].endHour - 1) / 60);
+      quartEnd.setMinutes((slots[i].endHour - 1) % 60);
 
       // Then generate all the Quarter from the first to the last
       do {
