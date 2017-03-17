@@ -122,7 +122,7 @@ export class OfferRecruit {
     this.updateView();
 
     this.offer = this.sharedService.getCurrentOffer();
-    this.offersService.getOfferById(this.offer.idOffer, "employer", this.offer).then(()=> {
+    this.offersService.getOfferById(2474, "employer", this.offer).then(()=> {
 
       if (this.offer == null) {
         this.employerPlanning = new CalendarQuarterPerDay();
@@ -233,13 +233,13 @@ export class OfferRecruit {
           titre: this.searchResults[i].titre,
           nom: this.searchResults[i].nom,
           prenom: this.searchResults[i].prenom,
-          avatar: this.searchResults[i].avatar,
+          avatar: 'assets/images/avatar.png',
           toujours_disponible: alwaysAvailable,
           disponibilites: slots,
         });
       }
 
-      this.recruitmentService.retreiveJobyersAlwaysAvailable(this.jobyers).then((data: any)=> {
+      this.recruitmentService.retrieveJobyersAlwaysAvailable(this.jobyers).then((data: any)=> {
         // Order by : Always available, Partial available, Never available
         this.jobyers.sort((a, b)=> {
           let aWeight = (a.toujours_disponible ? 2 : (a.disponibilites.length > 0 ? 1 : 0));
@@ -248,7 +248,7 @@ export class OfferRecruit {
         })
       });
 
-      // this.recruitmentService.retreiveJobyersPicture(this.jobyers).then((data: any)=> {});
+      this.recruitmentService.retrieveJobyersPicture(this.jobyers).then((data: any)=> {});
 
     });
 

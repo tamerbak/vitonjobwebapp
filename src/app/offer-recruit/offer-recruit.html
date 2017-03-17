@@ -31,7 +31,11 @@
           <span
             class="pull-left mr {{ getDetailStatusClass() == 'offer-recruit-detail-open' ? 'thumb-open' : 'thumb-close' }}"
           >
-            <img class="img-circle" src="{{ sharedService.getProfilImageUrl() }}" alt="...">
+            <img
+              class="img-circle"
+              src="{{ jobyerHover !== null && jobyerHover.avatar ? jobyerHover.avatar : 'assets/images/avatar.png' }}"
+              alt="..."
+            />
           </span>
           <h6 class="m-b-1 fw-normal text-white" *ngIf="jobyerHover !== null">
             {{ jobyerHover.titre }} {{ jobyerHover.prenom }} {{ jobyerHover.nom }}
@@ -87,12 +91,15 @@
             <!--(mouseleave)="cancelPreviewJobyerAvailabilities()"-->
             <!--(click)="assignToSelectedJobyer(jobyer)"-->
             <span class="thumb-xs avatar pull-left mr-sm">
-              <img class="img-circle" src="assets/images/avatar.png" alt="..." />
+              <img
+                class="img-circle"
+                [src]="jobyer.avatar"
+                alt="..."
+              />
             </span>
             <div class="comment-body">
               <h6 class="author fs-sm fw-semi-bold">
                 {{ jobyer.titre }} {{ jobyer.prenom }} {{ jobyer.nom }}
-                {{ jobyer.avatar }}
               </h6>
               <p class="fs-mini" *ngIf="jobyer.toujours_disponible">
                 Toujours disponible
