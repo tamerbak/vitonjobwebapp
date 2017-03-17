@@ -28,11 +28,13 @@
           <!--</ul>-->
         </div>
         <div class="post-user mt-n-lg {{ getDetailStatusClass() }}">
-          <span class="thumb-lg pull-left mr">
+          <span
+            class="pull-left mr {{ getDetailStatusClass() == 'offer-recruit-detail-open' ? 'thumb-open' : 'thumb-close' }}"
+          >
             <img class="img-circle" src="{{ sharedService.getProfilImageUrl() }}" alt="...">
           </span>
-          <h6 class="m-b-1 fw-normal text-white">
-            {{ sharedService.getCurrentUser().titre }} {{ sharedService.getCurrentUser().prenom }} {{ sharedService.getCurrentUser().nom }}
+          <h6 class="m-b-1 fw-normal text-white" *ngIf="jobyerHover !== null">
+            {{ jobyerHover.titre }} {{ jobyerHover.prenom }} {{ jobyerHover.nom }}
             <!--<small class="text-white text-light">@sing</small>-->
           </h6>
           <!--<p class="fs-mini text-muted"><time>25 mins</time> &nbsp; <i class="fa fa-map-marker"></i> &nbsp; near Amsterdam</p>-->

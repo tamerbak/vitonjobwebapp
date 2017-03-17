@@ -824,3 +824,29 @@ $detailAnimationDuration: 0.5s;
   font-weight: bold;
   padding-left: 5px !important;
 }
+
+$thumbWidth: 60px;
+
+.thumb-open {
+  width: $thumbWidth;
+  -webkit-animation-name: thumb-close-open; //on affecte l'animation clignote à notre bouton
+  -webkit-animation-duration: $detailAnimationDuration; //on définit la durée de l'animation à 1s
+}
+.thumb-close {
+  width: 0;
+  -webkit-animation-name: thumb-open-close; //on affecte l'animation clignote à notre bouton
+  -webkit-animation-duration: $detailAnimationDuration; //on définit la durée de l'animation à 1s
+}
+@-webkit-keyframes thumb-open-close {
+  0% { width: $thumbWidth; }
+  100% { width: 0; }
+}
+@-webkit-keyframes thumb-close-open {
+  0% { width: 0; }
+  100% { width: $thumbWidth; }
+}
+
+.thumb-open img,
+.thumb-close img {
+  width: 100%;
+}

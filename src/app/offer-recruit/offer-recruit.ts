@@ -163,6 +163,8 @@ export class OfferRecruit {
         this.lastPlanningDay = date;
       }
     }
+    this.firstPlanningDay -= 24 * 60 * 60 * 1000;
+    this.lastPlanningDay += 24 * 60 * 60 * 1000;
   }
 
   /**
