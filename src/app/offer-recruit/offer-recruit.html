@@ -12,7 +12,7 @@
       </ul>
     </section>
   </div>
-  <div class="col-lg-2 col-xs-12">
+  <div class="col-lg-3 col-xs-12">
     <section widget class="widget">
       <div class="widget-controls">
         <!--<a href="#"><i class="fa fa-refresh"></i></a>-->
@@ -20,8 +20,8 @@
       </div>
       <div class="widget-body">
         <div class="widget-top-overflow windget-padding-md clearfix bg-warning text-white">
-          <h3 class="mt-lg mb-lg">Liste des <span class="fw-semi-bold">Jobyers</span><br />
-            correspondant à cette offre
+          <h3 class="mt-lg mb-lg">
+            <span class="fw-semi-bold">Équipe</span>
           </h3>
           <!--<ul class="tags text-white pull-right">-->
             <!--<li><a href="#">features</a></li>-->
@@ -118,7 +118,7 @@
     </section>
   </div>
 
-  <div class="col-lg-10 col-xs-12">
+  <div class="col-lg-9 col-xs-12">
     <section class="widget widget-calendar widget-offer">
 
       <header class="bb widget-offer-header">
@@ -153,15 +153,13 @@
             <td *ngFor="let quarterId of quartersPerDay;" class="offer-recruit-slots-quart">
               <div
                 class="offer-recruit-slots-quarter-fill-container {{ planningColor[d] && planningColor[d][quarterId] }}"
-              >
-                &nbsp;
+              >.
               </div>
               <div
                 class="offer-recruit-slots-quarter-fill {{ planningColorHover[d] && planningColorHover[d][quarterId] }}"
                 (click)="selectSlot(day, quarterId)"
                 style="{{ (mode == 'unassign') ? 'cursor: crosshair;' : '' }}"
-              >
-                &nbsp;
+              >.
               </div>
             </td>
             <td class="offer-recruit-assigned-to">{{ planningJobyer[d] }}</td>

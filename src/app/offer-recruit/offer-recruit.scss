@@ -475,7 +475,8 @@ $requiredBorder: #c0392b;
 $assignedBackground: #2ecc71;
 $assignedBorder: #27ae60;
 
-$availableOpacity: 0.2;
+$minWidthQuarter: 5px;
+$availableOpacity: 0.4;
 $matchingBackground: rgba(149, 165, 166, $availableOpacity);
 $matchingBorder: rgba(127, 140, 141, $availableOpacity);
 $availableBackground: rgba(236, 240, 241, $availableOpacity);
@@ -515,11 +516,11 @@ $boxShadowColor: #4183C4;
     border-right: 1px black solid;
   }
   .offer-recruit-slots-quart {
-    min-width: 9px;
+    min-width: $minWidthQuarter;
     cursor: default;
 
     .offer-recruit-slots-quarter-fill-container {
-      min-width: 9px;
+      min-width: $minWidthQuarter;
       width: 100%;
       height: 100%;
       padding: 1px 0 1px 0;
@@ -527,14 +528,16 @@ $boxShadowColor: #4183C4;
       left: 0;
       top: 0;
       float: left;
+      color: rgba(0,0,0,0);
     }
     .offer-recruit-slots-quarter-fill {
-      min-width: 9px;
+      min-width: $minWidthQuarter;
       width: 100%;
       height: 25px;
       position: relative;
       left: 0;
       top: 0;
+      color: rgba(0,0,0,0);
     }
 
     .offer-recruit-slots-quarter-required {
@@ -806,7 +809,7 @@ $detailAnimationDuration: 0.5s;
 }
 
 .offer-recruit-description {
-  margin-top: 4em;
+  margin: 4em -1em -1em -1em;
 }
 
 .slot-description-unassign {
