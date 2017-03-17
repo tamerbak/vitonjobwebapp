@@ -593,6 +593,7 @@ export class OfferEdit {
             this.modalParams.btnCancelTitle = "Plus tard";
             this.modalParams.btnClasses = "btn btn-success";
             this.modalParams.modalTitle = "Plus de détails";
+            this.modalParams.fromOffer = true;
             //this.modalParams.offer = offer;
             jQuery("#modal-options").modal('show');
           }else{
@@ -614,6 +615,7 @@ export class OfferEdit {
             this.modalParams.modalTitle = "Plus de détails";
             //this.modalParams.offer = offer;
             this.modalParams.obj = 'recruit';
+            this.modalParams.fromOffer = true;
             jQuery("#modal-options").modal('show');
           }else{
             this.router.navigate(['offer/list', {typeOfferModel: '0'}]);
@@ -633,6 +635,7 @@ export class OfferEdit {
             this.modalParams.modalTitle = "Plus de détails";
             //this.modalParams.offer = offer;
             this.modalParams.obj = this.obj;
+            this.modalParams.fromOffer = true;
             jQuery("#modal-options").modal('show');
           }else{
             this.router.navigate(['offer/list', {typeOfferModel: '0'}]);
@@ -689,6 +692,7 @@ export class OfferEdit {
           this.modalParams.modalTitle = "Plus de détails";
           //this.modalParams.offer = this.offer;
           this.modalParams.advert = advert;
+          this.modalParams.fromOffer = true;
           jQuery("#modal-options").modal('show');
           //this.advertService.updateAdvertWithOffer(this.advertId, this.offer.idOffer);
           //this.router.navigate(['advert/list']);
@@ -704,6 +708,7 @@ export class OfferEdit {
           this.modalParams.btnClasses = "btn btn-success";
           this.modalParams.modalTitle = "Plus de détails";
           //this.modalParams.offer = this.offer;
+          this.modalParams.fromOffer = true;
           jQuery("#modal-options").modal('show');
         }
       });
