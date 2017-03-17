@@ -247,6 +247,9 @@ export class OfferRecruit {
           return bWeight - aWeight;
         })
       });
+
+      // this.recruitmentService.retreiveJobyersPicture(this.jobyers).then((data: any)=> {});
+
     });
 
   }
@@ -405,7 +408,7 @@ export class OfferRecruit {
   }
 
   selectJobyer(jobyer: any): void {
-    this.unselectSlot();
+    this.unselectAll();
     this.jobyerHover = jobyer;
     this.previewJobyerAvailabilities(jobyer);
   }
