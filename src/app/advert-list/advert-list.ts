@@ -117,7 +117,9 @@ export class AdvertList {
     this.modalParams.object = adv;
     jQuery("#modal-options").modal('show');
     var self = this;
-    jQuery('#modal-options').on('hidden.bs.modal', function (e) {
+    jQuery('#modal-options').one('hidden.bs.modal', function (e) {
+      self.queryOffset = 0;
+      self.adverts = [];
       self.loadAdverts();
     });
   }

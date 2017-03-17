@@ -157,7 +157,7 @@ export class ModalOptions{
         });
       }else {
         Messenger().post({
-          message: "l'annonce " + "'" + advert.titre + "'" + " a été supprimée avec succès",
+          message: "L'annonce " + "'" + advert.titre + "'" + " a été supprimée avec succès",
           type: 'error',
           showCloseButton: true
         });
