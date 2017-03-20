@@ -153,6 +153,8 @@
           <div class="col-md-1 col-xs-2 pull-sm-right pull-md-right pull-lg-right pull-xl-right">
             <button type="button" class="btn btn-secondary btn-sm btn-detail-offre-2" (click)="goToDetailOffer(item)">Détails de l'offre
             </button>
+            <button type="button" class="btn btn-danger btn-sm btn-detail-offre" (click)="deleteOffer(item)">Supprimer l'offre
+            </button>
           </div>
         </div>
         <div class="alert alert-warning alert-sm alertDispo" *ngIf="item.obsolete">
@@ -184,9 +186,13 @@
           <div class="col-md-1 col-xs-2 pull-sm-right pull-md-right pull-lg-right pull-xl-right">
             <button type="button" class="btn btn-secondary btn-sm btn-detail-offre-2" (click)="goToDetailOffer(item)">Détails de l'offre
             </button>
+            <button type="button" class="btn btn-danger btn-sm btn-detail-offre" (click)="deleteOffer(item)">Supprimer l'offre
+            </button>
           </div>
         </div>
       </section>
     </div>
   </div>
 </div>
+
+<modal-options [params]="modalParams"></modal-options>
