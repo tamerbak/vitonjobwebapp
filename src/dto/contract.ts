@@ -97,7 +97,7 @@ export class ContractData {
 
   constructor(){
     //default values
-    this.interim = "HubJob.com";
+    this.interim = "HubJob";
     this.indemniteCongesPayes = "10.00 %";
     this.centreMedecineETT = "CMIE";
     this.adresseCentreMedecineETT = "4 rue de La Haye – 95731 ROISSY EN FRANCE";

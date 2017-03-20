@@ -40,6 +40,7 @@ export class AdvertList {
   }
 
   ngOnInit(){
+    this.adverts = [];
     this.loadAdverts();
   }
 

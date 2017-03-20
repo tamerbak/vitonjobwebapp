@@ -337,6 +337,7 @@ export class AdvertEdit{
             return;
           }
           this.router.navigate(['advert/list']);
+          return;
         }else{
           Messenger().post({
             message: "Une erreur est survenue lors de l'enregistrement de l'annonce.",
