@@ -58,7 +58,15 @@ export class OfferRecruit {
   offer: Offer;
 
   // Contains the list of available jobyers
-  jobyers: any[] = [];
+  jobyers: {
+    id: number,
+    titre: string,
+    nom: string,
+    prenom: string,
+    avatar: string,
+    toujours_disponible: boolean,
+    disponibilites: CalendarSlot[]
+  }[] = [];
   currentJobyer: any = null;
   subject: string = "recruit";
 
@@ -122,7 +130,7 @@ export class OfferRecruit {
     this.updateView();
 
     this.offer = this.sharedService.getCurrentOffer();
-    this.offersService.getOfferById(this.offer.idOffer, "employer", this.offer).then(()=> {
+    this.offersService.getOfferById(2474, "employer", this.offer).then(()=> {
 
       if (this.offer == null) {
         this.employerPlanning = new CalendarQuarterPerDay();
@@ -200,7 +208,7 @@ export class OfferRecruit {
           this.currentJobyer = this.searchResults[i];
         }
 
-        let alwaysAvailable = false;
+        let alwaysAvailable: boolean = false;
         let slots: CalendarSlot[] = [];
 
         for (let j = 0; j < this.searchResults[i].disponibilites.length; ++j) {
@@ -228,18 +236,29 @@ export class OfferRecruit {
           }
 
         }
-        this.jobyers.push({
-          id: this.searchResults[i].idJobyer,
-          titre: this.searchResults[i].titre,
-          nom: this.searchResults[i].nom,
-          prenom: this.searchResults[i].prenom,
-          avatar: this.searchResults[i].avatar,
-          toujours_disponible: alwaysAvailable,
-          disponibilites: slots,
+
+        let alreadyImportedJobyer = this.jobyers.filter((e)=> {
+          return (e.id == this.searchResults[i].idJobyer);
         });
+        if (alreadyImportedJobyer.length > 0) {
+          for (let j = 0; j < slots.length; ++j) {
+            alreadyImportedJobyer[0].disponibilites.push(slots[j]);
+          }
+          alreadyImportedJobyer[0].toujours_disponible = (alreadyImportedJobyer[0].toujours_disponible || alwaysAvailable);
+        } else {
+          this.jobyers.push({
+            id: this.searchResults[i].idJobyer,
+            titre: this.searchResults[i].titre,
+            nom: this.searchResults[i].nom,
+            prenom: this.searchResults[i].prenom,
+            avatar: 'assets/images/avatar.png',
+            toujours_disponible: alwaysAvailable,
+            disponibilites: slots,
+          });
+        }
       }
 
-      this.recruitmentService.retreiveJobyersAlwaysAvailable(this.jobyers).then((data: any)=> {
+      this.recruitmentService.retrieveJobyersAlwaysAvailable(this.jobyers).then((data: any)=> {
         // Order by : Always available, Partial available, Never available
         this.jobyers.sort((a, b)=> {
           let aWeight = (a.toujours_disponible ? 2 : (a.disponibilites.length > 0 ? 1 : 0));
@@ -247,6 +266,9 @@ export class OfferRecruit {
           return bWeight - aWeight;
         })
       });
+
+      this.recruitmentService.retrieveJobyersPicture(this.jobyers).then((data: any)=> {});
+
     });
 
   }
@@ -405,7 +427,7 @@ export class OfferRecruit {
   }
 
   selectJobyer(jobyer: any): void {
-    this.unselectSlot();
+    this.unselectAll();
     this.jobyerHover = jobyer;
     this.previewJobyerAvailabilities(jobyer);
   }

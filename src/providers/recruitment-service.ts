@@ -127,7 +127,7 @@ export class RecruitmentService {
   /**
    * Convert an array of calendar slots into a CalendarQuarterPerDay
    */
-  loadSlots(slots: CalendarSlot[], dateLimitStart?, dateLimitEnd?): CalendarQuarterPerDay {
+  loadSlots(slots: CalendarSlot[], dateLimitStart?, dateLimitEnd?, concat?): CalendarQuarterPerDay {
 
     // Generate a new CalendarQuarterPerDay
     let planning = new CalendarQuarterPerDay();
@@ -156,8 +156,8 @@ export class RecruitmentService {
 
       // Retrieve the last Quarter of this slot, the last 15 min
       let quartEnd = new Date(slots[i].dateEnd);
-      quartEnd.setHours(slots[i].endHour / 60);
-      quartEnd.setMinutes(slots[i].endHour % 60);
+      quartEnd.setHours((slots[i].endHour - 1) / 60);
+      quartEnd.setMinutes((slots[i].endHour - 1) % 60);
 
       // Then generate all the Quarter from the first to the last
       do {
@@ -167,7 +167,9 @@ export class RecruitmentService {
 
         // Check that we arrived to the last quarter, if not, continue the process
       } while (quart.getTime() < quartEnd.getTime());
-      planning.nextSlot();
+      if (concat == null) {
+        planning.nextSlot();
+      }
     }
 
     return planning;
@@ -226,8 +228,20 @@ export class RecruitmentService {
    *
    * @returns {boolean}
    */
-  isJobyerCanWorkThisQuarter(): boolean {
-    return true;
+  isJobyerCanWorkThisQuarter(date, availabilities, jobyerSelected): boolean {
+    let similarDays = availabilities.quartersPerDay.filter((e)=> {
+      return e.date == date;
+    });
+    let workLoad: number = 0;
+    for (let j = 0; j < similarDays.length; ++j) {
+      for (let quarterId = 0; quarterId < (24*4); ++quarterId) {
+        if (similarDays[j].quarters[quarterId] == jobyerSelected.id) {
+          ++workLoad;
+        }
+      }
+    }
+    // HACK: maximum daily hours = 10 * quarterPerHour
+    return (workLoad <= (10 * 4));
   }
 
   /**
@@ -253,7 +267,7 @@ export class RecruitmentService {
     let availabilities = jobyersAvailabilities.get(jobyer.id);
     if (Utils.isEmpty(availabilities) == true) {
       availabilities = this.loadSlots(
-        jobyer.disponibilites, dateLimitStart, dateLimitEnd
+        jobyer.disponibilites, dateLimitStart, dateLimitEnd, true
       );
       if (availabilities.isFullAvailable() == true) {
         jobyer.toujours_disponible = true;
@@ -295,7 +309,7 @@ export class RecruitmentService {
         );
 
         // If the jobyer is available, check if the jobyer cans legally work
-        if (jobyerAvailable && this.isJobyerCanWorkThisQuarter() === true) {
+        if (jobyerAvailable && this.isJobyerCanWorkThisQuarter(day.date, availabilities, jobyerSelected) === true) {
           this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
         }
       }
@@ -347,7 +361,7 @@ export class RecruitmentService {
       );
 
       // If the jobyer is available, check if the jobyer cans legally work
-      if (jobyerAvailable && this.isJobyerCanWorkThisQuarter() === true) {
+      if (jobyerAvailable && this.isJobyerCanWorkThisQuarter(day.date, availabilities, jobyerSelected) === true) {
         this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
       }
     }
@@ -387,7 +401,7 @@ export class RecruitmentService {
     return i;
   }
 
-  retreiveJobyersAlwaysAvailable(jobyers: any[]) {
+  retrieveJobyersAlwaysAvailable(jobyers: any[]) {
 
     let ids: number[] = [];
 
@@ -411,6 +425,42 @@ export class RecruitmentService {
               if (jobyer.length > 0) {
                 jobyer[0].toujours_disponible = jobyer[0].toujours_disponible || (data.data[i].toujours_disponible == 'Oui');
 
+              }
+            }
+          }
+
+          resolve(data);
+        });
+    });
+  }
+
+  retrieveJobyersPicture(jobyers: any[]) {
+
+    let ids: number[] = [];
+
+    for (let i = 0; i < jobyers.length; ++i) {
+      ids.push(jobyers[i].id);
+    }
+
+    let sql =
+      "SELECT j.pk_user_jobyer, encode(a.photo_de_profil::bytea, 'escape') AS avatar " +
+      "FROM user_jobyer j " +
+      "LEFT JOIN user_account a ON j.fk_user_account = a.pk_user_account " +
+      "WHERE j.pk_user_jobyer IN (" + ids.join(',') + ")";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+
+          if (data.status == "success") {
+            for (let i = 0; i < data.data.length; ++i) {
+              let jobyer = jobyers.filter((j: any) => {
+                return (j.id == data.data[i].pk_user_jobyer);
+              });
+              if (jobyer.length > 0 && Utils.isEmpty(data.data[i].avatar) == false) {
+                jobyer[0].avatar = data.data[i].avatar;
               }
             }
           }
