@@ -706,7 +706,7 @@ export class Contract {
       message = message + ((!jobyer.numSS)? " Numéro SS -" : "");
       message = message + ((!jobyerBirthDate)? " Date de naissance -" : "");
       message = message + ((!jobyer.lieuNaissance)? " Lieu de naissance -" : "");
-      message = message + ((!jobyer.nationaliteLibelle)? " Nationalité -" : "");
+      message = message + ((!jobyer.nationaliteLibelle)? " Pays de nationalité -" : "");
       message = message + ((!jobyer.numeroTitreTravail)? " CNI ou passeport -" : "");
       message = message + ((!contractData.jobyerDebutTitreTravail)? " Valable du -" : "");
       message = message + ((!contractData.jobyerFinTitreTravail)? " Valable au -" : "");
