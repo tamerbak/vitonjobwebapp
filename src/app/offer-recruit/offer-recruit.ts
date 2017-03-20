@@ -130,7 +130,7 @@ export class OfferRecruit {
     this.updateView();
 
     this.offer = this.sharedService.getCurrentOffer();
-    this.offersService.getOfferById(2474, "employer", this.offer).then(()=> {
+    this.offersService.getOfferById(this.offer.idOffer, "employer", this.offer).then(()=> {
 
       if (this.offer == null) {
         this.employerPlanning = new CalendarQuarterPerDay();
