@@ -653,7 +653,7 @@ export class ContractService {
     return hours + ":" + minutes;
   }
 
-  prepareHoraire(calendar,prerequis, epis, address, moyen, contact, phone) {
+  prepareHoraire(calendar,prerequis, epis, epiProvidedBy, address, moyen, contact, phone) {
 
     let html = "<br><p><b>Calendrier de travail</b></p><ul>";
 
@@ -697,7 +697,7 @@ export class ContractService {
       html = html + "<br><p><b>Equipements de protection individuels</b></p><ul>";
       for (let i = 0; i < epis.length; i++) {
         let p = epis[i];
-        html = html + "<li>"+ p + "</li>";
+        html = html + "<li>"+ p + " fourni par " + epiProvidedBy + "</li>";
       }
       html = html + "</ul>";
     }
@@ -724,6 +724,7 @@ export class ContractService {
       horaires = this.prepareHoraire(currentOffer.calendarData,
         contract.prerequis,
         contract.epiList,
+        contract.epiProvidedBy,
         contract.adresseInterim,
         contract.moyenAcces,
         contract.offerContact,
