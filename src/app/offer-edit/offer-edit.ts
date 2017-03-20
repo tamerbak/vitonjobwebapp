@@ -525,7 +525,7 @@ export class OfferEdit {
     this.sharedService.setCurrentOffer(this.offer);
   }
 
-  saveOffer() {
+  saveOffer(stayOnPage = false) {
     this.triedValidate = true;
 
     if (!this.isFormValid()) {
@@ -655,7 +655,7 @@ export class OfferEdit {
         this.saveConditionEmp(this.offer);
       }
 
-      this.validateJob();
+      this.validateJob(stayOnPage);
     }
   }
 
@@ -909,17 +909,18 @@ export class OfferEdit {
 
   showQuote() {
 
-    // In order to retrieve updated quote, save current state
-    this.validateJob(true);
+    this.saveOffer(true);
 
     let offer = this.sharedService.getCurrentOffer();
     if (offer != null) {
       let self = this;
+      this.loader.display();
       this.financeService.loadPrevQuotePdf(offer.idOffer).then((data: any) => {
 
         let file64 = 'data:application/pdf;base64, ' + data.pdf;
         this.sharedService.setCurrentQuote(file64);
         this.keepCurrentOffer = true;
+        this.loader.hide();
         self.router.navigate(['iframe/quote']);
 
       });
