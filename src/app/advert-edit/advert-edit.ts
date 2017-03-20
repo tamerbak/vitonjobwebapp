@@ -27,6 +27,8 @@ export class AdvertEdit{
   idAdvert: any;
   type: string = 'add';
   obj: string;
+  fromOffer: boolean;
+
   offerId: number;
   thumbnailData: any;
   coverData: any;
@@ -94,6 +96,7 @@ export class AdvertEdit{
     this.route.params.forEach((params: Params) => {
       this.type = params['type'];
       this.obj = params['obj'];
+      this.fromOffer = params['fromOffer'];
     });
 
     let offer = this.sharedService.getCurrentOffer();
@@ -321,7 +324,6 @@ export class AdvertEdit{
             type: 'success',
             showCloseButton: true
           });
-          //this.router.navigate(['advert/list']);
           if (this.obj == "recruit") {
             this.router.navigate(['search/results', {obj: this.obj}]);
             return;
@@ -330,7 +332,11 @@ export class AdvertEdit{
             this.router.navigate(['pendingContracts', {obj: this.obj}]);
             return;
           }
-          this.router.navigate(['offer/list']);
+          if (this.fromOffer) {
+            this.router.navigate(['offer/list']);
+            return;
+          }
+          this.router.navigate(['advert/list']);
         }else{
           Messenger().post({
             message: "Une erreur est survenue lors de l'enregistrement de l'annonce.",
@@ -359,8 +365,11 @@ export class AdvertEdit{
             this.router.navigate(['pendingContracts', {obj: this.obj}]);
             return;
           }
-          this.router.navigate(['offer/list']);
-          //this.router.navigate(['offer/list']);
+          if (this.fromOffer) {
+            this.router.navigate(['offer/list']);
+            return;
+          }
+          this.router.navigate(['advert/list']);
         }else{
           Messenger().post({
             message: "Une erreur est survenue lors de l'enregistrement de l'annonce.",

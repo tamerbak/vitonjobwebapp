@@ -308,7 +308,7 @@ export class AdvertService {
   }
 
   deleteAdvert(advertId) {
-    let sql = "delete from user_annonce_entreprise where pk_user_annonce_entreprise="+advertId;
+    let sql = "update user_annonce_entreprise set dirty = 'Y' where pk_user_annonce_entreprise="+advertId;
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();

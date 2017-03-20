@@ -157,7 +157,7 @@ export class ModalOptions{
         });
       }else {
         Messenger().post({
-          message: "l'annonce " + "'" + advert.titre + "'" + " a été supprimée avec succès",
+          message: "L'annonce " + "'" + advert.titre + "'" + " a été supprimée avec succès",
           type: 'error',
           showCloseButton: true
         });
@@ -234,10 +234,11 @@ export class ModalOptions{
     }
 
     let obj = this.params.obj;
+    let fromOffer = this.params.fromOffer;
     if(!obj){
-      this.router.navigate(['advert/edit', {type: type}]);
+      this.router.navigate(['advert/edit', {type: type, fromOffer: fromOffer}]);
     }else{
-      this.router.navigate(['advert/edit', {type: type, obj: obj}]);
+      this.router.navigate(['advert/edit', {type: type, obj: obj, fromOffer: fromOffer}]);
     }
   }
 }
