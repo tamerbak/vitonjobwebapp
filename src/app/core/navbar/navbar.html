@@ -83,9 +83,9 @@
 					</span>
           <span *ngIf="!sharedService.getCurrentUser().nom">Bienvenue</span>
           <span *ngIf="sharedService.getCurrentUser().nom">
-&nbsp;           {{ sharedService.getCurrentUser().titre }} {{ sharedService.getCurrentUser().prenom }} {{ sharedService.getCurrentUser().nom }}
+&nbsp;           {{ sharedService.getCurrentUser().titre }} {{ capitalizeFirstLetter(sharedService.getCurrentUser().prenom) }} {{ sharedService.getCurrentUser().nom.toUpperCase() }}
             <span *ngIf="sharedService.getCurrentUser().estEmployeur && sharedService.getCurrentUser().employer.entreprises.length > 0">
-              - <strong>{{ sharedService.getCurrentUser().employer.entreprises[0].nom }}</strong>
+              - <strong>{{ sharedService.getCurrentUser().employer.entreprises[0].nom.toUpperCase() }}</strong>
             </span>
           </span>
           <b class="caret" *ngIf="sharedService.getCurrentUser().estEmployeur"></b>

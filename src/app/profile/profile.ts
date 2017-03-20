@@ -2243,4 +2243,8 @@ export class Profile{
     }
 
   }
+
+  capitalizeFirstLetter(str){
+    return Utils.capitalizeFirstLetter(str);
+  }
 }

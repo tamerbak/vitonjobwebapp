@@ -37,12 +37,12 @@
               </span>
               <h5 class="fw-normal">
                 {{ currentUser.titre }}
-                {{ currentUser.prenom }}
-                <span class="fw-semi-bold">{{ currentUser.nom }}</span>
+                {{ capitalizeFirstLetter(currentUser.prenom) }}
+                <span class="fw-semi-bold">{{ currentUser.nom.toUpperCase() }}</span>
               </h5>
               <p *ngIf="isEmployer || isRecruiter">
                 {{ isRecruiter ? "Recruteur" : "Employeur" }}
-                {{ currentUser.employer.entreprises[0].nom }}
+                {{ currentUser.employer.entreprises[0].nom.toUpperCase() }}
               </p>
               <p *ngIf="!isEmployer && !isRecruiter">Jobyer</p>
               <p *ngIf="environmentService.get('EMPLOYER_PHARMA') == 'true'">(PHARMACIE)</p>
