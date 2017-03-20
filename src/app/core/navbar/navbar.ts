@@ -8,6 +8,7 @@ import {OffersService} from "../../../providers/offer.service";
 import {NotificationsService} from "../../../providers/notifications.service";
 import {EntrepriseSelector} from "../entreprise-selector/entreprise-selector";
 import {Configs} from "../../../configurations/configs";
+import {Utils} from "../../utils/utils";
 
 declare let jQuery: any;
 
@@ -180,5 +181,9 @@ export class Navbar implements OnInit {
         }
       });
     });
+  }
+
+  capitalizeFirstLetter(str){
+    return Utils.capitalizeFirstLetter(str);
   }
 }
