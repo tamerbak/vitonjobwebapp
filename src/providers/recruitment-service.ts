@@ -127,7 +127,7 @@ export class RecruitmentService {
   /**
    * Convert an array of calendar slots into a CalendarQuarterPerDay
    */
-  loadSlots(slots: CalendarSlot[], dateLimitStart?, dateLimitEnd?): CalendarQuarterPerDay {
+  loadSlots(slots: CalendarSlot[], dateLimitStart?, dateLimitEnd?, concat?): CalendarQuarterPerDay {
 
     // Generate a new CalendarQuarterPerDay
     let planning = new CalendarQuarterPerDay();
@@ -167,7 +167,9 @@ export class RecruitmentService {
 
         // Check that we arrived to the last quarter, if not, continue the process
       } while (quart.getTime() < quartEnd.getTime());
-      planning.nextSlot();
+      if (concat == null) {
+        planning.nextSlot();
+      }
     }
 
     return planning;
@@ -265,7 +267,7 @@ export class RecruitmentService {
     let availabilities = jobyersAvailabilities.get(jobyer.id);
     if (Utils.isEmpty(availabilities) == true) {
       availabilities = this.loadSlots(
-        jobyer.disponibilites, dateLimitStart, dateLimitEnd
+        jobyer.disponibilites, dateLimitStart, dateLimitEnd, true
       );
       if (availabilities.isFullAvailable() == true) {
         jobyer.toujours_disponible = true;

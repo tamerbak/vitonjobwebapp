@@ -58,7 +58,15 @@ export class OfferRecruit {
   offer: Offer;
 
   // Contains the list of available jobyers
-  jobyers: any[] = [];
+  jobyers: {
+    id: number,
+    titre: string,
+    nom: string,
+    prenom: string,
+    avatar: string,
+    toujours_disponible: boolean,
+    disponibilites: CalendarSlot[]
+  }[] = [];
   currentJobyer: any = null;
   subject: string = "recruit";
 
@@ -200,7 +208,7 @@ export class OfferRecruit {
           this.currentJobyer = this.searchResults[i];
         }
 
-        let alwaysAvailable = false;
+        let alwaysAvailable: boolean = false;
         let slots: CalendarSlot[] = [];
 
         for (let j = 0; j < this.searchResults[i].disponibilites.length; ++j) {
@@ -228,15 +236,26 @@ export class OfferRecruit {
           }
 
         }
-        this.jobyers.push({
-          id: this.searchResults[i].idJobyer,
-          titre: this.searchResults[i].titre,
-          nom: this.searchResults[i].nom,
-          prenom: this.searchResults[i].prenom,
-          avatar: 'assets/images/avatar.png',
-          toujours_disponible: alwaysAvailable,
-          disponibilites: slots,
+
+        let alreadyImportedJobyer = this.jobyers.filter((e)=> {
+          return (e.id == this.searchResults[i].idJobyer);
         });
+        if (alreadyImportedJobyer.length > 0) {
+          for (let j = 0; j < slots.length; ++j) {
+            alreadyImportedJobyer[0].disponibilites.push(slots[j]);
+          }
+          alreadyImportedJobyer[0].toujours_disponible = (alreadyImportedJobyer[0].toujours_disponible || alwaysAvailable);
+        } else {
+          this.jobyers.push({
+            id: this.searchResults[i].idJobyer,
+            titre: this.searchResults[i].titre,
+            nom: this.searchResults[i].nom,
+            prenom: this.searchResults[i].prenom,
+            avatar: 'assets/images/avatar.png',
+            toujours_disponible: alwaysAvailable,
+            disponibilites: slots,
+          });
+        }
       }
 
       this.recruitmentService.retrieveJobyersAlwaysAvailable(this.jobyers).then((data: any)=> {
