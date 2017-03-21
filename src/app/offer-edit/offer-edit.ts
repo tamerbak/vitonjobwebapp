@@ -186,11 +186,13 @@ export class OfferEdit {
       this.obj = params['obj'];
     });
 
-    if (this.obj == "detail") {
+    let currentOffer = this.sharedService.getCurrentOffer();
+
+    if (this.obj == "detail" || (currentOffer && currentOffer.idOffer > 0)) {
 
       this.loader.display();
 
-      this.offer = this.sharedService.getCurrentOffer();
+      this.offer = currentOffer;
       this.offersService.getOfferById(this.offer.idOffer, this.projectTarget, this.offer).then(()=> {
         this.refreshParametrage = true;
         this.fullLoad = true;
