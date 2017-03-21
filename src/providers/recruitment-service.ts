@@ -572,6 +572,9 @@ export class RecruitmentService {
         return;
       }
 
+      // recuperer le timezone de l'offre pour mettre a jour les slots généré avec ce timezone
+      let currentTimeZoneOffset = offer.calendarData[0].date.getTimezoneOffset();
+
       //si la répartition est cohérente, continuer : générer des offres avec les slots de chaque jobyer à partir de l'offre mère: on aura une offre par jobyer
       for (let i = 0; i < slotsPerJobyer.length; i++) {
         let offerCopy: Offer = JSON.parse((JSON.stringify(offer)));
@@ -585,6 +588,8 @@ export class RecruitmentService {
         offerCopy.qualityData = [];
         for(let j = 0; j < offerCopy.calendarData.length; j++){
           offerCopy.calendarData[j].class = "com.vitonjob.callouts.offer.model.CalendarData";
+          offerCopy.calendarData[j].date = offerCopy.calendarData[j].date - currentTimeZoneOffset * 60000;
+          offerCopy.calendarData[j].dateEnd = offerCopy.calendarData[j].dateEnd - currentTimeZoneOffset * 60000;
         }
         offerCopy.class = "com.vitonjob.callouts.offer.model.OfferData";
         offerCopy.adresse.type = "adresse_de_travail";
