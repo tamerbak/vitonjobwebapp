@@ -834,7 +834,7 @@ export class Contract {
 
     //vérifier si l'epi selectionné dans la liste a été déja choisi
     for (let i = 0; i < this.contractData.epiList.length; i++) {
-      if (this.contractData.epiList[i].libelle == this.selectedEPI) {
+      if (this.contractData.epiList[i].libelle == this.selectedEPI + " fourni par " + this.contractData.epiProvidedBy) {
         found = true;
         break;
       }
@@ -844,7 +844,7 @@ export class Contract {
       return;
 
     //si l'epi selectionné dans la liste n'a jamais été choisi, l'ajouter dans la liste des epis choisis
-    this.contractData.epiList.push({libelle : this.selectedEPI});
+    this.contractData.epiList.push({libelle : this.selectedEPI + " fourni par " + this.contractData.epiProvidedBy});
   }
 
   removeEPI(e){
