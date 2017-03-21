@@ -133,7 +133,7 @@ export class ContractData {
     this.postRisks = "";
     this.medicalSurv = "NON";
     this.epi = false;
-    this.epiProvidedBy  = "";
+    this.epiProvidedBy  = "L'entreprise utilisatrice";
     this.baseSalary = 0;
     this.MonthlyAverageDuration = "0";
     this.salaryNHours = "00,00€ B/H";

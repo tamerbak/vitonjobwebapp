@@ -274,17 +274,28 @@
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
-          <label>Equipement de protection individuel</label>
+          <label class="col-md-6">Equipement de protection individuel</label>
+          <label class="col-md-1"> / </label>
+          <label class="col-md-5">Equipement fourni par</label>
           <div class="widget">
             <div class="row">
 
-              <select class="form-control col-xs-11" [(ngModel)]="selectedEPI">
+              <select class="form-control col-md-5" [(ngModel)]="selectedEPI">
                 <option *ngFor="let e of epiList" value="{{e.libelle}}">{{e.libelle}}</option>
+              </select>
+
+              <label class="col-md-1"> / </label>
+
+              <select class="form-control col-md-5" [(ngModel)]="contractData.epiProvidedBy">
+                <option value="L'entreprise utilisatrice">L'entreprise utilisatrice</option>
+                <option value="L'entreprise de travail temporaire">L'entreprise de travail temporaire</option>
+                <option value="Le salarié">Le salarié</option>
               </select>
 
               <button class="btn btn-primary btn-sm col-xs-1" type="button" (click)="addEPI()">
                 <span class="glyphicon glyphicon-plus"></span>
               </button>
+
             </div>
             <div class="row">&nbsp;</div>
             <div class="row contract-control-row" *ngFor="let e of contractData.epiList">
@@ -296,14 +307,14 @@
           </div>
           <small class="form-text text-muted"></small>
         </div>
-        <div class="form-group">
+        <!--<div class="form-group">
           <label>Equipement fourni par</label>
           <select class="form-control" [(ngModel)]="contractData.epiProvidedBy">
             <option value="L'entreprise utilisatrice">L'entreprise utilisatrice</option>
             <option value="L'entreprise de travail temporaire">L'entreprise de travail temporaire</option>
             <option value="Le salarié">Le salarié</option>
           </select>
-        </div>
+        </div>-->
 
       </div>
 
