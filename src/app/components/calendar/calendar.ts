@@ -110,6 +110,8 @@ export class Calendar {
   untilDate: any;
   createEvent: any;
 
+  employerControlsAreActive: boolean = false;
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private router: Router,
@@ -342,7 +344,7 @@ export class Calendar {
     // Check that the slot is not overwriting an other one
     if (!slot.pause) {
 
-      if (this.projectTarget == 'employer') {
+      if (this.projectTarget == 'employer' && this.employerControlsAreActive == true) {
         //total hours of one day should be lower than 10h
         let isDailyDurationRespected = this.offersService.isDailySlotsDurationRespected(slots, slot);
         if (!isDailyDurationRespected) {
