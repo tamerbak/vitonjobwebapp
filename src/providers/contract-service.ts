@@ -1015,18 +1015,22 @@ export class ContractService {
       + ', j.pk_user_jobyer as "jobyerId" '
       + ', a.email '
       + ', a.telephone as tel '
-      + ', (SELECT count(*) FROM user_offre_entreprise uoe2 WHERE uoe2.fk_user_offre_entreprise = uoe.fk_user_offre_entreprise) AS "nbChildren" '
-      + ', slot.jour '
-      + ', slot.heure_debut '
+      + ', (SELECT ' +
+          'count(*) ' +
+          'FROM user_offre_entreprise uoe2 ' +
+          'WHERE uoe2.fk_user_offre_entreprise = uoe.fk_user_offre_entreprise' +
+        ') AS "nbChildren" '
+      + ', slot.premier_jour as jour '
+      + ", to_char(slot.premier_jour, 'HH24')::integer * 60 + to_char(slot.premier_jour, 'MI')::integer as heure_debut "
     + 'FROM '
       + 'user_contrat as c, '
       + 'user_jobyer as j, '
       + 'user_account as a, '
       + 'user_offre_entreprise as uoe '
     + 'LEFT JOIN ( '
-      + 'SELECT MIN(d.jour) as jour, d.heure_debut, d.fk_user_offre_entreprise '
+      + "SELECT d.fk_user_offre_entreprise, MIN(d.jour + (d.heure_debut::text||' minute')::INTERVAL) as premier_jour "
       + 'FROM user_disponibilites_des_offres d '
-      + 'GROUP BY d.heure_debut, d.fk_user_offre_entreprise '
+      + 'GROUP BY d.fk_user_offre_entreprise '
     + ') slot ON slot.fk_user_offre_entreprise = uoe.pk_user_offre_entreprise '
     + 'WHERE '
     + "c.dirty='N' "
