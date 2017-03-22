@@ -42,7 +42,6 @@ export class Contract {
   currentUser: any;
   contractData: ContractData = new ContractData();
   currentOffer: Offer;
-  rate: number = 0.0;
   recours: any;
 
   dataValidation :boolean = false;
@@ -57,9 +56,14 @@ export class Contract {
   cni:any;
   isMissionDateValid: boolean = true;
 
-  //transport
   transportMeans = [];
-  natureTitre="";
+  postRisks1: String;
+  postRisks2: String;
+  postRisks3: String;
+
+  characteristics1: String;
+  characteristics2: String;
+  characteristics3: String;
 
   //  EPI
   epiList : {libelle: string}[] =[];
@@ -186,6 +190,20 @@ export class Contract {
       this.contractData.epiList.push(epi);
     }
 
+    let postRisks = this.contractData.postRisks.split(' - ');
+    if(postRisks && postRisks.length > 0){
+      this.postRisks1 = (postRisks.length >= 1 ? postRisks[0] : "");
+      this.postRisks2 = (postRisks.length >= 2 ? postRisks[1] : "");
+      this.postRisks3 = (postRisks.length >= 3 ? postRisks[2] : "");
+    }
+
+    let characteristics = this.contractData.characteristics.split(' - ');
+    if(characteristics && characteristics.length > 0){
+      this.characteristics1 = (characteristics.length >= 1 ? characteristics[0] : "");
+      this.characteristics2 = (characteristics.length >= 2 ? characteristics[1] : "");
+      this.characteristics3 = (characteristics.length >= 3 ? characteristics[2] : "");
+    }
+
     console.log("contractData after affectation");
     console.log(this.contractData);
 
@@ -307,8 +325,7 @@ export class Contract {
 
       for (let i = 0; i < resp.rates.length; i++) {
         if (this.currentOffer.jobData.remuneration < resp.rates[i].taux_horaire) {
-          this.rate = parseFloat(resp.rates[i].coefficient) * this.currentOffer.jobData.remuneration;
-          this.contractData.elementsCotisation = this.rate;
+          this.contractData.elementsCotisation = parseFloat(resp.rates[i].coefficient);
           break;
         }
       }
@@ -472,8 +489,11 @@ export class Contract {
     this.contractData.jobyerTitreTravail = Utils.removeAllSpaces(this.contractData.jobyerTitreTravail);
     this.contractData.elementsNonCotisation = 1.0;
 
-      console.log("contractData before saving");
-      console.log(this.contractData);
+    this.contractData.postRisks = this.postRisks1 + " - " + this.postRisks2 + " - " + this.postRisks3;
+    this.contractData.characteristics = this.characteristics1 + " - " + this.characteristics2 + " - " + this.characteristics3;
+
+    console.log("contractData before saving");
+    console.log(this.contractData);
 
       // traitement pour les nouveaux contrats
       if(this.contractData.id == 0 || Utils.isEmpty(this.contractData.id)){
