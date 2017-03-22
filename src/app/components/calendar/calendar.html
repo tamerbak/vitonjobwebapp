@@ -150,22 +150,19 @@
             </div>
           </div>
 
-
-          <div class="hidden-lg-up">
-            <alert
-              *ngFor="let alert of alertsSlot; let i = index"
-              [type]="alert.type + ' alert-sm'"
-              dismissible="false"
-            >
-              <div [innerHTML]="alert.msg"></div>
-            </alert>
-            <alert
-              *ngIf="triedValidate && slots.length == 0"
-              [type]="'danger alert-sm'"
-            >
-              <div [innerHTML]="'* Veuillez renseigner au moins un créneau'"></div>
-            </alert>
-          </div>
+          <alert
+            *ngFor="let alert of alertsSlot; let i = index"
+            [type]="alert.type + ' alert-sm'"
+            dismissible="false"
+          >
+            <div [innerHTML]="alert.msg"></div>
+          </alert>
+          <alert
+            *ngIf="triedValidate && slots.length == 0"
+            [type]="'danger alert-sm'"
+          >
+            <div [innerHTML]="'* Veuillez renseigner au moins un créneau'"></div>
+          </alert>
         </div>
 
       </section>

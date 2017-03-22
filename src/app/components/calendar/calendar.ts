@@ -337,7 +337,7 @@ export class Calendar {
 
     // Check that end hour is over than begin hour
     if (slot.date >= slot.dateEnd) {
-      this.addAlert("danger", "L'heure de début doit être inférieure à l'heure de fin", "slot");
+      this.addAlert("danger", "L'heure de début doit être inférieure à l'heure de fin lorsque le créneau est sur une journée", "slot");
       return false;
     }
 
@@ -356,11 +356,11 @@ export class Calendar {
           this.addAlert("danger", "Veuillez mettre un délai de 11h entre deux créneaux situés sur deux jours calendaires différents.", "slot");
           return false;
         }
-      }
-      for (let i = 0; i < slots.length; i++) {
-        if ((slot.date >= slots[i].date && slot.dateEnd <= slots[i].dateEnd) || (slot.date >= slots[i].date && slot.date < slots[i].dateEnd) || (slot.dateEnd > slots[i].date && slot.dateEnd <= slots[i].dateEnd)) {
-          this.addAlert("danger", "Ce créneau chevauche avec un autre", "slot");
-          return false;
+        for (let i = 0; i < slots.length; i++) {
+          if ((slot.date >= slots[i].date && slot.dateEnd <= slots[i].dateEnd) || (slot.date >= slots[i].date && slot.date < slots[i].dateEnd) || (slot.dateEnd > slots[i].date && slot.dateEnd <= slots[i].dateEnd)) {
+            this.addAlert("danger", "Ce créneau chevauche avec un autre", "slot");
+            return false;
+          }
         }
       }
     } else {
