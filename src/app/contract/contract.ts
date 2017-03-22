@@ -42,7 +42,6 @@ export class Contract {
   currentUser: any;
   contractData: ContractData = new ContractData();
   currentOffer: Offer;
-  rate: number = 0.0;
   recours: any;
 
   dataValidation :boolean = false;
@@ -307,8 +306,7 @@ export class Contract {
 
       for (let i = 0; i < resp.rates.length; i++) {
         if (this.currentOffer.jobData.remuneration < resp.rates[i].taux_horaire) {
-          this.rate = parseFloat(resp.rates[i].coefficient) * this.currentOffer.jobData.remuneration;
-          this.contractData.elementsCotisation = this.rate;
+          this.contractData.elementsCotisation = parseFloat(resp.rates[i].coefficient);
           break;
         }
       }
