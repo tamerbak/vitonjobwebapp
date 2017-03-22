@@ -938,8 +938,8 @@ export class ContractService {
       "validation_employeur) " +
       "values " +
       "(" + idContract + ", " +
-      "'" + DateUtils.dateToSqlTimestamp(d) + "', " +
-      "'" + DateUtils.dateToSqlTimestamp(f) + "', " +
+      "'" + DateUtils.sqlfy(d) + "', " +
+      "'" + DateUtils.sqlfy(f) + "', " +
       "" + c.startHour + ", " +
       "" + c.endHour + "," +
       "'NON', " +
