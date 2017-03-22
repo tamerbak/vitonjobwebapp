@@ -177,6 +177,17 @@
         </table>
       </div>
 
+      <div class="row">
+        <div class="col-xs-12 offer-recruit-action-button">
+          <button
+            class="btn btn-success"
+            (click)="saveRepartition()"
+          >
+            Valider la répartition
+          </button>
+        </div>
+      </div>
+
     </section>
   </div>
 
@@ -197,5 +208,3 @@
 <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
   <div [innerHTML]="alert.msg"></div>
 </alert>
-
-<button (click)="saveRepartition()">Valider la répartition</button>
