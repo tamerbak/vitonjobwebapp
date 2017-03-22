@@ -160,8 +160,16 @@ export class RecruitmentService {
       quartEnd.setMinutes((slots[i].endHour - 1) % 60);
 
       // Then generate all the Quarter from the first to the last
+      let previousQuart = null;
       do {
+        // Check if the slot is on 2 days
+        if (concat == null && previousQuart != quart.getDate()) {
+          planning.nextSlot();
+        }
+
         planning.pushQuart(quart);
+        previousQuart = quart.getDate();
+
         // Add 15 min to the current quarter
         quart = new CalendarQuarter(quart.getTime() + 15 * 60 * 1000);
 
