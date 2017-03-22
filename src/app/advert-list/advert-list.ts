@@ -132,6 +132,8 @@ export class AdvertList {
   }
 
   onScrollDown () {
-    this.loadAdverts();
+    if(this.queryOffset > 0){
+      this.loadAdverts();
+    }
   }
 }
