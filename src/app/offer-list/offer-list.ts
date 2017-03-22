@@ -9,6 +9,7 @@ import {Utils} from "../utils/utils";
 import {NotificationsService} from "../../providers/notifications.service";
 import {AdvertService} from "../../providers/advert.service";
 import {ButtonNumber} from "../components/button-number/button-number";
+import {ModalOptions} from "../modal-options/modal-options";
 
 declare let jQuery: any;
 declare let Messenger: any;
@@ -18,7 +19,7 @@ declare let Messenger: any;
   template: require('./offer-list.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./offer-list.scss')],
-  directives: [ACCORDION_DIRECTIVES, ROUTER_DIRECTIVES, AlertComponent, BUTTON_DIRECTIVES, ButtonNumber],
+  directives: [ACCORDION_DIRECTIVES, ROUTER_DIRECTIVES, AlertComponent, BUTTON_DIRECTIVES, ButtonNumber, ModalOptions],
   providers: [OffersService, SearchService,ChangeDetectorRef, AdvertService]
 })
 export class OfferList {
@@ -31,6 +32,8 @@ export class OfferList {
 
   alerts: Array<Object>;
   typeOfferModel: string = '0';
+
+  modalParams: any = {type: '', message: ''};
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -305,5 +308,19 @@ export class OfferList {
     this.sharedService.setCurrentAdv(null);
     this.sharedService.setCurrentOffer(offer);
     this.router.navigate(['offer/jobyer/list']);
+  }
+
+  deleteOffer(offer){
+    this.sharedService.setCurrentOffer(offer);
+    this.modalParams.type = "offer.delete";
+    this.modalParams.message = "Êtes-vous sûr de vouloir supprimer l'offre " + '"' + offer.title + '"' + " ?";
+    this.modalParams.btnTitle = "Supprimer l'offre";
+    this.modalParams.btnClasses = "btn btn-danger";
+    this.modalParams.modalTitle = "Suppression de l'offre";
+    jQuery("#modal-options").modal('show');
+    let self = this;
+    jQuery('#modal-options').on('hidden.bs.modal', function (e) {
+      self.loadOffers();
+    });
   }
 }

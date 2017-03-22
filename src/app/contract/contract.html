@@ -98,7 +98,7 @@
       </div>
       <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
-          <label>Nationalité</label>
+          <label>Pays de nationalité</label>
           <span class="asterisk">*</span>
           <input type="text" name="nationality" class="form-control" [(ngModel)]="contractData.jobyerNationaliteLibelle" aria-describedby="nat" readonly/>
           <small class="form-text text-muted"></small>
@@ -270,21 +270,34 @@
         </div>
         <div class="form-group">
           <label>Caractéristiques du poste&nbsp;<span  class="color-font" >*</span></label>
-          <input type="text" name="characteristics" class="form-control" [(ngModel)]="contractData.characteristics" aria-describedby="cara" required/>
+          <input type="text" name="characteristics1" class="form-control" [(ngModel)]="characteristics1" aria-describedby="cara" required/> <br/>
+          <input type="text" name="characteristics2" class="form-control" [(ngModel)]="characteristics2" aria-describedby="cara" required/> <br/>
+          <input type="text" name="characteristics3" class="form-control" [(ngModel)]="characteristics3" aria-describedby="cara" required/>
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
-          <label>Equipement de protection individuel</label>
+          <label class="col-md-6">Equipement de protection individuel</label>
+          <label class="col-md-1">/</label>
+          <label class="col-md-5">Equipement fourni par</label>
           <div class="widget">
             <div class="row">
 
-              <select class="form-control col-xs-11" [(ngModel)]="selectedEPI">
+              <select class="form-control col-md-5" [(ngModel)]="selectedEPI">
                 <option *ngFor="let e of epiList" value="{{e.libelle}}">{{e.libelle}}</option>
+              </select>
+
+              <label class="col-md-1"> / </label>
+
+              <select class="form-control col-md-5" [(ngModel)]="contractData.epiProvidedBy">
+                <option value="L'entreprise utilisatrice">L'entreprise utilisatrice</option>
+                <option value="L'entreprise de travail temporaire">L'entreprise de travail temporaire</option>
+                <option value="Le salarié">Le salarié</option>
               </select>
 
               <button class="btn btn-primary btn-sm col-xs-1" type="button" (click)="addEPI()">
                 <span class="glyphicon glyphicon-plus"></span>
               </button>
+
             </div>
             <div class="row">&nbsp;</div>
             <div class="row contract-control-row" *ngFor="let e of contractData.epiList">
@@ -296,21 +309,23 @@
           </div>
           <small class="form-text text-muted"></small>
         </div>
-        <div class="form-group">
+        <!--<div class="form-group">
           <label>Equipement fourni par</label>
           <select class="form-control" [(ngModel)]="contractData.epiProvidedBy">
-            <option value="L'entreprise utilisatrice">Le client</option>
+            <option value="L'entreprise utilisatrice">L'entreprise utilisatrice</option>
             <option value="L'entreprise de travail temporaire">L'entreprise de travail temporaire</option>
             <option value="Le salarié">Le salarié</option>
           </select>
-        </div>
+        </div>-->
 
       </div>
 
       <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
           <label>Risques</label>
-          <input type="text" name="postRisks" class="form-control" [(ngModel)]="contractData.postRisks" aria-describedby="risques" />
+          <input type="text" name="postRisks1" class="form-control" [(ngModel)]="postRisks1" aria-describedby="risques" /> <br/>
+          <input type="text" name="postRisks2" class="form-control" [(ngModel)]="postRisks2" aria-describedby="risques" /> <br/>
+          <input type="text" name="postRisks3" class="form-control" [(ngModel)]="postRisks3" aria-describedby="risques" />
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
