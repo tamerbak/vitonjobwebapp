@@ -829,7 +829,10 @@
                 </div>
               </div>
 
-              <div class="form-group row">
+              <div
+                *ngIf="!isEmployer && environmentService.get('JOBYER_PHARMA_STUDENT') == 'true'"
+                class="form-group row"
+              >
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">Nombre d'heures <br />travaillées en pharmacie</label>
                 <div class="abc-radio">
                   <input type="radio" name="radio4" id="nbHourSmallRadio" value="1" (click)="watchNbStudyHours($event)"
