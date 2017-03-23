@@ -285,7 +285,7 @@ export class AdvertEdit{
   }
 
   prepareDataForSaving(){
-    this.advert.description = btoa(unescape(encodeURIComponent((this.ckExport()))));
+    this.advert.description = btoa(unescape(encodeURIComponent(this.ckExport())));
     this.advert.contractForm = '';
     if (this.contractForm.isInterim) {
       this.advert.contractForm = this.advert.contractForm + ";Intérim";
@@ -337,6 +337,7 @@ export class AdvertEdit{
             return;
           }
           this.router.navigate(['advert/list']);
+          return;
         }else{
           Messenger().post({
             message: "Une erreur est survenue lors de l'enregistrement de l'annonce.",

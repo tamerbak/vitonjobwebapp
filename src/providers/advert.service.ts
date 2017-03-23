@@ -239,7 +239,7 @@ export class AdvertService {
       return "";
     let val = "";
     try {
-      val = atob(content);
+      val = decodeURIComponent(escape(atob(content)));
     } catch (exc) {
       val = content;
     }
