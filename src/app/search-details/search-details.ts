@@ -130,7 +130,7 @@ export class SearchDetails{
     if (this.projectTarget != "employer")
       this.fullName = this.result.entreprise;
     else
-      this.fullName = this.result.titre + ' ' + this.result.nom + ' ' + this.result.prenom;
+      this.fullName = this.result.titre + ' ' + this.result.nom.charAt(0) + '. ' + this.result.prenom;
 
     this.matching = this.result.matching + "%";
 
