@@ -1001,7 +1001,7 @@ export class ContractService {
     });
   }
 
-  getNonSignedContracts(entrepriseId){
+  getNonSignedEmployerContracts(entrepriseId){
     let sql = 'SELECT '
     + 'c.pk_user_contrat as id '
       + ', c.numero as num '
@@ -1041,6 +1041,59 @@ export class ContractService {
     + 'AND uoe.pk_user_offre_entreprise = c.fk_user_offre_entreprise '
     + 'ORDER BY c.created DESC '
   ;
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  getNonSignedJobyerContracts(jobyerId){
+    let sql = 'SELECT '
+      + 'c.pk_user_contrat as id '
+      + ', c.numero as num '
+      + ', c.created '
+      + ', c.lien_jobyer as "partnerJobyerLink" ' +
+      + ', e.nom, e.prenom ' +
+    "FROM user_contrat " +
+      "WHERE upper(c.signature_employeur) = 'OUI' and upper(c.signature_jobyer) = 'NON' and c.dirty = 'N' and "
+      + ', uoe.fk_user_heure_mission as "idOfferType" '
+      + ', c.fk_user_offre_entreprise as "idOffer" '
+      + ', j.date_de_naissance as "jobyerBirthDate" '
+      + ', j.numero_securite_sociale as "numSS" '
+      + ', j.pk_user_jobyer as "jobyerId" '
+      + ', a.email '
+      + ', a.telephone as tel '
+      + ', (SELECT ' +
+      'count(*) ' +
+      'FROM user_offre_entreprise uoe2 ' +
+      'WHERE uoe2.fk_user_offre_entreprise = uoe.fk_user_offre_entreprise' +
+      ') AS "nbChildren" '
+      + ', slot.premier_jour as jour '
+      + ", to_char(slot.premier_jour, 'HH24')::integer * 60 + to_char(slot.premier_jour, 'MI')::integer as heure_debut "
+      + 'FROM '
+      + 'user_contrat as c, '
+      + 'user_jobyer as j, '
+      + 'user_account as a, '
+      + 'user_offre_entreprise as uoe '
+      + 'LEFT JOIN ( '
+      + "SELECT d.fk_user_offre_entreprise, MIN(d.jour + (d.heure_debut::text||' minute')::INTERVAL) as premier_jour "
+      + 'FROM user_disponibilites_des_offres d '
+      + 'GROUP BY d.fk_user_offre_entreprise '
+      + ') slot ON slot.fk_user_offre_entreprise = uoe.pk_user_offre_entreprise '
+      + 'WHERE '
+      + "c.dirty='N' "
+      //+ 'AND c.fk_user_entreprise=' + entrepriseId + ' '
+      + "AND upper(c.signature_employeur) = 'NON' "
+      + 'AND c.fk_user_jobyer = j.pk_user_jobyer '
+      + 'AND a.pk_user_account = j.fk_user_account '
+      + 'AND uoe.pk_user_offre_entreprise = c.fk_user_offre_entreprise '
+      + 'ORDER BY c.created DESC '
+    ;
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();

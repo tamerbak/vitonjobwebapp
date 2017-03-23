@@ -29,6 +29,8 @@ declare let Messenger: any;
 export class ContractList{
   currentUser: any;
   projectTarget: string;
+  isEmployer: boolean;
+
   contractList = [];
   inProgress: boolean = false;
   alerts = [];
@@ -43,23 +45,27 @@ export class ContractList{
               private loader: LoaderService) {
 
     this.currentUser = this.sharedService.getCurrentUser();
-    //only employers and recruiters can access to the contract list page
-    if (!this.currentUser || (!this.currentUser.estEmployeur && !this.currentUser.estRecruteur)) {
+    if (!this.currentUser) {
       this.router.navigate(['home']);
       return;
     }
     this.projectTarget = (this.currentUser.estEmployeur || this.currentUser.estRecruteur ? 'employer' : 'jobyer');
-    if (this.projectTarget == "jobyer") {
-      this.router.navigate(['home']);
-    }
   }
 
   ngOnInit() {
-    this.contractService.getNonSignedContracts(this.currentUser.employer.entreprises[0].id).then((data: any) => {
-      if (data && data.status == "success" && data.data) {
-        this.contractList = data.data
-      }
-    });
+    if(this.projectTarget == 'employer') {
+      this.contractService.getNonSignedEmployerContracts(this.currentUser.employer.entreprises[0].id).then((data: any) => {
+        if (data && data.status == "success" && data.data) {
+          this.contractList = data.data
+        }
+      });
+    }else{
+      this.contractService.getNonSignedJobyerContracts(this.currentUser.jobyer.id).then((data: any) => {
+        if (data && data.status == "success" && data.data) {
+          this.contractList = data.data
+        }
+      });
+    }
   }
 
   goToDocusignPage(contractInfo) {
