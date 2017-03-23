@@ -192,9 +192,9 @@ export class Contract {
 
     let postRisks = this.contractData.postRisks.split(' - ');
     if(postRisks && postRisks.length > 0){
-      this.postRisks1 = (postRisks.length >= 1 ? postRisks[0] : "");
-      this.postRisks2 = (postRisks.length >= 2 ? postRisks[1] : "");
-      this.postRisks3 = (postRisks.length >= 3 ? postRisks[2] : "");
+      this.postRisks1 = (postRisks.length >= 1 ? Utils.preventNull(postRisks[0]) : "");
+      this.postRisks2 = (postRisks.length >= 2 ? Utils.preventNull(postRisks[1]) : "");
+      this.postRisks3 = (postRisks.length >= 3 ? Utils.preventNull(postRisks[2]) : "");
     }
 
     let characteristics = this.contractData.characteristics.split(' - ');
@@ -489,7 +489,7 @@ export class Contract {
     this.contractData.jobyerTitreTravail = Utils.removeAllSpaces(this.contractData.jobyerTitreTravail);
     this.contractData.elementsNonCotisation = 1.0;
 
-    this.contractData.postRisks = this.postRisks1 + " - " + this.postRisks2 + " - " + this.postRisks3;
+    this.contractData.postRisks = Utils.preventNull(this.postRisks1) + " - " + Utils.preventNull(this.postRisks2) + " - " + Utils.preventNull(this.postRisks3);
     this.contractData.characteristics = this.characteristics1 + " - " + this.characteristics2 + " - " + this.characteristics3;
 
     console.log("contractData before saving");
