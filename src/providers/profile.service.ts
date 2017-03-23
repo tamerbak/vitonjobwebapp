@@ -633,27 +633,33 @@ export class ProfileService{
     });
   }
 
-  saveDisponibilite(jobyerId, disponibilite){
-    let interval = (disponibilite.startDate == disponibilite.endDate)?'non':'oui';
+  saveDisponibilite(jobyerId, disponibilite) {
+    let interval = (disponibilite.startDate == disponibilite.endDate) ? 'non' : 'oui';
+
+    // recuperer le timezone de l'offre pour mettre a jour les slots généré avec ce timezone
+    let tmp = new Date();
+    let currentTimeZoneOffset = tmp.getTimezoneOffset() *
+        ((disponibilite.startDate.getHours() ? disponibilite.startDate.getHours() : 24) - disponibilite.startDate.getUTCHours())
+      ;
 
     let sql = "insert into user_disponibilite_du_jobyer (" +
-      "fk_user_jobyer, " +
-      "jour, " +
-      "date_de_debut," +
-      "date_de_fin," +
-      "heure_de_debut," +
-      "heure_de_fin," +
-      "\"interval\"" +
-      ") values (" +
-      jobyerId+", " +
-      "'"+this.dateToSqlTimestamp(disponibilite.startDate)+"', " +
-      "'"+this.dateToSqlTimestamp(disponibilite.startDate)+"'," +
-      "'"+this.dateToSqlTimestamp(disponibilite.endDate)+"'," +
-      (disponibilite.startHour.getHours()*60+disponibilite.startHour.getMinutes())+"," +
-      (disponibilite.endHour.getHours()*60+disponibilite.endHour.getMinutes())+"," +
-      "'"+interval+"'" +
-      ") returning pk_user_disponibilite_du_jobyer";
-    //console.log(sql);
+        "fk_user_jobyer, " +
+        "jour, " +
+        "date_de_debut," +
+        "date_de_fin," +
+        "heure_de_debut," +
+        "heure_de_fin," +
+        "\"interval\"" +
+        ") values (" +
+        jobyerId + ", " +
+        "'" + this.dateToSqlTimestamp(new Date(disponibilite.startDate.getTime() - currentTimeZoneOffset * 60000)) + "', " +
+        "'" + this.dateToSqlTimestamp(new Date(disponibilite.startDate.getTime() - currentTimeZoneOffset * 60000)) + "'," +
+        "'" + this.dateToSqlTimestamp(new Date(disponibilite.endDate.getTime() - currentTimeZoneOffset * 60000)) + "'," +
+        (disponibilite.startHour.getHours() * 60 + disponibilite.startHour.getMinutes()) + "," +
+        (disponibilite.endHour.getHours() * 60 + disponibilite.endHour.getMinutes()) + "," +
+        "'" + interval + "'" +
+        ") returning pk_user_disponibilite_du_jobyer"
+      ;
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
