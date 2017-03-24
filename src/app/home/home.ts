@@ -113,7 +113,7 @@ export class Home{
         jQuery('#modal-password').modal('show');
       }
 
-      if (this.isEmpty(this.currentUser.titre)) {
+      if (this.isEmpty(this.currentUser.titre) && this.isEmpty(this.currentUser.nom) && this.isEmpty(this.currentUser.prenom)) {
         jQuery('#modal-general-condition').modal({
           keyboard: false,
           backdrop: 'static'
@@ -244,7 +244,7 @@ export class Home{
       this.sharedService.setCurrentSearchCity(this.cityQuery);
       this.router.navigate(['search/results']);
     });
-  } 
+  }
 
   addAlert(type, msg): void {
     this.alerts = [{type: type, msg: msg}];
