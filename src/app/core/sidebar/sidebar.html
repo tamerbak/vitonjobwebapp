@@ -86,7 +86,7 @@
       </a>
     </li>
 
-    <li *ngIf="currentUser && currentUser.estEmployeur">
+    <li *ngIf="currentUser">
       <a [routerLink]=" ['/contract/list'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-th-list"></i>

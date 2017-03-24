@@ -23,7 +23,7 @@
           Numéro du contrat
         </th>
         <th>
-          Jobyer
+          {{projectTarget == 'jobyer' ? 'Employeur' : 'Jobyer'}}
         </th>
         <th>
           Date de création
@@ -51,26 +51,29 @@
               <button
                 class="btn btn-secondary mb-xs"
                 (click)="goToContractForm(item)"
+                *ngIf="projectTarget != 'jobyer'"
               >
                 <i class="glyphicon glyphicon-pencil text-success"></i>&nbsp;Compléter
               </button>
               <button
                 class="btn btn-secondary mb-xs"
                 (click)="reassignContract(item)"
+                *ngIf="projectTarget != 'jobyer'"
               >
                 <i class="fa fa-exchange" aria-hidden="true"></i>&nbsp;Réassigner
               </button>
               <button
                 class="btn btn-secondary mb-xs"
                 (click)="cancelContract(item)"
+                [disabled]="projectTarget == 'jobyer'"
               >
                 <i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;Annuler
               </button>
               <button
                 class="btn btn-secondary mb-xs"
                 (click)="goToDocusignPage(item)"
-                [disabled]="!currentUser.estEmployeur || item.isDraft.toUpperCase() == 'OUI' || inProgress"
-              >
+                [disabled]="item.isDraft.toUpperCase() == 'OUI' || inProgress || projectTarget == 'jobyer'">
+              <!--(projectTarget == 'jobyer' && item.signature_employeur.toUpperCase() == 'NON')"-->
                 <i class="fa fa-paper-plane-o" aria-hidden="true"></i>&nbsp;Signer
               </button>
             </td>

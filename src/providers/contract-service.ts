@@ -1001,7 +1001,7 @@ export class ContractService {
     });
   }
 
-  getNonSignedContracts(entrepriseId){
+  getNonSignedEmployerContracts(entrepriseId){
     let sql = 'SELECT '
     + 'c.pk_user_contrat as id '
       + ', c.numero as num '
@@ -1041,6 +1041,37 @@ export class ContractService {
     + 'AND uoe.pk_user_offre_entreprise = c.fk_user_offre_entreprise '
     + 'ORDER BY c.created DESC '
   ;
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  getNonSignedJobyerContracts(jobyerId){
+    let sql = "SELECT minHM.fk_user_contrat, minHM.jour, minHM.heure_debut, " +
+      'c.numero as num, c.created, c.en_brouillon as "isDraft",c.signature_employeur, ' +
+      "e.nom, e.prenom " +
+      "FROM " +
+      "(SELECT MIN(uhm.jour_debut)as jour, " +
+        "MIN(uhm.heure_debut) as heure_debut, " +
+        "uhm.fk_user_contrat " +
+        "FROM user_heure_mission as uhm " +
+        "GROUP BY uhm.fk_user_contrat " +
+        "ORDER BY uhm.fk_user_contrat " +
+      ") minHM, user_contrat as c, user_entreprise as ent, user_employeur as e " +
+      "WHERE minHM.fk_user_contrat = c.pk_user_contrat " +
+      "AND c.fk_user_jobyer = " + jobyerId + " " +
+      "AND upper(c.signature_employeur) = 'OUI' " +
+      "AND upper(c.signature_jobyer) = 'NON' " +
+      "AND c.dirty = 'N' " +
+      "AND c.fk_user_entreprise = ent.pk_user_entreprise " +
+      "AND ent.fk_user_employeur = e.pk_user_employeur " +
+      "ORDER BY c.created DESC";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
