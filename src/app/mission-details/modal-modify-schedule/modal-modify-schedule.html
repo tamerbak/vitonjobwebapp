@@ -5,7 +5,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel18">Vit-On-Job</h4>
         <p class="text-xs-center fs-mini text-muted mt-sm">
-          Relevé d'heures de travail du contract avec {{ contract.prenom }} {{ contract.nom }}
+          Relevé d'heures de travail du contrat avec {{ contract.prenom }} {{ contract.nom }}
         </p>
       </div>
       <div class="modal-body bg-gray-lighter">
@@ -35,21 +35,10 @@
                 <tr>
                   <td class="text-align-right" width="100">Début</td>
                   <td class="text-align-right" width="100">
-                    <input type="time" [(ngModel)]="day.heure_debut_temp" (change)="watchInput(i, j, true, false)" [style.backgroundColor]="!isEmpty(day.heure_debut_new) ? 'orange' : 'gray'" [disabled]="!isEmpty(day.heure_debut_pointe)"/>
+                    <input type="time" [(ngModel)]="day.heure_debut_temp" [style.backgroundColor]="!isEmpty(day.heure_debut_new) ? 'orange' : 'gray'" [disabled]="!isEmpty(day.heure_debut_pointe)"/>
                   </td>
                   <td class="text-align-center" width="100">
-                <span
-                  class="label label-{{ (
-                    upperCase(day.is_heure_debut_corrigee) == 'NON'
-                      ? 'success'
-                      : (upperCase(day.is_heure_debut_corrigee) == 'OUI'
-                        ? 'danger'
-                        : 'default'
-                    ))
-                  }}"
-                >
-                  {{ (day.heure_debut_pointe) ? day.heure_debut_pointe : '--:--' }}
-                </span>
+                    <input type="time" [(ngModel)]="day.heure_debut_pointe_temp" [disabled]="upperCase(day.is_heure_debut_corrigee) != 'OUI'" [style.backgroundColor]="upperCase(day.is_heure_debut_corrigee) == 'OUI' ? 'orange' : 'gray'" />
                   </td>
                 </tr>
                 <tr *ngFor="let pause of missionPauses[i], let j=index">
@@ -62,19 +51,19 @@
                       <tr>
                         <td class="text-align-right" width="100">Début</td>
                         <td class="text-align-right" width="100">
-                          <input type="time" [(ngModel)]="pause.pause_debut_temp" (change)="watchInput(i, j, false, true)" [style.backgroundColor]="!isEmpty(pause.pause_debut_new) ? 'orange' : 'gray'" [disabled]="!isEmpty(pause.pause_debut_pointe)"/>
+                          <input type="time" [(ngModel)]="pause.pause_debut_temp" [style.backgroundColor]="!isEmpty(pause.pause_debut_new) ? 'orange' : 'gray'" [disabled]="!isEmpty(pause.pause_debut_pointe)"/>
                         </td>
                         <td class="text-align-right" width="100">
-                          <input type="time" [(ngModel)]="pause.pause_debut_pointe" [hidden]="contract.option_mission == '1.0'|| isNewMission" [style.backgroundColor]="upperCase(pause.is_pause_debut_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_debut_corrigee) == 'NON' ? 'green' : '')" disabled="true"/>
+                          <input type="time" [(ngModel)]="pause.pause_debut_pointe_temp" [hidden]="contract.option_mission == '1.0'|| isNewMission" [style.backgroundColor]="upperCase(pause.is_pause_debut_corrigee) == 'OUI' ? 'orange' : (upperCase(pause.is_pause_debut_corrigee) == 'NON' ? 'green' : '')" [disabled]="upperCase(pause.is_pause_debut_corrigee) != 'OUI'"/>
                         </td>
                       </tr>
                       <tr>
                         <td class="text-align-right" width="100">Fin</td>
                         <td class="text-align-right" width="100">
-                          <input type="time" [(ngModel)]="pause.pause_fin_temp" (change)="watchInput(i, j, false, false)" [style.backgroundColor]="!isEmpty(pause.pause_fin_new) ? 'orange' : 'gray'" [disabled]="!isEmpty(pause.pause_fin_pointe)"/>
+                          <input type="time" [(ngModel)]="pause.pause_fin_temp" [style.backgroundColor]="!isEmpty(pause.pause_fin_new) ? 'orange' : 'gray'" [disabled]="!isEmpty(pause.pause_fin_pointe)"/>
                         </td>
                         <td class="text-align-right" width="100">
-                          <input type="time" [(ngModel)]="pause.pause_fin_pointe" [hidden]="contract.option_mission == '1.0'|| isNewMission" [style.backgroundColor]="upperCase(pause.is_pause_fin_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_fin_corrigee) == 'NON' ? 'green' : '')" disabled="true"/>
+                          <input type="time" [(ngModel)]="pause.pause_fin_pointe_temp" [hidden]="contract.option_mission == '1.0'|| isNewMission" [style.backgroundColor]="upperCase(pause.is_pause_fin_corrigee) == 'OUI' ? 'orange' : (upperCase(pause.is_pause_fin_corrigee) == 'NON' ? 'green' : '')" [disabled]="upperCase(pause.is_pause_fin_corrigee) != 'OUI'"/>
                         </td>
                       </tr>
                       </tbody>
@@ -85,21 +74,10 @@
                 <tr>
                   <td class="text-align-right" width="100">Fin</td>
                   <td class="text-align-right" width="100">
-                    <input type="time" [(ngModel)]="day.heure_fin_temp" (change)="watchInput(i, j, false, false)" [style.backgroundColor]="!isEmpty(day.heure_fin_new) ? 'orange' : 'gray'" [disabled]="!isEmpty(day.heure_fin_pointe)"/>
+                    <input type="time" [(ngModel)]="day.heure_fin_temp" [style.backgroundColor]="!isEmpty(day.heure_fin_new) ? 'orange' : 'gray'" [disabled]="!isEmpty(day.heure_fin_pointe)"/>
                     </td>
                   <td class="text-align-center" width="100">
-                <span
-                  class="label label-{{ (
-                    upperCase(day.is_heure_fin_corrigee) == 'NON'
-                      ? 'success'
-                      : (upperCase(day.is_heure_fin_corrigee) == 'OUI'
-                        ? 'danger'
-                        : 'default'
-                    ))
-                  }}"
-                >
-                  {{ (day.heure_fin_pointe) ? day.heure_fin_pointe : '--:--' }}
-                </span>
+                    <input type="time" [(ngModel)]="day.heure_fin_pointe_temp" [disabled]="upperCase(day.is_heure_fin_corrigee) != 'OUI'" [style.backgroundColor]="upperCase(day.is_heure_fin_corrigee) == 'OUI' ? 'orange' : 'gray'"/>
                   </td>
                 </tr>
                 </tbody>

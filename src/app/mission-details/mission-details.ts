@@ -665,12 +665,16 @@ export class MissionDetails{
       let day = this.missionHours[i];
       this.missionHours[i].heure_debut_temp = (Utils.isEmpty(day.heure_debut_new) ? this.missionService.convertToFormattedHour(day.heure_debut) : this.missionService.convertToFormattedHour(day.heure_debut_new));
       this.missionHours[i].heure_fin_temp = (Utils.isEmpty(day.heure_fin_new) ? this.missionService.convertToFormattedHour(day.heure_fin) : this.missionService.convertToFormattedHour(day.heure_fin_new));
+      this.missionHours[i].heure_debut_pointe_temp = day.heure_debut_pointe;
+      this.missionHours[i].heure_fin_pointe_temp = day.heure_fin_pointe;
       //prepare the mission pauses array to display
       if (this.missionPauses[i] && this.missionPauses[i].length != 0) {
         for (let j = 0; j < this.missionPauses[i].length; j++) {
           let pause = this.missionPauses[i][j];
           this.missionPauses[i][j].pause_debut_temp = (this.isEmpty(pause.pause_debut_new) ? pause.pause_debut : this.missionService.convertToFormattedHour(pause.pause_debut_new));
           this.missionPauses[i][j].pause_fin_temp = (this.isEmpty(pause.pause_fin_new) ? pause.pause_fin : this.missionService.convertToFormattedHour(pause.pause_fin_new));
+          this.missionPauses[i][j].pause_debut_pointe_temp = pause.pause_debut_pointe;
+          this.missionPauses[i][j].pause_fin_pointe_temp = pause.pause_fin_pointe;
         }
       }
     }
