@@ -141,11 +141,13 @@ export class MissionList{
         }
      });
 
-     this.contractService.getFutureContractsCount(this.userId, this.projectTarget).then((data: any) => {
-        if (data.data) {
-          this.missionFutureCount = data.data[0].count == 0 ? 'Aucune':(''+data.data[0].count);
-        }
-     });
+     if(this.isEmployer) {
+       this.contractService.getFutureContractsCount(this.userId, this.projectTarget).then((data: any) => {
+         if (data.data) {
+           this.missionFutureCount = data.data[0].count == 0 ? 'Aucune' : ('' + data.data[0].count);
+         }
+       });
+     }
 
      this.contractService.getPastContractsCount(this.userId, this.projectTarget).then((data: any) => {
         if (data.data) {
