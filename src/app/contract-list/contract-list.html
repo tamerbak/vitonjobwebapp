@@ -72,8 +72,8 @@
               <button
                 class="btn btn-secondary mb-xs"
                 (click)="goToDocusignPage(item)"
-                [disabled]="item.isDraft.toUpperCase() == 'OUI' || inProgress || projectTarget == 'jobyer'">
-              <!--(projectTarget == 'jobyer' && item.signature_employeur.toUpperCase() == 'NON')"-->
+                [disabled]="item.isDraft.toUpperCase() == 'OUI' || inProgress ||
+              (projectTarget == 'jobyer' && item.signature_employeur.toUpperCase() == 'NON')">
                 <i class="fa fa-paper-plane-o" aria-hidden="true"></i>&nbsp;Signer
               </button>
             </td>

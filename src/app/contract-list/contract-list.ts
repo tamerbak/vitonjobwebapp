@@ -29,7 +29,6 @@ declare let Messenger: any;
 export class ContractList{
   currentUser: any;
   projectTarget: string;
-  isEmployer: boolean;
 
   contractList = [];
   inProgress: boolean = false;
@@ -69,143 +68,152 @@ export class ContractList{
   }
 
   goToDocusignPage(contractInfo) {
-    this.loader.display();
+    //les recruteurs n'ont pas le droit de signer des contrats
+    if(this.currentUser.estRecruteur){
+      return;
+    }
 
-    this.inProgress = true;
+    if(this.projectTarget == 'jobyer'){
+      this.sharedService.setContractData(contractInfo);
+      this.router.navigate(['contract/recruitment']);
+    }else{
+      this.loader.display();
+      this.inProgress = true;
 
-    this.contractService.getContractDataInfos(contractInfo.id, this.projectTarget).then((contract: ContractData) => {
+      this.contractService.getContractDataInfos(contractInfo.id, this.projectTarget).then((contract: ContractData) => {
 
-      //specify if horaire fixes ou variables
-      contract.isScheduleFixed = (contract.isScheduleFixed.toUpperCase() == 'OUI' ? 'true' : 'false');
-      //specify equipement string
-      if (contract.epiList && contract.epiList.length > 0) {
-        contract.equipements = '(Voir annexe)';
-      } else {
-        contract.equipements = "Aucun";
-      }
+        //specify if horaire fixes ou variables
+        contract.isScheduleFixed = (contract.isScheduleFixed.toUpperCase() == 'OUI' ? 'true' : 'false');
+        //specify equipement string
+        if (contract.epiList && contract.epiList.length > 0) {
+          contract.equipements = '(Voir annexe)';
+        } else {
+          contract.equipements = "Aucun";
+        }
 
-      //convert epiString to epi list and attach it to the contract object
-      contract.epiList = [];
-      if(!Utils.isEmpty(contract.epiString) && contract.epiString.split(';') && contract.epiString.split(';').length != 0){
-        let epiArray = contract.epiString.split(';');
-        for(let i = 0; i < epiArray.length; i++){
-          if(!this.isEmpty(epiArray[i])){
-            contract.epiList.push(epiArray[i]);
+        //convert epiString to epi list and attach it to the contract object
+        contract.epiList = [];
+        if(!Utils.isEmpty(contract.epiString) && contract.epiString.split(';') && contract.epiString.split(';').length != 0){
+          let epiArray = contract.epiString.split(';');
+          for(let i = 0; i < epiArray.length; i++){
+            if(!this.isEmpty(epiArray[i])){
+              contract.epiList.push(epiArray[i]);
+            }
           }
         }
-       }
 
-      contract.adresseInterim = contract.workAdress;
+        contract.adresseInterim = contract.workAdress;
 
-      contract.jobyerDebutTitreTravail = DateUtils.simpleDateFormat(new Date(contract.jobyerDebutTitreTravail));
-      contract.jobyerFinTitreTravail = DateUtils.simpleDateFormat(new Date(contract.jobyerFinTitreTravail));
-      contract.missionStartDate = DateUtils.simpleDateFormat(new Date(contract.missionStartDate));
-      contract.missionEndDate = DateUtils.simpleDateFormat(new Date(contract.missionEndDate));
+        contract.jobyerDebutTitreTravail = DateUtils.simpleDateFormat(new Date(contract.jobyerDebutTitreTravail));
+        contract.jobyerFinTitreTravail = DateUtils.simpleDateFormat(new Date(contract.jobyerFinTitreTravail));
+        contract.missionStartDate = DateUtils.simpleDateFormat(new Date(contract.missionStartDate));
+        contract.missionEndDate = DateUtils.simpleDateFormat(new Date(contract.missionEndDate));
 
-      //initalize jobyer object
-      let jobyer = {
-        prenom: contract.jobyerPrenom,
-        nom: contract.jobyerNom,
-        numSS: contract.jobyerNumSS,
-        lieuNaissance: contract.jobyerLieuNaissance,
-        nationaliteLibelle: contract.jobyerNationaliteLibelle,
-        email: contract.email,
-        tel: contract.tel,
-        address: ''
-      };
+        //initalize jobyer object
+        let jobyer = {
+          prenom: contract.jobyerPrenom,
+          nom: contract.jobyerNom,
+          numSS: contract.jobyerNumSS,
+          lieuNaissance: contract.jobyerLieuNaissance,
+          nationaliteLibelle: contract.jobyerNationaliteLibelle,
+          email: contract.email,
+          tel: contract.tel,
+          address: ''
+        };
 
-      //get jobyer address
-      this.contractService.getJobyerAdress(contractInfo.jobyerId).then((address: string) => {
-        jobyer.address = address;
+        //get jobyer address
+        this.contractService.getJobyerAdress(contractInfo.jobyerId).then((address: string) => {
+          jobyer.address = address;
 
-        //get offer info of the selected contract
-        let offer: Offer = new Offer();
-        this.offerService.getOfferById(contractInfo.idOffer, this.projectTarget, offer).then(data => {
-          if(!data || Utils.isEmpty(data._body) || data.status != "200"){
-            this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
-            this.inProgress = false;
-            this.loader.hide();
-            return;
-          }
-          offer = JSON.parse(data._body);
-          //attach offer remuneration to contract object
-          contract.salaryNHours = Utils.parseNumber(offer.jobData.remuneration).toFixed(2) + " € B/H";
-
-          //load prerequis of the currrent offer and attach them to contract object
-          this.offerService.loadOfferPrerequisObligatoires(contractInfo.idOffer).then((data: any) => {
-            offer.jobData.prerequisObligatoires = [];
-            for (let j = 0; j < data.length; j++) {
-              offer.jobData.prerequisObligatoires.push(data[j].libelle);
+          //get offer info of the selected contract
+          let offer: Offer = new Offer();
+          this.offerService.getOfferById(contractInfo.idOffer, this.projectTarget, offer).then(data => {
+            if(!data || Utils.isEmpty(data._body) || data.status != "200"){
+              this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
+              this.inProgress = false;
+              this.loader.hide();
+              return;
             }
-            //contract.prerequis = offer.jobData.prerequisObligatoires;
+            offer = JSON.parse(data._body);
+            //attach offer remuneration to contract object
+            contract.salaryNHours = Utils.parseNumber(offer.jobData.remuneration).toFixed(2) + " € B/H";
 
-            //si le contrat docusign n'a jamais été généré, passer par tout le proccesus de génération
-            if(Utils.isEmpty(contract.partnerEmployerLink)){
+            //load prerequis of the currrent offer and attach them to contract object
+            this.offerService.loadOfferPrerequisObligatoires(contractInfo.idOffer).then((data: any) => {
+              offer.jobData.prerequisObligatoires = [];
+              for (let j = 0; j < data.length; j++) {
+                offer.jobData.prerequisObligatoires.push(data[j].libelle);
+              }
+              //contract.prerequis = offer.jobData.prerequisObligatoires;
 
-              this.financeService.loadQuote(contractInfo.idOffer, contract.baseSalary).then((data: any) => {
+              //si le contrat docusign n'a jamais été généré, passer par tout le proccesus de génération
+              if(Utils.isEmpty(contract.partnerEmployerLink)){
 
-                if (!data || Utils.isEmpty(data.quoteId) || data.quoteId == 0) {
-                  this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
-                  this.inProgress = false;
-                  this.loader.hide();
-                  return;
-                }
+                this.financeService.loadQuote(contractInfo.idOffer, contract.baseSalary).then((data: any) => {
 
-                let idQuote = data.quoteId;
-
-                this.financeService.loadPrevQuote(contractInfo.idOffer).then((results: any) => {
-                  if (!results || !results.lignes || results.lignes.length == 0) {
+                  if (!data || Utils.isEmpty(data.quoteId) || data.quoteId == 0) {
                     this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
                     this.inProgress = false;
                     this.loader.hide();
                     return;
                   }
 
-                  this.contractService.callYousign(this.currentUser, this.currentUser.employer, jobyer, contract, this.projectTarget, offer, idQuote).then((data: any) => {
-                  if (!data || data == null || Utils.isEmpty(data.Employeur) || Utils.isEmpty(data.Jobyer) || Utils.isEmpty(data.Employeur.idContrat) || Utils.isEmpty(data.Jobyer.idContrat) || !Utils.isValidUrl(data.Employeur.url) || !Utils.isValidUrl(data.Jobyer.url)) {
-                    this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
-                    this.inProgress = false;
-                    this.loader.hide();
-                    return;
-                  }
+                  let idQuote = data.quoteId;
 
-                  this.setDocusignData(data, contract);
-
-                  //update contract in Database with docusign data
-                  this.contractService.updateContract(contract, this.projectTarget).then((data: any) => {
-                    if (!data || data.status != "success") {
+                  this.financeService.loadPrevQuote(contractInfo.idOffer).then((results: any) => {
+                    if (!results || !results.lignes || results.lignes.length == 0) {
                       this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
                       this.inProgress = false;
                       this.loader.hide();
                       return;
                     }
 
-                    //set variables in local storage and navigate to docusign page
-                    this.sharedService.setCurrentJobyer(jobyer);
-                    this.sharedService.setCurrentOffer(offer);
-                    this.sharedService.setContractData(contract);
+                    this.contractService.callYousign(this.currentUser, this.currentUser.employer, jobyer, contract, this.projectTarget, offer, idQuote).then((data: any) => {
+                      if (!data || data == null || Utils.isEmpty(data.Employeur) || Utils.isEmpty(data.Jobyer) || Utils.isEmpty(data.Employeur.idContrat) || Utils.isEmpty(data.Jobyer.idContrat) || !Utils.isValidUrl(data.Employeur.url) || !Utils.isValidUrl(data.Jobyer.url)) {
+                        this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
+                        this.inProgress = false;
+                        this.loader.hide();
+                        return;
+                      }
 
-                    this.loader.hide();
-                    this.router.navigate(['contract/recruitment']);
+                      this.setDocusignData(data, contract);
+
+                      //update contract in Database with docusign data
+                      this.contractService.updateContract(contract, this.projectTarget).then((data: any) => {
+                        if (!data || data.status != "success") {
+                          this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
+                          this.inProgress = false;
+                          this.loader.hide();
+                          return;
+                        }
+
+                        //set variables in local storage and navigate to docusign page
+                        this.sharedService.setCurrentJobyer(jobyer);
+                        this.sharedService.setCurrentOffer(offer);
+                        this.sharedService.setContractData(contract);
+
+                        this.loader.hide();
+                        this.router.navigate(['contract/recruitment']);
+                      });
+                    });
                   });
                 });
-              });
+                //si le contrat docusign a été déja généré, l'afficher sans le regénérer
+              }else{
+
+                //set variables in local storage and navigate to docusign page
+                this.sharedService.setCurrentJobyer(jobyer);
+                this.sharedService.setCurrentOffer(offer);
+                this.sharedService.setContractData(contract);
+
+                this.loader.hide();
+                this.router.navigate(['contract/recruitment']);
+              }
             });
-              //si le contrat docusign a été déja généré, l'afficher sans le regénérer
-            }else{
-
-              //set variables in local storage and navigate to docusign page
-              this.sharedService.setCurrentJobyer(jobyer);
-              this.sharedService.setCurrentOffer(offer);
-              this.sharedService.setContractData(contract);
-
-              this.loader.hide();
-              this.router.navigate(['contract/recruitment']);
-            }
-           });
+          });
         });
       });
-    });
+    }
   }
 
   setDocusignData(data, contractData: ContractData){
