@@ -976,8 +976,15 @@ export class ContractService {
     });
   }
 
-  checkDocusignSignatureState(contractId) {
-    let sql = 'select signature_employeur as etat from user_contrat where pk_user_contrat=' + contractId;
+  checkDocusignSignatureState(contractId, role) {
+    let signColName;
+    if(role == 'jobyer'){
+      signColName = "signature_jobyer";
+    }else{
+      signColName = "signature_employeur";
+    }
+
+    let sql = 'select ' + signColName + ' as etat from user_contrat where pk_user_contrat=' + contractId;
     return new Promise(resolve => {
       let headers = new Headers();
       headers = Configs.getHttpTextHeaders();
@@ -1054,7 +1061,7 @@ export class ContractService {
 
   getNonSignedJobyerContracts(jobyerId){
     let sql = "SELECT minHM.fk_user_contrat, minHM.jour, minHM.heure_debut, " +
-      'c.numero as num, c.created, c.en_brouillon as "isDraft",c.signature_employeur, ' +
+      'c.pk_user_contrat as id, c.numero as num, c.created, c.en_brouillon as "isDraft",c.signature_employeur, c.lien_jobyer as \"partnerJobyerLink\", ' +
       "e.nom, e.prenom " +
       "FROM " +
       "(SELECT MIN(uhm.jour_debut)as jour, " +
