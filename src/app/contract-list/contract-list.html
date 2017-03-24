@@ -65,7 +65,7 @@
               <button
                 class="btn btn-secondary mb-xs"
                 (click)="cancelContract(item)"
-                [disabled]="projectTarget == 'jobyer'"
+                *ngIf="projectTarget != 'jobyer'"
               >
                 <i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;Annuler
               </button>
