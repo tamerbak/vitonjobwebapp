@@ -16,6 +16,9 @@ import {ModalModifySchedule} from "./modal-modify-schedule/modal-modify-schedule
 import {ModalInfo} from "../modal-info/modal-info";
 import {Utils} from "../utils/utils";
 import {ModalOptions} from "../modal-options/modal-options";
+import {Mission} from "../../dto/mission";
+import {HeureMission} from "../../dto/heureMission";
+import {DateUtils} from "../utils/date-utils";
 
 declare let jQuery: any;
 declare let Messenger: any;
@@ -34,10 +37,10 @@ export class MissionDetails{
   isEmployer: boolean;
   themeColor: string;
 
-  contract: any;
+  contract: Mission = new Mission();
 
   //records of user_heure_mission of a contract
-  missionHours = [];
+  missionHours: Array<HeureMission>;
   initialMissionHours = [];
 
   isNewMission = true;
@@ -45,8 +48,8 @@ export class MissionDetails{
 
   optionMission: string;
 
-  enterpriseName: string = "--";
-  jobyerName: string = "--";
+  //enterpriseName: string = "--";
+  //jobyerName: string = "--";
   currentUser: any;
 
   /*
@@ -66,10 +69,13 @@ export class MissionDetails{
    */
   prerequisObligatoires : any = [];
 
-  isSignContractClicked: boolean = false;
+  //isSignContractClicked: boolean = false;
 
   modalParams: any = {type: '', message: ''};
+
   hasJobyerSigned: boolean;
+  isPointing: boolean;
+  canPoint: boolean;
 
   constructor(private sharedService: SharedService,
               private missionService: MissionService,
@@ -77,80 +83,53 @@ export class MissionDetails{
               private router: Router) {
 
     this.currentUser = this.sharedService.getCurrentUser();
+    //only connected users can access to this page
     if (!this.currentUser) {
       this.router.navigate(['home']);
       return;
-    } else {
-      this.isEmployer = this.currentUser.estEmployeur;
-      this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
-
-      //get missions
-      this.contract = this.sharedService.getCurrentMission();
-
-      this.refreshGraphicalData();
-
-      /*
-       * Prerequis
-       */
-      if(this.isNewMission){
-        this.missionService.getPrerequisObligatoires(this.contract.pk_user_contrat).then(data=>{
-          this.prerequisObligatoires = data;
-        });
-      } else {
-        this.prerequisObligatoires = [];
-      }
-
-      this.hasJobyerSigned = (this.contract.signature_jobyer.toUpperCase() == "OUI" ? true : false);
-      var forPointing = this.contract.option_mission != "1.0" ? true : false;
-      this.missionService.listMissionHours(this.contract, forPointing).then(
-        (data: any) => {
-          if (data.data) {
-            this.initialMissionHours = data.data;
-            //initiate pauses array
-            var array = this.missionService.constructMissionHoursArray(this.initialMissionHours);
-            this.missionHours = array[0];
-            this.missionPauses = array[1];
-            //prepare the mission pauses array to display
-            this.prepareMissionHoursArray()
-          }
-        });
-
-      this.missionService.getCosignersNames(this.contract).then(
-        (data: any) => {
-          if (data.data) {
-            let cosigners = data.data[0];
-            this.enterpriseName = cosigners.enterprise;
-            this.jobyerName = cosigners.jobyer;
-          }
-        });
-
-      if (this.contract.numero_de_facture && this.contract.numero_de_facture != 'null')
-        this.invoiceReady = true;
-
-      this.getOptionMission();
-
-      // TODO
-      //  Getting contract score
-      // this.notationService.loadContractNotation(this.contract, this.projectTarget).then(
-      //   (score: any) => {
-      //     this.rating = score;
-      //     this.starsText = this.writeStars(this.rating);
-      //   });
-
-      this.financeService.checkInvoice(this.contract.pk_user_contrat).then(
-        (invoice: any) => {
-          if (invoice) {
-            this.invoiceId = invoice.pk_user_facture_voj;
-
-            if (this.projectTarget == 'employer')
-              this.isReleveAvailable = invoice.releve_signe_employeur == 'Non';
-            else
-              this.isReleveAvailable = invoice.releve_signe_jobyer == 'Non';
-
-            this.isInvoiceAvailable = invoice.facture_signee == 'Non' && this.projectTarget == 'employer';
-          }
-        });
     }
+
+    this.isEmployer = this.currentUser.estEmployeur;
+    this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
+
+    this.contract = this.sharedService.getCurrentMission();
+
+    //initialize global variables for the current mission
+    this.refreshGraphicalData();
+
+    //initialize mission hours and breaktimes
+    this.refreshMissionHours(this.isPointing);
+
+    /*
+     * Prerequis
+     */
+    /*if(this.isNewMission){
+      this.missionService.getPrerequisObligatoires(this.contract.pk_user_contrat).then(data=>{
+        this.prerequisObligatoires = data;
+      });
+    } else {
+      this.prerequisObligatoires = [];
+    }*/
+
+
+    /*this.missionService.getCosignersNames(this.contract).then(
+      (data: any) => {
+        if (data.data) {
+          let cosigners = data.data[0];
+          this.enterpriseName = cosigners.enterprise;
+          this.jobyerName = cosigners.jobyer;
+        }
+      });*/
+
+    //this.getOptionMission();
+
+    // TODO
+    //  Getting contract score
+    // this.notationService.loadContractNotation(this.contract, this.projectTarget).then(
+    //   (score: any) => {
+    //     this.rating = score;
+    //     this.starsText = this.writeStars(this.rating);
+    //   });
   }
 
   addPause(dayIndex) {
@@ -218,7 +197,7 @@ export class MissionDetails{
         this.contract.vu = 'Oui';
         var message = "Horaire du contrat numéro : " + this.contract.numero + " validé";
         //this.sendInfoBySMS(message, "toJobyer");
-        if (this.contract.option_mission != "1.0") {
+        if (this.contract.option_mission != 1) {
           //this.missionService.schedulePointeuse(this.contract, this.missionHours, this.missionPauses);
         }
       }
@@ -239,19 +218,19 @@ export class MissionDetails{
   }
 
   isHourValid(i, j, isStartPause, isStartMission, newHour) {
-    var startMission = this.isEmpty(this.missionHours[i].heure_debut_new) ? this.missionHours[i].heure_debut : this.missionHours[i].heure_debut_new;
-    var endMission = this.isEmpty(this.missionHours[i].heure_fin_new) ? this.missionHours[i].heure_fin : this.missionHours[i].heure_fin_new;
+    let startMission = this.isEmpty(this.missionHours[i].heure_debut_new) ? this.missionHours[i].heure_debut : this.missionHours[i].heure_debut_new;
+    let endMission = this.isEmpty(this.missionHours[i].heure_fin_new) ? this.missionHours[i].heure_fin : this.missionHours[i].heure_fin_new;
     if (j >= 0) {
       var startPause = this.isEmpty(this.missionPauses[i][j].pause_debut_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][j].pause_debut_temp) : this.missionPauses[i][j].pause_debut_new;
       var endPause = this.isEmpty(this.missionPauses[i][j].pause_fin_new) ? this.missionService.convertHoursToMinutes(this.missionPauses[i][j].pause_fin_temp) : this.missionPauses[i][j].pause_fin_new;
     }
 
     if (isStartPause) {
-      if (+startMission >= +newHour && startMission != "") {
+      if (+startMission >= +newHour && !Utils.isEmpty(startMission)) {
         this.addAlert("danger", "L'heure de début de pause doit être supérieure à l'heure de début de travail.");
         return false;
       }
-      if (+endMission <= +newHour && endMission != "") {
+      if (+endMission <= +newHour && !Utils.isEmpty(endMission)) {
         this.addAlert("danger", "L'heure de début de pause doit être inférieure à l'heure de fin de travail.");
         return false;
       }
@@ -273,11 +252,11 @@ export class MissionDetails{
       }
     } else {
       if (j >= 0) {
-        if (+startMission >= +newHour && startMission != "") {
+        if (+startMission >= +newHour && !Utils.isEmpty(startMission)) {
           this.addAlert("danger", "L'heure de fin de pause doit être supérieure à l'heure de début de travail.");
           return false;
         }
-        if (+endMission <= +newHour && endMission != "") {
+        if (+endMission <= +newHour && !Utils.isEmpty(endMission)) {
           this.addAlert("danger", "L'heure de fin de pause doit être inférieure à l'heure de fin de travail.");
           return false;
         }
@@ -301,7 +280,7 @@ export class MissionDetails{
     }
 
     if (isStartMission) {
-      if (+newHour >= +endMission && endMission != "") {
+      if (+newHour >= +endMission && !Utils.isEmpty(endMission)) {
         this.addAlert("danger", "L'heure de début de travail doit être inférieure à l'heure de fin de travail.");
         return false;
       }
@@ -317,7 +296,7 @@ export class MissionDetails{
       }
     } else {
       if ((!j && j != 0) || j < 0) {
-        if (+startMission >= +newHour && startMission != "") {
+        if (+startMission >= +newHour && !Utils.isEmpty(startMission)) {
           this.addAlert("danger", "L'heure de fin de travail doit être supérieure à l'heure de début de travail.");
           return false;
         }
@@ -359,7 +338,7 @@ export class MissionDetails{
         return;
       } else {
         // data saved
-        if (this.contract.option_mission == "2.0" && !this.isEmployer) {
+        if (this.contract.option_mission == 2 && !this.isEmployer) {
           var message = "Le relevé d'heure du contrat numéro " + this.contract.numero + " a été signé.";
           this.sendInfoBySMS(message, "toEmployer");
         }
@@ -435,7 +414,7 @@ export class MissionDetails{
   }
 
   resetForm() {
-    var array = this.missionService.constructMissionHoursArray(this.initialMissionHours);
+    let array: any[][] = this.missionService.constructMissionHoursArray(this.initialMissionHours);
     this.missionHours = array[0];
     this.missionPauses = array[1];
   }
@@ -445,7 +424,7 @@ export class MissionDetails{
     var k = 0;
     for (var i = 0; i < this.missionHours.length; i++) {
       var m = this.missionHours[i];
-      if (!m.heure_debut_pointe || m.heure_debut_pointe == "null" || !m.heure_fin_pointe || m.heure_fin_pointe == "null") {
+      if (Utils.isEmpty(m.date_debut_pointe) || Utils.isEmpty(m.date_fin_pointe)) {
         disable = true;
         return disable;
       } else {
@@ -479,11 +458,11 @@ export class MissionDetails{
       }
     }
     if (isStartMission) {
-      if (!this.missionHours[i].heure_debut_pointe)
+      if (!this.missionHours[i].date_debut_pointe)
         return;
     } else {
       if (!j && j != 0) {
-        if (!this.missionHours[i].heure_fin_pointe)
+        if (!this.missionHours[i].date_fin_pointe)
           return;
       }
     }
@@ -542,16 +521,16 @@ export class MissionDetails{
     this.router.navigate(['contract/invoice']);
   }
 
-  getOptionMission() {
+  /*getOptionMission() {
     if (this.isEmpty(this.contract.option_mission)) {
       this.optionMission = "Mode de suivi de mission n°1";
-      this.contract.option_mission = "1.0";
+      this.contract.option_mission = 1;
     } else {
-      this.optionMission = "Mode de suivi de mission n°" + this.contract.option_mission.substring(0, 1);
+      this.optionMission = "Mode de suivi de mission n°" + this.contract.option_mission;
     }
-  }
+  }*/
 
-  launchContractModal() {
+  /*launchContractModal() {
 
     //jQuery('#modal-contract').modal('show');
     //Create to Iframe to show the contract in the modal
@@ -571,7 +550,7 @@ export class MissionDetails{
 
     window.scrollTo(0,document.body.scrollHeight);
 
-  }
+  }*/
 
   openModifyScheduleModal() {
     jQuery('#modal-modify-schedule').modal({
@@ -591,15 +570,30 @@ export class MissionDetails{
     return str.toUpperCase();
   }
 
-  isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
-  }
-
   refreshGraphicalData() {
+    this.hasJobyerSigned = (this.contract.signature_jobyer.toUpperCase() == "OUI");
+
     this.isNewMission = this.contract.vu.toUpperCase() == 'Oui'.toUpperCase() ? false : true;
+
+    this.isPointing = (this.contract.option_mission != 1);
+
+    this.canPoint = (!this.isEmployer && this.hasJobyerSigned && this.isPointing);
+
+    this.invoiceReady = !Utils.isEmpty(this.contract.numero_de_facture) ;
+
+    this.financeService.checkInvoice(this.contract.pk_user_contrat).then(
+      (invoice: any) => {
+        if (invoice) {
+          this.invoiceId = invoice.pk_user_facture_voj;
+
+          if (this.projectTarget == 'employer')
+            this.isReleveAvailable = invoice.releve_signe_employeur == 'Non';
+          else
+            this.isReleveAvailable = invoice.releve_signe_jobyer == 'Non';
+
+          this.isInvoiceAvailable = invoice.facture_signee == 'Non' && this.projectTarget == 'employer';
+        }
+      });
   }
 
   /**
@@ -638,26 +632,23 @@ export class MissionDetails{
 
   pointHour(autoPointing, day, isStart, isPause) {
     //if (this.nextPointing) {
-    let h = new Date().getHours();
-    let m = new Date().getMinutes();
-    let minutesNow = this.missionService.convertHoursToMinutes(h + ':' + m);
-    day.pointe = minutesNow;
+    //let h = new Date().getHours();
+    //let m = new Date().getMinutes();
+    //let minutesNow = this.missionService.convertHoursToMinutes(h + ':' + m);
+    day.pointe = DateUtils.sqlfyWithHours(new Date());
 
     this.missionService.savePointing(day, isStart, isPause).then((data: any) => {
-      //retrieve mission hours of today
-      this.missionService.listMissionHours(this.contract, true).then((data: any) => {
-        if (data.data) {
-          let missionHoursTemp = data.data;
-          let array = this.missionService.constructMissionHoursArray(missionHoursTemp);
-          this.missionHours = array[0];
-          this.missionPauses = array[1];
-          this.prepareMissionHoursArray();
-          //this.disableBtnPointing = true;
-          //this.router.navigate(['mission/details']);
-        }
-      });
+      this.refreshMissionHours(true);
     });
     //}
+  }
+
+  modifypointedHour(autoPointing, day, isStart, isPause){
+    day.pointe = DateUtils.sqlfyWithHours(new Date());
+
+    this.missionService.savePointing(day, isStart, isPause).then((data: any) => {
+      this.refreshMissionHours(true);
+    });
   }
 
   prepareMissionHoursArray(){
@@ -674,5 +665,23 @@ export class MissionDetails{
         }
       }
     }
+  }
+
+  refreshMissionHours(forPointing){
+    this.missionService.listMissionHours(this.contract, forPointing).then((data: any) => {
+      if (data.data) {
+        let missionHoursTemp = data.data;
+        let array: any[][] = this.missionService.constructMissionHoursArray(missionHoursTemp);
+        this.missionHours = array[0];
+        this.missionPauses = array[1];
+        this.prepareMissionHoursArray();
+        //this.disableBtnPointing = true;
+        //this.router.navigate(['mission/details']);
+      }
+    });
+  }
+
+  isEmpty(str) {
+    return Utils.isEmpty(str);
   }
 }

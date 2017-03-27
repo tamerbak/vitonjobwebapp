@@ -24,8 +24,8 @@
             </header>
             <div class="widget-body">
 
-                <h5>Relevé d'heures de travail du contrat avec {{ contract.prenom }} {{ contract.nom }}.</h5>
-                <fieldset *ngIf="!isEmployer && upperCase(contract.signature_jobyer) == 'NON'">
+                <h5>Relevé d'heures de travail du contrat avec {{ isEmpty(contract.prenom) ? '' : contract.prenom }} {{ contract.nom }}.</h5>
+                <!--<fieldset *ngIf="!isEmployer && upperCase(contract.signature_jobyer) == 'NON'">
                   <legend><strong>Signature du contrat</strong></legend>
                   <div class="container-fluid" [hidden]="prerequisObligatoires.length == 0">
                     <div class="row">
@@ -49,7 +49,7 @@
                   <button type="button" class="btn btn-secondary btn-sm" (click)="launchContractModal()" *ngIf="!isEmployer && upperCase(contract.signature_jobyer) == 'NON' && !(upperCase(contract.signature_jobyer) == 'NON' && isSignContractClicked)">
                     Signer le contrat
                   </button>
-                </fieldset>
+                </fieldset>-->
                 <div *ngFor="let day of missionHours, let i=index">
                     <table class="table table-striped table-condensed" width="400">
 
@@ -67,11 +67,11 @@
                         <tr>
                             <th>Heure</th>
                             <th class="text-align-right">Prévu</th>
-                            <th class="text-align-center" *ngIf="upperCase(contract.approuve) == 'NON'">
+                            <th class="text-align-center" *ngIf="upperCase(contract.approuve) == 'NON' && isPointing">
                                 Jobyer
                             </th>
                             <th class="text-align-center"
-                                *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && (day.heure_debut_pointe || day.heure_fin_pointe) && upperCase(contract.releve_employeur) == 'NON'">
+                                *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && (day.date_debut_pointe || day.date_fin_pointe) && upperCase(contract.releve_employeur) == 'NON'">
                                 {{enterpriseName}}
                             </th>
                         </tr>
@@ -82,7 +82,7 @@
                             <td class="text-align-right" width="100">Début</td>
                             <td class="text-align-right" width="100" [style.color]="!isEmpty(day.heure_debut_new) ? 'orange' : 'gray'">{{ day.heure_debut_temp }}
                             </td>
-                            <td class="text-align-center" width="100">
+                            <td class="text-align-center" width="100" *ngIf="isPointing">
                 <span class="label label-{{ (
                     upperCase(day.is_heure_debut_corrigee) == 'NON'
                       ? 'success'
@@ -92,13 +92,13 @@
                     ))
                   }}"
                 >
-                  {{ (day.heure_debut_pointe) ? day.heure_debut_pointe : '--:--' }}
+                  {{ !isEmpty(day.date_debut_pointe) ? day.date_debut_pointe : '--/--/---- à --:--' }}
                 </span>
                             </td>
                             <td class="text-align-center"
                                 width="100">
                                 <div class="btn-group"
-                                     *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && day.heure_debut_pointe && upperCase(contract.releve_employeur) == 'NON'">
+                                     *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && day.date_debut_pointe && upperCase(contract.releve_employeur) == 'NON'">
                                     <button
                                             class="btn btn-gray btn-sm"
                                             (click)="onPointedHourClick(i, j, true, false, 'approve')"
@@ -115,9 +115,15 @@
                                     </button>
                                 </div>
                                 <button
-                                        type="button" class="btn btn-primary btn-sm" *ngIf="isEmpty(day.heure_debut_pointe) && !isEmployer && hasJobyerSigned"
+                                        type="button" class="btn btn-primary btn-sm" *ngIf="isEmpty(day.date_debut_pointe) && canPoint"
                                         (click)="pointHour(false, day, true, false)">
                                     Pointer
+                                </button>
+
+                                <button
+                                        type="button" class="btn btn-primary btn-sm" *ngIf="!isEmpty(day.date_debut_pointe) && canPoint"
+                                        (click)="modifypointedHour(false, day, true, false)">
+                                    Modifier
                                 </button>
                             </td>
                         </tr>
@@ -141,7 +147,7 @@
                                                    [disabled]="!isEmployer || upperCase(contract.vu) == 'OUI'"/>-->
                                         {{pause.pause_debut_temp}}
                                         </td>
-                                        <td class="text-align-right" width="100">
+                                        <td class="text-align-right" width="100" *ngIf="isPointing">
                                             <input type="time" [(ngModel)]="pause.pause_debut_pointe"
                                                    [hidden]="contract.option_mission == '1.0'|| isNewMission"
                                                    [style.backgroundColor]="upperCase(pause.is_pause_debut_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_debut_corrigee) == 'NON' ? 'green' : '')"
@@ -166,7 +172,7 @@
                                                 </button>
                                             </div>
                                             <button
-                                                    type="button" class="btn btn-primary btn-sm" *ngIf="isEmpty(pause.pause_debut_pointe) && !isEmployer && hasJobyerSigned"
+                                                    type="button" class="btn btn-primary btn-sm" *ngIf="isEmpty(pause.pause_debut_pointe) && canPoint"
                                                     (click)="pointHour(false, pause, true, true)">
                                                 Pointer
                                             </button>
@@ -180,7 +186,7 @@
                                                    [disabled]="!isEmployer || upperCase(contract.vu) == 'OUI'"/>-->
                                             {{pause.pause_fin_temp}}
                                         </td>
-                                        <td class="text-align-right" width="100">
+                                        <td class="text-align-right" width="100" *ngIf="isPointing">
                                             <input type="time" [(ngModel)]="pause.pause_fin_pointe"
                                                    [hidden]="contract.option_mission == '1.0'|| isNewMission"
                                                    [style.backgroundColor]="upperCase(pause.is_pause_fin_corrigee) == 'OUI' ? 'red' : (upperCase(pause.is_pause_fin_corrigee) == 'NON' ? 'green' : '')"
@@ -205,7 +211,7 @@
                                                 </button>
                                             </div>
                                             <button
-                                                    type="button" class="btn btn-primary btn-sm" *ngIf="isEmpty(pause.pause_fin_pointe) && !isEmployer && hasJobyerSigned"
+                                                    type="button" class="btn btn-primary btn-sm" *ngIf="isEmpty(pause.pause_fin_pointe) && canPoint"
                                                     (click)="pointHour(false, pause, false, true)">
                                                 Pointer
                                             </button>
@@ -219,7 +225,7 @@
                         <tr>
                             <td class="text-align-right" width="100">Fin</td>
                             <td class="text-align-right" width="100" [style.color]="!isEmpty(day.heure_fin_new) ? 'orange' : 'gray'">{{ day.heure_fin_temp }}</td>
-                            <td class="text-align-center" width="100">
+                            <td class="text-align-center" width="100" *ngIf="isPointing">
                 <span
                         class="label label-{{ (
                     upperCase(day.is_heure_fin_corrigee) == 'NON'
@@ -229,14 +235,14 @@
                         : 'default'
                     ))
                   }}">
-                  {{ (day.heure_fin_pointe) ? day.heure_fin_pointe : '--:--' }}
+                  {{ !isEmpty(day.date_fin_pointe) ? day.date_fin_pointe : '--/--/---- à --:--' }}
                 </span>
                             </td>
                             <td
                                     class="text-align-center"
                                     width="100">
                                 <div class="btn-group"
-                                     *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && day.heure_fin_pointe && upperCase(contract.releve_employeur) == 'NON'">
+                                     *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && day.date_fin_pointe && upperCase(contract.releve_employeur) == 'NON'">
                                     <button
                                             class="btn btn-gray btn-sm"
                                             (click)="onPointedHourClick(i, j, false, false, 'approve')"
@@ -253,7 +259,7 @@
                                     </button>
                                 </div>
                                 <button
-                                        type="button" class="btn btn-primary btn-sm" *ngIf="isEmpty(day.heure_fin_pointe) && !isEmployer && hasJobyerSigned"
+                                        type="button" class="btn btn-primary btn-sm" *ngIf="isEmpty(day.date_fin_pointe) && canPoint"
                                         (click)="pointHour(false, day, false, false)">
                                     Pointer
                                 </button>
@@ -376,3 +382,6 @@
 
 <div modal-info [msg] = "endMissionMsg" *ngIf="isEmployer && !isNewMission && upperCase(contract.approuve) == 'OUI' && !(upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0')"></div>
 <modal-options [params]="modalParams"></modal-options>
+
+<div modal-hour [missionHours] = "missionHours" [missionPauses] = "missionPauses"
+     *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && upperCase(contract.vu) == 'OUI'"></div>

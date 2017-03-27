@@ -3,6 +3,7 @@ import {Configs} from '../configurations/configs';
 import {Http, Headers} from '@angular/http';
 import {Utils} from "../app/utils/utils";
 import {DateUtils} from "../app/utils/date-utils";
+import {HeureMission} from "../dto/heureMission";
 
 // import {GlobalConfigs} from '../configurations/globalConfigs';
 // import {Storage, SqlStorage} from 'ionic-angular';
@@ -23,10 +24,11 @@ export class MissionService {
   }
 
   listMissionHours(contract, forPointing) {
+    let sql="";
     if (forPointing) {
-      var sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, h.heure_debut_pointe, h.heure_fin_pointe, h.debut_corrigee as is_heure_debut_corrigee, h.fin_corrigee as is_heure_fin_corrigee, h.heure_debut_new, h.heure_fin_new, p.debut as pause_debut, p.fin as pause_fin, p.debut_pointe as pause_debut_pointe, p.fin_pointe as pause_fin_pointe, p.debut_corrigee as is_pause_debut_corrigee, p.fin_corrigee as is_pause_fin_corrigee, p.debut_new as pause_debut_new, p.fin_new as pause_fin_new, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '" + contract.pk_user_contrat + "' order by h.jour_debut, p.debut";
+      sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, h.date_debut_pointe, h.date_fin_pointe, h.debut_corrigee as is_heure_debut_corrigee, h.fin_corrigee as is_heure_fin_corrigee, h.heure_debut_new, h.heure_fin_new, p.debut as pause_debut, p.fin as pause_fin, p.debut_pointe as pause_debut_pointe, p.fin_pointe as pause_fin_pointe, p.debut_corrigee as is_pause_debut_corrigee, p.fin_corrigee as is_pause_fin_corrigee, p.debut_new as pause_debut_new, p.fin_new as pause_fin_new, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '" + contract.pk_user_contrat + "' order by h.jour_debut, p.debut";
     } else {
-      var sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, h.heure_debut_new, h.heure_fin_new, p.debut as pause_debut, p.fin as pause_fin, p.debut_new as pause_debut_new, p.fin_new as pause_fin_new, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '" + contract.pk_user_contrat + "' order by h.jour_debut, p.debut";
+      sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, h.heure_debut_new, h.heure_fin_new, p.debut as pause_debut, p.fin as pause_fin, p.debut_new as pause_debut_new, p.fin_new as pause_fin_new, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '" + contract.pk_user_contrat + "' order by h.jour_debut, p.debut";
     }
 
     return new Promise(resolve => {
@@ -43,20 +45,20 @@ export class MissionService {
 
   constructMissionHoursArray(initialMissionArray) {
     //index of pause :a mission can have many pauses
-    var ids = [];
-    var missionHours = [];
-    var missionPauses = [[]];
-    var k = 0;
-    for (var i = 0; i < initialMissionArray.length; i++) {
-      var m = initialMissionArray[i];
+    let ids = [];
+    let missionHours: HeureMission[] = [];
+    let missionPauses = [[]];
+    let k = 0;
+    for (let i = 0; i < initialMissionArray.length; i++) {
+      let m = initialMissionArray[i];
       //if the mission is not yet pushed
       if (ids.indexOf(m.id) == -1) {
         //push the mission
-        m.heure_debut_pointe = this.convertToFormattedHour(m.heure_debut_pointe);
-        m.heure_fin_pointe = this.convertToFormattedHour(m.heure_fin_pointe);
+        m.date_debut_pointe = DateUtils.convertToFormattedDateHour(new Date(m.date_debut_pointe));
+        m.date_fin_pointe = DateUtils.convertToFormattedDateHour(new Date(m.date_fin_pointe));
         missionHours.push(m);
         k = missionHours.length - 1;
-        //push the id mission to not stock the same mission many time
+        //push the id mission to prebent stocking the same mission many times
         ids.push(m.id);
         //push the pauses
         if (m.id_pause != "null") {
@@ -73,8 +75,8 @@ export class MissionService {
         }
       } else {
         //if the mission is already pushed, just push its pause
-        var idExistMission = ids.indexOf(m.id);
-        var j = missionPauses[idExistMission].length;
+        let idExistMission = ids.indexOf(m.id);
+        let j = missionPauses[idExistMission].length;
         if (m.id_pause != "null") {
           missionPauses[idExistMission][j] = {};
           missionPauses[idExistMission][j].id = m.id_pause;
@@ -380,9 +382,9 @@ export class MissionService {
       }
     } else {
       if (isStart) {
-        sql = "update user_heure_mission set heure_debut_pointe = '" + pointing.pointe + "' where pk_user_heure_mission = '" + pointing.id + "'";
+        sql = "update user_heure_mission set date_debut_pointe = '" + pointing.pointe + "' where pk_user_heure_mission = '" + pointing.id + "'";
       } else {
-        sql = "update user_heure_mission set heure_fin_pointe = '" + pointing.pointe + "' where pk_user_heure_mission = '" + pointing.id + "'";
+        sql = "update user_heure_mission set date_fin_pointe = '" + pointing.pointe + "' where pk_user_heure_mission = '" + pointing.id + "'";
       }
     }
     console.log(sql);
@@ -405,12 +407,12 @@ export class MissionService {
       var m = missionHours[i];
       var str = "";
       if (m.heure_debut_corrigee && m.heure_debut_corrigee != "") {
-        str = " heure_debut_pointe = '" + this.convertHoursToMinutes(m.heure_debut_corrigee) + "', debut_corrigee = 'Oui' ";
+        str = " date_debut_pointe = '" + this.convertHoursToMinutes(m.heure_debut_corrigee) + "', debut_corrigee = 'Oui' ";
         sql = sql + " update user_heure_mission set " + str + " where pk_user_heure_mission = '" + m.id + "'; ";
       }
 
       if (m.heure_fin_corrigee && m.heure_fin_corrigee != "") {
-        str = " heure_fin_pointe = '" + this.convertHoursToMinutes(m.heure_fin_corrigee) + "', fin_corrigee = 'Oui' ";
+        str = " date_fin_pointe = '" + this.convertHoursToMinutes(m.heure_fin_corrigee) + "', fin_corrigee = 'Oui' ";
         sql = sql + " update user_heure_mission set " + str + " where pk_user_heure_mission = '" + m.id + "'; ";
       }
 
@@ -735,14 +737,14 @@ export class MissionService {
     let m = new Date().getMinutes();
     let minutesNow = this.convertHoursToMinutes(h+':'+m);
     for(let i = 0; i < missionHours.length; i++){
-      let scheduledHour = this.isEmpty(missionHours[i].heure_debut_new) ? missionHours[i].heure_debut : missionHours[i].heure_debut_new;
-      if(scheduledHour - minutesNow <=  10 && scheduledHour - minutesNow >=  0 && this.isEmpty(missionHours[i].heure_debut_pointe)){
+      let scheduledHour = Utils.isEmpty(missionHours[i].heure_debut_new) ? missionHours[i].heure_debut : missionHours[i].heure_debut_new;
+      if(scheduledHour - minutesNow <=  10 && scheduledHour - minutesNow >=  0 && Utils.isEmpty(missionHours[i].date_debut_pointe)){
         disabled = false;
         let nextPointing = {id: missionHours[i].id, start: true};
         return {disabled: disabled, nextPointing: nextPointing};
       }
-      scheduledHour = this.isEmpty(missionHours[i].heure_fin_new) ? missionHours[i].heure_fin : missionHours[i].heure_fin_new;
-      if(scheduledHour - minutesNow <=  10 && scheduledHour - minutesNow >=  0 && (this.isEmpty(missionHours[i].heure_fin_pointe))){
+      scheduledHour = Utils.isEmpty(missionHours[i].heure_fin_new) ? missionHours[i].heure_fin : missionHours[i].heure_fin_new;
+      if(scheduledHour - minutesNow <=  10 && scheduledHour - minutesNow >=  0 && (Utils.isEmpty(missionHours[i].date_fin_pointe))){
         disabled = false;
         let nextPointing = {id: missionHours[i].id, start: false};
         return {disabled: disabled, nextPointing: nextPointing};
@@ -750,26 +752,26 @@ export class MissionService {
       for(let j = 0; j < missionPauses[i].length; j++){
         let p = missionPauses[i][j];
         let minutesPause;
-        if(this.isEmpty(p.pause_debut_new)){
+        if(Utils.isEmpty(p.pause_debut_new)){
           let h = (p.pause_debut).split(":")[0];
           let m = (p.pause_debut).split(":")[1];
           minutesPause = this.convertHoursToMinutes(h+':'+m);
         }else{
           minutesPause = p.pause_debut_new;
         }
-        if(minutesPause - minutesNow <=  10 && minutesPause - minutesNow >=  0 && this.isEmpty(p.pause_debut_pointe)){
+        if(minutesPause - minutesNow <=  10 && minutesPause - minutesNow >=  0 && Utils.isEmpty(p.pause_debut_pointe)){
           disabled = false;
           let nextPointing = {id: missionHours[i].id, start: true, id_pause: p.id};
           return {disabled: disabled, nextPointing: nextPointing};
         }
-        if(this.isEmpty(p.pause_fin_new)){
+        if(Utils.isEmpty(p.pause_fin_new)){
           let h = (p.pause_fin).split(":")[0];
           let m = (p.pause_fin).split(":")[1];
           let minutesPause = this.convertHoursToMinutes(h+':'+m);
         }else{
           minutesPause = p.pause_fin_new;
         }
-        if(minutesPause - minutesNow <=  10 && minutesPause - minutesNow >=  0 && this.isEmpty(p.pause_fin_pointe)){
+        if(minutesPause - minutesNow <=  10 && minutesPause - minutesNow >=  0 && Utils.isEmpty(p.pause_fin_pointe)){
           disabled = false;
           let nextPointing = {id: missionHours[i].id, start: false, id_pause: p.id};
           return {disabled: disabled, nextPointing: nextPointing};
@@ -798,12 +800,5 @@ export class MissionService {
           resolve(d);
         });
     });
-  }
-
-  isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
   }
 }
