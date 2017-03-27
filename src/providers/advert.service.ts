@@ -241,7 +241,11 @@ export class AdvertService {
     try {
       val = decodeURIComponent(escape(atob(content)));
     } catch (exc) {
-      val = content;
+      try {
+        val = atob(content);
+      } catch (exc) {
+        val = content;
+      }
     }
     return val;
   }

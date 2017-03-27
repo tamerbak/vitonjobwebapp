@@ -528,20 +528,40 @@ export class MissionService {
     });
   }
 
-  saveNewHour(i, j, isStartMission, isStartPause, id, newHour) {
-    var sql;
-    if (isStartPause) {
-      sql = "update user_pause set debut_new = '" + newHour + "' where pk_user_pause = '" + id + "'";
-    } else {
-      if (j >= 0) {
-        sql = "update user_pause set fin_new = '" + newHour + "' where pk_user_pause = '" + id + "'";
-      }
+  saveNewHours(newHours) {
+    if(newHours.length == 0){
+      return new Promise(resolve => {
+        resolve({status: "success"});
+      });
     }
-    if (isStartMission) {
-      sql = "update user_heure_mission set heure_debut_new = '" + newHour + "' where pk_user_heure_mission = '" + id + "'";
-    } else {
-      if (!j && j != 0) {
-        sql = "update user_heure_mission set heure_fin_new = '" + newHour + "' where pk_user_heure_mission = '" + id + "'";
+    let sql = "";
+    for(let i = 0; i < newHours.length; i++){
+      if(newHours[i].isPointe){
+        if (newHours[i].isPause && newHours[i].isStart) {
+          sql = sql + " update user_pause set debut_pointe = '" + newHours[i].newHour + "', debut_corrigee = 'OUI'  where pk_user_pause = '" + newHours[i].id + "'; ";
+        }
+        if (newHours[i].isPause && !newHours[i].isStart) {
+          sql = sql + " update user_pause set fin_pointe = '" + newHours[i].newHour + "', fin_corrigee = 'OUI'  where pk_user_pause = '" + newHours[i].id + "'; ";
+        }
+        if (!newHours[i].isPause && newHours[i].isStart) {
+          sql = sql + " update user_heure_mission set heure_debut_pointe = '" + newHours[i].newHour + "', debut_corrigee = 'OUI' where pk_user_heure_mission = '" + newHours[i].id + "'; ";
+        }
+        if (!newHours[i].isPause && !newHours[i].isStart) {
+          sql = sql + " update user_heure_mission set heure_fin_pointe = '" + newHours[i].newHour + "', fin_corrigee = 'OUI' where pk_user_heure_mission = '" + newHours[i].id + "'; ";
+        }
+      }else{
+        if (newHours[i].isPause && newHours[i].isStart) {
+          sql = sql + " update user_pause set debut_new = '" + newHours[i].newHour + "' where pk_user_pause = '" + newHours[i].id + "'; ";
+        }
+        if (newHours[i].isPause && !newHours[i].isStart) {
+          sql = sql + " update user_pause set fin_new = '" + newHours[i].newHour + "' where pk_user_pause = '" + newHours[i].id + "'; ";
+        }
+        if (!newHours[i].isPause && newHours[i].isStart) {
+          sql = sql + " update user_heure_mission set heure_debut_new = '" + newHours[i].newHour + "' where pk_user_heure_mission = '" + newHours[i].id + "'; ";
+        }
+        if (!newHours[i].isPause && !newHours[i].isStart) {
+          sql = sql + " update user_heure_mission set heure_fin_new = '" + newHours[i].newHour + "' where pk_user_heure_mission = '" + newHours[i].id + "'; ";
+        }
       }
     }
     console.log(sql);

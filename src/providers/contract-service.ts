@@ -773,7 +773,7 @@ export class ContractService {
       "motifRecours": contract.justification,
       "justificationRecours": contract.motif,
       "qualification": contract.qualification,
-      "caracteristiquePoste": contract.characteristics,
+      "caracteristiquePoste": Utils.preventNull(contract.characteristics),
       "tempsTravail": {
         "nombreHeures": contract.workTimeHours,
         "variables": contract.workTimeVariable,
@@ -821,7 +821,7 @@ export class ContractService {
       "adresseCentreMedecineEntreprise": contract.adresseCentreMedecineEntreprise,
       "centreMedecineETT": contract.centreMedecineETT,
       "adresseCentreMedecineETT": contract.adresseCentreMedecineETT,
-      "risques": contract.postRisks,
+      "risques": Utils.preventNull(contract.postRisks),
       "titreTransport": contract.titreTransport,
       "zonesTitre": contract.zonesTitre,
       "elementsCotisation": ""+contract.elementsCotisation,
