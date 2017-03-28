@@ -123,7 +123,9 @@ export class MissionList{
   }
 
   onScrollDown () {
-    this.getContractsByType(this.typeMissionModel);
+    if(this.queryOffset > 0) {
+      this.getContractsByType(this.typeMissionModel);
+    }
   }
 
   loadList(type){
@@ -227,10 +229,7 @@ export class MissionList{
   }
 
   isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
+    return Utils.isEmpty(str);
   }
 
   upperCase(str) {

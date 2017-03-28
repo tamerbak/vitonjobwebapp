@@ -424,6 +424,9 @@ export class MissionDetails{
   }
 
   disableTimesheetButton() {
+    if(!this.missionHours){
+      return true;
+    }
     let disable = false;
     var k = 0;
     for (var i = 0; i < this.missionHours.length; i++) {
