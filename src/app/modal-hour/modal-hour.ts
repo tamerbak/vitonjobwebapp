@@ -1,47 +1,29 @@
 import {Component, Input, Output, EventEmitter} from "@angular/core";
-import {ROUTER_DIRECTIVES} from "@angular/router";
 
 declare let jQuery: any;
-declare let Messenger: any;
 
-/**
- * Simple modal requesting confirmation
- */
 @Component({
-  selector: '[modal-confirm]',
-  directives: [ROUTER_DIRECTIVES],
-  providers: [],
-  template: require('./modal-confirm.html'),
-  styles: [require('./modal-confirm.scss')]
+  selector: '[modal-hour]',
+  template: require('./modal-hour.html'),
+  styles: [require('./modal-hour.scss')]
 })
-export class ModalConfirm {
+export class ModalHour {
 
-  @Input()
-  message: string = "";
-
-  @Input()
-  messageCantConfirm: string = "";
-
-  @Input()
-  canConfirm: boolean = true;
+  date: Date;
+  time: Date;
 
   @Output()
   confirmed = new EventEmitter<any>();
 
-  @Output()
-  aborted = new EventEmitter<any>();
-
   constructor() {
   }
 
-  confirm(){
-    jQuery("#modal-confirm").modal('hide');
-    this.confirmed.emit([]);
+  validate(){
+    jQuery("#modal-hour").modal('hide');
+    this.confirmed.emit({date: this.date, time: this.time});
   }
 
   close(){
-    jQuery("#modal-confirm").modal('hide');
-    this.aborted.emit([]);
+    jQuery("#modal-hour").modal('hide');
   }
-
 }

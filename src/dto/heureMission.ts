@@ -9,6 +9,9 @@ export class HeureMission{
   date_debut_pointe: string;
   date_fin_pointe: string;
 
+  date_debut_pointe_modifie: string;
+  date_fin_pointe_modifie: string;
+
   is_heure_debut_corrigee: string;
   is_heure_fin_corrigee: string;
 
@@ -28,6 +31,9 @@ export class HeureMission{
 
     this.date_debut_pointe = "";
     this.date_fin_pointe = "";
+
+    this.date_debut_pointe_modifie = "";
+    this.date_fin_pointe_modifie = "";
 
     this.is_heure_debut_corrigee = "NON";
     this.is_heure_fin_corrigee = "NON";

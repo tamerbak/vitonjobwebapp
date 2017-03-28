@@ -188,6 +188,14 @@ export class DateUtils{
       return true;
     }
   }
+  //t = "10:45"
+  public static isTimeValid(t){
+    if(Utils.isEmpty(t) || t.split(":").length != 2){
+      return false;
+    }else{
+      return true;
+    }
+  }
 }
 
 interface Dictionary {

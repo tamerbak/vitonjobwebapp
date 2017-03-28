@@ -26,7 +26,7 @@ export class MissionService {
   listMissionHours(contract, forPointing) {
     let sql="";
     if (forPointing) {
-      sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, h.date_debut_pointe, h.date_fin_pointe, h.debut_corrigee as is_heure_debut_corrigee, h.fin_corrigee as is_heure_fin_corrigee, h.heure_debut_new, h.heure_fin_new, p.debut as pause_debut, p.fin as pause_fin, p.debut_pointe as pause_debut_pointe, p.fin_pointe as pause_fin_pointe, p.debut_corrigee as is_pause_debut_corrigee, p.fin_corrigee as is_pause_fin_corrigee, p.debut_new as pause_debut_new, p.fin_new as pause_fin_new, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '" + contract.pk_user_contrat + "' order by h.jour_debut, p.debut";
+      sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, h.date_debut_pointe, h.date_fin_pointe, h.date_debut_pointe_modifie, h.date_fin_pointe_modifie, h.debut_corrigee as is_heure_debut_corrigee, h.fin_corrigee as is_heure_fin_corrigee, h.heure_debut_new, h.heure_fin_new, p.debut as pause_debut, p.fin as pause_fin, p.debut_pointe as pause_debut_pointe, p.fin_pointe as pause_fin_pointe, p.debut_corrigee as is_pause_debut_corrigee, p.fin_corrigee as is_pause_fin_corrigee, p.debut_new as pause_debut_new, p.fin_new as pause_fin_new, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '" + contract.pk_user_contrat + "' order by h.jour_debut, p.debut";
     } else {
       sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, h.heure_debut_new, h.heure_fin_new, p.debut as pause_debut, p.fin as pause_fin, p.debut_new as pause_debut_new, p.fin_new as pause_fin_new, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '" + contract.pk_user_contrat + "' order by h.jour_debut, p.debut";
     }
@@ -56,6 +56,8 @@ export class MissionService {
         //push the mission
         m.date_debut_pointe = DateUtils.convertToFormattedDateHour(new Date(m.date_debut_pointe));
         m.date_fin_pointe = DateUtils.convertToFormattedDateHour(new Date(m.date_fin_pointe));
+        m.date_debut_pointe_modifie = DateUtils.convertToFormattedDateHour(new Date(m.date_debut_pointe_modifie));
+        m.date_fin_pointe_modifie = DateUtils.convertToFormattedDateHour(new Date(m.date_fin_pointe_modifie));
         missionHours.push(m);
         k = missionHours.length - 1;
         //push the id mission to prebent stocking the same mission many times
@@ -397,6 +399,34 @@ export class MissionService {
         .subscribe((data: any) => {
           this.data = data;
           resolve(this.data);
+        });
+    });
+  }
+
+  saveModifiedPointing(id, date, isStart, isPause) {
+    let sql;
+    if (isPause) {
+      if (isStart) {
+        //sql = "update user_pause set debut_pointe = '" + date + "' where pk_user_pause = '" + id + "'";
+      } else {
+        //sql = "update user_pause set fin_pointe = '" + date + "' where pk_user_pause = '" + id + "'";
+      }
+    } else {
+      if (isStart) {
+        sql = "update user_heure_mission set date_debut_pointe_modifie = '" + date + "' where pk_user_heure_mission = '" + id + "'";
+      } else {
+        sql = "update user_heure_mission set date_fin_pointe_modifie = '" + date + "' where pk_user_heure_mission = '" + id + "'";
+      }
+    }
+    console.log(sql);
+
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any) => {
+          resolve(data);
         });
     });
   }

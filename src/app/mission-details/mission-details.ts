@@ -19,6 +19,7 @@ import {ModalOptions} from "../modal-options/modal-options";
 import {Mission} from "../../dto/mission";
 import {HeureMission} from "../../dto/heureMission";
 import {DateUtils} from "../utils/date-utils";
+import {ModalHour} from "../modal-hour/modal-hour";
 
 declare let jQuery: any;
 declare let Messenger: any;
@@ -29,8 +30,9 @@ declare let Messenger: any;
   styles: [require('./mission-details.scss')],
   pipes: [DateConverter, TimeConverter],
   providers: [ContractService, SharedService, MissionService, FinanceService, GlobalConfigs],
-  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalModifySchedule, ModalInfo, ModalOptions]
+  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalModifySchedule, ModalInfo, ModalOptions, ModalHour]
 })
+
 export class MissionDetails{
 // TODO Set dynamically
   projectTarget: string = 'employer';
@@ -76,6 +78,8 @@ export class MissionDetails{
   hasJobyerSigned: boolean;
   isPointing: boolean;
   canPoint: boolean;
+
+  dayObj: any;
 
   constructor(private sharedService: SharedService,
               private missionService: MissionService,
@@ -643,12 +647,21 @@ export class MissionDetails{
     //}
   }
 
-  modifypointedHour(autoPointing, day, isStart, isPause){
-    day.pointe = DateUtils.sqlfyWithHours(new Date());
+  modifyPointedHour(day, isStart, isPause){
+    jQuery('#modal-hour').modal('show');
+    this.dayObj = {day: day, isStart: isStart, isPause: isPause};
+  }
 
-    this.missionService.savePointing(day, isStart, isPause).then((data: any) => {
-      this.refreshMissionHours(true);
-    });
+  saveModifiedPointedHour(params) {
+    if (!Utils.isEmpty(params) && DateUtils.isDateValid(new Date(params.date)) && DateUtils.isTimeValid(params.time)) {
+      let t = params.time.split(":");
+      let d = new Date(params.date).setHours(t[0], t[1]);
+      let sqlfyDate = DateUtils.sqlfyWithHours(new Date(d));
+
+      this.missionService.saveModifiedPointing(this.dayObj.day.id, sqlfyDate, this.dayObj.isStart, this.dayObj.isPause).then((data: any) => {
+        this.refreshMissionHours(true);
+      });
+    }
   }
 
   prepareMissionHoursArray(){
@@ -656,8 +669,8 @@ export class MissionDetails{
       let day = this.missionHours[i];
       this.missionHours[i].heure_debut_temp = (Utils.isEmpty(day.heure_debut_new) ? this.missionService.convertToFormattedHour(day.heure_debut) : this.missionService.convertToFormattedHour(day.heure_debut_new));
       this.missionHours[i].heure_fin_temp = (Utils.isEmpty(day.heure_fin_new) ? this.missionService.convertToFormattedHour(day.heure_fin) : this.missionService.convertToFormattedHour(day.heure_fin_new));
-      this.missionHours[i].heure_debut_pointe_temp = day.heure_debut_pointe;
-      this.missionHours[i].heure_fin_pointe_temp = day.heure_fin_pointe;
+      //this.missionHours[i].heure_debut_pointe_temp = day.heure_debut_pointe;
+      //this.missionHours[i].heure_fin_pointe_temp = day.heure_fin_pointe;
       //prepare the mission pauses array to display
       if (this.missionPauses[i] && this.missionPauses[i].length != 0) {
         for (let j = 0; j < this.missionPauses[i].length; j++) {
@@ -683,6 +696,52 @@ export class MissionDetails{
         //this.router.navigate(['mission/details']);
       }
     });
+  }
+
+  setColorForPointedHours(day: HeureMission, isStart){
+    if(isStart){
+      //si l'meployeur a refusé l'heure pointé/modifié par le jobyer
+      if(day.is_heure_debut_corrigee.toUpperCase() == 'OUI'){
+        return "danger";
+      }else{
+        //si l'employeur a accepté l'heure pointé/modifié par le jobyer
+        if(day.is_heure_debut_corrigee.toUpperCase() == 'NON'){
+          if(!this.isEmpty(day.date_debut_pointe_modifie)){
+            return 'warning';
+          }else{
+            return 'success';
+          }
+        }else{
+          //si l'employeur n'a pas encore donné son avis sur l'heure pointé/modifié par le jobyer
+          if(!this.isEmpty(day.date_debut_pointe_modifie)){
+            return 'primary';
+          }else{
+            return 'default';
+          }
+        }
+      }
+    }else{
+      //si l'meployeur a refusé l'heure pointé/modifié par le jobyer
+      if(day.is_heure_fin_corrigee.toUpperCase() == 'OUI'){
+        return "danger";
+      }else{
+        //si l'employeur a accepté l'heure pointé/modifié par le jobyer
+        if(day.is_heure_fin_corrigee.toUpperCase() == 'NON'){
+          if(!this.isEmpty(day.date_fin_pointe_modifie)){
+            return 'warning';
+          }else{
+            return 'success';
+          }
+        }else{
+          //si l'employeur n'a pas encore donné son avis sur l'heure pointé/modifié par le jobyer
+          if(!this.isEmpty(day.date_fin_pointe_modifie)){
+            return 'primary';
+          }else{
+            return 'default';
+          }
+        }
+      }
+    }
   }
 
   isEmpty(str) {
