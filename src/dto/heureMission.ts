@@ -1,22 +1,30 @@
 export class HeureMission{
   id: number;
 
+  //jours de la mission
   jour_debut: Date;
   jour_fin: Date;
+  //heures prévues de la mission
   heure_debut: number;
   heure_fin: number;
-
+  //dates pointées par le jobyer
   date_debut_pointe: string;
   date_fin_pointe: string;
-
+  //dates pointées puis modifiées par le jobyer
   date_debut_pointe_modifie: string;
   date_fin_pointe_modifie: string;
+  //date pointe modifiés par l'employeur
+  date_debut_pointe_corrige: string;
+  date_fin_pointe_corrige: string;
 
+  //pour determiner si la date a été pointée/modifiée
+  // a été accepté par l'employeur ou non
   is_heure_debut_corrigee: string;
   is_heure_fin_corrigee: string;
 
-  heure_debut_new: Date;
-  heure_fin_new: Date;
+  heure_debut_new: string;
+  heure_fin_new: string;
+
 
   heure_debut_temp: string;
   heure_fin_temp: string;
@@ -35,11 +43,14 @@ export class HeureMission{
     this.date_debut_pointe_modifie = "";
     this.date_fin_pointe_modifie = "";
 
+    this.date_debut_pointe_corrige = "";
+    this.date_fin_pointe_corrige = "";
+
     this.is_heure_debut_corrigee = "NON";
     this.is_heure_fin_corrigee = "NON";
 
-    this.heure_debut_new = new Date();
-    this.heure_fin_new = new Date();
+    this.heure_debut_new = "";
+    this.heure_fin_new = "";
 
     this.heure_debut_temp = "";
     this.heure_fin_temp = "";

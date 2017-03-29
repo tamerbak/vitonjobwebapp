@@ -14,8 +14,8 @@ declare let jQuery: any;
 export class ModalHour {
   alerts: Array<Object>;
 
-  date: Date;
-  time: Date;
+  date: string;
+  time: string;
 
   @Output()
   confirmed = new EventEmitter<any>();
@@ -24,7 +24,7 @@ export class ModalHour {
   }
 
   validate(){
-    if(!DateUtils.isDateValid(this.date) || Utils.isEmpty(this.time)){
+    if(!DateUtils.isDateValid(new Date(this.date)) || !DateUtils.isTimeValid(this.time)){
       this.addAlert("danger", "Veuillez renseigner la date et l'heure avant de pouvoir valider.");
       return;
     }

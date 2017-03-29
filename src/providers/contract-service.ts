@@ -161,7 +161,13 @@ export class ContractService {
 
   getContractsByType(type:number,offset:number,limit:number,id: number, projectTarget: string) {
     //  Init project parameters
-    var employerSql = "SELECT c.pk_user_contrat,c.*, j.nom, j.prenom FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='" + id + "'";
+    var employerSql = "SELECT c.pk_user_contrat,c.*, " +
+      "j.nom, j.prenom, " +
+      "a.telephone " +
+      "FROM user_contrat as c, user_jobyer as j, user_account as a " +
+      "WHERE c.fk_user_jobyer = j.pk_user_jobyer " +
+      "AND j.fk_user_account = a.pk_user_account " +
+      "AND c.fk_user_entreprise ='" + id + "'";
 
     var jobyerSql = "SELECT c.pk_user_contrat,c.*, e.nom_ou_raison_sociale as nom FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "'";
 

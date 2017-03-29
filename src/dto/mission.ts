@@ -4,6 +4,7 @@ export class Mission{
   titre: string;
   nom: string;
   prenom: string;
+  telephone: string;
 
   fk_user_jobyer: number;
   fk_user_entreprise: number;
@@ -29,6 +30,7 @@ export class Mission{
     this.titre = "";
     this.nom = "";
     this.prenom = "";
+    this.telephone = "";
 
     this.fk_user_jobyer = 0;
     this.fk_user_entreprise = 0;

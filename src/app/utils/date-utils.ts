@@ -181,7 +181,20 @@ export class DateUtils{
     return sd + " à " + hm;
   }
 
-  public static isDateValid(d){
+  //date = "24/03/1987 à 5:00"
+  public static reconvertFormattedDateHour(date: string){
+    if(Utils.isEmpty(date) || !date.split(" à ") || date.split(" à ").length != 2){
+      return;
+    }
+
+    let dateArray = date.split(" à ");
+    let parsedDate = this.displayableDateToSQL(dateArray[0]);
+    let timeArray = dateArray[1].split(":");
+    let d = new Date(parsedDate).setHours(+timeArray[0], +timeArray[1]);
+    return new Date(d);
+  }
+
+  public static isDateValid(d: Date){
     if(Utils.isEmpty(d) || isNaN(d.getTime())){
       return false;
     }else{
@@ -189,7 +202,7 @@ export class DateUtils{
     }
   }
   //t = "10:45"
-  public static isTimeValid(t){
+  public static isTimeValid(t: string){
     if(Utils.isEmpty(t) || t.split(":").length != 2){
       return false;
     }else{
