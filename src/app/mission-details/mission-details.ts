@@ -20,6 +20,7 @@ import {Mission} from "../../dto/mission";
 import {HeureMission} from "../../dto/heureMission";
 import {DateUtils} from "../utils/date-utils";
 import {ModalHour} from "../modal-hour/modal-hour";
+import {SmsService} from "../../providers/sms-service";
 
 declare let jQuery: any;
 declare let Messenger: any;
@@ -29,7 +30,7 @@ declare let Messenger: any;
   template: require('./mission-details.html'),
   styles: [require('./mission-details.scss')],
   pipes: [DateConverter, TimeConverter],
-  providers: [ContractService, SharedService, MissionService, FinanceService, GlobalConfigs],
+  providers: [ContractService, SharedService, MissionService, FinanceService, GlobalConfigs, SmsService],
   directives: [ROUTER_DIRECTIVES, AlertComponent, ModalModifySchedule, ModalInfo, ModalOptions, ModalHour]
 })
 
@@ -84,7 +85,8 @@ export class MissionDetails{
   constructor(private sharedService: SharedService,
               private missionService: MissionService,
               private financeService: FinanceService,
-              private router: Router) {
+              private router: Router,
+              private smsService: SmsService) {
 
     this.currentUser = this.sharedService.getCurrentUser();
     //only connected users can access to this page
@@ -451,44 +453,40 @@ export class MissionDetails{
     return disable;
   }
 
-  onPointedHourClick(i, j, isStartMission, isStartPause, decision) {
-    if (!this.isEmployer || this.upperCase(this.contract.releve_employeur) == 'OUI') {
-      return;
+  acceptHour(day, isDayMission, isStart) {
+    let isCorrected = 'Non';
+    let date = "";
+
+    if (isDayMission && isStart) {
+      date = (Utils.isEmpty(day.date_debut_pointe_modifie) ? day.date_debut_pointe : day.date_debut_pointe_modifie);
     }
-    if (isStartPause) {
-      if (!this.missionPauses[i][j].pause_debut_pointe)
-        return;
-    } else {
-      if (j >= 0) {
-        if (!this.missionPauses[i][j].pause_fin_pointe)
-          return;
-      }
-    }
-    if (isStartMission) {
-      if (!this.missionHours[i].date_debut_pointe)
-        return;
-    } else {
-      if (!j && j != 0) {
-        if (!this.missionHours[i].date_fin_pointe)
-          return;
-      }
+    if (isDayMission && !isStart) {
+      date = (Utils.isEmpty(day.date_fin_pointe_modifie) ? day.date_fin_pointe : day.date_fin_pointe_modifie);
     }
 
-    switch (decision) {
-      case 'approve':
-        this.colorHour(i, j, isStartMission, isStartPause, true);
-        break;
-      case 'decline':
-        this.colorHour(i, j, isStartMission, isStartPause, false);
-        break;
-      default:
-        console.error('Unknown pointing decision ' + decision);
-    }
+    let d = DateUtils.sqlfyWithHours(DateUtils.reconvertFormattedDateHour(date));
+
+    this.missionService.saveCorrectedHour(day, isDayMission, isStart, isCorrected, d).then((data) => {
+      console.log("is hour valid saved");
+      this.refreshMissionHours(true);
+    });
   }
 
-  colorHour(i, j, isStartMission, isStartPause, isAccepted) {
-    var isCorrected = (isAccepted ? 'Non' : 'Oui');
-    var id;
+  refuseHour(day, chosenDate, isDayMission, isStart) {
+    let isCorrected = 'Oui';
+    let date = "";
+
+    this.missionService.saveCorrectedHour(day, isDayMission, isStart, isCorrected, chosenDate).then((data) => {
+      console.log("is hour valid saved");
+      this.refreshMissionHours(true);
+      let message = this.contract.nom + " a refusé certains de vos horaires pointés pour le contrat " + this.contract.numero + ".";
+      this.smsService.sendSms(this.contract.telephone, message);
+    });
+  }
+
+  /*colorHour(chosenDate, i, j, isStartMission, isStartPause, isAccepted) {
+    let isCorrected = (isAccepted ? 'Non' : 'Oui');
+    let id;
     if (isStartPause) {
       this.missionPauses[i][j].is_pause_debut_corrigee = isCorrected;
       id = this.missionPauses[i][j].id;
@@ -498,19 +496,31 @@ export class MissionDetails{
         id = this.missionPauses[i][j].id;
       }
     }
+    let date = "";
     if (isStartMission) {
       this.missionHours[i].is_heure_debut_corrigee = isCorrected;
       id = this.missionHours[i].id;
+      date = (!isAccepted ? '' : (Utils.isEmpty(this.missionHours[i].date_debut_pointe_modifie) ? this.missionHours[i].date_debut_pointe : this.missionHours[i].date_debut_pointe_modifie));
     } else {
       if (!j && j != 0) {
         this.missionHours[i].is_heure_fin_corrigee = isCorrected;
         id = this.missionHours[i].id;
+        date = (!isAccepted ? '' : (Utils.isEmpty(this.missionHours[i].date_fin_pointe_modifie) ? this.missionHours[i].date_fin_pointe : this.missionHours[i].date_fin_pointe_modifie));
       }
     }
-    this.missionService.saveIsHourValid(i, j, isStartMission, isStartPause, isCorrected, id).then((data) => {
-      console.log("is hour valid saved")
+
+    let d = null;
+    if(Utils.isEmpty(chosenDate)){
+      d = DateUtils.sqlfyWithHours(DateUtils.reconvertFormattedDateHour(date));
+    } else {
+     d = chosenDate;
+    }
+
+    this.missionService.saveCorrectedHour(i, j, isStartMission, isStartPause, isCorrected, id, d).then((data) => {
+      console.log("is hour valid saved");
+      this.refreshMissionHours(true);
     });
-  }
+  }*/
 
   /**
    * Call the hours record signature page
@@ -650,20 +660,28 @@ export class MissionDetails{
     //}
   }
 
-  modifyPointedHour(day, isStart, isPause){
+  openModalHour(day, isDayMission, isStart, decision){
     jQuery('#modal-hour').modal('show');
-    this.dayObj = {day: day, isStart: isStart, isPause: isPause};
+    this.dayObj = {day: day, isDayMission: isDayMission, isStart: isStart, decision: decision};
   }
 
-  saveModifiedPointedHour(params) {
+  saveHour(params) {
     if (!Utils.isEmpty(params) && DateUtils.isDateValid(new Date(params.date)) && DateUtils.isTimeValid(params.time)) {
       let t = params.time.split(":");
       let d = new Date(params.date).setHours(t[0], t[1]);
       let sqlfyDate = DateUtils.sqlfyWithHours(new Date(d));
 
-      this.missionService.saveModifiedPointing(this.dayObj.day.id, sqlfyDate, this.dayObj.isStart, this.dayObj.isPause).then((data: any) => {
-        this.refreshMissionHours(true);
-      });
+      //dans le cas ou le jobyer veut modifier une heure pointée
+      if(this.dayObj.decision == 'modify') {
+        this.missionService.saveModifiedPointing(this.dayObj.day.id, sqlfyDate, this.dayObj.isDayMission, this.dayObj.isStart).then((data: any) => {
+          this.refreshMissionHours(true);
+        });
+      }
+
+      //dans le cas ou l'employeur refuse une heure pointée et saisi une autre
+      if(this.dayObj.decision == 'decline') {
+        this.refuseHour(this.dayObj.day, sqlfyDate, this.dayObj.isDayMission, this.dayObj.isStart);
+      }
     }
   }
 
@@ -703,6 +721,22 @@ export class MissionDetails{
 
   setColorForPointedHours(day: HeureMission, isStart){
     if(isStart){
+      if(!this.isEmpty(day.date_debut_pointe_modifie)){
+        return 'primary';
+      }else{
+        return 'default';
+      }
+    }else {
+      if (!this.isEmpty(day.date_fin_pointe_modifie)) {
+        return 'primary';
+      } else {
+        return 'default';
+      }
+    }
+  }
+
+  setColorForValidatedHours(day: HeureMission, isStart){
+    if(isStart){
       //si l'meployeur a refusé l'heure pointé/modifié par le jobyer
       if(day.is_heure_debut_corrigee.toUpperCase() == 'OUI'){
         return "danger";
@@ -716,11 +750,7 @@ export class MissionDetails{
           }
         }else{
           //si l'employeur n'a pas encore donné son avis sur l'heure pointé/modifié par le jobyer
-          if(!this.isEmpty(day.date_debut_pointe_modifie)){
-            return 'primary';
-          }else{
-            return 'default';
-          }
+          return 'default';
         }
       }
     }else{
@@ -737,11 +767,7 @@ export class MissionDetails{
           }
         }else{
           //si l'employeur n'a pas encore donné son avis sur l'heure pointé/modifié par le jobyer
-          if(!this.isEmpty(day.date_fin_pointe_modifie)){
-            return 'primary';
-          }else{
-            return 'default';
-          }
+          return 'default';
         }
       }
     }

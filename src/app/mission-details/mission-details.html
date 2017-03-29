@@ -28,8 +28,7 @@
       </header>
       <div class="widget-body">
         
-        <h5>Relevé d'heures de travail du contrat avec {{ isEmpty(contract.prenom) ? '' : contract.prenom }} {{
-          contract.nom }}.</h5>
+        <h5>Relevé d'heures de travail du contrat avec {{ isEmpty(contract.prenom) ? '' : contract.prenom }} {{ contract.nom }}.</h5>
         <!--<fieldset *ngIf="!isEmployer && upperCase(contract.signature_jobyer) == 'NON'">
           <legend><strong>Signature du contrat</strong></legend>
           <div class="container-fluid" [hidden]="prerequisObligatoires.length == 0">
@@ -56,11 +55,11 @@
           </button>
         </fieldset>-->
         <div *ngFor="let day of missionHours, let i=index">
-          <table class="table table-striped table-condensed" width="400">
+          <table class="table table-striped table-condensed" width="500">
             
             <thead class="no-bd col-xs-12">
             <tr>
-              <th colspan="4">
+              <th colspan="5">
                 Jour {{i + 1}}: {{day.jour_debut | dateConverter:'long'}}
                 <!--<button class="btn btn-default pull-right" (click)="addPause(i)"
                         [hidden]="!isNewMission || !isEmployer || upperCase(contract.signature_jobyer) == 'NON'">
@@ -71,13 +70,27 @@
             </tr>
             <tr>
               <th>Heure</th>
-              <th class="text-align-right">Prévu</th>
+              
+              <th class="text-align-right">Prévue</th>
+              <!--A revoir: la condition-->
               <th class="text-align-center" *ngIf="upperCase(contract.approuve) == 'NON' && isPointing">
-                Jobyer
+                Pointée/Modifiée par le jobyer
               </th>
+              
+              <!--A revoir: la cndition-->
               <th class="text-align-center"
-                  *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && (day.date_debut_pointe || day.date_fin_pointe) && upperCase(contract.releve_employeur) == 'NON'">
-                {{enterpriseName}}
+                  *ngIf="isEmployer && upperCase(contract.approuve) == 'NON'
+                  && (day.date_debut_pointe || day.date_fin_pointe)
+                  && upperCase(contract.releve_employeur) == 'NON'">
+                Validée/Refusée par {{enterpriseName}}
+              </th>
+  
+              <!--A revoir: la cndition-->
+              <th class="text-align-center"
+                  *ngIf="isEmployer && upperCase(contract.approuve) == 'NON'
+                  && (day.date_debut_pointe || day.date_fin_pointe)
+                  && upperCase(contract.releve_employeur) == 'NON'">
+                Actions
               </th>
             </tr>
             </thead>
@@ -86,6 +99,7 @@
             <tr>
               <td class="text-align-right" width="100">Début</td>
               
+              <!--A revoir: la cndition-->
               <td class="text-align-right" width="100"
                   [style.color]="!isEmpty(day.heure_debut_new) ? 'orange' : 'gray'">
                 {{ day.heure_debut_temp }}
@@ -93,29 +107,40 @@
               
               <td class="text-align-center" width="100" *ngIf="isPointing">
                 <span class="label label-{{ setColorForPointedHours(day, true)}}">
-                  {{ !isEmpty(day.date_debut_pointe_modifie) ? day.date_debut_pointe_modifie :
+                  {{ !isEmpty(day.date_debut_pointe_modifie) ?
+                    day.date_debut_pointe_modifie :
                     (!isEmpty(day.date_debut_pointe) ? day.date_debut_pointe : '--/--/---- à --:--')
                     }}
                 </span>
               </td>
-              
+  
+              <td class="text-align-center" width="100" *ngIf="isPointing">
+                <span class="label label-{{ setColorForValidatedHours(day, true)}}">
+                  {{ !isEmpty(day.date_debut_pointe_corrige) ? day.date_debut_pointe_corrige : '--/--/---- à --:--'}}
+                </span>
+              </td>
+  
               <td class="text-align-center" width="100">
+                <!--A revoir: la cndition-->
                 <div class="btn-group"
                      *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && day.date_debut_pointe && upperCase(contract.releve_employeur) == 'NON'">
+  
+                  <!--A revoir: disabled-->
                   <button
-                    class="btn btn-gray btn-sm"
-                    (click)="onPointedHourClick(i, j, true, false, 'approve')"
-                    [disabled]="disableAllUI()"
-                  >
-                    <i class="glyphicon glyphicon-ok"></i> Accepter
+                    class="btn btn-success btn-sm"
+                    (click)="acceptHour(day, true, true)"
+                    [disabled]="disableAllUI()">
+                    <i class="glyphicon glyphicon-ok"></i>
+                    Accepter
                   </button>
-                  
+  
+                  <!--A revoir: la cndition-->
                   <button
-                    class="btn btn-gray btn-sm"
-                    (click)="onPointedHourClick(i, j, true, false, 'decline')"
-                    [disabled]="disableAllUI()"
-                  >
-                    <i class="glyphicon glyphicon-remove"></i> Refuser
+                    class="btn btn-danger btn-sm"
+                    (click)="openModalHour(day, true, true, 'decline')"
+                    [disabled]="disableAllUI()">
+                    <i class="glyphicon glyphicon-remove"></i>
+                    Refuser
                   </button>
                 </div>
                 
@@ -129,7 +154,7 @@
                 <button
                   type="button" class="btn btn-primary btn-sm"
                   *ngIf="!isEmpty(day.date_debut_pointe) && canPoint"
-                  (click)="modifyPointedHour(day, true, false)">
+                  (click)="openModalHour(day, true, true, 'modify')">
                   Modifier
                 </button>
               </td>
@@ -227,6 +252,8 @@
             
             <tr>
               <td class="text-align-right" width="100">Fin</td>
+  
+              <!--A revoir: la cndition-->
               <td class="text-align-right" width="100" [style.color]="!isEmpty(day.heure_fin_new) ? 'orange' : 'gray'">
                 {{ day.heure_fin_temp }}
               </td>
@@ -239,27 +266,36 @@
                   }}
                 </span>
               </td>
-           
-              <td
-                class="text-align-center"
-                width="100">
+  
+              <td class="text-align-center" width="100" *ngIf="isPointing">
+                <span class="label label-{{ setColorForValidatedHours(day, false)}}">
+                  {{ !isEmpty(day.date_fin_pointe_corrige) ?
+                    day.date_fin_pointe_corrige : '--/--/---- à --:--'}}
+                </span>
+              </td>
+  
+              <!--A revoir: la cndition-->
+              <td class="text-align-center" width="100">
                 <div class="btn-group"
-                     *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && day.date_fin_pointe && upperCase(contract.releve_employeur) == 'NON'">
-                 
+                     *ngIf="isEmployer && upperCase(contract.approuve) == 'NON'
+                      && day.date_fin_pointe && upperCase(contract.releve_employeur) == 'NON'">
+  
+                  <!--A revoir: disabled-->
                   <button
-                    class="btn btn-gray btn-sm"
-                    (click)="onPointedHourClick(i, j, false, false, 'approve')"
-                    [disabled]="disableAllUI()"
-                  >
-                    <i class="glyphicon glyphicon-ok"></i> Accepter
+                    class="btn btn-success btn-sm"
+                    (click)="acceptHour(day, true, false)"
+                    [disabled]="disableAllUI()">
+                    <i class="glyphicon glyphicon-ok"></i>
+                    Accepter
                   </button>
-                 
+  
+                  <!--A revoir: disabled-->
                   <button
-                    class="btn btn-gray btn-sm"
-                    (click)="onPointedHourClick(i, j, false, false, 'decline')"
-                    [disabled]="disableAllUI()"
-                  >
-                    <i class="glyphicon glyphicon-remove"></i> Refuser
+                    class="btn btn-danger btn-sm"
+                    (click)="openModalHour(day, true, false, 'decline')"
+                    [disabled]="disableAllUI()">
+                    <i class="glyphicon glyphicon-remove"></i>
+                    Refuser
                   </button>
                 </div>
                
@@ -273,7 +309,7 @@
                 <button
                   type="button" class="btn btn-primary btn-sm"
                   *ngIf="!isEmpty(day.date_fin_pointe) && canPoint"
-                  (click)="modifyPointedHour(day, false, false)">
+                  (click)="openModalHour(day, true, false, 'modify')">
                   Modifier
                 </button>
               </td>
@@ -397,4 +433,4 @@
 
 <modal-options [params]="modalParams"></modal-options>
 
-<div modal-hour (confirmed)="saveModifiedPointedHour($event)"></div>
+<div modal-hour (confirmed)="saveHour($event)"></div>
