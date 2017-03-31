@@ -261,7 +261,7 @@ export class OfferEdit {
 
   ngOnInit(): void {
 
-    if (this.obj == "detail") {
+    if (this.obj == "detail" || this.type == 'planif') {
 
       /**
        * Existing offer initialization
