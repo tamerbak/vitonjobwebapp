@@ -62,6 +62,9 @@ export class OfferTypeList {
     this.currentUser = this.sharedService.getCurrentUser();
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     this.isEmployer = (this.projectTarget == 'employer');
+    if (!this.isEmployer) {
+      this.router.navigate(['home']);
+    }
 
     if (this.isEmployer) {
       this.offerList = this.sharedService.getCurrentUser().employer.entreprises[0].offers;

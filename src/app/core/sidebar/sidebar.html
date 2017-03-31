@@ -41,7 +41,7 @@
           </span>Mes Offres
       </a>
     </li>
-    <li *ngIf="currentUser">
+    <li *ngIf="currentUser && currentUser.estEmployeur">
       <a [routerLink]=" ['/offer/type/list'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-bullhorn"></i>
