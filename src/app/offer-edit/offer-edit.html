@@ -624,7 +624,7 @@
                 </div>
               </div>
 
-              <div *ngIf="obj === 'detail' && isConcretOffer()" class="row">
+              <div *ngIf="isEmployer && obj === 'detail' && isConcretOffer()" class="row">
                 <div
                   class="col-xs-12"
                 >
@@ -637,7 +637,7 @@
                   </button>
                 </div>
               </div>
-              <div *ngIf="obj === 'detail' && isTemplate()" class="row">
+              <div *ngIf="isEmployer && obj === 'detail' && isTemplate()" class="row">
                 <div
                   class="col-xs-12"
                 >
