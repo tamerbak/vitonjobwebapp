@@ -2,13 +2,7 @@
   <li>VOUS ÊTES ICI</li>
   <li class="active"><a class="breadcrumb-link" [routerLink]="['/offer/list']">Mes offres</a></li>
 </ol>
-<div class="row">
-  <div class="col-xs-12 pull-right" style="margin-bottom: 1em;">
-    <a href="javascript:history.go(-1)"><button type="button" class="btn btn-secondary btn-sm" name="button"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Retour</button></a>
-  </div>
-</div>
-<h1 class="page-title">{{currentUser.estRecruteur ? 'Recruteur' : (currentUser.estEmployeur ? 'Employeur' : 'Jobyer')}} - <span
-  class="fw-semi-bold">Mes offres</span></h1>
+
 <div class="row">
   <div class="col-lg-6 col-xs-12">
     <button type="button" class="add-offer btn btn-danger btn-sm" (click)="goToNewOffer()">Créer une offre
@@ -19,7 +13,7 @@
       </button>
 
   </div>
-  <div class="col-lg-6 col-xs-12">
+  <div class="col-lg-6 col-xs-12 offer-list-button-bar">
     <div class="btn-group pull-lg-right pull-md-right pull-sm-right pull-xl-right btn-grp">
       <label class="btn btn-gray btn-1" btnRadio="0" [(ngModel)]="typeOfferModel" (click)="watchTypeOfferModel()">
         En ligne

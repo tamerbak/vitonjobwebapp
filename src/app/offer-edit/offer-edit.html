@@ -25,7 +25,7 @@
 </div>
 
 <div class="row">
-  <div class="col-lg-3 col-xl-4 col-xs-12">
+  <div class="{{ isTemplate() == false ? 'col-lg-3 col-xl-4' : '' }} col-xs-12">
 
     <!-- JOB -->
 
@@ -179,7 +179,7 @@
 
   </div>
 
-  <div class="col-lg-9 col-xl-8 col-xs-12">
+  <div class="col-lg-9 col-xl-8 col-xs-12" *ngIf="isTemplate() == false">
 
     <!-- CALENDAR -->
     <section class="widget widget-calendar widget-offer">
@@ -540,48 +540,117 @@
         <form class="form-horizontal" role="form">
           <div class="form-actions">
             <div class="container-fluid">
+
               <div class="row">
                 <div class="col-xs-12">
-                  <button type="button" class="btn btn-success fwidth" [disabled]="isOfferInContract || isOfferArchived || !initSectorDone" (click)="saveOffer()">
-                    Enregistrer
+                  <button
+                    type="button"
+                    class="btn btn-success fwidth"
+                    [disabled]="isOfferInContract || isOfferArchived || !initSectorDone"
+                    (click)="saveOffer()"
+                  >
+                    {{ isPlanif() ? 'Créer l\'offre' : 'Enregistrer' }}
                   </button>
                 </div>
               </div>
-              <div *ngIf="obj === 'detail'" class="row">
+
+              <div *ngIf="obj === 'detail' && isConcretOffer()" class="row">
                 <div class="col-md-6 col-xs-12">
-                  <button type="submit" class="btn btn-primary fwidth" [disabled]="!fullLoad" (click)="copyOffer()">
+                  <button
+                    type="submit"
+                    class="btn btn-primary fwidth"
+                    [disabled]="!fullLoad"
+                    (click)="copyOffer()"
+                  >
                     Copier l'offre
                   </button>
                 </div>
+
                 <div class="col-lg-6 col-md-6 col-xs-12">
-                  <button type="submit" class="btn btn-primary fwidth" (click)="changePrivacy()" [disabled]="isOfferInContract || isOfferArchived">
+                  <button
+                    type="submit"
+                    class="btn btn-primary fwidth"
+                    (click)="changePrivacy()"
+                    [disabled]="isOfferInContract || isOfferArchived"
+                  >
                     {{ offer.visible ? "Rendre l'offre privée" : "Mettre l'offre en ligne" }}
                   </button>
                 </div>
 
                 <div class="col-lg-6 col-md-6 col-xs-12">
-                  <button type="submit" class="btn btn-primary fwidth" (click)="autoSearchMode()" [disabled]="isOfferArchived">
+                  <button
+                    type="submit"
+                    class="btn btn-primary fwidth"
+                    (click)="autoSearchMode()"
+                    [disabled]="isOfferArchived"
+                  >
                     {{autoSearchModeTitle}}
                   </button>
                 </div>
 
                 <div class="col-lg-6 col-md-6 col-xs-12">
-                  <button type="submit" class="btn btn-primary fwidth" (click)="launchSearch()" *ngIf="!offer.obsolete" [disabled]="isOfferArchived">
+                  <button
+                    *ngIf="!offer.obsolete"
+                    type="submit"
+                    class="btn btn-primary fwidth"
+                    (click)="launchSearch()"
+                    [disabled]="isOfferArchived"
+                  >
                     {{isEmployer ? 'Enregistrer et lancer la planification' : 'Lancer la recherche'}}
                   </button>
                 </div>
 
                 <div class="col-lg-6 col-md-6 col-xs-12">
-                  <button type="submit" class="btn btn-primary fwidth" (click)="showQuote()" [disabled]="!initSectorDone" *ngIf="projectTarget == 'employer'">
+                  <button
+                    *ngIf="projectTarget == 'employer'"
+                    type="submit"
+                    class="btn btn-primary fwidth"
+                    (click)="showQuote()"
+                    [disabled]="!initSectorDone"
+                  >
                     Enregistrer et consulter le devis
                   </button>
                 </div>
+
                 <div class="col-lg-6 col-md-6 col-xs-12">
-                  <button type="submit" class="btn btn-danger fwidth" (click)="deleteOffer()" [disabled]="offer.visible && !isOfferArchived">
+                  <button
+                    type="submit"
+                    class="btn btn-danger fwidth"
+                    (click)="deleteOffer()"
+                    [disabled]="offer.visible && !isOfferArchived"
+                  >
                     Supprimer l'offre
                   </button>
                 </div>
               </div>
+
+              <div *ngIf="obj === 'detail' && isConcretOffer()" class="row">
+                <div
+                  class="col-xs-12"
+                >
+                  <button
+                    type="submit"
+                    class="btn btn-danger fwidth"
+                    (click)="useAsType(true)"
+                  >
+                    Utiliser comme offre type
+                  </button>
+                </div>
+              </div>
+              <div *ngIf="obj === 'detail' && isTemplate()" class="row">
+                <div
+                  class="col-xs-12"
+                >
+                  <button
+                    type="submit"
+                    class="btn btn-danger fwidth"
+                    (click)="useAsType(false)"
+                  >
+                    Ne plus utiliser comme offre type
+                  </button>
+                </div>
+              </div>
+
             </div>
           </div>
 

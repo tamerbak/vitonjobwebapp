@@ -34,6 +34,8 @@ import {AdvertJobyerList} from "../advert-jobyer-list/advert-jobyer-list";
 import {Iframe} from '../iframe/iframe';
 import {EntrepriseEdit} from '../entreprise-edit/entreprise-edit';
 import {Origine} from "../origine/origine";
+// import {List} from "../list/list";
+import {OfferTypeList} from "../offer-type-list/offer-type-list";
 
 /**
  * VitOnJob modules
@@ -57,6 +59,8 @@ export const CoreRoutes: RouterConfig = [
         {path: '**'}
       ]},
 
+      // {path: 'test', component: List},
+
       // User parameters
       {path: 'profile', component: Profile, canDeactivate: [ConfirmExitPage]},
       {path: 'profile/jobyer', component: ProfileJobyer},
@@ -66,6 +70,7 @@ export const CoreRoutes: RouterConfig = [
 
       // Offers management
       {path: 'offer/list', component: OfferList},
+      {path: 'offer/type/list', component: OfferTypeList},
       {path: 'offer/edit', component: OfferEdit, canDeactivate: [ConfirmExitPage]},
       {path: 'offer/recruit', component: OfferRecruit, canDeactivate: [ConfirmExitPage]},
       //{path: 'offer/wizard', component: OfferWizard},

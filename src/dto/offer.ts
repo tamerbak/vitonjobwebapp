@@ -10,6 +10,8 @@ export class Offer extends AbstractGCallout {
   idOffer: number;
   title: string;
 
+  offerType: boolean;
+
   videolink: string;
   jobData: Job;
   parametrageConvention: number;
@@ -47,6 +49,7 @@ export class Offer extends AbstractGCallout {
     this.equipmentData = [];
     this.visible = false;
     this.title = "";
+    this.offerType = false;
     this.status = "open";
     this.videolink = "";
     this.nbPoste = 1;

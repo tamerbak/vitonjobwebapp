@@ -96,7 +96,12 @@ export class OfferEdit {
   alertsConditionEmp: Array<Object>;
   hideJobLoader: boolean = true;
   datepickerOpts: any;
+
+  /**
+   * Controller arguments
+   */
   obj: string;
+  type: string;
 
   videoAvailable: boolean = false;
   youtubeLink: string;
@@ -184,6 +189,7 @@ export class OfferEdit {
     //obj = "add", "detail", or "recruit"
     this.route.params.forEach((params: Params) => {
       this.obj = params['obj'];
+      this.type = params['type'];
     });
 
     let currentOffer = this.sharedService.getCurrentOffer();
@@ -198,6 +204,12 @@ export class OfferEdit {
         this.fullLoad = true;
         this.offer.adresse.type = "adresse_de_travail";
         this.loader.hide();
+
+        // If we come from a template, remove the id to implicit copy the offer.
+        if (this.type == 'planif') {
+          this.offer.idOffer = 0;
+          this.offer.calendarData = [];
+        }
       });
     } else {
       this.offer = new Offer();
@@ -208,11 +220,11 @@ export class OfferEdit {
     if (this.projectTarget == "employer" && this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
       this.convention = this.currentUser.employer.entreprises[0].conventionCollective;
     } else {
-      this.convention = {
-        id: 0,
-        code: '',
-        libelle: ''
-      }
+        this.convention = {
+          id: 0,
+          code: '',
+          libelle: ''
+        }
     }
   }
 
@@ -680,7 +692,7 @@ export class OfferEdit {
     }
 
     //redirection depending on the case
-    if (this.projectTarget == 'employer') {
+    if (this.projectTarget == 'employer' && this.type != 'template') {
       this.advertService.getAdvertByOffer(this.offer.idOffer).then((advert: any) => {
         if (!Utils.isEmpty(advert)) {
           this.dataValidation = true;
@@ -717,7 +729,11 @@ export class OfferEdit {
     } else {
       //redirect to offer-list and display public offers
       let typeOffer = this.offer.visible ? 0 : 1;
-      this.router.navigate(['offer/list', {typeOfferModel: typeOffer}]);
+      if (this.type == 'template' && this.obj == 'detail') {
+        this.router.navigate(['offer/type/list']);
+      } else {
+        this.router.navigate(['offer/list', {typeOfferModel: typeOffer}]);
+      }
     }
   }
 
@@ -1184,6 +1200,33 @@ export class OfferEdit {
       this.savedSoftwares.push(softwaresTemp[0]);
       this.selectedSoftware = "";
     }
+  }
+
+  useAsType(value) {
+    this.type = 'template';
+    if (value) {
+      this.offer.offerType = true;
+    } else {
+      this.offer.offerType = false;
+    }
+    this.saveOffer(false);
+  }
+
+  /**
+   * On offer type mode, the slots are hidden
+   *
+   * @returns {boolean}
+   */
+  isTemplate() {
+    return !(this.isEmpty(this.type) || this.type != 'template');
+  }
+
+  isPlanif() {
+    return !(this.isEmpty(this.type) || this.type != 'planif');
+  }
+
+  isConcretOffer() {
+    return this.isEmpty(this.type);
   }
 
   isEmpty(str) {

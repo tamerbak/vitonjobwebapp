@@ -42,6 +42,13 @@
       </a>
     </li>
     <li *ngIf="currentUser">
+      <a [routerLink]=" ['/offer/type/list'] ">
+        <span class="icon">
+            <i class="glyphicon glyphicon-bullhorn"></i>
+          </span>Mes Offres Types
+      </a>
+    </li>
+    <li *ngIf="currentUser">
       <a [routerLink]=" ['/mission/list'] ">
         <span class="icon">
             <i class="fa fa-file-text"></i>

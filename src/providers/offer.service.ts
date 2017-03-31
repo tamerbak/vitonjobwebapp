@@ -443,6 +443,41 @@ export class OffersService {
     });
   }
 
+  getIsTypeOrNot(offers) {
+    console.log(offers);
+    let ids = [];
+    for (let i = 0; i < offers.length; ++i) {
+      ids.push(offers[i].idOffer);
+    }
+    console.log(ids);
+    let sql = 'SELECT pk_user_offre_entreprise AS id, offre_type FROM user_offre_entreprise WHERE pk_user_offre_entreprise IN (' + ids.join(', ') + ');';
+
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data : any) => {
+
+          console.log(data);
+          if (data.status == 'success') {
+            for (let i = 0; i < offers.length; ++i) {
+              let offer = data.data.filter((o) => {
+                return offers[i].idOffer == o.id;
+              });
+              if (offer.length == 1) {
+                offers[i].offerType = offer[0].offre_type;
+              }
+            }
+          }
+          resolve(null);
+        });
+    });
+  }
+
   loadOfferAdress(idOffer, type){
     let to = type =='jobyer'?'user_offre_jobyer':'user_offre_entreprise';
     let table = type =='jobyer'?'user_adresse_jobyer':'user_adresse_entreprise';
@@ -535,6 +570,7 @@ export class OffersService {
       "', nombre_de_postes = " + offer.nbPoste +
       ", contact_sur_place = '" + offer.contact +
       "', telephone_contact = '" + offer.telephone +
+      "', offre_type = '" + (offer.offerType ? 'Oui' : 'Non') +
       "' where pk_user_offre_entreprise=" + offer.idOffer;
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
