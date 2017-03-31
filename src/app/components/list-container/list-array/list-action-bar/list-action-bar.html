@@ -1,0 +1,8 @@
+<div *ngFor="let button of buttons">
+  <button
+    type="button"
+    class="btn btn-sm action-button"
+    (click)="eventClick(button)"
+  >
+    {{ button.label }}</button>
+</div>

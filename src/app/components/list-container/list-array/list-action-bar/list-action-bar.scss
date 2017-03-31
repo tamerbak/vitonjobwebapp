@@ -1,0 +1,19 @@
+:host {
+  z-index: 0;
+  background-color: #14baa6;
+  border-color: #119c8b;
+  height: 50px;
+  width: 100vw;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  padding-left: 50px;
+  text-align: right;
+  padding-right: 60vw;
+  padding-top: 10px;
+}
+
+.action-button {
+  float: right;
+  margin-left: 5px;
+}

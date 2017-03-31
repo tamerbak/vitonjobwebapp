@@ -1,0 +1,18 @@
+<div style="margin-right: 30px;">
+  <div *ngFor="let listElement of listElements; let i = index">
+    <section class="widget">
+      <div class="widget-body row">
+        <div
+          element
+          [(listElement)]="listElements[i]"
+          [(canBeSelected)]="canBeSelected"
+          (elementSelect)="elementSelected($event)"
+        ></div>
+      </div>
+    </section>
+  </div>
+</div>
+<div
+  list-action-bar
+></div>
+<!--*ngIf="isActionBarOpen"-->

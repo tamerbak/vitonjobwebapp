@@ -273,8 +273,8 @@ export class Calendar {
 
         let newCalendarEvt = new CalendarEvent();
         newCalendarEvt.title =
-          (!isPause ? "Créneau de " : "Pause de ")
-          + startHour + " à " + endHour
+          (!isPause ? "" : "Pause : ")
+          + startHour + " -> " + endHour
         ;
         newCalendarEvt.setStartHour(startDate.getTime());
         newCalendarEvt.setEndHour(endDate.getTime());
@@ -624,7 +624,7 @@ export class Calendar {
 
         let newCalendarEvt = new CalendarEvent(true);
         newCalendarEvt.title =
-          (!this.slot.pause ? "Créneau de " : "Pause de ")
+          (!this.slot.pause ? "" : "Pause de ")
           + DateUtils.formatHours(hs) + ":" + DateUtils.formatHours(ms)
           + " à " + DateUtils.formatHours(he) + ":" + DateUtils.formatHours(me)
         ;
@@ -642,7 +642,7 @@ export class Calendar {
 
       let newCalendarEvt = new CalendarEvent(true);
       newCalendarEvt.title =
-        (!this.slot.pause ? "Créneau de " : "Pause de ")
+        (!this.slot.pause ? "" : "Pause de ")
         + DateUtils.formatHours(hs) + ":" + DateUtils.formatHours(ms)
         + " à " + DateUtils.formatHours(he) + ":" + DateUtils.formatHours(me)
       ;

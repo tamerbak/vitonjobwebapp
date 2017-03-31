@@ -1,0 +1,19 @@
+<div class="map-viewer">
+  <sebm-google-map
+    #Map
+    [latitude]="lat"
+    [longitude]="lng"
+    [zoom]="5"
+    class="content-map"
+  >
+    <sebm-google-map-marker
+      *ngFor="let item of searchResultPos, let i = index"
+      [latitude]="item.lat"
+      [longitude]="item.lng"
+    >
+      <sebm-google-map-info-window>
+        <div [innerHTML]="item.info"></div>
+      </sebm-google-map-info-window>
+    </sebm-google-map-marker>
+  </sebm-google-map>
+</div>

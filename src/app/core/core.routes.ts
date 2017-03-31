@@ -34,7 +34,7 @@ import {AdvertJobyerList} from "../advert-jobyer-list/advert-jobyer-list";
 import {Iframe} from '../iframe/iframe';
 import {EntrepriseEdit} from '../entreprise-edit/entreprise-edit';
 import {Origine} from "../origine/origine";
-// import {List} from "../list/list";
+import {List} from "../list/list";
 import {OfferTypeList} from "../offer-type-list/offer-type-list";
 
 /**
@@ -59,7 +59,7 @@ export const CoreRoutes: RouterConfig = [
         {path: '**'}
       ]},
 
-      // {path: 'test', component: List},
+      {path: 'test', component: List},
 
       // User parameters
       {path: 'profile', component: Profile, canDeactivate: [ConfirmExitPage]},

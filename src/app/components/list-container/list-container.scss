@@ -1,0 +1,14 @@
+
+$columnsNumber: 12;
+$maxHeight: 100%;
+
+$nbColumnList: 5;
+$nbColumnViewer: $columnsNumber - $nbColumnList;
+
+.array-container {
+  width: $nbColumnList * ($maxHeight / $columnsNumber);
+}
+
+.viewer-container {
+  width: $nbColumnViewer * ($maxHeight / $columnsNumber);
+}

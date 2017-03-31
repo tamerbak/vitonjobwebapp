@@ -1,0 +1,45 @@
+:host {
+  width: 100%;
+}
+
+.list-checkbox {
+  float: left;
+  margin-top: 22px;
+  margin-right: 10px;
+}
+
+.list-picture {
+  float: left;
+}
+
+.list-picture img {
+  width: 60px;
+  height: 60px;
+}
+
+.list-picture-status {
+  float: left;
+  position: absolute;
+  top: 4px;
+  left: 11px;
+}
+
+.list-label {
+  color: #555;
+}
+
+.list-sub-label {
+  margin-top: 2px;
+  font-size: 12px;
+  color: #999;
+}
+
+.list-value {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.list-value-unit {
+  color: #999;
+}
