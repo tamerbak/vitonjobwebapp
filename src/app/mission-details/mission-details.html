@@ -150,7 +150,8 @@
                   <button
                     class="btn btn-success btn-sm"
                     (click)="acceptHour(day, true, true)"
-                    [disabled]="disableAllUI()">
+                    [disabled]="disableAllUI()"
+                    *ngIf="!isEmpReleveGenerated">
                     <i class="glyphicon glyphicon-ok"></i>
                     Accepter
                   </button>
@@ -159,7 +160,8 @@
                   <button
                     class="btn btn-danger btn-sm"
                     (click)="openModalHour(day, true, true, 'decline')"
-                    [disabled]="disableAllUI()">
+                    [disabled]="disableAllUI()"
+                    *ngIf="!isEmpReleveGenerated">
                     <i class="glyphicon glyphicon-remove"></i>
                     Refuser
                   </button>
@@ -167,14 +169,14 @@
                 
                 <button
                   type="button" class="btn btn-default btn-sm"
-                  *ngIf="isEmpty(day.date_debut_pointe) && canPoint"
+                  *ngIf="isEmpty(day.date_debut_pointe) && canPoint && !isEmpReleveGenerated"
                   (click)="pointHour(false, day, true, false)">
                   Pointer
                 </button>
                 
                 <button
                   type="button" class="btn btn-primary btn-sm"
-                  *ngIf="!isEmpty(day.date_debut_pointe) && canPoint"
+                  *ngIf="!isEmpty(day.date_debut_pointe) && canPoint && !isEmpReleveGenerated"
                   (click)="openModalHour(day, true, true, 'modify')">
                   Modifier
                 </button>
@@ -335,7 +337,8 @@
                   <button
                     class="btn btn-success btn-sm"
                     (click)="acceptHour(day, true, false)"
-                    [disabled]="disableAllUI()">
+                    [disabled]="disableAllUI()"
+                    *ngIf="!isEmpReleveGenerated">
                     <i class="glyphicon glyphicon-ok"></i>
                     Accepter
                   </button>
@@ -344,7 +347,8 @@
                   <button
                     class="btn btn-danger btn-sm"
                     (click)="openModalHour(day, true, false, 'decline')"
-                    [disabled]="disableAllUI()">
+                    [disabled]="disableAllUI()"
+                    *ngIf="!isEmpReleveGenerated">
                     <i class="glyphicon glyphicon-remove"></i>
                     Refuser
                   </button>
@@ -352,14 +356,14 @@
                
                 <button
                   type="button" class="btn btn-default btn-sm"
-                  *ngIf="isEmpty(day.date_fin_pointe) && canPoint"
+                  *ngIf="isEmpty(day.date_fin_pointe) && canPoint && !isEmpReleveGenerated"
                   (click)="pointHour(false, day, false, false)">
                   Pointer
                 </button>
                 
                 <button
                   type="button" class="btn btn-primary btn-sm"
-                  *ngIf="!isEmpty(day.date_fin_pointe) && canPoint"
+                  *ngIf="!isEmpty(day.date_fin_pointe) && canPoint && !isEmpReleveGenerated"
                   (click)="openModalHour(day, true, false, 'modify')">
                   Modifier
                 </button>
@@ -459,14 +463,14 @@
           >
               Réinitialiser
           </button>-->
-          <button
+          <!--<button
             type="button" class="btn btn-danger btn-sm"
             *ngIf="isCanceled() == false"
             (click)="removeMission()"
             [disabled]="canRemoveMission()"
           >
             Annuler la mission
-          </button>
+          </button>-->
         
         </div>
         
