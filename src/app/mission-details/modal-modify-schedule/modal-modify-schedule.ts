@@ -79,52 +79,79 @@ export class ModalModifySchedule{
   }
 
   modifyScheduledHour() {
-    let isScheduleValid = this.checkHoursValidity();
+    /*let isScheduleValid = this.checkHoursValidity();
     if (!isScheduleValid) {
       return;
-    }
-    for (let k = 0; k < this.indexArray.length; k++) {
-      let i = this.indexArray[k].missionHourIndex;
-      let j = this.indexArray[k].pauseIndex;
-      let isStartMission = this.indexArray[k].isStartMission;
-      let isStartPause = this.indexArray[k].isStartPause;
+    }*/
 
-      let h: number;
-      let m: number;
-      let id;
-      if (isStartPause) {
-        this.missionPauses[i][j].pause_debut_new = this.missionPauses[i][j].pause_debut_temp;
-        h = +this.missionPauses[i][j].pause_debut_temp.split(':')[0] * 60;
-        m = +this.missionPauses[i][j].pause_debut_temp.split(':')[1];
-        id = this.missionPauses[i][j].id;
-      } else {
-        if (j >= 0) {
-          this.missionPauses[i][j].pause_fin_new = this.missionPauses[i][j].pause_fin_temp;
-          h = +this.missionPauses[i][j].pause_fin_temp.split(':')[0] * 60;
-          m = +this.missionPauses[i][j].pause_fin_temp.split(':')[1];
-          id = this.missionPauses[i][j].id;
+    let hoursArray = [];
+    let h: number;
+    let m: number;
+    for (let i = 0; i < this.missionHours.length; i++) {
+      let day = this.missionHours[i];
+      let savedHeureDebut = (Utils.isEmpty(day.heure_debut_new) ? this.missionService.convertToFormattedHour(day.heure_debut) : this.missionService.convertToFormattedHour(day.heure_debut_new));
+      if(day.heure_debut_temp != savedHeureDebut){
+        day.heure_debut_new = day.heure_debut_temp;
+        h = +day.heure_debut_temp.split(':')[0] * 60;
+        m = +day.heure_debut_temp.split(':')[1];
+        hoursArray.push({id:day.id, newHour: h + m, isPause: false, isStart: true, isPointe: false});
+      }
+      let savedHeureFin = (Utils.isEmpty(day.heure_fin_new) ? this.missionService.convertToFormattedHour(day.heure_fin) : this.missionService.convertToFormattedHour(day.heure_fin_new));
+      if(day.heure_fin_temp != savedHeureFin){
+        day.heure_fin_new = day.heure_fin_temp;
+        h = +day.heure_fin_temp.split(':')[0] * 60;
+        m = +day.heure_fin_temp.split(':')[1];
+        hoursArray.push({id:day.id, newHour: h + m, isPause: false, isStart: false, isPointe: false});
+      }
+      if(day.heure_debut_pointe_temp != day.heure_debut_pointe){
+        day.heure_debut_pointe = day.heure_debut_pointe_temp;
+        h = +day.heure_debut_pointe_temp.split(':')[0] * 60;
+        m = +day.heure_debut_pointe_temp.split(':')[1];
+        hoursArray.push({id:day.id, newHour: h + m, isPause: false, isStart: true, isPointe: true});
+      }
+      if(day.heure_fin_pointe_temp != day.heure_fin_pointe){
+        day.heure_fin_pointe = day.heure_fin_pointe_temp;
+        h = +day.heure_fin_pointe_temp.split(':')[0] * 60;
+        m = +day.heure_fin_pointe_temp.split(':')[1];
+        hoursArray.push({id:day.id, newHour: h + m, isPause: false, isStart: false, isPointe: true});
+      }
+      if (this.missionPauses[i] && this.missionPauses[i].length != 0) {
+        for (let j = 0; j < this.missionPauses[i].length; j++) {
+          let pause = this.missionPauses[i][j];
+          let savedPauseDebut = (Utils.isEmpty(pause.pause_debut_new) ? pause.pause_debut : this.missionService.convertToFormattedHour(pause.pause_debut_new));
+          if (pause.pause_debut_temp != savedPauseDebut) {
+            pause.pause_debut_new = pause.pause_debut_temp;
+            h = +pause.pause_debut_temp.split(':')[0] * 60;
+            m = +pause.pause_debut_temp.split(':')[1];
+            hoursArray.push({id: pause.id, newHour: h + m, isPause: true, isStart: true, isPointe: false});
+          }
+          let savedPauseFin = (Utils.isEmpty(pause.pause_fin_new) ? pause.pause_fin : this.missionService.convertToFormattedHour(pause.pause_fin_new));
+          if (pause.pause_fin_temp != savedPauseFin) {
+            pause.pause_fin_new = pause.pause_fin_temp;
+            h = +pause.pause_fin_temp.split(':')[0] * 60;
+            m = +pause.pause_fin_temp.split(':')[1];
+            hoursArray.push({id: pause.id, newHour: h + m, isPause: true, isStart: false, isPointe: false});
+          }
+          if (pause.pause_debut_pointe_temp != pause.pause_debut_pointe) {
+            pause.pause_debut_pointe = pause.pause_debut_pointe_temp;
+            h = +pause.pause_debut_pointe_temp.split(':')[0] * 60;
+            m = +pause.pause_debut_pointe_temp.split(':')[1];
+            hoursArray.push({id: pause.id, newHour: h + m, isPause: true, isStart: true, isPointe: true});
+          }
+          if (pause.pause_fin_pointe_temp != pause.pause_fin_pointe) {
+            pause.pause_fin_pointe = pause.pause_fin_pointe_temp;
+            h = +pause.pause_fin_pointe_temp.split(':')[0] * 60;
+            m = +pause.pause_fin_pointe_temp.split(':')[1];
+            hoursArray.push({id: pause.id, newHour: h + m, isPause: true, isStart: false, isPointe: true});
+          }
         }
       }
-      if (isStartMission) {
-        this.missionHours[i].heure_debut_new = this.missionHours[i].heure_debut_temp;
-        h = +this.missionHours[i].heure_debut_temp.split(':')[0] * 60;
-        m = +this.missionHours[i].heure_debut_temp.split(':')[1];
-        id = this.missionHours[i].id;
-      } else {
-        if (!j && j != 0) {
-          this.missionHours[i].heure_fin_new = this.missionHours[i].heure_fin_temp;
-          h = +this.missionHours[i].heure_fin_temp.split(':')[0] * 60;
-          m = +this.missionHours[i].heure_fin_temp.split(':')[1];
-          id = this.missionHours[i].id;
-        }
-      }
-      let newHour = h + m;
-      this.missionService.saveNewHour(i, j, isStartMission, isStartPause, id, newHour).then((data) => {
-        jQuery('#modal-modify-schedule').modal('hide');
-        return;
-      });
     }
-    jQuery('#modal-modify-schedule').modal('hide');
+
+    this.missionService.saveNewHours(hoursArray).then((data) => {
+      jQuery('#modal-modify-schedule').modal('hide');
+      return;
+    });
   }
 
   checkHoursValidity() {

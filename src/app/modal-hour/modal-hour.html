@@ -1,0 +1,32 @@
+<div class="modal fade modal-margin-top" id="modal-hour">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title text-xs-center fw-bold mt" id="myModalLabel18">Veuiller saisir l'heure souhaitée</h4>
+      </div>
+      <div class="modal-body bg-gray-lighter">
+        <form class="modal-picture-form form-horizontal" role="form">
+          <div class="row">
+            <div class="col-lg-12 col-xs-12">
+              <input type="date" [(ngModel)]="date">
+              <input type="time" [(ngModel)]="time">
+            </div>
+          </div>
+          <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
+            <div [innerHTML]="alert.msg"></div>
+          </alert>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="clearfix">
+            <button type="button" class="btn btn-gray" (click)="close()">
+              Annuler
+            </button>
+            <button class="btn btn-primary" (click)="validate()">
+              Enregistrer
+            </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -123,7 +123,9 @@ export class MissionList{
   }
 
   onScrollDown () {
-    this.getContractsByType(this.typeMissionModel);
+    if(this.queryOffset > 0) {
+      this.getContractsByType(this.typeMissionModel);
+    }
   }
 
   loadList(type){
@@ -141,11 +143,13 @@ export class MissionList{
         }
      });
 
-     this.contractService.getFutureContractsCount(this.userId, this.projectTarget).then((data: any) => {
-        if (data.data) {
-          this.missionFutureCount = data.data[0].count == 0 ? 'Aucune':(''+data.data[0].count);
-        }
-     });
+     if(this.isEmployer) {
+       this.contractService.getFutureContractsCount(this.userId, this.projectTarget).then((data: any) => {
+         if (data.data) {
+           this.missionFutureCount = data.data[0].count == 0 ? 'Aucune' : ('' + data.data[0].count);
+         }
+       });
+     }
 
      this.contractService.getPastContractsCount(this.userId, this.projectTarget).then((data: any) => {
         if (data.data) {
@@ -225,10 +229,7 @@ export class MissionList{
   }
 
   isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
+    return Utils.isEmpty(str);
   }
 
   upperCase(str) {

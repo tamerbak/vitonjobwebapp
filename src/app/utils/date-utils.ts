@@ -39,6 +39,10 @@ export class DateUtils{
     return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " 00:00:00+00";
   }
 
+  public static sqlfyWithHours(d: Date) {
+    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " " + d.getHours() + ":" + d.getMinutes() + ":00+00";
+  }
+
   public static toDateString(date) {
     if (Utils.isEmpty(date)) {
       return "";
@@ -132,11 +136,10 @@ export class DateUtils{
     return h + m;
   }
 
-  public static getFormattedHourFromDate(d) {
-    if (Utils.isEmpty(d)) {
+  public static getFormattedHourFromDate(date: Date) {
+    if (Utils.isEmpty(date)) {
       return "--:--";
     }
-    let date = new Date(d);
     let h = date.getHours();
     let m = date.getMinutes();
     return h + ":" + (m < 10 ? ('0' + m) : m);
@@ -166,6 +169,45 @@ export class DateUtils{
 
     d.setHours(hours, minutes);
     return d;
+  }
+
+  public static convertToFormattedDateHour(d: Date){
+    if(!this.isDateValid(d)){
+      return "";
+    }
+
+    let sd = this.simpleDateFormat(d);
+    let hm = this.getFormattedHourFromDate(d);
+    return sd + " à " + hm;
+  }
+
+  //date = "24/03/1987 à 5:00"
+  public static reconvertFormattedDateHour(date: string){
+    if(Utils.isEmpty(date) || !date.split(" à ") || date.split(" à ").length != 2){
+      return;
+    }
+
+    let dateArray = date.split(" à ");
+    let parsedDate = this.displayableDateToSQL(dateArray[0]);
+    let timeArray = dateArray[1].split(":");
+    let d = new Date(parsedDate).setHours(+timeArray[0], +timeArray[1]);
+    return new Date(d);
+  }
+
+  public static isDateValid(d: Date){
+    if(Utils.isEmpty(d) || isNaN(d.getTime())){
+      return false;
+    }else{
+      return true;
+    }
+  }
+  //t = "10:45"
+  public static isTimeValid(t: string){
+    if(Utils.isEmpty(t) || t.split(":").length != 2){
+      return false;
+    }else{
+      return true;
+    }
   }
 }
 

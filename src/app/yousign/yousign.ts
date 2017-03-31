@@ -1,15 +1,9 @@
 import {Component} from "@angular/core";
-import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SharedService} from "../../providers/shared.service";
-import {FinanceService} from "../../providers/finance.service";
 import {ContractService} from "../../providers/contract-service";
 import {SmsService} from "../../providers/sms-service";
-import {Helpers} from "../../providers/helpers.service";
 import {Router} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
-import {MissionService} from "../../providers/mission-service";
-import {Utils} from "../utils/utils";
-import {OffersService} from "../../providers/offer.service";
 
 
 /**
@@ -21,7 +15,7 @@ import {OffersService} from "../../providers/offer.service";
   template: require('./yousign.html'),
   styles: [require('./yousign.scss')],
   directives: [AlertComponent],
-  providers: [FinanceService, GlobalConfigs, ContractService, Helpers, SmsService, MissionService, OffersService]
+  providers: [ContractService, SmsService]
 })
 export class Yousign{
 
@@ -31,7 +25,6 @@ export class Yousign{
   employer: any;
   currentUser: any;
   jobyer: any;
-  dataObject: any;
   contractData: any;
 
   currentOffer: any = null;
@@ -39,51 +32,63 @@ export class Yousign{
 
   alerts: Array<Object>;
 
-  constructor(public gc: GlobalConfigs,
-              private contractService: ContractService,
-              private offerService: OffersService,
+  constructor(private contractService: ContractService,
               private smsService: SmsService,
-              private financeService: FinanceService,
               private sharedService: SharedService,
-              private missionService: MissionService,
               private router: Router) {
     this.currentUser = this.sharedService.getCurrentUser();
-    // Get target to determine configs
-    this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
+
+    //les recruteurs n'ont pas le droit de signer des contrats
+    if(this.currentUser.estRecruteur){
+      this.router.navigate(['home']);
+      return;
+    }
+
+    this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
     // Set local variables and messages
     //get the currentEmployer & call youssign service
     this.isEmployer = (this.projectTarget == 'employer');
-    this.jobyer = this.sharedService.getCurrentJobyer();
+
+    if(this.isEmployer){
+      this.jobyer = this.sharedService.getCurrentJobyer();
+      this.currentOffer = this.sharedService.getCurrentOffer();
+    }
+
     this.contractData = this.sharedService.getContractData();
-    this.currentOffer = this.sharedService.getCurrentOffer();
   }
 
   ngOnInit(){
-    let currentEmployer = this.currentUser.employer;
-    if (currentEmployer) {
-      this.employer = currentEmployer;
-      this.setDocusignFrame();
+    if(this.isEmployer) {
+      let currentEmployer = this.currentUser.employer;
+      if (currentEmployer) {
+        this.employer = currentEmployer;
+        this.setDocusignFrame();
+      }
     }
+
+    this.setDocusignFrame();
   }
 
   goToPaymentMethod() {
-    this.router.navigate(['payment/method']);
+    if(this.isEmployer) {
+      this.router.navigate(['payment/method']);
+    }
   }
 
-  /**
-   * @author daoudi amine
-   * @description call yousign service and send sms to the jobyer
-   */
   checkDocusignSignatureState() {
     if (!this.contractData.id ||this.contractData.id == 0) {
       this.addAlert("warning", "Veuillez signer le contrat avant de passer à l'étape suivante");
     } else {
-      this.contractService.checkDocusignSignatureState(this.contractData.id).then((data: any) => {
+      this.contractService.checkDocusignSignatureState(this.contractData.id, this.projectTarget).then((data: any) => {
         let state = data.data[0].etat;
         if (state.toLowerCase() == "oui") {
-          // Send sms to jobyer
-          this.smsService.sendSms(this.jobyer.tel, 'Une demande de signature de contrat vous a été adressée. Contrat numéro : ' + this.contractData.num);
-          this.goToPaymentMethod();
+          if(this.isEmployer) {
+            // Send sms to jobyer
+            this.smsService.sendSms(this.jobyer.tel, 'Une demande de signature de contrat vous a été adressée. Contrat numéro : ' + this.contractData.num);
+            this.goToPaymentMethod();
+          }else{
+            this.router.navigate(['mission/list']);
+          }
         } else {
           this.addAlert("warning", "Veuillez signer le contrat avant de passer à l'étape suivante");
         }
@@ -92,9 +97,11 @@ export class Yousign{
   }
 
   setDocusignFrame(){
-    //change jobyer 'contacted' status
-    this.jobyer.contacted = true;
-    this.jobyer.date_invit = new Date();
+    if(this.isEmployer) {
+      //change jobyer 'contacted' status
+      this.jobyer.contacted = true;
+      this.jobyer.date_invit = new Date();
+    }
 
     //Create to Iframe to show the contract in the NavPage
     let iframe = document.createElement('iframe');
@@ -105,7 +112,12 @@ export class Yousign{
     iframe.style.overflow = "hidden";
     iframe.style.height = "100%";
     iframe.style.width = "100%";
-    iframe.setAttribute("src", this.contractData.partnerEmployerLink);
+
+    if(this.isEmployer){
+      iframe.setAttribute("src", this.contractData.partnerEmployerLink);
+    }else{
+      iframe.setAttribute("src", this.contractData.partnerJobyerLink);
+    }
 
     document.getElementById("iframPlaceHolder").appendChild(iframe);
   }
