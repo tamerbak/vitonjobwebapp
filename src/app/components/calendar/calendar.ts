@@ -110,7 +110,7 @@ export class Calendar {
   untilDate: any;
   createEvent: any;
 
-  employerControlsAreActive: boolean = false;
+  employerControlsAreActive: string[] = [];
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -129,6 +129,8 @@ export class Calendar {
     this.route.params.forEach((params: Params) => {
       this.obj = params['obj'];
     });
+
+    this.employerControlsAreActive['daily_duration'] = true;
   }
 
   ngOnInit(): void {
@@ -344,22 +346,28 @@ export class Calendar {
     // Check that the slot is not overwriting an other one
     if (!slot.pause) {
 
-      if (this.projectTarget == 'employer' && this.employerControlsAreActive == true) {
-        //total hours of one day should be lower than 10h
-        let isDailyDurationRespected = this.offersService.isDailySlotsDurationRespected(slots, slot);
-        if (!isDailyDurationRespected) {
-          this.addAlert("danger", "Le total des heures de travail de chaque journée ne doit pas dépasser les 10 heures. Veuillez réduire la durée de ce créneau", "slot");
-          return false;
+      if (this.projectTarget == 'employer') {
+        if (this.employerControlsAreActive['daily_duration']) {
+          //total hours of one day should be lower than 10h
+          let isDailyDurationRespected = this.offersService.isDailySlotsDurationRespected(slots, slot);
+          if (!isDailyDurationRespected) {
+            this.addAlert("danger", "Le total des heures de travail de chaque journée ne doit pas dépasser les 10 heures. Veuillez réduire la durée de ce créneau", "slot");
+            return false;
+          }
         }
 
-        if (!this.offersService.isSlotRespectsBreaktime(slots, slot)) {
-          this.addAlert("danger", "Veuillez mettre un délai de 11h entre deux créneaux situés sur deux jours calendaires différents.", "slot");
-          return false;
-        }
-        for (let i = 0; i < slots.length; i++) {
-          if ((slot.date >= slots[i].date && slot.dateEnd <= slots[i].dateEnd) || (slot.date >= slots[i].date && slot.date < slots[i].dateEnd) || (slot.dateEnd > slots[i].date && slot.dateEnd <= slots[i].dateEnd)) {
-            this.addAlert("danger", "Ce créneau chevauche avec un autre", "slot");
+        if (this.employerControlsAreActive['check_rest']) {
+          if (!this.offersService.isSlotRespectsBreaktime(slots, slot)) {
+            this.addAlert("danger", "Veuillez mettre un délai de 11h entre deux créneaux situés sur deux jours calendaires différents.", "slot");
             return false;
+          }
+        }
+        if (this.employerControlsAreActive['slots_overwrite']) {
+          for (let i = 0; i < slots.length; i++) {
+            if ((slot.date >= slots[i].date && slot.dateEnd <= slots[i].dateEnd) || (slot.date >= slots[i].date && slot.date < slots[i].dateEnd) || (slot.dateEnd > slots[i].date && slot.dateEnd <= slots[i].dateEnd)) {
+              this.addAlert("danger", "Ce créneau chevauche avec un autre", "slot");
+              return false;
+            }
           }
         }
       }
