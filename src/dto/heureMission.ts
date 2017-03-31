@@ -22,6 +22,11 @@ export class HeureMission{
   is_heure_debut_corrigee: string;
   is_heure_fin_corrigee: string;
 
+  //pour determiner si le jobyer accepte la decision
+  // de l'employeur concernant ses heures pointé
+  est_heure_debut_aime: string;
+  est_heure_fin_aime: string;
+
   heure_debut_new: string;
   heure_fin_new: string;
 
@@ -48,6 +53,9 @@ export class HeureMission{
 
     this.is_heure_debut_corrigee = "NON";
     this.is_heure_fin_corrigee = "NON";
+
+    this.est_heure_debut_aime = "";
+    this.est_heure_fin_aime = "";
 
     this.heure_debut_new = "";
     this.heure_fin_new = "";

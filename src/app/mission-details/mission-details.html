@@ -55,11 +55,11 @@
           </button>
         </fieldset>-->
         <div *ngFor="let day of missionHours, let i=index">
-          <table class="table table-striped table-condensed" width="500">
+          <table class="table table-striped table-condensed" width="600">
             
             <thead class="no-bd col-xs-12">
             <tr>
-              <th colspan="5">
+              <th colspan="6">
                 Jour {{i + 1}}: {{day.jour_debut | dateConverter:'long'}}
                 <!--<button class="btn btn-default pull-right" (click)="addPause(i)"
                         [hidden]="!isNewMission || !isEmployer || upperCase(contract.signature_jobyer) == 'NON'">
@@ -79,7 +79,7 @@
               
               <!--A revoir: la cndition-->
               <th class="text-align-center"
-                  *ngIf="isEmployer && upperCase(contract.approuve) == 'NON'
+                  *ngIf="upperCase(contract.approuve) == 'NON'
                   && (day.date_debut_pointe || day.date_fin_pointe)
                   && upperCase(contract.releve_employeur) == 'NON'">
                 Validée/Refusée par {{enterpriseName}}
@@ -87,10 +87,17 @@
   
               <!--A revoir: la cndition-->
               <th class="text-align-center"
-                  *ngIf="isEmployer && upperCase(contract.approuve) == 'NON'
+                  *ngIf="upperCase(contract.approuve) == 'NON'
                   && (day.date_debut_pointe || day.date_fin_pointe)
                   && upperCase(contract.releve_employeur) == 'NON'">
                 Actions
+              </th>
+  
+              <th class="text-align-center"
+                  *ngIf="!isEmployer && upperCase(contract.approuve) == 'NON'
+                  && (day.date_debut_pointe || day.date_fin_pointe)
+                  && upperCase(contract.releve_employeur) == 'NON'">
+                Avis du jobyer
               </th>
             </tr>
             </thead>
@@ -116,7 +123,21 @@
   
               <td class="text-align-center" width="100" *ngIf="isPointing">
                 <span class="label label-{{ setColorForValidatedHours(day, true)}}">
-                  {{ !isEmpty(day.date_debut_pointe_corrige) ? day.date_debut_pointe_corrige : '--/--/---- à --:--'}}
+                  {{ !isEmpty(day.date_debut_pointe_corrige) ?
+                    day.date_debut_pointe_corrige : '--/--/---- à --:--'}}
+                </span>
+                
+                <span class="label">
+                  <i class="glyphicon glyphicon-thumbs-up text-success"
+                     style="font-size: medium;"
+                     *ngIf="day.est_heure_debut_aime.toUpperCase() == 'OUI'">
+                  </i>
+                </span>
+                <span class="label">
+                  <i class="glyphicon glyphicon-thumbs-down text-danger"
+                     style="font-size: medium;"
+                     *ngIf="day.est_heure_debut_aime.toUpperCase() == 'NON'">
+                  </i>
                 </span>
               </td>
   
@@ -156,6 +177,23 @@
                   *ngIf="!isEmpty(day.date_debut_pointe) && canPoint"
                   (click)="openModalHour(day, true, true, 'modify')">
                   Modifier
+                </button>
+              </td>
+  
+              <td class="text-align-center" width="100"
+                  *ngIf="isPointing && !isEmployer
+                  && (day.date_debut_pointe || day.date_fin_pointe)
+                  && upperCase(contract.releve_employeur) == 'NON'">
+                <button class="btn btn-default"
+                  *ngIf="!isEmpty(day.date_debut_pointe_corrige)"
+                  (click)="saveJobyerAppreciation(day, true, true, 'like')">
+                  <i class="glyphicon glyphicon-thumbs-up text-success"></i>
+                </button>
+              
+                <button class="btn btn-default"
+                        *ngIf="!isEmpty(day.date_debut_pointe_corrige)"
+                        (click)="saveJobyerAppreciation(day, true, true, 'unlike')">
+                  <i class="glyphicon glyphicon-thumbs-down text-danger"></i>
                 </button>
               </td>
             </tr>
@@ -272,6 +310,19 @@
                   {{ !isEmpty(day.date_fin_pointe_corrige) ?
                     day.date_fin_pointe_corrige : '--/--/---- à --:--'}}
                 </span>
+  
+                <span class="label">
+                  <i class="glyphicon glyphicon-thumbs-up text-success"
+                     style="font-size: medium;"
+                     *ngIf="day.est_heure_fin_aime.toUpperCase() == 'OUI'">
+                  </i>
+                </span>
+                <span class="label">
+                  <i class="glyphicon glyphicon-thumbs-down text-danger"
+                     style="font-size: medium;"
+                     *ngIf="day.est_heure_fin_aime.toUpperCase() == 'NON'">
+                  </i>
+                </span>
               </td>
   
               <!--A revoir: la cndition-->
@@ -313,13 +364,30 @@
                   Modifier
                 </button>
               </td>
+  
+              <td class="text-align-center" width="100"
+                  *ngIf="isPointing && !isEmployer
+                  && (day.date_debut_pointe || day.date_fin_pointe)
+                  && upperCase(contract.releve_employeur) == 'NON'">
+                <button class="btn btn-default"
+                        *ngIf="!isEmpty(day.date_fin_pointe_corrige)"
+                        (click)="saveJobyerAppreciation(day, true, false, 'like')">
+                  <i class="glyphicon glyphicon-thumbs-up text-success"></i>
+                </button>
+  
+                <button class="btn btn-default"
+                        *ngIf="!isEmpty(day.date_fin_pointe_corrige)"
+                        (click)="saveJobyerAppreciation(day, true, false, 'unlike')">
+                  <i class="glyphicon glyphicon-thumbs-down text-danger"></i>
+                </button>
+              </td>
             </tr>
             </tbody>
           </table>
         
         </div>
         <div class="col-xs-12">
-          <button
+          <button hidden="true"
             type="button" class="btn btn-primary btn-sm"
             (click)="openModifyScheduleModal()"
             *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && upperCase(contract.vu) == 'OUI' && upperCase(contract.releve_employeur) == 'NON'"
