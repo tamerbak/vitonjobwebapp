@@ -604,6 +604,10 @@ export class OfferEdit {
           });
           return;
         }*/
+        if (this.type == 'template') {
+          return ;
+        }
+
         if (this.obj == "add") {
           if(this.projectTarget == "employer"){
             this.dataValidation = true;
@@ -689,11 +693,14 @@ export class OfferEdit {
     this.dataValidation = true;
     this.offersService.updateOfferJob(this.offer, this.projectTarget);
     this.setOfferInLocal();
-    Messenger().post({
-      message: "Informations enregistrées avec succès.",
-      type: 'success',
-      showCloseButton: true
-    });
+
+    if (this.type != 'template') {
+      Messenger().post({
+        message: "Informations enregistrées avec succès.",
+        type: 'success',
+        showCloseButton: true
+      });
+    }
 
     if (stayOnPage == true) {
       return;
@@ -737,7 +744,7 @@ export class OfferEdit {
     } else {
       //redirect to offer-list and display public offers
       let typeOffer = this.offer.visible ? 0 : 1;
-      if (this.type == 'template' && this.obj == 'detail') {
+      if (this.type == 'template') {
         this.router.navigate(['offer/type/list']);
       } else {
         this.router.navigate(['offer/list', {typeOfferModel: typeOffer}]);

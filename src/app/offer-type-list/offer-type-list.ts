@@ -111,7 +111,7 @@ export class OfferTypeList {
       let offer = this.offerList[i];
 
       // If missing main data or if not a template, ignore
-      if (!offer || !offer.jobData || offer.offerType != 'Oui') {
+      if (!offer || !offer.jobData || !offer.offerType) {
         continue;
       }
 

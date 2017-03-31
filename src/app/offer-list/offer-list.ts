@@ -63,7 +63,12 @@ export class OfferList {
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     this.isEmployer = (this.projectTarget == 'employer');
 
-    this.loadOffers();
+    this.offerList = this.projectTarget == 'employer'
+      ? this.sharedService.getCurrentUser().employer.entreprises[0].offers
+      : this.sharedService.getCurrentUser().jobyer.offers;
+    this.offersService.getIsTypeOrNot(this.offerList).then(() => {
+      this.loadOffers();
+    });
 
   }
 
@@ -96,15 +101,20 @@ export class OfferList {
     this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
     this.globalOfferList.push({header: 'Mes brouillons', list: []});
     this.globalOfferList.push({header: 'Mes offres en archive', list: []});
-    this.offerList = this.projectTarget == 'employer'
-      ? this.sharedService.getCurrentUser().employer.entreprises[0].offers
-      : this.sharedService.getCurrentUser().jobyer.offers;
+    // this.offerList = this.projectTarget == 'employer'
+    //   ? this.sharedService.getCurrentUser().employer.entreprises[0].offers
+    //   : this.sharedService.getCurrentUser().jobyer.offers;
     let obsoleteOffers = [];
 
     for (let i = 0; i < this.offerList.length; i++) {
       let offer = this.offerList[i];
 
       if (!offer || !offer.jobData || !offer.calendarData ||(offer.calendarData && offer.calendarData.length == 0)) {
+        continue;
+      }
+
+      // If missing main data or if not a template, ignore
+      if (offer.offerType == true) {
         continue;
       }
 
