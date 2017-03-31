@@ -79,6 +79,7 @@ export class MissionDetails{
   hasJobyerSigned: boolean;
   isPointing: boolean;
   canPoint: boolean;
+  isEmpReleveGenerated: boolean;
 
   dayObj: any;
 
@@ -606,6 +607,8 @@ export class MissionDetails{
     this.canPoint = (!this.isEmployer && this.hasJobyerSigned && this.isPointing);
 
     this.invoiceReady = !Utils.isEmpty(this.contract.numero_de_facture) ;
+
+    this.isEmpReleveGenerated = (this.contract.releve_employeur.toUpperCase() ==  'OUI')
 
     this.financeService.checkInvoice(this.contract.pk_user_contrat).then(
       (invoice: any) => {
