@@ -484,6 +484,15 @@ export class MissionDetails{
     });
   }
 
+  saveJobyerAppreciation(day, isDayMission, isStart, appreciation) {
+    let isLiked = (appreciation == 'like' ? 'Oui' : 'Non');
+
+    this.missionService.saveJobyerAppreciation(day, isDayMission, isStart, isLiked).then((data) => {
+      this.refreshMissionHours(true);
+    });
+  }
+
+
   /*colorHour(chosenDate, i, j, isStartMission, isStartPause, isAccepted) {
     let isCorrected = (isAccepted ? 'Non' : 'Oui');
     let id;
