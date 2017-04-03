@@ -144,7 +144,7 @@ export class ContractList{
               for (let j = 0; j < data.length; j++) {
                 offer.jobData.prerequisObligatoires.push(data[j].libelle);
               }
-              //contract.prerequis = offer.jobData.prerequisObligatoires;
+              contract.prerequis = offer.jobData.prerequisObligatoires;
 
               //si le contrat docusign n'a jamais été généré, passer par tout le proccesus de génération
               if(Utils.isEmpty(contract.partnerEmployerLink)){
