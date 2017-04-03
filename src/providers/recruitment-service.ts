@@ -6,7 +6,6 @@ import {CalendarQuarter} from "../dto/calendar-quarter";
 import {CalendarQuarterPerDay} from "../dto/calendar-quarter-per-day";
 import {CalendarSlot} from "../dto/calendar-slot";
 import {Offer} from "../dto/offer";
-
 import {OffersService} from "./offer.service";
 import {ContractService} from "./contract-service";
 import {Router} from "@angular/router";
@@ -20,6 +19,8 @@ import {Entreprise} from "../dto/entreprise";
 export class RecruitmentService {
 
   configuration: any;
+
+  errorMessage: string = '';
 
   constructor(public http: Http,
               public router: Router,
@@ -232,12 +233,125 @@ export class RecruitmentService {
   }
 
   /**
+   * Return an array of day assigned to the given jobyer
+   *
+   * TODO : A tester
+   *
+   * @returns {Array}
+   */
+  allPlanning2JobyerPlanning(availabilities, jobyerSelected): {date: string, quarters: any[]}[] {
+    let jobyerDay = availabilities.quartersPerDay.filter((d)=> {
+      for (let quarterId = 0; quarterId < (24 * 4); ++quarterId) {
+        if (d.quarters[quarterId] == jobyerSelected.id) {
+          return true;
+        }
+      }
+      return false;
+    });
+    let mergedJobyerDay: any[] = [];
+    for (let i = 0; i < jobyerDay.length; ++i) {
+      if (mergedJobyerDay[jobyerDay[i].date] == null) {
+        mergedJobyerDay[jobyerDay[i].date] = {
+          date: jobyerDay[i].date,
+          quarters: []
+        };
+      }
+      for (let quarterId = 0; quarterId < (24 * 4); ++quarterId) {
+        if (jobyerDay[i].quarters[quarterId] == jobyerSelected.id) {
+          mergedJobyerDay[jobyerDay[i].date].quarters[quarterId] = jobyerSelected.id;
+        }
+      }
+    }
+
+    if (Utils.isEmpty(jobyerDay) == false) {
+      console.log('allPlanning2JobyerPlanning.jobyerDay');
+      console.log(jobyerDay);
+      console.log('allPlanning2JobyerPlanning.mergedJobyerDay');
+      console.log(mergedJobyerDay);
+    }
+    return mergedJobyerDay;
+  }
+
+  /**
+   * Return the number of hours separating 2 days:
+   * > If 2 days are following themselves, such as the monday and tuesday of the same week, returns 0.
+   * > Otherwhise, if the 2 days are monday and thursday, returns 48.
+   * > If the d1 is after d2, return -1.
+   *
+   * TODO : A tester
+   *
+   * @param d1
+   * @param d2
+   * @returns {number}
+   */
+  getHoursBetween2Days(d1, d2): number {
+    let d1Date = new Date(d1.date);
+    let d2Date = new Date(d2.date);
+
+    let d1Time: number = d1Date.getTime();
+    let d2Time: number = d2Date.getTime();
+
+    let shift = (((d2Time - d1Time) / (24 * 60 * 60 * 1000)) - 1) * 4 * 24;
+    console.log(shift);
+    return shift;
+  }
+
+  /**
    * TODO: Controls that the jobyer cans legally work
    *
    * @returns {boolean}
    */
-  isJobyerCanWorkThisQuarter(date, availabilities, jobyerSelected): boolean {
-    let similarDays = availabilities.quartersPerDay.filter((e)=> {
+  isJobyerCanWorkThisQuarter(employerPlanning, jobyerSelected): boolean {
+
+    // Break control
+    let breakAccumulate: number = 0;
+    let minimumBreakTime: number = 11 * 4; // HACK : multiplicated by 4 because counted in Quarter
+    let firstBreakIgnored: boolean = false;
+
+    // Workload control
+    let workLoad: number = 0;
+    let maximumWorkLoad: number = 10 * 4;
+
+    let jobyerAvailabilities = this.allPlanning2JobyerPlanning(employerPlanning, jobyerSelected);
+
+    let day: {date: string, quarters: any[]} = null;
+    let previousDay = null;
+    for (let prop in jobyerAvailabilities) {
+      day = jobyerAvailabilities[prop];
+      // Add the number of hours betwwen the current and the previous day into the rest time.
+      if (previousDay != null && previousDay != day) {
+        breakAccumulate += this.getHoursBetween2Days(previousDay, day);
+      }
+
+      // Parse the day and add the non assigned moment to the rest time.
+      for (let quarterId = 0; quarterId < (24*4); ++quarterId) {
+        if (day.quarters[quarterId] == jobyerSelected.id) {
+          if (firstBreakIgnored && workLoad == 0 && breakAccumulate < minimumBreakTime) {
+            this.errorMessage = 'Le temps de repos minimum légal ne serait pas respecté';
+            this.errorMessage += ' (le ' + day.date + ')';
+            console.log(this.errorMessage);
+            return false;
+          }
+          breakAccumulate = 0;
+          ++workLoad;
+        } else {
+          if (breakAccumulate == 0 && workLoad > maximumWorkLoad) {
+            this.errorMessage = 'Le temps de travail maximum légal ne serait pas respecté';
+            this.errorMessage += ' (le ' + day.date + ')';
+            console.log(this.errorMessage);
+            return false;
+          }
+          ++breakAccumulate;
+          if (workLoad > 0 && breakAccumulate > 0) {
+            firstBreakIgnored = true;
+          }
+          workLoad = 0;
+        }
+      }
+
+      previousDay = day;
+    }
+    /*let similarDays = availabilities.quartersPerDay.filter((e)=> {
       return e.date == date;
     });
     let workLoad: number = 0;
@@ -250,6 +364,14 @@ export class RecruitmentService {
     }
     // HACK: maximum daily hours = 10 * quarterPerHour
     return (workLoad <= (10 * 4));
+    */
+
+    // if (Utils.isEmpty(errorMessage) == false) {
+    //   console.log(errorMessage);
+    //   return false;
+    // }
+
+    return true;
   }
 
   /**
@@ -317,11 +439,12 @@ export class RecruitmentService {
         );
 
         // If the jobyer is available, check if the jobyer cans legally work
-        if (jobyerAvailable && this.isJobyerCanWorkThisQuarter(day.date, availabilities, jobyerSelected) === true) {
+        if (jobyerAvailable && this.isJobyerCanWorkThisQuarter(employerPlanning, jobyerSelected) === true) {
           this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
         }
       }
     }
+    // TODO controller si l'un des créneaux est bloquant
   }
 
   /**
@@ -340,16 +463,12 @@ export class RecruitmentService {
                          from: number,
                          to: number,
                          employerPlanning: CalendarQuarterPerDay) {
+
     let availabilities = [];
     if (jobyerSelected !== null) {
       availabilities = jobyersAvailabilities.get(jobyerSelected.id);
     }
 
-    // TODO : In order to get all the slot quarter,
-    // retrieve the first quarter of the slot and the last and assign all of then
-
-    // TODO replace O by the firstQuarterOfTheSlot
-    // TODO replace 24 * 4 by the lastQuarterOfTheSlot
     for (let quarterId = from; quarterId <= to; ++quarterId) {
 
       // If no jobyer given, this is unassignment process
@@ -369,10 +488,20 @@ export class RecruitmentService {
       );
 
       // If the jobyer is available, check if the jobyer cans legally work
-      if (jobyerAvailable && this.isJobyerCanWorkThisQuarter(day.date, availabilities, jobyerSelected) === true) {
+      if (jobyerAvailable) {
         this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
       }
     }
+
+    this.errorMessage = '';
+    if (this.isJobyerCanWorkThisQuarter(employerPlanning, jobyerSelected) === false) {
+      console.log('PAS LEGAL: ' + this.errorMessage);
+      for (let quarterId = from; quarterId <= to; ++quarterId) {
+        this.assignThisQuarterTo(day, quarterId, 0);
+      }
+        return;
+    }
+
   }
 
   /**

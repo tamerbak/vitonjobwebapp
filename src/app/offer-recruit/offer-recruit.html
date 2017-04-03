@@ -178,6 +178,17 @@
       </div>
 
       <div class="row">
+        <alert
+          *ngFor="let alert of alerts; let i = index"
+          [type]="alert.type + ' alert-sm'"
+          dismissible="true"
+          style="width: 100%"
+        >
+          <div [innerHTML]="alert.msg"></div>
+        </alert>
+      </div>
+
+      <div class="row">
         <div class="col-xs-12 offer-recruit-action-button">
           <button
             class="btn btn-success"
@@ -204,7 +215,3 @@
   [jobyer]="currentJobyer"
   [subject]="subject"
 ></div>
-
-<alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
-  <div [innerHTML]="alert.msg"></div>
-</alert>
