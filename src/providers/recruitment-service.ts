@@ -493,6 +493,10 @@ export class RecruitmentService {
       }
     }
 
+    if (jobyerSelected == null) {
+      return;
+    }
+
     this.errorMessage = '';
     if (this.isJobyerCanWorkThisQuarter(employerPlanning, jobyerSelected) === false) {
       console.log('PAS LEGAL: ' + this.errorMessage);

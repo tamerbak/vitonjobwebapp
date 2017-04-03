@@ -524,7 +524,7 @@ export class OfferRecruit {
     this.updateView();
     if (Utils.isEmpty(this.recruitmentService.errorMessage) == false) {
       Messenger().post({
-        message: 'Ce créneau ne peut être aasigné à ce jobyer car : ' + this.recruitmentService.errorMessage,
+        message: 'Ce créneau ne peut être assigné à ce jobyer car : ' + this.recruitmentService.errorMessage,
         type: 'error',
         showCloseButton: true
       });
