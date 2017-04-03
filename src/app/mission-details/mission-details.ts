@@ -478,9 +478,8 @@ export class MissionDetails{
     let date = "";
 
     this.missionService.saveCorrectedHour(day, isDayMission, isStart, isCorrected, chosenDate).then((data) => {
-      console.log("is hour valid saved");
       this.refreshMissionHours(true);
-      let message = this.contract.nom + " a refusé certains de vos horaires pointés pour le contrat " + this.contract.numero + ".";
+      let message = this.currentUser.employer.entreprises[0].nom + " a refusé certains de vos horaires pointés pour le contrat " + this.contract.numero + ".";
       this.smsService.sendSms(this.contract.telephone, message);
     });
   }
