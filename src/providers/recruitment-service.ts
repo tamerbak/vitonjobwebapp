@@ -739,6 +739,7 @@ export class RecruitmentService {
         // Add the offer to the current user's offers
         let currentUser = this.sharedService.getCurrentUser();
         let currentUserEntreprise: Entreprise = currentUser.employer.entreprises[0];
+        offerCopy.etat = 'en archive';
         currentUserEntreprise.offers.push(offerCopy);
         this.sharedService.setCurrentUser(currentUser);
 
