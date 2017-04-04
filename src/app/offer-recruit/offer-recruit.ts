@@ -595,14 +595,28 @@ export class OfferRecruit {
       this.projectTarget,
       this.currentUser.employer.entreprises[0].id
     ).then((stateMsg) => {
-      this.loader.hide();
-      if(Utils.isEmpty(stateMsg)){
-        //aller à la page liste des contrats
-        this.router.navigate(['contract/list']);
-      }else{
-        this.addAlert("danger", stateMsg);
-      }
-    })
+
+      // Remove offer
+      this.offersService.deleteOffer(this.offer, this.projectTarget).then((data: any) => {
+
+        // Remove offer from cache
+        let currentUser = this.sharedService.getCurrentUser();
+        let offers: Offer[] = currentUser.employer.entreprises[0].offers;
+        let currentOffer = currentUser.employer.entreprises[0].offers.filter((o)=> {
+          return o.idOffer = this.offer.idOffer;
+        });
+        offers.slice(offers.indexOf(currentOffer[0]), 1);
+        this.sharedService.setCurrentUser(currentUser);
+
+        this.loader.hide();
+        if (Utils.isEmpty(stateMsg)) {
+          //aller à la page liste des contrats
+          this.router.navigate(['contract/list']);
+        } else {
+          this.addAlert("danger", stateMsg);
+        }
+      });
+    });
   }
 
   addAlert(type, msg): void {
