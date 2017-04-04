@@ -101,9 +101,11 @@ export class OfferList {
     this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
     this.globalOfferList.push({header: 'Mes brouillons', list: []});
     this.globalOfferList.push({header: 'Mes offres en archive', list: []});
-    // this.offerList = this.projectTarget == 'employer'
-    //   ? this.sharedService.getCurrentUser().employer.entreprises[0].offers
-    //   : this.sharedService.getCurrentUser().jobyer.offers;
+
+    //A ne pas enlever : c'est necessaire pour récupérer la nouvelle liste des offres en cas de suppression d'une offre
+    this.offerList = this.projectTarget == 'employer'
+       ? this.sharedService.getCurrentUser().employer.entreprises[0].offers
+       : this.sharedService.getCurrentUser().jobyer.offers;
     let obsoleteOffers = [];
 
     for (let i = 0; i < this.offerList.length; i++) {
