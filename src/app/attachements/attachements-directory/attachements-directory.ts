@@ -18,6 +18,8 @@ export class AttachementsDirectory {
   viewFile = new EventEmitter<any>();
   @Output()
   deleteFile = new EventEmitter<any>();
+  @Output()
+  downloadFile = new EventEmitter<any>();
 
   open: boolean = true;
 
@@ -37,6 +39,10 @@ export class AttachementsDirectory {
     this.deleteFile.emit(a)
   }
 
+  clickDownloadFile(a) {
+    this.downloadFile.emit(a)
+  }
+
   /**
    * Cascade callbacks
    */
@@ -47,5 +53,9 @@ export class AttachementsDirectory {
 
   onDeleteFile($event) {
     this.deleteFile.emit($event)
+  }
+
+  onDownloadFile($event) {
+    this.downloadFile.emit($event)
   }
 }
