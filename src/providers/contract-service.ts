@@ -376,6 +376,7 @@ export class ContractService {
       " risques," +
       " lieu_de_mission," +
       " en_brouillon," +
+      " duree_hebdomadaire," +
       " fk_user_offre_entreprise" +
       ")" +
       " VALUES ("
@@ -433,6 +434,7 @@ export class ContractService {
       + "'" + Utils.sqlfyText(contract.postRisks) + "',"
       + "'" + Utils.sqlfyText(contract.workAdress) + "',"
       + "'NON',"
+      + "'" + contract.workTimeHours + "',"
       + "'" + idOffer + "'"
       + ")"
       + " RETURNING pk_user_contrat";
@@ -519,6 +521,7 @@ export class ContractService {
       "risques = '" + Utils.sqlfyText(contract.postRisks) + "', " +
       "lieu_de_mission = '" + Utils.sqlfyText(contract.workAdress) + "', " +
       "en_brouillon = 'NON', " +
+      "duree_hebdomadaire = "+ contract.workTimeHours + ", " +
       "fk_user_offre_entreprise = '" + idOffer + "' " +
       "WHERE pk_user_contrat = '" + contract.id + "'";
 
@@ -781,7 +784,7 @@ export class ContractService {
       "qualification": contract.qualification,
       "caracteristiquePoste": Utils.preventNull(contract.characteristics),
       "tempsTravail": {
-        "nombreHeures": contract.workTimeHours,
+        "nombreHeures": +contract.workTimeHours,
         "variables": contract.workTimeVariable,
       },
       "horaireHabituel": {
@@ -1099,6 +1102,7 @@ export class ContractService {
 
   getContractDataInfos(contractId, projectTarget){
     let sql = 'select c.pk_user_contrat as id, c.numero as num, c.en_brouillon as \"isDraft\", c.fk_user_offre_entreprise as \"idOffer\", c.created, c.tarif_heure as \"baseSalary\", c.horaires_fixes as \"isScheduleFixed\", c.heure_debut as \"workStartHour\", c.heure_fin as \"workEndHour\", c.date_de_debut as \"missionStartDate\", c.date_de_fin as \"missionEndDate\", c.date_debut_terme as \"termStartDate\", c.date_fin_terme as \"termEndDate\", c.periode_essai as \"trialPeriod\", c.motif_de_recours as justification, c.recours as motif, c.surveillance_medicale_renforcee as \"medicalSurv\", c.equipements_fournis_par_l_ai as epi, c.elements_non_soumis_a_des_cotisations as \"elementsNonCotisation\", c.elements_soumis_a_des_cotisations as \"elementsCotisation\", c.zones_transport as \"zonesTitre\", c.titre_transport as \"titreTransport\", c.debut_souplesse as \"debutSouplesse\", c.fin_souplesse as \"finSouplesse\", c.liste_epi as \"epiString\", c.moyen_d_acces as \"moyenAcces\", c.contact_sur_place as \"offerContact\", c.telephone_contact as \"contactPhone\", c.caracteristiques_du_poste as characteristics, c.duree_moyenne_mensuelle as \"MonthlyAverageDuration\", c.siege_social as \"headOffice\", c.lieu_de_mission as \"workAdress\", c.statut as category, c.filiere as sector, c.contact, c.indemnite_fin_de_mission as \"indemniteFinMission\", c.n_titre_travail as \"numeroTitreTravail\", c.periodes_non_travaillees as \"periodesNonTravaillees\", c.centre_de_medecine_entreprise as \"centreMedecineEntreprise\", c.adresse_centre_de_medecine_entreprise as \"adresseCentreMedecineEntreprise\", c.risques as \"postRisks\", c.epi as \"epiProvidedBy\", c.fk_user_periodicite_des_paiements as periodicite, c.lien_employeur as \"partnerEmployerLink\", c.lien_jobyer as \"partnerJobyerLink\", c.demande_jobyer as \"demandeJobyer\", c.demande_employeur as \"demandeEmployer\", c.enveloppe_jobyer as \"enveloppeJobyer\", c.enveloppe_employeur as \"enveloppeEmployeur\",' +
+      'c.duree_hebdomadaire as \"workTimeHours\",' +
 
       ' j.nom as \"jobyerNom\", j.prenom as \"jobyerPrenom\", j.numero_securite_sociale as \"jobyerNumSS\", j.lieu_de_naissance as \"jobyerLieuNaissance\",j.date_de_naissance as \"jobyerBirthDate\", j.pk_user_jobyer as \"jobyerId\", j.debut_validite as \"jobyerDebutTitreTravail\", j.fin_validite as \"jobyerFinTitreTravail\", ' +
       ' n.libelle as \"jobyerNationaliteLibelle\", ' +
