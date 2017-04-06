@@ -1,6 +1,8 @@
+@import "../../../scss/application";
+
 #entreprises-selector {
   .selected {
-    background-color: #14baa6;
+    background-color: $primary-color-one;
     color: white;
     font-weight: bold;
   }

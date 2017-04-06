@@ -1,3 +1,5 @@
+@import "../../scss/application";
+
 @import "../../../node_modules/ng2-datetime/src/vendor/bootstrap-datepicker/bootstrap-datepicker3.min";
 @import "../../../node_modules/ng2-datetime/src/vendor/bootstrap-timepicker/bootstrap-timepicker.min";
 @import "../../../node_modules/bootstrap-select/dist/css/bootstrap-select";
@@ -6,9 +8,9 @@
 @import "../../../node_modules/select2/select2";
 @import "../../../node_modules/select2-bootstrap-css/select2-bootstrap";
 //@import "../../../node_modules/jasny-bootstrap/dist/css/jasny-bootstrap";
-@import "../../scss/variables";
+//@import "../../scss/variables";
 @import "../../../node_modules/fullcalendar/dist/fullcalendar";
-@import "../../scss/variables";
+//@import "../../scss/variables";
 @import "../../../node_modules/bootstrap/scss/_variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
 
@@ -183,7 +185,7 @@ input[type="checkbox"] + label:before {
   display: block;
   width: 20px;
   height: 20px;
-  border: 1.5px solid #14baa6;
+  border: 1.5px solid $primary-color-one;
   position: absolute;
   left: 0;
   top: 0;

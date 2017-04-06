@@ -1,4 +1,6 @@
-@import "../../scss/variables";
+@import "../../scss/application";
+
+//@import "../../scss/variables";
 @import "../../../node_modules/bootstrap/scss/_variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
 @import "../../../node_modules/jasny-bootstrap/dist/css/jasny-bootstrap";
@@ -67,7 +69,7 @@
 
 .attachments-info-box{
   color:#FFF !important;
-  background-color: #14baa6;
+  background-color: $primary-color-one;
   font-size: x-large;
   text-align: center;
 }
@@ -96,10 +98,10 @@
   float: right;
 }
 .inp-file{
-  border: solid 1px #14BAA6;
+  border: solid 1px $primary-color-one;
   padding: 0.4em;
   border-radius: 5px;
-  color: #14BAA6;
+  color: $primary-color-one;
 
 }
 .fileinput-preview{
@@ -107,12 +109,12 @@
   text-align: center;
 }
 .btn-tertiary {
-  color: #14baa6;
+  color: $primary-color-one;
   padding: 0;
   line-height: 40px;
   margin: auto;
   display: block;
-  border: 2px solid #14baa6;
+  border: 2px solid $primary-color-one;
 }
 .btn-tertiary:hover, .btn-tertiary:focus {
   color: #888888;
@@ -144,14 +146,14 @@
 }
 .fileinput-preview{
 img{
-  border: solid 2px #14baa6;
+  border: solid 2px $primary-color-one;
   border-radius: 5px;
   padding: 0.5em;
   width: 100%;
 }
 }
 .color-small{
-  color: #14baa6;
+  color: $primary-color-one;
 }
 .required > label:after {
   content: " *";

@@ -1,6 +1,8 @@
+@import "../../../scss/application";
+
 .recruit-button {
   background-color: transparent;
   border: solid 1px;
-  color: #14baa6;
+  color: $primary-color-one;
   width: 100%;
 }

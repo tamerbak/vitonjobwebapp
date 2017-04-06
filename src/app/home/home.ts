@@ -134,12 +134,12 @@ export class Home{
     myContent.css({"padding": "0", "padding-right": "0"});
     if  (screen.width <= 1199) {
       myContent.css({"background-size": "cover"});
-      myNavBar.css({"background-color": "#14baa6", "border-color": "#14baa6"});
+      myNavBar.css({"background-color": "$primary-color-one", "border-color": "$primary-color-one"});
       this.isTablet = true;
     } else {
       myContent.css({"background-image": ""});
       myContent.css({"background-size": "cover"});
-      myNavBar.css({"background-color": "#14baa6", "border-color": "#14baa6"});
+      myNavBar.css({"background-color": "$primary-color-one", "border-color": "$primary-color-one"});
     }
 
     this.sharedService.setCurrentOffer(null);

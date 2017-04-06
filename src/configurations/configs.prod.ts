@@ -33,7 +33,7 @@ class EmployerConfigs implements AbstractConfigs {
   // Application theme color
   themeColor: string = '#757575';
   // Application opposite theme color
-  inversedThemeColor: string = '#14baa6';
+  inversedThemeColor: string = '$primary-color-one';
   // VitOnJob Employer image
   imageURL: string = 'img/logo_employeur.png';
   // User employer image
@@ -77,7 +77,7 @@ class JobyerConfigs implements AbstractConfigs {
   // Application title
   projectName: string = "VitOnJob Jobyer";
   // Application theme color
-  themeColor: string = "#14baa6";
+  themeColor: string = "$primary-color-one";
   // Application opposite theme color
   inversedThemeColor: string = '#757575';
   // VitOnJob Jobyer image

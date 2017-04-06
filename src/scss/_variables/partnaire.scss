@@ -2,6 +2,12 @@
 // -------------------------
 // -------------------------
 
+$primary-color-one: #00519e;
+$primary-color-two: #fbba00;
+$primary-color-three: #e95e27;
+$primary-color-four: #c5c6c8;
+$primary-color-five: #757575;
+
 $vendor-folder: '../../node_modules' !default;
 
 // Glyphicons
@@ -52,7 +58,7 @@ $addition-bg: #f8f8f8 !default;
 $sidebar-bg-color: #757575 !default;
 $sidebar-color: white !default;
 $sidebar-item-border-color: #2d2d2d !default;
-$sidebar-item-active-color: #14baa6 !default;
+$sidebar-item-active-color: $primary-color-one;
 $sidebar-item-hover-bg-color: #111 !default;
 
 // Typography
@@ -178,7 +184,7 @@ $nav-tabs-active-link-hover-border-color: #ddd !default;
 $navbar-margin-bottom: 0 !default;
 $navbar-border-radius: 0 !default;
 
-$navbar-dashboard-bg: #14baa6 !default;
+$navbar-dashboard-bg: $primary-color-one !default;
 $navbar-dashboard-color: #757575 !default;
 $navbar-dashboard-border: darken($navbar-dashboard-bg, 6.5%) !default;
 

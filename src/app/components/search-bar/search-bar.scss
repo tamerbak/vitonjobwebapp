@@ -1,3 +1,4 @@
+@import "../../../scss/application";
 
 :host {
   width:100%;
@@ -25,7 +26,7 @@
 
 .search-barr-button {
   color: #fff;
-  background-color: #14BAA6;
+  background-color: $primary-color-one;
   width: 50px;
   line-height: 50px;
   text-align: center;

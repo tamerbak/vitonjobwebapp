@@ -1,4 +1,5 @@
-@import "../../scss/variables";
+@import "../../scss/application";
+//@import "../../scss/variables";
 @import "../../../node_modules/bootstrap/scss/_variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
 
@@ -75,7 +76,7 @@
 }
 
 .adv-search {
-  color: #14BAA6;
+  color: $primary-color-one;
 }
 
 /* Small devices (phones) */
@@ -294,7 +295,7 @@ margin-top: 20em;
 .search__button {
 
   color: #fff;
-  background-color: #14BAA6;
+  background-color: $primary-color-one;
   width: 50px;
   line-height: 50px;
   text-align: center;

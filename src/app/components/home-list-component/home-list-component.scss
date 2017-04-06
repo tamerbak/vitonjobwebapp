@@ -1,3 +1,5 @@
+@import "../../../scss/application";
+
 home-list-component{
   background:white;
   display:block;
@@ -295,7 +297,7 @@ home-list-component.fade-in-component{
   top: -32px;
 }
 .material-card.Red h2 {
-  background-color: #14baa6;
+  background-color: $primary-color-one;
 }
 .material-card.Red h2:after {
   border-top-color: #14baa8;
@@ -311,18 +313,18 @@ home-list-component.fade-in-component{
 }
 .material-card.Red.mc-active h2:before {
   border-top-color: transparent;
-  border-right-color: #14baa6;
-  border-bottom-color: #14baa6;
+  border-right-color: $primary-color-one;
+  border-bottom-color: $primary-color-one;
   border-left-color: transparent;
 }
 .material-card.Red.mc-active h2:after {
-  border-top-color: #14baa6;
-  border-right-color: #14baa6;
+  border-top-color: $primary-color-one;
+  border-right-color: $primary-color-one;
   border-bottom-color: transparent;
   border-left-color: transparent;
 }
 .material-card.Red .mc-btn-action {
-  background-color: #14BAA6;
+  background-color: $primary-color-one;
 }
 .material-card.Red .mc-btn-action:hover {
   background-color: #757575;
