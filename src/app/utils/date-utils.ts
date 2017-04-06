@@ -1,4 +1,6 @@
 import {Utils} from "./utils";
+declare let moment: any;
+
 export class DateUtils{
 
   constructor() {
@@ -159,7 +161,7 @@ export class DateUtils{
     return sd
   }
 
-  public static setMinutesToDate(d: Date, min: number) {
+  public static setMinutesToDate(d: Date, min: number): Date {
     if (Utils.isEmpty(d)) {
       return null;
     }
@@ -208,6 +210,18 @@ export class DateUtils{
     }else{
       return true;
     }
+  }
+
+  public static isInSameWeek(d1: Date, d2: Date){
+    //la semaine commence par lundi et se termine à dimanche
+    //obligatoire de laisser le toISOString() sinon isSame renvoie tjrs false
+    let isInSameWeek = moment(d1.toISOString()).isSame(d2.toISOString(), 'week');
+    return isInSameWeek;
+  }
+
+  public static diffBetweenTwoDatesInMinutes(dateEnd: Date, dateStart: Date): number{
+    let milliSec = dateEnd.getTime() - dateStart.getTime();
+    return Math.floor(milliSec / (60 * 1000));
   }
 }
 

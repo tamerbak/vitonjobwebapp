@@ -154,4 +154,8 @@ export class Utils {
   public static capitalizeFirstLetter(str){
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
+
+  public static copyObjectByValue(obj: any){
+    return JSON.parse(JSON.stringify(obj));
+  }
 }
