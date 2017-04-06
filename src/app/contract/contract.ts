@@ -232,7 +232,8 @@ export class Contract {
     this.contractData.sector = this.currentOffer.jobData.sector;
     this.contractData.titre = this.currentOffer.title;
 
-    this.contractData.workTimeHours = + this.calculateOfferHours();
+    //this.contractData.workTimeHours = + this.calculateOfferHours();
+    this.contractData.workTimeHours = + this.calculateHebdoOfferHours();
     this.contractData.trialPeriod = this.initTrialPeriod(this.currentOffer);
 
     this.contractData.contactPhone = Utils.preventNull(this.currentOffer.telephone);
@@ -477,6 +478,61 @@ export class Contract {
       h = h + Math.abs(calendarEntry.endHour - calendarEntry.startHour) / 60;
     }
     return h.toFixed(0);
+  }
+
+  //Il s'agit ici du nombre d'heures prévues pour la mission du lundi au dimanche, si la mission est à cheval sur 2 semaine il faudra alors prendre la semaine ou il y a le moins d'heures prévues
+  calculateHebdoOfferHours(): string {
+    //tableau qui va contenir le nombre des heures de mission de chaque semaine
+    let weeksArray = [];
+    //var qui va contenir l'accumulation du nombre d'heure des jours de chaque semaine
+    let weekHours = 0;
+
+    //ordonner le tableau des slots par ordre croissant
+    this.currentOffer.calendarData.sort(function(a, b) {
+      return b.date - a.date;
+    });
+
+    //initialiser weekhours avec les heures du premier slot de la mission
+    let calendarEntry1 = this.currentOffer.calendarData[0];
+    let dateEntry1Start = DateUtils.setMinutesToDate(new Date(calendarEntry1.date), calendarEntry1.startHour);
+    let dateEntry1End = DateUtils.setMinutesToDate(new Date(calendarEntry1.dateEnd), calendarEntry1.endHour);
+    weekHours = weekHours + Math.abs(DateUtils.diffBetweenTwoDatesInMinutes(dateEntry1End, dateEntry1Start)) / 60;
+
+    let calendarLength = this.currentOffer.calendarData.length;
+    for (let i = 0; i < calendarLength - 1; i++) {
+      //si le calendrier ne contient qu'un seul slot, sortir de la boucle (les heures du slot 0 sont comptabilisé avant)
+      if(calendarLength == 1){
+        break;
+      }
+      //les heures de pause ne sont pas comtabilisés
+      if(this.currentOffer.calendarData[i+1].pause){
+        continue;
+      }
+
+      calendarEntry1 = this.currentOffer.calendarData[i];
+      let calendarEntry2 = this.currentOffer.calendarData[i + 1];
+      //verifier si les jours i et i+ 1 sont dans la meme semaine
+      let isInSameWeek = DateUtils.isInSameWeek(new Date(calendarEntry1.date), new Date(calendarEntry2.date));
+
+      //si oui, incrémenter weekhours avec le nombre dh'heure du jour i + 1 (le nombre d'heure de i est deja sauvegardé dans l'itération precedante (le cas particulier de i == 0 est deja traité))
+      let dateEntry2Start = DateUtils.setMinutesToDate(new Date(calendarEntry2.date), calendarEntry2.startHour);
+      let dateEntry2End = DateUtils.setMinutesToDate(new Date(calendarEntry2.dateEnd), calendarEntry2.endHour);
+      if (isInSameWeek) {
+        weekHours = weekHours + Math.abs(DateUtils.diffBetweenTwoDatesInMinutes(dateEntry2End, dateEntry2Start)) / 60;
+      } else {
+        //si non, sauvegarder le nombre d'heure de la semaine du jour i dans le weekArray
+        weeksArray.push(weekHours);
+        //et renitialiser weekHours avec la valeur du jour i + 1
+        weekHours = 0;
+        weekHours = weekHours + Math.abs(DateUtils.diffBetweenTwoDatesInMinutes(dateEntry2End, dateEntry2Start)) / 60;
+      }
+    }
+
+    //sauvegarder la valeur de la dernière itération
+    weeksArray.push(weekHours);
+
+    //retourner la valeur min du tableau contenant le total des heures de chaque semaine
+    return Math.min.apply(Math, weeksArray).toFixed(0);
   }
 
   gotoContractListPage(){
