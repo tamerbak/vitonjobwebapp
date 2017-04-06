@@ -449,6 +449,10 @@ export class SearchResults{
         backdrop: 'static'
       });
       jQuery('#modal-notification-contract').modal('show');
+      let self = this;
+      jQuery('#modal-notification-contract').on('hidden.bs.modal', function (e) {
+        self.sharedService.setContractData(null);
+      });
     }
   }
 
