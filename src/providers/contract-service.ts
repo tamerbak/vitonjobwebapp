@@ -784,7 +784,7 @@ export class ContractService {
       "qualification": contract.qualification,
       "caracteristiquePoste": Utils.preventNull(contract.characteristics),
       "tempsTravail": {
-        "nombreHeures": contract.workTimeHours,
+        "nombreHeures": +contract.workTimeHours,
         "variables": contract.workTimeVariable,
       },
       "horaireHabituel": {
