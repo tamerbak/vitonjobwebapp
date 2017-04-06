@@ -139,9 +139,9 @@ export class ContractService {
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
     if (projectTarget == 'employer') {
-      var sql = "SELECT c.pk_user_contrat,c.*, j.nom, j.prenom FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='" + id + "' order by c.pk_user_contrat";
+      var sql = "SELECT c.pk_user_contrat,c.*, j.nom, j.prenom FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='" + id + "' order by c.pk_user_contrat AND c.dirty = 'N'";
     } else {
-      var sql = "SELECT c.pk_user_contrat,c.*, e.nom_ou_raison_sociale as nom FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "' order by c.pk_user_contrat";
+      var sql = "SELECT c.pk_user_contrat,c.*, e.nom_ou_raison_sociale as nom FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "' AND c.dirty = 'N' order by c.pk_user_contrat";
     }
 
     //console.log(sql);
@@ -182,7 +182,7 @@ export class ContractService {
       typeSql =  " and c.date_de_debut is not null and c.annule_par is not null";
     }
 
-    var orderBySql = " order by c.pk_user_contrat";
+    var orderBySql = " AND c.dirty = 'N' order by c.pk_user_contrat";
     var rangeSql = " LIMIT "+limit +" OFFSET "+offset;
 
     this.configuration = Configs.setConfigs(projectTarget);
@@ -210,9 +210,9 @@ export class ContractService {
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
     if (projectTarget == 'employer') {
-      var sql = "SELECT count(*) FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='" + id + "' and c.date_de_debut is not null and upper(c.signature_jobyer) = 'OUI' and upper(c.accompli)='NON' and c.annule_par is null";
+      var sql = "SELECT count(*) FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='" + id + "' and c.date_de_debut is not null and upper(c.signature_jobyer) = 'OUI' and upper(c.accompli)='NON' and c.annule_par is null AND c.dirty='N'";
     } else {
-      var sql = "SELECT count(*) FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "' and c.date_de_debut is not null and upper(c.signature_jobyer) = 'OUI' and upper(c.accompli)='NON' and c.annule_par is null";
+      var sql = "SELECT count(*) FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "' and c.date_de_debut is not null and upper(c.signature_jobyer) = 'OUI' and upper(c.accompli)='NON' and c.annule_par is null AND c.dirty='N'";
     }
 
     //console.log(sql);
@@ -234,9 +234,9 @@ export class ContractService {
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
     if (projectTarget == 'employer') {
-      var sql = "SELECT count(*) FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='" + id + "' and c.date_de_debut is not null and upper(c.signature_jobyer) = 'NON' and c.annule_par is null";
+      var sql = "SELECT count(*) FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='" + id + "' and c.date_de_debut is not null and upper(c.signature_jobyer) = 'NON' and c.annule_par is null AND c.dirty='N'";
     } else {
-      var sql = "SELECT count(*) FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "' and c.date_de_debut is not null and upper(c.signature_jobyer) = 'NON' and c.annule_par is null";
+      var sql = "SELECT count(*) FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "' and c.date_de_debut is not null and upper(c.signature_jobyer) = 'NON' and c.annule_par is null AND c.dirty='N'";
     }
 
     //console.log(sql);
@@ -258,9 +258,9 @@ export class ContractService {
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
     if (projectTarget == 'employer') {
-      var sql = "SELECT count(*) FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='" + id + "' and c.date_de_debut is not null and upper(c.accompli) = 'OUI' and c.annule_par is null";
+      var sql = "SELECT count(*) FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='" + id + "' and c.date_de_debut is not null and upper(c.accompli) = 'OUI' and c.annule_par is null AND c.dirty='N'";
     } else {
-      var sql = "SELECT count(*) FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "' and c.date_de_debut is not null and upper(c.accompli) = 'OUI' and c.annule_par is null";
+      var sql = "SELECT count(*) FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "' and c.date_de_debut is not null and upper(c.accompli) = 'OUI' and c.annule_par is null AND c.dirty='N'";
     }
 
     //console.log(sql);
@@ -282,9 +282,9 @@ export class ContractService {
     //  Init project parameters
     this.configuration = Configs.setConfigs(projectTarget);
     if (projectTarget == 'employer') {
-      var sql = "SELECT count(*) FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='" + id + "' and c.date_de_debut is not null and c.annule_par is not null";
+      var sql = "SELECT count(*) FROM user_contrat as c, user_jobyer as j where c.fk_user_jobyer = j.pk_user_jobyer and c.fk_user_entreprise ='" + id + "' and c.date_de_debut is not null and c.annule_par is not null AND c.dirty='N'";
     } else {
-      var sql = "SELECT count(*) FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "' and c.date_de_debut is not null and c.annule_par is not null";
+      var sql = "SELECT count(*) FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "' and c.date_de_debut is not null and c.annule_par is not null AND c.dirty='N'";
     }
 
     //console.log(sql);
@@ -1106,7 +1106,7 @@ export class ContractService {
       ' o.titre as qualification ' +
       ' from user_contrat as c, user_jobyer as j, user_nationalite as n, user_account as a, user_offre_entreprise as o ' +
       " where c.pk_user_contrat = '" + contractId+ "' and upper(c.signature_employeur) = 'NON' " +
-      " and c.fk_user_jobyer = j.pk_user_jobyer and j.fk_user_nationalite = n.pk_user_nationalite and a.pk_user_account = j.fk_user_account and o.pk_user_offre_entreprise = c.fk_user_offre_entreprise ";
+      " and c.fk_user_jobyer = j.pk_user_jobyer and j.fk_user_nationalite = n.pk_user_nationalite and a.pk_user_account = j.fk_user_account and o.pk_user_offre_entreprise = c.fk_user_offre_entreprise  AND c.dirty = 'N'";
 
     this.configuration = Configs.setConfigs(projectTarget);
     return new Promise(resolve => {
