@@ -4,6 +4,7 @@ import {Router} from "@angular/router";
 import {WalletCreate} from "../wallet-create/wallet-create";
 import {SlimPayService} from "../../providers/slimpay-services";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
+import {Utils} from "../utils/utils";
 
 
 @Component({
@@ -22,6 +23,7 @@ export class PaymentMethod{
   isSlimPay = false;
   alerts: Array<Object>;
   hideLoader = true;
+  showChoiceFrame: boolean = true;
 
   constructor(private sharedService: SharedService,
               private router: Router,
@@ -41,6 +43,7 @@ export class PaymentMethod{
     this.isSlimPay = false;
     this.alerts = [];
     this.hideLoader = true;
+    this.showChoiceFrame = false;
   }
 
   showSlimPayFrame(){
@@ -48,6 +51,7 @@ export class PaymentMethod{
     this.alerts = [];
     this.isPayline = false;
     this.isSlimPay = true;
+    this.showChoiceFrame = false;
     let entrepriseId = this.currentUser.employer.entreprises[0].id;
     this.slimpayService.signSEPA(entrepriseId).then((data: any) => {
       if(!data || this.isEmpty(data.url)){
@@ -87,14 +91,25 @@ export class PaymentMethod{
     })
   }
 
+  cancelWalletFrame(params){
+    if(params.isCanceled){
+      this.isPayline = false;
+      this.showChoiceFrame = true;
+      this.alerts = [];
+    }
+  }
+
+  cancelSlimPay(){
+    this.isSlimPay = false;
+    this.showChoiceFrame = true;
+    this.alerts = [];
+  }
+
   addAlert(type, msg): void {
     this.alerts = [{type: type, msg: msg}];
   }
 
   isEmpty(str){
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
+    return Utils.isEmpty(str);
   }
 }

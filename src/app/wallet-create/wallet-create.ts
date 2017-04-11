@@ -1,8 +1,9 @@
-import {Component, ViewEncapsulation, Input} from "@angular/core";
+import {Component, ViewEncapsulation, Input, Output, EventEmitter} from "@angular/core";
 import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {PaylineServices} from "../../providers/payline-services";
+import {Utils} from "../utils/utils";
 
 
 @Component({
@@ -28,6 +29,9 @@ export class WalletCreate {
   walletMsg: any;
 
   dataValidation:boolean = false;
+
+  @Output()
+  onCancel = new EventEmitter<any>();
 
   constructor(private sharedService: SharedService,
               private service: PaylineServices,
@@ -83,6 +87,10 @@ export class WalletCreate {
     });
   }
 
+  cancel(){
+    this.onCancel.emit({isCanceled: true});
+  }
+
   addAlert(type, msg): void {
     this.alerts = [];
     if(this.walletMsg)
@@ -93,10 +101,7 @@ export class WalletCreate {
   }
 
   isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
-      return true;
-    else
-      return false;
+    return Utils.isEmpty(str);
   }
 
   formHasChanges(){
