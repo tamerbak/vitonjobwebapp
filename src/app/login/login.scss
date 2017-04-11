@@ -10,6 +10,18 @@
   background-position-y: 50%;
 }
 
+.home-logo-bg {
+  background-image: url($homeLogo);
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 200px;
+  height: 100px;
+  display: block;
+  background-position-x: center;
+  z-index: 3;
+  margin: auto;
+}
+
 /* Small devices (phones) */
 @media (max-width: 767px) {
 }

@@ -1,5 +1,17 @@
 @import "../../scss/application";
 
+.home-logo-bg {
+  background-image: url($homeLogo);
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 200px;
+  height: 100px;
+  display: block;
+  background-position-x: center;
+  z-index: 3;
+  margin: auto;
+}
+
 .contenu {
   text-align: center;
   width: 100%;

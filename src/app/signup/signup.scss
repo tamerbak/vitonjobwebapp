@@ -1,8 +1,19 @@
 @import "../../scss/application";
 
-@import "../../scss/variables";
 @import "../../../node_modules/bootstrap/scss/_variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
+
+.home-logo-bg {
+  background-image: url($homeLogo);
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 200px;
+  height: 100px;
+  display: block;
+  background-position-x: center;
+  z-index: 3;
+  margin: auto;
+}
 
 div[signup] {
   height: 100vh;

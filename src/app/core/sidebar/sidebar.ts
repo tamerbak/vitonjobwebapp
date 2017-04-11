@@ -13,7 +13,8 @@ declare let jQuery: any;
     ROUTER_DIRECTIVES,
     SlimScroll
   ],
-  template: require('./sidebar.html')
+  template: require('./sidebar.html'),
+  styles: [require('./sidebar.scss')]
 })
 
 export class Sidebar implements OnInit {

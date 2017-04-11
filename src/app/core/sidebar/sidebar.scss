@@ -1,0 +1,12 @@
+
+@import "../../../scss/variables";
+
+.logo-mini {
+  background-image: url($sideBarLogo);
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: block;
+  background-position-x: center;
+}
