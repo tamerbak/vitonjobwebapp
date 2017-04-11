@@ -35,6 +35,9 @@ export class Offer extends AbstractGCallout {
   jobyerId: number;
   entrepriseId: number;
 
+  risks: string; // JSON
+  characteristics: string; // JSON
+
   constructor() {
     super('com.vitonjob.callouts.offer.model.OfferData');
 
@@ -61,6 +64,9 @@ export class Offer extends AbstractGCallout {
     this.identity = 0;
     this.jobyerId = 0;
     this.entrepriseId = 0;
+
+    this.risks = "";
+    this.characteristics = "";
 
     this.adresse = new Address();
     this.adresse.type = 'adresse_de_travail';

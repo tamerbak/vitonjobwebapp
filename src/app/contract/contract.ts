@@ -232,6 +232,19 @@ export class Contract {
     this.contractData.sector = this.currentOffer.jobData.sector;
     this.contractData.titre = this.currentOffer.title;
 
+    let risks = JSON.parse(this.currentOffer.risks);
+    if (Utils.isEmpty(risks) == false) {
+      this.postRisks1 = risks[0];
+      this.postRisks2 = risks[1];
+      this.postRisks3 = risks[2];
+    }
+    let characteristics = JSON.parse(this.currentOffer.characteristics);
+    if (Utils.isEmpty(characteristics) == false) {
+      this.characteristics1 = characteristics[0];
+      this.characteristics2 = characteristics[1];
+      this.characteristics3 = characteristics[2];
+    }
+
     //this.contractData.workTimeHours = + this.calculateOfferHours();
     this.contractData.workTimeHours = + this.calculateHebdoOfferHours();
     this.contractData.trialPeriod = this.initTrialPeriod(this.currentOffer);

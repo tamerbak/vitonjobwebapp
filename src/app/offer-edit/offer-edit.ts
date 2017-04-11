@@ -159,6 +159,8 @@ export class OfferEdit {
 
   isValidAddress: boolean = true;
 
+  risks: string[] = ["", "", ""];
+  characteristics: string[] = ["", "", ""];
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -211,6 +213,10 @@ export class OfferEdit {
           this.offer.offerType = false;
           this.offer.calendarData = [];
         }
+
+        this.risks = JSON.parse(this.offer.risks);
+        this.characteristics = JSON.parse(this.offer.characteristics);
+
       });
     } else {
       this.offer = new Offer();
@@ -545,6 +551,9 @@ export class OfferEdit {
 
   saveOffer(stayOnPage = false) {
     this.triedValidate = true;
+
+    this.offer.risks = JSON.stringify(this.risks);
+    this.offer.characteristics = JSON.stringify(this.characteristics);
 
     if (!this.isFormValid()) {
       return;

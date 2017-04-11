@@ -450,7 +450,71 @@
           [placeholder]="'Equipement de protection individuel'"
         ></div>
 
+        <div
+          *ngIf="projectTarget == 'employer'"
+          class="form-group row"
+        >
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="risks1">
+            Risques
+          </label>
+          <div class="col-md-8 col-xs-12">
+            <input
+              name="risks1"
+              id="risks1"
+              type="text"
+              class="form-control"
+              [(ngModel)]="risks[0]"
+            />
+            <input
+              name="risks2"
+              id="risks2"
+              type="text"
+              class="form-control"
+              [(ngModel)]="risks[1]"
+            />
+            <input
+              name="risks3"
+              id="risks3"
+              type="text"
+              class="form-control"
+              [(ngModel)]="risks[2]"
+            />
+          </div>
+        </div>
+
+        <div
+          *ngIf="projectTarget == 'employer'"
+          class="form-group row"
+        >
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="characteristics1">
+            Caractèristiques
+          </label>
+          <div class="col-md-8 col-xs-12">
+            <input
+              name="characteristics1"
+              id="characteristics1"
+              type="text"
+              class="form-control"
+              [(ngModel)]="characteristics[0]"
+            />
+            <input
+              name="characteristics2"
+              id="characteristics2"
+              type="text"
+              class="form-control"
+              [(ngModel)]="characteristics[1]"
+            />
+            <input
+              name="characteristics3"
+              id="characteristics3"
+              type="text"
+              class="form-control"
+              [(ngModel)]="characteristics[2]"
+            />
+          </div>
+        </div>
       </div>
+
     </section>
 
     <!-- !JOB -->
