@@ -8,7 +8,7 @@
     <a href="javascript:history.go(-1)"><button type="button" class="btn btn-secondary btn-sm" name="button"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Retour</button></a>
   </div>
 </div>
-<h1 class="page-title">{{currentUser.estRecruteur ? 'Recruteur' : (currentUser.estEmployeur ? 'Employeur' : 'Jobyer')}}
+<h1 class="page-title">{{currentUser.estEmployeur ? 'Employeur' : 'Jobyer'}}
   - <span class="fw-semi-bold">Contrat</span>
 </h1>
 <div class="widget-body" *ngIf="!hideLoader">

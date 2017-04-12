@@ -58,14 +58,6 @@ export class Yousign{
   }
 
   ngOnInit(){
-    if(this.isEmployer) {
-      let currentEmployer = this.currentUser.employer;
-      if (currentEmployer) {
-        this.employer = currentEmployer;
-        this.setDocusignFrame();
-      }
-    }
-
     this.setDocusignFrame();
   }
 
