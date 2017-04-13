@@ -253,10 +253,38 @@ export class Contract {
     this.contractData.offerContact = Utils.preventNull(this.currentOffer.contact);
     this.contractData.sector = Utils.preventNull(this.currentOffer.jobData.sector);
 
+
     //initialiser contract.epiList avec les epi de l'offre
-    this.offersService.loadOfferEPI(this.currentOffer.idOffer, "employer").then((data: any)=>{
-      if(data)
-        this.contractData.epiList = data;
+    this.offersService.loadOfferEPIFournish(this.currentOffer.idOffer, "employer").then((data: any)=>{
+      if(data) {
+        console.log(data);
+        console.log(this.currentOffer.equipmentData);
+        this.contractData.epiList = [];
+        for (let i = 0; i < data.length; ++i) {
+          for (let e = 0; e < this.currentOffer.equipmentData.length; ++e) {
+            console.log('-');
+            console.log(this.currentOffer.equipmentData[e]);
+            console.log(data[e]);
+            console.log(data[e].libelle);
+            console.log('+');
+            let by = [
+              "",
+              "L'entreprise utilisatrice",
+              "L'entreprise de travail temporaire",
+              "Le salarié"
+            ];
+            console.log(by);
+
+            if (data[i].id == data[e].id) {
+              let tmp: any = this.currentOffer.equipmentData[e];
+              let metadata = JSON.parse(tmp.metadata);
+              let epi = data[i].libelle + " fourni par " + by[metadata.subValue];
+              console.log('epi:'+epi);
+              this.contractData.epiList.push({libelle: epi});
+            }
+          }
+        }
+      }
       else
         this.contractData.epiList = [];
     });

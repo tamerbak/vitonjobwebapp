@@ -996,6 +996,32 @@ export class OffersService {
     });
   }
 
+  loadOfferEPIFournish(oid, projectTarget){
+    var table = projectTarget == 'employer' ? "user_epi_employeur" : "user_epi_jobyer";
+    var fk = projectTarget == 'employer' ? "fk_user_offre_entreprise" : "fk_user_offre_jobyer";
+    let sql = "SELECT " +
+        "e.pk_user_epi as id" +
+        ", e.libelle " +
+        // ", t.metadata " +
+        "FROM " + table + " t " +
+        "LEFT JOIN user_epi e ON e.pk_user_epi = t.fk_user_epi " +
+        "WHERE " + fk + " = " + oid
+      ;
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          // we've got back the raw data, now generate the core schedule data
+          // and save the data for later reference
+          resolve(data.data);
+        });
+    });
+  }
+
   loadOfferPrerequisObligatoires(oid){
     let sql = "select libelle from user_prerquis where pk_user_prerquis in (select fk_user_prerquis from user_prerequis_obligatoires where fk_user_offre_entreprise="+oid+")";
     return new Promise(resolve => {
