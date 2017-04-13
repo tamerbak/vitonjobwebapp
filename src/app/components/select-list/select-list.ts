@@ -139,12 +139,13 @@ export class SelectList {
 
   }
 
-  canAddElement() {
-    return !this.selectedElem
+  cannotAddElement() {
+    let r = !this.selectedElem
       || this.selectedElem == '0'
       || (this.subList.length > 0 && this.selectedSubElem == '0')
       || !this.canEdit
     ;
+    return r;
   }
 
   removeElement(item) {
