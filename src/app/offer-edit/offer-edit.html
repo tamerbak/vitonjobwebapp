@@ -442,6 +442,7 @@
           select-list
           [(selectedList)]="offer.equipmentData"
           [list]=""
+          [subList]="equipmentDataFournishBy"
           [src]="'epi'"
           [allowNewEntry]="true"
           [canSearch]="false"
@@ -487,7 +488,7 @@
           class="form-group row"
         >
           <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="characteristics1">
-            Caractèristiques
+            Caractéristiques
           </label>
           <div class="col-md-8 col-xs-12">
             <input

@@ -29,6 +29,9 @@ export class SelectList {
   list: any[] = [];
 
   @Input()
+  subList: any[] = [];
+
+  @Input()
   src: string;
 
   @Input()
@@ -47,16 +50,17 @@ export class SelectList {
   placeholder: string = "";
 
   @Output()
-  onAdd = new EventEmitter<any>();
+  onAdd = new EventEmitter<ListElem>();
 
   @Output()
   onRemove = new EventEmitter<any>();
 
   selectedElem: string = "0";
-  selectedLevel: string = "1";
   randomId: number;
   selectClass: string;
   selectClass2: string;
+
+  selectedSubElem: string = "0";
 
   dinamycListIsLoading = false;
 
@@ -117,12 +121,15 @@ export class SelectList {
 
     let listElem: ListElem = new ListElem();
     listElem.id = Number(listTemp[0]['id']);
+    listElem.metadata = JSON.stringify({
+      subValue: this.selectedSubElem
+    });
 
     // Add the new element to the list
     this.selectedList.push(listElem);
 
     // Emit event to the parent
-    this.onAdd.emit(this.selectedElem);
+    this.onAdd.emit(listElem);
 
     this.selectedElem = "0";
 
@@ -130,6 +137,14 @@ export class SelectList {
       this.initializeDynamicSelect();
     }
 
+  }
+
+  canAddElement() {
+    return !this.selectedElem
+      || this.selectedElem == '0'
+      || (this.subList.length > 0 && this.selectedSubElem == '0')
+      || !this.canEdit
+    ;
   }
 
   removeElement(item) {
@@ -167,6 +182,28 @@ export class SelectList {
     if (this.isDynamicList() === false) {
       return "Soyez la première personne à proposer une valeur";
     }
+  }
+
+  getSubLabel(metadata) {
+
+    let id = JSON.parse(metadata).subValue;
+
+    if (this.subList && Utils.isEmpty(this.subList) === false) {
+      let listTemp = this.subList.filter((v)=> {
+        return (v.id == id);
+      });
+      if (Utils.isEmpty(listTemp) == true) {
+        return "Aucun résultat trouvé";
+      }
+
+      let label = listTemp[0].label;
+      // Add asterisk to dirty values
+      if (this.isDynamicList() === true && listTemp[0].dirty == 'Y') {
+        label += ' *';
+      }
+      return label;
+    }
+    return "Employeur";
   }
 
   containDeprecatedValue() {

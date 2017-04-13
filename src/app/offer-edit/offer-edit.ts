@@ -162,6 +162,8 @@ export class OfferEdit {
   risks: string[] = ["", "", ""];
   characteristics: string[] = ["", "", ""];
 
+  equipmentDataFournishBy: {id: number, label: string}[] = [];
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private searchService: SearchService,
@@ -214,8 +216,12 @@ export class OfferEdit {
           this.offer.calendarData = [];
         }
 
-        this.risks = JSON.parse(this.offer.risks);
-        this.characteristics = JSON.parse(this.offer.characteristics);
+        if (Utils.isEmpty(this.offer.risks) == false) {
+          this.risks = JSON.parse(this.offer.risks);
+        }
+        if (Utils.isEmpty(this.offer.characteristics) == false) {
+          this.characteristics = JSON.parse(this.offer.characteristics);
+        }
 
       });
     } else {
@@ -261,6 +267,19 @@ export class OfferEdit {
     //load Softwares for jobyers pharmaciens
     this.listService.loadPharmacieSoftwares().then((data: any) => {
       this.softwares = data.data;
+    });
+
+    this.equipmentDataFournishBy.push({
+      id: 1,
+      label: "L'entreprise utilisatrice"
+    });
+    this.equipmentDataFournishBy.push({
+      id: 2,
+      label: "L'entreprise de travail temporaire"
+    });
+    this.equipmentDataFournishBy.push({
+      id: 3,
+      label: "Le salarié"
     });
 
   }

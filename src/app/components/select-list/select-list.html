@@ -5,8 +5,11 @@
   <!-- Selected Qualities -->
   <div class="form-group row" *ngFor="let item of selectedList">
     <!--<div class="{{ !hasLevel ? 'col-md-9 col-xs-12' : 'col-md-6 col-xs-6' }}">-->
-    <div class="col-md-9 col-xs-12">
+    <div class="{{ subList.length > 0 ? 'col-md-4 col-xs-6' : 'col-md-9 col-xs-12' }}">
       <input class="form-control" [value]="getLabel(item.id)" disabled />
+    </div>
+    <div class="col-md-5 col-xs-6" *ngIf="subList.length > 0">
+      <input class="form-control" [value]="getSubLabel(item.metadata)" disabled />
     </div>
     <!--<div class="col-md-3 col-xs-6" *ngIf="hasLevel">-->
       <!--<select class="form-control" [(ngModel)]="item.level" disabled>-->
@@ -31,7 +34,7 @@
   <!-- New listCapitalyze input -->
   <div class="row">
     <!--<div class="{{ !hasLevel ? 'col-md-9 col-xs-12' : 'col-md-6 col-xs-6' }}">-->
-    <div class="col-md-9 col-xs-12">
+    <div class="{{ subList.length > 0 ? 'col-md-4 col-xs-6' : 'col-md-9 col-xs-12' }}">
 
       <!-- Dynamic list -->
       <input
@@ -54,6 +57,14 @@
       </select>
 
     </div>
+    <div class="col-md-5 col-xs-6" *ngIf="subList.length > 0">
+      <select class="form-control" [(ngModel)]="selectedSubElem">
+        <option [value]="0"></option>
+        <option *ngFor="let e of subList" [value]="e.id">
+          {{ e.label }}
+        </option>
+      </select>
+    </div>
     <!--<div class="col-md-3 col-xs-6" *ngIf="hasLevel">-->
       <!--<select class="form-control" [(ngModel)]="selectedLevel">-->
         <!--<option value="1">Débutant</option>-->
@@ -67,7 +78,7 @@
         class="btn btn-success mb-xs offer-add-button"
         role="button"
         (click)="addElement()"
-        [disabled]="!selectedElem || selectedElem == '0' || (hasLevel && !selectedLevel) || !canEdit"
+        [disabled]="canAddElement()"
       >
         Ajouter
       </button>

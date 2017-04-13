@@ -469,7 +469,7 @@ export class OffersService {
                 return offers[i].idOffer == o.id;
               });
               if (offer.length == 1) {
-                offers[i].offerType = (offer[0].offre_type == 'Oui');
+                offers[i].offerType = (offer[0].offre_type.toUpperCase() == 'OUI');
               }
             }
           }
