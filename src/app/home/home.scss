@@ -724,3 +724,10 @@ body {
   to   { opacity:1; }
 }
 */
+
+.page-footer-powered {
+  display: $displayPowered;
+}
+.page-footer-copyright {
+  display: $displayCopyright;
+}
