@@ -21,7 +21,7 @@ declare let jQuery: any;
 export class AdvertDetails{
   currentUser: any;
   projectTarget: string;
-  advert: Advert;
+  advert: Advert = new Advert();
   isValidLink:boolean;
   jobyerInterestLabel: string;
   jobyerInterested: boolean;
@@ -60,11 +60,11 @@ export class AdvertDetails{
 
   loadAdvert(){
     return new Promise (resolve => {
-      this.advert = this.sharedService.getCurrentAdv();
-      if(!this.advert){
+      let advert = this.sharedService.getCurrentAdv();
+      if(!advert){
         let advertId = 0;
         this.route.params.forEach((params: Params) => {
-          let advertId = params['id'];
+          advertId = params['id'];
         });
         if(!Utils.isEmpty(advertId) && advertId != 0){
           this.advertService.getAdvertById(advertId).then((data: any) => {
@@ -75,7 +75,8 @@ export class AdvertDetails{
           resolve(null);
         }
       }else{
-        resolve(this.advert);
+        this.advert = advert;
+        resolve(advert);
       }
     });
   }
