@@ -309,4 +309,12 @@ export class SharedService {
   setCurrentSearchCity(value) {
     this.setStorageVariable("currentSearchCity", value);
   }
+
+  getRedirectionArgs() {
+    return this.getStorageVariable("redirectionArgs");
+  }
+
+  setRedirectionArgs(value) {
+    this.setStorageVariable("redirectionArgs", value);
+  }
 }

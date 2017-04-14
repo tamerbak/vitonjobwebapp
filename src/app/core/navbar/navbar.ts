@@ -170,6 +170,8 @@ export class Navbar implements OnInit {
       this.sharedService.setProjectTarget("employer");
     }
     this.router.navigate(['home']);
+    //necessaire pour mettre à jour le sidebar
+    window.location.reload();
   }
 
   loadInterestedJobyersOffers(){

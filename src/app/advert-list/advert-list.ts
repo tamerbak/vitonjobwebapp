@@ -30,13 +30,19 @@ export class AdvertList {
   constructor(private advertService : AdvertService,
               private router : Router,
               private sharedService : SharedService){
-    this.currentUser = this.sharedService.getCurrentUser();
 
+    this.currentUser = this.sharedService.getCurrentUser();
+    //acces non autorisé pour les employeurs non connecté
     if(!this.currentUser){
-      this.router.navigate(['home']);
-      return;
+      let projectTarget = this.sharedService.getProjectTarget();
+      this.isEmployer = (projectTarget == 'employer');
+      if(this.isEmployer){
+        this.router.navigate(['home']);
+        return;
+      }
+    }else{
+      this.isEmployer = (this.currentUser.estEmployeur || this.currentUser.estRecruteur);
     }
-    this.isEmployer = (this.currentUser.estEmployeur || this.currentUser.estRecruteur);
   }
 
   ngOnInit(){

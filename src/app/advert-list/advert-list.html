@@ -2,7 +2,7 @@
   <li>VOUS ÊTES ICI</li>
   <li class="active">
     <a class="breadcrumb-link" [routerLink]="['/advert/list']">
-      {{ (currentUser.estEmployeur || currentUser.estRecruteur) ? 'Mes annonces' : 'Annonces'}}
+      {{ (currentUser && (currentUser.estEmployeur || currentUser.estRecruteur)) ? 'Mes annonces' : 'Annonces'}}
     </a>
   </li>
 </ol>

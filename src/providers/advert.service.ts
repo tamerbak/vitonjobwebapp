@@ -391,8 +391,13 @@ export class AdvertService {
     });
   }
 
-  saveAdvertInterest(advertId, jobyerId){
-    let sql = "insert into user_interet_jobyer_annonces (date, fk_user_annonce_entreprise, fk_user_jobyer) values ('" + DateUtils.sqlfy(new Date()) + "', " + advertId + ", " + jobyerId + ")";
+  saveAdvertInterest(advertId, jobyerId, partnerId?){
+    let sql = "";
+    if(Utils.isEmpty(partnerId)){
+      sql = "insert into user_interet_jobyer_annonces (date, fk_user_annonce_entreprise, fk_user_jobyer) values ('" + DateUtils.sqlfy(new Date()) + "', " + advertId + ", " + jobyerId + ")";
+    }else{
+      sql = "insert into user_interet_jobyer_annonces (date, fk_user_annonce_entreprise, fk_user_jobyer, fk_user_partenaire) values ('" + DateUtils.sqlfy(new Date()) + "', " + advertId + ", " + jobyerId + ", " + partnerId + ")";
+    }
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();

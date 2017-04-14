@@ -6,6 +6,7 @@ import {MissionService} from "../../providers/mission-service";
 import {SmsService} from "../../providers/sms-service";
 import {AdvertService} from "../../providers/advert.service";
 import {Utils} from "../utils/utils";
+import {LOGIN_BEFORE_ADVERT_POSTULAT} from "../../configurations/appConstants";
 
 declare let jQuery: any;
 declare let Messenger: any;
@@ -26,7 +27,6 @@ export class ModalOptions{
   projectTarget: any;
   processing: boolean = false;
 
-
   constructor(private sharedService: SharedService,
               private offersService: OffersService,
               private advertService: AdvertService,
@@ -35,7 +35,7 @@ export class ModalOptions{
               private router: Router) {
     this.currentUser = this.sharedService.getCurrentUser();
     if (!this.currentUser) {
-      this.router.navigate(['home']);
+      this.projectTarget = this.sharedService.getProjectTarget();
     } else {
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     }
@@ -53,19 +53,24 @@ export class ModalOptions{
       this.deleteMission();
     } else if (this.params.type === 'offer.annonce') {
       this.goToAdvertEdit();
+    }else if (this.params.type === LOGIN_BEFORE_ADVERT_POSTULAT){
+      this.goToLoginPage();
     }
   }
 
   cancelOperation(){
     if (this.params.type === 'offer.annonce') {
       this.router.navigate(['offer/list']);
+    }else if(this.params.type === LOGIN_BEFORE_ADVERT_POSTULAT) {
+      this.sharedService.setRedirectionArgs(null);
+      jQuery("#modal-options").modal('hide');
     }
   }
 
   deleteOffer() {
     this.processing = true;
     var offer = this.sharedService.getCurrentOffer();
-    if (!offer) {
+    if (!offer || !this.currentUser) {
       this.processing = false;
       jQuery("#modal-options").modal('hide');
       return;
@@ -240,5 +245,10 @@ export class ModalOptions{
     }else{
       this.router.navigate(['advert/edit', {type: type, obj: obj, fromOffer: fromOffer}]);
     }
+  }
+
+  goToLoginPage(){
+    jQuery("#modal-options").modal('hide');
+    this.router.navigate(['login']);
   }
 }
