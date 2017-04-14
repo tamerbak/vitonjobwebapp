@@ -187,6 +187,9 @@ export class SelectList {
 
   getSubLabel(metadata) {
 
+    if (Utils.isEmpty(metadata) == true) {
+      return "";
+    }
     let id = JSON.parse(metadata).subValue;
 
     if (this.subList && Utils.isEmpty(this.subList) === false) {
