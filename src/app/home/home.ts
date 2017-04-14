@@ -524,18 +524,25 @@ export class Home{
       let jobyerId = this.sharedService.getCurrentUser().jobyer.id;
 
       if (redirectionArgs.obj == LOGIN_BEFORE_ADVERT_POSTULAT &&
-        !Utils.isEmpty(partnerCode) && advertId != 0 && !Utils.isEmpty(advertId)) {
-        this.partnersService.getPartnerByCode(partnerCode).then((data: any) => {
-          if (data && data.data && data.data.length != 0) {
-            let partnerId = data.data[0].id;
-            this.advertService.saveAdvertInterest(advertId, jobyerId, partnerId).then((data: any) => {
+        advertId != 0 && !Utils.isEmpty(advertId)) {
+        if(!Utils.isEmpty(partnerCode)) {
+          this.partnersService.getPartnerByCode(partnerCode).then((data: any) => {
+            if (data && data.data && data.data.length != 0) {
+              let partnerId = data.data[0].id;
+              this.advertService.saveAdvertInterest(advertId, jobyerId, partnerId).then((data: any) => {
+                this.sharedService.setRedirectionArgs(null);
+                this.router.navigate(['advert/details', {id: advertId}]);
+              });
+            } else {
               this.sharedService.setRedirectionArgs(null);
-              this.router.navigate(['advert/details', {id: advertId}]);
-            });
-          } else {
+            }
+          });
+        }else{
+          this.advertService.saveAdvertInterest(advertId, jobyerId).then((data: any) => {
             this.sharedService.setRedirectionArgs(null);
-          }
-        });
+            this.router.navigate(['advert/details', {id: advertId}]);
+          });
+        }
       } else {
         this.sharedService.setRedirectionArgs(null);
         return;
