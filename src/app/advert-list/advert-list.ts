@@ -32,6 +32,10 @@ export class AdvertList {
               private sharedService : SharedService){
 
     this.currentUser = this.sharedService.getCurrentUser();
+
+  }
+
+  ngOnInit(){
     //acces non autorisé pour les employeurs non connecté
     if(!this.currentUser){
       let projectTarget = this.sharedService.getProjectTarget();
@@ -43,9 +47,7 @@ export class AdvertList {
     }else{
       this.isEmployer = (this.currentUser.estEmployeur || this.currentUser.estRecruteur);
     }
-  }
 
-  ngOnInit(){
     this.adverts = [];
     this.loadAdverts();
   }
