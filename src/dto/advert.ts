@@ -15,6 +15,13 @@ export class Advert extends AbstractGCallout{
     fileContent : string,
     fileName: string
   };
+  imgbg: {
+    'class':'com.vitonjob.annonces.Attachement',
+    code : number,
+    status : string,
+    fileContent : string,
+    fileName: string
+  };
   isThumbnail : boolean;
   rubriques: any[];
   created: string;
@@ -34,6 +41,13 @@ export class Advert extends AbstractGCallout{
     this.briefContent = "";
     this.thumbnail = {
       'class':'com.vitonjob.annonces.Attachement',
+        code : 0,
+        status : "",
+        fileContent : "",
+        fileName: ""
+    };
+    this.imgbg = {
+        'class':'com.vitonjob.annonces.Attachement',
         code : 0,
         status : "",
         fileContent : "",
