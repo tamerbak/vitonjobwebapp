@@ -47,10 +47,12 @@ export class AdvertDetails{
       this.projectTarget = this.sharedService.getProjectTarget();
       this.isEmployer = (this.projectTarget == 'employer');
     }
-    this.loadAdvert().then((data: any) => {
-      if(!this.advert){
+    this.loadAdvert().then((data: Advert) => {
+      if(!data){
         this.router.navigate(['home']);
+        return;
       }else{
+        this.advert = data;
         this.isValidLink = !Utils.isEmpty(this.advert.link);
         this.setInterestButtonLabel();
         this.splitContractForm();
@@ -68,14 +70,13 @@ export class AdvertDetails{
         });
         if(!Utils.isEmpty(advertId) && advertId != 0){
           this.advertService.getAdvertById(advertId).then((data: any) => {
-            this.advert = data;
-            resolve(this.advert);
+            advert = data;
+            resolve(advert);
           });
         }else{
           resolve(null);
         }
       }else{
-        this.advert = advert;
         resolve(advert);
       }
     });
