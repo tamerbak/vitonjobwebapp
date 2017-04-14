@@ -14,7 +14,9 @@ import {RecruitButton} from "../components/recruit-button/recruit-button";
 import {HomeList} from "../components/home-list-component/home-list-component";
 import {Utils} from "../utils/utils";
 import {SearchBar} from "../components/search-bar/search-bar";
-
+import {LOGIN_BEFORE_ADVERT_POSTULAT} from "../../configurations/appConstants";
+import {AdvertService} from "../../providers/advert.service";
+import {PartnersService} from "../../providers/partners-service";
 declare let jQuery: any;
 declare let require: any;
 
@@ -35,7 +37,9 @@ declare let require: any;
   ],
   providers: [
     SearchService,
-    HomeService
+    HomeService,
+    PartnersService,
+    AdvertService
   ],
   styles: [require('./home.scss')],
   encapsulation: ViewEncapsulation.None
@@ -76,6 +80,8 @@ export class Home{
               private searchService: SearchService,
               private homeService: HomeService,
               private route: ActivatedRoute,
+              private advertService: AdvertService,
+              private partnersService: PartnersService,
               private sharedService: SharedService) {
     if (this.router.url === '/jobyer') {
       this.sharedService.setProjectTarget('jobyer');
@@ -105,21 +111,7 @@ export class Home{
 
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
-      if (this.currentUser.mot_de_passe_reinitialise == "Oui") {
-        jQuery('#modal-password').modal({
-          keyboard: false,
-          backdrop: 'static'
-        });
-        jQuery('#modal-password').modal('show');
-      }
-
-      if (this.isEmpty(this.currentUser.titre) && this.isEmpty(this.currentUser.nom) && this.isEmpty(this.currentUser.prenom)) {
-        jQuery('#modal-general-condition').modal({
-          keyboard: false,
-          backdrop: 'static'
-        });
-        jQuery('#modal-general-condition').modal('show');
-      }
+      this.openAppropriateModal();
     } else {
       this.projectTarget = this.sharedService.getProjectTarget();
     }
@@ -147,6 +139,28 @@ export class Home{
     this.sharedService.setCurrentSearchCity(null);
     this.sharedService.setLastResult(null);
 
+  }
+
+  openAppropriateModal(){
+    //dans le cas de la renitialisation du mot de passe: obliger l'utilisateur à modifier son passwd
+    if (this.currentUser.mot_de_passe_reinitialise == "Oui") {
+      jQuery('#modal-password').modal({
+        keyboard: false,
+        backdrop: 'static'
+      });
+      jQuery('#modal-password').modal('show');
+    }
+
+    //dans le cas de l'inscription: afficher la modale des condition générale
+    if (this.isEmpty(this.currentUser.titre) && this.isEmpty(this.currentUser.nom) && this.isEmpty(this.currentUser.prenom)) {
+      jQuery('#modal-general-condition').modal({
+        keyboard: false,
+        backdrop: 'static'
+      });
+      jQuery('#modal-general-condition').modal('show');
+    }else{
+      this.redirectToAdvertAfterPostulat();
+    }
   }
 
   ngAfterViewInit(): void {
@@ -469,8 +483,11 @@ export class Home{
 
   }
 
+  //traitement à l'issue de la réponse aux condition générale
   onGCRefused(gcRefused: boolean){
-    var self = this;
+    let self = this;
+    //en cas de refus, se déconnecter
+    //en cas d'acceptation, afficher la modale de bienvenue
     jQuery('#modal-general-condition').on('hidden.bs.modal', function (e) {
       if(!gcRefused) {
         jQuery('#modal-welcome').modal({
@@ -478,18 +495,54 @@ export class Home{
           backdrop: 'static'
         });
         jQuery('#modal-welcome').modal('show');
+        //afficher ensuite la modale du profile
         jQuery('#modal-welcome').on('hidden.bs.modal', function (e) {
           jQuery('#modal-profile').modal({
             keyboard: false,
             backdrop: 'static'
           });
           jQuery('#modal-profile').modal('show');
+          jQuery('#modal-profile').on('hidden.bs.modal', function (e) {
+            this.redirectToAdvertAfterPostulat();
+          });
         });
       }else{
         self.sharedService.logOut();
         location.reload();
       }
     });
+  }
+
+  //redirige l'utilisateur vers la page de l'annonce à laquelle il a postulé
+  //s'il n'a pas postulé, on ne fais rien
+  //ceci est valable juste pour les jobyers connectés
+  redirectToAdvertAfterPostulat(){
+    let redirectionArgs = this.sharedService.getRedirectionArgs();
+    if(redirectionArgs && !this.currentUser.estEmployeur && !this.currentUser.estRecruteur){
+      let advertId = redirectionArgs.args.advertId;
+      let partnerCode = redirectionArgs.args.partnerCode;
+      let jobyerId = this.sharedService.getCurrentUser().jobyer.id;
+
+      if (redirectionArgs.obj == LOGIN_BEFORE_ADVERT_POSTULAT &&
+        !Utils.isEmpty(partnerCode) && advertId != 0 && !Utils.isEmpty(advertId)) {
+        this.partnersService.getPartnerByCode(partnerCode).then((data: any) => {
+          if (data && data.data && data.data.length != 0) {
+            let partnerId = data.data[0].id;
+            this.advertService.saveAdvertInterest(advertId, jobyerId, partnerId).then((data: any) => {
+              this.sharedService.setRedirectionArgs(null);
+              this.router.navigate(['advert/details', {id: advertId}]);
+            });
+          } else {
+            this.sharedService.setRedirectionArgs(null);
+          }
+        });
+      } else {
+        this.sharedService.setRedirectionArgs(null);
+        return;
+      }
+    }else{
+      this.sharedService.setRedirectionArgs(null);
+    }
   }
 
   displayPartnerLogo(): boolean {

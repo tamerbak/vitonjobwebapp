@@ -24,9 +24,16 @@ export class Sidebar implements OnInit {
   location: Location;
 
   currentUser: any;
+  isEmployer: boolean;
 
   constructor(config: ConfigService, el: ElementRef, router: Router, location: Location, private sharedService: SharedService) {
     this.currentUser = this.sharedService.getCurrentUser();
+    if(this.currentUser){
+      this.isEmployer = this.currentUser.estEmployeur;
+    }else{
+      let projectTarget = this.sharedService.getProjectTarget();
+      this.isEmployer = (projectTarget == 'employer');
+    }
     this.$el = jQuery(el.nativeElement);
     this.config = config.getConfig();
     this.router = router;

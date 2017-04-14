@@ -78,11 +78,12 @@
       </a>
     </li>
 
-    <li *ngIf="currentUser">
+    <!--Ne pas afficher dans le cas: mode déconnecté en tant qu'employeur-->
+    <li *ngIf="!(!currentUser && isEmployer)">
       <a [routerLink]=" ['/advert/list'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-globe"></i>
-          </span>{{currentUser.estEmployeur ? 'Mes annonces' : 'Annonces'}}
+          </span>{{isEmployer ? 'Mes annonces' : 'Annonces'}}
       </a>
     </li>
 
