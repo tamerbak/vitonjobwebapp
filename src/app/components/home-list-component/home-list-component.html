@@ -20,12 +20,24 @@
             <div class="swiper-slide" *ngFor="let o of upcomingOffers">
               <article class="material-card Red">
                 <h2 class="card-h">
-                  <span class="size-font">{{o.title}}</span>
+                  <span class="size-font">
+                    {{o.title}}
+                  </span>
 
                 </h2>
                 <div class="mc-content">
                   <div class="img-container">
-                    <img class="img-responsive img-size" src="{{ projectTarget == 'jobyer' ? '../../assets/images/people/employer.jpg' : '../../assets/images/people/jobyer.jpg' }}">
+                    <img
+                      class="img-responsive img-size home-list-img"
+                      src="https://s3-eu-west-1.amazonaws.com/vitonjob.photos/{{ o.idMetier }}.jpg"
+                    />
+                    <!--<img-->
+                      <!--class="img-responsive img-size"-->
+                      <!--src="{{ projectTarget == 'jobyer'-->
+                        <!--? '../../assets/images/people/employer.jpg'-->
+                        <!--: '../../assets/images/people/jobyer.jpg'-->
+                      <!--}}"-->
+                    <!--/>-->
                   </div>
                   <div class="mc-description">
                     Offre créée le {{simplifyDate(o.creationDate)}}<br/>
@@ -71,13 +83,23 @@
             <div class="swiper-slide"  *ngFor="let o of recentOffers">
               <article class="material-card Red">
                 <h2 class="card-h">
-                  <span class="size-font">{{o.title}}</span>
-
+                  <span class="size-font">
+                    {{ o.title }}
+                  </span>
                 </h2>
                 <div class="mc-content">
                   <div class="img-container">
-                    <img class="img-responsive img-size" src="{{ projectTarget == 'jobyer' ? '../../assets/images/people/employer.jpg' : '../../assets/images/people/jobyer.jpg' }}">
-
+                    <img
+                      class="img-responsive img-size home-list-img"
+                      src="https://s3-eu-west-1.amazonaws.com/vitonjob.photos/{{ o.idMetier }}.jpg"
+                    />
+                    <!--<img-->
+                      <!--class="img-responsive img-size"-->
+                      <!--src="{{ projectTarget == 'jobyer'-->
+                        <!--? '../../assets/images/people/employer.jpg'-->
+                        <!--: '../../assets/images/people/jobyer.jpg'-->
+                       <!--}}"-->
+                    <!--/>-->
                   </div>
                   <div class="mc-description">
                     Offre créée le {{simplifyDate(o.creationDate)}}<br/>
@@ -128,7 +150,13 @@
                 </h2>
                 <div class="mc-content">
                   <div class="img-container">
-                    <img class="img-responsive img-size" src="{{ projectTarget == 'jobyer' ? '../../assets/images/people/employer.jpg' : '../../assets/images/people/jobyer.jpg' }}">
+                    <img
+                      class="img-responsive img-size home-list-img-left"
+                      src="{{ projectTarget == 'jobyer'
+                        ? 'https://s3-eu-west-1.amazonaws.com/vitonjob.photos/employers.jpg'
+                        : 'https://s3-eu-west-1.amazonaws.com/vitonjob.photos/jobyers.jpg'
+                      }}"
+                    />
                   </div>
                   <div class="mc-description">
                     <span>A rejoint Vit-On-Job le &nbsp;</span>{{simplifyDate(o.creationDate)}}<br/>

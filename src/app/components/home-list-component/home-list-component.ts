@@ -64,7 +64,9 @@ export class HomeList{
 
     this.homeService.loadHomeData((this.projectTarget)).then(data => {
       this.homeServiceData = data;
-      this.initHomeList();
+      this.homeService.loadOfferType(this.projectTarget, this.homeServiceData).then(() => {
+        this.initHomeList();
+      });
 
     });
 

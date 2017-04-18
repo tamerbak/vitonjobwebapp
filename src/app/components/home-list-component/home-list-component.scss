@@ -120,7 +120,7 @@ home-list-component.fade-in-component{
   margin-top: 2em;
 }
 .img-size{
-  width: 100%;
+  min-width: 100%;
 }
 .no-padding{
   padding:0;
@@ -494,4 +494,12 @@ h3 {
 }
 .body{
   padding-top: 2em;
+}
+
+.home-list-img {
+  margin-left: -30%;
+}
+
+.home-list-img-left {
+  margin-left: -10%;
 }
