@@ -111,12 +111,14 @@ export class OfferList {
     for (let i = 0; i < this.offerList.length; i++) {
       let offer = this.offerList[i];
 
-      if (!offer || !offer.jobData || !offer.calendarData ||(offer.calendarData && offer.calendarData.length == 0)) {
+      console.log('offre type: ' + offer.type);
+
+      if (!offer || !offer.jobData) {
         continue;
       }
 
       // If missing main data or if not a template, ignore
-      if (offer.offerType == true) {
+      if (offer.type == true) {
         continue;
       }
 

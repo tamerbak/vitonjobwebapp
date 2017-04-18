@@ -188,7 +188,7 @@ export class Calendar {
   removeSlot(event) {
     let self = this;
 
-    if (this.slots.length == 1) {
+    /* if (this.slots.length == 1) {
       this.addAlert(
         "danger",
         "Une offre doit avoir au moins un créneau de " + (this.projectTarget == 'jobyer' ? 'disponibilité.' : 'travail souhaité.') +
@@ -196,7 +196,7 @@ export class Calendar {
         "slot"
       );
       return;
-    }
+    } */
 
     // Searching event in the calendar events
     let ev = this.calendar.events.filter((e)=> {

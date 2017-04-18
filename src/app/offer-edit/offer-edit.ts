@@ -212,7 +212,7 @@ export class OfferEdit {
         // If we come from a template, remove the id to implicit copy the offer.
         if (this.type == 'planif') {
           this.offer.idOffer = 0;
-          this.offer.offerType = false;
+          this.offer.type = false;
           this.offer.calendarData = [];
         }
 
@@ -227,7 +227,7 @@ export class OfferEdit {
     } else {
       this.offer = new Offer();
       if (this.type == 'template') {
-        this.offer.offerType = true;
+        this.offer.type = true;
       }
     }
 
@@ -606,7 +606,7 @@ export class OfferEdit {
 
           this.currentUser.employer.entreprises[0].offers.push(offer);
 
-          if (this.offer.offerType) {
+          if (this.offer.type) {
             this.validateJob(stayOnPage);
           }
         } else {
@@ -1097,13 +1097,13 @@ export class OfferEdit {
   isFormValid() {
     let errors = [];
 
-    if (!this.offer.offerType && (!this.offer.calendarData || this.offer.calendarData.length == 0)) {
-      this.addAlert("warning", "Veuillez saisir les horaires de travail pour continuer.", "general");
-      errors.push({
-        type: 'required',
-        label: this.projectTarget == 'jobyer' ? "Choix des disponibilités" : "Choix des horaires de travail"
-      })
-    }
+    // if (!this.offer.type && (!this.offer.calendarData || this.offer.calendarData.length == 0)) {
+    //   this.addAlert("warning", "Veuillez saisir les horaires de travail pour continuer.", "general");
+    //   errors.push({
+    //     type: 'required',
+    //     label: this.projectTarget == 'jobyer' ? "Choix des disponibilités" : "Choix des horaires de travail"
+    //   })
+    // }
 
     if (!this.isValidAddress) {
       errors.push({
@@ -1248,7 +1248,7 @@ export class OfferEdit {
   useAsType(value) {
     this.type = 'template';
     if (value) {
-      this.offer.offerType = true;
+      this.offer.type = true;
       this.obj = 'add';
       this.offer.idOffer = 0;
       this.saveOffer(false);

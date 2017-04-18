@@ -56,7 +56,7 @@
             <label class="" style="font-size: small; color: #ccc">DE L'HEURE</label>
           </div>
 
-          <div class="col-md-12 col-sm-12 col-xs-12">
+          <div *ngIf="item.slots && item.slots.length > 0" class="col-md-12 col-sm-12 col-xs-12">
             <b>{{ projectTarget == 'jobyer' ? 'Disponibilités' : 'Horaires de travail souhaités' }}</b>
             <ul>
               <li *ngFor="let dispo of item.slots, let j = index" [hidden]="dispo.pause">
