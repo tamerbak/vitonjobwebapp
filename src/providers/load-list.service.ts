@@ -124,7 +124,7 @@ export class LoadListService {
   loadConventions() {
     let sql = "SELECT pk_user_convention_collective as id, code, libelle " +
       "FROM user_convention_collective " +
-      "WHERE dirty = 'N' AND code != '9999' " +
+      "WHERE dirty = 'N' " +
       "ORDER BY libelle ASC;"
     ;
     return new Promise(resolve => {
