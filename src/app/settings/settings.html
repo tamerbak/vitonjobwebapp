@@ -62,6 +62,12 @@
               Modifier le mode de validation des horaires
             </button>
             <br />
+            
+            <button [disabled]="phase=='CODE_PROMO'" class="btn btn-default btn-sm mt"
+                    (click)="initCodePromoForm()">
+              S'inscrire à une campagne
+            </button>
+            <br />
             <br />
 
             <div *ngIf="isEmployer">
@@ -92,7 +98,7 @@
           <fieldset>
             <legend><strong>{{phaseTitle}}</strong></legend>
             <div *ngIf="phase=='CHANGE_MISSION'" class="form-group row">
-              <label for="lastname" class="col-md-12 col-xs-12 form-control-label">
+              <label class="col-md-12 col-xs-12 form-control-label">
                 Choisissez votre mode de suivi de mission
               </label>
               <div class="col-md-12 col-xs-12">
@@ -122,82 +128,94 @@
             </div>
 
             <div *ngIf="phase=='CHANGE_PASSWORD'">
-              <div class="form-group row">
-                <label for="password1" class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Mot de passe actuel
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <div id="hidePasswd" class="input-group">
-                    <input [(ngModel)]="oldPassword" class="form-control" type="password" (keyup)="watchOldPassword($event)">
-                    <div class="input-group-btn">
-                      <button type="button" class="btn btn-success" (click)="showHideOldPasswd()"><i
-                        class="{{showHidePasswdIcon}}"></i></button>
-                    </div>
-                  </div>
-                  <div id="showPasswd" class="input-group" style="display:none;">
-                    <input [(ngModel)]="oldPassword" class="form-control" type="text" (keyup)="watchOldPassword($event)">
-                    <div class="input-group-btn">
-                      <button type="button" class="btn btn-success" (click)="showHideOldPasswd()"><i
-                        class="{{showHidePasswdIcon}}"></i></button>
-                    </div>
+            <div class="form-group row">
+              <label for="password1" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                Mot de passe actuel
+              </label>
+              <div class="col-md-7 col-xs-12">
+                <div id="hidePasswd" class="input-group">
+                  <input [(ngModel)]="oldPassword" class="form-control" type="password" (keyup)="watchOldPassword($event)">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-success" (click)="showHideOldPasswd()"><i
+                      class="{{showHidePasswdIcon}}"></i></button>
                   </div>
                 </div>
-                <div class="col-md-offset-4 col-md-7 col-xs-12">
-                  <span class="hint label label-danger">{{oldPasswordHint}}</span>
+                <div id="showPasswd" class="input-group" style="display:none;">
+                  <input [(ngModel)]="oldPassword" class="form-control" type="text" (keyup)="watchOldPassword($event)">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-success" (click)="showHideOldPasswd()"><i
+                      class="{{showHidePasswdIcon}}"></i></button>
+                  </div>
                 </div>
               </div>
-
-              <div class="form-group row">
-                <label for="password1" class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Nouveau mot de passe
-                </label>
-                <div class="col-md-7 col-xs-12">
-                  <div id="hidePasswd1" class="input-group">
-                    <input [(ngModel)]="password1" class="form-control" type="password" (keyup)="watchPassword1($event)">
-                    <div class="input-group-btn">
-                      <button type="button" class="btn btn-success" (click)="showHidePasswd1()"><i
-                        class="{{showHidePasswd1Icon}}"></i></button>
-                    </div>
-                  </div>
-                  <div id="showPasswd1" class="input-group" style="display:none;">
-                    <input [(ngModel)]="password1" class="form-control" type="text" (keyup)="watchPassword1($event)">
-                    <div class="input-group-btn">
-                      <button type="button" class="btn btn-success" (click)="showHidePasswd1()"><i
-                        class="{{showHidePasswd1Icon}}"></i></button>
-                    </div>
+              <div class="col-md-offset-4 col-md-7 col-xs-12">
+                <span class="hint label label-danger">{{oldPasswordHint}}</span>
+              </div>
+            </div>
+  
+            <div class="form-group row">
+              <label for="password1" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                Nouveau mot de passe
+              </label>
+              <div class="col-md-7 col-xs-12">
+                <div id="hidePasswd1" class="input-group">
+                  <input [(ngModel)]="password1" class="form-control" type="password" (keyup)="watchPassword1($event)">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-success" (click)="showHidePasswd1()"><i
+                      class="{{showHidePasswd1Icon}}"></i></button>
                   </div>
                 </div>
-                <div class="col-md-offset-4 col-md-7 col-xs-12">
-                  <span class="hint label label-danger">{{password1Hint}}</span>
+                <div id="showPasswd1" class="input-group" style="display:none;">
+                  <input [(ngModel)]="password1" class="form-control" type="text" (keyup)="watchPassword1($event)">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-success" (click)="showHidePasswd1()"><i
+                      class="{{showHidePasswd1Icon}}"></i></button>
+                  </div>
                 </div>
               </div>
-
-              <div class="form-group row">
-                <label for="password2" class="col-md-4 col-xs-12 form-control-label text-md-right">
-                  Confirmation du mot de passe
-                </label>
-                                <div class="col-md-7 col-xs-12">
-                  <div id="hidePasswdConfirm" class="input-group">
-                    <input [(ngModel)]="password2" class="form-control" type="password" (keyup)="watchPassword2($event)">
-                    <div class="input-group-btn">
-                      <button type="button" class="btn btn-success" (click)="showHidePasswdConfirm()"><i
-                        class="{{showHidePasswdConfirmIcon}}"></i></button>
-                    </div>
-                  </div>
-                  <div id="showPasswdConfirm" class="input-group" style="display:none;">
-                    <input [(ngModel)]="password2" class="form-control" type="text" (keyup)="watchPassword2($event)">
-                    <div class="input-group-btn">
-                      <button type="button" class="btn btn-success" (click)="showHidePasswdConfirm()"><i
-                        class="{{showHidePasswdConfirmIcon}}"></i></button>
-                    </div>
+              <div class="col-md-offset-4 col-md-7 col-xs-12">
+                <span class="hint label label-danger">{{password1Hint}}</span>
+              </div>
+            </div>
+  
+            <div class="form-group row">
+              <label for="password2" class="col-md-4 col-xs-12 form-control-label text-md-right">
+                Confirmation du mot de passe
+              </label>
+              <div class="col-md-7 col-xs-12">
+                <div id="hidePasswdConfirm" class="input-group">
+                  <input [(ngModel)]="password2" class="form-control" type="password" (keyup)="watchPassword2($event)">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-success" (click)="showHidePasswdConfirm()"><i
+                      class="{{showHidePasswdConfirmIcon}}"></i></button>
                   </div>
                 </div>
-                <div class="col-md-offset-4 col-md-7 col-xs-12">
-                  <span class="hint label label-danger">{{password2Hint}}</span>
+                <div id="showPasswdConfirm" class="input-group" style="display:none;">
+                  <input [(ngModel)]="password2" class="form-control" type="text" (keyup)="watchPassword2($event)">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-success" (click)="showHidePasswdConfirm()"><i
+                      class="{{showHidePasswdConfirmIcon}}"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-offset-4 col-md-7 col-xs-12">
+                <span class="hint label label-danger">{{password2Hint}}</span>
+              </div>
+            </div>
+          </div>
+
+            <!--code promo-->
+            <div *ngIf="phase=='CODE_PROMO'">
+              <div class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Code privilège
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <input [(ngModel)]="codePromo" class="form-control">
                 </div>
               </div>
             </div>
-
+            
           </fieldset>
 
           <div class="clearfix">
