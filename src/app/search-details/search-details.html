@@ -91,8 +91,22 @@
         </div>
 
         <div class="col-md-12 col-sm-12 col-xs-12" *ngIf="projectTarget == 'jobyer' && result.rate && result.rate > 0">
-          <b>Le taux horaire : </b>{{result.rate.toFixed(3)}} &euro; <br />
-          <b>Les gains estimés : </b>{{(!estimatedIncome && estimatedIncome==0)? 'Calcul en cours ...':estimatedIncome.toFixed(2)+" €"}}
+          <div>
+            <b>Le taux horaire : </b>{{result.rate.toFixed(3)}} &euro;
+          </div>
+          <div
+            *ngIf="!offerComplete.calendarData || offerComplete.calendarData.length == 0"
+          >
+            <b>Les gains estimés : </b>non renseignés
+          </div>
+          <div
+            *ngIf="offerComplete.calendarData && offerComplete.calendarData.length > 0"
+          >
+            <b>Les gains estimés : </b>{{ (!estimatedIncome && estimatedIncome == 0)
+              ? 'Calcul en cours ...'
+              : estimatedIncome.toFixed(2) + " €"
+            }}
+          </div>
         </div>
 
         <div class="col-md-12 col-sm-12 col-xs-12" *ngIf="offerComplete.calendarData && offerComplete.calendarData.length > 0">
