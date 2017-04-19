@@ -26,6 +26,10 @@ export class CampaignService {
     // Build payload
     let payloadFinal = new CCallout(CAMPAIGN_CALLOUT_ID, [
       new CCalloutArguments(subject, token),
+      new CCalloutArguments('Configuration', {
+        'class': 'com.vitonjob.callouts.commun.model.CalloutConfiguration',
+        'mode': token.mode
+      }),
     ]);
 
     // Call the Callout
@@ -63,7 +67,7 @@ export class CampaignService {
   subscribeToCampaign(code: string, idAccount: number) {
     let token = {
       'class': 'com.vitonjob.callouts.commun.model.Token',
-      'mode': 'view',
+      'mode': 'subscribe',
       'code': code,
       'subscriber': idAccount,
     };
