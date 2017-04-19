@@ -5,6 +5,7 @@ import {AuthenticationService} from "../../providers/authentication.service";
 import {SharedService} from "../../providers/shared.service";
 import {Utils} from "../utils/utils";
 import {ProfileService} from "../../providers/profile.service";
+import {CampaignService} from "../../providers/campaign-service";
 
 declare let jQuery: any;
 declare let Messenger: any;
@@ -14,7 +15,7 @@ declare let md5: any;
   selector: '[settings]',
   template: require('./settings.html'),
   directives: [ROUTER_DIRECTIVES],
-  providers: [Utils, MissionService, AuthenticationService, ProfileService],
+  providers: [Utils, MissionService, AuthenticationService, ProfileService, CampaignService],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./settings.scss')]
 })
@@ -57,10 +58,13 @@ export class Settings {
 
   spontaneousContact: any;
 
+  //code privilege
+  codePromo: string;
 
   constructor(private missionService: MissionService,
               private profileService: ProfileService,
               private authService: AuthenticationService,
+              private campaignService: CampaignService,
               private sharedService: SharedService,
               private router: Router) {
 
@@ -196,6 +200,14 @@ export class Settings {
     this.initValidation();
   }
 
+  initCodePromoForm(){
+    this.phaseTitle = "Enregistrement d'un code privilège";
+    this.showForm = true;
+    this.phase = "CODE_PROMO";
+    this.codePromo = "";
+    this.initValidation();
+  }
+
   isSpontaneousContact() {
     if (this.currentUser.estEmployeur) {
       return (this.spontaneousContact && this.spontaneousContact.toUpperCase() == 'OUI');
@@ -290,6 +302,12 @@ export class Settings {
       }
     } else if (this.phase === "CHANGE_MISSION") {
       _isFormValid = true;
+    }else if (this.phase === "CODE_PROMO") {
+     if(!Utils.isEmpty(this.codePromo)){
+       _isFormValid = true;
+     }else{
+       _isFormValid = false;
+     }
     }
 
     return _isFormValid;
@@ -303,6 +321,8 @@ export class Settings {
       this.modifyPassword()
     } else if (this.phase === "CHANGE_MISSION") {
       this.changeMissionOption()
+    } else if (this.phase === "CODE_PROMO") {
+      this.saveCodePromo();
     }
   }
 
@@ -399,6 +419,36 @@ export class Settings {
           });
         });
     }
+  }
+
+  saveCodePromo(){
+    this.validation = true;
+    this.campaignService.subscribeToCampaign(this.codePromo, this.currentUser.id).then((data: any) => {
+      if (!data || data.status != 200) {
+        Messenger().post({
+          message: 'Serveur non disponible ou problème de connexion',
+          type: 'error',
+          showCloseButton: true
+        });
+        this.validation = false;
+        //dans le cas nominal, data._body contiendra l'id de l'inscription à la campagne, en cas d'erreur data._body contientra le msg d'erreur, d'ou l'appel de parseInt (pour distinguer l'id du texte de l'erreur)
+      } else if (Utils.isEmpty(data._body) || data._body == "[]" || isNaN(parseInt(data._body))) {
+        Messenger().post({
+          message: "Il n'existe pas de campagne avec le code privilège renseigné.",
+          type: 'error',
+          showCloseButton: true
+        });
+        this.validation = false;
+      } else {
+        Messenger().post({
+          message: "Vous vous êtes inscris à la campagne avec succès.",
+          type: 'success',
+          showCloseButton: true
+        });
+        this.validation = false;
+        this.closeForm();
+      }
+    });
   }
 
 }
