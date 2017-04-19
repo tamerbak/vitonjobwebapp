@@ -659,7 +659,7 @@
                     type="submit"
                     class="btn btn-primary fwidth"
                     (click)="launchSearch()"
-                    [disabled]="isOfferArchived"
+                    [disabled]="isOfferArchived || !(offer.calendarData && offer.calendarData.length > 0)"
                   >
                     {{isEmployer ? 'Enregistrer et lancer la planification' : 'Lancer la recherche'}}
                   </button>

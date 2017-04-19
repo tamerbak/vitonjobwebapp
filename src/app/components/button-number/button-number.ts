@@ -25,6 +25,9 @@ export class ButtonNumber {
   @Input()
   tooltip: string = "";
 
+  @Input()
+  disabled: boolean = false;
+
   @Output()
   buttonClick = new EventEmitter<any>();
 

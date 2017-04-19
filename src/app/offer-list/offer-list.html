@@ -97,6 +97,7 @@
                 [tooltip]="'Jobyers disponibles'"
                 (click)="launchSearch(item)"
                 *ngIf="!item.obsolete && isEmployer"
+                [disabled]="!(item.slots && item.slots.length > 0)"
               ></div>
 
               <button

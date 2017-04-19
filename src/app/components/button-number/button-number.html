@@ -4,7 +4,7 @@
       type="button"
       class="btn btn-secondary btn-sm"
       (click)="onButtonClick()"
-      [disabled]="number < 0"
+      [disabled]="number < 0 || disabled"
       style="margin-bottom: -1px"
     >
       {{ label }}
