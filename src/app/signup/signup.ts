@@ -6,6 +6,7 @@ import {LoadListService} from "../../providers/load-list.service";
 import {ValidationDataService} from "../../providers/validation-data.service";
 import {SharedService} from "../../providers/shared.service";
 import {Utils} from "../utils/utils";
+import {CampaignService} from "../../providers/campaign-service";
 declare function md5(value: string): string;
 declare let Messenger;
 
@@ -16,7 +17,7 @@ declare let Messenger;
   template: require('./signup.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./signup.scss')],
-  providers: [AuthenticationService, LoadListService, ValidationDataService]
+  providers: [AuthenticationService, LoadListService, ValidationDataService, CampaignService]
 })
 export class SignupPage{
   isRedirectedFromHome : boolean;
@@ -40,12 +41,15 @@ export class SignupPage{
 
   annee : any;
 
+  codePromo: string;
+
   constructor(private loadListService: LoadListService,
               private authService: AuthenticationService,
               private validationDataService: ValidationDataService,
               private sharedService: SharedService,
               private router: Router,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private campaignService: CampaignService) {
   }
 
   ngOnInit(): void {
@@ -81,7 +85,24 @@ export class SignupPage{
     if (this.isAuthDisabled()) {
       return;
     }
-    this.hideLoader = false;
+    if(!Utils.isEmpty(this.codePromo)) {
+      this.hideLoader = false;
+
+      this.campaignService.getCampaignByCode(this.codePromo).then((data: any) => {
+        if (!data || Utils.isEmpty(data._body) || data._body == "[]" || data.status != 200) {
+          this.addAlert("danger", "Il n'existe pas de campagne avec le code promo renseigné.");
+          this.hideLoader = true;
+          return;
+        }else{
+          this.saveAccount();
+        }
+      });
+    }else{
+      this.saveAccount();
+    }
+  }
+
+  saveAccount(){
     let indPhone=this.index+""+this.phone;
     let pwd = md5(this.password1);
     this.authService.authenticate(this.email, indPhone, pwd, this.role, false).then((data:any)=>{
@@ -94,6 +115,11 @@ export class SignupPage{
       }
       this.sharedService.setStorageType("local");
       this.sharedService.setCurrentUser(data);
+
+      //sauvegarder l'inscription de l'utilisateur à la campagne avec le code promo renseigné
+      if(!Utils.isEmpty(this.codePromo)){
+        this.campaignService.subscribeToCampaign(this.codePromo, data.id);
+      }
       if (this.obj == "recruit") {
         this.router.navigate(['home', {obj: 'recruit'}]);
         return;
