@@ -1,4 +1,3 @@
-import {Type} from "@angular/core";
 export class RedirectionArgs {
   obj: string;
   args: any;
