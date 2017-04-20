@@ -3,10 +3,8 @@ import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {ProfileService} from "../../providers/profile.service";
 import {SharedService} from "../../providers/shared.service";
 import {Utils} from "../utils/utils";
-import {AddressUtils} from "../utils/addressUtils";
-import {Configs} from "../../configurations/configs";
-import {Helpers} from "../../providers/helpers.service";
 import {DateUtils} from "../utils/date-utils";
+import {REDIRECT_FROM_JOBYER_PROFIL, REDIRECT_TO_JOBYER_PROFIL} from "../../configurations/appConstants";
 
 @Component({
   selector: '[profile-jobyer]',
@@ -113,6 +111,15 @@ export class ProfileJobyer{
           });
       }
     })
+  }
+
+  goBack(){
+    let redirectionArgs = this.sharedService.getRedirectionArgs();
+    if(redirectionArgs && redirectionArgs.obj == REDIRECT_TO_JOBYER_PROFIL){
+      redirectionArgs.obj = REDIRECT_FROM_JOBYER_PROFIL;
+      this.sharedService.setRedirectionArgs(redirectionArgs);
+      this.router.navigate(['advert/jobyer/list']);
+    }
   }
 
   isEmpty(str) {

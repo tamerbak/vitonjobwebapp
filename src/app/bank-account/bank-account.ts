@@ -262,4 +262,17 @@ export class BankAccount {
       }
     });
   }
+
+  cancel(){
+    this.bank = {
+      nom_de_banque : '',
+      detenteur_du_compte : '',
+      iban : '',
+      bic : ''
+    };
+    this.accountHolderHint = "";
+    this.bankHint = "";
+    this.bicHint = "";
+    this.ibanHint = "";
+  }
 }
