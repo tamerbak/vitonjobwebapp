@@ -79,11 +79,11 @@
     </li>
 
     <!--Ne pas afficher dans le cas: mode déconnecté en tant qu'employeur-->
-    <li *ngIf="!(!currentUser && isEmployer)">
+    <li *ngIf="!(!currentUser && sharedService.getProjectTarget() == 'employer')">
       <a [routerLink]=" ['/advert/list'] ">
         <span class="icon">
             <i class="glyphicon glyphicon-globe"></i>
-          </span>{{isEmployer ? 'Mes annonces' : 'Annonces'}}
+          </span>{{sharedService.getProjectTarget() == 'employer' ? 'Mes annonces' : 'Annonces'}}
       </a>
     </li>
 
