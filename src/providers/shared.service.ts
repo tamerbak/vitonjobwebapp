@@ -317,4 +317,12 @@ export class SharedService {
   setRedirectionArgs(value) {
     this.setStorageVariable("redirectionArgs", value);
   }
+
+  isFromPartner(){
+    return this.getStorageVariable("isFromPartner");
+  }
+
+  setFromPartner(value: boolean){
+    this.setStorageVariable("isFromPartner", value);
+  }
 }
