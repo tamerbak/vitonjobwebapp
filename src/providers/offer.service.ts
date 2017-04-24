@@ -570,7 +570,7 @@ export class OffersService {
       "', nombre_de_postes = " + offer.nbPoste +
       ", contact_sur_place = '" + offer.contact +
       "', telephone_contact = '" + offer.telephone +
-      "', offre_type = '" + (offer.offerType ? 'Oui' : 'Non') +
+      "', offre_type = '" + (offer.type ? 'Oui' : 'Non') +
       "' where pk_user_offre_entreprise=" + offer.idOffer;
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,

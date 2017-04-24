@@ -613,13 +613,15 @@ export class OfferEdit {
           this.currentUser.jobyer.offers.push(offer);
         }
 
+
+        this.sharedService.setCurrentUser(this.currentUser);
+
         if (this.projectTarget == 'employer') {
           for (let i = 0; i < this.savedSoftwares.length; i++) {
             this.saveSoftware(this.savedSoftwares[i], offer.idOffer);
           }
         }
 
-        this.sharedService.setCurrentUser(this.currentUser);
         Messenger().post({
           message: "L'offre " + "'" + this.offer.title + "'" + " a été ajoutée avec succès",
           type: 'success',
