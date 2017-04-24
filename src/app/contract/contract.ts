@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {Router, ActivatedRoute, Params} from "@angular/router";
+import {Router} from "@angular/router";
 import {Helpers} from "../../providers/helpers.service";
 import {SharedService} from "../../providers/shared.service";
 import {ContractService} from "../../providers/contract-service";
@@ -328,18 +328,18 @@ export class Contract {
       this.isEuropean = (datum.identifiant_nationalite == 42 ? false : true);
       this.isCIN = this.isFrench || this.isEuropean;
       let estResident = datum.est_resident;
-      if(this.isEuropean){
-        if(this.isCIN){
+      if (this.isEuropean) {
+        if (!estResident) {
           this.labelTitreIdentite = "CNI ou Passeport";
           this.contractData.jobyerTitreTravail = datum.cni;
-        }else{
+        } else {
           this.labelTitreIdentite = "Carte de ressortissant";
           this.contractData.jobyerTitreTravail = datum.numero_titre_sejour;
         }
-      }else{
-        if(estResident){
+      } else {
+        if (estResident) {
           this.labelTitreIdentite = "Carte de résident";
-        }else{
+        } else {
           this.labelTitreIdentite = "Titre de séjour";
         }
         this.contractData.jobyerTitreTravail = datum.numero_titre_sejour;
