@@ -42,8 +42,6 @@ export class AdvertDetails{
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
       this.isEmployer = (this.currentUser.estEmployeur || this.currentUser.estRecruteur);
     } else {
-      //this.router.navigate(['home']);
-      //return;
       this.projectTarget = this.sharedService.getProjectTarget();
       this.isEmployer = (this.projectTarget == 'employer');
     }
@@ -58,6 +56,11 @@ export class AdvertDetails{
         this.splitContractForm();
       }
     });
+
+    this.partnerCode = this.getPartnerCode();
+    if(!Utils.isEmpty(this.partnerCode)) {
+      this.forceJobyerRole();
+    }
   }
 
   loadAdvert(){
@@ -149,12 +152,21 @@ export class AdvertDetails{
   }
 
   getPartnerCode(){
-    let partnerCode= "";
+    let partnerCode = "";
     this.route.params.forEach((params: Params) => {
       partnerCode = params['partnerCode'];
     });
 
     return Utils.preventNull(partnerCode);
+  }
+
+  forceJobyerRole(){
+    if(!this.currentUser || !this.isEmployer){
+      this.sharedService.setFromPartner(true);
+      this.projectTarget = "jobyer";
+      this.isEmployer = false;
+      this.sharedService.setProjectTarget("jobyer");
+    }
   }
 
   addAlert(type, msg): void {

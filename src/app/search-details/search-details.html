@@ -97,12 +97,12 @@
           <div
             *ngIf="!offerComplete.calendarData || offerComplete.calendarData.length == 0"
           >
-            <b>Les gains estimés : </b>non renseignés
+            <b>Les gains estimés bruts : </b>non renseignés
           </div>
           <div
             *ngIf="offerComplete.calendarData && offerComplete.calendarData.length > 0"
           >
-            <b>Les gains estimés : </b>{{ (!estimatedIncome && estimatedIncome == 0)
+            <b>Les gains estimés bruts : </b>{{ (!estimatedIncome && estimatedIncome == 0)
               ? 'Calcul en cours ...'
               : estimatedIncome.toFixed(2) + " €"
             }}
