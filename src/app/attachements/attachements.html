@@ -4,16 +4,18 @@
 </ol>
 <h1 class="page-title">Coffre numérique</h1>
 <div class="col-lg-6 col-xs-12">
+  <!--div pour la consultation de la pièce jointe-->
+  <div *ngIf="viewMode" class="form-group row">
+    <div class="screen-filler">
+      <button class="screen-filler-btn" (click)="closeModal()" ><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+      <img class="screen-filler-img" alt="{{selFileName}}" [src]="photoURL()">
+    </div>
+  </div>
+  
   <section class="widget">
     <div class="widget-body">
       <div *ngIf="emptySafe"><p class="attachments-info-box">Vous pouvez installer dès maintenant un document dans votre coffre numérique sécurisé</p></div>
       <form #myForm="ngForm" class="profile-form form-horizontal" role="form">
-        <div *ngIf="viewMode" class="form-group row">
-          <div class="screen-filler">
-            <button class="screen-filler-btn" (click)="closeModal()" ><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
-            <img class="screen-filler-img" alt="{{selFileName}}" [src]="photoURL()" >
-          </div>
-        </div>
         <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
           <div [innerHTML]="alert.msg"></div>
         </alert>
