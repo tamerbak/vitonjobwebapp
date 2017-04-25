@@ -27,16 +27,30 @@
             <div class="col-md-4 col-xs-12">
               <input type="text" class="form-control" [(ngModel)]="fileName" [disabled]="isUploadInProgress">
             </div>
-
           </div>
+  
           <div class="form-group row">
             <label class="col-md-4 col-xs-12 form-control-label text-md-right">
-              Télécharger (JPEG/PNG)
+              Télécharger (JPEG/PNG/PDF)
+            </label>
+            <div class="col-md-4 col-xs-12">
+              <form>
+                <input type="file" id="file" name="file" (change)="submitFile()" accept="image/x-png,image/jpeg,.pdf">
+              </form>
+            </div>
+          </div>
+          
+          
+          
+          
+          <!--<div class="form-group row">
+            <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+              Télécharger (JPEG/PNG/PDF)
             </label>
             <div class="col-md-4 col-xs-12">
               <div class="fileinput fileinput-new" data-provides="fileinput">
                 <div class="form-group">
-                  <input type="file" name="file" id="file" class="input-file form-control" accept="image/x-png,image/jpeg">
+                  <input type="file" name="file" id="file" class="input-file form-control">
                   <label for="file" class="btn btn-tertiary js-labelFile">
                     <i class="icon fa fa-check"></i>
                     <span class="js-fileName">Choisir un fichier</span>
@@ -47,7 +61,8 @@
                 <div class="fileinput-preview" data-trigger="fileinput"></div>
               </div>
             </div>
-          </div>
+          </div>-->
+          
         </fieldset>
 
         <div class="form-group row">
