@@ -57,6 +57,7 @@ export class Attachements {
       });
     }
   }
+
   ngAfterViewInit(): void {
     let self = this;
     jQuery('.input-file').each(function() {
@@ -81,6 +82,27 @@ export class Attachements {
     });
   }
 
+  submitFile() {
+    this.alerts = [];
+    let fileField = jQuery('#file');
+    if (fileField && fileField[0]) {
+      let fs = fileField[0].files;
+      if (fs && fs.length > 0) {
+        let f: any = fs[0];
+        if(f.type == "application/pdf" || f.type == "image/png" || f.type == "image/jpeg") {
+          let fr = new FileReader();
+          fr.onload = (file: any) => {
+            this.scanData = file.target.result;
+          };
+          fr.readAsDataURL(f);
+        }else{
+          this.addAlert("warning", "Veuillez choisir une image ou un fichier PDF. Les autres types de fichiers ne sont pas permis.");
+          jQuery('#file').val('');
+        }
+      }
+    }
+  }
+
   saveFile(){
     if(!this.scanData || this.scanData == null){
       return;
@@ -88,7 +110,9 @@ export class Attachements {
 
     this.isUploadInProgress = true;
     this.attachementSerice.uploadFile(this.currentUser, this.fileName, this.scanData, 'Autres').then((data: any) => {
-      jQuery('.fileinput').fileinput('clear')
+      //jQuery('.fileinput').fileinput('clear')
+      //clear attchement
+      jQuery('#file').val('');
       this.fileName ='';
       if(data && data.id != 0){
         this.addAlert("info", "Le fichier est en cours de transfert. Veuillez patienter ...");
@@ -117,7 +141,13 @@ export class Attachements {
     this.attachementSerice.downloadActualFile(a.id, a.fileName).then((data: any)=> {
       if(data){
         this.fileContent = data['stream'];
-        this.viewMode=true;
+        //this.fileContent = "data:image/png;base64,iVBORw..."
+        let extension = this.fileContent.split('/')[1].split(';')[0];
+        if(extension == 'pdf'){
+          window.open(this.fileContent);
+        }else{
+          this.viewMode=true;
+        }
         this.alerts.length = 0;
       }else{
         this.addAlert("danger", "Le téléchargement du fichier a échoué. Veuillez recommencer l'opération.");
