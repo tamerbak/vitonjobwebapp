@@ -1023,7 +1023,7 @@ export class Profile{
   loadCurrentPerfecture(){
     this.profileService.getPrefecture(this.whoDeliverStay).then((data: any) => {
       if (data && data.status == "success" && data.data && data.data.length != 0){
-        jQuery(".whoDeliver-select").select2('data', {id: data.data[0].id, nom: this.whoDeliverStay});
+        jQuery(".whoDeliver-select").select2('data', data.data[0]);
       }
     });
   }
@@ -1257,13 +1257,14 @@ export class Profile{
           cache: true
         },
         formatResult: function (item) {
-          return item.nom;
+          return item.nom + (item.adresse_complete ? ' (' + item.adresse_complete + ')' : '');
         },
         formatSelection: function (item) {
-          return item.nom;
+          return item.nom  + (item.adresse_complete ? ' (' + item.adresse_complete + ')' : '');
         },
         dropdownCssClass: "bigdrop",
         escapeMarkup: function (markup) {
+          console.log('escapeMarkup: ' + markup);
           return markup;
         },
         minimumInputLength: 3,

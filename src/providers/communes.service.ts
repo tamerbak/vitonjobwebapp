@@ -51,7 +51,10 @@ export class CommunesService{
 
   getPrefecturesByTerm() {
     return function (term, page) {
-      return "select pk_user_prefecture as id, nom from user_prefecture where lower_unaccent(nom) like lower_unaccent('%" + term + "%') limit 10";
+      return "select pk_user_prefecture as id, nom, adresse_complete from user_prefecture where " +
+        "lower_unaccent(nom) like lower_unaccent('%" + term + "%') " +
+        "OR lower_unaccent(adresse_complete) like lower_unaccent('%" + term + "%') " +
+        "limit 10";
     }
   }
 

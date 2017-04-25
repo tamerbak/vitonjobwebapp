@@ -495,7 +495,7 @@ export class ProfileService{
   }
 
   getPrefecture(nom) {
-    let sql = "select pk_user_prefecture as id from user_prefecture where nom = '" + this.sqlfyText(nom) + "'";
+    let sql = "select pk_user_prefecture as id, nom, adresse_complete from user_prefecture where nom = '" + this.sqlfyText(nom) + "'";
 
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
