@@ -147,7 +147,7 @@ export class ContractList{
               contract.prerequis = offer.jobData.prerequisObligatoires;
 
               //si le contrat docusign n'a jamais été généré, passer par tout le proccesus de génération
-              if(Utils.isEmpty(contract.partnerEmployerLink)){
+              //if(Utils.isEmpty(contract.partnerEmployerLink)){
 
                 this.financeService.loadQuote(contractInfo.idOffer, contract.baseSalary).then((data: any) => {
 
@@ -198,7 +198,7 @@ export class ContractList{
                     });
                   });
                 });
-                //si le contrat docusign a été déja généré, l'afficher sans le regénérer
+                /*//si le contrat docusign a été déja généré, l'afficher sans le regénérer
               }else{
 
                 //set variables in local storage and navigate to docusign page
@@ -208,7 +208,7 @@ export class ContractList{
 
                 this.loader.hide();
                 this.router.navigate(['contract/recruitment']);
-              }
+              }*/
             });
           });
         });
