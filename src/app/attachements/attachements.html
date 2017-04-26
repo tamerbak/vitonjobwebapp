@@ -25,7 +25,14 @@
           <div class="form-group row required">
             <label class="col-md-4 col-xs-12 form-control-label text-md-right">Nom du document</label>
             <div class="col-md-4 col-xs-12">
-              <input type="text" class="form-control" [(ngModel)]="fileName" [disabled]="isUploadInProgress">
+              <select class="form-control" [(ngModel)]="fileName" [disabled]="isUploadInProgress" required>
+                <option value="Badge aéroportuaire">Badge aéroportuaire</option>
+                <option value="Carte de séjour">Carte de séjour</option>
+                <option value="Carte nationale d'identité">Carte nationale d'identité</option>
+                <option value="Carte professionnelle">Carte professionnelle</option>
+                <option value="Carte vitale">Carte vitale</option>
+                <option value="Justificatif de domicile">Justificatif de domicile</option>
+              </select>
             </div>
           </div>
   
