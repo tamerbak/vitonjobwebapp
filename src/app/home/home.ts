@@ -17,8 +17,10 @@ import {SearchBar} from "../components/search-bar/search-bar";
 import {LOGIN_BEFORE_ADVERT_POSTULAT} from "../../configurations/appConstants";
 import {AdvertService} from "../../providers/advert.service";
 import {PartnersService} from "../../providers/partners-service";
+import {ContractService} from "../../providers/contract-service";
 declare let jQuery: any;
 declare let require: any;
+declare let Messenger: any;
 
 @Component({
   selector: 'home',
@@ -39,7 +41,8 @@ declare let require: any;
     SearchService,
     HomeService,
     PartnersService,
-    AdvertService
+    AdvertService,
+    ContractService
   ],
   styles: [require('./home.scss')],
   encapsulation: ViewEncapsulation.None
@@ -82,6 +85,7 @@ export class Home{
               private route: ActivatedRoute,
               private advertService: AdvertService,
               private partnersService: PartnersService,
+              private contractService: ContractService,
               private sharedService: SharedService) {
     if (this.router.url === '/jobyer') {
       this.sharedService.setProjectTarget('jobyer');
@@ -132,6 +136,28 @@ export class Home{
       myContent.css({"background-image": ""});
       myContent.css({"background-size": "cover"});
       myNavBar.css({"background-color": "$primary-color-one", "border-color": "$primary-color-one"});
+    }
+
+    //afficher une notification pour les jobyers qui ont des contrats en attente
+    if(this.currentUser && this.projectTarget == "jobyer") {
+      let alreadyPassedByHome = this.sharedService.isAlreadyInHome();
+      if(!alreadyPassedByHome) {
+        this.sharedService.setAlreadyInHome(true);
+        this.contractService.getCountNonSignedContract("jobyer", this.currentUser.jobyer.id).then((data: any) => {
+          if (data && data.data && data.data.length > 0) {
+            let nbContrat = +(data.data[0].nbContrat);
+            if(nbContrat > 0) {
+              Messenger().post({
+                message: "Vous avez <b><a href='#/contract/list'>" + nbContrat + " contrat(s) en attente de signature.</a></b>",
+                type: 'info',
+                showCloseButton: true,
+                extraClasses: 'messenger-fixed messenger-on-top messenger-on-right',
+                theme: 'future'
+              });
+            }
+          }
+        });
+      }
     }
 
     this.sharedService.setCurrentOffer(null);

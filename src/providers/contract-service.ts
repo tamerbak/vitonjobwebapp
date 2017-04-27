@@ -1100,6 +1100,26 @@ export class ContractService {
     });
   }
 
+  getCountNonSignedContract(projectTarget, roleId){
+    let sql = "";
+    if(projectTarget == "jobyer"){
+      sql = "SELECT count(*) as \"nbContrat\" " +
+        "FROM user_contrat " +
+        "WHERE fk_user_jobyer = " + roleId + " " +
+        "AND upper(signature_employeur) = 'OUI' " +
+        "AND upper(signature_jobyer) = 'NON' " +
+        "AND dirty = 'N'";
+    }
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
   getContractDataInfos(contractId, projectTarget){
     let sql = 'SELECT ' +
         'c.pk_user_contrat as id,' +
