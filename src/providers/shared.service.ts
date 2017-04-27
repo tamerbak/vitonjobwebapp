@@ -325,4 +325,12 @@ export class SharedService {
   setFromPartner(value: boolean){
     this.setStorageVariable("isFromPartner", value);
   }
+
+  isAlreadyInHome(){
+    return this.getStorageVariable("isAlreadyInHome");
+  }
+
+  setAlreadyInHome(value: boolean){
+    this.setStorageVariable("isAlreadyInHome", value);
+  }
 }
