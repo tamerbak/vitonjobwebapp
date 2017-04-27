@@ -140,24 +140,7 @@ export class Home{
 
     //afficher une notification pour les jobyers qui ont des contrats en attente
     if(this.currentUser && this.projectTarget == "jobyer") {
-      let alreadyPassedByHome = this.sharedService.isAlreadyInHome();
-      if(!alreadyPassedByHome) {
-        this.sharedService.setAlreadyInHome(true);
-        this.contractService.getCountNonSignedContract("jobyer", this.currentUser.jobyer.id).then((data: any) => {
-          if (data && data.data && data.data.length > 0) {
-            let nbContrat = +(data.data[0].nbContrat);
-            if(nbContrat > 0) {
-              Messenger().post({
-                message: "Vous avez <b><a href='#/contract/list'>" + nbContrat + " contrat(s) en attente de signature.</a></b>",
-                type: 'info',
-                showCloseButton: true,
-                extraClasses: 'messenger-fixed messenger-on-top messenger-on-right',
-                theme: 'future'
-              });
-            }
-          }
-        });
-      }
+      this.showContratEnAttenteNotif();
     }
 
     this.sharedService.setCurrentOffer(null);
@@ -583,5 +566,26 @@ export class Home{
       return true;
     }
     return false;
+  }
+
+  showContratEnAttenteNotif(){
+    let alreadyPassedByHome = this.sharedService.isAlreadyInHome();
+    if(!alreadyPassedByHome) {
+      this.sharedService.setAlreadyInHome(true);
+      this.contractService.getCountNonSignedContract("jobyer", this.currentUser.jobyer.id).then((data: any) => {
+        if (data && data.data && data.data.length > 0) {
+          let nbContrat = +(data.data[0].nbContrat);
+          if(nbContrat > 0) {
+            Messenger().post({
+              message: "Vous avez <b><a href='#/contract/list'>" + nbContrat + " contrat(s) en attente de signature.</a></b>",
+              type: 'info',
+              showCloseButton: true,
+              extraClasses: 'messenger-fixed messenger-on-top messenger-on-right',
+              theme: 'future'
+            });
+          }
+        }
+      });
+    }
   }
 }
