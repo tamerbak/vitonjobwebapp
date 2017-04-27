@@ -311,7 +311,7 @@ export class Contract {
 
       this.contractData.jobyerNom = Utils.preventNull(datum.nom);
       this.contractData.jobyerPrenom = Utils.preventNull(datum.prenom);
-      this.contractData.jobyerLieuNaissance = Utils.preventNull(datum.lieuNaissance);
+      this.contractData.jobyerLieuNaissance = (Utils.isEmpty(datum.lieuNaissance) ? '-' : datum.lieuNaissance);
       if (!Utils.isEmpty(datum.dateNaissance)) {
         let bd = new Date(datum.dateNaissance);
         this.contractData.jobyerBirthDate = DateUtils.simpleDateFormat(bd);
@@ -814,7 +814,8 @@ export class Contract {
     let contractData = this.contractData;
     let jobyerBirthDate = this.contractData.jobyerBirthDate;
     if (
-      !jobyer.nom || !jobyer.prenom || !jobyer.numSS || !jobyerBirthDate || !jobyer.lieuNaissance || !jobyer.nationaliteLibelle || !contractData.numeroTitreTravail || !contractData.jobyerDebutTitreTravail || !contractData.jobyerFinTitreTravail || !contractData.qualification
+      !jobyer.nom || !jobyer.prenom || !jobyer.numSS || !jobyerBirthDate || //!jobyer.lieuNaissance ||
+      !jobyer.nationaliteLibelle || !contractData.numeroTitreTravail || !contractData.jobyerDebutTitreTravail || !contractData.jobyerFinTitreTravail || !contractData.qualification
     ) {
       message = message + " Certaines informations de votre compte sont manquantes, veuillez les renseigner : -";
       message = message + ((!jobyer.nom)? " Nom -" : "");
@@ -822,7 +823,7 @@ export class Contract {
       message = message + ((!jobyer.prenom)? " Prénom -" : "");
       message = message + ((!jobyer.numSS)? " Numéro SS -" : "");
       message = message + ((!jobyerBirthDate)? " Date de naissance -" : "");
-      message = message + ((!jobyer.lieuNaissance)? " Lieu de naissance -" : "");
+      //message = message + ((!jobyer.lieuNaissance)? " Lieu de naissance -" : "");
       message = message + ((!jobyer.nationaliteLibelle)? " Pays de nationalité -" : "");
       message = message + ((!jobyer.numeroTitreTravail)? " CNI ou passeport -" : "");
       message = message + ((!contractData.jobyerDebutTitreTravail)? " Valable du -" : "");
@@ -896,7 +897,7 @@ export class Contract {
       || !this.contractData.jobyerPrenom
       || !this.contractData.jobyerNumSS
       || !this.contractData.jobyerBirthDate
-      || !this.contractData.jobyerLieuNaissance
+      //|| !this.contractData.jobyerLieuNaissance
       || !this.contractData.jobyerNationaliteLibelle
       || !this.contractData.numeroTitreTravail
       || !this.contractData.jobyerDebutTitreTravail
