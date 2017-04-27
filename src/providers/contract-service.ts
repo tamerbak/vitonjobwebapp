@@ -1311,12 +1311,8 @@ export class ContractService {
    * @param offerId
    * @returns {Promise<T>}
    */
-  cancelContractFromOfferId(offerId: number) {
-
-    if (offerId == null) {
-      return;
-    }
-    let sql = "UPDATE user_contrat SET dirty='Y' WHERE fk_user_offre_entreprise = " + offerId;
+  cancelContractFromContractId(id: number) {
+let sql = "UPDATE user_contrat SET dirty='Y' WHERE pk_user_contrat = " + id;
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
@@ -1340,6 +1336,6 @@ export class ContractService {
     console.log(contract);
 
     // this.cancelOfferFromOfferId(contract.idOffer);
-    return this.cancelContractFromOfferId(contract.idOffer);
+    return this.cancelContractFromContractId(contract.id);
   }
 }
