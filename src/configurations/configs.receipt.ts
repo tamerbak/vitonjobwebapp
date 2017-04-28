@@ -133,12 +133,12 @@ export class Configs {
   // public static smsURL: string = ' http://vojrecette.us-west-2.elasticbeanstalk.com/api/envoisms';
   // public static emailURL: string = ' http://vojrecette.us-west-2.elasticbeanstalk.com/api/envoimail';
   // public static fssURL: string = ' http://vojrecette.us-west-2.elasticbeanstalk.com/api/fssjs';
-  public static calloutURL: string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business';
-  public static sqlURL: string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/sql';
-  public static yousignURL:string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/business';
-  public static smsURL: string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoisms';
-  public static emailURL: string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/envoimail';
-  public static fssURL: string = 'http://vitonjobv1.datqvvgppi.us-west-2.elasticbeanstalk.com/api/fssjs';
+  public static calloutURL: string = 'http://dev.vitonjob.com/prometheus/api/business';
+  public static sqlURL: string = 'http://dev.vitonjob.com/prometheus/api/sql';
+  public static yousignURL:string = 'http://dev.vitonjob.com/prometheus/api/business';
+  public static smsURL: string = 'http://dev.vitonjob.com/prometheus/api/envoisms';
+  public static emailURL: string = 'http://dev.vitonjob.com/prometheus/api/envoimail';
+  public static fssURL: string = 'http://dev.vitonjob.com/prometheus/api/fssjs';
 
   public static googleMapApiKey: string = 'AIzaSyD6de5QuqKPECTwNSkmBfeRmiTb9147S_Y';
 
