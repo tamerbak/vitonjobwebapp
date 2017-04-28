@@ -32,6 +32,8 @@ export class WalletCreate {
 
   @Output()
   onCancel = new EventEmitter<any>();
+  @Output()
+  onSuccess = new EventEmitter<any>();
 
   constructor(private sharedService: SharedService,
               private service: PaylineServices,
@@ -80,7 +82,9 @@ export class WalletCreate {
     this.service.empreinteCarte(card, this.currentUser).then((data: any) => {
       this.hideLoader = true;
       if (data.code == '02500') {
-        this.router.navigate(['mission/list']);
+        this.resetForm();
+        this.onSuccess.emit({isSuccess: true});
+        //this.router.navigate(['mission/list']);
       } else {
         this.addAlert("danger", "<b>Erreur lors de validation de la carte:</b> Le numéro de carte bancaire doit comporter 16 chiffres et doit être valide");
       }
@@ -88,7 +92,15 @@ export class WalletCreate {
   }
 
   cancel(){
+    this.resetForm();
     this.onCancel.emit({isCanceled: true});
+  }
+
+  resetForm(){
+    this.alerts = [];
+    this.cardNumber = "";
+    this.cardExpirationDate = null;
+    this.cardCvv = "";
   }
 
   addAlert(type, msg): void {
