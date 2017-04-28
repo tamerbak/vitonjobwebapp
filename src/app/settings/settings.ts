@@ -6,6 +6,7 @@ import {SharedService} from "../../providers/shared.service";
 import {Utils} from "../utils/utils";
 import {ProfileService} from "../../providers/profile.service";
 import {CampaignService} from "../../providers/campaign-service";
+import {PaymentMethod} from "../payment-method/payment-method";
 
 declare let jQuery: any;
 declare let Messenger: any;
@@ -14,7 +15,7 @@ declare let md5: any;
 @Component({
   selector: '[settings]',
   template: require('./settings.html'),
-  directives: [ROUTER_DIRECTIVES],
+  directives: [ROUTER_DIRECTIVES, PaymentMethod],
   providers: [Utils, MissionService, AuthenticationService, ProfileService, CampaignService],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./settings.scss')]
@@ -206,6 +207,21 @@ export class Settings {
     this.phase = "CODE_PROMO";
     this.codePromo = "";
     this.initValidation();
+  }
+
+  initPayementModeForm(){
+    this.phaseTitle = "Choisir le mode de paiement";
+    this.showForm = true;
+    this.phase = "PAYEMENT_MODE";
+    this.initValidation();
+  }
+
+  showWalletCreate(){
+    jQuery('#payment-method').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+    jQuery('#payment-method').modal('show');
   }
 
   isSpontaneousContact() {

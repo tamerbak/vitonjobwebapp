@@ -68,6 +68,11 @@
               S'inscrire à une campagne
             </button>
             <br />
+            <button [disabled]="phase=='PAYEMENT_MODE'" class="btn btn-default btn-sm mt"
+                    (click)="initPayementModeForm()">
+              Choisir le mode de paiement
+            </button>
+            <br />
             <br />
 
             <div *ngIf="isEmployer">
@@ -216,9 +221,22 @@
               </div>
             </div>
             
+            <!-- paiement par carte bancaire-->
+            <div class="row" *ngIf="phase=='PAYEMENT_MODE'">
+              <div class="col-md-6 col-xs-12">
+                <button class="btn btn-success" style="float: right; background-color: $primary-color-one;"
+                        (click)="showWalletCreate()">Payline: Paiement par
+                  carte bancaire
+                </button>
+              </div>
+              <div class="col-md-6 col-xs-12">
+                <button class="btn btn-primary" (click)="showSlimPayFrame()" disabled>SlimPay: Paiement par prélèvement bancaire
+                </button>
+              </div>
+            </div>
           </fieldset>
 
-          <div class="clearfix">
+          <div class="clearfix" *ngIf="phase!='PAYEMENT_MODE'">
             <div class="btn-toolbar pull-xs-right m-t-1">
               <div class="widget-body btn loaderPosition" [hidden]="!validation">
                 <div class="loader animated fadeIn handle">
@@ -240,3 +258,5 @@
     </section>
   </div>
 </div>
+
+<div payment-method></div>

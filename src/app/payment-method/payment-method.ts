@@ -1,4 +1,4 @@
-import {Component, ViewEncapsulation} from "@angular/core";
+import {Component} from "@angular/core";
 import {SharedService} from "../../providers/shared.service";
 import {Router} from "@angular/router";
 import {WalletCreate} from "../wallet-create/wallet-create";
@@ -6,11 +6,11 @@ import {SlimPayService} from "../../providers/slimpay-services";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {Utils} from "../utils/utils";
 
+declare let jQuery: any;
 
 @Component({
   selector: '[payment-method]',
   template: require('./payment-method.html'),
-  encapsulation: ViewEncapsulation.None,
   styles: [require('./payment-method.scss')],
   directives: [WalletCreate, AlertComponent],
   providers: [SlimPayService]
@@ -35,6 +35,10 @@ export class PaymentMethod{
     this.projectTarget = (this.currentUser.estEmployeur ? 'employer' : 'jobyer');
     if (this.projectTarget == "jobyer") {
       this.router.navigate(['home']);
+    }
+
+    if(this.currentUser && this.projectTarget == "employer"){
+      this.showWalletCreate();
     }
   }
 
@@ -91,12 +95,13 @@ export class PaymentMethod{
     })
   }
 
-  cancelWalletFrame(params){
-    if(params.isCanceled){
+  closeWalletFrame(params){
+    /*if(params.isCanceled){
       this.isPayline = false;
       this.showChoiceFrame = true;
       this.alerts = [];
-    }
+    }*/
+    jQuery('#payment-method').modal('hide');
   }
 
   cancelSlimPay(){

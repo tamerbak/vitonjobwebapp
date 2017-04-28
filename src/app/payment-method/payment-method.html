@@ -1,4 +1,4 @@
-<ol class="breadcrumb">
+<!--<ol class="breadcrumb">
   <li>VOUS ÊTES ICI</li>
   <li class="active"><a class="breadcrumb-link">Moyen de paiement</a></li>
 </ol>
@@ -8,37 +8,8 @@
   </div>
 </div>
 <h1 class="page-title">{{currentUser.estEmployeur ? 'Employeur' : 'Jobyer'}} - <span
-        class="fw-semi-bold">Moyen de paiement</span></h1>
-
-<div class="row" *ngIf="showChoiceFrame">
-  <div class="col-lg-8 col-xl-offset-2 col-xs-12">
-    <section class="widget" widget>
-      <header style="background-color: $primary-color-one; color: white">
-        <h6>
-          Moyen de paiement
-        </h6>
-      </header>
-      <div class="widget-body" style="margin-top: 30px">
-        <form class="form-horizontal" role="form">
-          <fieldset>
-            <div class="row">
-              <div class="col-md-6 col-xs-12">
-                <button class="btn btn-success" style="float: right; background-color: $primary-color-one;"
-                        (click)="showWalletCreate()">Payline: Paiement par
-                  carte bancaire
-                </button>
-              </div>
-              <div class="col-md-6 col-xs-12">
-                <button class="btn btn-primary" (click)="showSlimPayFrame()">SlimPay: Paiement par prélèvement bancaire
-                </button>
-              </div>
-            </div>
-          </fieldset>
-        </form>
-      </div>
-    </section>
-  </div>
-</div>
+        class="fw-semi-bold">Moyen de paiement</span></h1>-->
+<div class="modal fade modal-margin-top" id="payment-method">
 
 <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
   <div [innerHTML]="alert.msg"></div>
@@ -46,9 +17,10 @@
 
 <div class="row">
   <!--payline-->
-  <wallet-create *ngIf="isPayline" style="width: 75%" (onCancel)="cancelWalletFrame($event)"></wallet-create>
+  <wallet-create *ngIf="isPayline" style="width: 75%" (onCancel)="closeWalletFrame($event)" (onCancel)="closeWalletFrame($event)"></wallet-create>
+  
   <!--slimpay-->
-  <div class="col-lg-12 col-xs-12" *ngIf="isSlimPay">
+  <!--<div class="col-lg-12 col-xs-12" *ngIf="isSlimPay">
     <div class="widget-body" *ngIf="!hideLoader">
       <div class="loader animated fadeIn handle">
         <span class="spinner">
@@ -65,5 +37,6 @@
         Annuler
       </button>
     </div>
-  </div>
+  </div>-->
+</div>
 </div>
