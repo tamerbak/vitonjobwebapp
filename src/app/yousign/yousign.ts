@@ -77,10 +77,9 @@ export class Yousign{
           if(this.isEmployer) {
             // Send sms to jobyer
             this.smsService.sendSms(this.jobyer.tel, 'Une demande de signature de contrat vous a été adressée. Contrat numéro : ' + this.contractData.num);
-            this.goToPaymentMethod();
-          }else{
-            this.router.navigate(['mission/list']);
+            //this.goToPaymentMethod();
           }
+          this.router.navigate(['mission/list']);
         } else {
           this.addAlert("warning", "Veuillez signer le contrat avant de passer à l'étape suivante");
         }
