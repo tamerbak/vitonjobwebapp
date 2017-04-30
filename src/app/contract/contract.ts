@@ -329,7 +329,7 @@ export class Contract {
       this.isCIN = this.isFrench || this.isEuropean;
       let estResident = datum.est_resident;
       if (this.isEuropean) {
-        if (!estResident) {
+        if (!estResident || Utils.isEmpty(datum.cni) == false) {
           this.labelTitreIdentite = "CNI ou Passeport";
           this.contractData.jobyerTitreTravail = datum.cni;
         } else {
