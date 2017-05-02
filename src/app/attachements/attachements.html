@@ -25,15 +25,23 @@
           <div class="form-group row required">
             <label class="col-md-4 col-xs-12 form-control-label text-md-right">Nom du document</label>
             <div class="col-md-4 col-xs-12">
-              <select class="form-control" [(ngModel)]="fileName" [disabled]="isUploadInProgress" required>
+              <select class="form-control" [(ngModel)]="fileName" [disabled]="isUploadInProgress" (change)="watchFiletype($event)" required>
                 <option value="Badge aéroportuaire">Badge aéroportuaire</option>
-                <option value="Carte de séjour">Carte de séjour</option>
-                <option value="Carte nationale d'identité">Carte nationale d'identité</option>
-                <option value="Carte professionnelle">Carte professionnelle</option>
-                <option value="Carte vitale">Carte vitale</option>
-                <option value="Justificatif de domicile">Justificatif de domicile</option>
-              </select>
-            </div>
+            <option value="Carte de séjour">Carte de séjour</option>
+            <option value="Carte nationale d'identité">Carte nationale d'identité</option>
+            <option value="Carte professionnelle">Carte professionnelle</option>
+            <option value="Carte vitale">Carte vitale</option>
+            <option value="Justificatif de domicile">Justificatif de domicile</option>
+            <option value="">Autres</option>
+            </select>
+          </div>
+    </div>
+  
+    <div class="form-group row" *ngIf="isEmpty(fileName)">
+      <label class="col-md-4 col-xs-12 form-control-label text-md-right"></label>
+      <div class="col-md-4 col-xs-12">
+        <input type="text" class="form-control" [(ngModel)]="fileNameNotDefault" [disabled]="isUploadInProgress" placeholder="Veuillez saisir le nom du document" required>
+      </div>
           </div>
   
           <div class="form-group row">
@@ -74,7 +82,7 @@
 
         <div class="form-group row">
           <div class="col-md-12 col-xs-12">
-            <button class="btn success btn-lg attachement-add-btn" (click)="saveFile()" [disabled]="isUploadInProgress || isEmpty(fileName) || isEmpty(scanData)"><span class="icon"><i class ="glyphicon glyphicon-cloud-upload"></i></span> Ajouter</button>
+            <button class="btn success btn-lg attachement-add-btn" (click)="saveFile()" [disabled]="isUploadInProgress || isEmpty(fileName + '' + fileNameNotDefault) || isEmpty(scanData)"><span class="icon"><i class ="glyphicon glyphicon-cloud-upload"></i></span> Ajouter</button>
           </div>
         </div>
 

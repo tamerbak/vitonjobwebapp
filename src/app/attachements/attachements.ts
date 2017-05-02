@@ -28,6 +28,7 @@ export class Attachements {
   emptySafe : boolean;
   scanData : string = "";
   fileName : string;
+  fileNameNotDefault: string;
   viewMode :boolean;
   selFileName : string;
   fileContent : string;
@@ -42,6 +43,7 @@ export class Attachements {
     this.currentUser = this.sharedService.getCurrentUser();
     this.viewMode = false;
     this.selFileName="";
+    this.fileName = "Badge aéroportuaire";
     this.fileContent="";
     if (!this.currentUser) {
       this.router.navigate(['/login']);
@@ -104,16 +106,19 @@ export class Attachements {
   }
 
   saveFile(){
-    if(!this.scanData || this.scanData == null){
+    let filename = this.fileName + this.fileNameNotDefault;
+    if(!this.scanData || this.scanData == null || Utils.isEmpty(filename)){
+      this.addAlert("warning", "Veuillez renseigner le nom du fichier et le charger avant de l'ajouter");
       return;
     }
 
     this.isUploadInProgress = true;
-    this.attachementSerice.uploadFile(this.currentUser, this.fileName, this.scanData, 'Autres').then((data: any) => {
+    this.attachementSerice.uploadFile(this.currentUser, filename, this.scanData, 'Autres').then((data: any) => {
       //jQuery('.fileinput').fileinput('clear')
       //clear attchement
       jQuery('#file').val('');
       this.fileName ='';
+      this.fileNameNotDefault ='';
       if(data && data.id != 0){
         this.addAlert("info", "Le fichier est en cours de transfert. Veuillez patienter ...");
         this.attachementSerice.uploadActualFile(data.id, data.fileName, this.scanData).then((res: any) => {
@@ -200,6 +205,10 @@ export class Attachements {
         this.addAlert("danger", "Le téléchargement du fichier a échoué. Veuillez recommencer l'opération.");
       }
     });
+  }
+
+  watchFiletype(e){
+    this.fileNameNotDefault = "";
   }
 
   addAlert(type, msg): void {
