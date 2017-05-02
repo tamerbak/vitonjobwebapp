@@ -6,7 +6,9 @@ import {SharedService} from "../../providers/shared.service";
 import {Utils} from "../utils/utils";
 import {ProfileService} from "../../providers/profile.service";
 import {CampaignService} from "../../providers/campaign-service";
-import {PaymentMethod} from "../payment-method/payment-method";
+import {WalletCreate} from "../wallet-create/wallet-create";
+import {SlimpayModal} from "../slimpay-modal/slimpay-modal";
+import {SlimPayService} from "../../providers/slimpay-services";
 
 declare let jQuery: any;
 declare let Messenger: any;
@@ -15,8 +17,8 @@ declare let md5: any;
 @Component({
   selector: '[settings]',
   template: require('./settings.html'),
-  directives: [ROUTER_DIRECTIVES, PaymentMethod],
-  providers: [Utils, MissionService, AuthenticationService, ProfileService, CampaignService],
+  directives: [ROUTER_DIRECTIVES, WalletCreate, SlimpayModal],
+  providers: [Utils, MissionService, AuthenticationService, ProfileService, CampaignService, SlimPayService],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./settings.scss')]
 })
@@ -67,6 +69,7 @@ export class Settings {
               private authService: AuthenticationService,
               private campaignService: CampaignService,
               private sharedService: SharedService,
+              private slimpayService: SlimPayService,
               private router: Router) {
 
 
@@ -216,12 +219,59 @@ export class Settings {
     this.initValidation();
   }
 
+  initSlimpayModeForm(){
+    this.phaseTitle = "Paiement par prélèvement bancaire";
+    this.showForm = true;
+    this.phase = "SLIMPAY_MODE";
+    this.initValidation();
+  }
+
+  initPaylineModeForm(){
+    this.phaseTitle = "Paiement par carte bancaire";
+    this.showForm = true;
+    this.phase = "PAYLINE_MODE";
+    this.initValidation();
+  }
+
   showWalletCreate(){
-    jQuery('#payment-method').modal({
+    jQuery('#wallet-create').modal({
       keyboard: false,
       backdrop: 'static'
     });
-    jQuery('#payment-method').modal('show');
+    jQuery('#wallet-create').modal('show');
+  }
+
+  showSlimPayFrame(){
+    /*jQuery('#slimpay-modal').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+    jQuery('#slimpay-modal').modal('show');*/
+     //this.hideLoader = false;
+      //this.alerts = [];
+      let entrepriseId = this.currentUser.employer.entreprises[0].id;
+      this.slimpayService.signSEPA(entrepriseId).then((data: any) => {
+        if(!data || Utils.isEmpty(data.url)){
+          //this.addAlert("danger", "Erreur: Veuillez recommencer l'opération.")
+          console.log("erreur");
+          return;
+        }
+        //get the SEPA contract url
+        let sepaUrl = data.url;
+        //Create to Iframe to show the contract in the NavPage
+        let iframe = document.createElement('iframe');
+        iframe.frameBorder = "0";
+        iframe.width = "100%";
+        iframe.height = "100%";
+        iframe.id = "sepaContract";
+        iframe.style.overflow = "hidden";
+        iframe.style.height = "100%";
+        iframe.style.width = "100%";
+        iframe.setAttribute("src", sepaUrl);
+
+        document.getElementById("slimPayIFrame").appendChild(iframe);
+        //this.hideLoader = true;
+      })
   }
 
   isSpontaneousContact() {

@@ -1,15 +1,15 @@
-import {Component, ViewEncapsulation, Input, Output, EventEmitter} from "@angular/core";
+import {Component, EventEmitter, Output} from "@angular/core";
 import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {PaylineServices} from "../../providers/payline-services";
 import {Utils} from "../utils/utils";
 
+declare let jQuery: any;
 
 @Component({
   selector: 'wallet-create',
   template: require('./wallet-create.html'),
-  encapsulation: ViewEncapsulation.None,
   styles: [require('./wallet-create.scss')],
   directives: [ROUTER_DIRECTIVES, AlertComponent],
   providers: [PaylineServices]
@@ -31,9 +31,7 @@ export class WalletCreate {
   dataValidation:boolean = false;
 
   @Output()
-  onCancel = new EventEmitter<any>();
-  @Output()
-  onSuccess = new EventEmitter<any>();
+  canceled = new EventEmitter<any>();
 
   constructor(private sharedService: SharedService,
               private service: PaylineServices,
@@ -49,7 +47,7 @@ export class WalletCreate {
     if (this.currentUser) {
       this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     } else {
-      this.router.navigate(['home']);
+      //this.router.navigate(['home']);
       return;
 
     }
@@ -83,7 +81,7 @@ export class WalletCreate {
       this.hideLoader = true;
       if (data.code == '02500') {
         this.resetForm();
-        this.onSuccess.emit({isSuccess: true});
+        this.closeModal();
         //this.router.navigate(['mission/list']);
       } else {
         this.addAlert("danger", "<b>Erreur lors de validation de la carte:</b> Le numéro de carte bancaire doit comporter 16 chiffres et doit être valide");
@@ -91,9 +89,10 @@ export class WalletCreate {
     });
   }
 
-  cancel(){
+  closeModal(){
     this.resetForm();
-    this.onCancel.emit({isCanceled: true});
+    this.canceled.emit([]);
+    //jQuery('#wallet-create').modal('hide');
   }
 
   resetForm(){
