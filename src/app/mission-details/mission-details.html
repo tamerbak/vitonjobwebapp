@@ -401,14 +401,14 @@
           </button>
           
           <br>
-          <button
+          <!--<button
             type="button" class="btn btn-primary btn-sm"
             (click)="validateWork()"
             [style.color]="themeColor"
             *ngIf="isEmployer && !isNewMission && upperCase(contract.approuve) == 'OUI' && !(upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0') && upperCase(contract.accompli) == 'NON'"
           >
             Fin de mission
-          </button>
+          </button>-->
           <button
             type="button" class="btn btn-primary btn-sm"
             (click)="eomReleve()"
@@ -432,7 +432,7 @@
             (click)="generateTimesheet()"
             [style.color]="themeColor"
             *ngIf="!(missionHours && missionHours.length == 0) && isEmployer && contract.option_mission != '1.0' && !isNewMission && upperCase(contract.releve_employeur) != 'OUI'"
-            [disabled]="disableTimesheetButton() || disableAllUI()"
+            [disabled]="disableAllUI()"
           >
             Générer et envoyer le relevé d'heure
           </button>
@@ -445,7 +445,7 @@
           >
             Valider et notifier le Jobyer
           </button>
-          <button
+          <!--<button
             type="button" class="btn btn-primary btn-sm"
             (click)="signSchedule()"
             [style.color]="themeColor"
@@ -453,7 +453,7 @@
             [disabled]="disableAllUI()"
           >
             Signer les horaires
-          </button>
+          </button>-->
           <!--<button
                   type="button" class="btn btn-primary btn-sm"
                   (click)="resetForm()"
