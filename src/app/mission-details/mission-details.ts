@@ -323,6 +323,13 @@ export class MissionDetails{
   }
 
   generateTimesheet() {
+    this.alerts = [];
+    let isDisabled = this.disableTimesheetButton();
+    if(isDisabled){
+      this.addAlert('warning', "Veuillez valider/refuser tous les horaires pointés avant de générer le relevé d'heure");
+      return;
+    }
+
     this.missionService.saveCorrectedMissions(
       this.contract.pk_user_contrat, this.missionHours, this.missionPauses
     ).then((data: any) => {
@@ -332,8 +339,7 @@ export class MissionDetails{
         var objectifNotif = "MissionDetailsPage";
         this.sendInfoBySMS(message, "toJobyer");
 
-        // Return to the list
-        this.navigationPreviousPage();
+        this.signSchedule();
       }
     });
   }
@@ -349,11 +355,10 @@ export class MissionDetails{
           var message = "Le relevé d'heure du contrat numéro " + this.contract.numero + " a été signé.";
           this.sendInfoBySMS(message, "toEmployer");
         }
+
+        this.validateWork();
       }
     });
-
-// Return to the list
-    this.navigationPreviousPage();
   }
 
   validateWork() {
@@ -412,12 +417,12 @@ export class MissionDetails{
 
                 this.isInvoiceAvailable = invoice.facture_signee == 'Non' && this.projectTarget == 'employer';
               }
+              this.navigationPreviousPage();
             });
           });
         });
       });
     });
-    //this.navigationPreviousPage();
   }
 
   resetForm() {
@@ -434,22 +439,22 @@ export class MissionDetails{
     var k = 0;
     for (var i = 0; i < this.missionHours.length; i++) {
       var m = this.missionHours[i];
-      if (Utils.isEmpty(m.date_debut_pointe) || Utils.isEmpty(m.date_fin_pointe)) {
+      if (Utils.isEmpty(m.date_debut_pointe_corrige) || Utils.isEmpty(m.date_fin_pointe_corrige)) {
         disable = true;
         return disable;
       } else {
         disable = false;
       }
-      if (this.missionPauses[i]) {
+      /*if (this.missionPauses[i]) {
         for (var j = 0; j < this.missionPauses[i].length; j++) {
-          if (this.missionPauses[i][j].pause_debut_pointe == "" || this.missionPauses[i][j].pause_fin_pointe == "") {
+          if (this.missionPauses[i][j].pause_debut_pointe_corrige == "" || this.missionPauses[i][j].pause_fin_pointe_corrige == "") {
             disable = true;
             return disable;
           } else {
             disable = false;
           }
         }
-      }
+      }*/
     }
     return disable;
   }
