@@ -3,6 +3,8 @@ import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SharedService} from "../../providers/shared.service";
 import {FinanceService} from "../../providers/finance.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
+import {Utils} from "../utils/utils";
+import {AlertComponent} from "ng2-bootstrap";
 
 
 /**
@@ -13,7 +15,7 @@ import {ROUTER_DIRECTIVES, Router} from "@angular/router";
   template: require('./mission-end-releve.html'),
   styles: [require('./mission-end-releve.scss')],
   providers: [GlobalConfigs, FinanceService],
-  directives: [ROUTER_DIRECTIVES]
+  directives: [ROUTER_DIRECTIVES, AlertComponent]
 })
 export class MissionEndReleve {
   currentUser: any;
@@ -21,6 +23,7 @@ export class MissionEndReleve {
   isEmployer: boolean;
   idInvoice: number;
   unSigned: boolean = false;
+  alerts: Array<Object>;
 
   constructor(private sharedService: SharedService,
               private financeService: FinanceService,
@@ -60,6 +63,10 @@ export class MissionEndReleve {
     //get the link yousign of the contract for the employer
     let yousignEmployerLink = this.invoice.url_signature_de_releve_employeur;
 
+    if(Utils.isEmpty(yousignEmployerLink)){
+      this.addAlert("danger", "Une erreur est survenue lors de la génération du relevé. Veuillez réessayer.");
+      return;
+    }
     //Create to Iframe to show the contract in the NavPage
     let iframe = document.createElement('iframe');
     iframe.frameBorder = "0";
@@ -80,6 +87,11 @@ export class MissionEndReleve {
     //get the link yousign of the contract for the employer
     let yousignEmployerLink = this.invoice.url_signature_de_releve_jobyer;
 
+    if(Utils.isEmpty(yousignEmployerLink)){
+      this.addAlert("danger", "Une erreur est survenue lors de la génération du relevé. Veuillez réessayer.");
+      return;
+    }
+
     //Create to Iframe to show the contract in the NavPage
     let iframe = document.createElement('iframe');
     iframe.frameBorder = "0";
@@ -98,6 +110,10 @@ export class MissionEndReleve {
 
   gotoInvoice(){
     this.router.navigate(['mission/details']);
+  }
+
+  addAlert(type, msg): void {
+    this.alerts = [{type: type, msg: msg}];
   }
 }
 

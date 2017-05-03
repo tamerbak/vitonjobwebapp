@@ -3,6 +3,8 @@ import {GlobalConfigs} from "../../configurations/globalConfigs";
 import {SharedService} from "../../providers/shared.service";
 import {FinanceService} from "../../providers/finance.service";
 import {Router} from "@angular/router";
+import {AlertComponent} from "ng2-bootstrap";
+import {Utils} from "../utils/utils";
 
 
 /**
@@ -12,7 +14,8 @@ import {Router} from "@angular/router";
   selector: '[mission-end-invoice]',
   template: require('./mission-end-invoice.html'),
   styles: [require('./mission-end-invoice.scss')],
-  providers: [GlobalConfigs, FinanceService]
+  providers: [GlobalConfigs, FinanceService],
+  directives: [AlertComponent]
 })
 
 export class MissionEndInvoice {
@@ -20,6 +23,7 @@ export class MissionEndInvoice {
   idInvoice: number;
   unSigned: boolean = false;
   currentUser: any;
+  alerts: Array<Object>;
 
   constructor(private sharedService: SharedService,
               private service: FinanceService,
@@ -48,6 +52,11 @@ export class MissionEndInvoice {
     //get the link yousign of the contract for the employer
     let yousignEmployerLink = this.invoice.url_signature_de_facture;
 
+    if(Utils.isEmpty(yousignEmployerLink)){
+      this.addAlert("danger", "Une erreur est survenue lors de la génération de la facture. Veuillez réessayer.");
+      return;
+    }
+
     //Create to Iframe to show the contract in the NavPage
     let iframe = document.createElement('iframe');
     iframe.frameBorder = "0";
@@ -66,5 +75,9 @@ export class MissionEndInvoice {
 
   getBackToMissions() {
     this.router.navigate(['mission/details']);
+  }
+
+  addAlert(type, msg): void {
+    this.alerts = [{type: type, msg: msg}];
   }
 }
