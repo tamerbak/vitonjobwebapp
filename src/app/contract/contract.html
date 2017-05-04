@@ -168,6 +168,14 @@
         </div>
 
       </div>
+      <div class="col-xs-12">
+        <div class="form-group">
+          <label>Adresse</label>
+          <span class="asterisk">*</span>
+          <input type="text" class="form-control" [(ngModel)]="contractData.jobyerAddress" readonly/>
+          <small class="form-text text-muted"></small>
+        </div>
+      </div>
       <div class="col-xs-12" *ngIf="missingJobyerData()">
         <alert [type]="'info alert-sm'">
           <div [innerHTML]="'Le Jobyer est en train de saisir ses informations'"></div>

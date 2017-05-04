@@ -88,6 +88,7 @@ export class ContractData {
   numeroTitreTravail: string;
   email: string;
   tel: string;
+  jobyerAddress: string;
 
   //general contract infos
   isDraft: string;
@@ -183,6 +184,7 @@ export class ContractData {
     this.jobyerFinTitreTravail = "";
     this.email = "";
     this.tel = "";
+    this.jobyerAddress = "";
 
     this.isDraft = "OUI";
 
