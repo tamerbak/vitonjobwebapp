@@ -159,6 +159,11 @@ export class Contract {
     this.jobyer.email = this.contractData.email;
     this.jobyer.tel = this.contractData.tel;
 
+    //fill jobyer address
+    this.contractService.getJobyerAdress(this.jobyer.id).then((address: any) => {
+      this.contractData.jobyerAddress = address;
+    });
+
     this.contractData.jobyerBirthDate = DateUtils.simpleDateFormat(new Date(this.contractData.jobyerBirthDate));
     this.contractData.jobyerDebutTitreTravail = DateUtils.simpleDateFormat(new Date(this.contractData.jobyerDebutTitreTravail));
     this.contractData.jobyerFinTitreTravail = DateUtils.simpleDateFormat(new Date(this.contractData.jobyerFinTitreTravail));
@@ -386,6 +391,11 @@ export class Contract {
       this.updateDatePickers();
 
       console.log(JSON.stringify(this.contractData));
+    });
+
+    //fill jobyer address
+    this.contractService.getJobyerAdress(jobyerId).then((address: any) => {
+      this.contractData.jobyerAddress = address;
     });
   }
 
@@ -829,6 +839,7 @@ export class Contract {
       message = message + ((!contractData.jobyerDebutTitreTravail)? " Valable du -" : "");
       message = message + ((!contractData.jobyerFinTitreTravail)? " Valable au -" : "");
       message = message + ((!contractData.qualification)? " Qualification -" : "");
+      message = message + ((Utils.isEmpty(contractData.jobyerAddress))? " Adresse -" : "");
 
       message = message.slice(0, -1);
     }
@@ -903,6 +914,7 @@ export class Contract {
       || !this.contractData.jobyerDebutTitreTravail
       || !this.contractData.jobyerFinTitreTravail
       || !this.contractData.qualification
+      || Utils.isEmpty(this.contractData.jobyerAddress)
     );
   }
 
