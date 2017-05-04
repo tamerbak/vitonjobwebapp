@@ -223,6 +223,11 @@ export class DateUtils{
     let milliSec = dateEnd.getTime() - dateStart.getTime();
     return Math.floor(milliSec / (60 * 1000));
   }
+
+  public static convertToDate(d:string){
+    return new Date(d);
+  }
+
 }
 
 interface Dictionary {

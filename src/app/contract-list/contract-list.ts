@@ -36,6 +36,8 @@ export class ContractList{
 
   selectedItem: number = 0;
 
+  today: Date = new Date();
+
   constructor(private sharedService: SharedService,
               private router: Router,
               private contractService: ContractService,
@@ -334,6 +336,10 @@ export class ContractList{
 
   toHourString(d){
     return DateUtils.toHourString(d);
+  }
+
+  convertToDate(d: string){
+    return DateUtils.convertToDate(d);
   }
 
   addAlert(type, msg): void {
