@@ -34,6 +34,9 @@
         <th>
           Actions possibles
         </th>
+        <th>
+          Annuler le contrat
+        </th>
       </tr>
       </thead>
         <tbody>
@@ -48,33 +51,38 @@
 
             <!-- ACTIONS -->
             <td class="text-align-right">
-              <button
-                class="btn btn-secondary mb-xs"
-                (click)="goToContractForm(item)"
-                *ngIf="projectTarget != 'jobyer'"
-              >
-                <i class="glyphicon glyphicon-pencil text-success"></i>&nbsp;Compléter
-              </button>
-              <button
-                class="btn btn-secondary mb-xs"
-                (click)="reassignContract(item)"
-                *ngIf="projectTarget != 'jobyer'"
-              >
-                <i class="fa fa-exchange" aria-hidden="true"></i>&nbsp;Réassigner
-              </button>
+              {{convertToDate(item.jour).setHours(0, 0, 0, 0) <= today.setHours(0, 0, 0, 0) ? "Ce contrat a expiré." : ""}}
+              <div *ngIf="convertToDate(item.jour).setHours(0, 0, 0, 0) > today.setHours(0, 0, 0, 0)">
+                <button
+                  class="btn btn-secondary mb-xs"
+                  (click)="goToContractForm(item)"
+                  *ngIf="projectTarget != 'jobyer'"
+                >
+                  <i class="glyphicon glyphicon-pencil text-success"></i>&nbsp;Compléter
+                </button>
+                <button
+                  class="btn btn-secondary mb-xs"
+                  (click)="reassignContract(item)"
+                  *ngIf="projectTarget != 'jobyer'"
+                >
+                  <i class="fa fa-exchange" aria-hidden="true"></i>&nbsp;Réassigner
+                </button>
+                <button
+                  class="btn btn-secondary mb-xs"
+                  (click)="goToDocusignPage(item)"
+                  [disabled]="item.isDraft.toUpperCase() == 'OUI' || inProgress ||
+                (projectTarget == 'jobyer' && item.signature_employeur.toUpperCase() == 'NON')">
+                  <i class="fa fa-paper-plane-o" aria-hidden="true"></i>&nbsp;Signer
+                </button>
+              </div>
+            </td>
+  
+            <td class="text-align-right">
               <button
                 class="btn btn-secondary mb-xs"
                 (click)="cancelContract(item)"
-                *ngIf="projectTarget != 'jobyer'"
-              >
+                *ngIf="projectTarget != 'jobyer'">
                 <i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;Annuler
-              </button>
-              <button
-                class="btn btn-secondary mb-xs"
-                (click)="goToDocusignPage(item)"
-                [disabled]="item.isDraft.toUpperCase() == 'OUI' || inProgress ||
-              (projectTarget == 'jobyer' && item.signature_employeur.toUpperCase() == 'NON')">
-                <i class="fa fa-paper-plane-o" aria-hidden="true"></i>&nbsp;Signer
               </button>
             </td>
 
