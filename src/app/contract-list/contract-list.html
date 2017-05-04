@@ -34,7 +34,7 @@
         <th>
           Actions possibles
         </th>
-        <th>
+        <th *ngIf="projectTarget != 'jobyer'">
           Annuler le contrat
         </th>
       </tr>
@@ -77,7 +77,7 @@
               </div>
             </td>
   
-            <td class="text-align-right">
+            <td class="text-align-right" *ngIf="projectTarget != 'jobyer'">
               <button
                 class="btn btn-secondary mb-xs"
                 (click)="cancelContract(item)"
