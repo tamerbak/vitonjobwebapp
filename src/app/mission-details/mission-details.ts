@@ -83,6 +83,8 @@ export class MissionDetails{
 
   dayObj: any;
 
+  inProgress: boolean;
+
   constructor(private sharedService: SharedService,
               private missionService: MissionService,
               private financeService: FinanceService,
@@ -330,16 +332,23 @@ export class MissionDetails{
       return;
     }
 
+    this.inProgress = true;
+    this.addAlert('info', "La génération du relevé d'heure est en cours. Veuillez patienter ...");
+
     this.missionService.saveCorrectedMissions(
       this.contract.pk_user_contrat, this.missionHours, this.missionPauses
     ).then((data: any) => {
       if (data && data.status == "success") {
         console.log("timesheet saved");
-        var message = "Le relevé d'heure du contrat numéro : " + this.contract.numero + "vous a été envoyé";
+        var message = "Le relevé d'heure du contrat numéro : " + this.contract.numero + "vous a été envoyé.";
         var objectifNotif = "MissionDetailsPage";
         this.sendInfoBySMS(message, "toJobyer");
 
         this.signSchedule();
+      }else{
+        this.alerts = [];
+        this.addAlert('danger', "Une erreur est survenue lors de la génération du relevé d'heure. Veuillez réessayer l'opréation.");
+        this.inProgress = false;
       }
     });
   }
@@ -347,6 +356,8 @@ export class MissionDetails{
   signSchedule() {
     this.missionService.signSchedule(this.contract).then((data: any) => {
       if (!data || data.status == "failure") {
+        this.alerts = [];
+        this.inProgress = false;
         this.addAlert("danger", "Erreur lors de l'enregistrement des données");
         return;
       } else {
@@ -364,12 +375,6 @@ export class MissionDetails{
   validateWork() {
     let nbWorkHours = this.missionService.calculateNbWorkHours(this.missionHours);
     this.missionService.saveEndMission(this.contract.pk_user_contrat, nbWorkHours, this.contract.fk_user_jobyer).then(val => {
-      Messenger().post({
-        message: "Informations enregistrées avec succès.",
-        type: 'success',
-        showCloseButton: true
-      });
-
       this.missionService.endOfMission(this.contract.pk_user_contrat).then((data: any) => {
         this.endMissionMsg = "Les détails de cette missions sont en cours de traitements, vous serez contacté par SMS une fois la facturation effectuée";
         jQuery('#modal-info').modal({
@@ -417,6 +422,15 @@ export class MissionDetails{
 
                 this.isInvoiceAvailable = invoice.facture_signee == 'Non' && this.projectTarget == 'employer';
               }
+
+              Messenger().post({
+                message: "Informations enregistrées avec succès. Vous pouvez aller sur 'Missions terminées' pour signer le relevé d'heure",
+                type: 'success',
+                showCloseButton: true
+              });
+
+              this.inProgress = false;
+              this.alerts = [];
               this.navigationPreviousPage();
             });
           });
