@@ -144,11 +144,11 @@ export class BankAccount {
   }
 
   getUserFullName(){
-    return this.sharedService.getCurrentUser().nom.toLowerCase()+" "+this.sharedService.getCurrentUser().prenom.toLowerCase();
+    return this.sharedService.getCurrentUser().nom.trim().toLowerCase()+" "+this.sharedService.getCurrentUser().prenom.trim().toLowerCase();
   }
 
   getUserReverseFullName(){
-    return this.sharedService.getCurrentUser().prenom.toLowerCase()+" "+this.sharedService.getCurrentUser().nom.toLowerCase();
+    return this.sharedService.getCurrentUser().prenom.trim().toLowerCase()+" "+this.sharedService.getCurrentUser().nom.trim().toLowerCase();
   }
 
   watchAccountHolder(e) {
@@ -162,7 +162,7 @@ export class BankAccount {
     } else if ((this.isEmployer || this.isRecruiter) && _name.toLowerCase().trim() !== this.getCompany()){
       _hint = "La raison sociale fournie n'est pas conforme à vos informations de profil";
       _isValid = false;
-    } else if ((!this.isEmployer && !this.isRecruiter) && _name.toLowerCase().trim() !== this.getUserFullName() && _name.trim().toLowerCase() !== this.getUserReverseFullName()){
+    } else if ((!this.isEmployer && !this.isRecruiter) && _name.toLowerCase().trim() !== this.getUserFullName() && _name.toLowerCase().trim() !== this.getUserReverseFullName()){
       _hint = "Le nom et prénom fournis ne sont pas identiques à vos informations de profil";
       _isValid = false;
     } else {
