@@ -163,7 +163,7 @@ export class BankAccount {
     } else if ((this.isEmployer || this.isRecruiter) && _name.toLowerCase().trim() !== this.getCompany()){
       _hint = "La raison sociale fournie n'est pas conforme à vos informations de profil";
       _isValid = false;
-    } else if ((!this.isEmployer && !this.isRecruiter) && _name.toLowerCase().trim() !== this.getUserFullName() && _name.trim() !== this.getUserReverseFullName() ){
+    } else if ((!this.isEmployer && !this.isRecruiter) && _name.toLowerCase().trim() !== this.getUserFullName() && _name.trim().toLowerCase() !== this.getUserReverseFullName()){
       _hint = "Le nom et prénom fournis ne sont pas identiques à vos informations de profil";
       _isValid = false;
     } else {
