@@ -423,7 +423,7 @@
             (click)="eomInvoice()"
             [style.color]="themeColor"
             *ngIf="isInvoiceAvailable"
-            [disabled]="disableAllUI()"
+            [disabled]="disableAllUI()" hidden
           >
             Signer la facture
           </button>
