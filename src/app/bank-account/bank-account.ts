@@ -152,7 +152,6 @@ export class BankAccount {
   }
 
   watchAccountHolder(e) {
-
     let _name = e.target.value;
     let _isValid: boolean = true;
     let _hint: string = "";
