@@ -685,6 +685,9 @@ export class MissionDetails{
     day.pointe = DateUtils.sqlfyWithHours(new Date());
 
     this.missionService.savePointing(day, isStart, isPause).then((data: any) => {
+      let msg = "Contrat n°" + this.contract.numero + " : " + this.currentUser.titre + " " + this.currentUser.prenom + " " + this.currentUser.nom + " a pointé l'heure de " + (isStart ? "début " : "fin ") + "de travail de la journée du " + DateUtils.simpleDateFormat(new Date(day.jour_debut)) + ". Vous pouvez à présent valider son horaire.";
+      let who = "toEmployer";
+      this.sendInfoBySMS(msg, who);
       this.refreshMissionHours(true);
     });
     //}
