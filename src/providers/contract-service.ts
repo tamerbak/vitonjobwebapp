@@ -161,7 +161,9 @@ export class ContractService {
 
   getContractsByType(type:number,offset:number,limit:number,id: number, projectTarget: string) {
     //  Init project parameters
-    var employerSql = "SELECT c.pk_user_contrat,c.*, " +
+    var employerSql = "SELECT " +
+      "(SELECT COUNT(*) FROM user_heure_mission WHERE fk_user_contrat = c.pk_user_contrat AND date_debut_pointe IS NULL AND date_fin_pointe IS NULL) as pointages_a_faire, " +
+      "c.pk_user_contrat,c.*, " +
       "j.nom, j.prenom, " +
       "a.telephone " +
       "FROM user_contrat as c, user_jobyer as j, user_account as a " +
