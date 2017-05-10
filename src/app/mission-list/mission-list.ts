@@ -178,9 +178,6 @@ export class MissionList{
             }
             this.queryOffset = this.queryOffset + this.queryLimit;
 
-            this.currentTypeList = this.currentTypeList.sort((a, b) => {
-              return this.dayDifference(b.date_de_debut, a.date_de_debut)
-            });
             this.loading = false;
           }
         });
