@@ -184,11 +184,12 @@ export class ContractService {
       typeSql =  " and c.date_de_debut is not null and c.annule_par is not null";
     }
 
-    var orderBySql = " AND c.dirty = 'N' ORDER BY c.date_de_debut DESC, j.nom ASC ";
+    var orderBySql = " AND c.dirty = 'N' ORDER BY c.date_de_debut DESC ";
     var rangeSql = " LIMIT "+limit +" OFFSET "+offset;
 
     this.configuration = Configs.setConfigs(projectTarget);
     if (projectTarget == 'employer') {
+      orderBySql += ', j.nom ASC ';
       var sql = employerSql + typeSql + orderBySql + rangeSql;
     } else {
       var sql = jobyerSql + typeSql + orderBySql + rangeSql;
