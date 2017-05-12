@@ -21,6 +21,7 @@ import {HeureMission} from "../../dto/heureMission";
 import {DateUtils} from "../utils/date-utils";
 import {ModalHour} from "../modal-hour/modal-hour";
 import {SmsService} from "../../providers/sms-service";
+import {Configs} from "../../configurations/configs";
 
 declare let jQuery: any;
 declare let Messenger: any;
@@ -408,7 +409,7 @@ export class MissionDetails{
             idContract : idContrat,
             idInvoice : idInvoice,
             idDocument : idInvoice,
-            environnement:'DEV'
+            environnement:Configs.env
           };
           this.missionService.signEndOfMission(bean).then(signatureData=>{
             this.financeService.checkInvoice(this.contract.pk_user_contrat).then((invoice: any)=>{
