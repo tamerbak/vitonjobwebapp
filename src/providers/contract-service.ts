@@ -161,8 +161,9 @@ export class ContractService {
 
   getContractsByType(type:number,offset:number,limit:number,id: number, projectTarget: string) {
     //  Init project parameters
-    var employerSql = "SELECT " +
-      "(SELECT COUNT(*) FROM user_heure_mission WHERE fk_user_contrat = c.pk_user_contrat AND date_debut_pointe IS NULL AND date_fin_pointe IS NULL) as pointages_a_faire, " +
+   let sqlComm = "SELECT " +
+     "(SELECT COUNT(*) FROM user_heure_mission WHERE fk_user_contrat = c.pk_user_contrat AND (date_debut_pointe IS NULL OR date_fin_pointe IS NULL)) as pointages_a_faire, ";
+    var employerSql = sqlComm +
       "c.pk_user_contrat,c.*, " +
       "j.nom, j.prenom, " +
       "a.telephone " +
@@ -171,7 +172,8 @@ export class ContractService {
       "AND j.fk_user_account = a.pk_user_account " +
       "AND c.fk_user_entreprise ='" + id + "'";
 
-    var jobyerSql = "SELECT c.pk_user_contrat,c.*, e.nom_ou_raison_sociale as nom FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "'";
+    var jobyerSql = sqlComm +
+      "c.pk_user_contrat,c.*, e.nom_ou_raison_sociale as nom FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "'";
 
     var typeSql ="";
     if(type ==0){
