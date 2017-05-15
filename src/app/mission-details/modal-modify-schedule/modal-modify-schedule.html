@@ -54,7 +54,7 @@
                           <input type="time" [(ngModel)]="pause.pause_debut_temp" [style.backgroundColor]="!isEmpty(pause.pause_debut_new) ? 'orange' : 'gray'" [disabled]="!isEmpty(pause.pause_debut_pointe)"/>
                         </td>
                         <td class="text-align-right" width="100">
-                          <input type="time" [(ngModel)]="pause.pause_debut_pointe_temp" [hidden]="contract.option_mission == '1.0'|| isNewMission" [style.backgroundColor]="upperCase(pause.is_pause_debut_corrigee) == 'OUI' ? 'orange' : (upperCase(pause.is_pause_debut_corrigee) == 'NON' ? 'green' : '')" [disabled]="upperCase(pause.is_pause_debut_corrigee) != 'OUI'"/>
+                          <input type="time" [(ngModel)]="pause.pause_debut_pointe_temp" [hidden]="contract.option_mission == '1.0'" [style.backgroundColor]="upperCase(pause.is_pause_debut_corrigee) == 'OUI' ? 'orange' : (upperCase(pause.is_pause_debut_corrigee) == 'NON' ? 'green' : '')" [disabled]="upperCase(pause.is_pause_debut_corrigee) != 'OUI'"/>
                         </td>
                       </tr>
                       <tr>
@@ -63,7 +63,7 @@
                           <input type="time" [(ngModel)]="pause.pause_fin_temp" [style.backgroundColor]="!isEmpty(pause.pause_fin_new) ? 'orange' : 'gray'" [disabled]="!isEmpty(pause.pause_fin_pointe)"/>
                         </td>
                         <td class="text-align-right" width="100">
-                          <input type="time" [(ngModel)]="pause.pause_fin_pointe_temp" [hidden]="contract.option_mission == '1.0'|| isNewMission" [style.backgroundColor]="upperCase(pause.is_pause_fin_corrigee) == 'OUI' ? 'orange' : (upperCase(pause.is_pause_fin_corrigee) == 'NON' ? 'green' : '')" [disabled]="upperCase(pause.is_pause_fin_corrigee) != 'OUI'"/>
+                          <input type="time" [(ngModel)]="pause.pause_fin_pointe_temp" [hidden]="contract.option_mission == '1.0'" [style.backgroundColor]="upperCase(pause.is_pause_fin_corrigee) == 'OUI' ? 'orange' : (upperCase(pause.is_pause_fin_corrigee) == 'NON' ? 'green' : '')" [disabled]="upperCase(pause.is_pause_fin_corrigee) != 'OUI'"/>
                         </td>
                       </tr>
                       </tbody>

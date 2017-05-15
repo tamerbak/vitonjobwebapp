@@ -47,7 +47,7 @@ export class MissionDetails{
   missionHours: Array<HeureMission>;
   initialMissionHours = [];
 
-  isNewMission = true;
+  //isNewMission = true;
   invoiceReady: boolean = false;
 
   optionMission: string;
@@ -142,7 +142,7 @@ export class MissionDetails{
     //   });
   }
 
-  addPause(dayIndex) {
+  /*addPause(dayIndex) {
     if (!this.isNewMission || !this.isEmployer || this.contract.signature_jobyer.toUpperCase() == 'Non'.toUpperCase()) {
       return;
     }
@@ -151,15 +151,15 @@ export class MissionDetails{
     } else {
       this.missionPauses[dayIndex].push([{}]);
     }
-  }
+  }*/
 
-  deletePause(dayIndex, pauseIndex) {
+  /*deletePause(dayIndex, pauseIndex) {
     if (!this.isNewMission || !this.isEmployer) {
       return;
     }
     this.missionPauses[dayIndex].splice(pauseIndex, 1);
 
-  }
+  }*/
 
   validatePauses() {
     /*for (var i = 0; i < this.missionHours.length; i++) {
@@ -204,7 +204,7 @@ export class MissionDetails{
         // data saved
         this.addAlert("success", "Vos données ont été bien enregistrées");
         // Update contract status
-        this.contract.vu = 'Oui';
+        //this.contract.vu = 'Oui';
         var message = "Horaire du contrat numéro : " + this.contract.numero + " validé";
         //this.sendInfoBySMS(message, "toJobyer");
         if (this.contract.option_mission != 1) {
@@ -619,7 +619,7 @@ export class MissionDetails{
   refreshGraphicalData() {
     this.hasJobyerSigned = (this.contract.signature_jobyer.toUpperCase() == "OUI");
 
-    this.isNewMission = this.contract.vu.toUpperCase() == 'Oui'.toUpperCase() ? false : true;
+    //this.isNewMission = this.contract.vu.toUpperCase() == 'Oui'.toUpperCase() ? false : true;
 
     this.isPointing = (this.contract.option_mission != 1);
 

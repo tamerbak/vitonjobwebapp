@@ -431,12 +431,12 @@
             type="button" class="btn btn-primary btn-sm"
             (click)="generateTimesheet()"
             [style.color]="themeColor"
-            *ngIf="!(missionHours && missionHours.length == 0) && isEmployer && contract.option_mission != '1.0' && !isNewMission && upperCase(contract.releve_employeur) != 'OUI'"
+            *ngIf="!(missionHours && missionHours.length == 0) && isEmployer && contract.option_mission != '1.0' && upperCase(contract.releve_employeur) != 'OUI'"
             [disabled]="disableAllUI() || inProgress"
           >
             Générer et envoyer le relevé d'heure
           </button>
-          <button
+          <!--<button
             type="button" class="btn btn-primary btn-sm"
             (click)="validatePauses()"
             [style.color]="themeColor"
@@ -444,7 +444,7 @@
             [disabled]="disableAllUI()"
           >
             Valider et notifier le Jobyer
-          </button>
+          </button>-->
           <!--<button
             type="button" class="btn btn-primary btn-sm"
             (click)="signSchedule()"
@@ -501,7 +501,7 @@
 <!--<div modal-modify-schedule [missionHours]="missionHours" [missionPauses]="missionPauses" *ngIf="isEmployer && upperCase(contract.approuve) == 'NON' && upperCase(contract.vu) == 'OUI'"></div>-->
 
 <div modal-info [msg]="endMissionMsg"
-     *ngIf="isEmployer && !isNewMission && upperCase(contract.approuve) == 'OUI' && !(upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0')"></div>
+     *ngIf="isEmployer && upperCase(contract.approuve) == 'OUI' && !(upperCase(contract.releve_jobyer) != 'OUI' && contract.option_mission == '3.0')"></div>
 
 <modal-options [params]="modalParams"></modal-options>
 

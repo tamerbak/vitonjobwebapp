@@ -106,7 +106,7 @@ export class MissionService {
     return [missionHours, missionPauses];
   }
 
-  addPauses(missionHours, missionPauses, contractId) {
+  /*addPauses(missionHours, missionPauses, contractId) {
     //  Init project parameters
     var sql = "update user_contrat set vu = 'Oui' where pk_user_contrat = '" + contractId + "'; ";
 
@@ -137,7 +137,7 @@ export class MissionService {
           resolve(this.data);
         });
     });
-  }
+  }*/
 
   setContratToVu(contractId) {
     let sql = "update user_contrat set vu = 'Oui' where pk_user_contrat = '" + contractId + "'; ";

@@ -15,7 +15,7 @@ export class Mission{
   signature_jobyer: string;
   annule_par: string;
 
-  vu: string;
+  //vu: string;
   approuve: string;
   accompli: string;
 
@@ -41,7 +41,7 @@ export class Mission{
     this.signature_jobyer = 'NON';
     this.annule_par = "";
 
-    this.vu = 'NON';
+    //this.vu = 'NON';
     this.approuve = "NON";
     this.accompli = "NON";
 
