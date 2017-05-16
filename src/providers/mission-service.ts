@@ -885,4 +885,33 @@ export class MissionService {
         });
     });
   }
+
+  getMissionById(contractId, roleId, projectTarget){
+    let sql = "";
+    if (projectTarget == 'employer') {
+      sql= " SELECT c.pk_user_contrat , c.*, " +
+        "j.nom, j.prenom, " +
+        "a.telephone " +
+        "FROM user_contrat as c, user_jobyer as j, user_account as a " +
+        "WHERE c.fk_user_jobyer = j.pk_user_jobyer " +
+        "AND j.fk_user_account = a.pk_user_account " +
+        "AND c.fk_user_entreprise ='" + roleId + "' " +
+        "AND c.pk_user_contrat = '" + contractId + "'";
+    }else{
+      sql = "SELECT c.pk_user_contrat, c.*, e.nom_ou_raison_sociale as nom FROM user_contrat as c, user_entreprise as e " +
+        "WHERE c.fk_user_entreprise = e.pk_user_entreprise " +
+        "AND c.fk_user_jobyer ='" + roleId + "' " +
+        "AND c.pk_user_contrat = '" + contractId + "'";
+    }
+
+    console.log(sql);
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
 }

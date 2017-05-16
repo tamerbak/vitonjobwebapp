@@ -22,7 +22,7 @@ export class MissionEndReleve {
   invoice: any;
   isEmployer: boolean;
   idInvoice: number;
-  unSigned: boolean = false;
+  unSigned: boolean;
   alerts: Array<Object>;
 
   constructor(private sharedService: SharedService,
@@ -48,11 +48,11 @@ export class MissionEndReleve {
       this.invoice = data;
 
       if (this.isEmployer) {
-        this.unSigned = (this.invoice.releve_signe_employeur == "Non");
+        this.unSigned = (this.invoice.releve_signe_employeur.toUpperCase() == "NON");
         if (this.unSigned)
           this.initEmployerYousign();
       } else {
-        this.unSigned = (this.invoice.releve_signe_jobyer == "Non");
+        this.unSigned = (this.invoice.releve_signe_jobyer.toUpperCase() == "NON");
         if (this.unSigned)
           this.initJobyerYousign();
       }
@@ -109,7 +109,7 @@ export class MissionEndReleve {
   }
 
   gotoInvoice(){
-    this.router.navigate(['mission/details']);
+    this.router.navigate(['mission/list']);
   }
 
   addAlert(type, msg): void {
