@@ -104,6 +104,13 @@ export class MissionDetails{
 
     this.contract = this.sharedService.getCurrentMission();
 
+    //get contract info
+    /*let contractId = this.sharedService.getCurrentMission().pk_user_contrat;
+    let roleId = (this.isEmployer ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id);
+    this.missionService.getMissionById(contractId, roleId, this.projectTarget).then((data: any) => {
+      this.contract = data.data[0];
+    });*/
+
     //initialize global variables for the current mission
     this.refreshGraphicalData();
 
@@ -416,23 +423,24 @@ export class MissionDetails{
               if(invoice){
                 this.invoiceId = invoice.pk_user_facture_voj;
 
-                if(this.projectTarget == 'employer')
-                  this.isReleveAvailable = invoice.releve_signe_employeur == 'Non';
+                if (this.projectTarget == 'employer')
+                  this.isReleveAvailable = invoice.releve_signe_employeur.toUpperCase() == 'NON';
                 else
-                  this.isReleveAvailable = invoice.releve_signe_jobyer == 'Non';
+                  this.isReleveAvailable = (invoice.releve_signe_jobyer.toUpperCase() == 'NON' && invoice.releve_signe_employeur.toUpperCase() == 'OUI');
 
                 this.isInvoiceAvailable = invoice.facture_signee == 'Non' && this.projectTarget == 'employer';
               }
 
               Messenger().post({
-                message: "Informations enregistrées avec succès. Vous pouvez aller sur 'Missions terminées' pour signer le relevé d'heure",
+                message: "Informations enregistrées avec succès. Le relevé d'heure est en cours d'affichage. Veuillez patientez ...",
                 type: 'success',
-                showCloseButton: true
+                showCloseButton: true,
+                hideAfter: 10
               });
 
               this.inProgress = false;
               this.alerts = [];
-              this.navigationPreviousPage();
+              this.eomReleve();
             });
           });
         });
@@ -635,9 +643,9 @@ export class MissionDetails{
           this.invoiceId = invoice.pk_user_facture_voj;
 
           if (this.projectTarget == 'employer')
-            this.isReleveAvailable = invoice.releve_signe_employeur == 'Non';
+            this.isReleveAvailable = invoice.releve_signe_employeur.toUpperCase() == 'NON';
           else
-            this.isReleveAvailable = invoice.releve_signe_jobyer == 'Non';
+            this.isReleveAvailable = (invoice.releve_signe_jobyer.toUpperCase() == 'NON' && invoice.releve_signe_employeur.toUpperCase() == 'OUI');
 
           this.isInvoiceAvailable = invoice.facture_signee == 'Non' && this.projectTarget == 'employer';
         }

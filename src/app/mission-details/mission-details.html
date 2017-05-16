@@ -6,9 +6,9 @@
 <div class="row">
   <div class="col-xs-12 pull-right" style="margin-bottom: 1em;">
     <a href="javascript:history.go(-1)">
-      <button type="button" class="btn btn-secondary btn-sm" name="button"><span class="glyphicon glyphicon-arrow-left"
+      <!--<button type="button" class="btn btn-secondary btn-sm" name="button"><span class="glyphicon glyphicon-arrow-left"
                                                                                  aria-hidden="true"></span> Retour
-      </button>
+      </button>-->
     </a>
   </div>
 </div>
@@ -432,8 +432,7 @@
             (click)="generateTimesheet()"
             [style.color]="themeColor"
             *ngIf="!(missionHours && missionHours.length == 0) && isEmployer && contract.option_mission != '1.0' && upperCase(contract.releve_employeur) != 'OUI'"
-            [disabled]="disableAllUI() || inProgress"
-          >
+            [disabled]="disableAllUI() || inProgress">
             Générer le relevé d'heure
           </button>
           <!--<button
