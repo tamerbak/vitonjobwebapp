@@ -336,26 +336,26 @@ export class MissionDetails{
     this.alerts = [];
     let isDisabled = this.disableTimesheetButton();
     if(isDisabled){
-      this.addAlert('warning', "Veuillez valider/refuser tous les horaires pointés avant de générer le relevé d'heure");
+      this.addAlert('warning', "Veuillez valider/refuser tous les horaires pointés avant de générer le relevé d'heures");
       return;
     }
 
     this.inProgress = true;
-    this.addAlert('info', "La génération du relevé d'heure est en cours. Veuillez patienter ...");
+    this.addAlert('info', "La génération du relevé d'heures est en cours. Veuillez patienter ...");
 
     this.missionService.saveCorrectedMissions(
       this.contract.pk_user_contrat, this.missionHours, this.missionPauses
     ).then((data: any) => {
       if (data && data.status == "success") {
         console.log("timesheet saved");
-        var message = "Le relevé d'heure du contrat numéro : " + this.contract.numero + "vous a été envoyé.";
+        var message = "Le relevé d'heures du contrat numéro : " + this.contract.numero + "vous a été envoyé.";
         var objectifNotif = "MissionDetailsPage";
         this.sendInfoBySMS(message, "toJobyer");
 
         this.signSchedule();
       }else{
         this.alerts = [];
-        this.addAlert('danger', "Une erreur est survenue lors de la génération du relevé d'heure. Veuillez réessayer l'opréation.");
+        this.addAlert('danger', "Une erreur est survenue lors de la génération du relevé d'heures. Veuillez réessayer l'opréation.");
         this.inProgress = false;
       }
     });
@@ -371,7 +371,7 @@ export class MissionDetails{
       } else {
         // data saved
         if (this.contract.option_mission == 2 && !this.isEmployer) {
-          var message = "Le relevé d'heure du contrat numéro " + this.contract.numero + " a été signé.";
+          var message = "Le relevé d'heures du contrat numéro " + this.contract.numero + " a été signé.";
           this.sendInfoBySMS(message, "toEmployer");
         }
 
@@ -432,7 +432,7 @@ export class MissionDetails{
               }
 
               Messenger().post({
-                message: "Informations enregistrées avec succès. Le relevé d'heure est en cours d'affichage. Veuillez patientez ...",
+                message: "Informations enregistrées avec succès. Le relevé d'heures est en cours d'affichage. Veuillez patienter ...",
                 type: 'success',
                 showCloseButton: true,
                 hideAfter: 10
