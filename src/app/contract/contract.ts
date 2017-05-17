@@ -19,7 +19,7 @@ import {RecruitmentService} from "../../providers/recruitment-service";
 import {ContractData} from "../../dto/contract";
 import {Offer} from "../../dto/offer";
 import {DateUtils} from "../utils/date-utils";
-declare let Messenger,jQuery,moment: any;
+declare let Messenger,jQuery,moment, escape, unescape: any;
 
 /**
  * @author daoudi amine
@@ -57,9 +57,6 @@ export class Contract {
   isMissionDateValid: boolean = true;
 
   transportMeans = [];
-  postRisks1: String;
-  postRisks2: String;
-  postRisks3: String;
 
   characteristics1: String;
   characteristics2: String;
@@ -195,12 +192,14 @@ export class Contract {
       this.contractData.epiList.push(epi);
     }
 
-    let postRisks = this.contractData.postRisks.split(' - ');
+    /*let postRisks = this.contractData.postRisks.split(' - ');
     if(postRisks && postRisks.length > 0){
-      this.postRisks1 = (postRisks.length >= 1 ? Utils.preventNull(postRisks[0]) : "");
+      this.postRisks = (postRisks.length >= 1 ? Utils.preventNull(postRisks[0]) : "");
       this.postRisks2 = (postRisks.length >= 2 ? Utils.preventNull(postRisks[1]) : "");
       this.postRisks3 = (postRisks.length >= 3 ? Utils.preventNull(postRisks[2]) : "");
-    }
+    }*/
+
+    this.contractData.postRisks = unescape(this.contractData.postRisks);
 
     let characteristics = this.contractData.characteristics.split(' - ');
     if(characteristics && characteristics.length > 0){
@@ -237,17 +236,25 @@ export class Contract {
     this.contractData.sector = this.currentOffer.jobData.sector;
     this.contractData.titre = this.currentOffer.title;
 
-    let risks = JSON.parse(this.currentOffer.risks);
-    if (Utils.isEmpty(risks) == false) {
-      this.postRisks1 = risks[0];
-      this.postRisks2 = risks[1];
-      this.postRisks3 = risks[2];
-    }
-    let characteristics = JSON.parse(this.currentOffer.characteristics);
-    if (Utils.isEmpty(characteristics) == false) {
-      this.characteristics1 = characteristics[0];
-      this.characteristics2 = characteristics[1];
-      this.characteristics3 = characteristics[2];
+    this.contractData.postRisks = unescape(this.currentOffer.risks);
+    /*if(!Utils.isEmpty(this.currentOffer.risks)) {
+      let risks = JSON.parse(this.currentOffer.risks);
+      if (Utils.isEmpty(risks) == false) {
+        //this.postRisks1 = risks[0];
+        //this.postRisks2 = risks[1];
+        //this.postRisks3 = risks[2];
+        //this.contractData.postRisks = risks.join('-');
+        this.contractData.postRisks = unescape(this.contractData.postRisks);
+      }
+    }*/
+
+    if(!Utils.isEmpty(this.currentOffer.characteristics)) {
+      let characteristics = JSON.parse(this.currentOffer.characteristics);
+      if (Utils.isEmpty(characteristics) == false) {
+        this.characteristics1 = characteristics[0];
+        this.characteristics2 = characteristics[1];
+        this.characteristics3 = characteristics[2];
+      }
     }
 
     //this.contractData.workTimeHours = + this.calculateOfferHours();
@@ -596,7 +603,8 @@ export class Contract {
     this.contractData.jobyerTitreTravail = Utils.removeAllSpaces(this.contractData.jobyerTitreTravail);
     this.contractData.elementsNonCotisation = 1.0;
 
-    this.contractData.postRisks = Utils.preventNull(this.postRisks1) + " - " + Utils.preventNull(this.postRisks2) + " - " + Utils.preventNull(this.postRisks3);
+    //this.contractData.postRisks = Utils.preventNull(this.postRisks1) + " - " + Utils.preventNull(this.postRisks2) + " - " + Utils.preventNull(this.postRisks3);
+    this.contractData.postRisks = escape(this.contractData.postRisks);
     this.contractData.characteristics = this.characteristics1 + " - " + this.characteristics2 + " - " + this.characteristics3;
 
     console.log("contractData before saving");

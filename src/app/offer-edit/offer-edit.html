@@ -455,31 +455,17 @@
           *ngIf="projectTarget == 'employer'"
           class="form-group row"
         >
-          <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="risks1">
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right" for="risks">
             Risques
           </label>
           <div class="col-md-8 col-xs-12">
-            <input
-              name="risks1"
-              id="risks1"
-              type="text"
+            <textarea
+              name="risks"
+              id="risks"
               class="form-control"
-              [(ngModel)]="risks[0]"
-            />
-            <input
-              name="risks2"
-              id="risks2"
-              type="text"
-              class="form-control"
-              [(ngModel)]="risks[1]"
-            />
-            <input
-              name="risks3"
-              id="risks3"
-              type="text"
-              class="form-control"
-              [(ngModel)]="risks[2]"
-            />
+              rows="3"
+              [(ngModel)]="offer.risks"
+            ></textarea>
           </div>
         </div>
 

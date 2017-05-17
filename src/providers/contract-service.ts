@@ -837,7 +837,7 @@ export class ContractService {
       "adresseCentreMedecineEntreprise": contract.adresseCentreMedecineEntreprise,
       "centreMedecineETT": contract.centreMedecineETT,
       "adresseCentreMedecineETT": contract.adresseCentreMedecineETT,
-      "risques": Utils.preventNull(contract.postRisks),
+      "risques": Utils.preventNull(contract.postRisks.split("%0A").join(" - ")),
       "titreTransport": contract.titreTransport,
       "zonesTitre": contract.zonesTitre,
       "elementsCotisation": ""+contract.elementsCotisation,
