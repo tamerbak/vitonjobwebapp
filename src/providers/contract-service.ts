@@ -166,10 +166,12 @@ export class ContractService {
     var employerSql = sqlComm +
       "c.pk_user_contrat,c.*, " +
       "j.nom, j.prenom, " +
-      "a.telephone " +
-      "FROM user_contrat as c, user_jobyer as j, user_account as a " +
+      "a.telephone, " +
+      "f.releve_signe_employeur " +
+      "FROM user_contrat as c, user_jobyer as j, user_account as a, user_facture_voj as f " +
       "WHERE c.fk_user_jobyer = j.pk_user_jobyer " +
       "AND j.fk_user_account = a.pk_user_account " +
+      "AND c.pk_user_contrat = f.fk_user_contrat " +
       "AND c.fk_user_entreprise ='" + id + "'";
 
     var jobyerSql = sqlComm +
@@ -177,11 +179,11 @@ export class ContractService {
 
     var typeSql ="";
     if(type ==0){
-      typeSql = " and c.date_de_debut is not null and upper(c.signature_jobyer) = 'OUI' and upper(c.accompli)='NON' and c.annule_par is null";
+      typeSql = " and c.date_de_debut is not null and upper(c.signature_jobyer) = 'OUI' and upper(c.releve_employeur)='NON' and c.annule_par is null";
     }else if(type ==1){
       typeSql = " and c.date_de_debut is not null and upper(c.signature_jobyer) = 'NON' and c.annule_par is null";
     }else if(type ==2){
-      typeSql =  " and c.date_de_debut is not null and upper(c.accompli) = 'OUI' and c.annule_par is null";
+      typeSql =  " and c.date_de_debut is not null and upper(c.releve_employeur) = 'OUI' and c.annule_par is null";
     }else if(type ==3){
       typeSql =  " and c.date_de_debut is not null and c.annule_par is not null";
     }
