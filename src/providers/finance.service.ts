@@ -217,4 +217,18 @@ export class FinanceService {
         });
     });
   }
+
+  deleteMissionInvoice(contractId){
+    let sql = "delete from user_ligne_facture_voj where fk_user_ligne_facture_voj__user_facture_voj in (select pk_user_facture_voj from user_facture_voj where fk_user_contrat = " + contractId + "); ";
+    sql = sql + " delete from user_facture_voj where fk_user_contrat = " + contractId + ";";
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
 }
