@@ -330,11 +330,8 @@
 
       <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
-          <label>Risques</label>
-          <input type="text" name="postRisks1" class="form-control" [(ngModel)]="postRisks1" aria-describedby="risques" /> <br/>
-          <input type="text" name="postRisks2" class="form-control" [(ngModel)]="postRisks2" aria-describedby="risques" /> <br/>
-          <input type="text" name="postRisks3" class="form-control" [(ngModel)]="postRisks3" aria-describedby="risques" />
-          <small class="form-text text-muted"></small>
+          <label>Risques<span  class="color-font">*</span></label>
+          <textarea name="postRisks" rows="3" class="form-control" [(ngModel)]="contractData.postRisks" aria-describedby="risques"></textarea><br/>
         </div>
         <div class="form-group">
           <label>Surveillance médicale renforcée</label>

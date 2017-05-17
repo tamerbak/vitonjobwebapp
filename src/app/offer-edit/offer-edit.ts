@@ -37,6 +37,7 @@ declare let Messenger, jQuery: any;
 declare let google: any;
 declare let moment: any;
 declare let require;
+declare let escape, unescape: any;
 
 @Component({
   selector: '[offer-edit]',
@@ -159,7 +160,7 @@ export class OfferEdit {
 
   isValidAddress: boolean = true;
 
-  risks: string[] = ["", "", ""];
+  //risks: string;
   characteristics: string[] = ["", "", ""];
 
   equipmentDataFournishBy: {id: number, label: string}[] = [];
@@ -216,9 +217,11 @@ export class OfferEdit {
           this.offer.calendarData = [];
         }
 
-        if (Utils.isEmpty(this.offer.risks) == false) {
-          this.risks = JSON.parse(this.offer.risks);
-        }
+        this.offer.risks = unescape(this.offer.risks);
+        /*if (Utils.isEmpty(this.offer.risks) == false) {
+          this.risks = this.offer.risks;
+        }*/
+
         if (Utils.isEmpty(this.offer.characteristics) == false) {
           this.characteristics = JSON.parse(this.offer.characteristics);
         }
@@ -571,7 +574,7 @@ export class OfferEdit {
   saveOffer(stayOnPage = false) {
     this.triedValidate = true;
 
-    this.offer.risks = JSON.stringify(this.risks);
+    this.offer.risks = escape(this.offer.risks);
     this.offer.characteristics = JSON.stringify(this.characteristics);
 
     if (!this.isFormValid()) {
