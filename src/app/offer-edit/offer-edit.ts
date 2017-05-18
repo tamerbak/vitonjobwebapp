@@ -226,6 +226,8 @@ export class OfferEdit {
           this.characteristics = JSON.parse(this.offer.characteristics);
         }
 
+        this.offer.medicalSurv = Utils.preventNull(this.offer.medicalSurv).toUpperCase();
+
       });
     } else {
       this.offer = new Offer();
