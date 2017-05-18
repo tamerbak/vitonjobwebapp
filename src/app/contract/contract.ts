@@ -231,6 +231,8 @@ export class Contract {
     this.contractData.workStartHour = this.getHourMissionFirstDay()[0];
     this.contractData.workEndHour = this.getHourMissionFirstDay()[1];
 
+    this.getStatutOffer();
+
     //initialiser le contrat avec les infos de l'offre
     this.contractData.qualification = this.currentOffer.title;
     this.contractData.baseSalary = +Utils.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2);
@@ -621,6 +623,14 @@ export class Contract {
     return Math.min.apply(Math, weeksArray).toFixed(0);
   }
 
+  getStatutOffer(){
+    this.offersService.getStatutOffer(this.currentOffer.idOffer).then((data: any) => {
+      if(data && data.data && data.data.length != 0) {
+        this.contractData.category = data.data[0].libelle;
+      }
+    });
+  }
+
   gotoContractListPage(){
     let isValid = !this.missingJobyerData() && this.isMissionDateValid;
     if(!isValid){
@@ -735,102 +745,6 @@ export class Contract {
         });
       }
     }
-
-  /*saveDocusignInfo() {
-    this.inProgress = true;
-
-    this.financeService.loadQuote(
-      this.currentOffer.idOffer,
-      this.contractData.baseSalary
-    ).then((data: any) => {
-      if(!data || Utils.isEmpty(data.quoteId) || data.quoteId == 0){
-        this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
-        this.inProgress = false;
-        return;
-      }
-
-      this.financeService.loadPrevQuote(this.currentOffer.idOffer).then((results : any)=>{
-        if(!results || !results.lignes || results.lignes.length == 0){
-          this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
-          this.inProgress = false;
-          return;
-        }
-
-        this.contractService.callYousign(
-          this.currentUser,
-          this.employer,
-          this.jobyer,
-          this.contractData,
-          this.projectTarget,
-          this.currentOffer,
-          data.quoteId
-        ).then((data: any) => {
-          if(!data || data == null || Utils.isEmpty(data.Employeur) || Utils.isEmpty(data.Jobyer) || Utils.isEmpty(data.Employeur.idContrat) || Utils.isEmpty(data.Jobyer.idContrat) || !Utils.isValidUrl(data.Employeur.url) || !Utils.isValidUrl(data.Jobyer.url)){
-            this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
-            this.inProgress = false;
-            return;
-          }
-          this.setDocusignData(data);
-
-          //update contract in Database with docusign data
-          this.contractService.updateContract(this.contractData, this.projectTarget).then((data: any) => {
-              if (!data || data.status != "success") {
-                this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
-                this.inProgress = false;
-                return;
-              }
-
-              //go to contract list page
-              this.router.navigate(['contract/list']);
-            },
-            (err) => {
-              this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
-              this.inProgress = false;
-              return;
-            })
-        }).catch(function (err) {
-          this.addAlert("danger", "Une erreur est survenue lors de la génération du contrat. Veuillez rééssayer l'opération.");
-          this.inProgress = false;
-          return;
-        });
-      });
-    });
-  }*/
-
-  /*setDocusignData(data){
-    let partner = GlobalConfigs.global['electronic-signature'];
-
-    let dataValue = null;
-    let partnerData = null;
-    this.contractData.partnerEmployerLink = null;
-
-    if (partner === 'yousign') {
-      dataValue = data[0]['value'];
-      partnerData = JSON.parse(dataValue);
-      //get the link yousign of the contract for the employer
-      this.contractData.partnerEmployerLink = partnerData.iFrameURLs[1].iFrameURL;
-    } else if (partner === 'docusign') {
-      dataValue = data;
-      partnerData = dataValue;
-      //get the link docusign of the contract for the employer
-      this.contractData.partnerEmployerLink = partnerData.Employeur.url;
-    }
-
-    // get the partner link of the contract and the phoneNumber of the jobyer
-    this.contractData.partnerJobyerLink = null;
-    if (partner === 'yousign') {
-      this.contractData.partnerJobyerLink = partnerData.iFrameURLs[0].iFrameURL;
-      this.contractData.demandeJobyer = partnerData.idDemands[0].idDemand;
-      this.contractData.demandeEmployer = partnerData.idDemands[1].idDemand;
-
-    } else if (partner === 'docusign') {
-      this.contractData.partnerJobyerLink = partnerData.Jobyer.url;
-      this.contractData.demandeJobyer = partnerData.Jobyer.idContrat;
-      this.contractData.demandeEmployer = partnerData.Employeur.idContrat;
-      this.contractData.enveloppeEmployeur = partnerData.Employeur.folderURL;
-      this.contractData.enveloppeJobyer = partnerData.Jobyer.folderURL;
-    }
-  }*/
 
   checkOfferState(offer){
     this.contractService.getContractsByOffer(offer.idOffer).then((data: any) => {
