@@ -277,9 +277,11 @@
           <small class="form-text text-muted"></small>
         </div>
         <div class="form-group">
-          <label>Caractéristiques du poste&nbsp;<span  class="color-font" >*</span></label>
+          <label>Caractéristiques du poste n°1&nbsp;<span  class="color-font" >*</span></label>
           <input type="text" name="characteristics1" class="form-control" [(ngModel)]="characteristics1" aria-describedby="cara" required/> <br/>
+          <label>Caractéristiques du poste n°2&nbsp;<span  class="color-font" >*</span></label>
           <input type="text" name="characteristics2" class="form-control" [(ngModel)]="characteristics2" aria-describedby="cara" required/> <br/>
+          <label>Caractéristiques du poste n°3&nbsp;<span  class="color-font" >*</span></label>
           <input type="text" name="characteristics3" class="form-control" [(ngModel)]="characteristics3" aria-describedby="cara" required/>
           <small class="form-text text-muted"></small>
         </div>
@@ -331,7 +333,7 @@
       <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
           <label>Risques<span  class="color-font">*</span></label>
-          <textarea name="postRisks" rows="3" class="form-control" [(ngModel)]="contractData.postRisks" aria-describedby="risques"></textarea><br/>
+          <textarea name="postRisks" rows="3" class="form-control" [(ngModel)]="contractData.postRisks" aria-describedby="risques" required></textarea><br/>
         </div>
         <div class="form-group">
           <label>Surveillance médicale renforcée</label>
