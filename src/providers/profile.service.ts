@@ -291,7 +291,7 @@ export class ProfileService{
    * @description update jobyer information
    * @param title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthplace
    */
-  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, isStay, prefecture, isFrench, isEuropean, regionId, cv, nbWorkHours, studyHoursBigValue, alwaysAvailable, birthname) {
+  updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, roleId, birthdate, birthdepId, birthplace, birthCountryId, numStay, dateStay, dateFromStay, dateToStay, isStay, prefecture, isFrench, isEuropean, regionId, cv, nbWorkHours, studyHoursBigValue, alwaysAvailable, birthname, moyenTransport) {
     title = Utils.sqlfyText(title);
     lastname = Utils.sqlfyText(lastname);
     firstname = Utils.sqlfyText(firstname);
@@ -324,6 +324,7 @@ export class ProfileService{
       (!this.isEmpty(nbWorkHours) ? ("nb_heures_de_travail ='" + nbWorkHours + "', ") : ("nb_heures_de_travail = " + 0 + ", " )) +
       (!this.isEmpty(studyHoursBigValue) ? ("plus_de_350_heures_d_etude ='" + studyHoursBigValue + "', ") : ("plus_de_350_heures_d_etude = " + null + ", " )) +
       (!this.isEmpty(cv) ? (" cv='" + Utils.sqlfyText(cv) + "', ") : ("cv='', ")) +
+      (!this.isEmpty(moyenTransport) ? (" moyen_de_transport = '" + Utils.sqlfyText(moyenTransport) + "', ") : ("moyen_de_transport='', ")) +
 
       "toujours_disponible='" + (alwaysAvailable ? 'Oui' : 'Non') + "' " +
 

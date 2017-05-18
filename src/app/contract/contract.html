@@ -95,6 +95,12 @@
           <input type="text" name="birthplace" class="form-control" [(ngModel)]="contractData.jobyerLieuNaissance" aria-describedby="lieu" readonly/>
           <small class="form-text text-muted"></small>
         </div>
+        <div class="form-group">
+          <label>Adresse</label>
+          <span class="asterisk">*</span>
+          <input type="text" class="form-control" [(ngModel)]="contractData.jobyerAddress" readonly/>
+          <small class="form-text text-muted"></small>
+        </div>
       </div>
       <div class="col-md-6 col-xs-12 col-2">
         <div class="form-group">
@@ -166,16 +172,14 @@
           <input type="text" name="qualification" class="form-control" [(ngModel)]="contractData.qualification" aria-describedby="qual" readonly/>
           <small class="form-text text-muted"></small>
         </div>
+  
+        <div class="form-group">
+          <label>Moyen de transport</label>
+          <input type="text" class="form-control" [(ngModel)]="contractData.zonesTitre" readonly/>
+        </div>
 
       </div>
-      <div class="col-xs-12">
-        <div class="form-group">
-          <label>Adresse</label>
-          <span class="asterisk">*</span>
-          <input type="text" class="form-control" [(ngModel)]="contractData.jobyerAddress" readonly/>
-          <small class="form-text text-muted"></small>
-        </div>
-      </div>
+      
       <div class="col-xs-12" *ngIf="missingJobyerData()">
         <alert [type]="'info alert-sm'">
           <div [innerHTML]="'Le Jobyer est en train de saisir ses informations'"></div>
@@ -513,13 +517,6 @@
               </label>
           </div>
         </div>-->
-        <div class="form-group">
-          <label>Moyen de transport</label>
-          <select class="form-control" [(ngModel)]="contractData.zonesTitre">
-            <option *ngFor="let t of transportMeans" value="{{t}}">{{t}}</option>
-          </select>
-          <small class="form-text text-muted"></small>
-        </div>
       </div>
     </div>
     <div class="row">

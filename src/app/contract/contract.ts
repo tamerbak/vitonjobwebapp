@@ -56,8 +56,6 @@ export class Contract {
   cni:any;
   isMissionDateValid: boolean = true;
 
-  transportMeans = [];
-
   characteristics1: String;
   characteristics2: String;
   characteristics3: String;
@@ -92,18 +90,6 @@ export class Contract {
       return;
       //TODO: est ce qu'après le return le ngOninit n'est pas exécuté
     }
-
-    this.transportMeans = [
-      "Véhicule",
-      "Transport en commun Zone 1 à 2",
-      "Transport en commun Zone 1 à 3",
-      "Transport en commun Zone 1 à 4",
-      "Transport en commun Zone 1 à 5",
-      "Transport en commun Zone 2 à 3",
-      "Transport en commun Zone 3 à 4",
-      "Transport en commun Zone 4 à 5",
-      "Transport en commun toutes zones"
-    ];
   }
 
   ngOnInit(){
@@ -341,6 +327,7 @@ export class Contract {
 
       this.contractData.jobyerNumSS = Utils.preventNull(datum.numss);
       this.contractData.jobyerNationaliteLibelle = Utils.preventNull(datum.nationalite);
+      this.contractData.zonesTitre = datum.moyenTransport;
 
       this.contractData.jobyerTitreTravail = '';
       //specify if jobyer isFrench or european or a foreigner

@@ -582,6 +582,17 @@
                          [(ngModel)]="correspondenceAddress" (input)="autocompleteCorrespondenceAddress()"/>
                 </div>
               </div>
+  
+              <div *ngIf="!isEmployer && !isRecruiter" class="form-group row">
+                <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+                  Moyen de transport
+                </label>
+                <div class="col-md-7 col-xs-12">
+                  <select class="form-control" [(ngModel)]="zonesTitre">
+                    <option *ngFor="let t of transportMeans" value="{{t}}">{{t}}</option>
+                  </select>
+                </div>
+              </div>
 
             </div>
 
@@ -1109,7 +1120,7 @@
           </fieldset>
       </div>
     </section>
-
+    
     <section class="widget" widget>
 
       <div class="widget-body widget-body-profile">
