@@ -1279,6 +1279,11 @@ export class OfferEdit {
     return this.isEmpty(this.type);
   }
 
+  watchMedicalSupervision(e){
+    this.offer.medicalSurv = e.target.value;
+  }
+
+
   isEmpty(str) {
     return Utils.isEmpty(str);
   }
