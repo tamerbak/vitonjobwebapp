@@ -199,7 +199,7 @@ export class Contract {
       this.postRisks3 = (postRisks.length >= 3 ? Utils.preventNull(postRisks[2]) : "");
     }*/
 
-    this.contractData.postRisks = unescape(this.contractData.postRisks);
+    this.contractData.postRisks = Utils.preventNull(unescape(this.contractData.postRisks));
 
     let characteristics = this.contractData.characteristics.split(' - ');
     if(characteristics && characteristics.length > 0){
@@ -233,6 +233,8 @@ export class Contract {
 
     this.getStatutOffer();
 
+    this.contractData.medicalSurv = this.currentOffer.medicalSurv;
+
     //initialiser le contrat avec les infos de l'offre
     this.contractData.qualification = this.currentOffer.title;
     this.contractData.baseSalary = +Utils.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2);
@@ -242,7 +244,7 @@ export class Contract {
     this.contractData.sector = this.currentOffer.jobData.sector;
     this.contractData.titre = this.currentOffer.title;
 
-    this.contractData.postRisks = unescape(this.currentOffer.risks);
+    this.contractData.postRisks = Utils.preventNull(unescape(this.currentOffer.risks));
     /*if(!Utils.isEmpty(this.currentOffer.risks)) {
       let risks = JSON.parse(this.currentOffer.risks);
       if (Utils.isEmpty(risks) == false) {

@@ -500,6 +500,25 @@
             />
           </div>
         </div>
+  
+        <div
+          *ngIf="projectTarget == 'employer'"
+          class="form-group row"
+        >
+          <label class="col-md-4 col-xs-12 form-control-label text-md-right">
+            Surveillance médicale renforcée
+          </label>
+          <div class="abc-radio">
+            <input type="radio" name="radio1" [checked]="offer.medicalSurv == 'OUI'" value="OUI" id="medicalRadio1" (click)="watchMedicalSupervision($event)">
+            <label for="medicalRadio1" class="labelRadio">
+              Oui &nbsp;&nbsp;
+            </label>
+            <input type="radio" name="radio1" [checked]="offer.medicalSurv == 'NON'" value="NON" id="medicalRadio2" (click)="watchMedicalSupervision($event)">
+            <label for="medicalRadio2" class="labelRadio">
+              Non
+            </label>
+          </div>
+        </div>
       </div>
 
     </section>

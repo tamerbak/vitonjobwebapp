@@ -226,6 +226,8 @@ export class OfferEdit {
           this.characteristics = JSON.parse(this.offer.characteristics);
         }
 
+        this.offer.medicalSurv = Utils.preventNull(this.offer.medicalSurv).toUpperCase();
+
       });
     } else {
       this.offer = new Offer();
@@ -1278,6 +1280,11 @@ export class OfferEdit {
   isConcretOffer() {
     return this.isEmpty(this.type);
   }
+
+  watchMedicalSupervision(e){
+    this.offer.medicalSurv = e.target.value;
+  }
+
 
   isEmpty(str) {
     return Utils.isEmpty(str);
