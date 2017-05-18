@@ -66,7 +66,7 @@ export class Utils {
   }
 
   public static isEmpty(str) {
-    if (str == '' || str == 'null' || !str)
+    if (str == '' || str == 'null' || !str || str == 'undefined')
       return true;
     else
       return false;

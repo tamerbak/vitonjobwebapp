@@ -244,7 +244,7 @@ export class Contract {
     this.contractData.sector = this.currentOffer.jobData.sector;
     this.contractData.titre = this.currentOffer.title;
 
-    this.contractData.postRisks = unescape(this.currentOffer.risks);
+    this.contractData.postRisks = Utils.preventNull(unescape(this.currentOffer.risks));
     /*if(!Utils.isEmpty(this.currentOffer.risks)) {
       let risks = JSON.parse(this.currentOffer.risks);
       if (Utils.isEmpty(risks) == false) {
