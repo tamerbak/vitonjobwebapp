@@ -199,7 +199,7 @@ export class Contract {
       this.postRisks3 = (postRisks.length >= 3 ? Utils.preventNull(postRisks[2]) : "");
     }*/
 
-    this.contractData.postRisks = unescape(this.contractData.postRisks);
+    this.contractData.postRisks = Utils.preventNull(unescape(this.contractData.postRisks));
 
     let characteristics = this.contractData.characteristics.split(' - ');
     if(characteristics && characteristics.length > 0){
@@ -232,6 +232,8 @@ export class Contract {
     this.contractData.workEndHour = this.getHourMissionFirstDay()[1];
 
     this.getStatutOffer();
+
+    this.contractData.medicalSurv = this.currentOffer.medicalSurv;
 
     //initialiser le contrat avec les infos de l'offre
     this.contractData.qualification = this.currentOffer.title;
