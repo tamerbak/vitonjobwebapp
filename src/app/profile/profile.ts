@@ -240,6 +240,10 @@ export class Profile{
 
   alwaysAvailable: boolean;
 
+  //moyen de transport
+  transportMeans = [];
+  zonesTitre: string;
+
   setImgClasses() {
     return {
       'img-circle': true,//TODO:this.currentUser && this.currentUser.estEmployeur,
@@ -345,6 +349,17 @@ export class Profile{
       this.initinterestingJobs();
     }
 
+    this.transportMeans = [
+      "Véhicule",
+      "Transport en commun Zone 1 à 2",
+      "Transport en commun Zone 1 à 3",
+      "Transport en commun Zone 1 à 4",
+      "Transport en commun Zone 1 à 5",
+      "Transport en commun Zone 2 à 3",
+      "Transport en commun Zone 3 à 4",
+      "Transport en commun Zone 4 à 5",
+      "Transport en commun toutes zones"
+    ];
   }
 
   initinterestingJobs(){
@@ -731,7 +746,7 @@ export class Profile{
         }
         this.alwaysAvailable = (data.toujours_disponible != 'Non');
         jQuery('.always-available').prop('checked', this.alwaysAvailable);
-
+        this.zonesTitre = data.moyen_de_transport;
       });
 
 
@@ -1586,7 +1601,7 @@ export class Profile{
         let studyHoursBigValue = (this.isNbStudyHoursBig ? "OUI" : "NON");
 
         this.profileService.updateJobyerCivility(title, lastname, firstname, numSS, cni, nationalityId, userRoleId, birthdate, birthdepId, birthplace, birthCountryId, numStay,
-          dateStay, dateFromStay, dateToStay, isResident, prefecture, this.isFrench, this.isEuropean, regionId, this.cv, this.nbWorkHours, studyHoursBigValue, this.alwaysAvailable, this.birthname)
+          dateStay, dateFromStay, dateToStay, isResident, prefecture, this.isFrench, this.isEuropean, regionId, this.cv, this.nbWorkHours, studyHoursBigValue, this.alwaysAvailable, this.birthname, this.zonesTitre)
           .then((res: any) => {
 
             //case of authentication failure : server unavailable or connection problem
