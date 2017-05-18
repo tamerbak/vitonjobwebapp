@@ -1279,7 +1279,7 @@ export class ContractService {
 
     let body = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      id: 20053,
+      id: 20057,
       args: [
         {
           class: 'fr.protogen.masterdata.model.CCalloutArguments',
