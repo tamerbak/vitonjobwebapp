@@ -146,7 +146,7 @@ export class ContractData {
     this.primes = 0;
     this.headOffice = "";
     this.missionContent = "";
-    this.category = "Employé";
+    this.category = "";
     this.sector = "";
     this.companyName = "";
     this.titreTransport = "NON";

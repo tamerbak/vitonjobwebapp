@@ -1367,4 +1367,20 @@ export class OffersService {
         });
     });
   }
+
+  getStatutOffer(offerId){
+    let sql = "select s.libelle " +
+      "from user_statut_convention as s, user_offre_entreprise as o, user_parametrage_convention as p " +
+      "where o.pk_user_offre_entreprise = " + offerId + " " +
+      "and o.fk_user_parametrage_convention = p.pk_user_parametrage_convention " +
+      "and p.fk_user_statut_convention = s.pk_user_statut_convention";
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
 }
