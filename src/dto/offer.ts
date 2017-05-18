@@ -38,6 +38,8 @@ export class Offer extends AbstractGCallout {
   risks: string; // JSON
   characteristics: string; // JSON
 
+  medicalSurv: string;
+
   constructor() {
     super('com.vitonjob.callouts.offer.model.OfferData');
 
@@ -70,6 +72,7 @@ export class Offer extends AbstractGCallout {
 
     this.adresse = new Address();
     this.adresse.type = 'adresse_de_travail';
+
+    this.medicalSurv = "";
   }
 }
-;
