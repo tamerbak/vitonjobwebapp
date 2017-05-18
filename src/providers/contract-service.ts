@@ -751,9 +751,10 @@ export class ContractService {
     //get configuration
     let sh = 'Horaires variables selon planning';
     let eh = '';
-    if(contract.isScheduleFixed == 'true'){
-      sh = DateUtils.toHourString(contract.workStartHour);
-      eh = " à "+DateUtils.toHourString(contract.workEndHour);
+    sh = DateUtils.toHourString(contract.workStartHour);
+    eh = " à "+DateUtils.toHourString(contract.workEndHour);
+    if(contract.isScheduleFixed == 'false'){
+      eh = eh + " puis variables selon planning.";
     }
 
     if(!contract.epiList || contract.epiList.length == 0){
