@@ -227,6 +227,10 @@ export class Contract {
     this.contractData.termStartDate = this.getXmlEndDate();
     this.contractData.termEndDate = this.getXmlEndDate();
 
+    this.contractData.isScheduleFixed = (this.IsScheduleFixed() ? 'true' : 'false');
+    this.contractData.workStartHour = this.getHourMissionFirstDay()[0];
+    this.contractData.workEndHour = this.getHourMissionFirstDay()[1];
+
     //initialiser le contrat avec les infos de l'offre
     this.contractData.qualification = this.currentOffer.title;
     this.contractData.baseSalary = +Utils.parseNumber(this.currentOffer.jobData.remuneration).toFixed(2);
@@ -495,6 +499,30 @@ export class Contract {
     sd = d.getFullYear()+'-'+ (m < 10 ? '0' : '') + m + '-'+ (da < 10 ? '0' : '') + da ;
 
     return sd;
+  }
+
+  getHourMissionFirstDay(){
+    //ordonner le tableau des slots par ordre croissant
+    this.currentOffer.calendarData.sort(function(a, b) {
+      return (a.date + a.startHour) - (b.date + b.startHour);
+    });
+    let startH = DateUtils.setMinutesToDate(new Date(), this.currentOffer.calendarData[0].startHour);
+    let endH = DateUtils.setMinutesToDate(new Date(), this.currentOffer.calendarData[0].endHour);
+    return [startH, endH];
+  }
+
+  IsScheduleFixed(){
+    let schedule = this.currentOffer.calendarData;
+    if(schedule.length == 1){
+      return true;
+    }
+
+    for(let i = 0; i < schedule.length - 1; i++){
+      if(schedule[i].startHour != schedule[i+1].startHour || schedule[i].endHour != schedule[i+1].endHour){
+        return false;
+      }
+    }
+    return true;
   }
 
   ngAfterViewInit(){
