@@ -38,7 +38,7 @@ export class Offer extends AbstractGCallout {
   risks: string; // JSON
   characteristics: string; // JSON
 
-  medicalSurv: string;
+  medicalSurv: string = 'NON';
 
   constructor() {
     super('com.vitonjob.callouts.offer.model.OfferData');
