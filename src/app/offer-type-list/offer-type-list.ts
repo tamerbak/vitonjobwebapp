@@ -68,9 +68,13 @@ export class OfferTypeList {
 
     if (this.isEmployer) {
       this.offerList = this.sharedService.getCurrentUser().employer.entreprises[0].offers;
-      this.offersService.getIsTypeOrNot(this.offerList).then(() => {
+      if (this.offerList && this.offerList.length) {
+        this.offersService.getIsTypeOrNot(this.offerList).then(() => {
+          this.loadOffers();
+        });
+      } else {
         this.loadOffers();
-      });
+      }
     }
 
   }

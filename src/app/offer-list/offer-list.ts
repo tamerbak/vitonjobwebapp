@@ -66,9 +66,13 @@ export class OfferList {
     this.offerList = this.projectTarget == 'employer'
       ? this.sharedService.getCurrentUser().employer.entreprises[0].offers
       : this.sharedService.getCurrentUser().jobyer.offers;
-    this.offersService.getIsTypeOrNot(this.offerList).then(() => {
+    if (this.offerList && this.offerList.length > 0) {
+      this.offersService.getIsTypeOrNot(this.offerList).then(() => {
+        this.loadOffers();
+      });
+    } else {
       this.loadOffers();
-    });
+    }
 
   }
 
