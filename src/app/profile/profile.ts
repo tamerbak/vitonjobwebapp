@@ -22,6 +22,7 @@ import {ConventionService} from "../../providers/convention.service";
 import {OffersService} from "../../providers/offer.service";
 import {EnvironmentService} from "../../providers/environment.service";
 import {SelectLanguages} from "../components/select-languages/select-languages";
+import {SearchService} from "../../providers/search-service";
 
 declare let jQuery: any;
 declare let Messenger: any;
@@ -31,7 +32,7 @@ declare let google: any;
 @Component({
   selector: '[profile]',
   template: require('./profile.html'),
-  providers: [Utils, ProfileService, CommunesService, LoadListService, MedecineService, AttachementsService, AccountConstraints, ConventionService, OffersService, EnvironmentService],
+  providers: [Utils, ProfileService, CommunesService, LoadListService, MedecineService, AttachementsService, AccountConstraints, ConventionService, OffersService, EnvironmentService, SearchService],
   directives: [ROUTER_DIRECTIVES, NKDatetime, AlertComponent, ModalPicture, MaskedInput, BankAccount, ModalCorporamaSearch, SelectLanguages],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./profile.scss')]
@@ -258,6 +259,7 @@ export class Profile{
               private attachementsService: AttachementsService,
               private conventionService: ConventionService,
               private offersService : OffersService,
+              private searchService : SearchService,
               private zone: NgZone,
               private router: Router,
               private environmentService: EnvironmentService,
@@ -1659,6 +1661,10 @@ export class Profile{
               if (this.isNewUser) {
                 this.router.navigate(['home']);
               }
+
+              //  Update jobyer indexation
+              this.searchService.updateJobyerIndexation(this.currentUser.jobyer.id);
+
             }
           })
           .catch((error: any) => {

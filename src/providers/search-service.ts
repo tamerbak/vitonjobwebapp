@@ -223,4 +223,72 @@ export class SearchService {
     });
 
   }
+
+
+  /*
+   *  indexation des jobyers et des offres
+   */
+  updateJobyerIndexation(id : number){
+    let argument = {
+      idJobyer : id
+    };
+    let payload = {
+      'class': 'fr.protogen.masterdata.model.CCallout',
+      id: 50000,
+      args: [
+        {
+          class: 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'Indexation',
+          value: btoa(JSON.stringify(argument))
+        },
+        {
+          class: 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'Type',
+          value: btoa('jobyer')
+        }
+      ]
+    };
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  updateOfferIndexation(id : number){
+    let argument = {
+      idOffre : id,
+      idAnnonce:0
+
+    };
+    let payload = {
+      'class': 'fr.protogen.masterdata.model.CCallout',
+      id: 50000,
+      args: [
+        {
+          class: 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'Indexation',
+          value: btoa(JSON.stringify(argument))
+        },
+        {
+          class: 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'Type',
+          value: btoa('employer_offer')
+        }
+      ]
+    };
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
 }
