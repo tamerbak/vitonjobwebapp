@@ -670,7 +670,7 @@ export class ContractService {
     return hours + ":" + minutes;
   }
 
-  prepareHoraire(calendar,prerequis, epis, epiProvidedBy, address, moyen, contact, phone) {
+  prepareHoraire(calendar,prerequis, epis, epiProvidedBy, address, moyen, contact, phone, jobyer) {
 
     let html = "<br><p><b>Calendrier de travail</b></p><ul>";
 
@@ -720,11 +720,16 @@ export class ContractService {
     }
 
     html = html + "<br><p><b>Adresse de la mission : </b>"+address+"</p>";
-    html = html + "<br><p><b>Moyen d'accès : </b>"+moyen+"</p>";
+    /*html = html + "<br><p><b>Moyen d'accès : </b>"+moyen+"</p>";
     if(contact && contact.length>0)
-      html = html + "<br><p><b>Contact sur place : </b>"+contact+"</p>";
-    if(phone && phone.length>0)
-      html = html + "<br><p><b>N° Téléphone : </b>"+phone+"</p>";
+      html = html + "<br><p><b>Contact sur place : </b>"+contact+"</p>";*/
+    //coordonnées du jobyer
+    html = html + "<br><p><b>Coordonnées du Jobyer : </b></p>";
+    html = html + "<li><b>Nom et prénom: </b>"+ jobyer.nom + " " + jobyer.prenom + "</li>";
+    html = html + "<li><b>N° Téléphone: </b>"+ jobyer.tel +"</li>";
+
+    /*if(phone && phone.length>0)
+      html = html + "<br><p><b>N° Téléphone : </b>"+phone+"</p>";*/
     return html;
   }
 
@@ -745,7 +750,8 @@ export class ContractService {
         contract.adresseInterim,
         contract.moyenAcces,
         contract.offerContact,
-        contract.contactPhone
+        contract.contactPhone,
+        jobyer
       );
     }
     //get configuration
