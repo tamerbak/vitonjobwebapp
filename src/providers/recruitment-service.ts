@@ -11,6 +11,10 @@ import {ContractService} from "./contract-service";
 import {Router} from "@angular/router";
 import {SharedService} from "./shared.service";
 import {Entreprise} from "../dto/entreprise";
+import {CCalloutArguments} from "../dto/generium/ccallout-arguments";
+import {CCallout} from "../dto/generium/ccallout";
+
+const RECRUIT_CALLOUT_ID = 3000;
 
 /**
  * Contains all the recruitment logic
@@ -540,6 +544,27 @@ export class RecruitmentService {
       }
     }
     return i;
+  }
+
+  retrieveJobyersAvailabilitiesByOffer(idOffer: number) {
+
+    let payloadFinal = new CCallout(RECRUIT_CALLOUT_ID, [
+      new CCalloutArguments('Planification', {
+        'class': 'com.vitonjob.callouts.offer.model.RecruitToken',
+        'idOffer': idOffer,
+        // 'userType': (projectTarget === 'employer') ? 'employeur' : 'jobyer'
+      }),
+    ]);
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.calloutURL, payloadFinal.forge(), {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any) => {
+          resolve(data);
+        });
+    });
+
   }
 
   retrieveJobyersAlwaysAvailable(jobyers: any[]) {

@@ -187,36 +187,20 @@ export class OfferRecruit {
       idOffer: offer.idOffer,
       resultsType: 'jobyer'
     };
-    this.searchService.advancedSearch(searchQuery).then((data: any)=> {
-      this.sharedService.setLastResult(data);
-      this.sharedService.setCurrentOffer(offer);
-      this.sharedService.setCurrentSearch(null);
-      this.sharedService.setCurrentSearchCity(null);
-      this.loadResult();
 
-      console.log('Jobyers trouvés');
-      console.log(this.searchResults);
+    this.recruitmentService.retrieveJobyersAvailabilitiesByOffer(offer.idOffer).then((data: any)=> {
 
-      // TODO : To remove, temporary jobyerColor
-      for (let i = 0; i < this.searchResults.length; i++) {
-
-        if (this.searchResults[i].idJobyer <= 0) {
-          continue;
-        }
-
-        if (this.currentJobyer == null) {
-          this.currentJobyer = this.searchResults[i];
-        }
+      for (let i = 0; i < data.length; i++) {
 
         let alwaysAvailable: boolean = false;
         let slots: CalendarSlot[] = [];
 
-        for (let j = 0; j < this.searchResults[i].disponibilites.length; ++j) {
+        for (let j = 0; j < data[i].availabilities.length; ++j) {
           let slot = new CalendarSlot();
-          slot.date = this.searchResults[i].disponibilites[j].startDate;
-          slot.dateEnd = this.searchResults[i].disponibilites[j].endDate;
-          slot.startHour = this.searchResults[i].disponibilites[j].startHour;
-          slot.endHour = this.searchResults[i].disponibilites[j].endHour;
+          slot.date = data[i].availabilities[j].startDate;
+          slot.dateEnd = data[i].availabilities[j].endDate;
+          slot.startHour = data[i].availabilities[j].startHour;
+          slot.endHour = data[i].availabilities[j].endHour;
           if (!slot.dateEnd) {
             slot.dateEnd = slot.date;
           }
@@ -238,7 +222,7 @@ export class OfferRecruit {
         }
 
         let alreadyImportedJobyer = this.jobyers.filter((e)=> {
-          return (e.id == this.searchResults[i].idJobyer);
+          return (e.id == data[i].id);
         });
         if (alreadyImportedJobyer.length > 0) {
           for (let j = 0; j < slots.length; ++j) {
@@ -247,10 +231,10 @@ export class OfferRecruit {
           alreadyImportedJobyer[0].toujours_disponible = (alreadyImportedJobyer[0].toujours_disponible || alwaysAvailable);
         } else {
           this.jobyers.push({
-            id: this.searchResults[i].idJobyer,
-            titre: this.searchResults[i].titre,
-            nom: this.searchResults[i].nom,
-            prenom: this.searchResults[i].prenom,
+            id: data[i].id,
+            titre: data[i].title,
+            nom: data[i].name,
+            prenom: data[i].firstname,
             avatar: 'assets/images/avatar.png',
             toujours_disponible: alwaysAvailable,
             disponibilites: slots,
@@ -270,6 +254,8 @@ export class OfferRecruit {
       this.recruitmentService.retrieveJobyersPicture(this.jobyers).then((data: any)=> {});
 
     });
+
+    this.sharedService.setCurrentOffer(offer);
 
   }
 
