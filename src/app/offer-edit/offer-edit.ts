@@ -625,6 +625,12 @@ export class OfferEdit {
           for (let i = 0; i < this.savedSoftwares.length; i++) {
             this.saveSoftware(this.savedSoftwares[i], offer.idOffer);
           }
+
+          /*
+           *  Update indexation
+           */
+          let json = JSON.parse(data._body);
+          this.searchService.updateOfferIndexation(json.idOffer);
         }
 
         Messenger().post({
@@ -709,12 +715,16 @@ export class OfferEdit {
 
       this.offersService.saveOffer(this.offer, this.projectTarget).then((data: any) => {
         console.log('L offre a été sauvegardée avec succès');
-      });
+        if(this.projectTarget == 'employer'){
+          /*
+           *  Update indexation
+           */
+          let json = JSON.parse(data._body);
+          this.searchService.updateOfferIndexation(json.idOffer);
+          this.saveConditionEmp(this.offer);
+        }
 
-      if (this.projectTarget == 'employer') {
-        //save values of condition de travail
-        this.saveConditionEmp(this.offer);
-      }
+      });
 
       this.validateJob(stayOnPage);
     }

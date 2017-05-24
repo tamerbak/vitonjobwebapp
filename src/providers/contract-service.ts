@@ -670,7 +670,7 @@ export class ContractService {
     return hours + ":" + minutes;
   }
 
-  prepareHoraire(calendar,prerequis, epis, epiProvidedBy, address, moyen, contact, phone) {
+  prepareHoraire(calendar,prerequis, epis, epiProvidedBy, address, moyen, contact, phone, jobyer, employer) {
 
     let html = "<br><p><b>Calendrier de travail</b></p><ul>";
 
@@ -720,12 +720,24 @@ export class ContractService {
     }
 
     html = html + "<br><p><b>Adresse de la mission : </b>"+address+"</p>";
-    html = html + "<br><p><b>Moyen d'accès : </b>"+moyen+"</p>";
+    /*html = html + "<br><p><b>Moyen d'accès : </b>"+moyen+"</p>";
     if(contact && contact.length>0)
-      html = html + "<br><p><b>Contact sur place : </b>"+contact+"</p>";
-    if(phone && phone.length>0)
-      html = html + "<br><p><b>N° Téléphone : </b>"+phone+"</p>";
-    return html;
+      html = html + "<br><p><b>Contact sur place : </b>"+contact+"</p>";*/
+
+    //coordonnées du jobyer
+    let htmlEmployeur = html + "<br><p><b>Coordonnées du Jobyer : </b></p>";
+    htmlEmployeur = htmlEmployeur + "<li><b>Nom et prénom: </b>"+ jobyer.nom + " " + jobyer.prenom + "</li>";
+    htmlEmployeur = htmlEmployeur + "<li><b>N° Téléphone: </b>"+ jobyer.tel +"</li>";
+
+    //coordonnées de l'employeur
+    let htmlJobyer = html + "<br><p><b>Coordonnées de l'employeur: </b></p>";
+    htmlJobyer = htmlJobyer + "<li><b>Nom et prénom: </b>"+ employer.nom + " " + employer.prenom + "</li>";
+    htmlJobyer = htmlJobyer + "<li><b>N° Téléphone: </b>"+ employer.tel +"</li>";
+    htmlJobyer = htmlJobyer + "<br><p><b>Moyen d'accès : </b>"+(!Utils.isEmpty(moyen) ? moyen : '-')+"</p>";
+
+    /*if(phone && phone.length>0)
+      html = html + "<br><p><b>N° Téléphone : </b>"+phone+"</p>";*/
+    return [htmlEmployeur, htmlJobyer];
   }
 
   /**
@@ -735,7 +747,9 @@ export class ContractService {
    * @return JSON results in form of youSign Object
    */
   callYousign(user: any, employer: any, jobyer: any, contract: ContractData, projectTarget: string, currentOffer: any, idQuote: any) {
-    let horaires = '';
+    let horaires = [];
+    let horairesEmployer = '';
+    let horairesJobyer = '';
 
     if (currentOffer) {
       horaires = this.prepareHoraire(currentOffer.calendarData,
@@ -745,8 +759,12 @@ export class ContractService {
         contract.adresseInterim,
         contract.moyenAcces,
         contract.offerContact,
-        contract.contactPhone
+        contract.contactPhone,
+        jobyer,
+        user
       );
+      horairesEmployer = horaires[0];
+      horairesJobyer = horaires[1];
     }
     //get configuration
     let sh = 'Horaires variables selon planning';
@@ -838,12 +856,13 @@ export class ContractService {
       "adresseCentreMedecineEntreprise": contract.adresseCentreMedecineEntreprise,
       "centreMedecineETT": contract.centreMedecineETT,
       "adresseCentreMedecineETT": contract.adresseCentreMedecineETT,
-      "risques": Utils.preventNull(contract.postRisks.split("%0A").join(" - ")),
+      "risques": Utils.preventNull(unescape(contract.postRisks.split("%0A").join(" - "))),
       "titreTransport": contract.titreTransport,
       "zonesTitre": contract.zonesTitre,
       "elementsCotisation": ""+contract.elementsCotisation,
       "elementsNonCotisation": ""+contract.elementsNonCotisation,
-      "horaires": horaires,
+      "horaires": horairesEmployer,
+      "horairesJobyer": horairesJobyer,
       "organisationParticuliere":''
     };
 
@@ -1279,7 +1298,7 @@ export class ContractService {
 
     let body = {
       'class': 'fr.protogen.masterdata.model.CCallout',
-      id: 20053,
+      id: 20057,
       args: [
         {
           class: 'fr.protogen.masterdata.model.CCalloutArguments',

@@ -512,7 +512,7 @@ export class Home{
           });
           jQuery('#modal-profile').modal('show');
           jQuery('#modal-profile').on('hidden.bs.modal', function (e) {
-            this.redirectToAdvertAfterPostulat();
+            self.redirectToAdvertAfterPostulat();
           });
         });
       }else{
