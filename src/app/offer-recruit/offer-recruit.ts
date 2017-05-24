@@ -242,14 +242,12 @@ export class OfferRecruit {
         }
       }
 
-      this.recruitmentService.retrieveJobyersAlwaysAvailable(this.jobyers).then((data: any)=> {
-        // Order by : Always available, Partial available, Never available
-        this.jobyers.sort((a, b)=> {
-          let aWeight = (a.toujours_disponible ? 2 : (a.disponibilites.length > 0 ? 1 : 0));
-          let bWeight = (b.toujours_disponible ? 2 : (b.disponibilites.length > 0 ? 1 : 0));
-          return bWeight - aWeight;
-        })
-      });
+      // Order by : Always available, Partial available, Never available
+      this.jobyers.sort((a, b)=> {
+        let aWeight = (a.toujours_disponible ? 2 : (a.disponibilites.length > 0 ? 1 : 0));
+        let bWeight = (b.toujours_disponible ? 2 : (b.disponibilites.length > 0 ? 1 : 0));
+        return bWeight - aWeight;
+      })
 
       this.recruitmentService.retrieveJobyersPicture(this.jobyers).then((data: any)=> {});
 
