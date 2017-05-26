@@ -230,7 +230,7 @@ export class OfferRecruit {
           }
           alreadyImportedJobyer[0].toujours_disponible = (alreadyImportedJobyer[0].toujours_disponible || alwaysAvailable);
         } else {
-          this.jobyers.push({
+          let jobyer ={
             id: data[i].id,
             titre: data[i].title,
             nom: data[i].name,
@@ -238,16 +238,49 @@ export class OfferRecruit {
             avatar: 'assets/images/avatar.png',
             toujours_disponible: alwaysAvailable,
             disponibilites: slots,
-          });
+          };
+          this.jobyers.push(jobyer);
+
         }
       }
+
+      for(let i = 0 ; i < this.jobyers.length ; i++){
+        let alwaysBlue = true;
+        for(let j = 0 ; j < this.offer.calendarData.length ; j++){
+          let dayCovered = true;
+          for(let k = 0 ; k < this.jobyers[i].disponibilites.length ; k++){
+            let dateJ = new Date(this.jobyers[i].disponibilites[k].date);
+            let dateO = this.offer.calendarData[j].date;
+
+            if(dateJ == dateO){
+              dayCovered = true;
+              if(this.jobyers[i].disponibilites[k].startHour>this.offer.calendarData[j].startHour ||
+                this.jobyers[i].disponibilites[k].endHour<this.offer.calendarData[j].endHour){
+                alwaysBlue = false;
+                break;
+              }
+            }
+
+          }
+
+          if(!dayCovered){
+            alwaysBlue = false;
+            break;
+          }
+
+        }
+
+        this.jobyers[i].toujours_disponible = alwaysBlue;
+      }
+
+
 
       // Order by : Always available, Partial available, Never available
       this.jobyers.sort((a, b)=> {
         let aWeight = (a.toujours_disponible ? 2 : (a.disponibilites.length > 0 ? 1 : 0));
         let bWeight = (b.toujours_disponible ? 2 : (b.disponibilites.length > 0 ? 1 : 0));
         return bWeight - aWeight;
-      })
+      });
 
       this.recruitmentService.retrieveJobyersPicture(this.jobyers).then((data: any)=> {});
 
