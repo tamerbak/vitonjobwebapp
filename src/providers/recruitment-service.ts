@@ -14,7 +14,7 @@ import {Entreprise} from "../dto/entreprise";
 import {CCalloutArguments} from "../dto/generium/ccallout-arguments";
 import {CCallout} from "../dto/generium/ccallout";
 
-const RECRUIT_CALLOUT_ID = 3000;
+const RECRUIT_CALLOUT_ID = 3001;
 
 /**
  * Contains all the recruitment logic
