@@ -422,11 +422,16 @@ export class RecruitmentService {
                                             jobyersAvailabilities,
                                             jobyerSelected): void {
 
+    let mandatoryPause : boolean = false;
+    let consecWorkTime : number = 0;
+    let pauseTime : number = 0;
+
     // Get tje jobyer availabilities from the team
     let availabilities = jobyersAvailabilities.get(jobyerSelected.id);
 
     // Then for each day of the calendar
     for (let i = 0; i < employerPlanning.quartersPerDay.length; ++i) {
+
       let day = employerPlanning.quartersPerDay[i];
 
       // We check all quarter
@@ -443,8 +448,27 @@ export class RecruitmentService {
         );
 
         // If the jobyer is available, check if the jobyer cans legally work
-        if (jobyerAvailable && this.isJobyerCanWorkThisQuarter(employerPlanning, jobyerSelected) === true) {
+        if (jobyerAvailable /*&& this.isJobyerCanWorkThisQuarter(employerPlanning, jobyerSelected) === true*/) {
+
+          //  If we are in pause mode no need to add another quarter to the schedule
+          if(mandatoryPause){
+            pauseTime++;
+            if(pauseTime==44){
+              consecWorkTime = 0;
+              pauseTime = 0;
+              mandatoryPause = false;
+            }
+            continue;
+          }
+
           this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
+
+          //  Check if the jobyer reached the mandatory pause limit
+          consecWorkTime++;
+          if(consecWorkTime==40){
+            mandatoryPause = true;
+          }
+
         }
       }
     }
@@ -473,6 +497,37 @@ export class RecruitmentService {
       availabilities = jobyersAvailabilities.get(jobyerSelected.id);
     }
 
+    let mandatoryPause : boolean = false;
+    let consecWorkTime : number = 0;
+    let pauseTime : number = 0;
+
+    // Construct consecutive work time before current slot
+    let pauses = 0;
+    for(let i = 0 ; i < employerPlanning.quartersPerDay.length ; i++){
+      let precDay = employerPlanning.quartersPerDay[i];
+      if(precDay.date == day.date)
+        break;
+
+      for(let quarterId = 0 ; quarterId < 24*4 ; quarterId++){
+        let q = precDay.quarters[quarterId];
+        if(q == null)
+          continue;
+        if(q != jobyerSelected.id){
+          pauses++;
+          if (pauses >= 44){
+            consecWorkTime=0;
+          }
+          continue;
+        }
+
+        consecWorkTime++;
+        pauses = 0;
+      }
+    }
+
+    if(consecWorkTime>=40)
+      mandatoryPause = true;
+
     for (let quarterId = from; quarterId <= to; ++quarterId) {
 
       // If no jobyer given, this is unassignment process
@@ -493,7 +548,20 @@ export class RecruitmentService {
 
       // If the jobyer is available, check if the jobyer cans legally work
       if (jobyerAvailable) {
+        if(mandatoryPause){
+          pauseTime++;
+          if(pauseTime==44){
+            consecWorkTime = 0;
+            pauseTime = 0;
+            mandatoryPause = false;
+          }
+          continue;
+        }
         this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
+        consecWorkTime++;
+        if(consecWorkTime==40){
+          mandatoryPause = true;
+        }
       }
     }
 

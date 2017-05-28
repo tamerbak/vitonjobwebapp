@@ -579,6 +579,7 @@ export class OfferRecruit {
       this.selectedQuarterIdEnd,
       this.employerPlanning
     );
+
   }
 
   /**
