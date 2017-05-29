@@ -563,6 +563,7 @@ export class OfferRecruit {
   }
 
   assignselectSlotToThisJobyer(jobyer: any): void {
+    debugger;
     if (jobyer === null) {
       return;
     }
@@ -621,7 +622,7 @@ export class OfferRecruit {
         let currentUser = this.sharedService.getCurrentUser();
         let offers: Offer[] = currentUser.employer.entreprises[0].offers;
         let currentOffer = currentUser.employer.entreprises[0].offers.filter((o)=> {
-          return o.idOffer = this.offer.idOffer;
+          return o.idOffer == this.offer.idOffer;
         });
         offers.slice(offers.indexOf(currentOffer[0]), 1);
         this.sharedService.setCurrentUser(currentUser);

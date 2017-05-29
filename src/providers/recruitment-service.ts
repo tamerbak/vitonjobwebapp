@@ -322,7 +322,7 @@ export class RecruitmentService {
     let previousDay = null;
     for (let prop in jobyerAvailabilities) {
       day = jobyerAvailabilities[prop];
-      // Add the number of hours betwwen the current and the previous day into the rest time.
+      // Add the number of hours betwen the current and the previous day into the rest time.
       if (previousDay != null && previousDay != day) {
         breakAccumulate += this.getHoursBetween2Days(previousDay, day);
       }
@@ -421,8 +421,6 @@ export class RecruitmentService {
   assignAsMuchQuarterAsPossibleToThisJobyer(employerPlanning: CalendarQuarterPerDay,
                                             jobyersAvailabilities,
                                             jobyerSelected): void {
-
-    let mandatoryPause : boolean = false;
     let consecWorkTime : number = 0;
     let pauseTime : number = 0;
 
@@ -439,6 +437,10 @@ export class RecruitmentService {
 
         // Check that this quarter is required or is not assigned yet
         if (day.quarters[quarterId] === null || day.quarters[quarterId] > 0) {
+          pauseTime++;
+          if(pauseTime >= 44){
+            consecWorkTime = 0;
+          }
           continue;
         }
 
@@ -448,27 +450,20 @@ export class RecruitmentService {
         );
 
         // If the jobyer is available, check if the jobyer cans legally work
-        if (jobyerAvailable /*&& this.isJobyerCanWorkThisQuarter(employerPlanning, jobyerSelected) === true*/) {
-
-          //  If we are in pause mode no need to add another quarter to the schedule
-          if(mandatoryPause){
-            pauseTime++;
-            if(pauseTime==44){
-              consecWorkTime = 0;
-              pauseTime = 0;
-              mandatoryPause = false;
-            }
-            continue;
-          }
+        if (jobyerAvailable && consecWorkTime<40 /*&& this.isJobyerCanWorkThisQuarter(employerPlanning, jobyerSelected) === true*/) {
 
           this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
 
-          //  Check if the jobyer reached the mandatory pause limit
           consecWorkTime++;
-          if(consecWorkTime==40){
-            mandatoryPause = true;
-          }
+          pauseTime = 0;
 
+
+        } else {
+          pauseTime++;
+          if(pauseTime >= 44){
+            consecWorkTime = 0;
+          }
+          continue;
         }
       }
     }
@@ -491,13 +486,11 @@ export class RecruitmentService {
                          from: number,
                          to: number,
                          employerPlanning: CalendarQuarterPerDay) {
-
     let availabilities = [];
     if (jobyerSelected !== null) {
       availabilities = jobyersAvailabilities.get(jobyerSelected.id);
     }
 
-    let mandatoryPause : boolean = false;
     let consecWorkTime : number = 0;
     let pauseTime : number = 0;
 
@@ -505,14 +498,16 @@ export class RecruitmentService {
     let pauses = 0;
     for(let i = 0 ; i < employerPlanning.quartersPerDay.length ; i++){
       let precDay = employerPlanning.quartersPerDay[i];
-      if(precDay.date == day.date)
-        break;
+      let sameday = precDay.date == day.date;
+      let eoc = false;
 
       for(let quarterId = 0 ; quarterId < 24*4 ; quarterId++){
         let q = precDay.quarters[quarterId];
-        if(q == null)
-          continue;
-        if(q != jobyerSelected.id){
+        if(sameday && quarterId>=from){
+          eoc = true;
+          break;
+        }
+        if(q == null || q != jobyerSelected.id){
           pauses++;
           if (pauses >= 44){
             consecWorkTime=0;
@@ -523,10 +518,9 @@ export class RecruitmentService {
         consecWorkTime++;
         pauses = 0;
       }
+      if(eoc)
+        break;
     }
-
-    if(consecWorkTime>=40)
-      mandatoryPause = true;
 
     for (let quarterId = from; quarterId <= to; ++quarterId) {
 
@@ -538,7 +532,10 @@ export class RecruitmentService {
 
       // Check that this quarter is required or is not assigned yet
       if (day.quarters[quarterId] === null || day.quarters[quarterId] > 0) {
-        continue;
+        pauseTime++;
+        if(pauseTime >= 44){
+          consecWorkTime = 0;
+        }
       }
 
       // If the quarter is not assigned, check if the jobyer is available
@@ -547,21 +544,17 @@ export class RecruitmentService {
       );
 
       // If the jobyer is available, check if the jobyer cans legally work
-      if (jobyerAvailable) {
-        if(mandatoryPause){
-          pauseTime++;
-          if(pauseTime==44){
-            consecWorkTime = 0;
-            pauseTime = 0;
-            mandatoryPause = false;
-          }
-          continue;
-        }
+      if (jobyerAvailable && consecWorkTime<40) {
+
         this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
         consecWorkTime++;
-        if(consecWorkTime==40){
-          mandatoryPause = true;
+        pauseTime = 0;
+      } else {
+        pauseTime++;
+        if(pauseTime >= 44){
+          consecWorkTime = 0;
         }
+        continue;
       }
     }
 
