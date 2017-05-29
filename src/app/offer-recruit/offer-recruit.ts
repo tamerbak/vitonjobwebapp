@@ -139,7 +139,7 @@ export class OfferRecruit {
       }
 
       // Retrieve offer data
-      this.employerPlanning = this.recruitmentService.loadSlots(this.offer.calendarData);
+      this.employerPlanning = this.recruitmentService.loadSlots(this.offer.calendarData, null, null, true);
 
       this.retrieveLimits();
 
@@ -563,7 +563,6 @@ export class OfferRecruit {
   }
 
   assignselectSlotToThisJobyer(jobyer: any): void {
-    debugger;
     if (jobyer === null) {
       return;
     }
