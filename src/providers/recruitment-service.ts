@@ -493,6 +493,7 @@ export class RecruitmentService {
 
     let consecWorkTime : number = 0;
     let pauseTime : number = 0;
+    let unschedulable = false;
 
     // Construct consecutive work time before current slot
     let pauses = 0;
@@ -550,6 +551,9 @@ export class RecruitmentService {
         consecWorkTime++;
         pauseTime = 0;
       } else {
+        if(consecWorkTime>=40){
+          unschedulable = true;
+        }
         pauseTime++;
         if(pauseTime >= 44){
           consecWorkTime = 0;
@@ -563,6 +567,10 @@ export class RecruitmentService {
     }
 
     this.errorMessage = '';
+    if(unschedulable) {
+      this.errorMessage = "Le nom de repos minimal n'est pas respecté";
+    }
+    /*
     if (this.isJobyerCanWorkThisQuarter(employerPlanning, jobyerSelected) === false) {
       console.log('PAS LEGAL: ' + this.errorMessage);
       for (let quarterId = from; quarterId <= to; ++quarterId) {
@@ -570,7 +578,7 @@ export class RecruitmentService {
       }
         return;
     }
-
+    */
   }
 
   /**
