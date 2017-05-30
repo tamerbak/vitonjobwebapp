@@ -181,19 +181,25 @@ export class OfferRecruit {
   getJobyerList(): void {
     let offer = this.offer;
 
-    let searchQuery = {
-      'class': 'com.vitonjob.recherche.model.SearchQuery',
-      queryType: 'OFFER',
-      idOffer: offer.idOffer,
-      resultsType: 'jobyer'
-    };
-
     this.recruitmentService.retrieveJobyersAvailabilitiesByOffer(offer.idOffer).then((data: any)=> {
-
+      console.log(JSON.stringify(data));
       for (let i = 0; i < data.length; i++) {
 
         let alwaysAvailable: boolean = false;
         let slots: CalendarSlot[] = [];
+        let constraints: CalendarSlot[] = [];
+
+        for(let k = 0 ; k < data[i].constraints.length ; k++) {
+          let slot = new CalendarSlot();
+          slot.date = data[i].constraints[k].startDate;
+          slot.dateEnd = data[i].constraints[k].endDate;
+          slot.startHour = data[i].constraints[k].startHour;
+          slot.endHour = data[i].constraints[k].endHour;
+          if (!slot.dateEnd) {
+            slot.dateEnd = slot.date;
+          }
+          constraints.push(slot);
+        }
 
         for (let j = 0; j < data[i].availabilities.length; ++j) {
           let slot = new CalendarSlot();
@@ -238,6 +244,7 @@ export class OfferRecruit {
             avatar: 'assets/images/avatar.png',
             toujours_disponible: alwaysAvailable,
             disponibilites: slots,
+            contraintes : constraints
           };
           this.jobyers.push(jobyer);
 
@@ -247,7 +254,7 @@ export class OfferRecruit {
       for(let i = 0 ; i < this.jobyers.length ; i++){
         let alwaysBlue = true;
         for(let j = 0 ; j < this.offer.calendarData.length ; j++){
-          let dayCovered = true;
+          let dayCovered = false;
           for(let k = 0 ; k < this.jobyers[i].disponibilites.length ; k++){
             let dateJ = new Date(this.jobyers[i].disponibilites[k].date);
             let dateO = this.offer.calendarData[j].date;
