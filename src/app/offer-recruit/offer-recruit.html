@@ -77,7 +77,13 @@
           <!--<li><a href="#">Comment</a></li>-->
         </ul>
         <ul class="post-comments mt mb-0">
-
+          <li>
+            <input type="text" class="search-box" [(ngModel)]="searchedJobyer">
+            <button type="button" class="btn btn-secondary btn-sm search-btn"
+              (click)="seekJobyer()" >
+              <span class="glyphicon glyphicon-search"></span>
+            </button>
+          </li>
           <li
             *ngFor="let jobyer of jobyers"
             class="offer-recruit-jobyer-available offer-recruit-jobyer-{{ (
