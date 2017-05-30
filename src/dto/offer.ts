@@ -17,6 +17,7 @@ export class Offer extends AbstractGCallout {
   parametrageConvention: number;
 
   calendarData: any[];
+  slots : any[];
   qualityData: any[];
   languageData: any[];
   requirementData: Requirement[];

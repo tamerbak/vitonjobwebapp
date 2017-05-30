@@ -450,7 +450,7 @@ export class RecruitmentService {
         );
 
         // If the jobyer is available, check if the jobyer cans legally work
-        if (jobyerAvailable && consecWorkTime<40 /*&& this.isJobyerCanWorkThisQuarter(employerPlanning, jobyerSelected) === true*/) {
+        if (jobyerAvailable && consecWorkTime<40 ) {
 
           this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
 
