@@ -110,6 +110,8 @@ export class OfferRecruit {
 
   mode: string = '';
 
+  searchedJobyer : string;
+
   constructor(private offersService: OffersService,
               public sharedService: SharedService,
               private searchService: SearchService,
@@ -143,7 +145,7 @@ export class OfferRecruit {
 
       this.retrieveLimits();
 
-      this.getJobyerList();
+      //this.getJobyerList();
 
       this.updateView();
 
@@ -159,6 +161,128 @@ export class OfferRecruit {
 
   ngAfterViewInit(): void {
 
+  }
+
+  seekJobyer(){
+
+    this.loader.display();
+
+    let offer = this.offer;
+
+    this.recruitmentService.retrieveJobyersAvailabilitiesByOfferAndName(offer.idOffer, this.searchedJobyer).then((data: any)=> {
+
+      for (let i = 0; i < data.length; i++) {
+
+        let alwaysAvailable: boolean = false;
+        let slots: CalendarSlot[] = [];
+        let constraints: CalendarSlot[] = [];
+
+        for(let k = 0 ; k < data[i].constraints.length ; k++) {
+          let slot = new CalendarSlot();
+          slot.date = data[i].constraints[k].startDate;
+          slot.dateEnd = data[i].constraints[k].endDate;
+          slot.startHour = data[i].constraints[k].startHour;
+          slot.endHour = data[i].constraints[k].endHour;
+          if (!slot.dateEnd) {
+            slot.dateEnd = slot.date;
+          }
+          constraints.push(slot);
+        }
+
+        for (let j = 0; j < data[i].availabilities.length; ++j) {
+          let slot = new CalendarSlot();
+          slot.date = data[i].availabilities[j].startDate;
+          slot.dateEnd = data[i].availabilities[j].endDate;
+          slot.startHour = data[i].availabilities[j].startHour;
+          slot.endHour = data[i].availabilities[j].endHour;
+          if (!slot.dateEnd) {
+            slot.dateEnd = slot.date;
+          }
+
+          let date = new Date(slot.date).getTime();
+          let dateEnd = new Date(slot.dateEnd).getTime();
+          if ((date >= this.firstPlanningDay && date <= this.lastPlanningDay)
+            || (dateEnd >= this.firstPlanningDay && dateEnd <= this.lastPlanningDay)) {
+            slots.push(slot);
+          }
+
+          // If a slots cover all the planning, activate alwaysAvailable;
+          if (date <= this.firstPlanningDay && dateEnd >= this.lastPlanningDay) {
+            alwaysAvailable = true;
+            slots = [];
+            break;
+          }
+
+        }
+
+        let alreadyImportedJobyer = this.jobyers.filter((e)=> {
+          return (e.id == data[i].id);
+        });
+        if (alreadyImportedJobyer.length > 0) {
+          for (let j = 0; j < slots.length; ++j) {
+            alreadyImportedJobyer[0].disponibilites.push(slots[j]);
+          }
+          alreadyImportedJobyer[0].toujours_disponible = (alreadyImportedJobyer[0].toujours_disponible || alwaysAvailable);
+        } else {
+          let jobyer ={
+            id: data[i].id,
+            titre: data[i].title,
+            nom: data[i].name,
+            prenom: data[i].firstname,
+            avatar: 'assets/images/avatar.png',
+            toujours_disponible: alwaysAvailable,
+            disponibilites: slots,
+            contraintes : constraints
+          };
+          this.jobyers.push(jobyer);
+
+        }
+      }
+
+      for(let i = 0 ; i < this.jobyers.length ; i++){
+        let alwaysBlue = true;
+        for(let j = 0 ; j < this.offer.calendarData.length ; j++){
+          let dayCovered = false;
+          for(let k = 0 ; k < this.jobyers[i].disponibilites.length ; k++){
+            let dateJ = new Date(this.jobyers[i].disponibilites[k].date);
+            let dateO = this.offer.calendarData[j].date;
+
+            if(dateJ == dateO){
+              dayCovered = true;
+              if(this.jobyers[i].disponibilites[k].startHour>this.offer.calendarData[j].startHour ||
+                this.jobyers[i].disponibilites[k].endHour<this.offer.calendarData[j].endHour){
+                alwaysBlue = false;
+                break;
+              }
+            }
+
+          }
+
+          if(!dayCovered){
+            alwaysBlue = false;
+            break;
+          }
+
+        }
+
+        this.jobyers[i].toujours_disponible = alwaysBlue;
+      }
+
+
+
+      // Order by : Always available, Partial available, Never available
+      this.jobyers.sort((a, b)=> {
+        let aWeight = (a.toujours_disponible ? 2 : (a.disponibilites.length > 0 ? 1 : 0));
+        let bWeight = (b.toujours_disponible ? 2 : (b.disponibilites.length > 0 ? 1 : 0));
+        return bWeight - aWeight;
+      });
+
+      this.recruitmentService.retrieveJobyersPicture(this.jobyers).then((data: any)=> {});
+      this.searchedJobyer = '';
+      this.loader.hide();
+    });
+
+    this.sharedService.setCurrentOffer(offer);
   }
 
   retrieveLimits() {

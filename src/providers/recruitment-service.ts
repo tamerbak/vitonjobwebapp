@@ -614,6 +614,24 @@ export class RecruitmentService {
     }
     return i;
   }
+  retrieveJobyersAvailabilitiesByOfferAndName(idOffer : number, name : string){
+    let payloadFinal = new CCallout(RECRUIT_CALLOUT_ID, [
+      new CCalloutArguments('Planification', {
+        'class': 'com.vitonjob.callouts.offer.model.RecruitToken',
+        'idOffer': idOffer,
+        'jobyerName': name
+      }),
+    ]);
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.calloutURL, payloadFinal.forge(), {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any) => {
+          resolve(data);
+        });
+    });
+  }
 
   retrieveJobyersAvailabilitiesByOffer(idOffer: number) {
 
