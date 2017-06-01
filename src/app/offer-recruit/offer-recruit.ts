@@ -239,14 +239,16 @@ export class OfferRecruit {
       }
 
       for(let i = 0 ; i < this.jobyers.length ; i++){
+
         let alwaysBlue = true;
         for(let j = 0 ; j < this.offer.calendarData.length ; j++){
           let dayCovered = false;
           for(let k = 0 ; k < this.jobyers[i].disponibilites.length ; k++){
             let dateJ = new Date(this.jobyers[i].disponibilites[k].date);
             let dateO = this.offer.calendarData[j].date;
-
-            if(dateJ == dateO){
+            if(dateJ.getFullYear() == dateO.getFullYear() &&
+              dateJ.getMonth() == dateO.getMonth() &&
+              dateJ.getDay() == dateO.getDay()){
               dayCovered = true;
               if(this.jobyers[i].disponibilites[k].startHour>this.offer.calendarData[j].startHour ||
                 this.jobyers[i].disponibilites[k].endHour<this.offer.calendarData[j].endHour){
