@@ -601,14 +601,14 @@ export class RecruitmentService {
             break;
           }
 
-          /*if(sameDay)
-            break;*/
+
         }
 
         if(eligible) {
           this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
 
         } else {
+          debugger;
           this.errorMessage = 'Non respect du temps de repos obligatoire';
         }
 
@@ -619,19 +619,6 @@ export class RecruitmentService {
       return;
     }
 
-    this.errorMessage = '';
-    if(unschedulable) {
-      this.errorMessage = "Le nom de repos minimal n'est pas respecté";
-    }
-    /*
-    if (this.isJobyerCanWorkThisQuarter(employerPlanning, jobyerSelected) === false) {
-      console.log('PAS LEGAL: ' + this.errorMessage);
-      for (let quarterId = from; quarterId <= to; ++quarterId) {
-        this.assignThisQuarterTo(day, quarterId, 0);
-      }
-        return;
-    }
-    */
   }
 
   /**
