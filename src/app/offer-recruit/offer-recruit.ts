@@ -172,6 +172,13 @@ export class OfferRecruit {
       return;
     }
     this.schedulableDays = [];
+
+    //  Add yesterday in order to prevent ignoring precharges
+    let today = this.employerPlanning.quartersPerDay[0].date;
+    let yesterday = DateUtils.extractYesterday(today);
+
+    this.schedulableDays.push(yesterday);
+
     for(let i = 0 ; i < this.employerPlanning.quartersPerDay.length ; i++){
       let q = this.employerPlanning.quartersPerDay[i];
       let day = q.date;
@@ -509,10 +516,12 @@ export class OfferRecruit {
       dateLimitEnd
     );
 
+
+    let yesterDay : Date = DateUtils.getYesterday(dateLimitStart);
     this.recruitmentService.loadJobyerConstraints(
       this.jobyersConstraints,
       jobyer,
-      dateLimitStart,
+      yesterDay,
       dateLimitEnd
     );
 
@@ -524,7 +533,12 @@ export class OfferRecruit {
 
   }
 
+  /**
+   * Update jobyer hour load
+   * @param jobyer
+   */
   updateJobyerLoad(jobyer){
+
     let constraints = this.jobyersConstraints.get(jobyer.id);
     let qpd = new CalendarQuarterPerDay();
     qpd.quartersPerDay = [];
@@ -541,6 +555,7 @@ export class OfferRecruit {
       for(let j = 0 ; j < constraints.quartersPerDay.length ; j++) {
         if(constraints.quartersPerDay[j].date != day)
           continue;
+
         let qcs = constraints.quartersPerDay[j];
         for(let qc = 0 ; qc < qcs.quarters.length ; qc++){
           let qval = qcs.quarters[qc];
@@ -567,6 +582,7 @@ export class OfferRecruit {
         quarters : quarters
       });
     }
+
 
     this.jobyersLoad.set(jobyer.id, qpd);
   }
@@ -623,22 +639,28 @@ export class OfferRecruit {
       return;
     }
 
+    let jobyerLoad = this.jobyersLoad.get(this.jobyerHover.id);
+
     // If a quarter is selected, assign this quarter to this jobyer
     if (this.selectedDay != null) {
-      let jobyerLoad = this.jobyersLoad.get(this.jobyerHover.id);
       this.assignselectSlotToThisJobyer(this.jobyerHover, jobyerLoad);
       this.unselectSlot();
+      this.updateJobyerLoad(this.jobyerHover);
     } else {
-      let jobyerLoad = this.jobyersLoad.get(this.jobyerHover.id);
       // Neither assign as much quarters as possible to this jobyer
-      this.recruitmentService.assignAsMuchQuarterAsPossibleToThisJobyer(
-        this.employerPlanning,
-        this.jobyersAvailabilities,
-        this.jobyerHover,
-        jobyerLoad
-      );
+      for(let i = 0 ; i < this.employerPlanning.quartersPerDay.length ; i++){
+        this.selectedDay = this.employerPlanning.quartersPerDay[i];
+        this.selectedQuarterIdStart = 0;
+        this.selectedQuarterIdEnd = 24*4;
+        this.assignselectSlotToThisJobyer(this.jobyerHover, jobyerLoad);
+        this.unselectSlot();
+        this.updateJobyerLoad(this.jobyerHover);
+        jobyerLoad = this.jobyersLoad.get(this.jobyerHover.id);
+
+      }
+
     }
-    this.updateJobyerLoad(this.jobyerHover);
+
     this.updateView();
     if (Utils.isEmpty(this.recruitmentService.errorMessage) == false) {
       Messenger().post({

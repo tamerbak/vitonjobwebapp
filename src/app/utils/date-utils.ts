@@ -229,17 +229,37 @@ export class DateUtils{
   }
 
   public static isSameDay(dateO : Date, dateJ : Date): boolean {
-    let yearO = dateO.getFullYear();
-    let yearJ = dateJ.getFullYear();
+    let yearO = dateO.getUTCFullYear();
+    let yearJ = dateJ.getUTCFullYear();
 
-    let monthO = dateO.getMonth();
-    let monthJ = dateJ.getMonth();
+    let monthO = dateO.getUTCMonth();
+    let monthJ = dateJ.getUTCMonth();
 
-    let dayO = dateO.getDay();
-    let dayJ = dateJ.getDay();
+    let dayO = dateO.getUTCDate();
+    let dayJ = dateJ.getUTCDate();
 
     return yearO == yearJ && monthO == monthJ && dayO==dayJ;
   }
+
+  public static extractYesterday(sdate : string): string {
+    let yesterday = '';
+
+    let date :Date = DateUtils.convertToDate(sdate);
+
+    let yd : Date = new Date(sdate);
+    yd.setDate(date.getDate()-1);
+
+    yesterday = yd.getFullYear()+'-'+yd.getMonth()+'-'+yd.getDate();
+
+    return yesterday;
+  }
+
+  public static getYesterday(date : Date) : Date {
+    let yd = date;
+    yd.setDate(date.getDate()-1);
+    return yd;
+  }
+
 }
 
 interface Dictionary {

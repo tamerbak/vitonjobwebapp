@@ -466,7 +466,6 @@ export class RecruitmentService {
 
         // If the jobyer is available, check if the jobyer cans legally work
         if (jobyerAvailable) {
-          //debugger;
           let eligible : boolean = true;
           let sameDay : boolean = false;
           pauseTime = 0;
@@ -477,11 +476,17 @@ export class RecruitmentService {
               sameDay = true;
             }
             let max = 24*4;
-            if(sameDay)
-              max = quarterId;
 
             load = jobyerLoad.quartersPerDay[qpd].quarters;
             for(let lq = 0 ; lq < max ;lq++){
+              if(sameDay) {
+                //max = quarterId;
+                if(lq == quarterId && consecWorkTime>=40){
+                  eligible = false;
+                  break;
+                }
+
+              }
               if(load[lq] == 0){
                 pauseTime++;
                 if(pauseTime == 44)
@@ -492,17 +497,20 @@ export class RecruitmentService {
               }
             }
 
-            if(consecWorkTime>=40){
+            if(consecWorkTime>40){
               eligible = false;
+              break;
             }
 
-            if(sameDay)
-              break;
+            /*if(sameDay)
+             break;*/
           }
 
           if(eligible) {
             this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
-            load[quarterId] = 1;
+
+          } else {
+            this.errorMessage = 'Non respect du temps de repos obligatoire';
           }
         }
       }
@@ -535,7 +543,7 @@ export class RecruitmentService {
     let consecWorkTime : number = 0;
     let pauseTime : number = 0;
     let unschedulable = false;
-
+    this.errorMessage = '';
     for (let quarterId = from; quarterId <= to; ++quarterId) {
 
       // If no jobyer given, this is unassignment process
@@ -557,7 +565,6 @@ export class RecruitmentService {
       // If the jobyer is available, check if the jobyer cans legally work
       if (jobyerAvailable) {
 
-        //debugger;
         let eligible : boolean = true;
         let sameDay : boolean = false;
         pauseTime = 0;
@@ -568,11 +575,17 @@ export class RecruitmentService {
             sameDay = true;
           }
           let max = 24*4;
-          if(sameDay)
-            max = quarterId;
 
           load = jobyerLoad.quartersPerDay[qpd].quarters;
           for(let lq = 0 ; lq < max ;lq++){
+            if(sameDay) {
+              //max = quarterId;
+              if(lq == quarterId && consecWorkTime>=40){
+                eligible = false;
+                break;
+              }
+
+            }
             if(load[lq] == 0){
               pauseTime++;
               if(pauseTime == 44)
@@ -583,18 +596,22 @@ export class RecruitmentService {
             }
           }
 
-          if(consecWorkTime>=40){
+          if(consecWorkTime>40){
             eligible = false;
+            break;
           }
 
-          if(sameDay)
-            break;
+          /*if(sameDay)
+            break;*/
         }
 
         if(eligible) {
           this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
-          load[quarterId] = 1;
+
+        } else {
+          this.errorMessage = 'Non respect du temps de repos obligatoire';
         }
+
       }
     }
 
