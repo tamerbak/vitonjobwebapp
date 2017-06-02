@@ -228,6 +228,18 @@ export class DateUtils{
     return new Date(d);
   }
 
+  public static isSameDay(dateO : Date, dateJ : Date): boolean {
+    let yearO = dateO.getFullYear();
+    let yearJ = dateJ.getFullYear();
+
+    let monthO = dateO.getMonth();
+    let monthJ = dateJ.getMonth();
+
+    let dayO = dateO.getDay();
+    let dayJ = dateJ.getDay();
+
+    return yearO == yearJ && monthO == monthJ && dayO==dayJ;
+  }
 }
 
 interface Dictionary {
