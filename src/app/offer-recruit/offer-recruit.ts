@@ -164,42 +164,57 @@ export class OfferRecruit {
 
   seekJobyer(){
 
+    // Affichage du loader
     this.loader.display();
 
     let offer = this.offer;
 
+    // Récuperation des disponibilités des jobyers
     this.recruitmentService.retrieveJobyersAvailabilitiesByOfferAndName(offer.idOffer, this.searchedJobyer).then((data: any)=> {
 
+      // Pour chaque jobyer
       for (let i = 0; i < data.length; i++) {
 
         let alwaysAvailable: boolean = false;
         let slots: CalendarSlot[] = [];
         let constraints: CalendarSlot[] = [];
 
+        // On parcourt la liste des créneaux déjà utilisés
         for(let k = 0 ; k < data[i].constraints.length ; k++) {
+
+          // On traduit de la donnée vers un objet CalendarSlot
           let slot = new CalendarSlot();
           slot.date = data[i].constraints[k].startDate;
           slot.dateEnd = data[i].constraints[k].endDate;
           slot.startHour = data[i].constraints[k].startHour;
           slot.endHour = data[i].constraints[k].endHour;
+
+          // S'il n y a pas de date de fin, cela signifie que c'est sur un jour, donc date de fin égal à date de début
           if (!slot.dateEnd) {
             slot.dateEnd = slot.date;
           }
           constraints.push(slot);
         }
 
+        // On parcours la liste des créneaux annoncés comme disponibles
         for (let j = 0; j < data[i].availabilities.length; ++j) {
+
+          // On traduit de la donnée vers un objet CalendarSlot
           let slot = new CalendarSlot();
           slot.date = data[i].availabilities[j].startDate;
           slot.dateEnd = data[i].availabilities[j].endDate;
           slot.startHour = data[i].availabilities[j].startHour;
           slot.endHour = data[i].availabilities[j].endHour;
+
+          // S'il n y a pas de date de fin, cela signifie que c'est sur un jour, donc date de fin égal à date de début
           if (!slot.dateEnd) {
             slot.dateEnd = slot.date;
           }
 
           let date = new Date(slot.date).getTime();
           let dateEnd = new Date(slot.dateEnd).getTime();
+
+          // Vérification si le créneau doit être pris en compte ou ignoré
           if ((date >= this.firstPlanningDay && date <= this.lastPlanningDay)
             || (dateEnd >= this.firstPlanningDay && dateEnd <= this.lastPlanningDay)) {
             slots.push(slot);
@@ -214,15 +229,18 @@ export class OfferRecruit {
 
         }
 
+        // Vérifie si un jobyer est déjà été importé
         let alreadyImportedJobyer = this.jobyers.filter((e)=> {
           return (e.id == data[i].id);
         });
+        // Si oui, on lui ajoute simplement le créneau
         if (alreadyImportedJobyer.length > 0) {
           for (let j = 0; j < slots.length; ++j) {
             alreadyImportedJobyer[0].disponibilites.push(slots[j]);
           }
           alreadyImportedJobyer[0].toujours_disponible = (alreadyImportedJobyer[0].toujours_disponible || alwaysAvailable);
         } else {
+          // Si non, on ajoute le jobyer à la liste des jobyers
           let jobyer ={
             id: data[i].id,
             titre: data[i].title,
@@ -238,6 +256,8 @@ export class OfferRecruit {
         }
       }
 
+      // Ensuite, on parcourt tout les jobyers et on vérifie si celui-ci a un créneau couvre toute la mision
+      // Si oui, on e passe comme toujours disponible
       for(let i = 0 ; i < this.jobyers.length ; i++){
 
         let alwaysBlue = true;
@@ -269,15 +289,14 @@ export class OfferRecruit {
         this.jobyers[i].toujours_disponible = alwaysBlue;
       }
 
-
-
-      // Order by : Always available, Partial available, Never available
+      // Placer les jobyer toujours disponible en haut, Partiellement dispo au milieu et jamais dispo en bas
       this.jobyers.sort((a, b)=> {
         let aWeight = (a.toujours_disponible ? 2 : (a.disponibilites.length > 0 ? 1 : 0));
         let bWeight = (b.toujours_disponible ? 2 : (b.disponibilites.length > 0 ? 1 : 0));
         return bWeight - aWeight;
       });
 
+      // Chargement des photos
       this.recruitmentService.retrieveJobyersPicture(this.jobyers).then((data: any)=> {});
       this.searchedJobyer = '';
       this.loader.hide();
@@ -286,6 +305,9 @@ export class OfferRecruit {
     this.sharedService.setCurrentOffer(offer);
   }
 
+  /**
+   * Calcul les bornes de début et de fin de mission afin de controler si des créneaux jobyers couvrent toutes la mission
+   */
   retrieveLimits() {
     for (let i = 0; i < this.employerPlanning.quartersPerDay.length; ++i) {
       let date = new Date(this.employerPlanning.quartersPerDay[i].date).getTime();
@@ -347,18 +369,23 @@ export class OfferRecruit {
 
     let quarterClass: string = '';
 
+    // Si la case contient non, on ignore car cela n'est pas un créneaux de l'offre
     if (day.quarters[quarterId] !== null) {
       if (this.selectedDay == day && quarterId >= this.selectedQuarterIdStart && quarterId <= this.selectedQuarterIdEnd) {
         quarterClass += ' slot-selected';
       }
+      // Si la case contient une valeur, c'est l'id du jobyer affecté
       if (day.quarters[quarterId] > 0) {
         quarterClass += ' offer-recruit-slots-quarter-assigned';
         quarterClass += ' assigned-'  + this.getJobyerColor(day.quarters[quarterId]);
       }
+      // On ajoute la class CSS pour colorer le créneaux
       quarterClass += ' offer-recruit-slots-quarter-required';
+      // Si c'est un début ou une fin de créneau, on ajoute une classe pour arrondir les bords : gauche
       if (quarterId == 0 || day.quarters[quarterId - 1] === null) {
         quarterClass += '-left';
       }
+      // Si c'est un début ou une fin de créneau, on ajoute une classe pour arrondir les bords : droite
       else if (quarterId == (24 * 15 - 1) || day.quarters[quarterId + 1] === null) {
         quarterClass += '-right';
       }
