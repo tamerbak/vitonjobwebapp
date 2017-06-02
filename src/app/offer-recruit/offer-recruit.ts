@@ -662,6 +662,7 @@ export class OfferRecruit {
     }
 
     this.updateView();
+    debugger;
     if (Utils.isEmpty(this.recruitmentService.errorMessage) == false) {
       Messenger().post({
         message: 'Ce créneau ne peut être complétement assigné à ce jobyer car : ' + this.recruitmentService.errorMessage,
