@@ -411,6 +411,24 @@ export class RecruitmentService {
   }
 
   /**
+   * Add to the jobyersConstraints the availabilities of the given jobyer
+   * Used when we add a jobyer to the team in order to show his availabilities on the calendar
+   *
+   * @param jobyersConstraints
+   * @param jobyer
+   */
+  loadJobyerConstraints(jobyersConstraints, jobyer, dateLimitStart?, dateLimitEnd?) {
+    let constraints = jobyersConstraints.get(jobyer.id);
+    if (Utils.isEmpty(constraints) == true) {
+      constraints = this.loadSlots(
+        jobyer.contraintes, dateLimitStart, dateLimitEnd, true
+      );
+
+      jobyersConstraints.set(jobyer.id, constraints);
+    }
+  }
+
+  /**
    * Assign as much quarters as possible to a jobyer for all day of the calendar
    * As soon we find a required employer quarter and a available jobyer quarter, we assign it
    *
@@ -420,7 +438,8 @@ export class RecruitmentService {
    */
   assignAsMuchQuarterAsPossibleToThisJobyer(employerPlanning: CalendarQuarterPerDay,
                                             jobyersAvailabilities,
-                                            jobyerSelected): void {
+                                            jobyerSelected,
+                                            jobyerLoad : CalendarQuarterPerDay): void {
     let consecWorkTime : number = 0;
     let pauseTime : number = 0;
 
@@ -437,10 +456,6 @@ export class RecruitmentService {
 
         // Check that this quarter is required or is not assigned yet
         if (day.quarters[quarterId] === null || day.quarters[quarterId] > 0) {
-          pauseTime++;
-          if(pauseTime >= 44){
-            consecWorkTime = 0;
-          }
           continue;
         }
 
@@ -450,20 +465,45 @@ export class RecruitmentService {
         );
 
         // If the jobyer is available, check if the jobyer cans legally work
-        if (jobyerAvailable && consecWorkTime<40 ) {
-
-          this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
-
-          consecWorkTime++;
+        if (jobyerAvailable) {
+          //debugger;
+          let eligible : boolean = true;
+          let sameDay : boolean = false;
           pauseTime = 0;
+          consecWorkTime = 0;
+          let load : number[];
+          for(let qpd = 0 ; qpd < jobyerLoad.quartersPerDay.length ; qpd++){
+            if(jobyerLoad.quartersPerDay[qpd].date == day.date){
+              sameDay = true;
+            }
+            let max = 24*4;
+            if(sameDay)
+              max = quarterId;
 
+            load = jobyerLoad.quartersPerDay[qpd].quarters;
+            for(let lq = 0 ; lq < max ;lq++){
+              if(load[lq] == 0){
+                pauseTime++;
+                if(pauseTime == 44)
+                  consecWorkTime = 0;
+              } else {
+                consecWorkTime++;
+                pauseTime = 0;
+              }
+            }
 
-        } else {
-          pauseTime++;
-          if(pauseTime >= 44){
-            consecWorkTime = 0;
+            if(consecWorkTime>=40){
+              eligible = false;
+            }
+
+            if(sameDay)
+              break;
           }
-          continue;
+
+          if(eligible) {
+            this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
+            load[quarterId] = 1;
+          }
         }
       }
     }
@@ -485,7 +525,8 @@ export class RecruitmentService {
                          jobyerSelected,
                          from: number,
                          to: number,
-                         employerPlanning: CalendarQuarterPerDay) {
+                         employerPlanning: CalendarQuarterPerDay,
+                         jobyerLoad? : CalendarQuarterPerDay) {
     let availabilities = [];
     if (jobyerSelected !== null) {
       availabilities = jobyersAvailabilities.get(jobyerSelected.id);
@@ -494,34 +535,6 @@ export class RecruitmentService {
     let consecWorkTime : number = 0;
     let pauseTime : number = 0;
     let unschedulable = false;
-
-    // Construct consecutive work time before current slot
-    let pauses = 0;
-    for(let i = 0 ; i < employerPlanning.quartersPerDay.length ; i++){
-      let precDay = employerPlanning.quartersPerDay[i];
-      let sameday = precDay.date == day.date;
-      let eoc = false;
-
-      for(let quarterId = 0 ; quarterId < 24*4 ; quarterId++){
-        let q = precDay.quarters[quarterId];
-        if(sameday && quarterId>=from){
-          eoc = true;
-          break;
-        }
-        if(q == null || q != jobyerSelected.id){
-          pauses++;
-          if (pauses >= 44){
-            consecWorkTime=0;
-          }
-          continue;
-        }
-
-        consecWorkTime++;
-        pauses = 0;
-      }
-      if(eoc)
-        break;
-    }
 
     for (let quarterId = from; quarterId <= to; ++quarterId) {
 
@@ -533,10 +546,7 @@ export class RecruitmentService {
 
       // Check that this quarter is required or is not assigned yet
       if (day.quarters[quarterId] === null || day.quarters[quarterId] > 0) {
-        pauseTime++;
-        if(pauseTime >= 44){
-          consecWorkTime = 0;
-        }
+        continue;
       }
 
       // If the quarter is not assigned, check if the jobyer is available
@@ -545,20 +555,46 @@ export class RecruitmentService {
       );
 
       // If the jobyer is available, check if the jobyer cans legally work
-      if (jobyerAvailable && consecWorkTime<40) {
+      if (jobyerAvailable) {
 
-        this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
-        consecWorkTime++;
+        //debugger;
+        let eligible : boolean = true;
+        let sameDay : boolean = false;
         pauseTime = 0;
-      } else {
-        if(consecWorkTime>=40){
-          unschedulable = true;
+        consecWorkTime = 0;
+        let load : number[];
+        for(let qpd = 0 ; qpd < jobyerLoad.quartersPerDay.length ; qpd++){
+          if(jobyerLoad.quartersPerDay[qpd].date == day.date){
+            sameDay = true;
+          }
+          let max = 24*4;
+          if(sameDay)
+            max = quarterId;
+
+          load = jobyerLoad.quartersPerDay[qpd].quarters;
+          for(let lq = 0 ; lq < max ;lq++){
+            if(load[lq] == 0){
+              pauseTime++;
+              if(pauseTime == 44)
+                consecWorkTime = 0;
+            } else {
+              consecWorkTime++;
+              pauseTime = 0;
+            }
+          }
+
+          if(consecWorkTime>=40){
+            eligible = false;
+          }
+
+          if(sameDay)
+            break;
         }
-        pauseTime++;
-        if(pauseTime >= 44){
-          consecWorkTime = 0;
+
+        if(eligible) {
+          this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
+          load[quarterId] = 1;
         }
-        continue;
       }
     }
 
