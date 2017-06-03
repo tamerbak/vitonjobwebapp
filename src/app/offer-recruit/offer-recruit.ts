@@ -118,7 +118,6 @@ export class OfferRecruit {
 
   constructor(private offersService: OffersService,
               public sharedService: SharedService,
-              private searchService: SearchService,
               private recruitmentService: RecruitmentService,
               private router: Router,
               private loader: LoaderService) {
@@ -168,12 +167,14 @@ export class OfferRecruit {
   }
 
   extractSchedulableDays(){
+
     if(!this.employerPlanning){
       return;
     }
     this.schedulableDays = [];
 
     //  Add yesterday in order to prevent ignoring precharges
+
     let today = this.employerPlanning.quartersPerDay[0].date;
     let yesterday = DateUtils.extractYesterday(today);
 
@@ -210,6 +211,7 @@ export class OfferRecruit {
         let alwaysAvailable: boolean = false;
         let slots: CalendarSlot[] = [];
         let constraints: CalendarSlot[] = [];
+
 
         for(let k = 0 ; k < data[i].constraints.length ; k++) {
           let slot = new CalendarSlot();
@@ -366,7 +368,6 @@ export class OfferRecruit {
     if (Utils.isEmpty(this.jobyerColors[jobyerId]) === true) {
       this.jobyerColors[jobyerId] = this.jobyerColorNb++;
     }
-    // return this.jobyerColors[jobyerId];
     return 1;
   }
 
@@ -477,7 +478,7 @@ export class OfferRecruit {
       }
       let jobyer = this.jobyers.filter((e)=> {
         return (e.id == jobyerId);
-      })
+      });
       this.planningJobyer[i] = (jobyer.length > 0)
         ? ((jobyer[0].prenom ? jobyer[0].prenom.substring(0, 1) + '.' : '') + ' ' + jobyer[0].nom)
         : ''
@@ -518,6 +519,7 @@ export class OfferRecruit {
 
 
     let yesterDay : Date = DateUtils.getYesterday(dateLimitStart);
+
     this.recruitmentService.loadJobyerConstraints(
       this.jobyersConstraints,
       jobyer,
@@ -544,6 +546,7 @@ export class OfferRecruit {
     qpd.quartersPerDay = [];
 
     for(let i=0 ; i < this.schedulableDays.length ; i++) {
+
       let day : string = this.schedulableDays[i];
       let maxQuarts = 24 * 4;
       let quarters : number[] = [];
@@ -640,6 +643,8 @@ export class OfferRecruit {
     }
 
     let jobyerLoad = this.jobyersLoad.get(this.jobyerHover.id);
+    console.clear();
+    console.log(JSON.stringify(jobyerLoad));
 
     // If a quarter is selected, assign this quarter to this jobyer
     if (this.selectedDay != null) {
@@ -647,7 +652,7 @@ export class OfferRecruit {
       this.unselectSlot();
       this.updateJobyerLoad(this.jobyerHover);
     } else {
-      // Neither assign as much quarters as possible to this jobyer
+      // Assign as much quarters as possible to this jobyer
       for(let i = 0 ; i < this.employerPlanning.quartersPerDay.length ; i++){
         this.selectedDay = this.employerPlanning.quartersPerDay[i];
         this.selectedQuarterIdStart = 0;
@@ -662,7 +667,7 @@ export class OfferRecruit {
     }
 
     this.updateView();
-    debugger;
+
     if (Utils.isEmpty(this.recruitmentService.errorMessage) == false) {
       Messenger().post({
         message: 'Ce créneau ne peut être complétement assigné à ce jobyer car : ' + this.recruitmentService.errorMessage,
@@ -683,7 +688,7 @@ export class OfferRecruit {
       this.selectedQuarterIdStart,
       this.selectedQuarterIdEnd,
       this.employerPlanning
-    )
+    );
   }
 
   assignselectSlotToThisJobyer(jobyer: any, jobyerLoad): void {
@@ -753,7 +758,7 @@ export class OfferRecruit {
 
         this.loader.hide();
         if (Utils.isEmpty(stateMsg)) {
-          //aller à la page liste des contrats
+          // Aller à la page liste des contrats
           this.router.navigate(['contract/list']);
         } else {
           this.addAlert("danger", stateMsg);

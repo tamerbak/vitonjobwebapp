@@ -249,7 +249,7 @@ export class DateUtils{
     let yd : Date = new Date(sdate);
     yd.setDate(date.getDate()-1);
 
-    yesterday = yd.getFullYear()+'-'+yd.getMonth()+'-'+yd.getDate();
+    yesterday = yd.getFullYear()+'-'+(yd.getMonth()+1)+'-'+yd.getDate();
 
     return yesterday;
   }
