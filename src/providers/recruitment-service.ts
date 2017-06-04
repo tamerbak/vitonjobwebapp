@@ -544,6 +544,7 @@ export class RecruitmentService {
     let pauseTime : number = 0;
     let unschedulable = false;
     this.errorMessage = '';
+    let selectedDay : any;
     for (let quarterId = from; quarterId <= to; ++quarterId) {
 
       // If no jobyer given, this is unassignment process
@@ -573,6 +574,7 @@ export class RecruitmentService {
         for(let qpd = 0 ; qpd < jobyerLoad.quartersPerDay.length ; qpd++){
           if(jobyerLoad.quartersPerDay[qpd].date == day.date){
             sameDay = true;
+            selectedDay = jobyerLoad.quartersPerDay[qpd];
           }
           let max = 24*4;
 
@@ -606,9 +608,8 @@ export class RecruitmentService {
 
         if(eligible) {
           this.assignThisQuarterTo(day, quarterId, jobyerSelected.id);
-
+          selectedDay.quarters[quarterId]=1;
         } else {
-          debugger;
           this.errorMessage = 'Non respect du temps de repos obligatoire';
         }
 
