@@ -19,6 +19,7 @@ import {RecruitmentService} from "../../providers/recruitment-service";
 import {ContractData} from "../../dto/contract";
 import {Offer} from "../../dto/offer";
 import {DateUtils} from "../utils/date-utils";
+import {ConventionParameters} from "../offer-edit/convention-parameters/convention-parameters";
 declare let Messenger,jQuery,moment, escape, unescape: any;
 
 /**
@@ -29,7 +30,7 @@ declare let Messenger,jQuery,moment, escape, unescape: any;
 @Component({
   template: require('./contract.html'),
   styles: [require('./contract.scss')],
-  directives: [AlertComponent, NKDatetime],
+  directives: [AlertComponent, NKDatetime, ConventionParameters],
   providers: [ContractService, MedecineService, ParametersService, Helpers,SmsService, OffersService,ProfileService,LoadListService, ConventionService, FinanceService, GlobalConfigs, RecruitmentService]
 })
 export class Contract {
@@ -69,11 +70,24 @@ export class Contract {
   //info jobyer
   labelTitreIdentite: string;
 
+  //condition de travail
+  personalizeConvention = false;
+  personalizeConventionInit: boolean = false;
+  alertsConditionEmp: Array<Object>;
+  categoriesHeure: any = [];
+  majorationsHeure: any = [];
+  indemnites: any = [];
+  convention: any;
+  conventionComponentMsg: string;
+  isConditionEmpValid = true;
+  isConditionEmpExist: boolean = true;
+
   constructor(private contractService: ContractService,
               private sharedService: SharedService,
               private offersService : OffersService,
               private smsService: SmsService,
               private router: Router,
+              private conventionService: ConventionService,
               private recruitmentService: RecruitmentService) {
 
     this.currentUser = this.sharedService.getCurrentUser();
@@ -88,7 +102,6 @@ export class Contract {
     if(!accessValid){
       this.router.navigate(['home']);
       return;
-      //TODO: est ce qu'après le return le ngOninit n'est pas exécuté
     }
   }
 
@@ -135,6 +148,16 @@ export class Contract {
     this.offersService.loadEPI().then((data:any)=>{
       this.epiList = data;
     });
+
+    if (this.projectTarget == "employer" && this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
+      this.convention = this.currentUser.employer.entreprises[0].conventionCollective;
+    } else {
+      this.convention = {
+        id: 0,
+        code: '',
+        libelle: ''
+      }
+    }
   }
 
   initSavedContract(){
@@ -637,7 +660,10 @@ export class Contract {
     console.log("contractData before saving");
     console.log(this.contractData);
 
-      // traitement pour les nouveaux contrats
+    //save condition d'emploi
+    this.saveConditionEmp(this.currentOffer);
+
+    // traitement pour les nouveaux contrats
       if(this.contractData.id == 0 || Utils.isEmpty(this.contractData.id)){
         this.contractService.getNumContract(this.projectTarget).then((data: any) => {
           let contractNum;
@@ -986,13 +1012,85 @@ export class Contract {
    return today;
    }*/
 
-  addAlert(type, msg): void {
-    this.alerts = [{type: type, msg: msg}];
+  /**
+   * Event when "Personalize Working conditions"
+   */
+  onPersonalizeConvention() {
+    if (this.personalizeConvention === false) {
+      if (this.personalizeConventionInit === false) {
+        //get values for "condition de travail"
+        this.getConditionEmpValuesForUpdate();
+        this.personalizeConventionInit = true;
+      }
+    }
+    this.personalizeConvention = !this.personalizeConvention;
+  }
+
+  getConditionEmpValuesForUpdate() {
+    this.conventionService.getHoursCategoriesEmp(this.convention.id, this.currentOffer.idOffer).then((data: any) => {
+      if (!data || data.length == 0) {
+        this.isConditionEmpExist = false;
+        this.offersService.getHoursCategories(this.convention.id).then(data => {
+          this.categoriesHeure = this.conventionService.convertValuesToPercent(data);
+        });
+      } else {
+        this.isConditionEmpExist = true;
+        this.categoriesHeure = this.conventionService.convertValuesToPercent(data);
+      }
+    });
+    this.majorationsHeure = [];
+
+    this.conventionService.getIndemnitesEmp(this.convention.id, this.currentOffer.idOffer).then((data: any) => {
+      if (!data || data.length == 0) {
+        this.isConditionEmpExist = false;
+        this.offersService.getIndemnites(this.convention.id).then(data => {
+          this.indemnites = this.conventionService.convertValuesToPercent(data);
+        });
+      } else {
+        this.isConditionEmpExist = true;
+        this.indemnites = this.conventionService.convertValuesToPercent(data);
+      }
+    });
+  }
+
+  watchConditionEmp(e, item) {
+    this.alertsConditionEmp = [];
+    this.isConditionEmpValid = true;
+    if (+e.target.value < item.coefficient || Utils.isEmpty(e.target.value)) {
+      this.addAlert("danger", "Les valeurs définies par l'employeur doivent être supérieures ou égales à celles définies par la convention collective.", "conditionEmp");
+      this.isConditionEmpValid = false;
+      e.target.value = Utils.decimalAdjust('round', item.coefficient, -2).toFixed(2);
+    }
+    e.target.value = Utils.decimalAdjust('round', e.target.value, -2).toFixed(2);//e.target.value.toFixed(2);
+  }
+
+  saveConditionEmp(offer) {
+    this.conventionService.updateConditionEmploi(this.currentOffer.idOffer, this.conventionService.convertPercentToRaw(this.categoriesHeure), this.conventionService.convertPercentToRaw(this.majorationsHeure), this.conventionService.convertPercentToRaw(this.indemnites)).then((data: any) => {
+        if (!data || data.status == "failure") {
+          this.addAlert("danger", "Erreur lors de la sauvegarde des conditions d'emploi.", "conditionEmp");
+        }
+      })
+  }
+
+  addAlert(type, msg, section?): void {
+    if (section == "conditionEmp") {
+      this.alertsConditionEmp = [{type: type, msg: msg}];
+    }else{
+      this.alerts = [{type: type, msg: msg}];
+    }
   }
 
   ngOnDestroy(): void {
     this.sharedService.setContractData(null);
     this.sharedService.setCurrentJobyer(null);
     this.sharedService.setCurrentOffer(null);
+  }
+
+  isEmpty(str) {
+    return Utils.isEmpty(str);
+  }
+
+  preventNull(str){
+    return Utils.preventNull(str);
   }
 }
