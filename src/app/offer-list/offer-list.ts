@@ -149,7 +149,11 @@ export class OfferList {
 
       //archived offers
       if(offer.etat == 'en archive'){
-        this.globalOfferList[2].list.push(offer);
+        this.offersService.isOfferChild(offer.idOffer).then((data: any) => {
+          if(data && data.data && data.data.length != 0 && Utils.isEmpty(data.data[0].idParent)){
+            this.globalOfferList[2].list.push(offer);
+          }
+        });
         offer.correspondantsCount = -1;
         offer.interestedCount = -1;
         continue;
