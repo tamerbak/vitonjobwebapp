@@ -899,7 +899,9 @@ export class RecruitmentService {
         this.offersService.copyOffer(offerCopy, projectTarget, "en archive").then((data: any) => {
           if(data && !Utils.isEmpty(data._body)) {
             let savedOffer = JSON.parse(data._body);
+
             this.saveRecruitmentConfiguration(slotsPerJobyer[i].jobyerId, savedOffer.idOffer).then((data: any) => {
+
               //get next num contract
               this.contractService.getNumContract(projectTarget).then((data: any) => {
                 let contractNum;
@@ -920,9 +922,16 @@ export class RecruitmentService {
                   projectTarget
                 ).then((data: any) => {
                   let contractId = data.contractId;
+
                   //generate hour mission based on the offer slots
                   this.contractService.generateMission(contractId, savedOffer);
                   if (i == slotsPerJobyer.length - 1) {
+                    //archiver l'offre mère
+                    this.offersService.updateOfferState(offer.idOffer, "en archive");
+                    offer.etat = "en archive";
+                    this.offersService.spliceOfferInLocal(currentUser, offer, projectTarget);
+                    this.sharedService.setCurrentUser(currentUser);
+
                     stateMsg = "";
                     resolve(stateMsg);
                   }

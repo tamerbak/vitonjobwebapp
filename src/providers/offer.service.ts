@@ -1117,6 +1117,39 @@ export class OffersService {
       });
     });
   }
+  deleteOfferInLocal(offer, currentUser, projectTarget){
+    if (projectTarget == 'employer') {
+      let rawData = currentUser.employer;
+      if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
+        let index = -1;
+        for (let i = 0; i < currentUser.employer.entreprises[0].offers.length; i++) {
+          if (currentUser.employer.entreprises[0].offers[i].idOffer == offer.idOffer) {
+            index = i;
+            break;
+          }
+        }
+        if (index >= 0) {
+          currentUser.employer.entreprises[0].offers.splice(index, 1);
+        }
+        this.sharedService.setCurrentUser(currentUser);
+      }
+    } else {
+      let rawData = currentUser.jobyer;
+      if (rawData && rawData.offers) {
+        let index = -1;
+        for (let i = 0; i < currentUser.jobyer.offers.length; i++) {
+          if (currentUser.jobyer.offers[i].idOffer == offer.idOffer) {
+            index = i;
+            break;
+          }
+        }
+        if (index >= 0) {
+          currentUser.jobyer.offers.splice(index, 1);
+        }
+        this.sharedService.setCurrentUser(currentUser);
+      }
+    }
+  }
 
   getCategoryByOfferAndConvention(offerId, convId){
     let sql = "select pk_user_categorie_convention as id, libelle from user_categorie_convention where " +
@@ -1374,6 +1407,20 @@ export class OffersService {
       "where o.pk_user_offre_entreprise = " + offerId + " " +
       "and o.fk_user_parametrage_convention = p.pk_user_parametrage_convention " +
       "and p.fk_user_statut_convention = s.pk_user_statut_convention";
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
+  isOfferChild(offerId){
+    let sql = "select fk_user_offre_entreprise as \"idParent\" " +
+      "from user_offre_entreprise " +
+      "where pk_user_offre_entreprise = " + offerId + ";";
     return new Promise(resolve => {
       let headers = Configs.getHttpTextHeaders();
       this.http.post(Configs.sqlURL, sql, {headers: headers})
