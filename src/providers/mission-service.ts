@@ -724,7 +724,9 @@ export class MissionService {
   convertToFormattedHour(value) {
     var hours = Math.floor(value / 60);
     var minutes = value % 60;
-    if (!hours && !minutes) {
+    if(hours == 0 && minutes == 0){
+      return "00:00";
+    }else if (!hours && !minutes) {
       return '';
     } else {
       return ((hours < 10 ? ('0' + hours) : hours) + ':' + (minutes < 10 ? ('0' + minutes) : minutes));
