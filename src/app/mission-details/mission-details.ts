@@ -344,7 +344,7 @@ export class MissionDetails{
     this.addAlert('info', "La génération du relevé d'heures est en cours. Veuillez patienter ...");
 
     this.missionService.saveCorrectedMissions(
-      this.contract.pk_user_contrat, this.missionHours, this.missionPauses
+      this.contract.pk_user_contrat, this.missionHours, this.missionPauses, this.isPointing
     ).then((data: any) => {
       if (data && data.status == "success") {
         console.log("timesheet saved");
@@ -460,24 +460,28 @@ export class MissionDetails{
     }
     let disable = false;
     var k = 0;
-    for (var i = 0; i < this.missionHours.length; i++) {
-      var m = this.missionHours[i];
-      if (Utils.isEmpty(m.date_debut_pointe_corrige) || Utils.isEmpty(m.date_fin_pointe_corrige)) {
-        disable = true;
-        return disable;
-      } else {
-        disable = false;
-      }
-      /*if (this.missionPauses[i]) {
-        for (var j = 0; j < this.missionPauses[i].length; j++) {
-          if (this.missionPauses[i][j].pause_debut_pointe_corrige == "" || this.missionPauses[i][j].pause_fin_pointe_corrige == "") {
-            disable = true;
-            return disable;
-          } else {
-            disable = false;
-          }
+    if(this.isPointing) {
+      for (var i = 0; i < this.missionHours.length; i++) {
+        var m = this.missionHours[i];
+        if (Utils.isEmpty(m.date_debut_pointe_corrige) || Utils.isEmpty(m.date_fin_pointe_corrige)) {
+          disable = true;
+          return disable;
+        } else {
+          disable = false;
         }
-      }*/
+        /*if (this.missionPauses[i]) {
+         for (var j = 0; j < this.missionPauses[i].length; j++) {
+         if (this.missionPauses[i][j].pause_debut_pointe_corrige == "" || this.missionPauses[i][j].pause_fin_pointe_corrige == "") {
+         disable = true;
+         return disable;
+         } else {
+         disable = false;
+         }
+         }
+         }*/
+      }
+    }else{
+     disable = false;
     }
     return disable;
   }

@@ -175,7 +175,12 @@ export class ContractService {
       "AND c.fk_user_entreprise ='" + id + "'";
 
     var jobyerSql = sqlComm +
-      "c.pk_user_contrat,c.*, e.nom_ou_raison_sociale as nom FROM user_contrat as c, user_entreprise as e where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "'";
+      "c.*, " +
+      "e.nom_ou_raison_sociale as nom, " +
+      "f.releve_signe_jobyer " +
+      "FROM user_entreprise as e, user_contrat as c " +
+      "LEFT JOIN user_facture_voj as f ON c.pk_user_contrat = f.fk_user_contrat " +
+      "where c.fk_user_entreprise = e.pk_user_entreprise and c.fk_user_jobyer ='" + id + "'";
 
     var typeSql ="";
     if(type ==0){
@@ -894,6 +899,7 @@ export class ContractService {
     let calloutId = 10337;
     if (Configs.env == 'PROD') {
       calloutId = 10537;
+      //calloutId = 20058;
     }
 
     var payload = {

@@ -431,7 +431,7 @@
             type="button" class="btn btn-primary btn-sm"
             (click)="generateTimesheet()"
             [style.color]="themeColor"
-            *ngIf="!(missionHours && missionHours.length == 0) && isEmployer && contract.option_mission != '1.0' && upperCase(contract.releve_employeur) != 'OUI'"
+            *ngIf="!(missionHours && missionHours.length == 0) && isEmployer && hasJobyerSigned && upperCase(contract.releve_employeur) != 'OUI'"
             [disabled]="disableAllUI() || inProgress">
             Générer le relevé d'heures
           </button>
@@ -479,7 +479,7 @@
           </alert>
         </div>
         
-        <div class="col-xs-12">
+        <div class="col-xs-12" *ngIf="isPointing">
           <h5>Informations :</h5>
           <ul>
             <li><span class="label label-default">Horaire</span> pointé par le jobyer</li>
