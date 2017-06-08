@@ -167,8 +167,7 @@ export class MissionService {
       this.http.post(this.configuration.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe((data: any) => {
-          this.data = data;
-          resolve(this.data);
+          resolve(data);
         });
     });
   }
@@ -443,35 +442,48 @@ export class MissionService {
     });
   }
 
-  saveCorrectedMissions(id, missionHours, pauseHours) {
-    var sql = "";
-    for (var i = 0; i < missionHours.length; i++) {
-      var m = missionHours[i];
-      var str = "";
-      if (m.heure_debut_corrigee && m.heure_debut_corrigee != "") {
-        str = " date_debut_pointe = '" + this.convertHoursToMinutes(m.heure_debut_corrigee) + "', debut_corrigee = 'Oui' ";
-        sql = sql + " update user_heure_mission set " + str + " where pk_user_heure_mission = '" + m.id + "'; ";
-      }
+  saveCorrectedMissions(id, missionHours, pauseHours, isPointing) {
+    let sql = "";
+    if(isPointing) {
+      for (var i = 0; i < missionHours.length; i++) {
+        var m = missionHours[i];
+        var str = "";
+        if (m.heure_debut_corrigee && m.heure_debut_corrigee != "") {
+          str = " date_debut_pointe = '" + this.convertHoursToMinutes(m.heure_debut_corrigee) + "', debut_corrigee = 'Oui' ";
+          sql = sql + " update user_heure_mission set " + str + " where pk_user_heure_mission = '" + m.id + "'; ";
+        }
 
-      if (m.heure_fin_corrigee && m.heure_fin_corrigee != "") {
-        str = " date_fin_pointe = '" + this.convertHoursToMinutes(m.heure_fin_corrigee) + "', fin_corrigee = 'Oui' ";
-        sql = sql + " update user_heure_mission set " + str + " where pk_user_heure_mission = '" + m.id + "'; ";
-      }
+        if (m.heure_fin_corrigee && m.heure_fin_corrigee != "") {
+          str = " date_fin_pointe = '" + this.convertHoursToMinutes(m.heure_fin_corrigee) + "', fin_corrigee = 'Oui' ";
+          sql = sql + " update user_heure_mission set " + str + " where pk_user_heure_mission = '" + m.id + "'; ";
+        }
 
-      //sql request for pauses
-      if (pauseHours[i]) {
-        for (var j = 0; j < pauseHours[i].length; j++) {
-          var p = pauseHours[i][j];
-          var str = "";
-          if (p.pause_debut_corrigee && p.pause_debut_corrigee != "") {
-            str = " debut_pointe = '" + this.convertHoursToMinutes(p.pause_debut_corrigee) + "', debut_corrigee = 'Oui' ";
-            sql = sql + " update user_pause set " + str + " where pk_user_pause = '" + p.id + "'; ";
-          }
-          if (p.pause_fin_corrigee && p.pause_fin_corrigee != "") {
-            str = " fin_pointe = '" + this.convertHoursToMinutes(p.pause_fin_corrigee) + "', fin_corrigee = 'Oui' ";
-            sql = sql + " update user_pause set " + str + " where pk_user_pause = '" + p.id + "'; ";
+        //sql request for pauses
+        if (pauseHours[i]) {
+          for (var j = 0; j < pauseHours[i].length; j++) {
+            var p = pauseHours[i][j];
+            var str = "";
+            if (p.pause_debut_corrigee && p.pause_debut_corrigee != "") {
+              str = " debut_pointe = '" + this.convertHoursToMinutes(p.pause_debut_corrigee) + "', debut_corrigee = 'Oui' ";
+              sql = sql + " update user_pause set " + str + " where pk_user_pause = '" + p.id + "'; ";
+            }
+            if (p.pause_fin_corrigee && p.pause_fin_corrigee != "") {
+              str = " fin_pointe = '" + this.convertHoursToMinutes(p.pause_fin_corrigee) + "', fin_corrigee = 'Oui' ";
+              sql = sql + " update user_pause set " + str + " where pk_user_pause = '" + p.id + "'; ";
+            }
           }
         }
+      }
+    }else{
+      for (let i = 0; i < missionHours.length; i++) {
+        let m = missionHours[i];
+        let str = " debut_corrigee='NON', fin_corrigee='NON', " +
+          " date_debut_pointe = '" + DateUtils.sqlfyWithHours(DateUtils.setMinutesToDate(new Date(m.jour_debut), m.heure_debut)) + "', " +
+          " date_fin_pointe = '" + DateUtils.sqlfyWithHours(DateUtils.setMinutesToDate(new Date(m.jour_fin), m.heure_fin)) + "', " +
+          " date_debut_pointe_corrige = '" + DateUtils.sqlfyWithHours(DateUtils.setMinutesToDate(new Date(m.jour_debut), m.heure_debut)) + "', " +
+          " date_fin_pointe_corrige = '" + DateUtils.sqlfyWithHours(DateUtils.setMinutesToDate(new Date(m.jour_fin), m.heure_fin)) + "' ";
+
+        sql = sql + " update user_heure_mission set " + str + " where pk_user_heure_mission = '" + m.id + "'; ";
       }
     }
 
@@ -483,8 +495,7 @@ export class MissionService {
       this.http.post(this.configuration.sqlURL, sql, {headers: headers})
         .map(res => res.json())
         .subscribe((data: any) => {
-          this.data = data;
-          resolve(this.data);
+          resolve(data);
         });
     });
   }
