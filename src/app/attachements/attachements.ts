@@ -109,7 +109,6 @@ export class Attachements {
     if (!this.fileNameNotDefault)
       this.fileNameNotDefault = '';
     let filename = this.fileName + this.fileNameNotDefault;
-    console.log(this.fileNameNotDefault);
     if(!this.scanData || this.scanData == null || Utils.isEmpty(filename)){
       this.addAlert("warning", "Veuillez renseigner le nom du fichier et le charger avant de l'ajouter");
       return;
