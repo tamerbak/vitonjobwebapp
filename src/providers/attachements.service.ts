@@ -239,7 +239,25 @@ export class AttachementsService {
   }
 
   downloadActualFile(id, fileName){
-    let payload = {
+
+    let sql = "select id, file_name, text_content as stream from row_document where storage_identifier like '%\"idAttachement\":"+id+"}' limit 1";
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        //.map(res => res.json())
+        .subscribe(data => {
+          let strdata = JSON.stringify(data);
+          let resp : any = JSON.parse(strdata);
+          strdata = resp._body.replace(/[\n\r]+/g, '');
+          let newData = JSON.parse(strdata);
+          let file = {stream : ''};
+          if(newData.data && newData.data.length>0)
+            file = newData.data[0];
+          resolve(file);
+        });
+    });
+
+    /*let payload = {
       'class': 'fr.protogen.connector.model.StreamedFile',
       fileName : fileName,
       table : 'user_pieces_justificatives',
@@ -258,7 +276,7 @@ export class AttachementsService {
           this.data = data;
           resolve(this.data);
         });
-    });
+    });*/
   }
 
   private _recursiveGroupeByFolder(folder: Folder, deep: number, folderTree: string[], attachement: File): Folder {
