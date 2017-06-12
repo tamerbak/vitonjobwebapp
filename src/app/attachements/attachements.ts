@@ -147,7 +147,7 @@ export class Attachements {
     this.addAlert("info", "Le téléchargement du fichier est en cours. Veuillez patienter ...");
     this.attachementSerice.downloadActualFile(a.id, a.fileName).then((data: any)=> {
       if(data){
-        this.fileContent = data['stream'];
+        this.fileContent = data.stream;
         //this.fileContent = "data:image/png;base64,iVBORw..."
         let extension = this.fileContent.split('/')[1].split(';')[0];
         if(extension == 'pdf'){
@@ -195,7 +195,7 @@ export class Attachements {
     this.attachementSerice.downloadActualFile(a.id, a.fileName).then((data: any)=> {
       if(data){
         //data = data:image/png;base64,xxxx
-        let url = data['stream'];
+        let url = data.stream;
         let downloadLink = document.createElement("a");
         downloadLink.href = url;
         downloadLink.setAttribute("download", data.fileName);
