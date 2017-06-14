@@ -2,6 +2,24 @@
   <li>VOUS ÊTES ICI</li>
   <li class="active"><a class="breadcrumb-link" [routerLink]="['/mission/list']">Suivi des missions</a></li>
 </ol>
+
+<div class="row" style="width: 75%;margin: 0 auto;" *ngIf="isEmployer">
+  <div class="widget emarg-widget">
+    <div class="widget-header emarg-header">
+      <h4>Générer la feuille d'émargement</h4>
+    </div>
+    <div class="widget-body row emarg-body">
+      <datetime id="birthdate" [(ngModel)]="emargeDate" name="emargedate" [timepicker]="false"
+                [datepicker]="{language:'fr-FR',autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}">
+      </datetime>
+      &nbsp;
+      <button type="button" class="btn btn-success fwidth" (click)="downloadEmargement()">
+        Générer
+      </button>
+    </div>
+  </div>
+</div>
+
 <div class="row" style="width: 75%;margin: 0 auto;">
       <label class="btn btn-gray active label-btn col-xs-12 col-md-12 col-lg-3" btnRadio="0" [(ngModel)]="typeMissionModel" (click)=loadList(0)>
         Missions en cours ({{ missionNowCount}})

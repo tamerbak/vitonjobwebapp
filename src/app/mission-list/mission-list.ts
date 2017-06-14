@@ -8,6 +8,8 @@ import {MissionService} from "../../providers/mission-service";
 import {Helpers} from "../../providers/helpers.service";
 import {Utils} from "../utils/utils";
 import { InfiniteScroll } from 'angular2-infinite-scroll';
+import {NKDatetime} from "ng2-datetime/ng2-datetime";
+import {DateUtils} from "../utils/date-utils";
 
 
 @Component({
@@ -15,7 +17,7 @@ import { InfiniteScroll } from 'angular2-infinite-scroll';
   template: require('./mission-list.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./mission-list.scss')],
-  directives: [ROUTER_DIRECTIVES, BUTTON_DIRECTIVES,InfiniteScroll],
+  directives: [ROUTER_DIRECTIVES, BUTTON_DIRECTIVES,InfiniteScroll, NKDatetime],
   providers: [ContractService, MissionService, Helpers]
 })
 export class MissionList{
@@ -59,6 +61,8 @@ export class MissionList{
   // Web
   typeMissionModel: string = '0';
   disableBtnPointing;
+
+  emargeDate : Date = new Date();
 
   constructor(private sharedService: SharedService,
               // public gc: GlobalConfigs,
@@ -223,6 +227,25 @@ export class MissionList{
   goToMissionPointingPage(mission) {
     this.sharedService.setCurrentMission(mission);
     this.router.navigate(['mission/pointing']);
+  }
+
+  downloadEmargement(){
+
+    let demand = {
+      'class':'com.vitonjob.emargement.DemandeEmargement',
+      idEntreprise : this.userId,
+      jour: this.emargeDate.getTime()
+    };
+    console.log(JSON.stringify(demand));
+    debugger;
+    this.missionService.emargement(demand).then((data:any)=>{
+      console.log(JSON.stringify(data));
+      if(data.pdf && !this.isEmpty(data.pdf)){
+        window.open('data:application/pdf;base64,'+data.pdf);
+      } else {
+
+      }
+    });
   }
 
   isEmpty(str) {

@@ -172,6 +172,35 @@ export class MissionService {
     });
   }
 
+  emargement(demand : any) {
+    let payload = {
+      'class': 'fr.protogen.masterdata.model.CCallout',
+      'id': 10000,
+      'args': [
+        {
+          'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'Demand',
+          value: btoa(JSON.stringify(demand))
+        }
+      ]
+    };
+
+    return new Promise(resolve => {
+      // We're using Angular Http provider to request the data,
+      // then on the response it'll map the JSON data to a parsed JS object.
+      // Next we process the data and resolve the promise with the new data.
+      let headers = new Headers();
+      headers = Configs.getHttpJsonHeaders();
+
+      this.http.post(Configs.calloutURL, JSON.stringify(payload), {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any) => {
+
+          resolve(data);
+        });
+    });
+  }
+
   endOfMission(idContrat) {
     let env = btoa(Configs.env);
     let payload = {
