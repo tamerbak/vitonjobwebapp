@@ -10,10 +10,11 @@
     </div>
     <div class="widget-body row emarg-body">
       <datetime id="birthdate" [(ngModel)]="emargeDate" name="emargedate" [timepicker]="false"
+                style="width: 56%;"
                 [datepicker]="{language:'fr-FR',autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}">
       </datetime>
       &nbsp;
-      <button type="button" class="btn btn-success fwidth" (click)="downloadEmargement()">
+      <button type="button" class="btn btn-success fwidth" style="width: 25%;" (click)="downloadEmargement()">
         Générer
       </button>
     </div>
