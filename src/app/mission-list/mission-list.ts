@@ -10,6 +10,7 @@ import {Utils} from "../utils/utils";
 import { InfiniteScroll } from 'angular2-infinite-scroll';
 import {NKDatetime} from "ng2-datetime/ng2-datetime";
 import {DateUtils} from "../utils/date-utils";
+import {LoaderService} from "../../providers/loader.service";
 
 
 @Component({
@@ -70,7 +71,8 @@ export class MissionList{
               private router: Router,
               private route: ActivatedRoute,
               private contractService: ContractService,
-              private missionService: MissionService) {
+              private missionService: MissionService,
+              private loader: LoaderService) {
 
     this.currentUser = this.sharedService.getCurrentUser();
 
@@ -230,16 +232,15 @@ export class MissionList{
   }
 
   downloadEmargement(){
-
+    this.loader.display();
     let demand = {
       'class':'com.vitonjob.emargement.DemandeEmargement',
       idEntreprise : this.userId,
       jour: this.emargeDate.getTime()
     };
-    console.log(JSON.stringify(demand));
-    debugger;
+
     this.missionService.emargement(demand).then((data:any)=>{
-      console.log(JSON.stringify(data));
+      this.loader.hide();
       if(data.pdf && !this.isEmpty(data.pdf)){
         window.open('data:application/pdf;base64,'+data.pdf);
       } else {
