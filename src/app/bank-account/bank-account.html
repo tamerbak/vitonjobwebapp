@@ -17,8 +17,8 @@
                       Nom de la banque
                     </label>
                     <div class="col-md-7 col-xs-12">
-                      <input type="text" id="bank" class="form-control" [(ngModel)]="bank.nom_de_banque" name="bank"
-                      (keyup)="watchBank($event)">
+                      <input type="text" id="bank" #bank class="form-control" [(ngModel)]="bank.nom_de_banque" name="bank"
+                      (keyup)="watchBank($event)" (input)="bank.value=$event.target.value.toUpperCase()">
                     </div>
                     <div class="col-md-offset-4 col-md-7 col-xs-12">
                       <span class="hint label label-danger">{{bankHint}}</span>
@@ -44,8 +44,8 @@
                       IBAN
                     </label>
                     <div class="col-md-7 col-xs-12">
-                      <input type="text" id="iban" class="form-control" [(ngModel)]="bank.iban" name="iban"
-                      (keyup)="watchIban($event)">
+                      <input type="text" id="iban" #iban class="form-control" [(ngModel)]="bank.iban" name="iban"
+                      (keyup)="watchIban($event)" (input)="iban.value=$event.target.value.toUpperCase()">
                     </div>
 
                     <div class="col-md-offset-4 col-md-7 col-xs-12">
@@ -58,8 +58,8 @@
                       BIC
                     </label>
                     <div class="col-md-7 col-xs-12">
-                      <input type="text" id="bic" class="form-control" [(ngModel)]="bank.bic" name="bic"
-                      (keyup)="watchBic($event)">
+                      <input type="text" id="bic" #bic class="form-control" [(ngModel)]="bank.bic" name="bic"
+                      (keyup)="watchBic($event)" (input)="bic.value=$event.target.value.toUpperCase()">
                     </div>
 
                     <div class="col-md-offset-4 col-md-7 col-xs-12">
