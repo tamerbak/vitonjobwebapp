@@ -750,6 +750,43 @@ export class MissionService {
     });
   }
 
+  generatePayement(contractId, month) {
+    let data = {
+      'class': 'fr.protogen.masterdata.model.CCallout',
+      'id': 234,
+      'args': [
+        {
+          'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'ID Contract',
+          value: btoa(contractId + "")
+        },
+        {
+          'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'Environment',
+          value: Configs.env
+        },
+        {
+          'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'Stage',
+          value: 'EOM'
+        },
+        {
+          'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'Month',
+          value: month
+        }
+      ]
+    };
+    let stringData = JSON.stringify(data);
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.calloutURL, stringData, {headers: headers})
+        .subscribe((data: any)=> {
+          resolve(data);
+        });
+    });
+  }
+
   convertToFormattedHour(value) {
     var hours = Math.floor(value / 60);
     var minutes = value % 60;
