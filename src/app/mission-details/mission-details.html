@@ -435,6 +435,15 @@
             [disabled]="disableAllUI() || inProgress">
             Générer le relevé d'heures
           </button>
+  
+          <button
+            type="button" class="btn btn-primary btn-sm"
+            (click)="openPayementModal()"
+            [style.color]="themeColor"
+            *ngIf="!(missionHours && missionHours.length == 0) && isEmployer && hasJobyerSigned"
+            [disabled]="inProgress">
+            Générer la paie
+          </button>
           <!--<button
             type="button" class="btn btn-primary btn-sm"
             (click)="validatePauses()"
@@ -506,3 +515,6 @@
 <modal-options [params]="modalParams"></modal-options>
 
 <div modal-hour (confirmed)="saveHour($event)"></div>
+
+<div modal-paie [missionHours]="missionHours" (confirmed)="generatePayement($event)"></div>
+

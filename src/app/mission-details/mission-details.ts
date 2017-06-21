@@ -22,6 +22,7 @@ import {DateUtils} from "../utils/date-utils";
 import {ModalHour} from "../modal-hour/modal-hour";
 import {SmsService} from "../../providers/sms-service";
 import {Configs} from "../../configurations/configs";
+import {ModalPaie} from "../modal-paie/modal-paie";
 
 declare let jQuery: any;
 declare let Messenger: any;
@@ -32,7 +33,7 @@ declare let Messenger: any;
   styles: [require('./mission-details.scss')],
   pipes: [DateConverter, TimeConverter],
   providers: [ContractService, SharedService, MissionService, FinanceService, GlobalConfigs, SmsService],
-  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalModifySchedule, ModalInfo, ModalOptions, ModalHour]
+  directives: [ROUTER_DIRECTIVES, AlertComponent, ModalModifySchedule, ModalInfo, ModalOptions, ModalHour, ModalPaie]
 })
 
 export class MissionDetails{
@@ -729,6 +730,18 @@ export class MissionDetails{
         this.refuseHour(this.dayObj.day, sqlfyDate, this.dayObj.isDayMission, this.dayObj.isStart);
       }
     }
+  }
+
+  openPayementModal(){
+    jQuery('#modal-paie').modal('show');
+  }
+
+  generatePayement(params){
+    this.missionService.generatePayement(this.contract.pk_user_contrat, params.monthIndex).then((data: any) => {
+      if(data && data.status == 200 && !Utils.isEmpty(data._body)){
+        this.addAlert("success", "La paie " + (params.monthIndex == 0 ? "de " : "du mois de ") + params.monthName + " a été bien générée.");
+      }
+    });
   }
 
   prepareMissionHoursArray(){
