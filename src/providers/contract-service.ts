@@ -389,7 +389,8 @@ export class ContractService {
       " lieu_de_mission," +
       " en_brouillon," +
       " duree_hebdomadaire," +
-      " fk_user_offre_entreprise" +
+      " fk_user_offre_entreprise," +
+      " taux_horaire_verse" +
       ")" +
       " VALUES ("
       + "'" + new Date().toISOString() + "',"
@@ -447,7 +448,8 @@ export class ContractService {
       + "'" + Utils.sqlfyText(contract.workAdress) + "',"
       + "'NON',"
       + "'" + contract.workTimeHours + "',"
-      + "'" + idOffer + "'"
+      + "'" + idOffer + "',"
+      + "'" + contract.salaireBase + "'"
       + ")"
       + " RETURNING pk_user_contrat";
 
