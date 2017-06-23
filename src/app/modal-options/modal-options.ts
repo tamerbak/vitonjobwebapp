@@ -76,7 +76,7 @@ export class ModalOptions{
       return;
     }
     this.offersService.deleteOffer(offer, this.projectTarget).then((data: any) => {
-      if (this.projectTarget == 'employer') {
+      /*if (this.projectTarget == 'employer') {
         let rawData = this.currentUser.employer;
         if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
           let index = -1;
@@ -107,7 +107,7 @@ export class ModalOptions{
           this.sharedService.setCurrentUser(this.currentUser);
         }
       }
-      this.sharedService.setCurrentUser(this.currentUser);
+      this.sharedService.setCurrentUser(this.currentUser);*/
 
 
       Messenger().post({
@@ -131,7 +131,7 @@ export class ModalOptions{
       return;
     }
 
-    this.offersService.setOfferInLocal(offer, this.projectTarget);
+    //this.offersService.setOfferInLocal(offer, this.projectTarget);
     this.offersService.copyOffer(offer, this.projectTarget, '').then((data: any) => {
       Messenger().post({
         message: "l'offre " + "'" + offer.title + "'" + " a été copiée avec succès",

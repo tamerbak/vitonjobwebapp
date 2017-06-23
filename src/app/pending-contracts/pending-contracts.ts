@@ -55,7 +55,7 @@ export class PendingContracts {
   goToContractForm(item){
     this.sharedService.setCurrentOffer(null);
     if(!Utils.isEmpty(item.offerId)){
-      this.currentOffer = this.offerService.getOfferByIdFromLocal(this.currentUser, item.offerId);
+      //this.currentOffer = this.offerService.getOfferByIdFromLocal(this.currentUser, item.offerId);
     }
     else{
       this.currentOffer = null;

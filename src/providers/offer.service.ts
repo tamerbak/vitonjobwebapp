@@ -10,6 +10,7 @@ import {Utils} from "../app/utils/utils";
 import {AddressUtils} from "../app/utils/addressUtils";
 
 const OFFER_CALLOUT_ID = 20055;
+const LOADING_OFFERS_CALLOUT = 20064;
 
 @Injectable()
 export class OffersService {
@@ -163,7 +164,7 @@ export class OffersService {
     });
   }
 
-  setOfferInLocal(offerData: any, projectTarget: string) {
+  /*setOfferInLocal(offerData: any, projectTarget: string) {
     //  Init project parameters
     let offers: any;
     let result: any;
@@ -188,7 +189,7 @@ export class OffersService {
         this.sharedService.setCurrentUser(data);
       }
     }
-  }
+  }*/
 
   /**
    * Get an offer
@@ -632,7 +633,7 @@ export class OffersService {
     });
   }
 
-  spliceOfferInLocal(currentUser, offer, projectTarget) {
+  /*spliceOfferInLocal(currentUser, offer, projectTarget) {
     var offerList = (projectTarget == 'employer' ? currentUser.employer.entreprises[0].offers : currentUser.jobyer.offers);
     var offerTemp = offerList.filter((v)=> {
       return (v.idOffer == offer.idOffer);
@@ -646,7 +647,7 @@ export class OffersService {
       currentUser.jobyer.offers = offerList;
     }
     return currentUser;
-  }
+  }*/
 
   getOffersLanguages(idOffers: any, offerTable: string) {
     let ids = '(' + idOffers[0];
@@ -928,6 +929,22 @@ export class OffersService {
     });
   }
 
+  selectJobByOfferId(offerId){
+    let sql = "select j.libelle from user_job as j, user_pratique_job as p where j.pk_user_job = p.fk_user_job and p.fk_user_offre_entreprise = "+offerId;
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let job = "";
+          if(data.data && data.data.length>0)
+            job = data.data[0].libelle;
+          resolve(job);
+        });
+    });
+  }
+
   loadSectorByJobId(id){
     let sql = "select pk_user_metier as id, libelle from user_metier where pk_user_metier in " +
       "(select fk_user_metier from user_job where pk_user_job="+id+") and dirty='N'";
@@ -1117,7 +1134,7 @@ export class OffersService {
       });
     });
   }
-  deleteOfferInLocal(offer, currentUser, projectTarget){
+  /*deleteOfferInLocal(offer, currentUser, projectTarget){
     if (projectTarget == 'employer') {
       let rawData = currentUser.employer;
       if (rawData && rawData.entreprises && rawData.entreprises[0].offers) {
@@ -1149,7 +1166,7 @@ export class OffersService {
         this.sharedService.setCurrentUser(currentUser);
       }
     }
-  }
+  }*/
 
   getCategoryByOfferAndConvention(offerId, convId){
     let sql = "select pk_user_categorie_convention as id, libelle from user_categorie_convention where " +
@@ -1325,7 +1342,7 @@ export class OffersService {
     }
   }
 
-  getOfferByIdFromLocal(currentUser, offerId){
+  /*getOfferByIdFromLocal(currentUser, offerId){
     let offers = currentUser.employer.entreprises[0].offers;
     for(let i = 0; i < offers.length; i++){
       if(offers[i].idOffer == offerId){
@@ -1333,7 +1350,7 @@ export class OffersService {
       }
     }
     return null;
-  }
+  }*/
 
   getOfferSoftwares(offerId){
     let sql = "select exp.pk_user_logiciels_des_offres as \"expId\", exp.fk_user_logiciels_pharmaciens as \"softId\", log.nom from user_logiciels_des_offres as exp, user_logiciels_pharmaciens as log where exp.fk_user_logiciels_pharmaciens = log.pk_user_logiciels_pharmaciens and exp.fk_user_offre_entreprise = '" + offerId + "'";
@@ -1427,6 +1444,39 @@ export class OffersService {
         .map(res => res.json())
         .subscribe(data => {
           resolve(data);
+        });
+    });
+  }
+
+  getOffersByType(type:string, offset:number, limit:number, userId: number, role: string) {
+    let offerData = {
+      'class': 'com.vitonjob.callouts.loading.offers.OfferToken',
+      'userId': userId.toString(),
+      'role': role,
+      'status': type,
+      'req': 'med',
+      'offset': offset,
+      'limit': limit
+    };
+    let offerDataStr = JSON.stringify(offerData);
+    let encodedDatum = btoa(offerDataStr);
+    let data = {
+      'class': 'fr.protogen.masterdata.model.CCallout',
+      'id': LOADING_OFFERS_CALLOUT,
+      'args': [{
+        'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+        label: 'LoadingOffers',
+        value: encodedDatum
+      }]
+    };
+    let stringData = JSON.stringify(data);
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.calloutURL, stringData, {headers: headers})
+        .subscribe((data: any)=> {
+          if(data && data.status == 200 && !Utils.isEmpty(data._body)){
+            resolve(JSON.parse(data._body).offers);
+          }
         });
     });
   }

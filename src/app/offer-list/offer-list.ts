@@ -10,6 +10,8 @@ import {NotificationsService} from "../../providers/notifications.service";
 import {AdvertService} from "../../providers/advert.service";
 import {ButtonNumber} from "../components/button-number/button-number";
 import {ModalOptions} from "../modal-options/modal-options";
+import { InfiniteScroll } from 'angular2-infinite-scroll';
+import {DateUtils} from "../utils/date-utils";
 
 declare let jQuery: any;
 declare let Messenger: any;
@@ -19,7 +21,7 @@ declare let Messenger: any;
   template: require('./offer-list.html'),
   encapsulation: ViewEncapsulation.None,
   styles: [require('./offer-list.scss')],
-  directives: [ACCORDION_DIRECTIVES, ROUTER_DIRECTIVES, AlertComponent, BUTTON_DIRECTIVES, ButtonNumber, ModalOptions],
+  directives: [ACCORDION_DIRECTIVES, ROUTER_DIRECTIVES, AlertComponent, BUTTON_DIRECTIVES, ButtonNumber, ModalOptions, InfiniteScroll],
   providers: [OffersService, SearchService,ChangeDetectorRef, AdvertService]
 })
 export class OfferList {
@@ -31,9 +33,16 @@ export class OfferList {
   isEmployer: boolean;
 
   alerts: Array<Object>;
-  typeOfferModel: string = '0';
+  typeOfferModel: number = 0;
 
   modalParams: any = {type: '', message: ''};
+
+  //infinite scroll
+  currentTypeList: any = [];
+  queryOffset:number = 0;
+  queryLimit:number = 5;
+  loading:boolean = true;
+  userId:any;
 
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
@@ -43,9 +52,20 @@ export class OfferList {
               private searchService: SearchService,
               private notificationsService:NotificationsService,
               private route: ActivatedRoute) {
+
     this.currentUser = this.sharedService.getCurrentUser();
+
     if (!this.currentUser) {
       this.router.navigate(['home']);
+    }
+
+    this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
+    this.isEmployer = (this.projectTarget == 'employer');
+
+    if (this.isEmployer) {
+      this.userId = this.currentUser.employer.entreprises[0].id;
+    } else {
+      this.userId = this.currentUser.jobyer.id;
     }
   }
 
@@ -56,154 +76,19 @@ export class OfferList {
     });
 
     if(Utils.isEmpty(this.typeOfferModel)){
-      this.typeOfferModel = '0';
+      this.typeOfferModel = 0;
     }
 
-    this.currentUser = this.sharedService.getCurrentUser();
-    this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
-    this.isEmployer = (this.projectTarget == 'employer');
-
-    this.offerList = this.projectTarget == 'employer'
-      ? this.sharedService.getCurrentUser().employer.entreprises[0].offers
-      : this.sharedService.getCurrentUser().jobyer.offers;
-    if (this.offerList && this.offerList.length > 0) {
-      this.offersService.getIsTypeOrNot(this.offerList).then(() => {
-        this.loadOffers();
-      });
-    } else {
-      this.loadOffers();
-    }
-
-  }
-
-  convertSlotsForDisplay(s) {
-    var slotTemp = {
-      date: this.toDateString(s.date),
-      startHour: this.toHourString(s.startHour),
-      endHour: this.toHourString(s.endHour),
-      pause: s.pause
-    };
-    return slotTemp;
+    //load offers
+    this.getOffersByType();
   }
 
   toHourString(time: number) {
-    let minutes = (time % 60) < 10 ? "0" + (time % 60).toString() : (time % 60).toString();
-    let hours = Math.trunc(time / 60) < 10 ? "0" + Math.trunc(time / 60).toString() : Math.trunc(time / 60).toString();
-    return hours + ":" + minutes;
+    return DateUtils.toHourString(time);
   }
 
   toDateString(date: number) {
-    var dateOptions = {
-      weekday: "long", month: "long", year: "numeric",
-      day: "numeric"//, hour: "2-digit", minute: "2-digit"
-    };
-    return new Date(date).toLocaleDateString('fr-FR', dateOptions);
-  }
-
-  loadOffers(){
-    this.globalOfferList.length = 0;
-    this.globalOfferList.push({header: 'Mes offres en ligne', list: []});
-    this.globalOfferList.push({header: 'Mes brouillons', list: []});
-    this.globalOfferList.push({header: 'Mes offres en archive', list: []});
-
-    //A ne pas enlever : c'est necessaire pour récupérer la nouvelle liste des offres en cas de suppression d'une offre
-    this.offerList = this.projectTarget == 'employer'
-       ? this.sharedService.getCurrentUser().employer.entreprises[0].offers
-       : this.sharedService.getCurrentUser().jobyer.offers;
-    let obsoleteOffers = [];
-
-    for (let i = 0; i < this.offerList.length; i++) {
-      let offer = this.offerList[i];
-
-      console.log('offre type: ' + offer.type);
-
-      if (!offer || !offer.jobData) {
-        continue;
-      }
-
-      // If missing main data or if not a template, ignore
-      if (offer.type == true) {
-        continue;
-      }
-
-      //push slots into offer
-      offer.slots =[];
-      offer.calendarData.sort((a, b) => {
-        return a.date - b.date
-      });
-      for (let i = 0; i < offer.calendarData.length; i++) {
-
-        let nb_days_diff = offer.calendarData[i].dateEnd - offer.calendarData[i].date;
-            nb_days_diff = nb_days_diff / (60 * 60 * 24 * 1000);
-
-        var slotTemp = {
-          date: this.toDateString(offer.calendarData[i].date),
-          dateEnd: this.toDateString(offer.calendarData[i].dateEnd),
-          startHour: this.toHourString(offer.calendarData[i].startHour),
-          endHour: this.toHourString(offer.calendarData[i].endHour),
-          pause: offer.calendarData[i].pause,
-          nbDays: nb_days_diff
-        };
-        offer.slots.push(slotTemp);
-      }
-
-      //archived offers
-      if(offer.etat == 'en archive'){
-        this.offersService.isOfferChild(offer.idOffer).then((data: any) => {
-          if(data && data.data && data.data.length != 0 && Utils.isEmpty(data.data[0].idParent)){
-            this.globalOfferList[2].list.push(offer);
-          }
-        });
-        offer.correspondantsCount = -1;
-        offer.interestedCount = -1;
-        continue;
-      }
-
-      //public offers
-      if (offer.visible) {
-        offer.color = 'black';
-        offer.correspondantsCount = -1;
-        offer.interestedCount = -1;
-
-        //verify if offer is obsolete
-        let isOfferObsolete = this.isOfferObsolete(offer);
-        if (isOfferObsolete) {
-          offer.obsolete = true;
-          obsoleteOffers.push(offer);
-        } else {
-          offer.obsolete = false;
-          this.globalOfferList[0].list.push(offer);
-
-          let searchQuery = {
-            class: 'com.vitonjob.recherche.model.SearchQuery',
-            queryType: 'COUNT',
-            idOffer: offer.idOffer,
-            resultsType: this.projectTarget=='jobyer'?'employer':'jobyer'
-          };
-          this.searchService.advancedSearch(searchQuery).then((data:any)=>{
-            offer.correspondantsCount = data.count;
-          });
-          this.advertService.loadInterestsByOffre(offer.idOffer).then((data:any)=>{
-            offer.interestedCount = data.nbInterest;
-          });
-
-        }
-      } else {
-        //private offers
-        offer.color = 'grey';
-        offer.correspondantsCount = -1;
-        offer.interestedCount = -1;
-        this.globalOfferList[1].list.push(offer);
-      }
-    }
-    //placing obsolete offers in the botton of the list
-    this.globalOfferList[0].list = this.globalOfferList[0].list.concat(obsoleteOffers);
-  }
-
-  sortOffers(){
-    this.globalOfferList[0].list.sort((a, b) => {
-     return b.correspondantsCount - a.correspondantsCount;
-     })
+    return DateUtils.toFrenchDateString(date);
   }
 
   goToDetailOffer(offer) {
@@ -225,8 +110,8 @@ export class OfferList {
         });
       });
     }else{
-      this.sharedService.setCurrentOffer(offer);
-      this.router.navigate(['offer/edit', {obj:'detail'}]);
+        this.sharedService.setCurrentOffer(offer);
+        this.router.navigate(['offer/edit', {obj:'detail'}]);
     }
   }
 
@@ -240,7 +125,7 @@ export class OfferList {
         }else{
           this.notificationsService.remove(offer);
         }
-        this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
+        //this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
         this.sharedService.setCurrentUser(this.currentUser);
       } else {
         this.addAlert("danger", "Une erreur est survenue lors de l'enregistrement des données.");
@@ -295,7 +180,7 @@ export class OfferList {
     var statut = offer.visible ? 'Non' : 'Oui';
     this.offersService.updateOfferStatut(offer.idOffer, statut, this.projectTarget).then(()=> {
       offer.visible = (statut == 'Non' ? false : true);
-      this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
+      //this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
       this.sharedService.setCurrentUser(this.currentUser);
       if (offer.visible) {
         this.addAlert("info", "Votre offre a bien été déplacée dans «Mes offres en ligne».");
@@ -318,8 +203,77 @@ export class OfferList {
     return false;
   }
 
-  watchTypeOfferModel() {
-    this.alerts = [];
+  loadList(type){
+    if(!this.loading) {
+      this.currentTypeList = [];
+      this.queryOffset = 0;
+      this.queryLimit = 5;
+      this.typeOfferModel = type;
+      this.getOffersByType();
+    }
+  }
+
+  onScrollDown () {
+    if(this.queryOffset > 0) {
+      this.getOffersByType();
+    }
+  }
+
+  getOffersByType() {
+    this.loading = true;
+    jQuery("#radioButtons").addClass("disable-button");
+
+    let type = (this.typeOfferModel == 0 ? 'public' : (this.typeOfferModel == 1 ? 'private' : 'archived'));
+
+    this.offersService.getOffersByType(type, this.queryOffset,this.queryLimit, this.userId, this.projectTarget).then((data: any) => {
+      if (data && data.length != 0) {
+        this.offerList = data;
+        for (let i = 0; i < this.offerList.length; i++) {
+          let item = this.offerList[i];
+
+          //pour empecher l'ajout d'offre deja existante (parfois le infinite scroll re-renvoie la derniere offre)
+          let canAdd = true;
+          if(this.currentTypeList.length <= this.queryOffset){
+            canAdd = true;
+          }else{
+            if (item.idOffer != this.currentTypeList[this.currentTypeList.length - 1].idOffer) {
+              canAdd = true;
+            }else{
+              canAdd = false;
+            }
+          }
+
+          //si l'offre n'est pas redondante, l'ajouter dans la liste à afficher
+          if (canAdd) {
+            this.currentTypeList.push(item);
+
+            //recuperer le nombre de jobyer dispo pour cette offre
+            if (!item.obsolete && this.typeOfferModel == 0) {
+              let searchQuery = {
+                class: 'com.vitonjob.recherche.model.SearchQuery',
+                queryType: 'COUNT',
+                idOffer: item.idOffer,
+                resultsType: this.projectTarget == 'jobyer' ? 'employer' : 'jobyer'
+              };
+              this.searchService.advancedSearch(searchQuery).then((data: any) => {
+                item.correspondantsCount = data.count;
+              });
+
+              //recuperer le nombre de jobyer interessé pour chaque offre
+              if (this.isEmployer) {
+                this.advertService.loadInterestsByOffre(item.idOffer).then((data: any) => {
+                  item.interestedCount = data.nbInterest;
+                });
+              }
+            }
+          }
+        }
+
+        this.queryOffset = this.queryOffset + this.queryLimit;
+      }
+      this.loading = false;
+      $("#radioButtons").removeClass("disable-button");
+    });
   }
 
   addAlert(type, msg): void {
@@ -342,7 +296,7 @@ export class OfferList {
     jQuery("#modal-options").modal('show');
     let self = this;
     jQuery('#modal-options').on('hidden.bs.modal', function (e) {
-      self.loadOffers();
+      self.loadList(self.typeOfferModel);
     });
   }
 }
