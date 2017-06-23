@@ -10,7 +10,7 @@ import {Utils} from "../app/utils/utils";
 import {AddressUtils} from "../app/utils/addressUtils";
 
 const OFFER_CALLOUT_ID = 20055;
-const LOADING_OFFERS_CALLOUT = 20064;
+const LOADING_OFFERS_CALLOUT = 20065;
 
 @Injectable()
 export class OffersService {
