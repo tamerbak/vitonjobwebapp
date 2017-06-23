@@ -14,6 +14,11 @@
   margin-bottom: 1em;
 }
 
+.disable-button {
+  pointer-events: none;
+  opacity: 0.4;
+}
+
 .abc-style{
   padding-left: 0px !important;
 }

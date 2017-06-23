@@ -235,7 +235,7 @@ export class OfferTypeList {
         }else{
           this.notificationsService.remove(offer);
         }
-        this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
+        //this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
         this.sharedService.setCurrentUser(this.currentUser);
       } else {
         this.addAlert("danger", "Une erreur est survenue lors de l'enregistrement des données.");
@@ -290,7 +290,7 @@ export class OfferTypeList {
     var statut = offer.visible ? 'Non' : 'Oui';
     this.offersService.updateOfferStatut(offer.idOffer, statut, this.projectTarget).then(()=> {
       offer.visible = (statut == 'Non' ? false : true);
-      this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
+      //this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
       this.sharedService.setCurrentUser(this.currentUser);
       if (offer.visible) {
         this.addAlert("info", "Votre offre a bien été déplacée dans «Mes offres en ligne».");

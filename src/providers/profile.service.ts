@@ -995,4 +995,25 @@ export class ProfileService{
       ('00' + date.getUTCSeconds()).slice(-2);
     return sqlTimestamp;
   }
+
+  hasOffers(entrepriseId){
+    let sql = "SELECT pk_user_offre_entreprise AS id " +
+      "FROM user_offre_entreprise " +
+      "WHERE dirty = 'N' " +
+      "AND upper(publiee) = 'OUI' " +
+      "AND etat != 'en archive' " +
+      "AND fk_user_offre_entreprise is null " +
+      "AND offre_type = 'NON' " +
+      "AND fk_user_entreprise = " + entrepriseId + " LIMIT 1";
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          if (data && data.data && data.status == "success") {
+            resolve(data.data.length > 0);
+          }
+        });
+    });
+  }
 }

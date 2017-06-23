@@ -3,13 +3,15 @@ import {SharedService} from "../../providers/shared.service";
 import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 import {ModalOffers} from "../modal-offers/modal-offers";
 import {Utils} from "../utils/utils";
+import {ProfileService} from "../../providers/profile.service";
 
 declare let jQuery: any;
 
 @Component({
   selector: '[modal-notification-contract]',
   template: require('./modal-notification-contract.html'),
-  directives: [ROUTER_DIRECTIVES,ModalOffers]
+  directives: [ROUTER_DIRECTIVES,ModalOffers],
+  providers: [ProfileService]
 })
 export class ModalNotificationContract{
   @Input()
@@ -29,6 +31,7 @@ export class ModalNotificationContract{
   hasOffers: boolean;
 
   constructor(private sharedService: SharedService,
+              private profileService: ProfileService,
               private router: Router) {
 
   }
@@ -44,8 +47,9 @@ export class ModalNotificationContract{
       return;
     }
     if (this.currentUser.estEmployeur) {
-      let offers = this.currentUser.employer.entreprises[0].offers;
-      this.hasOffers = (offers && offers.length > 0);
+      this.profileService.hasOffers(this.currentUser.employer.entreprises[0].id).then((hasOffers: boolean) => {
+        this.hasOffers = hasOffers;
+      });
     } else {
       this.hasOffers = false;
     }

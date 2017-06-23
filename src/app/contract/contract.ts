@@ -78,7 +78,6 @@ export class Contract {
   majorationsHeure: any = [];
   indemnites: any = [];
   convention: any;
-  conventionComponentMsg: string;
   isConditionEmpValid = true;
   isConditionEmpExist: boolean = true;
 
@@ -105,11 +104,11 @@ export class Contract {
     }
   }
 
-  ngOnInit(){
+  ngOnInit() {
     //TODO: voir commnet empecher l'acces au ngOninit après l'execution du constructeur
     //go to home if access is not authorized
     let accessValid = this.isAccessAutorised(this.currentUser, this.isEmployer, this.currentOffer);
-    if(!accessValid){
+    if (!accessValid) {
       this.router.navigate(['home']);
       return;
     }
@@ -119,30 +118,33 @@ export class Contract {
     let contract = this.sharedService.getContractData();
 
     //l'objet contrat est vide seulement dans le cas ou l'on passe par une recherche directement (sémantique, par ville, ...)
-    if(Utils.isEmpty(contract)) {
+    if (Utils.isEmpty(contract)) {
       this.contractData = new ContractData();
-    }else{
+    } else {
       this.contractData = contract;
     }
 
-    //draft == 'oui', dans le cas des contrats généré à partir d'une offres mère (mais juste lors de la première initialisation est sauvegarde du contrat)
-    //ou dans le cas des contrat initialisé à partir d'une recherche
-    if(Utils.isEmpty(contract) || this.contractData.isDraft.toUpperCase() == 'OUI') {
-      // Retrieve jobyer
-      this.jobyer = this.sharedService.getCurrentJobyer();
+    this.getCurrentOffer().then((data: any) => {
+      this.currentOffer = data;
+      //draft == 'oui', dans le cas des contrats généré à partir d'une offres mère (mais juste lors de la première initialisation est sauvegarde du contrat)
+      //ou dans le cas des contrat initialisé à partir d'une recherche
+      if (Utils.isEmpty(contract) || this.contractData.isDraft.toUpperCase() == 'OUI') {
+        // Retrieve jobyer
+        this.jobyer = this.sharedService.getCurrentJobyer();
 
-      // initialize contract data
-      this.initContractData();
-      //init employer data
-      this.initEmployerData();
-      //initialize recruitment data
-      this.initRecruitmentData();
+        // initialize contract data
+        this.initContractData();
+        //init employer data
+        this.initEmployerData();
+        //initialize recruitment data
+        this.initRecruitmentData();
 
-    } else {
-      console.log("contractData raw");
-      console.log(this.contractData);
-      this.initSavedContract();
-    }
+      } else {
+        console.log("contractData raw");
+        console.log(this.contractData);
+        this.initSavedContract();
+      }
+    });
 
     //TODO à ajouter dans le callout prepareRecruitment
     this.offersService.loadEPI().then((data:any)=>{
@@ -158,6 +160,19 @@ export class Contract {
         libelle: ''
       }
     }
+  }
+
+  getCurrentOffer(){
+    return new Promise(resolve => {
+      //dans le cas ou on passe par la recherche, l'offre retournée ne contient pas des les information complete. Il faut donc recuperer l'offre toute entière
+      if(Utils.isEmpty(this.currentOffer.jobData.idJob) || this.currentOffer.jobData.idJob == 0){
+        this.offersService.getOfferById(this.currentOffer.idOffer, this.projectTarget, this.currentOffer).then((data: any) => {
+          resolve(this.currentOffer);
+        });
+      }else{
+        resolve(this.currentOffer);
+      }
+    });
   }
 
   initSavedContract(){
@@ -689,7 +704,7 @@ export class Contract {
                 this.offersService.updateOfferState(this.currentOffer.idOffer, "en contrat").then((data: any) => {
                   if (data && data.status == "success") {
                     this.currentOffer.etat = "en contrat";
-                    this.offersService.spliceOfferInLocal(this.currentUser, this.currentOffer, this.projectTarget);
+                    //this.offersService.spliceOfferInLocal(this.currentUser, this.currentOffer, this.projectTarget);
                     this.sharedService.setCurrentUser(this.currentUser);
                     //place offer in archive if nb contract of the selected offer is equal to its nb poste
                     this.checkOfferState(this.currentOffer);
@@ -739,7 +754,7 @@ export class Contract {
               this.offersService.updateOfferState(this.currentOffer.idOffer, "en contrat").then((data: any) => {
                 if (data && data.status == "success") {
                   this.currentOffer.etat = "en contrat";
-                  this.offersService.spliceOfferInLocal(this.currentUser, this.currentOffer, this.projectTarget);
+                  //this.offersService.spliceOfferInLocal(this.currentUser, this.currentOffer, this.projectTarget);
                   this.sharedService.setCurrentUser(this.currentUser);
                   //place offer in archive if nb contract of the selected offer is equal to its nb poste
                   this.checkOfferState(this.currentOffer);
@@ -766,7 +781,7 @@ export class Contract {
       if(data && data.data && data.data.length != 0 && data.data.length >= offer.nbPoste){
         this.offersService.updateOfferState(offer.idOffer, "en archive");
         offer.etat = "en archive";
-        this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
+        //this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
         this.sharedService.setCurrentUser(this.currentUser);
       }
     })

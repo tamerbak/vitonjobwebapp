@@ -893,8 +893,8 @@ export class RecruitmentService {
         let currentUser = this.sharedService.getCurrentUser();
         let currentUserEntreprise: Entreprise = currentUser.employer.entreprises[0];
         offerCopy.etat = 'en archive';
-        currentUserEntreprise.offers.push(offerCopy);
-        this.sharedService.setCurrentUser(currentUser);
+        //currentUserEntreprise.offers.push(offerCopy);
+        //this.sharedService.setCurrentUser(currentUser);
 
         this.offersService.copyOffer(offerCopy, projectTarget, "en archive").then((data: any) => {
           if(data && !Utils.isEmpty(data._body)) {
@@ -929,7 +929,7 @@ export class RecruitmentService {
                     //archiver l'offre mère
                     this.offersService.updateOfferState(offer.idOffer, "en archive");
                     offer.etat = "en archive";
-                    this.offersService.spliceOfferInLocal(currentUser, offer, projectTarget);
+                    //this.offersService.spliceOfferInLocal(currentUser, offer, projectTarget);
                     this.sharedService.setCurrentUser(currentUser);
 
                     stateMsg = "";

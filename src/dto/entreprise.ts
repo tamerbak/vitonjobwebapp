@@ -14,7 +14,7 @@ export class Entreprise extends AbstractGCallout {
   workAdress: Address;
   correspondanceAdress: Address;
   conventionCollective: ConventionCollective;
-  offers: Offer[];
+  //offers: Offer[];
 
   constructor() {
     super('com.vitonjob.callouts.auth.model.Entreprise');
@@ -31,6 +31,6 @@ export class Entreprise extends AbstractGCallout {
     this.correspondanceAdress = new Address();
 
     this.conventionCollective = new ConventionCollective();
-    this.offers = [];
+    //this.offers = [];
   }
 }

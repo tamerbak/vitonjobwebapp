@@ -484,12 +484,10 @@ export class OfferEdit {
         }
       );
 
-    if (this.offer.jobData.idJob) {
-      this.offersService.selectJobById(this.offer.jobData.idJob).then((job: string) => {
-        this.selectedJob = job;
-        jQuery(".job-select").select2('data', {id: this.offer.jobData.idJob, libelle: this.selectedJob});
-      });
-    }
+    this.offersService.selectJobByOfferId(this.offer.idOffer).then((job: string) => {
+      this.selectedJob = job;
+      jQuery(".job-select").select2('data', {id: this.offer.jobData.idJob, libelle: this.selectedJob});
+    });
   }
 
   /**
@@ -566,12 +564,12 @@ export class OfferEdit {
     this.offer.jobData.level = e.target.value;
   }
 
-  setOfferInLocal() {
+  /*setOfferInLocal() {
     //set offer in local
     this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, this.offer, this.projectTarget);
     this.sharedService.setCurrentUser(this.currentUser);
     this.sharedService.setCurrentOffer(this.offer);
-  }
+  }*/
 
   saveOffer(stayOnPage = false) {
     this.triedValidate = true;
@@ -609,13 +607,13 @@ export class OfferEdit {
           //save values of condition de travail
           this.saveConditionEmp(offer);
 
-          this.currentUser.employer.entreprises[0].offers.push(offer);
+          //this.currentUser.employer.entreprises[0].offers.push(offer);
 
           if (this.offer.type) {
             this.validateJob(stayOnPage);
           }
         } else {
-          this.currentUser.jobyer.offers.push(offer);
+          //this.currentUser.jobyer.offers.push(offer);
         }
 
 
@@ -737,7 +735,7 @@ export class OfferEdit {
 
     this.dataValidation = true;
     this.offersService.updateOfferJob(this.offer, this.projectTarget);
-    this.setOfferInLocal();
+    //this.setOfferInLocal();
 
     if (this.type != 'template') {
       Messenger().post({
@@ -876,7 +874,7 @@ export class OfferEdit {
         this.videoAvailable = true;
       }
       this.offer.videolink = this.youtubeLink;
-      this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, this.offer, this.projectTarget);
+      //this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, this.offer, this.projectTarget);
       this.sharedService.setCurrentUser(this.currentUser);
       this.sharedService.setCurrentOffer(this.offer);
     });
@@ -909,7 +907,7 @@ export class OfferEdit {
     var statut = offer.visible ? 'Non' : 'Oui';
     this.offersService.updateOfferStatut(offer.idOffer, statut, this.projectTarget).then(() => {
       offer.visible = (statut == 'Non' ? false : true);
-      this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
+      //this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
       this.sharedService.setCurrentUser(this.currentUser);
       if (offer.visible) {
         Messenger().post({
@@ -973,7 +971,7 @@ export class OfferEdit {
       if (data && data.status == "success") {
         offer.rechercheAutomatique = !offer.rechercheAutomatique;
         this.autoSearchModeTitle = offer.rechercheAutomatique ? "Désactiver la recherche auto" : "Activer la recherche auto";
-        this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
+        //this.currentUser = this.offersService.spliceOfferInLocal(this.currentUser, offer, this.projectTarget);
         this.sharedService.setCurrentUser(this.currentUser);
       } else {
         Messenger().post({
