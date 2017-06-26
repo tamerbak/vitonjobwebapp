@@ -24,4 +24,27 @@ export class EmailService{
         });
     })
   }
+
+  sendContractNotification(numContrat : string) {
+    let body = {
+      'class': 'fr.protogen.masterdata.model.CCallout',
+      id: 90002,
+      args: [
+        {
+          class: 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'numero de contrat',
+          value: btoa(numContrat)
+        }
+      ]
+    };
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.calloutURL, body, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any) => {
+          resolve(data);
+        });
+    });
+  }
 }
