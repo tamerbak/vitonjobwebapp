@@ -4,6 +4,7 @@ import {ContractService} from "../../providers/contract-service";
 import {SmsService} from "../../providers/sms-service";
 import {Router} from "@angular/router";
 import {AlertComponent} from "ng2-bootstrap/components/alert";
+import {EmailService} from "../../providers/email-service";
 
 
 /**
@@ -15,7 +16,7 @@ import {AlertComponent} from "ng2-bootstrap/components/alert";
   template: require('./yousign.html'),
   styles: [require('./yousign.scss')],
   directives: [AlertComponent],
-  providers: [ContractService, SmsService]
+  providers: [ContractService, SmsService, EmailService]
 })
 export class Yousign{
 
@@ -34,6 +35,7 @@ export class Yousign{
 
   constructor(private contractService: ContractService,
               private smsService: SmsService,
+              private emailService: EmailService,
               private sharedService: SharedService,
               private router: Router) {
     this.currentUser = this.sharedService.getCurrentUser();
@@ -77,6 +79,7 @@ export class Yousign{
           if(this.isEmployer) {
             // Send sms to jobyer
             this.smsService.sendSms(this.jobyer.tel, 'Une demande de signature de contrat vous a été adressée. Contrat numéro : ' + this.contractData.num);
+            this.emailService.sendContractNotification(this.contractData.num);
             //this.goToPaymentMethod();
           }
           this.router.navigate(['mission/list']);
