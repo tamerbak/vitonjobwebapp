@@ -15,6 +15,37 @@
   </div>
 </div>
 
+<div class="row">
+  <div class="col-xs-12 pull-right widget" style="margin-bottom: 1em;padding: 8px 0px;">
+    <div class="col-xs-12">
+      <button
+        type="button"
+        class="btn btn-success "
+        [disabled]="isOfferInContract || isOfferArchived || !initSectorDone"
+        (click)="saveOffer()"
+      >
+        {{ isPlanif() ? 'Créer l\'offre' : 'Enregistrer' }}
+      </button>
+      <button
+        *ngIf="isEmployer && obj === 'detail' && isConcretOffer()"
+        type="submit"
+        class="btn btn-danger "
+        (click)="useAsType(true)"
+      >
+        Utiliser comme offre type
+      </button>
+      <button
+        *ngIf="isEmployer && obj === 'detail' && isTemplate()"
+        type="submit"
+        class="btn btn-danger "
+        (click)="useAsType(false)"
+      >
+        Ne plus utiliser comme offre type
+      </button>
+    </div>
+  </div>
+</div>
+
 <div class="alert-zone fixed">
   <alert *ngFor="let alert of alerts; let i = index" [type]="alert.type + ' alert-sm'" dismissible="true">
     <div [innerHTML]="alert.msg"></div>
@@ -500,7 +531,7 @@
             />
           </div>
         </div>
-  
+
         <div
           *ngIf="projectTarget == 'employer'"
           class="form-group row"
