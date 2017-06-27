@@ -15,7 +15,7 @@
     "watch:prod": "webpack --watch --config webpack.prod.config.js --progress --profile --colors --display-error-details --display-cached",
     "build": "node --max_old_space_size=8000 /home/ubuntu/.nvm/versions/node/v5.12.0/bin/npm run build:dev",
     "prebuild:dev": "node --max_old_space_size=8000 /home/ubuntu/.nvm/versions/node/v5.12.0/bin/npm run clean:dist",
-    "build:dev": "webpack --max_old_space_size=8000 --progress --profile --colors --display-error-details --display-cached",
+    "build:dev": "node --max_old_space_size=8000 ./node_modules/webpack/bin/webpack.js --progress --profile --colors --display-error-details --display-cached",
     "prebuild:prod": "node --max_old_space_size=8000 /home/ubuntu/.nvm/versions/node/v5.12.0/bin/npm run clean:dist",
     "build:prod": "node --max_old_space_size=8000 webpack --config webpack.prod.config.js --progress --profile --colors --display-error-details --display-cached",
     "server": "node --max_old_space_size=8000 /home/ubuntu/.nvm/versions/node/v5.12.0/bin/npm run server:dev",
