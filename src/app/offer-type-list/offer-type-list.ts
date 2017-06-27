@@ -67,23 +67,20 @@ export class OfferTypeList {
   loadOffers(){
     this.loading = true;
     let userId = this.currentUser.employer.entreprises[0].id;
+
     this.offersService.getOffersByType("offer-type", this.queryOffset,this.queryLimit, userId, this.projectTarget).then((data: any) => {
       if (data && data.length != 0) {
-        this.offerList = data;
-        for (let i = 0; i < this.offerList.length; i++) {
-          let item = this.offerList[i];
+        //this.offerList = data;
+        for (let i = 0; i < data.length; i++) {
+          let item = data[i];
 
           //pour empecher l'ajout d'offre deja existante (parfois le infinite scroll re-renvoie la derniere offre)
           let canAdd = true;
-          if(this.offerList.length <= this.queryOffset){
-            canAdd = true;
-          }else{
-            if (item.idOffer != this.offerList[this.offerList.length - 1].idOffer) {
-              canAdd = true;
-            }else{
+          for (let j = 0 ; j < this.offerList.length ; j++)
+            if(this.offerList[j].idOffer = item.idOffer){
               canAdd = false;
+              break;
             }
-          }
 
           //si l'offre n'est pas redondante, l'ajouter dans la liste à afficher
           if (canAdd) {
