@@ -420,7 +420,7 @@ export class Contract {
       this.contractData.workAdress = resp.adress.adresse_google_maps;
       this.contractData.interimAddress = resp.adress.adresse_google_maps;
 
-      if (resp.duree_collective != 'null') {
+      if (!Utils.isEmpty(resp.duree_collective)) {
         this.contractData.MonthlyAverageDuration = resp.duree_collective;
       } else {
         this.contractData.MonthlyAverageDuration = "35";
