@@ -70,6 +70,7 @@ export class OfferTypeList {
 
     this.offersService.getOffersByType("offer-type", this.queryOffset,this.queryLimit, userId, this.projectTarget).then((data: any) => {
       if (data && data.length != 0) {
+        debugger;
         //this.offerList = data;
         for (let i = 0; i < data.length; i++) {
           let item = data[i];
@@ -77,7 +78,7 @@ export class OfferTypeList {
           //pour empecher l'ajout d'offre deja existante (parfois le infinite scroll re-renvoie la derniere offre)
           let canAdd = true;
           for (let j = 0 ; j < this.offerList.length ; j++)
-            if(this.offerList[j].idOffer = item.idOffer){
+            if(this.offerList[j].idOffer == item.idOffer){
               canAdd = false;
               break;
             }

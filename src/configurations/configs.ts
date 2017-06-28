@@ -127,12 +127,12 @@ export class Configs {
   public static env: string = 'DEV';
   public static isOnline: boolean = false;
 
-  public static calloutURL: string = 'http://dev.vitonjob.com/prometheus/api/business';
-  public static sqlURL: string = 'http://dev.vitonjob.com/prometheus/api/sql';
-  public static yousignURL:string = 'http://dev.vitonjob.com/prometheus/api/business';
-  public static smsURL: string = 'http://dev.vitonjob.com/prometheus/api/envoisms';
-  public static emailURL: string = 'http://dev.vitonjob.com/prometheus/api/envoimail';
-  public static fssURL: string = 'http://dev.vitonjob.com/prometheus/api/fssjs';
+  public static calloutURL: string = 'http://app.vitonjob.com/api/business';
+  public static sqlURL: string = 'http://app.vitonjob.com/api/sql';
+  public static yousignURL:string = 'http://app.vitonjob.com/api/business';
+  public static smsURL: string = 'http://app.vitonjob.com/api/envoisms';
+  public static emailURL: string = 'http://app.vitonjob.com/api/envoimail';
+  public static fssURL: string = 'http://app.vitonjob.com/api/fssjs';
 
   public static googleMapApiKey: string = 'AIzaSyD6de5QuqKPECTwNSkmBfeRmiTb9147S_Y';
 
