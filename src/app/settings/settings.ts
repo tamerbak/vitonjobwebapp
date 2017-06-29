@@ -420,7 +420,7 @@ export class Settings {
         this.validation = false;
       } else {
         Messenger().post({
-          message: "l'Option suivi de mission a été enregistrée avec succès",
+          message: "l'option suivi de mission a été enregistrée avec succès",
           type: 'success',
           showCloseButton: true
         });

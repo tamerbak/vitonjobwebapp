@@ -36,7 +36,18 @@ export class MissionService {
         "h.heure_debut_new, h.heure_fin_new, " +
         "p.debut as pause_debut, p.fin as pause_fin, p.debut_pointe as pause_debut_pointe, p.fin_pointe as pause_fin_pointe, p.debut_corrigee as is_pause_debut_corrigee, p.fin_corrigee as is_pause_fin_corrigee, p.debut_new as pause_debut_new, p.fin_new as pause_fin_new, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '" + contract.pk_user_contrat + "' order by h.jour_debut, p.debut";
     } else {
-      sql = "SELECT h.pk_user_heure_mission as id, h.jour_debut, h.jour_fin, h.heure_debut, h.heure_fin, h.heure_debut_new, h.heure_fin_new, p.debut as pause_debut, p.fin as pause_fin, p.debut_new as pause_debut_new, p.fin_new as pause_fin_new, p.pk_user_pause as id_pause FROM user_heure_mission as h LEFT JOIN user_pause as p ON p.fk_user_heure_mission = h.pk_user_heure_mission where fk_user_contrat = '" + contract.pk_user_contrat + "' order by h.jour_debut, p.debut";
+      sql = "SELECT h.pk_user_heure_mission as id, " +
+        "h.jour_debut, h.jour_fin, " +
+        "h.heure_debut, h.heure_fin, " +
+        "h.heure_debut_new, h.heure_fin_new, " +
+        "h.date_debut_new, h.date_fin_new, " +
+        "p.debut as pause_debut, p.fin as pause_fin, " +
+        "p.debut_new as pause_debut_new, p.fin_new as pause_fin_new, " +
+        "p.pk_user_pause as id_pause " +
+        "FROM user_heure_mission as h LEFT JOIN user_pause as p " +
+        "ON p.fk_user_heure_mission = h.pk_user_heure_mission " +
+        "where fk_user_contrat = '" + contract.pk_user_contrat + "' " +
+        "order by h.jour_debut, p.debut";
     }
 
     return new Promise(resolve => {
@@ -62,6 +73,8 @@ export class MissionService {
       //if the mission is not yet pushed
       if (ids.indexOf(m.id) == -1) {
         //push the mission
+        m.date_debut_new = DateUtils.convertToFormattedDateHour(new Date(m.date_debut_new));
+        m.date_fin_new = DateUtils.convertToFormattedDateHour(new Date(m.date_fin_new));
         m.date_debut_pointe = DateUtils.convertToFormattedDateHour(new Date(m.date_debut_pointe));
         m.date_fin_pointe = DateUtils.convertToFormattedDateHour(new Date(m.date_fin_pointe));
         m.date_debut_pointe_modifie = DateUtils.convertToFormattedDateHour(new Date(m.date_debut_pointe_modifie));
@@ -607,6 +620,27 @@ export class MissionService {
         .subscribe((data: any) => {
           this.data = data;
           resolve(this.data);
+        });
+    });
+  }
+
+  saveNewHour(id, date, isDayMission, isStart) {
+    let sql;
+    if (isDayMission && isStart) {
+      sql = "update user_heure_mission set date_debut_new = '" + date + "' where pk_user_heure_mission = '" + id + "'";
+    }
+    if (isDayMission && !isStart) {
+      sql = "update user_heure_mission set date_fin_new = '" + date + "' where pk_user_heure_mission = '" + id + "'";
+    }
+
+    console.log(sql);
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(this.configuration.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe((data: any) => {
+          resolve(data);
         });
     });
   }

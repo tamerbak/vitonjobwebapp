@@ -133,13 +133,20 @@
                     Option 3: Définition, suivi et validation des horaires par badgeuse
                   </label>
                 </div>
+                <div class="abc-radio">
+                  <input type="radio" name="radio1" id="radio4" value="4" (click)="watchOption($event)"
+                         [checked]="missionOption == '4'">
+                  <label for="radio4">
+                    Option 4: Modification des heures prévues sans intervention du jobyer
+                  </label>
+                </div>
               </div>
 
             </div>
 
             <div *ngIf="phase=='CHANGE_PASSWORD'">
             <div class="form-group row">
-              <label for="password1" class="col-md-4 col-xs-12 form-control-label text-md-right">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                 Mot de passe actuel
               </label>
               <div class="col-md-7 col-xs-12">
@@ -189,7 +196,7 @@
             </div>
   
             <div class="form-group row">
-              <label for="password2" class="col-md-4 col-xs-12 form-control-label text-md-right">
+              <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                 Confirmation du mot de passe
               </label>
               <div class="col-md-7 col-xs-12">

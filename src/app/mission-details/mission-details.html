@@ -55,7 +55,7 @@
           </button>
         </fieldset>-->
         <div *ngFor="let day of missionHours, let i=index">
-          <table class="table table-striped table-condensed" width="600">
+          <table class="table table-striped table-condensed" width="700">
             
             <thead class="no-bd col-xs-12">
             <tr>
@@ -72,6 +72,9 @@
               <th>Heure</th>
               
               <th class="text-align-right">Prévue</th>
+  
+              <th class="text-align-center" *ngIf="+contract.option_mission == 4">Modifiée</th>
+              
               <!--A revoir: la condition-->
               <th class="text-align-center" *ngIf="upperCase(contract.approuve) == 'NON' && isPointing">
                 Pointée/Modifiée par le jobyer
@@ -110,6 +113,10 @@
               <td class="text-align-right" width="100"
                   [style.color]="!isEmpty(day.heure_debut_new) ? 'orange' : 'gray'">
                 {{ day.heure_debut_temp }}
+              </td>
+  
+              <td class="text-align-right" width="100" *ngIf="+contract.option_mission == 4">
+                {{ !isEmpty(day.date_debut_new) ? day.date_debut_new : '--:--'}}
               </td>
               
               <td class="text-align-center" width="100" *ngIf="isPointing">
@@ -166,6 +173,15 @@
                     Refuser
                   </button>
                 </div>
+  
+                <!-- Modifier les heures prévues par l'employeur-->
+                <button
+                  class="btn btn-primary btn-sm"
+                  (click)="openModalHour(day, true, true, 'modifyScheduled')"
+                  *ngIf="canModifyPlannedSchedule">
+                  <i class="glyphicon glyphicon-pencil"></i>
+                  Modifier
+                </button>
                 
                 <button
                   type="button" class="btn btn-default btn-sm"
@@ -297,6 +313,10 @@
               <td class="text-align-right" width="100" [style.color]="!isEmpty(day.heure_fin_new) ? 'orange' : 'gray'">
                 {{ day.heure_fin_temp }}
               </td>
+  
+              <td class="text-align-right" width="100" *ngIf="+contract.option_mission == 4">
+                {{ !isEmpty(day.date_fin_new) ? day.date_fin_new : '--:--'}}
+              </td>
               
               <td class="text-align-center" width="100" *ngIf="isPointing">
                 <span class="label label-{{ setColorForPointedHours(day, false)}}">
@@ -353,7 +373,17 @@
                     Refuser
                   </button>
                 </div>
+  
+                <!-- Modifier les heures prévues par l'employeur-->
+                <button
+                  class="btn btn-primary btn-sm"
+                  (click)="openModalHour(day, true, false, 'modifyScheduled')"
+                  *ngIf="canModifyPlannedSchedule">
+                  <i class="glyphicon glyphicon-pencil"></i>
+                  Modifier
+                </button>
                
+                <!-- Pointage par le jobyer -->
                 <button
                   type="button" class="btn btn-default btn-sm"
                   *ngIf="isEmpty(day.date_fin_pointe) && canPoint && !isEmpReleveGenerated"
