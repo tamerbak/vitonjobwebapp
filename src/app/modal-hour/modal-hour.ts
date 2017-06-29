@@ -1,6 +1,5 @@
 import {Component, Input, Output, EventEmitter} from "@angular/core";
 import {DateUtils} from "../utils/date-utils";
-import {Utils} from "../utils/utils";
 import {AlertComponent} from 'ng2-bootstrap/components/alert';
 
 declare let jQuery: any;

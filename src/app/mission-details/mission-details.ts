@@ -82,6 +82,7 @@ export class MissionDetails{
   isPointing: boolean;
   canPoint: boolean;
   isEmpReleveGenerated: boolean;
+  canModifyPlannedSchedule: boolean;
 
   dayObj: any;
 
@@ -215,7 +216,7 @@ export class MissionDetails{
         //this.contract.vu = 'Oui';
         var message = "Horaire du contrat numéro : " + this.contract.numero + " validé";
         //this.sendInfoBySMS(message, "toJobyer");
-        if (this.contract.option_mission != 1) {
+        if (this.isPointing) {
           //this.missionService.schedulePointeuse(this.contract, this.missionHours, this.missionPauses);
         }
       }
@@ -371,7 +372,7 @@ export class MissionDetails{
         return;
       } else {
         // data saved
-        if (this.contract.option_mission == 2 && !this.isEmployer) {
+        if (+this.contract.option_mission == 2 && !this.isEmployer) {
           var message = "Le relevé d'heures du contrat numéro " + this.contract.numero + " a été signé.";
           this.sendInfoBySMS(message, "toEmployer");
         }
@@ -632,15 +633,17 @@ export class MissionDetails{
   refreshGraphicalData() {
     this.hasJobyerSigned = (this.contract.signature_jobyer.toUpperCase() == "OUI");
 
+    this.isEmpReleveGenerated = (this.contract.releve_employeur.toUpperCase() ==  'OUI');
+
     //this.isNewMission = this.contract.vu.toUpperCase() == 'Oui'.toUpperCase() ? false : true;
 
-    this.isPointing = (this.contract.option_mission != 1);
+    this.isPointing = (+this.contract.option_mission != 1 && +this.contract.option_mission != 4);
 
     this.canPoint = (!this.isEmployer && this.hasJobyerSigned && this.isPointing);
 
-    this.invoiceReady = !Utils.isEmpty(this.contract.numero_de_facture) ;
+    this.canModifyPlannedSchedule = (this.isEmployer && +this.contract.option_mission == 4 && !this.isEmpReleveGenerated && this.hasJobyerSigned);
 
-    this.isEmpReleveGenerated = (this.contract.releve_employeur.toUpperCase() ==  'OUI')
+    this.invoiceReady = !Utils.isEmpty(this.contract.numero_de_facture) ;
 
     this.financeService.checkInvoice(this.contract.pk_user_contrat).then(
       (invoice: any) => {
@@ -728,6 +731,12 @@ export class MissionDetails{
       //dans le cas ou l'employeur refuse une heure pointée et saisi une autre
       if(this.dayObj.decision == 'decline') {
         this.refuseHour(this.dayObj.day, sqlfyDate, this.dayObj.isDayMission, this.dayObj.isStart);
+      }
+
+      if(this.dayObj.decision == 'modifyScheduled') {
+        this.missionService.saveNewHour(this.dayObj.day.id, sqlfyDate, this.dayObj.isDayMission, this.dayObj.isStart).then((data: any) => {
+          this.refreshMissionHours(this.isPointing);
+        });
       }
     }
   }
