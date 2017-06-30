@@ -2,8 +2,8 @@ export class HeureMission{
   id: number;
 
   //jours de la mission
-  jour_debut: Date;
-  jour_fin: Date;
+  jour_debut: any;
+  jour_fin: any;
   //heures prévues de la mission
   heure_debut: number;
   heure_fin: number;
@@ -34,6 +34,10 @@ export class HeureMission{
   heure_debut_temp: string;
   heure_fin_temp: string;
 
+  //date prévue modifiée
+  date_debut_new: string;
+  date_fin_new: string;
+
   constructor(){
     this.id = 0;
 
@@ -62,5 +66,8 @@ export class HeureMission{
 
     this.heure_debut_temp = "";
     this.heure_fin_temp = "";
+
+    this.date_debut_new = "";
+    this.date_fin_new = "";
   }
 }

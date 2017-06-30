@@ -346,8 +346,7 @@ export class MissionDetails{
     this.addAlert('info', "La génération du relevé d'heures est en cours. Veuillez patienter ...");
 
     this.missionService.saveCorrectedMissions(
-      this.contract.pk_user_contrat, this.missionHours, this.missionPauses, this.isPointing
-    ).then((data: any) => {
+      this.contract.pk_user_contrat, this.missionHours, this.missionPauses, this.isPointing, +this.contract.option_mission).then((data: any) => {
       if (data && data.status == "success") {
         console.log("timesheet saved");
         var message = "Le relevé d'heures du contrat numéro : " + this.contract.numero + "vous a été envoyé.";
