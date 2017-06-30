@@ -23,6 +23,7 @@ import {OffersService} from "../../providers/offer.service";
 import {EnvironmentService} from "../../providers/environment.service";
 import {SelectLanguages} from "../components/select-languages/select-languages";
 import {SearchService} from "../../providers/search-service";
+import {LoaderService} from "../../providers/loader.service";
 
 declare let jQuery: any;
 declare let Messenger: any;
@@ -263,7 +264,8 @@ export class Profile{
               private zone: NgZone,
               private router: Router,
               private environmentService: EnvironmentService,
-              private _loader: MapsAPILoader) {
+              private _loader: MapsAPILoader,
+              private loader: LoaderService) {
 
     this.currentUser = this.sharedService.getCurrentUser();
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
@@ -712,10 +714,10 @@ export class Profile{
    * Initialize form with user values
    */
   initForm() {
-
+    this.loader.display();
     this.showForm = true;
-    var offset = jQuery("#profileForm").offset().top;
-    var point = offset+window.innerHeight-50;
+    //var offset = jQuery("#profileForm").offset().top;
+    //var point = offset+window.innerHeight-50;
 
     this.title = !this.currentUser.titre ? "M." : this.currentUser.titre;
     jQuery('.titleSelectPicker').selectpicker('val', this.title);
@@ -797,6 +799,7 @@ export class Profile{
         this.alwaysAvailable = (data.toujours_disponible != 'Non');
         jQuery('.always-available').prop('checked', this.alwaysAvailable);
         this.zonesTitre = data.moyen_de_transport;
+        this.loader.hide();
       });
 
 
@@ -972,6 +975,7 @@ export class Profile{
           });
         }
         this.isValidJobAddress = true;
+        this.loader.hide();
       }
 
     }
@@ -1031,16 +1035,17 @@ export class Profile{
             self.jobSelected(e.val);
           }
         );
-
+      this.loader.hide();
     }
 
 
 
     this.initValidation();
+    this.loader.hide();
     //$( "#profileForm" ).scrollTop( 300 );
-    window.setTimeout(function(){
+    /*window.setTimeout(function(){
       window.scrollTo(0,point);
-    }, 1000);
+    }, 1000);*/
 
   }
 
