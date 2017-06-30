@@ -484,7 +484,7 @@ export class MissionService {
     });
   }
 
-  saveCorrectedMissions(id, missionHours, pauseHours, isPointing) {
+  saveCorrectedMissions(id, missionHours, pauseHours, isPointing, optionMission: number) {
     let sql = "";
     if(isPointing) {
       for (var i = 0; i < missionHours.length; i++) {
@@ -517,15 +517,31 @@ export class MissionService {
         }
       }
     }else{
-      for (let i = 0; i < missionHours.length; i++) {
-        let m = missionHours[i];
-        let str = " debut_corrigee='NON', fin_corrigee='NON', " +
-          " date_debut_pointe = '" + DateUtils.sqlfyWithHours(DateUtils.setMinutesToDate(new Date(m.jour_debut), m.heure_debut)) + "', " +
-          " date_fin_pointe = '" + DateUtils.sqlfyWithHours(DateUtils.setMinutesToDate(new Date(m.jour_fin), m.heure_fin)) + "', " +
-          " date_debut_pointe_corrige = '" + DateUtils.sqlfyWithHours(DateUtils.setMinutesToDate(new Date(m.jour_debut), m.heure_debut)) + "', " +
-          " date_fin_pointe_corrige = '" + DateUtils.sqlfyWithHours(DateUtils.setMinutesToDate(new Date(m.jour_fin), m.heure_fin)) + "' ";
+      if(optionMission == 4){
+        for (let i = 0; i < missionHours.length; i++) {
+          let m: HeureMission = missionHours[i];
+          let startDate = (Utils.isEmpty(m.date_debut_new) ? ( DateUtils.sqlfyWithHours(DateUtils.setMinutesToDate(new Date(m.jour_debut), m.heure_debut))) : ( DateUtils.sqlfyWithHours(DateUtils.reconvertFormattedDateHour(m.date_debut_new))));
+          let endDate = (Utils.isEmpty(m.date_fin_new) ? ( DateUtils.sqlfyWithHours(DateUtils.setMinutesToDate(new Date(m.jour_fin), m.heure_fin))) : ( DateUtils.sqlfyWithHours(DateUtils.reconvertFormattedDateHour(m.date_fin_new))));
 
-        sql = sql + " update user_heure_mission set " + str + " where pk_user_heure_mission = '" + m.id + "'; ";
+          let str = " debut_corrigee='NON', fin_corrigee='NON', " +
+            " date_debut_pointe = '" + startDate + "', " +
+            " date_fin_pointe = '" + endDate + "', " +
+            " date_debut_pointe_corrige = '" + startDate + "', " +
+            " date_fin_pointe_corrige = '" + endDate + "' ";
+
+          sql = sql + " update user_heure_mission set " + str + " where pk_user_heure_mission = '" + m.id + "'; ";
+        }
+      }else{
+        for (let i = 0; i < missionHours.length; i++) {
+          let m = missionHours[i];
+          let str = " debut_corrigee='NON', fin_corrigee='NON', " +
+            " date_debut_pointe = '" + DateUtils.sqlfyWithHours(DateUtils.setMinutesToDate(new Date(m.jour_debut), m.heure_debut)) + "', " +
+            " date_fin_pointe = '" + DateUtils.sqlfyWithHours(DateUtils.setMinutesToDate(new Date(m.jour_fin), m.heure_fin)) + "', " +
+            " date_debut_pointe_corrige = '" + DateUtils.sqlfyWithHours(DateUtils.setMinutesToDate(new Date(m.jour_debut), m.heure_debut)) + "', " +
+            " date_fin_pointe_corrige = '" + DateUtils.sqlfyWithHours(DateUtils.setMinutesToDate(new Date(m.jour_fin), m.heure_fin)) + "' ";
+
+          sql = sql + " update user_heure_mission set " + str + " where pk_user_heure_mission = '" + m.id + "'; ";
+        }
       }
     }
 
