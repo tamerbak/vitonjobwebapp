@@ -23,7 +23,6 @@ import {OffersService} from "../../providers/offer.service";
 import {EnvironmentService} from "../../providers/environment.service";
 import {SelectLanguages} from "../components/select-languages/select-languages";
 import {SearchService} from "../../providers/search-service";
-import {LoaderService} from "../../providers/loader.service";
 
 declare let jQuery: any;
 declare let Messenger: any;
@@ -116,7 +115,7 @@ export class Profile{
   nameJA: string;
   zipCodeJA: string;
 
-   //CorrespondenceAddress params
+  //CorrespondenceAddress params
   cityCA: string;
   countryCA: string;
   streetCA: string;
@@ -264,46 +263,15 @@ export class Profile{
               private zone: NgZone,
               private router: Router,
               private environmentService: EnvironmentService,
-              private _loader: MapsAPILoader,
-              private loader: LoaderService) {
+              private _loader: MapsAPILoader) {
 
     this.currentUser = this.sharedService.getCurrentUser();
-    this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
-
-    this.transportMeans = [
-      "Véhicule",
-      "Transport en commun Zone 1 à 2",
-      "Transport en commun Zone 1 à 3",
-      "Transport en commun Zone 1 à 4",
-      "Transport en commun Zone 1 à 5",
-      "Transport en commun Zone 2 à 3",
-      "Transport en commun Zone 3 à 4",
-      "Transport en commun Zone 4 à 5",
-      "Transport en commun toutes zones"
-    ];
 
     if (!this.currentUser) {
       this.router.navigate(['home']);
       return;
     } else {
-      if (this.isNewUser) {
-        this.initForm();
-      }
-
-      let accountType : string = this.projectTarget=='jobyer'?'jobyer':'employeur';
-      let idEntity : string = accountType=="jobyer"?
-        this.currentUser.jobyer.id:
-        this.currentUser.employer.entreprises[0].id;
-
-      this.profileService.loadProfileInformations(accountType, idEntity).then((data:any)=>{
-        if(accountType == 'jobyer'){
-          this.populateJobyerForm(data);
-          this.dataForNationalitySelectReady = true;
-        } else {
-          this.populateEmployerForm(data);
-        }
-      });
-
+      this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
       this.getUserInfos();
       if (this.isNewUser) {
         this.initForm();
@@ -311,12 +279,50 @@ export class Profile{
       if (!this.isRecruiter && !this.isEmployer) {
         this.personalAddressLabel = "personnelle";
         this.jobAddressLabel = "Adresse de départ au travail";
+        listService.loadNationalities().then((response: any) => {
+          this.nationalities = response.data;
+          this.dataForNationalitySelectReady = true;
+          if (this.isFrench || this.isEuropean == 0) {
+            this.scanTitle = " de votre titre d'identité";
+          }
+          if (this.isEuropean == 1) {
+            this.scanTitle = " de votre titre de séjour";
+          }
+          this.loadAttachement(this.scanTitle);
+        });
+
       } else {
         this.scanTitle = " de votre Kbis";
         this.loadAttachement(this.scanTitle);
+        listService.loadConventions().then((response: any) => {
+          this.conventions = response;
+        });
       }
     }
     this.isFrench = true;
+
+    //load countries list
+    this.listService.loadCountries("jobyer").then((data: any) => {
+      this.pays = data.data;
+    });
+    //loadQualities
+    this.qualities = this.sharedService.getOwnQualityList();
+    if (!this.qualities || this.qualities.length == 0) {
+      let role = this.projectTarget != "jobyer" ? "employeur" : 'jobyer'
+      this.listService.loadQualities(this.projectTarget, role).then((data: any) => {
+        this.qualities = data.data;
+        this.sharedService.setOwnQualityList(this.qualities);
+      })
+    }
+
+    //loadLanguages
+    this.languages = this.sharedService.getLangList();
+    if (!this.languages || this.languages.length == 0) {
+      this.listService.loadLanguages().then((data: any) => {
+        this.languages = data.data;
+        this.sharedService.setLangList(this.languages);
+      })
+    }
 
     //load Softwares for jobyers pharmaciens
     this.listService.loadPharmacieSoftwares().then((data: any) => {
@@ -340,94 +346,22 @@ export class Profile{
       endHour : 0
     };
     if(!this.isEmployer && !this.isRecruiter){
+      this.initDisponibilites();
       this.initRequirements();
       this.initinterestingJobs();
     }
 
-
-  }
-
-  populateJobyerForm(data : any){
-    this.qualities = data.masterData.qualities;
-    this.languages = data.masterData.languages;
-    this.pays = data.masterData.countries;
-    this.nationalities = data.masterData.nationalities;
-
-    this.birthdate = data.dateNaissance;
-    this.index = data.paysIndex;
-    this.birthdep = data.departmentNum;
-    this.birthdepId = data.departmentId;
-    this.numSS = data.numSS;
-    this.nationalityId = data.natId;
-    this.isEuropean = data.identifiantNationalite;
-    this.isResident = data.estResidant;
-    this.numStay = data.numTS;
-    this.isCIN = this.index == 33;
-    this.cni = data.cni;
-    this.dateStay = data.delivranceTS;
-    this.dateFromStay = data.duTS;
-    this.dateToStay = data.auTS;
-    this.whoDeliverStay = data.prefectureLibelle;
-
-    this.personalAddress = data.personnalAdress.fullAdress;
-    this.jobAddress = data.workAdress.fullAdress;
-    this.correspondenceAddress = data.correspondanceAdress.fullAdress;
-    this.savedQualities=data.qualityData;
-    for(let i = 0 ; i < data.languageData.length ; i++) {
-      let l = {
-        'class':"com.vitonjob.callouts.offer.model.LanguageData",
-        id:data.languageData[i].idLanguage,
-        libelle:data.languageData[i].libelle,
-        level:data.languageData[i].level
-      };
-      this.savedLanguages.push(l);
-    }
-    this.alwaysAvailable = data.toujours_disponible == 'Oui';
-
-    for(let i = 0 ; i < data.calendarData.length ; i++){
-      let c = {
-        startDate : data.calendarData[i].date,
-        endDate : data.calendarData[i].dateEnd,
-        startHour : data.calendarData[i].startHour,
-        endHour : data.calendarData[i].endHour,
-      };
-      this.disponibilites.push(c);
-    }
-
-    if (this.isFrench || this.isEuropean == 0) {
-      this.scanTitle = " de votre titre d'identité";
-    }
-    if (this.isEuropean == 1) {
-      this.scanTitle = " de votre titre de séjour";
-    }
-    this.loadAttachement(this.scanTitle);
-  }
-
-  populateEmployerForm(data : any){
-    this.qualities = data.masterData.qualities;
-    this.languages = data.masterData.languages;
-    this.conventions = data.masterData.conventions;
-
-    this.companyname = data.raisonSociale;
-    this.siret = data.siret;
-    this.ape = data.naf;
-    this.conventionId = data.convention;
-    this.collective_heure_hebdo = data.collectiveWorkDuration;
-    this.selectedMedecine = {id : data.medicalOrganism.id, libelle:data.code+' - '+ data.medicalOrganism.libelle, code_urssafe : data.medicalOrganism.codeUrssaf};
-    this.personalAddress = data.hqAdress.fullAdress;
-    this.jobAddress = data.workAdress.fullAdress;
-    this.correspondenceAddress = data.correspondanceAdress.fullAdress;
-    this.savedQualities=data.qualities;
-    for(let i = 0 ; i < data.languages.length ; i++) {
-      let l = {
-        'class':"com.vitonjob.callouts.offer.model.LanguageData",
-        id:data.languages[i].idLanguage,
-        libelle:data.languages[i].libelle,
-        level:data.languages[i].level
-      };
-      this.savedLanguages.push(l);
-    }
-
+    this.transportMeans = [
+      "Véhicule",
+      "Transport en commun Zone 1 à 2",
+      "Transport en commun Zone 1 à 3",
+      "Transport en commun Zone 1 à 4",
+      "Transport en commun Zone 1 à 5",
+      "Transport en commun Zone 2 à 3",
+      "Transport en commun Zone 3 à 4",
+      "Transport en commun Zone 4 à 5",
+      "Transport en commun toutes zones"
+    ];
   }
 
   initinterestingJobs(){
@@ -531,8 +465,24 @@ export class Profile{
       });
     }
 
+    if(!this.isRecruiter) {
+      //get user qualities
+      let id = this.currentUser.estEmployeur ? this.currentUser.employer.entreprises[0].id : this.currentUser.jobyer.id;
+      this.profileService.getUserQualities(id, this.projectTarget).then((data: any) => {
+        if (data) {
+          this.savedQualities = data;
+        }
+      });
+
+      this.profileService.getUserLanguages(id, this.projectTarget).then((data: any) => {
+        if (data) {
+          this.savedLanguages = data;
+        }
+      });
+    }
     //cv && nb work and study hours
     if(this.projectTarget == 'jobyer'){
+      this.cv = this.currentUser.jobyer.cv;
       this.nbWorkHours = this.currentUser.jobyer.nbWorkHours;
       this.nbWorkVitOnJob = this.currentUser.jobyer.nbVitOnJobHours/60;
       this.isNbStudyHoursBig = this.currentUser.jobyer.nbStudyHoursBig;
@@ -716,8 +666,8 @@ export class Profile{
   initForm() {
 
     this.showForm = true;
-    //var offset = jQuery("#profileForm").offset().top;
-    //var point = offset+window.innerHeight-50;
+    var offset = jQuery("#profileForm").offset().top;
+    var point = offset+window.innerHeight-50;
 
     this.title = !this.currentUser.titre ? "M." : this.currentUser.titre;
     jQuery('.titleSelectPicker').selectpicker('val', this.title);
@@ -735,7 +685,7 @@ export class Profile{
 
 
 
-     if (!this.isEmployer && !this.isNewUser)
+    if (!this.isEmployer && !this.isNewUser)
       this.profileService.loadAdditionalUserInformations(this.currentUser.jobyer.id).then((data: any) => {
         data = data.data[0];
         this.birthname = Utils.preventNull(data.nom_de_jeune_fille);
@@ -799,7 +749,6 @@ export class Profile{
         this.alwaysAvailable = (data.toujours_disponible != 'Non');
         jQuery('.always-available').prop('checked', this.alwaysAvailable);
         this.zonesTitre = data.moyen_de_transport;
-
       });
 
 
@@ -975,7 +924,6 @@ export class Profile{
           });
         }
         this.isValidJobAddress = true;
-
       }
 
     }
@@ -1041,11 +989,10 @@ export class Profile{
 
 
     this.initValidation();
-
     //$( "#profileForm" ).scrollTop( 300 );
-    /*window.setTimeout(function(){
+    window.setTimeout(function(){
       window.scrollTo(0,point);
-    }, 1000);*/
+    }, 1000);
 
   }
 
@@ -1378,11 +1325,11 @@ export class Profile{
       }
       //vérifier la validité du nom de naissance pour les dames
       if(this.title == "Mme"){
-       if(this.isValidBirthname && !this.isEmpty(this.birthname)){
-         _isFormValid = true;
-       } else {
-         _isFormValid = false;
-       }
+        if(this.isValidBirthname && !this.isEmpty(this.birthname)){
+          _isFormValid = true;
+        } else {
+          _isFormValid = false;
+        }
       }
     }
     return _isFormValid;
@@ -2036,11 +1983,11 @@ export class Profile{
   }
 
   watchBirthdate(e) {
-      let birthdateChecked = AccountConstraints.checkBirthDate(e);
-      this.birthdateHidden = e;
-      this.isValidBirthdate = birthdateChecked.isValid;
-      this.birthdateHint = birthdateChecked.hint;
-      this.isValidForm();
+    let birthdateChecked = AccountConstraints.checkBirthDate(e);
+    this.birthdateHidden = e;
+    this.isValidBirthdate = birthdateChecked.isValid;
+    this.birthdateHint = birthdateChecked.hint;
+    this.isValidForm();
   }
 
   initDisponibilites(){
@@ -2189,15 +2136,15 @@ export class Profile{
 
   downloadFile(content) {
     let pureBase64 = content.split(';')[1];
-	let url = "data:application/octet-stream;base64," + pureBase64;
+    let url = "data:application/octet-stream;base64," + pureBase64;
 
-	let downloadLink = document.createElement("a");
-	downloadLink.href = url;
-	//downloadLink.download = content.split(';')[0];
-	downloadLink.setAttribute("download", content.split(';')[0]);
-	document.body.appendChild(downloadLink);
-	downloadLink.click();
-	document.body.removeChild(downloadLink);
+    let downloadLink = document.createElement("a");
+    downloadLink.href = url;
+    //downloadLink.download = content.split(';')[0];
+    downloadLink.setAttribute("download", content.split(';')[0]);
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
   }
 
   deleteFile() {
