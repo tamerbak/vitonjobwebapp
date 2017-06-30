@@ -714,7 +714,7 @@ export class Profile{
    * Initialize form with user values
    */
   initForm() {
-    this.loader.display();
+
     this.showForm = true;
     //var offset = jQuery("#profileForm").offset().top;
     //var point = offset+window.innerHeight-50;
@@ -799,7 +799,7 @@ export class Profile{
         this.alwaysAvailable = (data.toujours_disponible != 'Non');
         jQuery('.always-available').prop('checked', this.alwaysAvailable);
         this.zonesTitre = data.moyen_de_transport;
-        this.loader.hide();
+
       });
 
 
@@ -975,7 +975,7 @@ export class Profile{
           });
         }
         this.isValidJobAddress = true;
-        this.loader.hide();
+
       }
 
     }
@@ -1035,13 +1035,13 @@ export class Profile{
             self.jobSelected(e.val);
           }
         );
-      this.loader.hide();
+
     }
 
 
 
     this.initValidation();
-    this.loader.hide();
+
     //$( "#profileForm" ).scrollTop( 300 );
     /*window.setTimeout(function(){
       window.scrollTo(0,point);
