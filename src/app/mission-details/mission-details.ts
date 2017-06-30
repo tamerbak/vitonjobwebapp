@@ -747,7 +747,7 @@ export class MissionDetails{
   generatePayement(params){
     this.missionService.generatePayement(this.contract.pk_user_contrat, params.monthIndex).then((data: any) => {
       if(data && data.status == 200 && !Utils.isEmpty(data._body)){
-        this.addAlert("success", "La paie " + (params.monthIndex == 0 ? "de " : "du mois de ") + params.monthName + " a été bien générée.");
+        this.addAlert("success", "La paie " + (params.monthIndex == 0 ? "de " : "du mois de ") + params.monthName + " a bien été générée.");
       }
     });
   }
