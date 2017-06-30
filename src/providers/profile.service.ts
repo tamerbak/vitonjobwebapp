@@ -12,6 +12,38 @@ export class ProfileService{
     this.http = http;
   }
 
+
+  loadProfileInformations(accountType, idEntity){
+    let arg = {
+      'class':'com.vitonjob.callouts.jobyerInfo.AccountToken',
+      entityId:idEntity+"",
+      accountType:accountType+""
+    }
+    let encPL = btoa(JSON.stringify(arg));
+
+    let payload = {
+      'class': 'fr.protogen.masterdata.model.CCallout',
+      'id': 10100,
+      'args': [
+        {
+          'class': 'fr.protogen.masterdata.model.CCalloutArguments',
+          label: 'recuperation infos',
+          value: encPL
+        }
+      ]
+    };
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpJsonHeaders();
+      this.http.post(Configs.yousignURL, JSON.stringify(payload), {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          console.clear();
+          resolve(data);
+        });
+    });
+  }
+
   loadAdditionalUserInformations(id) {
     let sql = "select j.*, n.libelle as nationalite_libelle from user_jobyer as j LEFT JOIN user_nationalite as n  ON j.fk_user_nationalite = n.pk_user_nationalite where j.pk_user_jobyer = '" + id + "';";
     return new Promise(resolve => {
