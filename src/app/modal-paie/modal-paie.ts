@@ -62,13 +62,15 @@ export class ModalPaie {
       let obj = {id: monthIndex, name: this.months[d.getMonth()]};
 
       if(!Utils.isEmpty(m.date_debut_pointe_corrige) && !Utils.isEmpty(m.date_fin_pointe_corrige)){
-        if(this.pointedMonths.indexOf(obj) != 0) {
+        let index = this.pointedMonths.findIndex(p => p.id === obj.id);
+        if(index == -1) {
           this.pointedMonths.push(obj);
         }else{
           continue;
         }
       }else{
-        if(monthsToDelete.indexOf(obj) != 0) {
+        let index = monthsToDelete.findIndex(p => p.id === obj.id);
+        if(index == -1) {
           monthsToDelete.push(obj);
         }else{
           continue;
@@ -78,7 +80,8 @@ export class ModalPaie {
 
     //supprimer les mois non pointés intégralement du tableau pointedMonths
     for(let i = 0; i < this.pointedMonths.length; i++){
-      if(monthsToDelete.indexOf(this.pointedMonths[i]) == 0){
+      let index = monthsToDelete.findIndex(p => p.id === this.pointedMonths[i].id);
+      if(index == 0){
         this.pointedMonths.splice(i, 1);
       }
     }
