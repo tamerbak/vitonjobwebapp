@@ -840,6 +840,15 @@ export class MissionDetails{
     }
   }
 
+  declareAbsence(day){
+    debugger;
+    day.absence = 'Oui';
+    this.missionService.absence(day).then((data:any)=>{
+      console.clear();
+      console.log(data);
+    });
+  }
+
   isEmpty(str) {
     return Utils.isEmpty(str);
   }
