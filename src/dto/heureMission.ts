@@ -38,6 +38,8 @@ export class HeureMission{
   date_debut_new: string;
   date_fin_new: string;
 
+  absence: string;
+
   constructor(){
     this.id = 0;
 
