@@ -86,7 +86,7 @@ export class ModalPaie {
         }else{
           if (new Date(m.jour_debut).getMonth() == +this.selectedMonth - 1) {
             if (Utils.isEmpty(m.date_debut_pointe_corrige) || Utils.isEmpty(m.date_fin_pointe_corrige)) {
-              this.addAlert("warning", "Vous devez valider tous les horaires de travail du mois seléctionné avant de pouvoir générer la paie.");
+              this.addAlert("warning", "Vous devez valider tous les horaires de travail du mois sélectionné avant de pouvoir générer la paie.");
               return;
             } else {
               continue;
