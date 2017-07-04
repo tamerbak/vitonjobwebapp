@@ -106,8 +106,12 @@
                 <button class="btn btn-primary btn-sm"
                         *ngIf="day.absence.toUpperCase() == 'NON'"
                         (click)="declareAbsence(day)">
-                  Declarer absence
+                  Déclarer absence
                 </button>
+                <span class="label label-{{ setColorForPointedHours(day, true)}}"
+                  *ngIf="day.absence.toUpperCase() == 'OUI'">
+                  Jobyer absent
+                </span>
               </th>
             </tr>
             </thead>

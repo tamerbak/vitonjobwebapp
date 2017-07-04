@@ -464,7 +464,7 @@ export class MissionDetails{
     if(this.isPointing) {
       for (var i = 0; i < this.missionHours.length; i++) {
         var m = this.missionHours[i];
-        if (Utils.isEmpty(m.date_debut_pointe_corrige) || Utils.isEmpty(m.date_fin_pointe_corrige)) {
+        if (m.absence.toUpperCase() == 'NON' && (Utils.isEmpty(m.date_debut_pointe_corrige) || Utils.isEmpty(m.date_fin_pointe_corrige))) {
           disable = true;
           return disable;
         } else {
@@ -841,7 +841,6 @@ export class MissionDetails{
   }
 
   declareAbsence(day){
-    debugger;
     day.absence = 'Oui';
     this.missionService.absence(day).then((data:any)=>{
       console.clear();
