@@ -23,6 +23,21 @@ export class MissionService {
     this.configuration = Configs.setConfigs('employer');
   }
 
+  absence(day) {
+    let sql = "update user_heure_mission set absence='Oui' where pk_user_heure_mission="+day.id;
+
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map((res) => res.json())
+        .subscribe((data) => {
+          this.data = data;
+          resolve(this.data);
+        });
+    });
+  }
+
   listMissionHours(contract, forPointing) {
     let sql="";
     sql = "SELECT h.pk_user_heure_mission as id, " +
@@ -34,7 +49,7 @@ export class MissionService {
       "h.date_debut_pointe_corrige, h.date_fin_pointe_corrige, " +
       "h.est_heure_debut_aime, h.est_heure_fin_aime, " +
       "h.debut_corrigee as is_heure_debut_corrigee, h.fin_corrigee as is_heure_fin_corrigee, " +
-      "h.heure_debut_new, h.heure_fin_new, " +
+      "h.heure_debut_new, h.heure_fin_new, h.absence, " +
       "p.debut as pause_debut, p.fin as pause_fin, " +
       "p.debut_pointe as pause_debut_pointe, p.fin_pointe as pause_fin_pointe, " +
       "p.debut_corrigee as is_pause_debut_corrigee, p.fin_corrigee as is_pause_fin_corrigee, " +
