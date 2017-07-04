@@ -546,5 +546,5 @@
 
 <div modal-hour (confirmed)="saveHour($event)"></div>
 
-<div modal-paie [missionHours]="missionHours" (confirmed)="generatePayement($event)"></div>
+<div modal-paie [missionHours]="missionHours" [isPointing]="isPointing" (confirmed)="generatePayement($event)"></div>
 

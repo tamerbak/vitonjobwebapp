@@ -745,11 +745,29 @@ export class MissionDetails{
   }
 
   generatePayement(params){
-    this.missionService.generatePayement(this.contract.pk_user_contrat, params.monthIndex).then((data: any) => {
-      if(data && data.status == 200 && !Utils.isEmpty(data._body)){
-        this.addAlert("success", "La paie " + (params.monthIndex == 0 ? "de " : "du mois de ") + params.monthName + " a bien été générée.");
-      }
-    });
+    if(!this.isPointing) {
+      this.missionService.saveCorrectedMissions(
+        this.contract.pk_user_contrat, this.missionHours, this.missionPauses, this.isPointing, +this.contract.option_mission).then((data: any) => {
+        if (data && data.status == "success") {
+          this.missionService.generatePayement(this.contract.pk_user_contrat, params.monthIndex).then((data: any) => {
+            if (data && data.status == 200 && !Utils.isEmpty(data._body)) {
+              this.addAlert("success", "La paie " + (params.monthIndex == 0 ? "de " : "du mois de ") + params.monthName + " a bien été générée.");
+            }
+          });
+        } else {
+          this.alerts = [];
+          this.addAlert('danger', "Une erreur est survenue. Veuillez réessayer l'opréation.");
+        }
+      });
+    }else{
+      this.missionService.generatePayement(this.contract.pk_user_contrat, params.monthIndex).then((data: any) => {
+        if (data && data.status == 200 && !Utils.isEmpty(data._body)) {
+          this.addAlert("success", "La paie " + (params.monthIndex == 0 ? "de " : "du mois de ") + params.monthName + " a bien été générée.");
+        }else{
+          this.addAlert('danger', "Une erreur est survenue lors de la génération de la paie. Veuillez réessayer l'opréation.");
+        }
+      });
+    }
   }
 
   prepareMissionHoursArray(){
