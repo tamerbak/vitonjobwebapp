@@ -22,6 +22,9 @@ export class ModalPaie {
   @Input()
   missionHours: Array<HeureMission>;
 
+  @Input()
+  isPointing: boolean;
+
   @Output()
   confirmed = new EventEmitter<any>();
 
@@ -55,46 +58,42 @@ export class ModalPaie {
     //tableau contenant les mois non pointés intégralement
     let monthsToDelete = [];
 
-    for(let i = 0; i < this.missionHours.length; i++){
+    for(let i = 0; i < this.missionHours.length; i++) {
       let m = this.missionHours[i];
       let d = new Date(m.jour_debut.toString());
       let monthIndex = d.getMonth() + 1;
       let obj = {id: monthIndex, name: this.months[d.getMonth()]};
-
-      if(!Utils.isEmpty(m.date_debut_pointe_corrige) && !Utils.isEmpty(m.date_fin_pointe_corrige)){
-        let index = this.pointedMonths.findIndex(p => p.id === obj.id);
-        if(index == -1) {
-          this.pointedMonths.push(obj);
-        }else{
-          continue;
-        }
+      let index = this.pointedMonths.findIndex(p => p.id === obj.id);
+      if(index == -1) {
+        this.pointedMonths.push(obj);
       }else{
-        let index = monthsToDelete.findIndex(p => p.id === obj.id);
-        if(index == -1) {
-          monthsToDelete.push(obj);
-        }else{
-          continue;
-        }
-      }
-    }
-
-    //supprimer les mois non pointés intégralement du tableau pointedMonths
-    for(let i = 0; i < this.pointedMonths.length; i++){
-      let index = monthsToDelete.findIndex(p => p.id === this.pointedMonths[i].id);
-      if(index == 0){
-        this.pointedMonths.splice(i, 1);
+        continue;
       }
     }
   }
 
   generatePayement(){
-    if(this.selectedMonth == "0") {
+    if(this.isPointing) {
       for (let i = 0; i < this.missionHours.length; i++) {
         let m = this.missionHours[i];
-
-        if (Utils.isEmpty(m.date_debut_pointe_corrige) || Utils.isEmpty(m.date_fin_pointe_corrige)) {
-          this.addAlert("warning", "Vous devez valider tous les horaires de travail avant de pouvoir générer la paie de la mission.");
-          return;
+        if(this.selectedMonth == "0"){
+          if (Utils.isEmpty(m.date_debut_pointe_corrige) || Utils.isEmpty(m.date_fin_pointe_corrige)) {
+            this.addAlert("warning", "Vous devez valider tous les horaires de travail du mois sélectionné avant de pouvoir générer la paie.");
+            return;
+          } else {
+            continue;
+          }
+        }else{
+          if (new Date(m.jour_debut).getMonth() == +this.selectedMonth - 1) {
+            if (Utils.isEmpty(m.date_debut_pointe_corrige) || Utils.isEmpty(m.date_fin_pointe_corrige)) {
+              this.addAlert("warning", "Vous devez valider tous les horaires de travail du mois seléctionné avant de pouvoir générer la paie.");
+              return;
+            } else {
+              continue;
+            }
+          } else {
+            continue;
+          }
         }
       }
     }
