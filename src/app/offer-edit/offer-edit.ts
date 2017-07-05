@@ -32,6 +32,7 @@ import {AutocompleteAddress} from "../components/autocomplete-address/autocomple
 import {ProfileService} from "../../providers/profile.service";
 import {Loader} from "../loader/loader";
 import {LoaderService} from "../../providers/loader.service";
+import {RubriquePersonnalisee} from "../../dto/rubrique-personalisee";
 
 declare let Messenger, jQuery: any;
 declare let google: any;
@@ -165,6 +166,9 @@ export class OfferEdit {
 
   equipmentDataFournishBy: {id: number, label: string}[] = [];
 
+  rubriquesPerso : Array<RubriquePersonnalisee>;
+  itemToAdd : RubriquePersonnalisee;
+
   constructor(private sharedService: SharedService,
               public offersService: OffersService,
               private searchService: SearchService,
@@ -189,6 +193,8 @@ export class OfferEdit {
 
     this.projectTarget = (this.currentUser.estRecruteur ? 'employer' : (this.currentUser.estEmployeur ? 'employer' : 'jobyer'));
     this.isEmployer = (this.projectTarget == 'employer');
+    this.itemToAdd = new RubriquePersonnalisee();
+    this.rubriquesPerso = [];
 
     this.environmentService.reload();
     //obj = "add", "detail", or "recruit"
@@ -208,7 +214,6 @@ export class OfferEdit {
         this.refreshParametrage = true;
         this.fullLoad = true;
         this.offer.adresse.type = "adresse_de_travail";
-        this.loader.hide();
 
         // If we come from a template, remove the id to implicit copy the offer.
         if (this.type == 'planif') {
@@ -227,7 +232,10 @@ export class OfferEdit {
         }
 
         this.offer.medicalSurv = Utils.preventNull(this.offer.medicalSurv).toUpperCase();
-
+        this.offersService.loadPersoRubriques(this.offer.idOffer).then((data:any)=>{
+          this.rubriquesPerso = data;
+          this.loader.hide();
+        });
       });
     } else {
       this.offer = new Offer();
@@ -1048,6 +1056,9 @@ export class OfferEdit {
         }
       })
     }
+
+    //  save perso rubs
+    this.offersService.savePersoRubriques(offer.idOffer, this.rubriquesPerso);
   }
 
   getConditionEmpValuesForCreation() {
@@ -1270,6 +1281,30 @@ export class OfferEdit {
     } else {
       this.deleteOffer();
     }
+  }
+
+  deleteRubrique(item) {
+    let index = -1;
+    for(let i = 0; i < this.rubriquesPerso.length ; i++) {
+      if(this.rubriquesPerso[i] == item) {
+        index = i;
+        break;
+      }
+    }
+
+    if(index == -1)
+      return;
+
+    this.rubriquesPerso = this.rubriquesPerso.splice(index, 1);
+  }
+
+  saveRubrique() {
+    this.rubriquesPerso.push(this.itemToAdd);
+    this.itemToAdd = new RubriquePersonnalisee();
+  }
+
+  switchCotisation(item) {
+    item.soumisCotisations = !item.soumisCotisations;
   }
 
   /**

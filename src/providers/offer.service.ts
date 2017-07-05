@@ -8,6 +8,7 @@ import {CCalloutArguments} from "../dto/generium/ccallout-arguments";
 import {CCallout} from "../dto/generium/ccallout";
 import {Utils} from "../app/utils/utils";
 import {AddressUtils} from "../app/utils/addressUtils";
+import {RubriquePersonnalisee} from "../dto/rubrique-personalisee";
 
 const OFFER_CALLOUT_ID = 20055;
 const LOADING_OFFERS_CALLOUT = 20065;
@@ -190,6 +191,62 @@ export class OffersService {
       }
     }
   }*/
+
+  savePersoRubriques(idOffer: number, rubriques: Array<RubriquePersonnalisee>) {
+    let sqlScript = "delete from user_rubrique_personalisee where fk_user_offre_entreprise="+idOffer+";";
+    for(let i = 0 ; i < rubriques.length ; i++) {
+      let r : RubriquePersonnalisee = rubriques[i];
+      sqlScript = sqlScript + "insert into user_rubrique_personalisee (code, designation, coefficient, soumise_a_cotisation, periodicite, fk_user_offre_entreprise) values " +
+        "(" +
+          "'"+Utils.sqlfyText(r.code)+"',"+
+          "'"+Utils.sqlfyText(r.designation)+"',"+
+          "'"+r.coefficient+"',"+
+          "'"+(r.soumisCotisations?'Oui':'Non')+"',"+
+          "'"+Utils.sqlfyText(r.periodicite)+"',"+
+          "'"+idOffer+"'"+
+        ");";
+    }
+
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sqlScript, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+
+  }
+
+  loadPersoRubriques(idOffer: number) {
+    let sql = "select pk_user_rubrique_personalisee as id, code, designation, " +
+      "coefficient, soumise_a_cotisation as cotisation, periodicite from user_rubrique_personalisee " +
+      "where fk_user_offre_entreprise="+idOffer;
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let rubriques:Array<RubriquePersonnalisee> = [];
+          if(data.data && data.data.length>0) {
+            for(let i = 0 ; i < data.data.length ; i++) {
+              let row = data.data[i];
+              let r : RubriquePersonnalisee = new RubriquePersonnalisee();
+              r.id = row.id;
+              r.code = row.code;
+              r.designation = row.designation;
+              r.coefficient = row.coefficient;
+              r.periodicite = row.periodicite;
+              r.soumisCotisations = row.cotisation.toLowerCase() == 'oui';
+              rubriques.push(r);
+            }
+          }
+          resolve(rubriques);
+        });
+    });
+  }
 
   /**
    * Get an offer

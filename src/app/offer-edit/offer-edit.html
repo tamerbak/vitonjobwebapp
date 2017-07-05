@@ -389,6 +389,101 @@
       </div>
     </section>
 
+    <section widget class="widget widget-offer" *ngIf="projectTarget == 'employer'">
+      <header class="bb widget-offer-header">
+        <h6><span class="fw-semi-bold widget-offer-header-title">Ajouter des conditions d'emploi</span></h6>
+      </header>
+
+      <div class="widget-body" >
+        <fieldset>
+          <legend><strong>Conditions d'emploi</strong></legend>
+          <alert *ngFor="let alert of alertsConditionEmp; let i = index" [type]="alert.type + ' alert-sm'"
+                 dismissible="false">
+            <div [innerHTML]="alert.msg"></div>
+          </alert>
+
+          <table class="table table-condensed">
+            <thead>
+            <tr>
+              <th>Code</th>
+              <th>Désignation</th>
+              <th>Coéfficient</th>
+              <th>Périodicité</th>
+              <th>Soumis à cotisation</th>
+              <th></th>
+            </tr>
+            </thead>
+
+            <tr *ngFor="let item of rubriquesPerso">
+              <td>
+                <input type="text" [(ngModel)]="item.code" />
+              </td>
+              <td>
+                <input type="text" [(ngModel)]="item.designation" />
+              </td>
+              <td>
+                <input
+                    type="number"
+                    class="form-control"
+                    [(ngModel)]="item.coefficient"
+                />
+
+              </td>
+              <td>
+                <select [(ngModel)]="item.periodicite">
+                  <option value="H">Heure</option>
+                  <option value="J">Jour</option>
+                  <option value="NA">Non applicable</option>
+                </select>
+              </td>
+              <td>
+                <input type="checkbox" class="form-control" style="display:block" [(ngModel)]="item.soumisCotisations" />
+              </td>
+              <td>
+                <button (click)="deleteRubrique(item)" class="btn btn-danger">
+                  <span class="glyphicon glyphicon-trash" ></span>
+                </button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <input type="text" [(ngModel)]="itemToAdd.code" />
+              </td>
+              <td>
+                <input type="text" [(ngModel)]="itemToAdd.designation" />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  class="form-control"
+                  [(ngModel)]="itemToAdd.coefficient"
+                />
+
+              </td>
+              <td>
+                <select [(ngModel)]="itemToAdd.periodicite">
+                  <option value="H">Heure</option>
+                  <option value="J">Jour</option>
+                  <option value="NA">Non applicable</option>
+                </select>
+              </td>
+              <td>
+                <input type="checkbox" class="form-control" style="display:block" [(ngModel)]="itemToAdd.soumisCotisations" />
+              </td>
+              <td>
+                <button (click)="saveRubrique()" class="btn btn-primary">
+                  <span class="glyphicon glyphicon-check" ></span>
+                </button>
+              </td>
+            </tr>
+
+          </table>
+
+        </fieldset>
+      </div>
+    </section>
+
     <!--  COORDONNEES ET CONTACT -->
     <section widget class="widget widget-offer">
       <header class="bb widget-offer-header">
