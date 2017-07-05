@@ -10,14 +10,14 @@
     </div>
     <div class="widget-body row emarg-body">
       <datetime id="birthdate" [(ngModel)]="emargeDate" name="emargedate" [timepicker]="false"
-                style="width: 56%;"
+                style="width: 40%;"
                 [datepicker]="{language:'fr-FR',autoclose: true,format: 'dd/mm/yyyy',icon: 'fa fa-calendar'}">
       </datetime>
       &nbsp;
       <button type="button" class="btn btn-success fwidth" style="width: 15%;" (click)="downloadEmargement()">
         Générer
       </button>
-      <a type="button" class="btn btn-success" style="width: 10%;" target="_blank" href="http://dev.vitonjob.com/resources/emargement.pdf">
+      <a type="button" class="btn btn-success" style="width: 15%;margin-left:5px" target="_blank" href="http://dev.vitonjob.com/resources/emargement.pdf">
         Feuille vierge
       </a>
     </div>
