@@ -6,6 +6,7 @@ import {GlobalConfigs} from "../configurations/globalConfigs";
 import {Utils} from "../app/utils/utils";
 import {Offer} from "../dto/offer";
 import {ContractData} from "../dto/contract";
+import {RubriquePersonnalisee} from "../dto/rubrique-personalisee";
 
 // HACK: To fix: error TS2307: Cannot find module 'node'.
 declare function unescape(s: string): string;
@@ -940,7 +941,61 @@ export class ContractService {
     });
   }
 
+  savePersoRubriques(idContrat: number, rubriques: Array<RubriquePersonnalisee>) {
+    let sqlScript = "delete from user_rubrique_personalisee where fk_user_contrat="+idContrat+";";
+    for(let i = 0 ; i < rubriques.length ; i++) {
+      let r : RubriquePersonnalisee = rubriques[i];
+      sqlScript = sqlScript + "insert into user_rubrique_personalisee (code, designation, coefficient, soumise_a_cotisation, periodicite, fk_user_contrat) values " +
+        "(" +
+        "'"+Utils.sqlfyText(r.code)+"',"+
+        "'"+Utils.sqlfyText(r.designation)+"',"+
+        "'"+r.coefficient+"',"+
+        "'"+(r.soumisCotisations?'Oui':'Non')+"',"+
+        "'"+Utils.sqlfyText(r.periodicite)+"',"+
+        "'"+idContrat+"'"+
+        ");";
+    }
 
+
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sqlScript, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+
+  }
+
+  loadPersoRubriques(idContract: number) {
+    let sql = "select pk_user_rubrique_personalisee as id, code, designation, " +
+      "coefficient, soumise_a_cotisation as cotisation, periodicite from user_rubrique_personalisee " +
+      "where fk_user_contrat="+idContract;
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let rubriques:Array<RubriquePersonnalisee> = [];
+          if(data.data && data.data.length>0) {
+            for(let i = 0 ; i < data.data.length ; i++) {
+              let row = data.data[i];
+              let r : RubriquePersonnalisee = new RubriquePersonnalisee();
+              r.id = row.id;
+              r.code = row.code;
+              r.designation = row.designation;
+              r.coefficient = row.coefficient;
+              r.periodicite = row.periodicite;
+              r.soumisCotisations = row.cotisation.toLowerCase() == 'oui';
+              rubriques.push(r);
+            }
+          }
+          resolve(rubriques);
+        });
+    });
+  }
 
   generateMission(idContract, offer) {
     let calendar = offer.calendarData;
