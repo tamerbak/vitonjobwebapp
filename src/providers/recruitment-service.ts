@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Http} from "@angular/http";
+import {Http, Headers} from "@angular/http";
 import {Configs} from "../configurations/configs";
 import {Utils} from "../app/utils/utils";
 import {CalendarQuarter} from "../dto/calendar-quarter";
@@ -899,7 +899,7 @@ export class RecruitmentService {
         this.offersService.copyOffer(offerCopy, projectTarget, "en archive").then((data: any) => {
           if(data && !Utils.isEmpty(data._body)) {
             let savedOffer = JSON.parse(data._body);
-
+            this.duplicateRubriques(offer.idOffer, savedOffer.idOffer);
             this.saveRecruitmentConfiguration(slotsPerJobyer[i].jobyerId, savedOffer.idOffer).then((data: any) => {
 
               //get next num contract
@@ -944,6 +944,25 @@ export class RecruitmentService {
           }
         });
       }
+    });
+  }
+
+  duplicateRubriques(idOfferOrigine, idOfferDupl) {
+    let sql = "insert into user_rubrique_personalisee (code, designation, coefficient, soumise_a_cotisation, periodicite, fk_user_offre_entreprise) " +
+      "select code, designation, coefficient, soumise_a_cotisation, periodicite, '"+idOfferDupl+"' " +
+      "from user_rubrique_personalisee where fk_user_offre_entreprise="+idOfferOrigine;
+
+    console.clear();
+    console.log(sql);
+    
+    return new Promise(resolve => {
+      let headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          console.log(JSON.stringify(data));
+          resolve(data);
+        });
     });
   }
 

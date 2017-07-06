@@ -20,6 +20,7 @@ import {ContractData} from "../../dto/contract";
 import {Offer} from "../../dto/offer";
 import {DateUtils} from "../utils/date-utils";
 import {ConventionParameters} from "../offer-edit/convention-parameters/convention-parameters";
+import {RubriquePersonnalisee} from "../../dto/rubrique-personalisee";
 declare let Messenger,jQuery,moment, escape, unescape: any;
 
 /**
@@ -81,6 +82,10 @@ export class Contract {
   isConditionEmpValid = true;
   isConditionEmpExist: boolean = true;
 
+  rubriquesPerso : Array<RubriquePersonnalisee>;
+  itemToAdd : RubriquePersonnalisee;
+
+
   constructor(private contractService: ContractService,
               private sharedService: SharedService,
               private offersService : OffersService,
@@ -95,6 +100,9 @@ export class Contract {
 
     //  check if there is a current offer
     this.currentOffer = this.sharedService.getCurrentOffer();
+    this.itemToAdd = new RubriquePersonnalisee();
+    this.rubriquesPerso = [];
+
 
     //go to home if access is not authorized
     let accessValid = this.isAccessAutorised(this.currentUser, this.isEmployer, this.currentOffer);
@@ -138,13 +146,18 @@ export class Contract {
         this.initEmployerData();
         //initialize recruitment data
         this.initRecruitmentData();
-
+        this.offersService.loadPersoRubriques(this.currentOffer.idOffer).then((data:any)=>{
+          this.rubriquesPerso = data;
+        });
       } else {
         console.log("contractData raw");
         console.log(this.contractData);
         this.initSavedContract();
       }
+
     });
+
+
 
     //TODO à ajouter dans le callout prepareRecruitment
     this.offersService.loadEPI().then((data:any)=>{
@@ -215,6 +228,10 @@ export class Contract {
       }
       this.contractData.epiList.push(epi);
     }
+
+    this.contractService.loadPersoRubriques(this.contractData.id).then((data:any)=>{
+      this.rubriquesPerso = data;
+    });
 
     /*let postRisks = this.contractData.postRisks.split(' - ');
     if(postRisks && postRisks.length > 0){
@@ -710,6 +727,9 @@ export class Contract {
                     this.checkOfferState(this.currentOffer);
                     //generate hour mission based on the offer slots
                     this.contractService.generateMission(this.contractData.id, this.currentOffer);
+
+                    this.contractService.savePersoRubriques(this.contractData.id, this.rubriquesPerso);
+
                     if (!Utils.isEmpty(this.jobyer.rgId)) {
                       //update recrutement groupé state
                       this.recruitmentService.updateRecrutementGroupeState(this.jobyer.rgId);
@@ -765,6 +785,9 @@ export class Contract {
               //update recrutement groupé state
               this.recruitmentService.updateRecrutementGroupeState(this.jobyer.rgId);
             }
+
+            this.contractService.savePersoRubriques(this.contractData.id, this.rubriquesPerso);
+
             //go to contract list page
             this.router.navigate(['contract/list']);
           } else {
@@ -1085,6 +1108,26 @@ export class Contract {
           this.addAlert("danger", "Erreur lors de la sauvegarde des conditions d'emploi.", "conditionEmp");
         }
       })
+  }
+
+  deleteRubrique(item) {
+    let index = -1;
+    for(let i = 0; i < this.rubriquesPerso.length ; i++) {
+      if(this.rubriquesPerso[i] == item) {
+        index = i;
+        break;
+      }
+    }
+
+    if(index == -1)
+      return;
+
+    this.rubriquesPerso = this.rubriquesPerso.splice(index, 1);
+  }
+
+  saveRubrique() {
+    this.rubriquesPerso.push(this.itemToAdd);
+    this.itemToAdd = new RubriquePersonnalisee();
   }
 
   addAlert(type, msg, section?): void {
