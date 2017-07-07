@@ -1,4 +1,5 @@
 import {Injectable} from "@angular/core";
+import {RubriquePersonnalisee} from "../dto/rubrique-personalisee";
 
 /**
  * @author Amal ROCHD
@@ -332,5 +333,13 @@ export class SharedService {
 
   setAlreadyInHome(value: boolean){
     this.setStorageVariable("isAlreadyInHome", value);
+  }
+
+  setRubriquesPerso( value : Array<RubriquePersonnalisee>) {
+    this.setStorageVariable("RUBRIQUES_PERSO", value);
+  }
+
+  getRubriquesPerso() {
+    return this.getStorageVariable("RUBRIQUES_PERSO");
   }
 }

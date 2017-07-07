@@ -7,6 +7,7 @@ import {AlertComponent} from "ng2-bootstrap/components/alert";
 import {ButtonNumber} from "../components/button-number/button-number";
 import {ModalOptions} from "../modal-options/modal-options";
 import { InfiniteScroll } from 'angular2-infinite-scroll';
+import {RubriquePersonnalisee} from "../../dto/rubrique-personalisee";
 
 declare let jQuery: any;
 declare let Messenger: any;
@@ -109,11 +110,16 @@ export class OfferTypeList {
             offer.jobData.epi.push(data[j].libelle);
         }
         this.sharedService.setCurrentOffer(offer);
-        if (toPlan) {
-          this.router.navigate(['offer/edit', {obj:'add', type: 'planif'}]);
-        } else {
-          this.router.navigate(['offer/edit', {obj:'detail', type: 'template'}]);
-        }
+        this.offersService.loadPersoRubriques(offer.idOffer).then((data:any)=>{
+          let rps : Array<RubriquePersonnalisee> = data;
+          this.sharedService.setRubriquesPerso(rps);
+          if (toPlan) {
+            this.router.navigate(['offer/edit', {obj:'add', type: 'planif'}]);
+          } else {
+            this.router.navigate(['offer/edit', {obj:'detail', type: 'template'}]);
+          }
+        });
+
       });
     });
   }

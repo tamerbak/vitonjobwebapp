@@ -204,7 +204,6 @@ export class OfferEdit {
     });
 
     let currentOffer = this.sharedService.getCurrentOffer();
-
     if (this.obj == "detail" || (currentOffer && currentOffer.idOffer > 0)) {
 
       this.loader.display();
@@ -232,18 +231,25 @@ export class OfferEdit {
         }
 
         this.offer.medicalSurv = Utils.preventNull(this.offer.medicalSurv).toUpperCase();
-        this.offersService.loadPersoRubriques(this.offer.idOffer).then((data:any)=>{
-          this.rubriquesPerso = data;
+        if(this.obj != 'add')
+          this.offersService.loadPersoRubriques(this.offer.idOffer).then((data:any)=>{
+            this.rubriquesPerso = data;
+            this.loader.hide();
+          });
+        else
           this.loader.hide();
-        });
       });
     } else {
       this.offer = new Offer();
       if (this.type == 'template') {
         this.offer.type = true;
       }
+
     }
 
+    if(this.obj == 'add' && this.type == 'planif') {
+      this.rubriquesPerso = this.sharedService.getRubriquesPerso();
+    }
     this.loadLists();
 
     if (this.projectTarget == "employer" && this.currentUser.employer.entreprises[0].conventionCollective.id > 0) {
