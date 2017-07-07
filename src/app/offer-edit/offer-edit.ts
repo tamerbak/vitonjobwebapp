@@ -1284,18 +1284,12 @@ export class OfferEdit {
   }
 
   deleteRubrique(item) {
-    let index = -1;
-    for(let i = 0; i < this.rubriquesPerso.length ; i++) {
-      if(this.rubriquesPerso[i] == item) {
-        index = i;
-        break;
-      }
-    }
+    let index = this.rubriquesPerso.indexOf(item);
 
     if(index == -1)
       return;
 
-    this.rubriquesPerso = this.rubriquesPerso.splice(index, 1);
+    this.rubriquesPerso.splice(index, 1);
   }
 
   saveRubrique() {
