@@ -248,6 +248,21 @@ export class OffersService {
     });
   }
 
+  copyPersoRubriques(idOrigine, idDest) {
+    let sql = "insert into user_rubrique_personalisee (code, designation, coefficient, soumise_a_cotisation, periodicite, fk_user_offre_entreprise) " +
+      "select code, designation, coefficient, soumise_a_cotisation, periodicite, '"+idDest+"' " +
+      "from user_rubrique_personalisee where fk_user_offre_entreprise="+idOrigine+"";
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
+
   /**
    * Get an offer
    *

@@ -125,6 +125,7 @@ export class ModalOptions{
   copyOffer() {
     this.processing = true;
     let offer = this.sharedService.getCurrentOffer();
+    let ido = offer.idOffer;
     if (!offer) {
       this.processing = false;
       jQuery("#modal-options").modal('hide');
@@ -133,6 +134,8 @@ export class ModalOptions{
 
     //this.offersService.setOfferInLocal(offer, this.projectTarget);
     this.offersService.copyOffer(offer, this.projectTarget, '').then((data: any) => {
+
+      this.offersService.copyPersoRubriques(ido, offer.idOffer);
       Messenger().post({
         message: "l'offre " + "'" + offer.title + "'" + " a été copiée avec succès",
         type: 'success',
