@@ -264,12 +264,10 @@ export class ContractList{
       return;
     }else{
       this.contractService.getContractDataInfos(item.id, this.projectTarget).then((data: ContractData) => {
-
         this.sharedService.setContractData(data);
         let jobyer = {id: data.jobyerId, email: data.email, tel: data.tel, nom: data.jobyerNom, prenom: data.jobyerPrenom, lieuNaissance: data.jobyerLieuNaissance, dateNaissance: data.jobyerBirthDate};
         this.sharedService.setCurrentJobyer(jobyer);
         this.offerService.getOfferById(item.idOffer, this.projectTarget, offer).then(data => {
-
           this.sharedService.setCurrentOffer(offer);
           this.loader.hide();
           this.router.navigate(['contract/recruitment-form']);
