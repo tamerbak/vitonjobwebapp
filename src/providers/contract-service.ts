@@ -1263,6 +1263,7 @@ export class ContractService {
         'c.enveloppe_jobyer as \"enveloppeJobyer\",' +
         'c.enveloppe_employeur as \"enveloppeEmployeur\",' +
         'c.duree_hebdomadaire as \"workTimeHours\",' +
+        'c.titre, ' +
         'j.nom as \"jobyerNom\",' +
         'j.prenom as \"jobyerPrenom\",' +
         'j.numero_securite_sociale as \"jobyerNumSS\",' +
@@ -1294,6 +1295,7 @@ export class ContractService {
             let contractData: ContractData = new ContractData();
             let res = data.data[0];
             Utils.copyKeyValues(res, contractData);
+            contractData.titre = res.qualification; // Hot fix for contracts without title
             resolve(contractData);
           }
         });
