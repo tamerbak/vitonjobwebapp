@@ -606,18 +606,16 @@ export class Calendar {
     this.slot.dateEnd = end._d;
 
     if (this.plageDate == "multiple" && this.isPeriodic) {
-
-      this.isPeriodic = false; // setting back to false to prevent default
+      //this.isPeriodic = false; // setting back to false to prevent default
       let nbDays = Math.floor((this.endDate - this.startDate) / (60 * 60 * 24 * 1000)) + 1;
 
       // Boucle de splittage slots with fix for special dates
       for (let n = 0; n < (nbDays > 1 ? nbDays : nbDays + 1); n++) {
-
         // Compute day slot
         let slotStart = new Date(start);
         slotStart.setDate(slotStart.getDate() + n);
         let slotEnd = new Date(start);
-        slotEnd.setDate(slotStart.getDate());
+        slotEnd.setDate(slotEnd.getDate() + n);
         slotEnd.setHours(he);
         slotEnd.setMinutes(me);
 
