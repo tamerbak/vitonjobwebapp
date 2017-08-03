@@ -1408,7 +1408,7 @@ export class Profile{
       this.validation = true;
       var title = this.title;
       var firstname = this.firstname;
-      var lastname = this.lastname;
+      var lastname = this.lastname.toUpperCase();
       var accountId = this.accountId;
       var userRoleId = this.userRoleId;
       var isNewUser = this.isNewUser;
@@ -1429,7 +1429,7 @@ export class Profile{
               } else {
                 // //console.log("response update civility : " + res.status);
                 this.currentUser.titre = this.title;
-                this.currentUser.nom = this.lastname;
+                this.currentUser.nom = this.lastname.toUpperCase();
                 this.currentUser.prenom = this.firstname;
                 this.currentUser.newAccount = false;
                 this.sharedService.setCurrentUser(this.currentUser);
@@ -1456,7 +1456,7 @@ export class Profile{
             });
 
         } else {
-          var companyname = this.companyname;
+          var companyname = this.companyname.toUpperCase();
           var siret = this.siret.substring(0, 17);
           var ape = this.ape.substring(0, 5).toUpperCase();
           var medecineId = this.selectedMedecine.id === "0" ? 0 : parseInt(this.selectedMedecine.id);
@@ -1484,9 +1484,9 @@ export class Profile{
                 // data saved
                 // //console.log("response update civility : " + res.status);
                 this.currentUser.titre = this.title;
-                this.currentUser.nom = this.lastname;
+                this.currentUser.nom = this.lastname.toUpperCase();
                 this.currentUser.prenom = this.firstname;
-                this.currentUser.employer.entreprises[0].nom = this.companyname;
+                this.currentUser.employer.entreprises[0].nom = this.companyname.toUpperCase();
                 this.currentUser.employer.entreprises[0].siret = siret;
                 this.currentUser.employer.entreprises[0].naf = ape;
                 this.currentUser.isNewUser
@@ -1618,7 +1618,7 @@ export class Profile{
             } else {
               // data saved
               this.currentUser.titre = this.title;
-              this.currentUser.nom = this.lastname;
+              this.currentUser.nom = this.lastname.toUpperCase();
               this.currentUser.prenom = this.firstname;
               this.currentUser.jobyer.cni = this.cni;
               this.currentUser.jobyer.numSS = this.numSS;
