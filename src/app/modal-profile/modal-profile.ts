@@ -539,8 +539,8 @@ export class ModalProfile{
     if (isFormValid) {
       this.validation = true;
       var title = this.title;
-      var firstname = this.firstname;
-      var lastname = this.lastname.toUpperCase();
+      var firstname = this.firstname.trim();
+      var lastname = this.lastname.trim().toUpperCase();
       var accountId = this.accountId;
       var userRoleId = this.userRoleId;
       var isNewUser = this.isNewUser;
