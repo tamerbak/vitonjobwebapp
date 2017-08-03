@@ -540,7 +540,7 @@ export class ModalProfile{
       this.validation = true;
       var title = this.title;
       var firstname = this.firstname;
-      var lastname = this.lastname;
+      var lastname = this.lastname.toUpperCase();
       var accountId = this.accountId;
       var userRoleId = this.userRoleId;
       var isNewUser = this.isNewUser;
@@ -559,7 +559,7 @@ export class ModalProfile{
           } else {
             // console.log("response update civility : " + res.status);
             this.currentUser.titre = this.title;
-            this.currentUser.nom = this.lastname;
+            this.currentUser.nom = this.lastname.toUpperCase();
             this.currentUser.prenom = this.firstname;
             this.currentUser.newAccount = false;
             this.sharedService.setCurrentUser(this.currentUser);
@@ -594,12 +594,12 @@ export class ModalProfile{
       }else {
 
         if (this.isEmployer) {
-          var companyname = (!this.companyname ? this.currentUser.employer.entreprises[0].nom : this.companyname);
+          var companyname = (!this.companyname ? this.currentUser.employer.entreprises[0].nom.toUpperCase() : this.companyname.toUpperCase());
           var siret = this.siret ? this.siret.substring(0, 17) : "";
           var ape = this.ape ? this.ape.substring(0, 5).toUpperCase() : "";
           var entrepriseId = this.currentUser.employer.entreprises[0].id;
-          
-          //pharma NAF 
+
+          //pharma NAF
           if(ape === this.pharmaNAF){
             this.conventionId = this.pharmaConventionId;
           }
@@ -616,9 +616,9 @@ export class ModalProfile{
             } else {
               // data saved
               this.currentUser.titre = this.title;
-              this.currentUser.nom = this.lastname;
+              this.currentUser.nom = this.lastname.toUpperCase();
               this.currentUser.prenom = this.firstname;
-              this.currentUser.employer.entreprises[0].nom = this.companyname;
+              this.currentUser.employer.entreprises[0].nom = this.companyname.toUpperCase();
               this.currentUser.employer.entreprises[0].naf = ape;
               this.currentUser.employer.entreprises[0].siret = siret;
               this.currentUser.newAccount = false;
@@ -689,7 +689,7 @@ export class ModalProfile{
             } else {
               // data saved
               this.currentUser.titre = this.title;
-              this.currentUser.nom = this.lastname;
+              this.currentUser.nom = this.lastname.toUpperCase();
               this.currentUser.prenom = this.firstname;
               this.currentUser.newAccount = false;
               this.sharedService.setCurrentUser(this.currentUser);

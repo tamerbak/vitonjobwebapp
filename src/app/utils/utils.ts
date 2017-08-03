@@ -41,6 +41,20 @@ export class Utils {
       return true;
     if (check == false)
       return false;
+
+    //  no spaces allowed
+    if(str.indexOf(' ')>-1)
+      return false;
+
+    //  no special characters allowed
+    if(!/^[a-zA-Z0-9]+$/i.test(str))
+      return false;
+
+    //  no accents allowed
+    for(let i=0 ; i < str.length ; i++)
+      if(/^[\u00E0-\u00FC]+$/i.test(str.charAt(i)))
+        return false;
+
     return check == 1;
   }
 

@@ -28,9 +28,9 @@ export class BankService {
     let estEmployeur = table == "fk_user_jobyer"?"NON":"OUI";
     if(voidAccount)
     sql = "insert into user_coordonnees_bancaires (iban, bic, nom_de_banque, detenteur_du_compte, est_employeur, "+table+") values " +
-    "('"+bank.iban+"', '"+bank.bic+"', '"+Utils.sqlfyText(bank.nom_de_banque)+"', '"+Utils.sqlfyText(bank.detenteur_du_compte.trim())+"', '"+estEmployeur+"', "+id+")";
+    "('"+bank.iban.toUpperCase()+"', '"+bank.bic.toUpperCase()+"', '"+Utils.sqlfyText(bank.nom_de_banque)+"', '"+Utils.sqlfyText(bank.detenteur_du_compte.toUpperCase().trim())+"', '"+estEmployeur+"', "+id+")";
     else
-    sql = "update user_coordonnees_bancaires set iban='"+bank.iban+"', bic='"+bank.bic+"', nom_de_banque='"+Utils.sqlfyText(bank.nom_de_banque)+"', detenteur_du_compte='"+Utils.sqlfyText(bank.detenteur_du_compte)+"' where "+table+"="+id;
+    sql = "update user_coordonnees_bancaires set iban='"+bank.iban.toUpperCase()+"', bic='"+bank.bic.toUpperCase()+"', nom_de_banque='"+Utils.sqlfyText(bank.nom_de_banque)+"', detenteur_du_compte='"+Utils.sqlfyText(bank.detenteur_du_compte.trim().toUpperCase())+"' where "+table+"="+id;
 
     return new Promise(resolve => {
       // We're using Angular Http provider to request the data,
