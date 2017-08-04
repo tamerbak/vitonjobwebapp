@@ -57,6 +57,22 @@ export class ProfileService{
     });
   }
 
+  seekPrefecture(id) {
+    let sql = "select nom from user_prefecture where pk_user_prefecture="+id;
+    return new Promise(resolve => {
+      let headers = new Headers();
+      headers = Configs.getHttpTextHeaders();
+      this.http.post(Configs.sqlURL, sql, {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          let nom = "";
+          if(data.data && data.data.length>0)
+            nom = data.data[0].nom;
+          resolve(nom);
+        });
+    });
+  }
+
   loadProfilePicture(accountId, tel?, role?) {
     let sql;
     if (!this.isEmpty(accountId)) {
