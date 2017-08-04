@@ -694,7 +694,17 @@ export class Profile{
         }
         this.regionId = data.fk_user_identifiants_nationalite;
         this.whoDeliverStay = data.instance_delivrance;
-        this.loadCurrentPerfecture();
+
+        if(Utils.isNumber(this.whoDeliverStay)) {
+          this.profileService.seekPrefecture(this.whoDeliverStay).then((data : any)=>{
+
+            this.whoDeliverStay = data;
+            this.loadCurrentPerfecture();
+          });
+        } else {
+          this.loadCurrentPerfecture();
+        }
+
 
         this.dateStay = data.date_de_delivrance;
         var dateStay = Utils.isEmpty(this.dateStay) ? "":moment(this.dateStay).format("DD/MM/YYYY");
@@ -1588,6 +1598,10 @@ export class Profile{
         if (this.index)
           birthCountryId = this.profileService.getCountryByIndex(this.index, this.pays).id;
         var prefecture = this.whoDeliverStay;
+        console.clear();
+        console.log(prefecture);
+
+        return;
         var regionId;
         if (!this.regionId) {
           if (this.isEuropean == 1) {
