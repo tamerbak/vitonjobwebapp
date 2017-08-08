@@ -1598,10 +1598,6 @@ export class Profile{
         if (this.index)
           birthCountryId = this.profileService.getCountryByIndex(this.index, this.pays).id;
         var prefecture = this.whoDeliverStay;
-        console.clear();
-        console.log(prefecture);
-
-        return;
         var regionId;
         if (!this.regionId) {
           if (this.isEuropean == 1) {
