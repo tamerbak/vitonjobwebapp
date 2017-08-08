@@ -81,7 +81,10 @@ export class AccountConstraints{
     return {isValid: _isValid, hint: _hint}
   }
 
-  public static checkNumss(e, title, birthdate, commune) {
+  public static checkNumss(e, title, birthdate, commune, isFrench : boolean) {
+    if(isFrench === false) {
+      return {isValid: true, hint: ""};
+    }
     let _numSS = e.target.value;
 
     let _isValid: boolean = true;

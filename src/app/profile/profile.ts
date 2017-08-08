@@ -1906,7 +1906,15 @@ export class Profile{
         this.scanTitle = " de votre titre de séjour";
         this.loadAttachement(this.scanTitle);
       }
-    })
+    });
+
+    //  Revalidate NumSS
+
+    this.isFrench = e.target.value == '91';
+    let numssChecked = AccountConstraints.checkNumss(e, this.title, moment(this.birthdateHidden).format('YYYY-MM-DD'), this.selectedCommune, this.isFrench);
+    this.isValidNumSS = numssChecked.isValid;
+    this.numSSHint = numssChecked.hint;
+    this.isValidForm();
   }
 
   watchTypeDocStranger(e) {
@@ -1986,7 +1994,7 @@ export class Profile{
   }
 
   watchNumSS(e) {
-    let numssChecked = AccountConstraints.checkNumss(e, this.title, moment(this.birthdateHidden).format('YYYY-MM-DD'), this.selectedCommune);
+    let numssChecked = AccountConstraints.checkNumss(e, this.title, moment(this.birthdateHidden).format('YYYY-MM-DD'), this.selectedCommune, this.isFrench);
     this.isValidNumSS = numssChecked.isValid;
     this.numSSHint = numssChecked.hint;
     this.isValidForm();
