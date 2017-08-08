@@ -337,7 +337,7 @@
                 </label>
                 <div class="col-md-7 col-xs-12">
                   <input type="text" id="numSS" class="form-control" [(ngModel)]="numSS" name="numSS"
-                         placeholder="N° de sécurité sociale" (keyup)="watchNumSS($event)" maxlength="15">
+                         placeholder="N° de sécurité sociale" (keyup)="watchNumSS($event)" >
                 </div>
                 <div class="col-md-offset-4 col-md-7 col-xs-12">
                   <span class="hint label label-danger">{{numSSHint}}</span>
@@ -582,7 +582,7 @@
                          [(ngModel)]="correspondenceAddress" (input)="autocompleteCorrespondenceAddress()"/>
                 </div>
               </div>
-  
+
               <div *ngIf="!isEmployer && !isRecruiter" class="form-group row">
                 <label class="col-md-4 col-xs-12 form-control-label text-md-right">
                   Moyen de transport
@@ -1120,7 +1120,7 @@
           </fieldset>
       </div>
     </section>
-    
+
     <section class="widget" widget>
 
       <div class="widget-body widget-body-profile">
